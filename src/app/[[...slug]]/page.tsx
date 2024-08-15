@@ -1,6 +1,6 @@
 import path from "path";
 
-import { getFrontMatter, MdxContent } from "@/components/mdx/mdxContent";
+import { getFrontMatter, MdxContent } from "@/components/web/mdx/mdxContent";
 import { existsSync } from "fs";
 import { readFile } from "fs/promises";
 import { Metadata, ResolvingMetadata } from "next";

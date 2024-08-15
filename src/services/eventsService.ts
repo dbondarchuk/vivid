@@ -208,15 +208,14 @@ export class EventsService {
   ): Promise<Period[]> {
     const db = await getDbConnection();
     const events = await db
-      .collection(APPOINTMENTS_COLLECTION_NAME)
+      .collection<DbEvent>(APPOINTMENTS_COLLECTION_NAME)
       .find({
         dateTime: {
           $gte: start.minus({ days: 1 }).toJSDate(),
           $lte: end.plus({ days: 1 }).toJSDate(),
         },
       })
-      .map((document) => {
-        const { duration, dateTime } = document as unknown as DbEvent;
+      .map(({ duration, dateTime }) => {
         return {
           duration,
           dateTime,
@@ -234,7 +233,7 @@ export class EventsService {
 
   private async saveEvent(event: MeetingEvent) {
     const db = await getDbConnection();
-    const appointments = db.collection(APPOINTMENTS_COLLECTION_NAME);
+    const appointments = db.collection<DbEvent>(APPOINTMENTS_COLLECTION_NAME);
 
     const dbEvent: DbEvent = {
       ...event,
