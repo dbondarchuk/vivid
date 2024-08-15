@@ -4,10 +4,12 @@ import { MeetingEvent } from "@/models/meetingEvent";
 import { Period } from "@/models/period";
 import { DateTime } from "luxon";
 import * as nodemailer from "nodemailer";
-import { DateObject, generateIcsCalendar, VCalendar, VEvent } from "ts-ics";
 import { ConfigurationService } from "./configurationService";
 import { IcsBusyTimeProvider } from "./helpers/ics";
 import * as ics from "ics";
+import { getDbConnection } from "@/database";
+
+const APPOINTMENTS_COLLECTION_NAME = "appointments";
 
 type CalendarEventOptions = {
   from: string;
@@ -26,15 +28,27 @@ export class EventsService {
     const start = DateTime.now();
     const end = DateTime.now().plus({ weeks: config.maxWeeksInFuture ?? 4 });
 
-    const ics = new IcsBusyTimeProvider(config.ics);
-    const icsEvents = await ics.getBusyTimes(start, end);
+    const dbEventsPromise = this.getDbBusyTimes();
 
-    return icsEvents;
+    const ics = new IcsBusyTimeProvider(config.ics);
+    const icsEventsPromise = ics.getBusyTimes(start, end);
+
+    const [dbEvents, icsEvents] = await Promise.all([
+      dbEventsPromise,
+      icsEventsPromise,
+    ]);
+
+    return [...dbEvents, ...icsEvents];
   }
 
   public async createEvent(event: MeetingEvent): Promise<void> {
     const { booking, address, smtp, name, url } =
       await this.configurationService.getConfiguration();
+
+    const db = await getDbConnection();
+    const appointments = db.collection(APPOINTMENTS_COLLECTION_NAME);
+
+    await appointments.insertOne(event);
 
     const transport = nodemailer.createTransport({
       host: smtp.host,
@@ -185,5 +199,27 @@ export class EventsService {
     }
 
     return value;
+  }
+
+  private async getDbBusyTimes(): Promise<Period[]> {
+    const db = await getDbConnection();
+    const events = await db
+      .collection(APPOINTMENTS_COLLECTION_NAME)
+      .find()
+      .map((document) => {
+        const { duration, dateTime } = document as unknown as MeetingEvent;
+        return {
+          duration,
+          dateTime,
+        };
+      })
+      .toArray();
+
+    return events.map((x) => ({
+      startAt: DateTime.fromISO(x.dateTime, { zone: "utc" }),
+      endAt: DateTime.fromISO(x.dateTime, { zone: "utc" }).plus({
+        minutes: x.duration,
+      }),
+    }));
   }
 }

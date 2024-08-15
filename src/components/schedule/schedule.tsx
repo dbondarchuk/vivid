@@ -48,6 +48,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   }, [duration]);
 
   const submitForm = (fields: Record<string, any>) => {
+    if (!dateTime) return;
+
     setIsLoading(true);
     fetch("/api/event", {
       method: "POST",
@@ -55,11 +57,11 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         date: LuxonDateTime.fromJSDate(dateTime!.date).toISODate(),
         dateTime: LuxonDateTime.fromObject(
           {
-            year: dateTime?.date.getFullYear(),
-            month: dateTime?.date.getMonth(),
-            day: dateTime?.date.getDate(),
-            hour: dateTime?.time.hour,
-            minute: dateTime?.time.minute,
+            year: dateTime.date.getFullYear(),
+            month: dateTime.date.getMonth() + 1,
+            day: dateTime.date.getDate(),
+            hour: dateTime.time.hour,
+            minute: dateTime.time.minute,
             second: 0,
           },
           { zone: dateTime?.timeZone }
