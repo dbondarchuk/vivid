@@ -17,6 +17,8 @@ RUN \
 
 # Rebuild the source code only when needed
 FROM base AS builder
+ENV MONGODB_URI=mongodb://mongo:27017/vivid?retryWrites=true&w=majority
+
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -62,7 +64,6 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT=3000
-ENV MONGODB_URI=mongodb://mongo:27017/vivid?retryWrites=true&w=majority
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
