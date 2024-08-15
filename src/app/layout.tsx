@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { TwLoad } from "./twLoad";
+import { Toaster } from "@/components/ui/toaster";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

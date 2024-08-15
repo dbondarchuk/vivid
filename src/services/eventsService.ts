@@ -11,6 +11,10 @@ import { getDbConnection } from "@/database";
 
 const APPOINTMENTS_COLLECTION_NAME = "appointments";
 
+type DbEvent = Omit<MeetingEvent, "dateTime"> & {
+  dateTime: Date;
+};
+
 type CalendarEventOptions = {
   from: string;
   address: string;
@@ -25,10 +29,10 @@ export class EventsService {
     const configuration = await this.configurationService.getConfiguration();
     const config = configuration.booking;
 
-    const start = DateTime.now();
-    const end = DateTime.now().plus({ weeks: config.maxWeeksInFuture ?? 4 });
+    const start = DateTime.utc();
+    const end = DateTime.utc().plus({ weeks: config.maxWeeksInFuture ?? 8 });
 
-    const dbEventsPromise = this.getDbBusyTimes();
+    const dbEventsPromise = this.getDbBusyTimes(start, end);
 
     const ics = new IcsBusyTimeProvider(config.ics);
     const icsEventsPromise = ics.getBusyTimes(start, end);
@@ -45,10 +49,7 @@ export class EventsService {
     const { booking, address, smtp, name, url } =
       await this.configurationService.getConfiguration();
 
-    const db = await getDbConnection();
-    const appointments = db.collection(APPOINTMENTS_COLLECTION_NAME);
-
-    await appointments.insertOne(event);
+    await this.saveEvent(event);
 
     const transport = nodemailer.createTransport({
       host: smtp.host,
@@ -201,13 +202,21 @@ export class EventsService {
     return value;
   }
 
-  private async getDbBusyTimes(): Promise<Period[]> {
+  private async getDbBusyTimes(
+    start: DateTime,
+    end: DateTime
+  ): Promise<Period[]> {
     const db = await getDbConnection();
     const events = await db
       .collection(APPOINTMENTS_COLLECTION_NAME)
-      .find()
+      .find({
+        dateTime: {
+          $gte: start.minus({ days: 1 }).toJSDate(),
+          $lte: end.plus({ days: 1 }).toJSDate(),
+        },
+      })
       .map((document) => {
-        const { duration, dateTime } = document as unknown as MeetingEvent;
+        const { duration, dateTime } = document as unknown as DbEvent;
         return {
           duration,
           dateTime,
@@ -216,10 +225,22 @@ export class EventsService {
       .toArray();
 
     return events.map((x) => ({
-      startAt: DateTime.fromISO(x.dateTime, { zone: "utc" }),
-      endAt: DateTime.fromISO(x.dateTime, { zone: "utc" }).plus({
+      startAt: DateTime.fromJSDate(x.dateTime, { zone: "utc" }),
+      endAt: DateTime.fromJSDate(x.dateTime, { zone: "utc" }).plus({
         minutes: x.duration,
       }),
     }));
+  }
+
+  private async saveEvent(event: MeetingEvent) {
+    const db = await getDbConnection();
+    const appointments = db.collection(APPOINTMENTS_COLLECTION_NAME);
+
+    const dbEvent: DbEvent = {
+      ...event,
+      dateTime: DateTime.fromISO(event.dateTime, { zone: "utc" }).toJSDate(),
+    };
+
+    await appointments.insertOne(dbEvent);
   }
 }

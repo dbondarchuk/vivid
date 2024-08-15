@@ -58,8 +58,8 @@ export interface TimeSlotsFinderConfiguration {
 }
 
 export interface DatePeriod {
-  startAt: Date;
-  endAt: Date;
+  startAt: number;
+  endAt: number;
 }
 
 export interface TimeSlot extends DatePeriod {

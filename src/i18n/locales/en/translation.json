@@ -23,6 +23,10 @@
   "select_timezone_label_format": "All times are in {0} time zone",
   "search_country_code_label": "Search for country...",
   "search_timezone_label": "Search to change the timezone",
-  "confirmation_success_title": "Your appointment has been confirmed!",
-  "confirmation_success_message": "Thanks, {0}! We have received your appointment request and will send you a confirmation email shortly."
+  "confirmation_success_title": "Your appointment has been received!",
+  "confirmation_success_message": "Thanks, {0}! We have received your appointment request and will send you a confirmation email shortly.",
+  "availability_fetch_failed_title": "Uh oh! Something went wrong.",
+  "availability_fetch_failed_description": "Something went wrong while we were getting available times",
+  "submit_event_failed_title": "Uh oh! Something went wrong.",
+  "submit_event_failed_description": "Something went wrong while we were trying to book your appointment. Please give us a call"
 }

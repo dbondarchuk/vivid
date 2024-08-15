@@ -11,6 +11,7 @@ import { CalendarCard } from "./calendar.card";
 import { ConfirmationCard } from "./confirmation.card";
 import { DurationCard } from "./duration.card";
 import { FormCard } from "./form.card";
+import { useToast } from "../ui/use-toast";
 
 export type ScheduleProps = {
   meetingOption: MeetingOption;
@@ -21,6 +22,18 @@ type Step = "duration" | "calendar" | "form" | "confirmation";
 
 export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   const i18n = useI18n();
+
+  const errors = React.useMemo(
+    () => ({
+      fetchTitle: i18n("availability_fetch_failed_title"),
+      fetchDescription: i18n("availability_fetch_failed_description"),
+      submitTitle: i18n("submit_event_failed_title"),
+      submitDescription: i18n("submit_event_failed_description"),
+    }),
+    [i18n]
+  );
+
+  const { toast } = useToast();
 
   const [duration, setDuration] = React.useState<number | undefined>(
     props.meetingOption.duration
@@ -38,14 +51,28 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
   React.useEffect(() => {
     if (!duration) return;
+    if (errors.fetchTitle === "availability_fetch_failed_title") return;
+
     setIsLoading(true);
     fetch(`/api/availability?duration=${duration}`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status >= 400) throw new Error(response.statusText);
+        return response.json();
+      })
       .then((data: Availability) => {
         setAvailability(data);
         setIsLoading(false);
+      })
+      .catch(() => {
+        setAvailability([]);
+        setIsLoading(false);
+        toast({
+          variant: "destructive",
+          title: errors.fetchTitle,
+          description: errors.fetchDescription,
+        });
       });
-  }, [duration]);
+  }, [duration, errors]);
 
   const submitForm = (fields: Record<string, any>) => {
     if (!dateTime) return;
@@ -76,7 +103,10 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         fields,
       } as MeetingEvent),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status >= 400) throw new Error(response.statusText);
+        return response.json();
+      })
       .then(() => {
         setFields(fields);
         setIsLoading(false);
@@ -84,6 +114,11 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       })
       .catch(() => {
         setIsLoading(false);
+        toast({
+          variant: "destructive",
+          title: errors.submitTitle,
+          description: errors.submitDescription,
+        });
       });
   };
 

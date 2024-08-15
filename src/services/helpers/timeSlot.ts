@@ -297,8 +297,8 @@ function _pushNewSlot(
   });
   const endAt = startAt.plus({ minute: configuration.timeSlotDuration });
   const timeSlot = {
-    startAt: startAt.toJSDate(),
-    endAt: endAt.toJSDate(),
+    startAt: startAt.toUTC().toMillis(),
+    endAt: endAt.toUTC().toMillis(),
     duration: endAt.diff(startAt, "minute").minutes,
   };
   /**

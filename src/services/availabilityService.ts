@@ -27,9 +27,11 @@ export class AvailabilityService {
         slotStartMinuteStep: config.slotStartMinuteStep ?? 15,
       },
       from: Luxon.now().toJSDate(),
-      to: Luxon.now().plus({ weeks: 4 }).toJSDate(),
+      to: Luxon.now()
+        .plus({ weeks: config.maxWeeksInFuture ?? 8 })
+        .toJSDate(),
     });
 
-    return results.map((x) => x.startAt.getTime());
+    return results.map((x) => x.startAt);
   }
 }

@@ -23,10 +23,7 @@ const asJsDate = (dateTime: Luxon) =>
 
 const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
   label: `GMT${zone.currentTimeFormat}`,
-  shortLabel: `GMT${formatTime({
-    hour: Math.floor(zone.rawOffsetInMinutes / 60) as HourNumbers,
-    minute: (zone.rawOffsetInMinutes % 60) as MinuteNumbers,
-  })} ${zone.alternativeName}`,
+  shortLabel: `${zone.alternativeName}`,
   value: zone.name,
 }));
 
@@ -60,7 +57,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
   const adjustedAvailability = React.useMemo(
     () =>
       props.availability.map((time) =>
-        Luxon.fromMillis(time, { zone: timeZone })
+        Luxon.fromMillis(time, { zone: "utc" }).setZone(timeZone)
       ),
     [props.availability, timeZone]
   );

@@ -23,6 +23,10 @@
   "select_timezone_label_format": "Весь час показується у {0} часовому поясі",
   "search_country_code_label": "Шукайте код країни...",
   "search_timezone_label": "Шукайте ваш часовий пояс",
-  "confirmation_success_title": "Ваша зустріч підтверджена!",
-  "confirmation_success_message": "Дякуємо, {0}! Ми отримали ваш запит на зустріч і незабаром надішлемо вам підтвердження на електронну пошту."
+  "confirmation_success_title": "Ваш запит на запис отримано!",
+  "confirmation_success_message": "Дякуємо, {0}! Ми отримали ваш запит на запис і незабаром надішлемо вам підтвердження на електронну пошту.",
+  "availability_fetch_failed_title": "Ой! Щось пішло не так",
+  "availability_fetch_failed_description": "Щось пішло не так коли ми нагались дізнатись вільний час для запису",
+  "submit_event_failed_title": "Ой! Щось пішло не так",
+  "submit_event_failed_description": "Щось пішло не так коли ми намагались обробити Ваш запит. Зателефонуйте нам!"
 }
