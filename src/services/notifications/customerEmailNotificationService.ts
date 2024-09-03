@@ -64,7 +64,7 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
       "PUBLISH"
     );
 
-    const { subject, body } = booking.email.templates.declined;
+    const { subject, body } = booking.email.templates.confirmed;
 
     await this.sendEmail({
       to: appointment.fields.email,
