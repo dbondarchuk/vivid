@@ -22,7 +22,7 @@ const getSource = async (slug: string[]) => {
     return notFound();
   }
 
-  return readFile(filePath, "utf-8");
+  return await readFile(filePath, "utf-8");
 };
 
 export async function generateMetadata(

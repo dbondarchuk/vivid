@@ -1,5 +1,4 @@
-import { getConfiguration } from "@/lib/config";
-import { MenuItem } from "@/models/configuration";
+import { MenuItem } from "@/types/configuration";
 import { icons, Menu, X } from "lucide-react";
 import React from "react";
 import { Button } from "../../ui/button";
@@ -13,6 +12,7 @@ import {
 import { Icon } from "../../ui/icon";
 import { Link } from "../../ui/link";
 import { HeaderWithScrollShadow } from "./HeaderWithScrollShadow";
+import { Services } from "@/lib/services";
 
 export type HeaderProps = {
   menu: MenuItem[];
@@ -22,77 +22,79 @@ export type HeaderProps = {
 const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
   const getLink = (isSidebar: boolean) => {
     return menu.map((item) => {
-      if ("icon" in item) {
-        return (
-          <Link
-            href={item.url}
-            className="no-underline inline-flex gap-2"
-            key={item.url}
-          >
-            <Icon
-              name={item.icon as keyof typeof icons}
-              className="w-6 h-6"
-              aria-label={item.label}
-            />
-            {isSidebar && <span className="ml-2">{item.label}</span>}
-          </Link>
-        );
-      }
-
-      if ("button" in item) {
-        return (
-          <Link
-            button
-            variant={item.variant}
-            size={item.size}
-            key={item.url}
-            href={item.url}
-            className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
-          >
-            {item.prefixIcon && (
+      switch (item.type) {
+        case "icon":
+          return (
+            <Link
+              href={item.url}
+              className="no-underline inline-flex gap-2"
+              key={item.url}
+            >
               <Icon
-                name={item.prefixIcon as keyof typeof icons}
+                name={item.icon as keyof typeof icons}
                 className="w-6 h-6"
                 aria-label={item.label}
               />
-            )}
-            {item.label}
-            {item.suffixIcon && (
-              <Icon
-                name={item.suffixIcon as keyof typeof icons}
-                className="w-6 h-6"
-                aria-label={item.label}
-              />
-            )}
-          </Link>
-        );
-      }
+              {isSidebar && <span className="ml-2">{item.label}</span>}
+            </Link>
+          );
 
-      return (
-        <Link
-          key={item.url}
-          variant={item.variant}
-          size={item.size}
-          className="hover:text-gray-600 transition-colors"
-          href={item.url}
-        >
-          {item.prefixIcon && (
-            <Icon
-              name={item.prefixIcon as keyof typeof icons}
-              className="w-6 h-6"
-              aria-label={item.label}
-            />
-          )}
-          {item.label}
-          {item.suffixIcon && (
-            <Icon
-              name={item.suffixIcon as keyof typeof icons}
-              className="w-6 h-6"
-              aria-label={item.label}
-            />
-          )}
-        </Link>
-      );
+        case "button":
+          return (
+            <Link
+              button
+              variant={item.variant}
+              size={item.size}
+              key={item.url}
+              href={item.url}
+              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
+            >
+              {item.prefixIcon && (
+                <Icon
+                  name={item.prefixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+              {item.label}
+              {item.suffixIcon && (
+                <Icon
+                  name={item.suffixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+            </Link>
+          );
+
+        case "link":
+        default:
+          return (
+            <Link
+              key={item.url}
+              variant={item.variant}
+              size={item.size}
+              className="hover:text-gray-600 transition-colors"
+              href={item.url}
+            >
+              {item.prefixIcon && (
+                <Icon
+                  name={item.prefixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+              {item.label}
+              {item.suffixIcon && (
+                <Icon
+                  name={item.suffixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+            </Link>
+          );
+      }
     });
   };
 
@@ -140,11 +142,16 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
 };
 
 export const Header: React.FC = async () => {
-  const config = await getConfiguration();
+  const { menu } = await Services.ConfigurationService().getConfiguration(
+    "header"
+  );
+  const { name } = await Services.ConfigurationService().getConfiguration(
+    "general"
+  );
 
   return (
     <HeaderWithScrollShadow>
-      <HeaderBase menu={config.menu} name={config.name} />
+      <HeaderBase menu={menu} name={name} />
     </HeaderWithScrollShadow>
   );
 };

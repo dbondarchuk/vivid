@@ -1,6 +1,5 @@
 import {
   FormItem,
-  FormLabel,
   FormControl,
   FormDescription,
   FormMessage,
@@ -9,8 +8,9 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { FieldValues } from "react-hook-form";
-import { FormFielLabel } from "./formFieldLabel";
-import { IFormFieldProps, WithLabelFieldData } from "./formFieldProps";
+import { FormFieldLabel } from "./formFieldLabel";
+import { IFormFieldProps } from "./formFieldProps";
+import { WithLabelFieldData } from "@/types";
 
 export const OneLineField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData>
@@ -20,7 +20,7 @@ export const OneLineField: <T extends FieldValues>(
     name={props.name}
     render={({ field }) => (
       <FormItem>
-        <FormFielLabel label={props.data.label} required={props.required} />
+        <FormFieldLabel label={props.data.label} required={props.required} />
         <FormControl>
           <Input {...field} placeholder="Type your response here" />
         </FormControl>

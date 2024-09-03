@@ -1,4 +1,4 @@
-import { Availability } from "@/models/availability";
+import type { Availability } from "@/types";
 import { DateTime as Luxon } from "luxon";
 
 import { ConfigurationService } from "./configurationService";
@@ -11,8 +11,7 @@ export class AvailabilityService {
     private readonly eventsService: EventsService
   ) {}
   public async getAvailability(duration: number): Promise<Availability> {
-    const configuration = await this.configurationService.getConfiguration();
-    const config = configuration.booking;
+    const config = await this.configurationService.getConfiguration("booking");
 
     const events = await this.eventsService.getBusyEvents();
 

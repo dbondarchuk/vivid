@@ -2,31 +2,45 @@ import { cva, VariantProps } from "class-variance-authority";
 import NextLink from "next/link";
 import React from "react";
 import { ButtonSize, ButtonVariant, buttonVariants } from "./button";
+import { cn } from "@/lib/utils";
 
-export const linkVariants = cva(
+const linkVariants = {
+  default: "underline",
+  standalone: "no-underline",
+  dashed: "underline decoration-dashed",
+};
+
+const linkSizes = {
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg",
+};
+
+export const linkClasses = cva(
   ["text-black", "hover:text-gray-800", "transition-all", "font-thin"],
   {
     variants: {
-      variant: {
-        default: "underline",
-        standalone: "no-underline",
-      },
-      size: {
-        sm: "text-sm",
-        md: "text-base",
-        lg: "text-lg",
-      },
+      variant: linkVariants,
+      size: linkSizes,
     },
   }
 );
 
-export type LinkVariant = VariantProps<typeof linkVariants>["variant"];
-export type LinkSize = VariantProps<typeof linkVariants>["size"];
+export type LinkVariant = VariantProps<typeof linkClasses>["variant"];
+export const LinkVariants = Object.keys(
+  linkVariants
+) as (keyof typeof linkVariants)[];
+
+export type LinkSize = VariantProps<typeof linkClasses>["size"];
+export const LinkSizes = Object.keys(linkSizes) as (keyof typeof linkSizes)[];
 
 type BaseProps = Omit<React.ComponentProps<typeof NextLink>, "as"> & {
+  target?: "_blank" | "_parent" | "_self" | "_top";
+};
+
+type BaseLinkProps = BaseProps & {
   variant?: LinkVariant;
   size?: LinkSize;
-  target?: "_blank" | "_parent" | "_self" | "_top";
 };
 
 type ButtonLinkProps = BaseProps & {
@@ -36,23 +50,31 @@ type ButtonLinkProps = BaseProps & {
   size?: ButtonSize;
 };
 
-export type LinkProps = BaseProps | ButtonLinkProps;
+export type LinkProps = BaseLinkProps | ButtonLinkProps;
 
 export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   (props, ref) => {
-    const classes =
-      "button" in props
-        ? buttonVariants({
-            className: props.className,
-            variant: props.variant,
-            size: props.size,
-          })
-        : linkVariants({
-            className: props.className,
-            variant: props.variant,
-            size: props.size,
-          });
-    return <NextLink ref={ref} {...props} className={classes} />;
+    let passProps = props;
+    let classes: string = "";
+    if ("button" in props) {
+      const { button, ...rest } = props;
+      passProps = rest;
+
+      classes = buttonVariants({
+        variant: props.variant,
+        size: props.size,
+        className: props.className,
+      });
+    } else {
+      const linkProps = props as BaseLinkProps;
+      classes = linkClasses({
+        variant: linkProps.variant,
+        size: linkProps.size,
+        className: props.className,
+      });
+    }
+
+    return <NextLink ref={ref} {...passProps} className={cn(classes)} />;
   }
 );
 

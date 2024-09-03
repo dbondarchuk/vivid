@@ -2,15 +2,15 @@ import { DateTime as Luxon } from "luxon";
 
 import {
   AvailablePeriod,
-  Period,
+  TimeSlotPeriod,
   PeriodMoment,
   Shift,
   TimeSlot,
   TimeSlotsFinderConfiguration,
   TimeSlotsFinderError,
-} from "../../models/timeSlot";
+} from "@/types/booking/timeSlot";
 
-import { Period as LuxonPeriod } from "@/models/period";
+import { Period as LuxonPeriod } from "@/types/booking/period";
 
 export interface TimeSlotsFinderParameters {
   /** The calendar data. */
@@ -318,7 +318,7 @@ function _pushNewSlot(
 }
 
 function _getUnavailablePeriodAsEvents(
-  unavailablePeriods: Period[],
+  unavailablePeriods: TimeSlotPeriod[],
   timeZone: string
 ) {
   const format = "YYYY-MM-DD HH:mm";
@@ -416,10 +416,10 @@ export function _mergeOverlappingShifts(shifts: Shift[]): Shift[] {
 
 /**
  * Check the validity of a configuration for the time-slots service.
- * @param {Period} period The shifts to refactor into non-overlapping shifts.
+ * @param {TimeSlotPeriod} period The shifts to refactor into non-overlapping shifts.
  * @returns {boolean}
  */
-export function _isUnavailablePeriodValid(period: Period): boolean {
+export function _isUnavailablePeriodValid(period: TimeSlotPeriod): boolean {
   return Boolean(
     period &&
       period.startAt &&

@@ -1,3 +1,13 @@
+import type {
+  AppointmentAddon,
+  AppointmentChoice,
+  AppointmentOption,
+  Fields,
+  FieldsWithId,
+  WithId,
+  WithLabelFieldData,
+} from "@/types";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,7 +18,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { IWithI18nProps } from "@/i18n/withI18n";
-import { MeetingOption } from "@/models/meetingOption";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
 
@@ -16,7 +25,8 @@ export type BaseCardProps = IWithI18nProps & {
   next?: () => void;
   prev?: () => void;
 
-  meetingOption: MeetingOption;
+  appointmentOption: AppointmentChoice;
+  selectedAddons?: AppointmentAddon[];
 };
 
 export type BaseCardState = {};
@@ -30,32 +40,50 @@ export abstract class BaseCard<
 
   public abstract get cardContent(): React.ReactNode;
 
+  protected get duration() {
+    if (!this.props.appointmentOption.duration) return undefined;
+
+    return (
+      this.props.appointmentOption.duration +
+      (this.props.selectedAddons || []).reduce(
+        (sum, addon) => sum + (addon.duration || 0),
+        0
+      )
+    );
+  }
+
+  protected get price() {
+    return (
+      (this.props.appointmentOption.price || 0) +
+      (this.props.selectedAddons || []).reduce(
+        (sum, addon) => sum + (addon.price || 0),
+        0
+      )
+    );
+  }
+
   public render(): React.ReactNode {
     return (
       <Card className="sm:min-w-min md:w-full">
         <CardHeader className="text-center">
-          <CardTitle>{this.props.meetingOption.name}</CardTitle>
+          <CardTitle>{this.props.appointmentOption.name}</CardTitle>
           <CardDescription>
-            {this.props.meetingOption.description}
+            {this.props.appointmentOption.description}
           </CardDescription>
-          {(this.props.meetingOption.duration ||
-            this.props.meetingOption.price) && (
+          {(this.duration || this.price) && (
             <CardDescription className="flex flex-row gap-2 justify-center place-items-center">
-              {this.props.meetingOption.duration && (
+              {this.duration && (
                 <div className="flex flex-row items-center">
                   <Timer className="mr-1" />
-                  {this.props.i18n(
-                    "duration_min_format",
-                    this.props.meetingOption.duration
-                  )}
+                  {this.props.i18n("duration_min_format", {
+                    duration: this.duration,
+                  })}
                 </div>
               )}
-              {this.props.meetingOption.price && (
+              {this.price && (
                 <div className="flex flex-row items-center">
                   <DollarSign className="mr-1" />
-                  {this.props.meetingOption.price
-                    .toFixed(2)
-                    .replace(/\.00$/, "")}
+                  {this.price.toFixed(2).replace(/\.00$/, "")}
                 </div>
               )}
             </CardDescription>

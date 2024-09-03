@@ -1,4 +1,4 @@
-import { Period } from "@/models/period";
+import { Period } from "@/types/booking/period";
 import { DateTime } from "luxon";
 import { parseIcsCalendar } from "ts-ics";
 

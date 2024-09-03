@@ -23,7 +23,9 @@ class _ConfirmationCard extends BaseCard<ConfirmationCardProps> {
           <h2>{this.props.i18n("confirmation_success_title")}</h2>
         </div>
         <div className="flex flex-row gap-2 justify-around flex-wrap">
-          {this.props.i18n("confirmation_success_message", this.props.fields.name)}
+          {this.props.i18n("confirmation_success_message", {
+            name: this.props.fields.name,
+          })}
         </div>
       </div>
     );

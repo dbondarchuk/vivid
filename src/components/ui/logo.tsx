@@ -1,12 +1,12 @@
+import { Services } from "@/lib/services";
 import { cn } from "@/lib/utils";
 import { ConfigurationService } from "@/services/configurationService";
 import Image from "next/image";
 import React from "react";
 
-const configurationService = new ConfigurationService();
-
 export const Logo: React.FC<{ className?: string }> = async (props) => {
-  const { title, logo } = await configurationService.getConfiguration();
+  const { title, logo } =
+    await Services.ConfigurationService().getConfiguration("general");
 
   return (
     <div

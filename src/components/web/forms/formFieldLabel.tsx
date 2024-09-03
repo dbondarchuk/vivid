@@ -1,7 +1,7 @@
 import { FormLabel } from "@/components/ui/form";
 import { I18nKeys, useI18n } from "@/i18n/i18n";
 
-export const FormFielLabel: React.FC<{
+export const FormFieldLabel: React.FC<{
   label: I18nKeys | string;
   required: boolean;
 }> = (props) => {

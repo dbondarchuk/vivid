@@ -206,7 +206,9 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={"w-max p-0"}>
+      <PopoverContent
+        className={"min-w-max p-0 w-[var(--radix-popper-anchor-width)]"}
+      >
         <Command
           shouldFilter={!props.customSearch}
           filter={props.customSearch ? () => 1 : undefined}

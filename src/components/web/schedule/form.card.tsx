@@ -1,4 +1,14 @@
 "use client";
+import {
+  DateTime,
+  Time,
+  Field,
+  FieldType,
+  AppointmentFields,
+  Fields,
+  WithLabelFieldData,
+} from "@/types";
+
 import React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,25 +16,23 @@ import { Control, UseFormReturn, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Form } from "@/components/ui/form";
-import { DateTime, Time, formatTime } from "@/models/dateTime";
 import { Calendar, Clock, DollarSign, Globe2, Timer } from "lucide-react";
 import { EmailField } from "../forms/email";
 import { NameField } from "../forms/name";
 import { PhoneField } from "../forms/phone";
 
 import { fallbackLanguage, useI18n } from "@/i18n/i18n";
-import { Field, FieldType } from "@/models/fields";
 import { TimeZone, getTimeZones } from "@vvo/tzdb";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
-import { WithLabelFieldData } from "../forms/formFieldProps";
 import { MultiLineField } from "../forms/multiLine";
 import { OneLineField } from "../forms/oneLine";
 import { BaseCard, BaseCardProps } from "./baseCard";
+import { formatTime } from "@/lib/time";
 
 export type FormCardProps = BaseCardProps & {
   dateTime: DateTime;
   duration: number;
-  onSubmit: (values: { [x: string]: any }) => void;
+  onSubmit: (values: AppointmentFields) => void;
 };
 
 const fieldsSchemaMap = {
@@ -67,7 +75,7 @@ const fieldsComponentMap: Record<FieldType, FieldComponentMapFn> = {
     <EmailField control={control} {...field} />
   ),
   [FieldType.Phone]: (field, control) => (
-    <PhoneField control={control} {...field} />
+    <PhoneField control={control} {...(field as Field<WithLabelFieldData>)} />
   ),
   [FieldType.OneLine]: (field, control) => (
     <OneLineField control={control} {...(field as Field<WithLabelFieldData>)} />
@@ -78,6 +86,22 @@ const fieldsComponentMap: Record<FieldType, FieldComponentMapFn> = {
       {...(field as Field<WithLabelFieldData>)}
     />
   ),
+};
+
+const getFields = (fields: Fields<WithLabelFieldData>): Fields<any> => {
+  return [
+    {
+      name: "name",
+      required: true,
+      type: FieldType.Name,
+    },
+    {
+      name: "email",
+      required: true,
+      type: FieldType.Email,
+    },
+    ...fields,
+  ];
 };
 
 const timeZones = getTimeZones();
@@ -91,7 +115,7 @@ type _FormCardProps = FormCardProps & {
     undefined
   >;
 
-  onSubmit: (values: { [x: string]: any }) => void;
+  onSubmit: (values: AppointmentFields) => void;
 };
 
 class _FormCard extends BaseCard<_FormCardProps> {
@@ -110,7 +134,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
         hour: this.props.dateTime.time.hour,
         minute: this.props.dateTime.time.minute,
       })
-      .plus({ minutes: this.props.duration });
+      .plus({ minutes: this.duration });
 
     const timeEnd: Time = {
       hour: timeEndLuxon.hour as HourNumbers,
@@ -130,9 +154,12 @@ class _FormCard extends BaseCard<_FormCardProps> {
       });
     }
 
+    const fields = getFields(this.props.appointmentOption.fields);
+
     return (
       <Form {...this.props.form}>
         <form
+          // @ts-expect-error This will have required fields
           onSubmit={this.props.form.handleSubmit(this.props.onSubmit)}
           className="space-y-8 not-prose"
         >
@@ -141,42 +168,38 @@ class _FormCard extends BaseCard<_FormCardProps> {
               <div className="md:col-span-1 md:pr-5 md:flex gap-3 md:flex-col grid grid-cols-2">
                 <div className="flex items-center">
                   <Calendar className="mr-1" />
-                  {this.props.i18n(
-                    "form_date_label_format",
-                    date.toLocaleString(Luxon.DATE_FULL, {
+                  {this.props.i18n("form_date_label_format", {
+                    date: date.toLocaleString(Luxon.DATE_FULL, {
                       locale: fallbackLanguage,
-                    })
-                  )}
+                    }),
+                  })}
                 </div>
                 <div className="flex items-center">
                   <Clock className="mr-1" />
-                  {this.props.i18n(
-                    "form_time_label_format",
-                    formatTime(this.props.dateTime.time),
-                    formatTime(timeEnd)
-                  )}
+                  {this.props.i18n("form_time_label_format", {
+                    start: formatTime(this.props.dateTime.time),
+                    end: formatTime(timeEnd),
+                  })}
                 </div>
                 <div className="flex items-center">
                   <Timer className="mr-1" />
-                  {this.props.i18n(
-                    "form_duration_label_format",
-                    this.props.duration
-                  )}
+                  {this.props.i18n("form_duration_label_format", {
+                    duration: this.duration,
+                  })}
                 </div>
-                {this.props.meetingOption.price && (
+                {this.price && (
                   <div className="flex items-center">
                     <DollarSign className="mr-1" />
-                    {this.props.meetingOption.price
-                      .toFixed(2)
-                      .replace(/\.00$/, "")}
+                    {this.props.i18n("form_price_label_format", {
+                      price: this.price.toFixed(2).replace(/\.00$/, ""),
+                    })}
                   </div>
                 )}
                 <div className="flex items-center">
                   <Globe2 className="mr-1 flex-none" />
-                  {this.props.i18n(
-                    "timezone_format",
-                    timeZone?.currentTimeFormat
-                  )}
+                  {this.props.i18n("timezone_format", {
+                    timezone: timeZone?.currentTimeFormat,
+                  })}
                 </div>
               </div>
               <div className="md:col-span-2 md:pr-2 sm:mb-3">
@@ -186,7 +209,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
                   </h2>
                 </div>
 
-                {this.props.meetingOption.fields.map((field) =>
+                {fields.map((field) =>
                   fieldsComponentMap[field.type](field, this.props.form.control)
                 )}
               </div>
@@ -200,7 +223,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
 
 export const FormCard: React.FC<Omit<FormCardProps, "i18n">> = (props) => {
   const formSchema = z.object(
-    props.meetingOption.fields.reduce((prev, field) => {
+    getFields(props.appointmentOption.fields).reduce((prev, field) => {
       prev[field.name] = fieldSchemaMapper(field);
       return prev;
     }, {} as { [field: string]: z.ZodType })
@@ -220,6 +243,7 @@ export const FormCard: React.FC<Omit<FormCardProps, "i18n">> = (props) => {
       i18n={i18n}
       form={form}
       onSubmit={props.onSubmit}
+      // @ts-expect-error The form will have needed fields
       next={form.handleSubmit(props.onSubmit)}
     />
   );

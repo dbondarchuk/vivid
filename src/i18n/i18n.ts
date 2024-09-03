@@ -1,16 +1,16 @@
-import { format } from "@/lib/string";
+import { template } from "@/lib/string";
 import React from "react";
 import translation from "./locales/en/translation.json";
 
 export type I18nKeys = keyof typeof translation;
 
-export type I18nFn = (key: I18nKeys, ...args: any[]) => string;
+export type I18nFn = (key: I18nKeys, args?: Record<string, any>) => string;
 
 export const fallbackLanguage = "en";
 
 const i18nFunction = (translations: Record<string, string>): I18nFn => {
-  return (key: I18nKeys, ...args: any[]) =>
-    format((translations[key] as string) || key, ...args);
+  return (key: I18nKeys, args?: Record<string, any>) =>
+    template(translations[key] || key, args);
 };
 
 export const useI18nAsync = async (language?: string): Promise<I18nFn> => {

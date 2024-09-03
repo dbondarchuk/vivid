@@ -37,7 +37,7 @@ class _DurationCard extends BaseCard<DurationCardProps> {
                   )
                 }
               >
-                {this.props.i18n("duration_minutes_format", dur)}
+                {this.props.i18n("duration_minutes_format", { duration: dur })}
               </Button>
             </div>
           ))}

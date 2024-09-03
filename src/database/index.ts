@@ -1,9 +1,9 @@
 import { MongoClient } from "mongodb";
-import { NextRequest } from "next/server";
 import { env } from "process";
+import { cache } from "react";
 
-const client = new MongoClient(env["MONGODB_URI"]!);
+export const getDbClient = cache(() => new MongoClient(env["MONGODB_URI"]!));
 
 export const getDbConnection = async () => {
-  return client.db();
+  return getDbClient().db();
 };

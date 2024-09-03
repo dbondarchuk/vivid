@@ -1,6 +1,4 @@
-import { AvailabilityService } from "@/services/availabilityService";
-import { ConfigurationService } from "@/services/configurationService";
-import { EventsService } from "@/services/eventsService";
+import { Services } from "@/lib/services";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -19,13 +17,9 @@ export async function GET(request: NextRequest) {
       { status: 400 }
     );
 
-  const configurationService = new ConfigurationService();
-  const availabilityService = new AvailabilityService(
-    configurationService,
-    new EventsService(configurationService)
+  const availability = await Services.AvailabilityService().getAvailability(
+    duration
   );
-
-  const availability = await availabilityService.getAvailability(duration);
 
   return NextResponse.json(availability);
 }

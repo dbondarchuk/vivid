@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 
 import { IFormFieldProps } from "./formFieldProps";
 import { FieldValues } from "react-hook-form";
-import { FormFielLabel } from "./formFieldLabel";
+import { FormFieldLabel } from "./formFieldLabel";
 
 export const EmailField: <T extends FieldValues>(
   p: IFormFieldProps<T>
@@ -19,7 +19,7 @@ export const EmailField: <T extends FieldValues>(
     name={props.name}
     render={({ field }) => (
       <FormItem>
-        <FormFielLabel label="form_email_label" required={props.required} />
+        <FormFieldLabel label="form_email_label" required={props.required} />
         <FormControl>
           <Input {...field} />
         </FormControl>

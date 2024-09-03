@@ -1,81 +1,89 @@
-import { getConfiguration } from "@/lib/config";
 import { icons } from "lucide-react";
 import { SocialIcons } from "../socialIcons/SocialIcons";
 import { Icon } from "../../ui/icon";
 import { Link } from "../../ui/link";
+import { Services } from "@/lib/services";
 
 export const Footer: React.FC = async () => {
-  const { phone, email, address, name, footer, mapsUrl, instagram, facebook } =
-    await getConfiguration();
+  const configurationService = Services.ConfigurationService();
+  const { phone, email, address, name, mapsUrl } =
+    await configurationService.getConfiguration("general");
+
+  const { links } = await configurationService.getConfiguration("footer");
+  const { instagram, facebook } = await configurationService.getConfiguration(
+    "social"
+  );
 
   const getLink = () => {
-    return footer.map((item) => {
-      if ("icon" in item) {
-        return (
-          <a href={item.url} className="no-underline" key={item.url}>
-            <Icon
-              name={item.icon as keyof typeof icons}
-              className="w-6 h-6"
-              aria-label={item.label}
-            />
-          </a>
-        );
-      }
-
-      if ("button" in item) {
-        return (
-          <Link
-            button
-            variant={item.variant}
-            size={item.size}
-            key={item.url}
-            href={item.url}
-            className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
-          >
-            {item.prefixIcon && (
+    return links.map((item) => {
+      switch (item.type) {
+        case "icon":
+          return (
+            <a href={item.url} className="no-underline" key={item.url}>
               <Icon
-                name={item.prefixIcon as keyof typeof icons}
+                name={item.icon as keyof typeof icons}
                 className="w-6 h-6"
                 aria-label={item.label}
               />
-            )}
-            {item.label}
-            {item.suffixIcon && (
-              <Icon
-                name={item.suffixIcon as keyof typeof icons}
-                className="w-6 h-6"
-                aria-label={item.label}
-              />
-            )}
-          </Link>
-        );
-      }
+            </a>
+          );
 
-      return (
-        <Link
-          variant={item.variant}
-          size={item.size}
-          key={item.url}
-          className="text-black underline hover:text-gray-800 transition-all font-thin inline-flex items-center"
-          href={item.url}
-        >
-          {item.prefixIcon && (
-            <Icon
-              name={item.prefixIcon as keyof typeof icons}
-              className="w-6 h-6"
-              aria-label={item.label}
-            />
-          )}
-          {item.label}
-          {item.suffixIcon && (
-            <Icon
-              name={item.suffixIcon as keyof typeof icons}
-              className="w-6 h-6"
-              aria-label={item.label}
-            />
-          )}
-        </Link>
-      );
+        case "button":
+          return (
+            <Link
+              button
+              variant={item.variant}
+              size={item.size}
+              key={item.url}
+              href={item.url}
+              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
+            >
+              {item.prefixIcon && (
+                <Icon
+                  name={item.prefixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+              {item.label}
+              {item.suffixIcon && (
+                <Icon
+                  name={item.suffixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+            </Link>
+          );
+
+        case "link":
+        default:
+          return (
+            <Link
+              variant={item.variant}
+              size={item.size}
+              key={item.url}
+              className="text-black underline hover:text-gray-800 transition-all font-thin inline-flex items-center"
+              href={item.url}
+            >
+              {item.prefixIcon && (
+                <Icon
+                  name={item.prefixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+              {item.label}
+              {item.suffixIcon && (
+                <Icon
+                  name={item.suffixIcon as keyof typeof icons}
+                  className="w-6 h-6"
+                  aria-label={item.label}
+                />
+              )}
+            </Link>
+          );
+      }
     });
   };
   return (
@@ -103,20 +111,22 @@ export const Footer: React.FC = async () => {
                       <Link href={`mailto:${email}`}>{email}</Link>
                     </p>
                   </div>
-                  <div>
-                    <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
-                      Address
-                    </h2>
-                    <p className="mt-1 font-thin">
-                      <Link
-                        href={`https://www.google.com/maps/place/${encodeURIComponent(
-                          address
-                        )}`}
-                      >
-                        {address}
-                      </Link>
-                    </p>
-                  </div>
+                  {address && (
+                    <div>
+                      <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
+                        Address
+                      </h2>
+                      <p className="mt-1 font-thin">
+                        <Link
+                          href={`https://www.google.com/maps/place/${encodeURIComponent(
+                            address
+                          )}`}
+                        >
+                          {address}
+                        </Link>
+                      </p>
+                    </div>
+                  )}
                   {mapsUrl && (
                     <div className="relative bg-gray-100 h-52 overflow-hidden rounded-lg">
                       <iframe

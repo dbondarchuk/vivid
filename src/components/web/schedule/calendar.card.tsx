@@ -1,12 +1,12 @@
 "use client";
+import type { DateTime, Time, Availability } from "@/types";
+
 import React from "react";
 
 import { getTimeZones } from "@vvo/tzdb";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Availability } from "@/models/availability";
-import { DateTime, Time, areTimesEqual, formatTime } from "@/models/dateTime";
 
 import { withI18n } from "@/i18n/withI18n";
 import { formatJsx } from "@/lib/string";
@@ -17,6 +17,7 @@ import { BaseCard, BaseCardProps, BaseCardState } from "./baseCard";
 
 import { fallbackLanguage } from "@/i18n/i18n";
 import * as Locales from "date-fns/locale";
+import { areTimesEqual, formatTime } from "@/lib/time";
 
 const asJsDate = (dateTime: Luxon) =>
   new Date(dateTime.year, dateTime.month - 1, dateTime.day);

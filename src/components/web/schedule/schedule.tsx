@@ -1,10 +1,14 @@
 "use client";
 
 import { useI18n } from "@/i18n/i18n";
-import { Availability } from "@/models/availability";
-import { DateTime } from "@/models/dateTime";
-import { MeetingEvent } from "@/models/meetingEvent";
-import { MeetingOption } from "@/models/meetingOption";
+import { Availability } from "@/types/booking/availability";
+import type {
+  DateTime,
+  AppointmentEvent,
+  AppointmentFields,
+  AppointmentAddon,
+  AppointmentChoice,
+} from "@/types";
 import { DateTime as LuxonDateTime } from "luxon";
 import React from "react";
 import { CalendarCard } from "./calendar.card";
@@ -12,13 +16,14 @@ import { ConfirmationCard } from "./confirmation.card";
 import { DurationCard } from "./duration.card";
 import { FormCard } from "./form.card";
 import { useToast } from "../../ui/use-toast";
+import { AddonsCard } from "./addons.card";
 
 export type ScheduleProps = {
-  meetingOption: MeetingOption;
+  appointmentOption: AppointmentChoice;
   back?: () => void;
 };
 
-type Step = "duration" | "calendar" | "form" | "confirmation";
+type Step = "duration" | "addons" | "calendar" | "form" | "confirmation";
 
 export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   const i18n = useI18n();
@@ -36,25 +41,52 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   const { toast } = useToast();
 
   const [duration, setDuration] = React.useState<number | undefined>(
-    props.meetingOption.duration
+    props.appointmentOption.duration
   );
-  const [step, setStep] = React.useState<Step>(
-    props.meetingOption.duration ? "calendar" : "duration"
-  );
+
+  let initialStep: Step = "duration";
+  if (props.appointmentOption.addons && props.appointmentOption.addons.length) {
+    initialStep = "addons";
+  } else if (props.appointmentOption.duration) initialStep = "calendar";
+
+  const [step, setStep] = React.useState<Step>(initialStep);
   const [dateTime, setDateTime] = React.useState<DateTime | undefined>(
     undefined
   );
+  const [selectedAddons, setSelectedAddons] = React.useState<
+    AppointmentAddon[]
+  >([]);
 
   const [availability, setAvailability] = React.useState<Availability>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [fields, setFields] = React.useState<Record<string, any>>({});
 
-  React.useEffect(() => {
-    if (!duration) return;
+  const getTotalDuration = () => {
+    if (!duration) return undefined;
+
+    return (
+      duration +
+      (selectedAddons || []).reduce(
+        (sum, addon) => sum + (addon.duration || 0),
+        0
+      )
+    );
+  };
+
+  const getTotalPrice = () => {
+    return (
+      (props.appointmentOption.price || 0) +
+      (selectedAddons || []).reduce((sum, addon) => sum + (addon.price || 0), 0)
+    );
+  };
+
+  const fetchAvailability = () => {
+    const totalDuration = getTotalDuration();
+    if (!totalDuration) return;
     if (errors.fetchTitle === "availability_fetch_failed_title") return;
 
     setIsLoading(true);
-    fetch(`/api/availability?duration=${duration}`)
+    fetch(`/api/availability?duration=${getTotalDuration()}`)
       .then((response) => {
         if (response.status >= 400) throw new Error(response.statusText);
         return response.json();
@@ -72,9 +104,15 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           description: errors.fetchDescription,
         });
       });
-  }, [duration, errors]);
+  };
 
-  const submitForm = (fields: Record<string, any>) => {
+  React.useEffect(() => {
+    if (initialStep === "calendar") {
+      fetchAvailability();
+    }
+  }, [initialStep, i18n]);
+
+  const submitForm = (fields: AppointmentFields) => {
     if (!dateTime) return;
 
     setIsLoading(true);
@@ -96,12 +134,14 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           .toUTC()
           .toISO(),
         time: dateTime!.time,
-        meetingName: props.meetingOption.name,
-        price: props.meetingOption.price,
+        meetingName: props.appointmentOption.name,
+        totalPrice: getTotalPrice() || undefined,
         timeZone: dateTime!.timeZone,
-        duration,
+        totalDuration: getTotalDuration(),
         fields,
-      } as MeetingEvent),
+        option: props.appointmentOption,
+        addons: selectedAddons,
+      } as AppointmentEvent),
     })
       .then((response) => {
         if (response.status >= 400) throw new Error(response.statusText);
@@ -122,36 +162,25 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       });
   };
 
-  const isNextDisabled = () => {
-    switch (step) {
-      case "duration":
-        return !duration;
-      case "calendar":
-        return !dateTime;
-      case "form":
-        return !dateTime;
-      default:
-        return true;
-    }
-  };
-
-  const isPrevDisabled = () => {
-    switch (step) {
-      case "calendar":
-        return !!props.meetingOption.duration;
-      case "form":
-        return false;
-      default:
-        return true;
-    }
-  };
-
   const nextStep = () => {
     let next: Step | undefined = undefined;
 
     switch (step) {
       case "duration":
+        if (
+          props.appointmentOption.addons &&
+          props.appointmentOption.addons.length
+        ) {
+          next = "addons";
+        } else {
+          next = "calendar";
+          fetchAvailability();
+        }
+
+        break;
+      case "addons":
         next = "calendar";
+        fetchAvailability();
         break;
       case "calendar":
         next = "form";
@@ -175,8 +204,26 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         }
 
         break;
+
+      case "addons":
+        if (props.appointmentOption.duration && props.back) {
+          props.back();
+          return;
+        }
+
+        prev = "duration";
+        break;
+
       case "calendar":
-        if (props.meetingOption.duration && props.back) {
+        if (
+          props.appointmentOption.addons &&
+          props.appointmentOption.addons.length
+        ) {
+          prev = "addons";
+          break;
+        }
+
+        if (props.appointmentOption.duration && props.back) {
           props.back();
           return;
         }
@@ -196,20 +243,40 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       {step === "duration" && (
         <DurationCard
           prev={props.back ? prevStep : undefined}
-          meetingOption={props.meetingOption}
+          appointmentOption={props.appointmentOption}
+          selectedAddons={selectedAddons}
           onDurationChange={(duration) => setDuration(duration)}
           duration={duration}
           next={nextStep}
         />
       )}
+      {step === "addons" && props.appointmentOption.addons && (
+        <AddonsCard
+          prev={
+            props.appointmentOption.duration || props.back
+              ? prevStep
+              : undefined
+          }
+          next={nextStep}
+          appointmentOption={props.appointmentOption}
+          onAddonSelectionChange={setSelectedAddons}
+          selectedAddons={selectedAddons}
+        />
+      )}
       {step === "calendar" && (
         <CalendarCard
           prev={
-            props.meetingOption.duration || props.back ? prevStep : undefined
+            props.appointmentOption.duration ||
+            props.back ||
+            (props.appointmentOption.addons &&
+              props.appointmentOption.addons.length)
+              ? prevStep
+              : undefined
           }
           next={nextStep}
-          meetingOption={props.meetingOption}
+          appointmentOption={props.appointmentOption}
           availability={availability}
+          selectedAddons={selectedAddons}
           dateTime={dateTime}
           onDateTimeSelected={(dateTime) => setDateTime(dateTime)}
         />
@@ -219,15 +286,17 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           prev={prevStep}
           onSubmit={submitForm}
           dateTime={dateTime}
+          selectedAddons={selectedAddons}
           duration={duration!}
-          meetingOption={props.meetingOption}
+          appointmentOption={props.appointmentOption}
         />
       )}
       {step === "confirmation" && (
         <ConfirmationCard
           fields={fields}
           duration={duration!}
-          meetingOption={props.meetingOption}
+          selectedAddons={selectedAddons}
+          appointmentOption={props.appointmentOption}
         />
       )}
       {isLoading && (

@@ -20,11 +20,12 @@ import { IFormFieldProps } from "./formFieldProps";
 
 import { useI18n } from "@/i18n/i18n";
 import "./css/flags.css";
-import { FormFielLabel } from "./formFieldLabel";
+import { FormFieldLabel } from "./formFieldLabel";
+import { WithLabelFieldData } from "@/types";
 
 export const PhoneField: <T extends FieldValues>(
-  p: IFormFieldProps<T>
-) => React.ReactElement<IFormFieldProps<T>> = (props) => {
+  p: IFormFieldProps<T, WithLabelFieldData>
+) => React.ReactElement<IFormFieldProps<T, WithLabelFieldData>> = (props) => {
   const defaultCountry = "US";
   const [mask, setMask] = React.useState<Mask | undefined>(undefined);
   const [maskPlaceholder, setMaskPlaceholder] = React.useState<
@@ -87,7 +88,10 @@ export const PhoneField: <T extends FieldValues>(
       name={props.name}
       render={({ field }) => (
         <FormItem>
-          <FormFielLabel label="form_phone_label" required={props.required} />
+          <FormFieldLabel
+            label={props.data.label || "form_phone_label"}
+            required={props.required}
+          />
           <FormControl>
             <InputGroup>
               <InputSuffix>
