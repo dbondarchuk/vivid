@@ -9,7 +9,7 @@ import { Appointment } from "@/types";
 import { DateTime } from "luxon";
 import { ObjectId } from "mongodb";
 import { ConfigurationService } from "./configurationService";
-import { IcsBusyTimeProvider } from "./helpers/ics";
+import { getIcsEventUid, IcsBusyTimeProvider } from "./helpers/ics";
 import { NotificationService } from "./notifications/notificationService";
 
 const APPOINTMENTS_COLLECTION_NAME = "appointments";
@@ -22,14 +22,19 @@ export class EventsService {
 
   public async getBusyEvents(): Promise<Period[]> {
     const config = await this.configurationService.getConfiguration("booking");
+    const { url } = await this.configurationService.getConfiguration("general");
 
     const start = DateTime.utc();
     const end = DateTime.utc().plus({ weeks: config.maxWeeksInFuture ?? 8 });
 
+    const declinedUids = (await this.getDbDeclinedEventIds(start, end)).map(
+      (id) => getIcsEventUid(id, url)
+    );
+
     const dbEventsPromise = this.getDbBusyTimes(start, end);
 
     const ics = new IcsBusyTimeProvider(config.ics);
-    const icsEventsPromise = ics.getBusyTimes(start, end);
+    const icsEventsPromise = ics.getBusyTimes(start, end, declinedUids);
 
     const [dbEvents, icsEvents] = await Promise.all([
       dbEventsPromise,
@@ -160,6 +165,28 @@ export class EventsService {
         minutes: x.duration,
       }),
     }));
+  }
+
+  private async getDbDeclinedEventIds(
+    start: DateTime,
+    end: DateTime
+  ): Promise<string[]> {
+    const db = await getDbConnection();
+    const ids = await db
+      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
+      .find({
+        dateTime: {
+          $gte: start.minus({ days: 1 }).toJSDate(),
+          $lte: end.plus({ days: 1 }).toJSDate(),
+        },
+        status: {
+          $eq: "declined",
+        },
+      })
+      .map(({ _id }) => _id)
+      .toArray();
+
+    return ids;
   }
 
   private async saveEvent(event: AppointmentEvent) {

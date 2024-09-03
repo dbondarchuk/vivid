@@ -5,11 +5,23 @@ import { parseIcsCalendar } from "ts-ics";
 export class IcsBusyTimeProvider {
   constructor(public readonly icsUrl: string) {}
 
-  public async getBusyTimes(start: DateTime, end: DateTime): Promise<Period[]> {
+  public async getBusyTimes(
+    start: DateTime,
+    end: DateTime,
+    declinedUids?: string[]
+  ): Promise<Period[]> {
     const ics = await this.getIcs();
     const calendar = parseIcsCalendar(ics);
 
+    const declinedUidsSet = new Set(declinedUids || []);
+
     const icsEvents: Period[] = (calendar.events || [])
+      .filter(
+        (event) =>
+          event.status !== "CANCELLED" &&
+          !event.summary?.toLocaleLowerCase()?.startsWith("cancel") &&
+          !declinedUidsSet.has(event.uid)
+      )
       .map((event) => {
         const startAt = DateTime.fromJSDate(event.start.date);
         const endAt = event.end
@@ -30,3 +42,8 @@ export class IcsBusyTimeProvider {
     return await response.text();
   }
 }
+
+export const getIcsEventUid = (id: string, url: string) => {
+  const host = new URL(url).host;
+  return `${id}@${host}`;
+};

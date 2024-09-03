@@ -4,6 +4,7 @@ import { createEvent, EventAttributes } from "ics";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 import { ConfigurationService } from "../configurationService";
+import { getIcsEventUid } from "../helpers/ics";
 import { INotificationService } from "./notificaionService.interface";
 
 export type IcalEventMethod = "PUBLISH" | "REQUEST" | "CANCEL" | "REPLY";
@@ -113,12 +114,22 @@ export abstract class IEmailNotificationService
       url,
     };
 
-    const host = new URL(config.url).host;
     const date = DateTime.fromJSDate(event.dateTime);
+
+    let ownStatus: ics.ParticipationStatus = "TENTATIVE";
+    switch (method) {
+      case "PUBLISH":
+        ownStatus = "ACCEPTED";
+        break;
+
+      case "CANCEL":
+        ownStatus = "DECLINED";
+        break;
+    }
 
     const icsEvent: ics.EventAttributes = {
       method,
-      uid: `${date.toMillis()}@${host}`,
+      uid: getIcsEventUid(event._id, url),
       start: date.toMillis(),
       end: date.plus({ minutes: event.totalDuration }).toMillis(),
       startInputType: "utc",
@@ -136,6 +147,11 @@ export abstract class IEmailNotificationService
           partstat: "ACCEPTED",
           name: event.fields.name,
           email: event.fields.email,
+        },
+        {
+          partstat: ownStatus,
+          name: config.name,
+          email: booking.email.to,
         },
       ],
     };
