@@ -122,7 +122,7 @@ export class EventsService {
         break;
 
       case "confirmed":
-        this.notificationService.sendAppointmentDeclinedNotification(
+        this.notificationService.sendAppointmentConfirmedNotification(
           appointment
         );
 
