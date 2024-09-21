@@ -18,7 +18,7 @@ import { UseFormReturn } from "react-hook-form";
 import { IconSelect } from "./iconSelect";
 import { Combobox, IComboboxItem } from "@/components/ui/combobox";
 import { Link, LinkSizes, LinkVariants } from "@/components/ui/link";
-import { useState } from "react";
+import { Text, TextFonts, TextSizes, TextWeights } from "@/components/ui/text";
 
 export type MenuItemWithId = MenuItem & {
   id: string;
@@ -120,6 +120,63 @@ const buttonSizesValues = ButtonSizes.map(
           onClick={(e) => e.preventDefault()}
         >
           {size}
+        </Link>
+      ),
+    } as IComboboxItem)
+);
+
+const textFontValues = TextFonts.map(
+  (variant) =>
+    ({
+      value: variant,
+      shortLabel: variant,
+      label: (
+        <Link
+          button
+          href="#"
+          font={variant}
+          variant="secondary"
+          onClick={(e) => e.preventDefault()}
+        >
+          {variant}
+        </Link>
+      ),
+    } as IComboboxItem)
+);
+
+const textSizesValues = TextSizes.map(
+  (variant) =>
+    ({
+      value: variant,
+      shortLabel: variant,
+      label: (
+        <Link
+          button
+          href="#"
+          fontSize={variant}
+          variant="secondary"
+          onClick={(e) => e.preventDefault()}
+        >
+          {variant}
+        </Link>
+      ),
+    } as IComboboxItem)
+);
+
+const textWeightsValues = TextWeights.map(
+  (variant) =>
+    ({
+      value: variant,
+      shortLabel: variant,
+      label: (
+        <Link
+          button
+          href="#"
+          fontWeight={variant}
+          variant="secondary"
+          onClick={(e) => e.preventDefault()}
+        >
+          {variant}
         </Link>
       ),
     } as IComboboxItem)
@@ -379,6 +436,72 @@ export function MenuItemCard({
         )}
         {(itemType === "link" || itemType === "button") && (
           <>
+            <FormField
+              control={form.control}
+              shouldUnregister
+              name={`${name}.font`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Text font</FormLabel>
+
+                  <FormControl>
+                    <Combobox
+                      disabled={disabled}
+                      className="flex w-full font-normal text-base"
+                      values={textFontValues}
+                      searchLabel="Select text font"
+                      value={field.value}
+                      onItemSelect={(value) => field.onChange(value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              shouldUnregister
+              name={`${name}.fontSize`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Text size</FormLabel>
+
+                  <FormControl>
+                    <Combobox
+                      disabled={disabled}
+                      className="flex w-full font-normal text-base"
+                      values={textSizesValues}
+                      searchLabel="Select text size"
+                      value={field.value}
+                      onItemSelect={(value) => field.onChange(value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              shouldUnregister
+              name={`${name}.fontWeight`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Text weight</FormLabel>
+
+                  <FormControl>
+                    <Combobox
+                      disabled={disabled}
+                      className="flex w-full font-normal text-base"
+                      values={textWeightsValues}
+                      searchLabel="Select text weight"
+                      value={field.value}
+                      onItemSelect={(value) => field.onChange(value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name={`${name}.prefixIcon`}

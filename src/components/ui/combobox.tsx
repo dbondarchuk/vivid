@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
@@ -17,9 +16,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-import { FixedSizeList as List } from "react-window";
-import { ScrollArea } from "./scroll-area";
 
 export type IComboboxItem = {
   value: string;
@@ -141,15 +137,6 @@ const Items = React.memo(
     ) : (
       <></>
     );
-
-    // return props.values.map((item) => (
-    //   <ItemComponent
-    //     key={item.value}
-    //     item={item}
-    //     selected={props.selected}
-    //     select={props.select}
-    //   />
-    // ));
   }
 );
 Items.displayName = "Items";
@@ -158,8 +145,6 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(props.value || "");
   const [search, setSearch] = React.useState("");
-
-  const deferredSearch = React.useDeferredValue(search);
 
   let { listClassName, customSearch, searchLabel, ...rest } = props;
   searchLabel = searchLabel || "Select item...";

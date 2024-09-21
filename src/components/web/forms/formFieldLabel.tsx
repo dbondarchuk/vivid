@@ -3,7 +3,7 @@ import { I18nKeys, useI18n } from "@/i18n/i18n";
 
 export const FormFieldLabel: React.FC<{
   label: I18nKeys | string;
-  required: boolean;
+  required?: boolean;
 }> = (props) => {
   const i18n = useI18n();
   return (

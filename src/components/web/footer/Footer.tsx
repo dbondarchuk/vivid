@@ -34,6 +34,9 @@ export const Footer: React.FC = async () => {
               button
               variant={item.variant}
               size={item.size}
+              font={item.font}
+              fontSize={item.fontSize}
+              fontWeight={item.fontWeight}
               key={item.url}
               href={item.url}
               className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
@@ -63,6 +66,9 @@ export const Footer: React.FC = async () => {
               variant={item.variant}
               size={item.size}
               key={item.url}
+              font={item.font}
+              fontSize={item.fontSize}
+              fontWeight={item.fontWeight}
               className="text-black underline hover:text-gray-800 transition-all font-thin inline-flex items-center"
               href={item.url}
             >

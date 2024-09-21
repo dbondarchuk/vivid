@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IFrame } from "@/components/ui/iframe";
+import { AppointmentsSettingsFormValues } from "../schema";
 
 const emailTemplateSchema = z.object({
   subject: z
@@ -30,19 +31,17 @@ const emailTemplateSchema = z.object({
     .min(1, "Email body template is required"),
 });
 
+type TemplateKeys = keyof AppointmentsSettingsFormValues["email"]["templates"];
+
 export const emailTabFormSchema = z.object({
   to: z.string().email("Must be a valid email"),
   from: z.string().email("Must be a valid email"),
-  templates: z
-    .record(z.enum(appointmentStatuses), emailTemplateSchema)
-    .refine((obj): obj is Required<typeof obj> =>
-      appointmentStatuses.every((key) => !!obj[key])
-    ),
-  // templates: z.object({
-  //   pending: emailTemplateSchema,
-  //   confirmed: emailTemplateSchema,
-  //   declined: emailTemplateSchema,
-  // }),
+  templates: z.object({
+    pending: emailTemplateSchema,
+    confirmed: emailTemplateSchema,
+    declined: emailTemplateSchema,
+    rescheduled: emailTemplateSchema,
+  }),
   event: z.object({
     summary: z
       .string({ message: "Event summary template is required" })
@@ -53,18 +52,25 @@ export const emailTabFormSchema = z.object({
   }),
 });
 
+const templateKeyText: Record<TemplateKeys, string> = {
+  ...StatusText,
+  rescheduled: "Rescheduled",
+};
+
 const EmailTemplateForm: React.FC<
   TabProps & {
-    status: AppointmentStatus;
+    type: TemplateKeys;
     whenText: string;
   }
-> = ({ form, disabled, status, whenText }) => {
+> = ({ form, disabled, type, whenText }) => {
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="m-0 text-center">{StatusText[status]} email template</h3>
+      <h3 className="m-0 text-center">
+        {templateKeyText[type]} email template
+      </h3>
       <FormField
         control={form.control}
-        name={`email.templates.${status}.subject`}
+        name={`email.templates.${type}.subject`}
         render={({ field }) => (
           <FormItem>
             <FormLabel>
@@ -86,7 +92,7 @@ const EmailTemplateForm: React.FC<
       />
       <FormField
         control={form.control}
-        name={`email.templates.${status}.body`}
+        name={`email.templates.${type}.body`}
         render={({ field }) => (
           <ResizablePanelGroup direction="horizontal" className="max-md:hidden">
             <ResizablePanel className="pr-1">
@@ -187,20 +193,32 @@ export const EmailTab: React.FC<TabProps> = ({ form, disabled }) => {
       <EmailTemplateForm
         form={form}
         disabled={disabled}
-        status={"pending"}
+        type={"pending"}
         whenText="they book new appointment"
       />
       <EmailTemplateForm
         form={form}
         disabled={disabled}
-        status={"confirmed"}
+        type={"confirmed"}
         whenText="the appointment was confirmed"
       />
       <EmailTemplateForm
         form={form}
         disabled={disabled}
-        status={"declined"}
+        type={"declined"}
         whenText="the appointment was declined"
+      />
+      <EmailTemplateForm
+        form={form}
+        disabled={disabled}
+        type={"declined"}
+        whenText="the appointment was declined"
+      />
+      <EmailTemplateForm
+        form={form}
+        disabled={disabled}
+        type={"rescheduled"}
+        whenText="the appointment was rescheduled"
       />
       <div className="flex flex-col gap-2">
         <h3 className="m-0 text-center">Calendar event template</h3>

@@ -26,6 +26,22 @@ export class OwnEmailNotificationService extends IEmailNotificationService {
     this.sendOwnerEmail(appointment, "ownerAppointmentConfirmed", "PUBLISH");
   }
 
+  async sendAppointmentRescheduledNotification(
+    appointment: Appointment,
+    newTime: Date,
+    newDuration: number
+  ): Promise<void> {
+    this.sendOwnerEmail(
+      {
+        ...appointment,
+        dateTime: newTime,
+        totalDuration: newDuration,
+      },
+      "ownerAppointmentRescheduled",
+      "REQUEST"
+    );
+  }
+
   private async sendOwnerEmail(
     appointment: Appointment,
     templateName: string,
@@ -51,7 +67,7 @@ export class OwnEmailNotificationService extends IEmailNotificationService {
 
     await this.sendEmail({
       to: booking.email.to,
-      subject: `New booking from ${appointment.option.name} at ${appointment.dateTime}`,
+      subject: `Appointment for ${arg.option.name} by ${arg.fields.name} at ${arg.dateTime}`,
       body: description,
       icalEvent: {
         method: eventMethod,

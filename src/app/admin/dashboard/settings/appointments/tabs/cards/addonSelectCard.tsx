@@ -14,6 +14,17 @@ import { UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Combobox, IComboboxItem } from "@/components/ui/combobox";
 import { AddonSchema } from "./addonCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export type AddonSelectProps = {
   item: {
@@ -117,16 +128,36 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
           <GripVertical />
         </Button>
         <span>{nameValue || "Addon"}</span>
-        <Button
-          disabled={disabled}
-          variant="destructive"
-          className=""
-          onClick={remove}
-          size="sm"
-          type="button"
-        >
-          <Trash size={20} />
-        </Button>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              disabled={disabled}
+              variant="destructive"
+              className=""
+              size="sm"
+              type="button"
+            >
+              <Trash size={20} />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to remove this addon from this option?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction asChild>
+                <Button variant="destructive" onClick={remove}>
+                  Delete
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardHeader>
       <CardContent className="px-3 pb-6 pt-3 text-left relative">
         <FormField

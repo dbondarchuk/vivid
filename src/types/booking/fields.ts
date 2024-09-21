@@ -16,7 +16,7 @@ export type FieldData<
   TData extends Record<string, any> | undefined = undefined
 > = {
   name: string;
-  required: boolean;
+  required?: boolean;
 } & (TData extends undefined ? { data?: never } : { data: TData });
 
 export type Field<TData extends Record<string, any> | undefined = undefined> =

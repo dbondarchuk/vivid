@@ -1,7 +1,7 @@
 import { IWithI18nProps, withI18n } from "@/i18n/withI18n";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
-import { AppointmentChoice, AppointmentOption } from "@/types";
+import { AppointmentChoice } from "@/types";
 import {
   Card,
   CardContent,
@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../ui/card";
+import { Markdown } from "../markdown/Markdown";
 
 export type AppointmentsCardProps = {
   options: AppointmentChoice[];
@@ -48,7 +49,9 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
                 )}
               </CardDescription>
             </CardHeader>
-            <CardContent>{option.description}</CardContent>
+            <CardContent>
+              <Markdown markdown={option.description} />
+            </CardContent>
           </Card>
         );
       })}

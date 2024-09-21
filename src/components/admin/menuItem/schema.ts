@@ -1,5 +1,6 @@
 import { ButtonSizes, ButtonVariants } from "@/components/ui/button";
 import { LinkSizes, LinkVariants } from "@/components/ui/link";
+import { TextFonts, TextSizes, TextWeights } from "@/components/ui/text";
 import { icons } from "lucide-react";
 import { z } from "zod";
 import { itemTypes } from "./menuItemCard";
@@ -15,6 +16,9 @@ const [firstLinkVariant, ...restLinkVariants] = LinkVariants;
 const [firstLinkSize, ...restLinkSizes] = LinkSizes;
 const [firstButtonVariant, ...restButtonVariants] = ButtonVariants;
 const [firstButtonSize, ...restButtonSizes] = ButtonSizes;
+const [firstFont, ...restFonts] = TextFonts;
+const [firstTextSize, ...restTextSizes] = TextSizes;
+const [firstTextWeight, ...restTextWeights] = TextWeights;
 
 export const baseSchema = z.object({
   url: z.string({ required_error: "URL must be provided" }),
@@ -28,7 +32,24 @@ export const iconMenuItemSchema = baseSchema.merge(
   })
 );
 
-export const linkMenuItemSchema = baseSchema.merge(
+const textStyleSchema = baseSchema.merge(
+  z.object({
+    font: z
+      .enum([firstFont, ...restFonts])
+      .nullable()
+      .optional(),
+    fontSize: z
+      .enum([firstTextSize, ...restTextSizes])
+      .nullable()
+      .optional(),
+    fontWeight: z
+      .enum([firstTextWeight, ...restTextWeights])
+      .nullable()
+      .optional(),
+  })
+);
+
+export const linkMenuItemSchema = textStyleSchema.merge(
   z.object({
     prefixIcon: iconsEnum.optional(),
     suffixIcon: iconsEnum.optional(),

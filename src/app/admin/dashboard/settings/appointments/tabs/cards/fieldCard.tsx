@@ -16,8 +16,20 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+import { OptionSchema } from "./optionsCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const [firstFieldType, ...restFieldTypes] = Object.values(FieldType);
 
@@ -48,7 +60,7 @@ export const fieldSchema = z.object({
   data: z.object({
     label: z.string().min(1, "Field label is required"),
   }),
-  required: z.boolean(),
+  required: z.boolean().optional(),
 });
 
 export type FieldSchema = z.infer<typeof fieldSchema>;
@@ -113,6 +125,24 @@ export const FieldCard: React.FC<FieldProps> = ({
 
   const nameValue = form.getValues(`${name}.name`);
 
+  const { fields: options, update: updateOption } = useFieldArray({
+    control: form.control,
+    name: "options",
+    keyName: "fields_id",
+  });
+
+  const removeField = () => {
+    (options as unknown as OptionSchema[]).forEach((option, index) => {
+      const fields = option.fields?.filter((fields) => fields.id !== item.id);
+      updateOption(index, {
+        ...option,
+        fields,
+      });
+    });
+
+    remove();
+  };
+
   return (
     <Card
       ref={setNodeRef}
@@ -134,16 +164,39 @@ export const FieldCard: React.FC<FieldProps> = ({
           <GripVertical />
         </Button>
         <span>{nameValue || "Invalid field"}</span>
-        <Button
-          disabled={disabled}
-          variant="destructive"
-          className=""
-          onClick={remove}
-          size="sm"
-          type="button"
-        >
-          <Trash size={20} />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              disabled={disabled}
+              variant="destructive"
+              className=""
+              size="sm"
+              type="button"
+            >
+              <Trash size={20} />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                <p>Are you sure you want to remove this field?</p>
+                <p>
+                  <strong>NOTE: </strong>This will also remove this field from
+                  all the options
+                </p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction asChild>
+                <Button variant="destructive" onClick={removeField}>
+                  Delete
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardHeader>
       <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
         <FormField

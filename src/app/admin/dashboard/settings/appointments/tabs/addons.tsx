@@ -12,6 +12,7 @@ export const AddonsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const { fields, append, remove, swap, update } = useFieldArray({
     control: form.control,
     name: "addons",
+    keyName: "fields_id",
   });
 
   const ids = React.useMemo(() => fields.map((x) => x.id), [fields]);

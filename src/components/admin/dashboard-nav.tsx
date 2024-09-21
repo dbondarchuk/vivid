@@ -20,6 +20,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import React from "react";
+import { v4 } from "uuid";
 
 interface DashboardNavProps {
   items: NavItemWithOptionalChildren[];
@@ -35,14 +37,14 @@ export function DashboardNav({
   const path = usePathname();
   const { isMinimized } = useSidebar();
 
+  const [openSubMenu, setOpenSubMenu] = React.useState<string>();
+
   if (!items?.length) {
     return null;
   }
 
-  console.log("isActive", isMobileNav, isMinimized);
-
   return (
-    <nav className="grid items-start gap-2">
+    <nav className="flex flex-col gap-2">
       <TooltipProvider>
         {items.map((item, index) => {
           const Icon = Icons[item.icon || "arrowRight"];
@@ -83,45 +85,95 @@ export function DashboardNav({
           }
 
           if (item.items) {
-            return (
-              <Accordion type="single" collapsible key={index}>
-                <AccordionItem value={index.toString()} className="border-none">
-                  <AccordionTrigger
-                    className={cn(
-                      "flex items-center gap-2 overflow-hidden rounded-md py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                      "hover:no-underline focus:no-underline",
-                      path === item.href ? "bg-accent" : "transparent",
-                      item.disabled && "cursor-not-allowed opacity-80"
-                    )}
-                  >
-                    <span className="flex gap-2">
-                      <Icon className={`ml-3 size-5 flex-none`} />
-                      <span className="mr-2 truncate">{item.title}</span>
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="pl-5">
-                    {item.items.map((subItem, jndex) => {
-                      const SubIcon = Icons[subItem.icon || "arrowRight"];
-                      return (
-                        <Link
-                          key={jndex}
-                          href={subItem.href || "/"}
-                          className={cn(
-                            "flex items-center gap-2 overflow-hidden rounded-md py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                            path === subItem.href ? "bg-accent" : "transparent",
-                            subItem.disabled && "cursor-not-allowed opacity-80"
-                          )}
-                        >
-                          <SubIcon className={`ml-3 size-5 flex-none`} />
+            const id = `item-${index}`;
 
+            return (
+              <Accordion
+                type="single"
+                collapsible
+                key={index}
+                onValueChange={setOpenSubMenu}
+              >
+                <AccordionItem value={id} className="border-none">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AccordionTrigger
+                        className={cn(
+                          "flex items-center gap-2 overflow-hidden rounded-md py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                          "hover:no-underline focus:no-underline",
+                          path === item.href ||
+                            (item.items.some(
+                              (subItem) => subItem.href === path
+                            ) &&
+                              openSubMenu !== id)
+                            ? "bg-accent"
+                            : "transparent",
+                          item.disabled && "cursor-not-allowed opacity-80"
+                        )}
+                      >
+                        <span className="flex gap-2">
+                          <Icon className={`ml-3 size-5 flex-none`} />
                           {isMobileNav || (!isMinimized && !isMobileNav) ? (
-                            <span className="mr-2 truncate">
-                              {subItem.title}
-                            </span>
+                            <span className="mr-2 truncate">{item.title}</span>
                           ) : (
                             ""
                           )}
-                        </Link>
+                        </span>
+                      </AccordionTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="center"
+                      side="right"
+                      sideOffset={8}
+                      className={!isMinimized ? "hidden" : "inline-block"}
+                    >
+                      {item.title}
+                    </TooltipContent>
+                  </Tooltip>
+                  <AccordionContent
+                    className={cn(
+                      "transition-all",
+                      isMobileNav || (!isMinimized && !isMobileNav)
+                        ? "pl-5"
+                        : "pl-2"
+                    )}
+                  >
+                    {item.items.map((subItem, jndex) => {
+                      const SubIcon = Icons[subItem.icon || "arrowRight"];
+                      return (
+                        <Tooltip key={jndex}>
+                          <TooltipTrigger asChild>
+                            <Link
+                              href={subItem.href || "/"}
+                              className={cn(
+                                "flex items-center gap-2 overflow-hidden rounded-md py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                                path === subItem.href
+                                  ? "bg-accent"
+                                  : "transparent",
+                                subItem.disabled &&
+                                  "cursor-not-allowed opacity-80"
+                              )}
+                            >
+                              <SubIcon className={`ml-3 size-5 flex-none`} />
+
+                              {isMobileNav || (!isMinimized && !isMobileNav) ? (
+                                <span className="mr-2 truncate">
+                                  {subItem.title}
+                                </span>
+                              ) : (
+                                ""
+                              )}
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            align="center"
+                            side="right"
+                            sideOffset={8}
+                            className={!isMinimized ? "hidden" : "inline-block"}
+                          >
+                            {subItem.title}
+                          </TooltipContent>
+                        </Tooltip>
                       );
                     })}
                   </AccordionContent>

@@ -1,13 +1,16 @@
 import { getDbConnection } from "@/database";
+import { buildSearchQuery } from "@/lib/query";
 import type {
   AppointmentEvent,
   AppointmentStatus,
+  DateRange,
   Period,
   WithTotal,
 } from "@/types";
 import { Appointment } from "@/types";
+import { Query } from "@/types/database/query";
 import { DateTime } from "luxon";
-import { ObjectId } from "mongodb";
+import { Filter, ObjectId, Sort } from "mongodb";
 import { ConfigurationService } from "./configurationService";
 import { getIcsEventUid, IcsBusyTimeProvider } from "./helpers/ics";
 import { NotificationService } from "./notifications/notificationService";
@@ -53,13 +56,19 @@ export class EventsService {
   }
 
   public async getPendingAppointments(
-    limit = 20
+    limit = 20,
+    after?: Date
   ): Promise<WithTotal<Appointment>> {
     const db = await getDbConnection();
     const cursor = db
       .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
       .find({
         status: "pending",
+        dateTime: after
+          ? {
+              $gte: after,
+            }
+          : undefined,
       });
 
     const appointments = await cursor.limit(limit).toArray();
@@ -89,6 +98,114 @@ export class EventsService {
       .sort("dateTime", "ascending")
       .limit(limit)
       .toArray();
+
+    return result;
+  }
+
+  public async getAppointments(
+    query: Query & {
+      range?: DateRange;
+      status?: AppointmentStatus[];
+    }
+  ): Promise<WithTotal<Appointment>> {
+    const db = await getDbConnection();
+
+    const sort: Sort = query.sort?.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.key]: curr.desc ? -1 : 1,
+      }),
+      {}
+    ) || { dateTime: 1 };
+
+    const filter: Filter<Appointment> = {};
+    if (query.range?.start || query.range?.end) {
+      filter.dateTime = {};
+
+      if (query.range.start) {
+        filter.dateTime.$gte = query.range.start;
+      }
+
+      if (query.range.end) {
+        filter.dateTime.$lte = query.range.end;
+      }
+    }
+
+    if (query.status && query.status.length) {
+      filter.status = {
+        $in: query.status,
+      };
+    }
+
+    if (query.search) {
+      const $regex = new RegExp(query.search, "i");
+      const queries = buildSearchQuery<Appointment>(
+        { $regex },
+        "option.name",
+        "option.description",
+        "note",
+        "addons.name",
+        "addons.description",
+        "fields.v"
+      );
+
+      filter.$or = queries;
+    }
+
+    const [result] = await db
+      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
+      .aggregate([
+        {
+          $addFields: {
+            fields: {
+              $objectToArray: "$fields",
+            },
+          },
+        },
+        {
+          $sort: sort,
+        },
+        {
+          $match: filter,
+        },
+        {
+          $addFields: {
+            fields: {
+              $arrayToObject: "$fields",
+            },
+          },
+        },
+        {
+          $facet: {
+            paginatedResults: [
+              { $skip: query.offset || 0 },
+              { $limit: query.limit || 1000000000000000 },
+            ],
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
+
+    return {
+      total: result.totalCount?.[0]?.count || 0,
+      items: result.paginatedResults || [],
+    };
+  }
+
+  public async getAppointment(id: string) {
+    const db = await getDbConnection();
+    const appointments = db.collection<Appointment>(
+      APPOINTMENTS_COLLECTION_NAME
+    );
+
+    const result = await appointments.findOne({
+      _id: id,
+    });
 
     return result;
   }
@@ -133,6 +250,55 @@ export class EventsService {
 
         break;
     }
+  }
+
+  public async updateAppointmentNote(id: string, note?: string) {
+    const db = await getDbConnection();
+
+    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          note: note,
+        },
+      }
+    );
+  }
+
+  public async rescheduleAppointment(
+    id: string,
+    newTime: Date,
+    newDuration: number
+  ) {
+    const db = await getDbConnection();
+
+    const appointment = await db
+      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
+      .findOne({
+        _id: id,
+      });
+
+    if (!appointment) return;
+
+    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          dateTime: newTime,
+          totalDuration: newDuration,
+        },
+      }
+    );
+
+    await this.notificationService.sendAppointmentRescheduledNotification(
+      appointment,
+      newTime,
+      newDuration
+    );
   }
 
   private async getDbBusyTimes(

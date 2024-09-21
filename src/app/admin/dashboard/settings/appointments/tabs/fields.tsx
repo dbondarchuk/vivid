@@ -12,6 +12,7 @@ export const FieldsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const { fields, append, remove, swap, update } = useFieldArray({
     control: form.control,
     name: "fields",
+    keyName: "fields_id",
   });
 
   const ids = React.useMemo(() => fields.map((x) => x.id), [fields]);
@@ -28,6 +29,7 @@ export const FieldsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const addNew = () => {
     append({
       id: v4(),
+      required: false,
     } as Partial<FieldSchema> as FieldSchema);
   };
 

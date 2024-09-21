@@ -3,6 +3,7 @@ import * as ics from "ics";
 import { createEvent, EventAttributes } from "ics";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
+import Mail from "nodemailer/lib/mailer";
 import { ConfigurationService } from "../configurationService";
 import { getIcsEventUid } from "../helpers/ics";
 import { INotificationService } from "./notificaionService.interface";
@@ -41,6 +42,11 @@ export abstract class IEmailNotificationService
   abstract sendAppointmentConfirmedNotification(
     appointment: Appointment
   ): Promise<void>;
+  abstract sendAppointmentRescheduledNotification(
+    appointment: Appointment,
+    newTime: Date,
+    newDuration: number
+  ): Promise<void>;
 
   protected async getArguments(appointment: Appointment) {
     const booking = await this.configurationService.getConfiguration("booking");
@@ -69,19 +75,25 @@ export abstract class IEmailNotificationService
   protected async sendEmail(email: Email) {
     const smtp = await this.configurationService.getConfiguration("smtp");
 
+    let icalEvent: Mail.IcalAttachment | undefined = undefined;
+    if (email.icalEvent) {
+      const { value: icsContent, error: icsError } = createEvent(
+        email.icalEvent.content
+      );
+      icalEvent = {
+        filename: email.icalEvent.filename || "invitation.ics",
+        method: email.icalEvent.method,
+        content: icsContent,
+      };
+    }
+
     const mailOptions: nodemailer.SendMailOptions = {
       from: smtp.email,
       to: email.to,
       cc: email.cc,
       subject: email.subject,
       html: email.body,
-      icalEvent: email.icalEvent
-        ? {
-            filename: email.icalEvent.filename || "invitation.ics",
-            method: email.icalEvent.method,
-            content: createEvent(email.icalEvent.content).value,
-          }
-        : undefined,
+      icalEvent: icalEvent,
     };
 
     const transport = nodemailer.createTransport({
@@ -142,6 +154,7 @@ export abstract class IEmailNotificationService
       title: summary,
       description: description,
       location: config.address,
+      sequence: this.getIcsSequence(),
       attendees: [
         {
           partstat: "ACCEPTED",
@@ -158,4 +171,6 @@ export abstract class IEmailNotificationService
 
     return icsEvent;
   }
+
+  private getIcsSequence = () => Math.floor(Date.now() / 100000);
 }

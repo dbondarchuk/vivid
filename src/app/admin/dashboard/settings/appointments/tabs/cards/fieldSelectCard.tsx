@@ -14,6 +14,18 @@ import { UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Combobox, IComboboxItem } from "@/components/ui/combobox";
 import { FieldSchema, fieldTypeLabels } from "./fieldCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AppointmentActionButton } from "@/components/admin/appointments/action.button";
 
 export type FieldSelectProps = {
   item: {
@@ -86,11 +98,13 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
     (field: FieldSchema) =>
       ({
         value: field.id,
-        shortLabel: field.name,
+        shortLabel: field.data?.label || field.name,
         label: (
           <div className="flex flex-col gap-1">
-            <div>{field.name}</div>
-            <div className="text-sm">{fieldTypeLabels[field.type]}</div>
+            <div>{field.data?.label || field.name}</div>
+            <div className="text-sm">
+              {field.name} - {fieldTypeLabels[field.type]}
+            </div>
           </div>
         ),
       } as IComboboxItem)
@@ -117,16 +131,35 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
           <GripVertical />
         </Button>
         <span>{nameValue || "Field"}</span>
-        <Button
-          disabled={disabled}
-          variant="destructive"
-          className=""
-          onClick={remove}
-          size="sm"
-          type="button"
-        >
-          <Trash size={20} />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              disabled={disabled}
+              variant="destructive"
+              className=""
+              size="sm"
+              type="button"
+            >
+              <Trash size={20} />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to remove this field from this option?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction asChild>
+                <Button variant="destructive" onClick={remove}>
+                  Delete
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardHeader>
       <CardContent className="px-3 pb-6 pt-3 text-left relative">
         <FormField

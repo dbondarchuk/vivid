@@ -39,4 +39,19 @@ export class NotificationService implements INotificationService {
     );
     await Promise.all(promises);
   }
+
+  async sendAppointmentRescheduledNotification(
+    appointment: Appointment,
+    newTime: Date,
+    newDuration: number
+  ): Promise<void> {
+    const promises = this.services.map((service) =>
+      service.sendAppointmentRescheduledNotification(
+        appointment,
+        newTime,
+        newDuration
+      )
+    );
+    await Promise.all(promises);
+  }
 }

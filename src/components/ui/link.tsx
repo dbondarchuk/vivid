@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import React from "react";
 import { ButtonSize, ButtonVariant, buttonVariants } from "./button";
 import { cn } from "@/lib/utils";
+import { textVariants, TextVariants } from "./text";
 
 const linkVariants = {
   default: "underline",
@@ -17,7 +18,7 @@ const linkSizes = {
 };
 
 export const linkClasses = cva(
-  ["text-black", "hover:text-gray-800", "transition-all", "font-thin"],
+  ["text-primary", "hover:text-gray-800", "transition-all", "font-thin"],
   {
     variants: {
       variant: linkVariants,
@@ -34,9 +35,10 @@ export const LinkVariants = Object.keys(
 export type LinkSize = VariantProps<typeof linkClasses>["size"];
 export const LinkSizes = Object.keys(linkSizes) as (keyof typeof linkSizes)[];
 
-type BaseProps = Omit<React.ComponentProps<typeof NextLink>, "as"> & {
-  target?: "_blank" | "_parent" | "_self" | "_top";
-};
+type BaseProps = Omit<React.ComponentProps<typeof NextLink>, "as"> &
+  TextVariants & {
+    target?: "_blank" | "_parent" | "_self" | "_top";
+  };
 
 type BaseLinkProps = BaseProps & {
   variant?: LinkVariant;
@@ -56,6 +58,12 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   (props, ref) => {
     let passProps = props;
     let classes: string = "";
+    const textClasses = textVariants({
+      fontSize: props.fontSize,
+      fontWeight: props.fontWeight,
+      font: props.font,
+    });
+
     if ("button" in props) {
       const { button, ...rest } = props;
       passProps = rest;
@@ -63,18 +71,22 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       classes = buttonVariants({
         variant: props.variant,
         size: props.size,
-        className: props.className,
       });
     } else {
       const linkProps = props as BaseLinkProps;
       classes = linkClasses({
         variant: linkProps.variant,
         size: linkProps.size,
-        className: props.className,
       });
     }
 
-    return <NextLink ref={ref} {...passProps} className={cn(classes)} />;
+    return (
+      <NextLink
+        ref={ref}
+        {...passProps}
+        className={cn(classes, textClasses, props.className)}
+      />
+    );
   }
 );
 

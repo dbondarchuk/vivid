@@ -2,6 +2,18 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
 } from "@/components/admin/forms/inputGroupClasses";
+import { SupportsMarkdownTooltip } from "@/components/admin/tooltip/supportsMarkdown";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import {
@@ -17,12 +29,14 @@ import {
   InputGroupInput,
   InputSuffix,
 } from "@/components/ui/inputGroup";
+import { Textarea } from "@/components/ui/textarea";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+import { OptionSchema } from "./optionsCard";
 
 export const addonSchema = z.object({
   name: z.string().min(2, "Addon name must me at least 2 characters long"),
@@ -99,6 +113,24 @@ export const AddonCard: React.FC<AddonProps> = ({
 
   const nameValue = form.getValues(`${name}.name`);
 
+  const { fields: options, update: updateOption } = useFieldArray({
+    control: form.control,
+    name: "options",
+    keyName: "fields_id",
+  });
+
+  const removeAddon = () => {
+    (options as unknown as OptionSchema[]).forEach((option, index) => {
+      const addons = option.addons?.filter((addon) => addon.id !== item.id);
+      updateOption(index, {
+        ...option,
+        addons,
+      });
+    });
+
+    remove();
+  };
+
   return (
     <Card
       ref={setNodeRef}
@@ -120,16 +152,40 @@ export const AddonCard: React.FC<AddonProps> = ({
           <GripVertical />
         </Button>
         <span>{nameValue || "Invalid addon"}</span>
-        <Button
-          disabled={disabled}
-          variant="destructive"
-          className=""
-          onClick={remove}
-          size="sm"
-          type="button"
-        >
-          <Trash size={20} />
-        </Button>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              disabled={disabled}
+              variant="destructive"
+              className=""
+              size="sm"
+              type="button"
+            >
+              <Trash size={20} />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                <p>Are you sure you want to remove this addon?</p>
+                <p>
+                  <strong>NOTE: </strong>This will also remove this addon from
+                  all the options
+                </p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction asChild>
+                <Button variant="destructive" onClick={removeAddon}>
+                  Delete
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardHeader>
       <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
         <FormField
@@ -155,9 +211,13 @@ export const AddonCard: React.FC<AddonProps> = ({
           name={`${name}.description`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>
+                Description <SupportsMarkdownTooltip />
+              </FormLabel>
               <FormControl>
-                <Input
+                <Textarea
+                  className="min-h-10"
+                  autoResize
                   disabled={disabled}
                   placeholder="Description"
                   {...field}

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { BaseCard, BaseCardProps } from "./baseCard";
 import { ReactNode } from "react";
 import { withI18n } from "@/i18n/withI18n";
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Timer, DollarSign } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Markdown } from "../markdown/Markdown";
 
 export type AddonsCardProps = BaseCardProps & {
   onAddonSelectionChange: (addons: AppointmentAddon[]) => void;
@@ -86,7 +86,9 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
                     />
                   </div>
                 </CardHeader>
-                <CardContent>{option.description}</CardContent>
+                <CardContent>
+                  <Markdown markdown={option.description} />
+                </CardContent>
               </Card>
             );
           })}

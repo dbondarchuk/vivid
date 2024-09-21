@@ -47,6 +47,9 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
               size={item.size}
               key={item.url}
               href={item.url}
+              font={item.font}
+              fontSize={item.fontSize}
+              fontWeight={item.fontWeight}
               className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
             >
               {item.prefixIcon && (
@@ -74,6 +77,9 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
               key={item.url}
               variant={item.variant}
               size={item.size}
+              font={item.font}
+              fontSize={item.fontSize}
+              fontWeight={item.fontWeight}
               className="hover:text-gray-600 transition-colors"
               href={item.url}
             >

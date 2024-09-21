@@ -1,5 +1,6 @@
 import type { CompileOptions } from "@mdx-js/mdx";
-import { compileMDX, MDXRemote } from "next-mdx-remote/rsc";
+import { MDXRemote } from "next-mdx-remote-client/rsc";
+import { evaluate } from "next-mdx-remote-client/rsc";
 import type { VFileCompatible } from "vfile";
 import { Components } from "../../components";
 export interface SerializeOptions {
@@ -20,7 +21,7 @@ export const getFrontMatter = async (
   source: VFileCompatible,
   options?: SerializeOptions
 ) => {
-  const { frontmatter } = await compileMDX({
+  const { frontmatter } = await evaluate({
     source,
     components: Components,
     options: { parseFrontmatter: true, ...options },

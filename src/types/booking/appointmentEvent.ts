@@ -16,4 +16,5 @@ export type AppointmentEvent = {
   fields: AppointmentFields;
   option: Omit<AppointmentOption, "fields" | "addons">;
   addons?: AppointmentAddon[];
+  note?: string;
 };

@@ -14,11 +14,25 @@ import {
   Clock,
   DollarSign,
   Presentation,
+  SquareArrowOutUpRight,
+  StickyNote,
 } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { AppointmentActionButton } from "./action.button";
 import { StatusText } from "./types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Heading } from "@/components/ui/heading";
 
 export type AppointmentCardProps = {
   appointment: Appointment;
@@ -30,75 +44,103 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle>
+        <CardTitle className="w-full flex flex-row justify-between items-center">
+          <Heading
+            title={appointment.option.name}
+            description={`By ${appointment.fields.name}`}
+          />
           <Link
-            variant="dashed"
-            className="font-medium text-lg"
-            href={`/admin/dashboard/customer?email=${appointment.fields.email}`}
+            variant="ghost"
+            title="View full appointment information"
+            href={`/admin/dashboard/appointments/${appointment._id}`}
           >
-            {appointment.fields.name}
+            <SquareArrowOutUpRight size={20} />
           </Link>
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-sm">
-        <div className="grid grid-cols-2 gap-y-2">
-          <div className="flex flex-row gap-2 font-medium">
-            <Presentation /> Appointment:
+      <CardContent className="text-sm flex flex-col w-full gap-4">
+        <dl className="divide-y">
+          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="flex self-center items-center gap-1">
+              <Presentation size={16} /> Appointment:
+            </dt>
+            <dd className="col-span-2">{appointment.option.name}</dd>
           </div>
-          <div>{appointment.option.name}</div>
-          <div className="flex flex-row gap-2 font-medium">
-            <CheckCircle /> Status:
+          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="flex self-center items-center gap-1">
+              <CheckCircle size={16} /> Status:
+            </dt>
+            <dd className="col-span-2">{StatusText[appointment.status]}</dd>
           </div>
-          <div>{StatusText[appointment.status]}</div>
-          <div className="flex flex-row gap-2 font-medium">
-            <Calendar /> Date & Time:
+          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="flex self-center items-center gap-1">
+              <Calendar size={16} /> Date &amp; Time::
+            </dt>
+            <dd className="col-span-2">
+              {DateTime.fromJSDate(appointment.dateTime, {
+                zone: "local",
+              }).toLocaleString(DateTime.DATETIME_SHORT)}
+            </dd>
           </div>
-          <div>
-            {DateTime.fromJSDate(appointment.dateTime, {
-              zone: "local",
-            }).toLocaleString(DateTime.DATETIME_SHORT)}
+          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="flex self-center items-center gap-1">
+              <Clock size={16} /> Duration:
+            </dt>
+            <dd className="col-span-2">{appointment.totalDuration} minutes</dd>
           </div>
-          <div className="flex flex-row gap-2 font-medium">
-            <Clock /> Duration:
-          </div>
-          <div>{appointment.totalDuration} minutes</div>
           {appointment.totalPrice && (
-            <>
-              <div className="flex flex-row gap-2 font-medium">
-                <DollarSign /> Price:
-              </div>
-              <div>${appointment.totalPrice}</div>
-            </>
+            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="flex self-center items-center gap-1">
+                <DollarSign size={16} /> Price:
+              </dt>
+              <dd className="col-span-2">${appointment.totalPrice}</dd>
+            </div>
           )}
-        </div>
+          {appointment.note && (
+            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="flex self-center items-center gap-1">
+                <StickyNote size={16} /> Note:
+              </dt>
+              <dd className="col-span-2">{appointment.note}</dd>
+            </div>
+          )}
+        </dl>
       </CardContent>
       {appointment.status !== "declined" && (
         <CardFooter className="justify-between">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="secondary">Decline</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently decline
+                  this appointment and will notify the customer.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <AppointmentActionButton
+                    variant="secondary"
+                    _id={appointment._id}
+                    status="declined"
+                  >
+                    Decline
+                  </AppointmentActionButton>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           {appointment.status === "pending" && (
-            <>
-              <AppointmentActionButton
-                variant="secondary"
-                _id={appointment._id}
-                status="declined"
-              >
-                Decline
-              </AppointmentActionButton>
-              <AppointmentActionButton
-                variant="primary"
-                _id={appointment._id}
-                status="confirmed"
-              >
-                Accept
-              </AppointmentActionButton>
-            </>
-          )}
-          {appointment.status === "confirmed" && (
             <AppointmentActionButton
-              variant="secondary"
+              variant="primary"
               _id={appointment._id}
-              status="declined"
+              status="confirmed"
             >
-              Decline
+              Accept
             </AppointmentActionButton>
           )}
         </CardFooter>

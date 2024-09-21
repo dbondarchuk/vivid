@@ -134,12 +134,15 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           .toUTC()
           .toISO(),
         time: dateTime!.time,
-        meetingName: props.appointmentOption.name,
         totalPrice: getTotalPrice() || undefined,
         timeZone: dateTime!.timeZone,
         totalDuration: getTotalDuration(),
         fields,
-        option: props.appointmentOption,
+        option: {
+          ...props.appointmentOption,
+          fields: undefined,
+          addons: undefined,
+        },
         addons: selectedAddons,
       } as AppointmentEvent),
     })

@@ -20,6 +20,7 @@ import {
 import { IWithI18nProps } from "@/i18n/withI18n";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
+import { Markdown } from "../markdown/Markdown";
 
 export type BaseCardProps = IWithI18nProps & {
   next?: () => void;
@@ -67,8 +68,11 @@ export abstract class BaseCard<
       <Card className="sm:min-w-min md:w-full">
         <CardHeader className="text-center">
           <CardTitle>{this.props.appointmentOption.name}</CardTitle>
-          <CardDescription>
-            {this.props.appointmentOption.description}
+          <CardDescription className="flex flex-row self-center">
+            <Markdown
+              className="w-full"
+              markdown={this.props.appointmentOption.description}
+            ></Markdown>
           </CardDescription>
           {(this.duration || this.price) && (
             <CardDescription className="flex flex-row gap-2 justify-center place-items-center">

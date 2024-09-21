@@ -1,5 +1,6 @@
 import { ButtonSize, ButtonVariant } from "@/components/ui/button";
 import { LinkSize, LinkVariant } from "@/components/ui/link";
+import { TextFont, TextSize, TextWeight } from "@/components/ui/text";
 import { FieldsWithId, WithLabelFieldData } from "./booking";
 import {
   AppointmentAddon,
@@ -27,6 +28,9 @@ export type IconMenuItem = BaseMenuItem & {
 type BaseLinkMenuItem = BaseMenuItem & {
   prefixIcon?: string;
   suffixIcon?: string;
+  font?: TextFont;
+  fontSize?: TextSize;
+  fontWeight?: TextWeight;
 };
 
 export type LinkMenuItem = BaseLinkMenuItem & {
@@ -67,7 +71,9 @@ export type EventConfiguration = {
 export type EmailConfiguration = {
   to: string;
   from: string;
-  templates: Record<AppointmentStatus, EmailTemplateConfiguration>;
+  templates: Record<AppointmentStatus, EmailTemplateConfiguration> & {
+    rescheduled: EmailTemplateConfiguration;
+  };
   event: EventConfiguration;
 };
 

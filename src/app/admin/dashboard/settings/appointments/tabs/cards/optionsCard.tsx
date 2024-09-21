@@ -26,6 +26,9 @@ import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { AddonSelectCard } from "./addonSelectCard";
 import { FieldSelectCard } from "./fieldSelectCard";
+import { SupportsMarkdownTooltip } from "@/components/admin/tooltip/supportsMarkdown";
+import { Textarea } from "@/components/ui/textarea";
+import { WithId } from "@/types";
 
 export const optionSchema = z.object({
   name: z.string().min(2, "Option name must me at least 2 characters long"),
@@ -125,11 +128,17 @@ export const OptionCard: React.FC<OptionProps> = ({
   } = useFieldArray({
     control: form.control,
     name: `${name}.addons`,
+    keyName: "fields_id",
   });
 
   const sortAddons = (activeId: string, overId: string) => {
-    const activeIndex = addonsFields.findIndex((x) => x.id === activeId);
-    const overIndex = addonsFields.findIndex((x) => x.id === overId);
+    const activeIndex = addonsFields.findIndex(
+      (x: WithId<any>) => x.id === activeId
+    );
+
+    const overIndex = addonsFields.findIndex(
+      (x: WithId<any>) => x.id === overId
+    );
 
     if (activeIndex < 0 || overIndex < 0) return;
 
@@ -151,11 +160,17 @@ export const OptionCard: React.FC<OptionProps> = ({
   } = useFieldArray({
     control: form.control,
     name: `${name}.fields`,
+    keyName: "fields_id",
   });
 
   const sortFields = (activeId: string, overId: string) => {
-    const activeIndex = fieldsFields.findIndex((x) => x.id === activeId);
-    const overIndex = fieldsFields.findIndex((x) => x.id === overId);
+    const activeIndex = fieldsFields.findIndex(
+      (x: WithId<any>) => x.id === activeId
+    );
+
+    const overIndex = fieldsFields.findIndex(
+      (x: WithId<any>) => x.id === overId
+    );
 
     if (activeIndex < 0 || overIndex < 0) return;
 
@@ -168,8 +183,8 @@ export const OptionCard: React.FC<OptionProps> = ({
     });
   };
 
-  const addonsIds = addonsFields.map((x) => x.id);
-  const fieldsIds = fieldsFields.map((x) => x.id);
+  const addonsIds = addonsFields.map((x: WithId<any>) => x.id);
+  const fieldsIds = fieldsFields.map((x: WithId<any>) => x.id);
 
   return (
     <Card
@@ -227,9 +242,13 @@ export const OptionCard: React.FC<OptionProps> = ({
           name={`${name}.description`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>
+                Description <SupportsMarkdownTooltip />
+              </FormLabel>
               <FormControl>
-                <Input
+                <Textarea
+                  className="min-h-10"
+                  autoResize
                   disabled={disabled}
                   placeholder="Description"
                   {...field}
@@ -304,8 +323,8 @@ export const OptionCard: React.FC<OptionProps> = ({
               return (
                 <FieldSelectCard
                   form={form}
-                  item={item}
-                  key={item.id}
+                  item={item as WithId<any>}
+                  key={(item as WithId<any>).id}
                   name={`${name}.fields.${index}`}
                   disabled={disabled}
                   remove={() => removeField(index)}
@@ -326,8 +345,8 @@ export const OptionCard: React.FC<OptionProps> = ({
               return (
                 <AddonSelectCard
                   form={form}
-                  item={item}
-                  key={item.id}
+                  item={item as WithId<any>}
+                  key={(item as WithId<any>).id}
                   name={`${name}.addons.${index}`}
                   disabled={disabled}
                   remove={() => removeAddon(index)}

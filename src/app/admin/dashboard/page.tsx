@@ -1,18 +1,12 @@
 import { AppointmentCard } from "@/components/admin/appointments/appointment.card";
-import { AreaGraph } from "@/components/admin/charts/area-graph";
-import { BarGraph } from "@/components/admin/charts/bar-graph";
-import { PieGraph } from "@/components/admin/charts/pie-graph";
-import { CalendarDateRangePicker } from "@/components/admin/date-range-picker";
+import {
+  WeeklyCalendar,
+  CalendarEvent,
+} from "@/components/admin/calendar/weeklyCalendar";
+import { WeeklyCalendarWrapper } from "@/components/admin/calendar/weeklyCalendar.wrapper";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   TabsContent,
   TabsList,
@@ -20,13 +14,16 @@ import {
   TabsViaUrl,
 } from "@/components/ui/tabs";
 import { Services } from "@/lib/services";
+import { DateTime } from "luxon";
 import { Suspense } from "react";
 
 export default async function Page() {
+  const beforeNow = DateTime.now().minus({ hours: 1 }).toJSDate();
   const pendingAppointments =
-    await Services.EventsService().getPendingAppointments();
+    await Services.EventsService().getPendingAppointments(20, beforeNow);
+
   const nextAppointments = await Services.EventsService().getNextAppointments(
-    new Date(),
+    beforeNow,
     3
   );
 
@@ -56,7 +53,12 @@ export default async function Page() {
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
               <div className="flex flex-col-reverse lg:flex-row gap-8">
-                <div className="flex flex-col basis-2/3"></div>
+                <div className="flex flex-col basis-2/3">
+                  <WeeklyCalendarWrapper
+                    date={DateTime.now().startOf("day").toJSDate()}
+                    className="h-[60vh]"
+                  />
+                </div>
                 <div className="flex flex-col gap-2 basis-1/3">
                   <h2 className="tracking-tight text-lg font-medium">
                     Next appointments
