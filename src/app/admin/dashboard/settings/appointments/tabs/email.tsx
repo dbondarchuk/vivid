@@ -211,12 +211,6 @@ export const EmailTab: React.FC<TabProps> = ({ form, disabled }) => {
       <EmailTemplateForm
         form={form}
         disabled={disabled}
-        type={"declined"}
-        whenText="the appointment was declined"
-      />
-      <EmailTemplateForm
-        form={form}
-        disabled={disabled}
         type={"rescheduled"}
         whenText="the appointment was rescheduled"
       />

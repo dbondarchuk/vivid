@@ -1,12 +1,9 @@
 import { AppointmentCard } from "@/components/admin/appointments/appointment.card";
-import {
-  WeeklyCalendar,
-  CalendarEvent,
-} from "@/components/admin/calendar/weeklyCalendar";
 import { WeeklyCalendarWrapper } from "@/components/admin/calendar/weeklyCalendar.wrapper";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   TabsContent,
   TabsList,
@@ -56,26 +53,30 @@ export default async function Page() {
                 <div className="flex flex-col basis-2/3">
                   <WeeklyCalendarWrapper
                     date={DateTime.now().startOf("day").toJSDate()}
-                    className="h-[60vh]"
+                    className="h-[100vh]"
                   />
                 </div>
-                <div className="flex flex-col gap-2 basis-1/3">
+                <div className="basis-1/3 flex flex-col gap-2 ">
                   <h2 className="tracking-tight text-lg font-medium">
                     Next appointments
                   </h2>
-                  {!nextAppointments.length && (
-                    <Card>
-                      <CardContent className="flex justify-center py-4">
-                        No appointments are scheduled
-                      </CardContent>
-                    </Card>
-                  )}
-                  {nextAppointments.map((appointment) => (
-                    <AppointmentCard
-                      key={appointment._id}
-                      appointment={appointment}
-                    />
-                  ))}
+                  <ScrollArea className="max-h-[100vh]">
+                    <div className="flex flex-col gap-2">
+                      {!nextAppointments.length && (
+                        <Card>
+                          <CardContent className="flex justify-center py-4">
+                            No appointments are scheduled
+                          </CardContent>
+                        </Card>
+                      )}
+                      {nextAppointments.map((appointment) => (
+                        <AppointmentCard
+                          appointment={appointment}
+                          key={appointment._id}
+                        />
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </div>
               </div>
             </TabsContent>
