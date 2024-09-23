@@ -25,9 +25,7 @@ const formSchema = z.object({
   filename: z
     .string()
     .min(3, { message: "File name must be at least 3 characters" })
-    .refine((filename) => /^[\w,\s-]+\.[A-Za-z]{6}$/gi.test(filename), {
-      message: "File name must have an exension",
-    })
+    .regex(/^[\w,\s-]+\.[A-Za-z]{1,6}$/gi, "File name must have an exension")
     .refine((filename) => checkUniqueFileName(filename), {
       message: "File name must be unique",
     }),
