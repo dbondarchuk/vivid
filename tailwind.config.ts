@@ -18,8 +18,8 @@ const config = {
   prefix: "",
   theme: {
     fontFamily: {
-      body: ["var(--font-montserrat)"],
-      header: ["var(--font-playfair)"],
+      primary: ["var(--font-montserrat)"],
+      secondary: ["var(--font-playfair)"],
     },
     container: {
       center: true,
@@ -30,8 +30,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        body: ["var(--font-montserrat)"],
-        header: ["var(--font-playfair)"],
+        primary: ["var(--font-montserrat)"],
+        secondary: ["var(--font-playfair)"],
       },
       colors: {
         border: "hsl(var(--border))",

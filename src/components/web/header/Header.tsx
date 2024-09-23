@@ -105,7 +105,7 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
   };
 
   return (
-    <header className="text-black font-body w-full fixed bg-white font-light z-50 transition-all duration-300">
+    <header className="text-black font-body w-full sticky top-0 bg-white font-light z-50 transition-all duration-300">
       <div className="container mx-auto flex flex-wrap p-5 flex-row items-center gap-4">
         <a href="/" className="flex title-font font-medium items-center">
           <span className="ml-3 text-xl font-body font-medium">{name}</span>

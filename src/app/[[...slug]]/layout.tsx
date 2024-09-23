@@ -35,7 +35,7 @@ export default function RootLayout({
       <TwLoad />
       <body>
         <Header />
-        <main className="min-h-screen bg-white pt-20 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none font-body">
+        <main className="min-h-screen bg-white pt-20 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none font-primary">
           {children}
         </main>
         <Footer />
