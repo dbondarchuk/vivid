@@ -2,12 +2,16 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import { Spinner } from "../ui/spinner";
 
 interface AlertModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   loading: boolean;
+  title?: string;
+  description?: string;
+  continueButton?: string;
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
@@ -15,6 +19,9 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   onClose,
   onConfirm,
   loading,
+  title = "Are you sure?",
+  description = "This action cannot be undone.",
+  continueButton = "Continue",
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -28,8 +35,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
   return (
     <Modal
-      title="Are you sure?"
-      description="This action cannot be undone."
+      title={title}
+      description={description}
       isOpen={isOpen}
       onClose={onClose}
     >
@@ -37,8 +44,14 @@ export const AlertModal: React.FC<AlertModalProps> = ({
         <Button disabled={loading} variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          Continue
+        <Button
+          disabled={loading}
+          variant="destructive"
+          onClick={onConfirm}
+          className="flex flex-row gap-1 items-center"
+        >
+          {loading && <Spinner />}
+          <span>{continueButton}</span>
         </Button>
       </div>
     </Modal>

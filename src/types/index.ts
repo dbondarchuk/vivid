@@ -1,4 +1,5 @@
 export * from "./admin";
+export * from "./assets";
 export * from "./booking";
 export * from "./database";
 export * from "./general";

@@ -24,6 +24,7 @@ import {
   MoreVertical,
   PanelBottom,
   PanelTop,
+  Paperclip,
   Pizza,
   Plus,
   Settings,
@@ -71,4 +72,5 @@ export const Icons = {
   smtp: Mail,
   header: PanelTop,
   footer: PanelBottom,
+  assets: Paperclip,
 };
