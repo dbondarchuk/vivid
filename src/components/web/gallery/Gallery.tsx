@@ -18,7 +18,10 @@ export const Gallery: React.FC<GalleryProps> = ({
 }) => {
   return (
     <section
-      className={cn("flex flex-col gap-20 w-full scroll-m-20", className)}
+      className={cn(
+        "flex flex-col gap-10 w-full scroll-m-20 not-prose",
+        className
+      )}
       {...props}
     >
       <h3 className="w-full text-4xl text-center appear">{title}</h3>
@@ -30,8 +33,8 @@ export const Gallery: React.FC<GalleryProps> = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />{" "}
+        <CarouselPrevious className="left-0" />
+        <CarouselNext className="right-0" />
       </Carousel>
     </section>
   );

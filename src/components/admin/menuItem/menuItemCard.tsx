@@ -530,6 +530,19 @@ export function MenuItemCard({
             />
           </>
         )}
+        <FormField
+          control={form.control}
+          name={`${name}.className`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Additional classes</FormLabel>
+              <FormControl>
+                <Input disabled={disabled} placeholder="font-bold" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </CardContent>
     </Card>
   );

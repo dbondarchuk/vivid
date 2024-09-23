@@ -266,7 +266,10 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             //colsRepeatClasses[dates.length as keyof typeof colsRepeatClasses]
           )}
           style={{
-            "--calendar-grid-cols": `60px repeat(${dates.length}, 1fr)`,
+            "--calendar-grid-cols": `repeat(${dates.length}, ${(
+              100 /
+              (dates.length + 1)
+            ).toFixed(3)}%)`,
           }}
         >
           <div></div>
@@ -332,7 +335,10 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             colsRepeatClass
           )}
           style={{
-            "--calendar-grid-cols": `60px repeat(${dates.length}, 1fr)`,
+            "--calendar-grid-cols": `repeat(${dates.length}, ${(
+              100 /
+              (dates.length + 1)
+            ).toFixed(3)}%)`,
             "--rows-repeat": `repeat(${timeSlots.length},${sizePerRow}px)`,
           }}
         >
