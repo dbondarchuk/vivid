@@ -23,6 +23,13 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
   onSelect,
   i18n,
 }) => {
+  const onKeyPress = (id: string, event: React.KeyboardEvent<any>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      onSelect(id);
+      event.preventDefault();
+    }
+  };
+
   return (
     <div className={className}>
       {meetings.map((option) => {
@@ -30,20 +37,38 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
           <Card
             key={option.id}
             onClick={() => onSelect(option.id)}
+            onKeyDown={(e) => onKeyPress(option.id, e)}
             className="cursor-pointer"
+            tabIndex={1}
+            aria-describedby={`option-${option.id}`}
+            role="button"
           >
-            <CardHeader>
+            <CardHeader id={`option-${option.id}`}>
               <CardTitle>{option.name}</CardTitle>
               <CardDescription className="flex flex-col gap-2">
-                <div className="flex flex-row items-center">
+                <div
+                  className="flex flex-row items-center"
+                  aria-label={
+                    option.duration
+                      ? i18n("form_duration_label_format", {
+                          duration: option.duration,
+                        })
+                      : i18n("custom_duration_label_format")
+                  }
+                >
                   <Timer className="mr-1" />
                   {option.duration
                     ? i18n("duration_min_format", { duration: option.duration })
                     : i18n("duration_custom")}
                 </div>
                 {option.price && (
-                  <div className="flex flex-row items-center">
-                    <DollarSign className="mr-1" />
+                  <div
+                    className="flex flex-row items-center"
+                    aria-label={i18n("form_price_label_format", {
+                      price: option.price.toFixed(2).replace(/\.00$/, ""),
+                    })}
+                  >
+                    <DollarSign className="mr-1" aria-label="" />
                     {option.price.toFixed(2).replace(/\.00$/, "")}
                   </div>
                 )}

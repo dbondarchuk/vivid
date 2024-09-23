@@ -58,11 +58,23 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
                 onClick={() => this.onClick(option)}
                 className="cursor-pointer"
               >
-                <CardHeader className="flex flex-row w-full">
+                <CardHeader
+                  className="flex flex-row w-full"
+                  id={`addon-${option.id}`}
+                >
                   <div className="flex flex-col grow">
                     <CardTitle className="mt-0">{option.name}</CardTitle>
                     <CardDescription className="flex flex-col gap-2">
-                      <div className="flex flex-row items-center">
+                      <div
+                        className="flex flex-row items-center"
+                        aria-label={
+                          option.duration
+                            ? this.props.i18n("form_duration_label_format", {
+                                duration: option.duration,
+                              })
+                            : this.props.i18n("custom_duration_label_format")
+                        }
+                      >
                         <Timer className="mr-1" />
                         {option.duration
                           ? this.props.i18n("duration_min_format", {
@@ -71,7 +83,17 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
                           : this.props.i18n("duration_custom")}
                       </div>
                       {option.price && (
-                        <div className="flex flex-row items-center">
+                        <div
+                          className="flex flex-row items-center"
+                          aria-label={this.props.i18n(
+                            "form_price_label_format",
+                            {
+                              price: option.price
+                                .toFixed(2)
+                                .replace(/\.00$/, ""),
+                            }
+                          )}
+                        >
                           <DollarSign className="mr-1" />
                           {option.price.toFixed(2).replace(/\.00$/, "")}
                         </div>
@@ -80,6 +102,7 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
                   </div>
                   <div className="flex place-content-start">
                     <Checkbox
+                      aria-describedby={`addon-${option.id}`}
                       checked={this.props.selectedAddons?.some(
                         (addon) => addon.id === option.id
                       )}
