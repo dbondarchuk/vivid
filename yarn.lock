@@ -3670,6 +3670,11 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
+inherits-ex@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/inherits-ex/-/inherits-ex-2.1.0.tgz#ee1252b977534278d1e15d5186df4ef9e87bd9e2"
+  integrity sha512-lvIiDNc3vA/RjtYmXSNYaJU4z2JYijO90V0MDC63mDoCuwjGok67u1Cl6vN5xgYkY5m6sOzo3fCKRqSXLq00zA==
+
 inherits@2, inherits@^2.0.3, inherits@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
@@ -4842,6 +4847,15 @@ micromatch@^4.0.4, micromatch@^4.0.5:
     braces "^3.0.3"
     picomatch "^2.3.1"
 
+mime-type@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/mime-type/-/mime-type-5.0.0.tgz#3bf0d9cd3f5535adb1f06629abba055c79de90ca"
+  integrity sha512-bA14AmcvhoQIHS6TYi4Fx+eGRigNCwWDW1DkfjV6eAkLDCfrc70dk+kSHHdwOH0r+X/r7lVJbPWH/1SLCRcdiA==
+  dependencies:
+    micromatch "^4.0.5"
+    path.js "^2.0.0"
+    util-ex "^2.0.0"
+
 mimic-response@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-3.1.0.tgz#2d1d59af9c1b129815accc2c46a022a5ce1fa3c9"
@@ -5503,6 +5517,14 @@ path-type@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
+
+path.js@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/path.js/-/path.js-2.0.0.tgz#976461fd9828e0da5cb362c7f645235ce322661f"
+  integrity sha512-DbEpzgKCtQHALNvmm51JOL3VMX+1JZCGvfpst1veul4hBIOEzRx6lH9JNPd7DlnvW304aal43JfnlHub3oybRw==
+  dependencies:
+    inherits-ex "^2.1.0"
+    util-ex "^2.0.0"
 
 periscopic@^3.0.0:
   version "3.1.0"
@@ -7069,6 +7091,13 @@ util-deprecate@^1.0.1, util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
+
+util-ex@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/util-ex/-/util-ex-2.0.0.tgz#9e21e2216c1f5ab456f3466f1ac336f1a36e069a"
+  integrity sha512-CdVsXWgu5SIVsVTAQvQ7tT7pHJmKCsaPoid3+OkxyUSItTC/o4w4rq24A1zJHiljsyRnjfwAxAkj0uSz0wyCgQ==
+  dependencies:
+    inherits-ex "^2.1.0"
 
 uuid@^10.0.0:
   version "10.0.0"

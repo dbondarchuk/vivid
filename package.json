@@ -53,6 +53,7 @@
     "lucide-react": "^0.427.0",
     "luxon": "^3.5.0",
     "mdx-bundler": "^10.0.2",
+    "mime-type": "^5.0.0",
     "mongodb": "^6.8.0",
     "mustache": "^4.2.0",
     "next": "14.2.5",
