@@ -29,14 +29,14 @@ export const CalendarDateRangePicker: React.FC<
   };
 
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("grid gap-2 w-full", className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[280px] justify-start text-left font-normal text-md",
+              "w-full justify-start text-left font-normal text-md",
               !date && "text-muted-foreground"
             )}
           >

@@ -1,3 +1,4 @@
+import { AssetsService } from "@/services/assetsService";
 import { AvailabilityService } from "@/services/availabilityService";
 import {
   CachedConfigurationService,
@@ -10,6 +11,7 @@ import { cache } from "react";
 
 type Types = {
   ConfigurationService: () => ConfigurationService;
+  AssetsService: () => AssetsService;
   EventsService: () => EventsService;
   MeetingService: () => MeetingService;
   AvailabilityService: () => AvailabilityService;
@@ -18,6 +20,7 @@ type Types = {
 
 export const Services: Types = {
   ConfigurationService: cache(() => new CachedConfigurationService()),
+  AssetsService: cache(() => new AssetsService()),
   EventsService: cache(
     () =>
       new EventsService(

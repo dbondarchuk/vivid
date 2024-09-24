@@ -18,6 +18,7 @@ export type WithId<T> = T & Id;
 export type BaseMenuItem = {
   url: string;
   label: string;
+  className?: string;
 };
 
 export type IconMenuItem = BaseMenuItem & {

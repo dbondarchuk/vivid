@@ -43,8 +43,6 @@ import {
 } from "@/types";
 import { DateTime } from "luxon";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { StatusText } from "../types";
-import { AppointmentDialog } from "../appointment.dialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,19 +51,15 @@ interface DataTableProps<TData, TValue> {
   total: number;
   pageSizeOptions?: number[];
   limit: number;
-  dateRange?: DateRange;
-  statuses: AppointmentStatus[];
   search?: string;
 }
 
-export const AppointmentsTable = <TData, TValue>({
+export const AssetsTable = <TData, TValue>({
   columns,
   data,
   page,
   total,
   limit,
-  dateRange,
-  statuses,
   search,
   pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTableProps<TData, TValue>) => {
@@ -115,31 +109,6 @@ export const AppointmentsTable = <TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, pageSize]);
 
-  const setDateRange = (range: DateRange | undefined) => {
-    router.push(
-      `${pathname}?${createQueryString({
-        start: range?.start
-          ? DateTime.fromJSDate(range.start).startOf("day").toISO()
-          : undefined,
-        end: range?.end
-          ? DateTime.fromJSDate(range.end).endOf("day").toISO()
-          : undefined,
-        page: undefined,
-      })}`
-    );
-  };
-
-  const setStatuses = (status: AppointmentStatus[]) => {
-    router.push(
-      `${pathname}?${createQueryString({
-        status: status.length !== 0 ? status : undefined,
-        page: null,
-      })}`
-    );
-
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  };
-
   const table = useReactTable({
     data,
     columns,
@@ -173,10 +142,6 @@ export const AppointmentsTable = <TData, TValue>({
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
   }, [deferredSearch]);
 
-  const [clickedRow, clickRow] = React.useState<Appointment | undefined>(
-    undefined
-  );
-
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -184,18 +149,8 @@ export const AppointmentsTable = <TData, TValue>({
           placeholder={`Search...`}
           value={searchValue}
           onChange={(event) => setSearchValue(event.target.value)}
-          className="w-full md:max-w-sm"
+          className="w-full"
         />
-        <MultiSelect
-          placeholder="Select status..."
-          selected={statuses}
-          onChange={(value) => setStatuses(value as AppointmentStatus[])}
-          options={appointmentStatuses.map((s) => ({
-            value: s,
-            label: StatusText[s],
-          }))}
-        />
-        <CalendarDateRangePicker range={dateRange} onChange={setDateRange} />
       </div>
       <div className="w-full">
         <ScrollArea className="h-[calc(80vh-220px)] rounded-md border">

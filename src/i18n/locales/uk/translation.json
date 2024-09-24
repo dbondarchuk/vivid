@@ -14,6 +14,7 @@
   "field_required_error": "Поле обов'язкове",
   "form_date_label_format": "Дата: {{date}}",
   "form_time_label_format": "Час: {{start}} - {{end}}",
+  "custom_duration_label_format": "Тривалість: виберіть",
   "form_duration_label_format": "Тривалість: {{duration}} хвилин",
   "form_price_label_format": "Ціна: ${{price}}",
   "form_title_label": "Введіть ваші данні",

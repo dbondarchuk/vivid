@@ -14,6 +14,7 @@
   "field_required_error": "Please provide the answer",
   "form_date_label_format": "Date: {{date}}",
   "form_time_label_format": "Time: {{start}} - {{end}}",
+  "custom_duration_label_format": "Duration: custom",
   "form_duration_label_format": "Duration: {{duration}} min",
   "form_price_label_format": "Price: ${{price}}",
   "form_title_label": "Enter your details",

@@ -1,4 +1,5 @@
-import type { HTMLAttributes } from "react";
+import { ButtonVariant } from "@/components/ui/button";
+import type { CSSProperties, HTMLAttributes } from "react";
 
 export type PageHeroSection = HTMLAttributes<HTMLDivElement> & {
   title: string;
@@ -8,6 +9,9 @@ export type PageHeroSection = HTMLAttributes<HTMLDivElement> & {
   cta?: {
     link: string;
     text: string;
-  };
+    variant?: ButtonVariant;
+    className?: string;
+  }[];
   className?: string;
+  style?: CSSProperties;
 };

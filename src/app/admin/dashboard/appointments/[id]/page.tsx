@@ -10,16 +10,17 @@ type Props = {
   params: { id: string };
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Appointments", link: "/admin/dashboard/appointments" },
-];
-
 export default async function AppointmentPage({ params }: Props) {
   const appointment = await Services.EventsService().getAppointment(params.id);
   if (!appointment) {
     return notFound();
   }
+
+  const breadcrumbItems = [
+    { title: "Dashboard", link: "/admin/dashboard" },
+    { title: "Appointments", link: "/admin/dashboard/appointments" },
+    { title: appointment.option.name, link: "/admin/dashboard/appointments" },
+  ];
 
   return (
     <PageContainer scrollable={true}>

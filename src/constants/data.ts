@@ -14,6 +14,12 @@ export const navItems: NavItemWithOptionalChildren[] = [
     label: "Appointments",
   },
   {
+    title: "Assets",
+    href: "/admin/dashboard/assets",
+    icon: "assets",
+    label: "Assets",
+  },
+  {
     title: "Settings",
     icon: "settings",
     items: [

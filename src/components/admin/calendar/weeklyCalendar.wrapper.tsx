@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  CalendarEvent,
-  WeeklyCalendar,
-  WeeklyCalendarProps,
-} from "./weeklyCalendar";
+import { WeeklyCalendar, WeeklyCalendarProps } from "./weeklyCalendar";
 import { DateTime } from "luxon";
 import { Appointment } from "@/types";
 import { AppointmentDialog } from "../appointments/appointment.dialog";

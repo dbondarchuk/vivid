@@ -7,7 +7,7 @@ export const Markdown: React.FC<MarkdownProps> = ({ markdown, className }) => {
   return (
     <div
       className={clsx(
-        "[&_p]:py-4 [&_li]:list-inside [&_li]:pl-8 [&_ul_li]:list-disc font-extralight prose prose-slate",
+        "[&_p]:py-4 [&_li]:list-inside [&_li]:pl-8 [&_ul_li]:list-disc prose prose-slate",
         className
       )}
     >

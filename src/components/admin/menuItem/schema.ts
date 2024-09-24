@@ -23,6 +23,7 @@ const [firstTextWeight, ...restTextWeights] = TextWeights;
 export const baseSchema = z.object({
   url: z.string({ required_error: "URL must be provided" }),
   label: z.string({ required_error: "Label is required" }),
+  className: z.string().optional(),
 });
 
 export const iconMenuItemSchema = baseSchema.merge(

@@ -47,12 +47,14 @@ export class EventsService {
     return [...dbEvents, ...icsEvents];
   }
 
-  public async createEvent(event: AppointmentEvent): Promise<void> {
+  public async createEvent(event: AppointmentEvent): Promise<Appointment> {
     const appointment = await this.saveEvent(event);
 
     await this.notificationService.sendAppointmentRequestedNotification(
       appointment
     );
+
+    return appointment;
   }
 
   public async getPendingAppointments(

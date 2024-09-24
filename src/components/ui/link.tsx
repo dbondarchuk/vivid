@@ -18,7 +18,7 @@ const linkSizes = {
 };
 
 export const linkClasses = cva(
-  ["text-primary", "hover:text-gray-800", "transition-all", "font-thin"],
+  ["text-primary", "hover:text-gray-800", "transition-all"],
   {
     variants: {
       variant: linkVariants,

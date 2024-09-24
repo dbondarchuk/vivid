@@ -3,6 +3,7 @@ import { SocialIcons } from "../socialIcons/SocialIcons";
 import { Icon } from "../../ui/icon";
 import { Link } from "../../ui/link";
 import { Services } from "@/lib/services";
+import { cn } from "@/lib/utils";
 
 export const Footer: React.FC = async () => {
   const configurationService = Services.ConfigurationService();
@@ -19,7 +20,11 @@ export const Footer: React.FC = async () => {
       switch (item.type) {
         case "icon":
           return (
-            <a href={item.url} className="no-underline" key={item.url}>
+            <a
+              href={item.url}
+              className={cn("no-underline", item.className)}
+              key={item.url}
+            >
               <Icon
                 name={item.icon as keyof typeof icons}
                 className="w-6 h-6"
@@ -39,7 +44,10 @@ export const Footer: React.FC = async () => {
               fontWeight={item.fontWeight}
               key={item.url}
               href={item.url}
-              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
+              className={cn(
+                "inline-flex gap-1 items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base",
+                item.className
+              )}
             >
               {item.prefixIcon && (
                 <Icon
@@ -69,7 +77,10 @@ export const Footer: React.FC = async () => {
               font={item.font}
               fontSize={item.fontSize}
               fontWeight={item.fontWeight}
-              className="text-black underline hover:text-gray-800 transition-all font-thin inline-flex items-center"
+              className={cn(
+                "text-black underline hover:text-gray-800 transition-all inline-flex gap-1 items-center",
+                item.className
+              )}
               href={item.url}
             >
               {item.prefixIcon && (

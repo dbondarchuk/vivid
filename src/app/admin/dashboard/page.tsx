@@ -60,23 +60,21 @@ export default async function Page() {
                   <h2 className="tracking-tight text-lg font-medium">
                     Next appointments
                   </h2>
-                  <ScrollArea className="max-h-[100vh]">
-                    <div className="flex flex-col gap-2">
-                      {!nextAppointments.length && (
-                        <Card>
-                          <CardContent className="flex justify-center py-4">
-                            No appointments are scheduled
-                          </CardContent>
-                        </Card>
-                      )}
-                      {nextAppointments.map((appointment) => (
-                        <AppointmentCard
-                          appointment={appointment}
-                          key={appointment._id}
-                        />
-                      ))}
-                    </div>
-                  </ScrollArea>
+                  <div className="flex flex-col gap-2">
+                    {!nextAppointments.length && (
+                      <Card>
+                        <CardContent className="flex justify-center py-4">
+                          No appointments are scheduled
+                        </CardContent>
+                      </Card>
+                    )}
+                    {nextAppointments.map((appointment) => (
+                      <AppointmentCard
+                        appointment={appointment}
+                        key={appointment._id}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </TabsContent>

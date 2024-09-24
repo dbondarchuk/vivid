@@ -13,6 +13,7 @@ import { Icon } from "../../ui/icon";
 import { Link } from "../../ui/link";
 import { HeaderWithScrollShadow } from "./HeaderWithScrollShadow";
 import { Services } from "@/lib/services";
+import { cn } from "@/lib/utils";
 
 export type HeaderProps = {
   menu: MenuItem[];
@@ -27,7 +28,7 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
           return (
             <Link
               href={item.url}
-              className="no-underline inline-flex gap-2"
+              className={cn("no-underline inline-flex gap-2", item.className)}
               key={item.url}
             >
               <Icon
@@ -50,7 +51,10 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
               font={item.font}
               fontSize={item.fontSize}
               fontWeight={item.fontWeight}
-              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base [&_svg]:hover:animate-bounce-horizontal"
+              className={cn(
+                "inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base",
+                item.className
+              )}
             >
               {item.prefixIcon && (
                 <Icon
@@ -80,7 +84,10 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
               font={item.font}
               fontSize={item.fontSize}
               fontWeight={item.fontWeight}
-              className="hover:text-gray-600 transition-colors"
+              className={cn(
+                "hover:text-gray-600 transition-colors",
+                item.className
+              )}
               href={item.url}
             >
               {item.prefixIcon && (

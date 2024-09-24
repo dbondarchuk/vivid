@@ -40,6 +40,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { number, z } from "zod";
 import { AppointmentRescheduleDialog } from "./appointment.reschedule.dialog";
+import { Markdown } from "@/components/web/markdown/Markdown";
 
 const timezones = getTimeZones();
 
@@ -105,7 +106,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="md:grid grid-cols-2">
+      <div className="flex flex-col lg:grid grid-cols-2">
         <div className="flex flex-col gap-2">
           <dl className="divide-y">
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -273,7 +274,9 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                           </>
                         )}
                         <div>Description:</div>
-                        <div>{appointment.option.description}</div>
+                        <div>
+                          <Markdown markdown={appointment.option.description} />
+                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>

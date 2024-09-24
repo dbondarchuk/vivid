@@ -10,6 +10,7 @@ export const PageHero: React.FC<PageHeroSectionProps> = ({
   backgroundImage,
   cta,
   className,
+  style = {},
   ...props
 }) => {
   return (
@@ -17,6 +18,7 @@ export const PageHero: React.FC<PageHeroSectionProps> = ({
       style={{
         // @ts-ignore setting variable in css
         "--image-url": backgroundImage ? `url(${backgroundImage})` : "",
+        ...style,
       }}
       className={cn(
         "w-full bg-white bg-opacity-50 bg-[image:var(--image-url)] bg-cover bg-no-repeat bg-blend-overlay p-[6vw] appear rounded-lg",
@@ -26,21 +28,22 @@ export const PageHero: React.FC<PageHeroSectionProps> = ({
     >
       <div className="py-[10vmax]  flex flex-col items-center gap-10 text-center">
         {subtitle && (
-          <h2 className="font-body font-light text-2xl p">{subtitle}</h2>
+          <h2 className="font-body font-normal text-3xl p">{subtitle}</h2>
         )}
-        <h1 className="font-header font-semibold text-[4rem] md:text-6xl py-10">
-          {title}
-        </h1>
+        <h1 className="font-header font-semibold text-5xl py-10">{title}</h1>
         {description}
         {cta && (
-          <div>
-            <Button
-              variant="primary"
-              className="bg-transparent font-medium text-xl hover:animate-bounce"
-              asChild
-            >
-              <a href={cta.link}>{cta.text}</a>
-            </Button>
+          <div className="flex flex-row gap-2">
+            {cta.map((button, index) => (
+              <Button
+                key={index}
+                variant={button.variant || "primary"}
+                className={cn("font-medium text-xl", button.className)}
+                asChild
+              >
+                <a href={button.link}>{button.text}</a>
+              </Button>
+            ))}
           </div>
         )}
       </div>
