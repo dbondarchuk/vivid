@@ -2,10 +2,10 @@ import { DateTime as Luxon } from "luxon";
 
 import {
   AvailablePeriod,
-  TimeSlotPeriod,
   PeriodMoment,
   Shift,
   TimeSlot,
+  TimeSlotPeriod,
   TimeSlotsFinderConfiguration,
   TimeSlotsFinderError,
 } from "@/types/booking/timeSlot";
@@ -310,9 +310,18 @@ function _pushNewSlot(
       (configuration.minAvailableTimeBeforeSlot ?? 0),
     0
   );
+
+  const slotStartMinuteStep = configuration.slotStartMinuteStep ?? 5;
+  const next = searchMoment.plus({ minutes: 1 });
+  const minuteToAdd =
+    (slotStartMinuteStep - (next.minute % slotStartMinuteStep)) %
+    slotStartMinuteStep;
+
   return {
     // newSearchMoment: endAt.plus({ minute: minutesBeforeNextSearch }),
-    newSearchMoment: startAt.plus({ minute: 1 }),
+    newSearchMoment: next
+      .plus({ minutes: minuteToAdd })
+      .set({ millisecond: 0, second: 0 }),
     timeSlot,
   };
 }
