@@ -18,6 +18,11 @@ import {
   ComponentStyles,
   ComponentVariants,
 } from "../../props/component";
+import {
+  RichTextField,
+  RichTextFieldRender,
+  RichTextFieldType,
+} from "@/components/pages/fields/rich-text-editor";
 
 export const TextClasses = cva([], {
   variants: {
@@ -28,24 +33,20 @@ export const TextClasses = cva([], {
 
 export type TextComponentProps = ComponentProps &
   TextProps & {
-    text?: string;
+    text: RichTextFieldType;
   };
 
 export const Text: ComponentConfig<TextComponentProps> = {
   fields: {
-    text: {
-      type: "textarea",
-      label: "Text",
-    },
+    text: RichTextField,
     ...TextFields,
     ...ComponentFields,
   },
   defaultProps: {
-    text: "Text",
     ...TextDefaults,
     ...ComponentDefaults,
   },
-  render: ({ text, ...rest }) => {
+  render: ({ text, puck, ...rest }) => {
     return (
       <Section
         className={TextClasses({
@@ -54,9 +55,11 @@ export const Text: ComponentConfig<TextComponentProps> = {
         })}
         style={ComponentStyles(rest) as CSSProperties}
       >
-        {text?.split("\n").map((t) => (
-          <p>{t}</p>
-        ))}
+        <RichTextFieldRender
+          id={rest.id}
+          isEditing={puck.isEditing}
+          state={text}
+        />
       </Section>
     );
   },
