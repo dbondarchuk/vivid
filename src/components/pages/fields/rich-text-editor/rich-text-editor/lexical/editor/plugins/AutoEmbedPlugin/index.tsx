@@ -25,6 +25,7 @@ import Button from "../../ui/Button";
 import { DialogActions } from "../../ui/Dialog";
 import { INSERT_TWEET_COMMAND } from "../TwitterPlugin";
 import { INSERT_YOUTUBE_COMMAND } from "../YouTubePlugin";
+import { Twitter, Youtube } from "lucide-react";
 
 interface PlaygroundEmbedConfig extends EmbedConfig {
   // Human readable name of the embeded content e.g. Tweet or Google Map.
@@ -49,7 +50,7 @@ export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
   exampleUrl: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
 
   // Icon for display.
-  icon: <i className="icon youtube" />,
+  icon: <Youtube size={16} />,
 
   insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {
     editor.dispatchCommand(INSERT_YOUTUBE_COMMAND, result.id);
@@ -84,7 +85,7 @@ export const TwitterEmbedConfig: PlaygroundEmbedConfig = {
   exampleUrl: "https://twitter.com/jack/status/20",
 
   // Icon for display.
-  icon: <i className="icon tweet" />,
+  icon: <Twitter size={16} />,
 
   // Create the Lexical embed node from the url data.
   insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {

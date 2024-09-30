@@ -1,4 +1,6 @@
-export const editorTheme = {
+import { EditorThemeClasses } from "lexical";
+
+export const editorTheme: EditorThemeClasses = {
   ltr: "ltr",
   rtl: "rtl",
   placeholder: "editor-placeholder",
@@ -11,6 +13,9 @@ export const editorTheme = {
     h4: "text-lg font-bold dark:text-white",
     h5: "font-bold dark:text-white",
   },
+  layoutContainer: "grid gap-10 my-4",
+  layoutItem: "border-0 group-[.edit-mode]:border border-dotted border-sky-500",
+  hr: "h-px my-8 bg-gray-200 border-0 dark:bg-gray-700",
   list: {
     nested: {
       listitem: "pl-5 mt-2 space-y-1 list-decimal list-inside dark:text-white",

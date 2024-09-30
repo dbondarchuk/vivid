@@ -15,8 +15,14 @@ export const RootRenderer = (
     footer: isFooter,
     puck,
   }: RootProps) => {
+    const cssOverrides = `
+      * {
+            --overlay-background: 'none';
+      }
+    `;
     return (
       <>
+        <style>{cssOverrides}</style>
         {isHeader && header}
         {children}
         {isFooter && footer}

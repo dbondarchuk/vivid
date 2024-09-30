@@ -40,7 +40,7 @@ import EmojisPlugin from "./plugins/EmojisPlugin";
 import EquationsPlugin from "./plugins/EquationsPlugin";
 import ExcalidrawPlugin from "./plugins/ExcalidrawPlugin";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
-import FloatingTextFormatToolbarPlugin from "./plugins/FloatingTextFormatToolbarPlugin";
+import FloatingTextFormatToolbarPlugin from "../plugins/floatingToolbar";
 import ImagesPlugin from "./plugins/ImagesPlugin";
 import InlineImagePlugin from "./plugins/InlineImagePlugin";
 import KeywordsPlugin from "./plugins/KeywordsPlugin";

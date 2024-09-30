@@ -2,7 +2,7 @@ import {
   ElementFormatType,
   FORMAT_ELEMENT_COMMAND,
   LexicalEditor,
-} from "lexical"
+} from "lexical";
 
 import {
   LucideIcon,
@@ -10,21 +10,21 @@ import {
   AlignJustify,
   AlignLeft,
   AlignRight,
-} from "lucide-react"
+} from "lucide-react";
 import {
   DropdownContent,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from "../../ui/dropdown-menu"
+} from "../../ui/dropdownMenu";
 
 const ELEMENT_FORMAT_OPTIONS: {
   [key in Exclude<ElementFormatType, "">]: {
-    Icon: LucideIcon
-    IconRTL: LucideIcon
-    name: string
-    command: ElementFormatType
-  }
+    Icon: LucideIcon;
+    IconRTL: LucideIcon;
+    name: string;
+    command: ElementFormatType;
+  };
 } = {
   left: {
     Icon: AlignLeft,
@@ -62,20 +62,20 @@ const ELEMENT_FORMAT_OPTIONS: {
     name: "End Align",
     command: "end",
   },
-}
+};
 
 export function ElementFormatDropdown({
   editor,
   value,
   isRTL,
 }: {
-  editor: LexicalEditor
-  value: ElementFormatType
-  isRTL: boolean
+  editor: LexicalEditor;
+  value: ElementFormatType;
+  isRTL: boolean;
 }) {
-  const formatOption = ELEMENT_FORMAT_OPTIONS[value || "left"]
+  const formatOption = ELEMENT_FORMAT_OPTIONS[value || "left"];
 
-  const TriggerIcon = isRTL ? formatOption.IconRTL : formatOption.Icon
+  const TriggerIcon = isRTL ? formatOption.IconRTL : formatOption.Icon;
 
   return (
     <DropdownMenu>
@@ -86,20 +86,20 @@ export function ElementFormatDropdown({
       <DropdownContent>
         {Object.keys(ELEMENT_FORMAT_OPTIONS).map((key) => {
           const { Icon, IconRTL, name, command } =
-            ELEMENT_FORMAT_OPTIONS[key as keyof typeof ELEMENT_FORMAT_OPTIONS]
+            ELEMENT_FORMAT_OPTIONS[key as keyof typeof ELEMENT_FORMAT_OPTIONS];
           return (
             <DropdownItem
               key={key}
               onClick={() => {
-                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, command)
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, command);
               }}
             >
               {isRTL ? <IconRTL size={16} /> : <Icon size={16} />}
-              <span style={{ marginLeft: "4px" }}>{name}</span>
+              <span className="ml-1">{name}</span>
             </DropdownItem>
-          )
+          );
         })}
       </DropdownContent>
     </DropdownMenu>
-  )
+  );
 }

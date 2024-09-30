@@ -25,7 +25,6 @@ import { InlineImageNode } from "./InlineImageNode/InlineImageNode";
 import { KeywordNode } from "./KeywordNode";
 import { LayoutContainerNode } from "./LayoutContainerNode";
 import { LayoutItemNode } from "./LayoutItemNode";
-import { MentionNode } from "./MentionNode";
 import { PageBreakNode } from "./PageBreakNode";
 import { TweetNode } from "./TweetNode";
 import { YouTubeNode } from "./YouTubeNode";
@@ -46,7 +45,6 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   OverflowNode,
   ImageNode,
   InlineImageNode,
-  MentionNode,
   EmojiNode,
   ExcalidrawNode,
   EquationNode,

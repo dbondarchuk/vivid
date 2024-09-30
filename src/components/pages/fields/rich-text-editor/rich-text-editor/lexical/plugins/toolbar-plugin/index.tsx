@@ -1,30 +1,22 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { $isListNode, ListNode } from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $isDecoratorBlockNode } from "@lexical/react/LexicalDecoratorBlockNode";
-import { $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
-import { $isParentElementRTL, $patchStyleText } from "@lexical/selection";
+import { $isHeadingNode } from "@lexical/rich-text";
+import {
+  $getSelectionStyleValueForProperty,
+  $isParentElementRTL,
+  $patchStyleText,
+} from "@lexical/selection";
 import {
   $findMatchingParent,
-  $getNearestBlockElementAncestorOrThrow,
   $getNearestNodeOfType,
   mergeRegister,
 } from "@lexical/utils";
 import {
-  $createParagraphNode,
   $getSelection,
   $isElementNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
-  $isTextNode,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_NORMAL,
   ElementFormatType,
@@ -32,16 +24,15 @@ import {
   KEY_MODIFIER_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
+import { $isTableSelection } from "@lexical/table";
 import { Dispatch, useCallback, useEffect, useState } from "react";
 
-import { createPortal } from "react-dom";
 import {
   Baseline,
   Bold,
   Italic,
+  Link,
   PaintBucket,
-  RemoveFormatting,
-  Strikethrough,
   Underline,
 } from "lucide-react";
 import { getSelectedNode } from "../../utils/get-selected-node";
@@ -50,9 +41,13 @@ import { Button } from "../../ui/button";
 import { getToolbarPortal } from "../../utils/get-toolbar-portal";
 
 import { isApple } from "../../utils/is-apple";
-import { BlockFormatDropDown, blockFormats } from "./block-format-dropdown";
-import { ElementFormatDropdown } from "./element-format-dropdown";
-import DropdownColorPicker from "../../editor/ui/DropdownColorPicker";
+import { BlockFormatDropDown, blockFormats } from "./blockFormatDropdown";
+import { ElementFormatDropdown } from "./elementFormatDropdown";
+import DropdownColorPicker from "./dropdownColorPicker";
+import { TextFormatDropdown, TextFormatOptions } from "./textFormatDropdown";
+import FontSize from "./fontSize";
+import { InsertDropdown } from "./insertDropdown";
+import useModal from "../../editor/hooks/useModal";
 
 const IS_APPLE = isApple();
 
@@ -75,12 +70,17 @@ export function ToolbarPlugin({
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
-  const [isStrikethrough, setIsStrikethrough] = useState(false);
+  const [textFormat, setTextFormat] = useState<
+    Record<TextFormatOptions, boolean> | undefined
+  >(undefined);
 
+  const [fontSize, setFontSize] = useState<string>("15px");
   const [fontColor, setFontColor] = useState<string>("#000");
   const [bgColor, setBgColor] = useState<string>("#fff");
 
   const [isRTL, setIsRTL] = useState(false);
+
+  const [modal, showModal] = useModal();
 
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -105,7 +105,13 @@ export function ToolbarPlugin({
       setIsBold(selection.hasFormat("bold"));
       setIsItalic(selection.hasFormat("italic"));
       setIsUnderline(selection.hasFormat("underline"));
-      setIsStrikethrough(selection.hasFormat("strikethrough"));
+
+      setTextFormat({
+        strikethrough: selection.hasFormat("strikethrough"),
+        subscript: selection.hasFormat("subscript"),
+        superscript: selection.hasFormat("superscript"),
+      });
+
       setIsRTL($isParentElementRTL(selection));
 
       // Update links
@@ -138,7 +144,19 @@ export function ToolbarPlugin({
           }
         }
       }
+
       // Handle buttons
+      setFontColor(
+        $getSelectionStyleValueForProperty(selection, "color", "#000")
+      );
+      setBgColor(
+        $getSelectionStyleValueForProperty(
+          selection,
+          "background-color",
+          "#fff"
+        )
+      );
+
       let matchingParent;
       if ($isLinkNode(parent)) {
         // If node is a link, we need to fetch the parent paragraph node to set format
@@ -155,6 +173,11 @@ export function ToolbarPlugin({
           : $isElementNode(node)
           ? node.getFormatType()
           : parent?.getFormatType() || "left"
+      );
+    }
+    if ($isRangeSelection(selection) || $isTableSelection(selection)) {
+      setFontSize(
+        $getSelectionStyleValueForProperty(selection, "font-size", "15px")
       );
     }
   }, [activeEditor]);
@@ -273,48 +296,6 @@ export function ToolbarPlugin({
     );
   }, [activeEditor, isLink, setIsLinkEditMode]);
 
-  const clearFormatting = useCallback(() => {
-    activeEditor.update(() => {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        const anchor = selection.anchor;
-        const focus = selection.focus;
-        const nodes = selection.getNodes();
-
-        if (anchor.key === focus.key && anchor.offset === focus.offset) {
-          return;
-        }
-
-        nodes.forEach((node, idx) => {
-          // We split the first and last node by the selection
-          // So that we don't format unselected text inside those nodes
-          if ($isTextNode(node)) {
-            // Use a separate variable to ensure TS does not lose the refinement
-            let textNode = node;
-            if (idx === 0 && anchor.offset !== 0) {
-              textNode = textNode.splitText(anchor.offset)[1] || textNode;
-            }
-            if (idx === nodes.length - 1) {
-              textNode = textNode.splitText(focus.offset)[0] || textNode;
-            }
-
-            if (textNode.__style !== "") {
-              textNode.setStyle("");
-            }
-            if (textNode.__format !== 0) {
-              textNode.setFormat(0);
-              $getNearestBlockElementAncestorOrThrow(textNode).setFormat("");
-            }
-            node = textNode;
-          } else if ($isHeadingNode(node) || $isQuoteNode(node)) {
-            node.replace($createParagraphNode(), true);
-          } else if ($isDecoratorBlockNode(node)) {
-            node.setFormat("");
-          }
-        });
-      }
-    });
-  }, [activeEditor]);
   const portalTarget = getToolbarPortal(id);
 
   if (!showToolbar) {
@@ -325,23 +306,23 @@ export function ToolbarPlugin({
     return null;
   }
 
-  return createPortal(
-    <div
-      style={{
-        display: "flex",
-        gap: "4px",
-        paddingLeft: "12px",
-        borderLeft: "1px solid var(--puck-color-grey-04)",
-        marginLeft: "8px",
-        zIndex: 100,
-      }}
-    >
+  const parent = portalTarget.parentElement;
+  if (parent) portalTarget.parentElement.style.zIndex = "10";
+
+  // return createPortal(
+  return (
+    <div className="flex gap-4 bottom-0 bg-background sticky">
       <BlockFormatDropDown blockType={blockType} editor={editor} />
 
       <ElementFormatDropdown
         value={elementFormat}
         editor={editor}
         isRTL={isRTL}
+      />
+      <FontSize
+        selectionFontSize={fontSize.slice(0, -2)}
+        editor={activeEditor}
+        disabled={false}
       />
       <Button
         onClick={() => {
@@ -380,46 +361,41 @@ export function ToolbarPlugin({
         <Underline size={16} />
       </Button>
       <Button
-        onClick={() => {
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
-        }}
-        active={isUnderline}
-        title="Striketrhough"
-        type="button"
-        aria-label="Format text to strikethrough"
-      >
-        <Strikethrough size={16} />
-      </Button>
-      <Button
         onClick={insertLink}
-        className={isLink ? "active" : ""}
-        aria-label="Insert link"
+        active={isLink}
         title="Insert link"
+        aria-label="Insert link"
+        type="button"
       >
-        a
+        <Link size={16} />
       </Button>
       <DropdownColorPicker
         buttonAriaLabel="Formatting text color"
         buttonIcon={<Baseline size={16} />}
         color={fontColor}
         onChange={onFontColorSelect}
-        title="text color"
+        title="Text color"
       />
       <DropdownColorPicker
         buttonAriaLabel="Formatting background color"
         buttonIcon={<PaintBucket size={16} />}
         color={bgColor}
         onChange={onBgColorSelect}
-        title="bg color"
+        title="Background color"
       />
-      <Button
-        onClick={clearFormatting}
-        aria-label="Clear all text formatting"
-        title="Clear text formatting"
-      >
-        <RemoveFormatting size={16} />
-      </Button>
-    </div>,
-    portalTarget
+      <TextFormatDropdown
+        editor={activeEditor}
+        isRTL={isRTL}
+        value={textFormat}
+      />
+      <InsertDropdown
+        editor={activeEditor}
+        isRTL={isRTL}
+        showModal={showModal}
+      />
+      {modal}
+    </div>
   );
+  //   portalTarget
+  // );
 }

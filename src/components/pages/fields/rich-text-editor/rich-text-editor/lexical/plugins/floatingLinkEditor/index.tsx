@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import "./index.css";
 
 import {
   $createLinkNode,
@@ -16,6 +15,7 @@ import {
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $findMatchingParent, mergeRegister } from "@lexical/utils";
 import {
+  $getPreviousSelection,
   $getSelection,
   $isLineBreakNode,
   $isRangeSelection,
@@ -32,9 +32,12 @@ import { Dispatch, useCallback, useEffect, useRef, useState } from "react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 
-import { getSelectedNode } from "../../utils/getSelectedNode";
-import { setFloatingElemPositionForLinkEditor } from "../../utils/setFloatingElemPositionForLinkEditor";
 import { sanitizeUrl } from "../../utils/url";
+import { Input } from "@/components/ui/input";
+import { Button } from "../../ui/button";
+import { Check, Edit, Trash, X } from "lucide-react";
+import { getSelectedNode } from "../../editor/utils/getSelectedNode";
+import { setFloatingElemPositionForLinkEditor } from "../../editor/utils/setFloatingElemPositionForLinkEditor";
 
 function FloatingLinkEditor({
   editor,
@@ -195,7 +198,7 @@ function FloatingLinkEditor({
       if (linkUrl !== "") {
         editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl(editedLinkUrl));
         editor.update(() => {
-          const selection = $getSelection();
+          const selection = $getPreviousSelection();
           if ($isRangeSelection(selection)) {
             const parent = getSelectedNode(selection).getParent();
             if ($isAutoLinkNode(parent)) {
@@ -215,12 +218,15 @@ function FloatingLinkEditor({
   };
 
   return (
-    <div ref={editorRef} className="link-editor">
+    <div
+      ref={editorRef}
+      className="flex gap-1 bg-background p-2 align-middle absolute top-0 left-0.5 z-[62] opacity-0 shadow-md rounded-xl transition-opacity will-change-transform"
+    >
       {!isLink ? null : isLinkEditMode ? (
         <>
-          <input
+          <Input
+            className="flex-grow"
             ref={inputRef}
-            className="link-input"
             value={editedLinkUrl}
             onChange={(event) => {
               setEditedLinkUrl(event.target.value);
@@ -229,28 +235,32 @@ function FloatingLinkEditor({
               monitorInputInteraction(event);
             }}
           />
-          <div>
-            <div
-              className="link-cancel"
-              role="button"
+          <div className="flex flex-row gap-1">
+            <Button
               tabIndex={0}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => {
                 setIsLinkEditMode(false);
               }}
-            />
+              aria-label="Cancel"
+              title="Cancel"
+            >
+              <X size={16} />
+            </Button>
 
-            <div
-              className="link-confirm"
-              role="button"
+            <Button
               tabIndex={0}
               onMouseDown={(event) => event.preventDefault()}
               onClick={handleLinkSubmission}
-            />
+              aria-label="Confirm"
+              title="Confirm"
+            >
+              <Check size={16} />
+            </Button>
           </div>
         </>
       ) : (
-        <div className="link-view">
+        <div className="flex gap-1">
           <a
             href={sanitizeUrl(linkUrl)}
             target="_blank"
@@ -258,25 +268,30 @@ function FloatingLinkEditor({
           >
             {linkUrl}
           </a>
-          <div
-            className="link-edit"
-            role="button"
+          <Button
             tabIndex={0}
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => {
               setEditedLinkUrl(linkUrl);
               setIsLinkEditMode(true);
             }}
-          />
-          <div
-            className="link-trash"
+            aria-label="Edit"
+            title="Edit"
+          >
+            <Edit size={16} />
+          </Button>
+          <Button
             role="button"
             tabIndex={0}
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => {
               editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
             }}
-          />
+            aria-label="Delete"
+            title="Delete"
+          >
+            <Trash size={16} />
+          </Button>
         </div>
       )}
     </div>

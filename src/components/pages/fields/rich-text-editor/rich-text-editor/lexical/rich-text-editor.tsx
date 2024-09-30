@@ -46,10 +46,11 @@ import { CAN_USE_DOM } from "@lexical/utils";
 import PlaygroundNodes from "./editor/nodes/PlaygroundNodes";
 import DraggableBlockPlugin from "./editor/plugins/DraggableBlockPlugin";
 import CodeActionMenuPlugin from "./editor/plugins/CodeActionMenuPlugin";
-import FloatingLinkEditorPlugin from "./editor/plugins/FloatingLinkEditorPlugin";
-import FloatingTextFormatToolbarPlugin from "./editor/plugins/FloatingTextFormatToolbarPlugin";
+import FloatingLinkEditorPlugin from "./plugins/floatingLinkEditor";
+import FloatingTextFormatToolbarPlugin from "./plugins/floatingToolbar";
 import TableCellActionMenuPlugin from "./editor/plugins/TableActionMenuPlugin";
 import { editorTheme } from "./theme";
+import { cn } from "@/lib/utils";
 
 export const InlineRichTextEditor = ({
   id,
@@ -118,7 +119,22 @@ export const InlineRichTextEditor = ({
 
         <RichTextPlugin
           contentEditable={
-            <ContentEditable style={{ outline: "none" }} ref={onRef} />
+            <div
+              className={cn(
+                "min-h-[150px] border-none flex relative outline-0 z-0 overflow-auto resize-y group",
+                enabled ? "edit-mode" : ""
+              )}
+            >
+              <div className="flex-auto relative resize-y z-[-1]" ref={onRef}>
+                <ContentEditable
+                  style={{ outline: "none" }}
+                  aria-placeholder="Text"
+                  placeholder={
+                    <div className="text-muted-foreground">Text</div>
+                  }
+                />
+              </div>
+            </div>
           }
           placeholder={null}
           ErrorBoundary={LexicalErrorBoundary}
@@ -156,6 +172,7 @@ export const InlineRichTextEditor = ({
           showToolbar={enabled}
           setIsLinkEditMode={setIsLinkEditMode}
         />
+
         {floatingAnchorElem && !isSmallWidthViewport && (
           <>
             <DraggableBlockPlugin anchorElem={floatingAnchorElem} />

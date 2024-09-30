@@ -6,18 +6,27 @@
  *
  */
 
-import {useCallback, useMemo, useState} from 'react';
-import * as React from 'react';
+import { useCallback, useMemo, useState } from "react";
+import * as React from "react";
 
-import Modal from '../ui/Modal';
+import Modal from "../ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default function useModal(): [
   JSX.Element | null,
-  (title: string, showModal: (onClose: () => void) => JSX.Element) => void,
+  (title: string, showModal: (onClose: () => void) => JSX.Element) => void
 ] {
   const [modalContent, setModalContent] = useState<null | {
     closeOnClickOutside: boolean;
     content: JSX.Element;
+    action?: JSX.Element;
     title: string;
   }>(null);
 
@@ -29,14 +38,22 @@ export default function useModal(): [
     if (modalContent === null) {
       return null;
     }
-    const {title, content, closeOnClickOutside} = modalContent;
+    const { title, content, action, closeOnClickOutside } = modalContent;
     return (
-      <Modal
-        onClose={onClose}
-        title={title}
-        closeOnClickOutside={closeOnClickOutside}>
-        {content}
-      </Modal>
+      <Dialog defaultOpen={true} onOpenChange={(open) => !open && onClose()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-1 w-full">{content}</div>
+          <DialogFooter>
+            <Button variant={"secondary"} onClick={() => onClose()}>
+              Close
+            </Button>
+            {action}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     );
   }, [modalContent, onClose]);
 
@@ -45,7 +62,7 @@ export default function useModal(): [
       title: string,
       // eslint-disable-next-line no-shadow
       getContent: (onClose: () => void) => JSX.Element,
-      closeOnClickOutside = false,
+      closeOnClickOutside = false
     ) => {
       setModalContent({
         closeOnClickOutside,
@@ -53,7 +70,7 @@ export default function useModal(): [
         title,
       });
     },
-    [onClose],
+    [onClose]
   );
 
   return [modal, showModal];

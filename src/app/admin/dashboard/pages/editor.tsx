@@ -1,5 +1,5 @@
 "use client";
-import { Button as PuckButton, Puck } from "@measured/puck";
+import { Button as PuckButton, Puck, ActionBar } from "@measured/puck";
 import headingAnalyzer from "@measured/puck-plugin-heading-analyzer";
 import config, { initialData } from "@/components/pages/config";
 import { Link } from "@/components/ui/link";
@@ -24,17 +24,24 @@ export const Editor: React.FC<{
     <div
       className={cn(
         "w-full",
-        !fullscreen ? "[&_div:nth-child(1)]:!relative" : ""
+        !fullscreen ? "[&_div:nth-child(1)]:!relative" : "z-[60]"
       )}
+      style={{
+        "--overlay-background": "transparent !important",
+      }}
     >
       <Puck
         config={conf}
+        viewports={undefined}
         data={initialData}
         onPublish={async (data) => {
           localStorage.setItem(key, JSON.stringify(data));
         }}
         plugins={[headingAnalyzer]}
         headerPath={path}
+        iframe={{
+          enabled: false,
+        }}
         overrides={{
           headerActions: ({ children }) => (
             <>

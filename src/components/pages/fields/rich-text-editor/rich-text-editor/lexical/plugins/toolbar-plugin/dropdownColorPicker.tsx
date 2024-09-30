@@ -8,8 +8,12 @@
 
 import * as React from "react";
 
-import ColorPicker from "./ColorPicker";
-import DropDown from "./DropDown";
+import ColorPicker from "../../editor/ui/ColorPicker";
+import {
+  DropdownContent,
+  DropdownMenu,
+  DropdownTrigger,
+} from "../../ui/dropdownMenu";
 
 type Props = {
   disabled?: boolean;
@@ -27,16 +31,21 @@ export default function DropdownColorPicker({
   disabled = false,
   stopCloseOnClickSelf = true,
   color,
+  buttonAriaLabel,
+  buttonClassName,
+  buttonIcon,
+  title,
   onChange,
   ...rest
 }: Props) {
   return (
-    <DropDown
-      {...rest}
-      disabled={disabled}
-      stopCloseOnClickSelf={stopCloseOnClickSelf}
-    >
-      <ColorPicker color={color} onChange={onChange} />
-    </DropDown>
+    <DropdownMenu>
+      <DropdownTrigger title={title} aria-label={buttonAriaLabel}>
+        {buttonIcon}
+      </DropdownTrigger>
+      <DropdownContent>
+        <ColorPicker color={color} onChange={onChange} />
+      </DropdownContent>
+    </DropdownMenu>
   );
 }
