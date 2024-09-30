@@ -1,10 +1,7 @@
-import path from "path";
-
-import { getFrontMatter, MdxContent } from "@/components/web/mdx/mdxContent";
-import { existsSync } from "fs";
-import { readFile } from "fs/promises";
+import { MdxContent } from "@/components/web/mdx/mdxContent";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
+import { Services } from "@/lib/services";
 
 type Props = {
   params: { slug: string[] };
@@ -15,14 +12,15 @@ const getSource = async (slug: string[]) => {
     slug = ["home"];
   }
 
-  const filePath = path.join(process.cwd(), "data", "pages", ...slug) + ".mdx";
+  const pageSlug = slug.join("/");
+  const page = await Services.PagesService().getPageBySlug(pageSlug);
 
-  if (!existsSync(filePath)) {
-    console.error(`File not found: ${filePath}`);
+  if (!page) {
+    console.error(`Page not found: ${pageSlug}`);
     return notFound();
   }
 
-  return await readFile(filePath, "utf-8");
+  return page;
 };
 
 export async function generateMetadata(
@@ -30,13 +28,21 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
+  const settings = await Services.ConfigurationService().getConfiguration(
+    "general"
+  );
   const page = await getSource(params.slug);
-  const frontmatter = await getFrontMatter(page);
 
   return {
-    title: frontmatter.title as string,
-    description: frontmatter.description as string,
-    keywords: frontmatter.keywords as string,
+    title: page.doNotCombine?.title
+      ? page.title
+      : [settings.title, page.title].filter((x) => !!x).join(" - "),
+    description: page.doNotCombine?.description
+      ? page.description
+      : [settings.description, page.description].filter((x) => !!x).join("\n"),
+    keywords: page.doNotCombine?.keywords
+      ? page.keywords
+      : [settings.keywords, page.keywords].filter((x) => !!x).join(", "),
   };
 }
 
@@ -45,7 +51,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <div className="container mx-auto flex flex-col gap-20 px-4">
-      <MdxContent source={page} />
+      <MdxContent source={page.content} />
     </div>
   );
 }

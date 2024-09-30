@@ -20,6 +20,12 @@ export const navItems: NavItemWithOptionalChildren[] = [
     label: "Assets",
   },
   {
+    title: "Pages",
+    href: "/admin/dashboard/pages",
+    icon: "pages",
+    label: "Pages",
+  },
+  {
     title: "Settings",
     icon: "settings",
     items: [

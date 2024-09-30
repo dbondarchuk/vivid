@@ -101,7 +101,9 @@ export class AssetsService {
       {
         _id: id,
       },
-      updateObj
+      {
+        $set: updateObj,
+      }
     );
   }
 

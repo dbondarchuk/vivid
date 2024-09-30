@@ -11,6 +11,7 @@ import {
   CreditCard,
   File,
   FileText,
+  Globe,
   HelpCircle,
   Image,
   Instagram,
@@ -73,4 +74,5 @@ export const Icons = {
   header: PanelTop,
   footer: PanelBottom,
   assets: Paperclip,
+  pages: Globe,
 };

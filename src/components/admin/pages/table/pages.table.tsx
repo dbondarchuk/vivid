@@ -34,16 +34,7 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { CalendarDateRangePicker } from "../../../ui/date-range-picker";
-import {
-  Appointment,
-  AppointmentStatus,
-  appointmentStatuses,
-  DateRange,
-} from "@/types";
-import { DateTime } from "luxon";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { StatusText } from "../types";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,22 +43,22 @@ interface DataTableProps<TData, TValue> {
   total: number;
   pageSizeOptions?: number[];
   limit: number;
-  dateRange?: DateRange;
-  statuses: AppointmentStatus[];
   search?: string;
+  published?: boolean[];
 }
 
-export const AppointmentsTable = <TData, TValue>({
+export const PagesTable = <TData, TValue>({
   columns,
   data,
   page,
   total,
   limit,
-  dateRange,
-  statuses,
   search,
   pageSizeOptions = [10, 20, 30, 40, 50],
+  published = [true, false],
 }: DataTableProps<TData, TValue>) => {
+  const publishStatus = published.map((x) => x.toString());
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -114,31 +105,6 @@ export const AppointmentsTable = <TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, pageSize]);
 
-  const setDateRange = (range: DateRange | undefined) => {
-    router.push(
-      `${pathname}?${createQueryString({
-        start: range?.start
-          ? DateTime.fromJSDate(range.start).startOf("day").toISO()
-          : undefined,
-        end: range?.end
-          ? DateTime.fromJSDate(range.end).endOf("day").toISO()
-          : undefined,
-        page: undefined,
-      })}`
-    );
-  };
-
-  const setStatuses = (status: AppointmentStatus[]) => {
-    router.push(
-      `${pathname}?${createQueryString({
-        status: status.length !== 0 ? status : undefined,
-        page: null,
-      })}`
-    );
-
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  };
-
   const table = useReactTable({
     data,
     columns,
@@ -172,9 +138,16 @@ export const AppointmentsTable = <TData, TValue>({
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
   }, [deferredSearch]);
 
-  const [clickedRow, clickRow] = React.useState<Appointment | undefined>(
-    undefined
-  );
+  const setPublishedStatus = (publishedStatus: string[]) => {
+    router.push(
+      `${pathname}?${createQueryString({
+        published: publishedStatus.length !== 0 ? publishedStatus : undefined,
+        page: null,
+      })}`
+    );
+
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -183,18 +156,17 @@ export const AppointmentsTable = <TData, TValue>({
           placeholder={`Search...`}
           value={searchValue}
           onChange={(event) => setSearchValue(event.target.value)}
-          className="w-full md:max-w-sm"
+          className="w-full"
         />
         <MultiSelect
-          placeholder="Select status..."
-          selected={statuses}
-          onChange={(value) => setStatuses(value as AppointmentStatus[])}
-          options={appointmentStatuses.map((s) => ({
-            value: s,
-            label: StatusText[s],
+          placeholder="Select publish status status..."
+          selected={publishStatus}
+          onChange={(value) => setPublishedStatus(value as string[])}
+          options={[true, false].map((s) => ({
+            value: s.toString(),
+            label: s ? "Published" : "Draft",
           }))}
         />
-        <CalendarDateRangePicker range={dateRange} onChange={setDateRange} />
       </div>
       <div className="w-full">
         <ScrollArea className="h-[calc(80vh-220px)] rounded-md border">

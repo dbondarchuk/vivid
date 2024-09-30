@@ -7,6 +7,7 @@ import {
 import { EventsService } from "@/services/eventsService";
 import { MeetingService } from "@/services/meetingService";
 import { NotificationService } from "@/services/notifications/notificationService";
+import { PagesService } from "@/services/pagesService";
 import { cache } from "react";
 
 type Types = {
@@ -16,6 +17,7 @@ type Types = {
   MeetingService: () => MeetingService;
   AvailabilityService: () => AvailabilityService;
   NotificationService: () => NotificationService;
+  PagesService: () => PagesService;
 };
 
 export const Services: Types = {
@@ -41,4 +43,5 @@ export const Services: Types = {
   NotificationService: cache(
     () => new NotificationService(Services.ConfigurationService())
   ),
+  PagesService: cache(() => new PagesService()),
 };

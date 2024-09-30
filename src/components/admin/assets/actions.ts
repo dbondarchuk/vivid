@@ -8,6 +8,9 @@ import fs from "fs/promises";
 import { notFound } from "next/navigation";
 import path from "path";
 
+const getFilePath = (filename: string) =>
+  path.join(process.cwd(), "public", "upload", filename);
+
 export async function createAsset(formData: FormData) {
   const file = formData.get("file") as File;
 
@@ -34,18 +37,20 @@ export async function deleteAsset(_id: string) {
 }
 
 export async function checkUniqueFileName(filename: string, _id?: string) {
+  if (existsSync(getFilePath(filename))) return false;
+
   return await Services.AssetsService().checkUniqueFileName(filename, _id);
 }
 
 async function saveFile(file: File, filename: string) {
-  const filepath = path.join(process.cwd(), "public", "upload", filename);
+  const filepath = getFilePath(filename);
 
   const data = await file.arrayBuffer();
   await fs.appendFile(filepath, Buffer.from(data));
 }
 
 async function deleteFile(filename: string) {
-  const filepath = path.join(process.cwd(), "public", "upload", filename);
+  const filepath = getFilePath(filename);
   if (!existsSync(filename)) return;
 
   await fs.rm(filepath);
