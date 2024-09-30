@@ -1,15 +1,19 @@
 "use client";
 
 import React from "react";
-import { WeeklyCalendar, WeeklyCalendarProps } from "./weeklyCalendar";
+import {
+  CalendarEvent,
+  WeeklyCalendar,
+  WeeklyCalendarProps,
+} from "./weeklyCalendar";
 import { DateTime } from "luxon";
-import { Appointment } from "@/types";
+import { Appointment, Event } from "@/types";
 import { AppointmentDialog } from "../appointments/appointment.dialog";
 
 export const WeeklyCalendarWrapper: React.FC<
   Omit<WeeklyCalendarProps, "events" | "variant">
 > = (props) => {
-  const [appointments, setAppointments] = React.useState<Appointment[]>([]);
+  const [events, setEvents] = React.useState<Event[]>([]);
   const [appointment, setAppointment] = React.useState<
     Appointment | undefined
   >();
@@ -25,33 +29,45 @@ export const WeeklyCalendarWrapper: React.FC<
 
     setLoading(false);
 
-    const appointments = (await response.json()) as Appointment[];
+    const apiEvents = (await response.json()) as Event[];
 
-    setAppointments(
-      (appointments || []).map((a) => ({
+    setEvents(
+      (apiEvents || []).map((a) => ({
         ...a,
         dateTime: DateTime.fromISO(a.dateTime as unknown as string).toJSDate(),
       }))
     );
   };
 
-  const events = React.useMemo(
+  const calendarEvents: CalendarEvent[] = React.useMemo(
     () =>
-      appointments.map((app) => {
+      events.map((app) => {
         const start = DateTime.fromJSDate(app.dateTime);
-        return {
-          start: start.toJSDate(),
-          end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
-          id: app._id,
-          title: `${app.fields.name} for ${app.option.name}`,
-          isSecondary: app.status !== "confirmed",
-        };
+        if ("_id" in app) {
+          return {
+            start: start.toJSDate(),
+            end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
+            id: app._id,
+            title: `${app.fields.name} for ${app.option.name}`,
+            variant: app.status !== "confirmed" ? "secondary" : "primary",
+          };
+        } else {
+          return {
+            start: start.toJSDate(),
+            end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
+            title: app.title,
+            variant: "tertiary",
+          };
+        }
       }),
-    [appointments]
+    [events]
   );
 
-  const onEventClick = (id: string) => {
-    const appointment = appointments.find((app) => app._id == id);
+  const onEventClick = (id?: string) => {
+    if (!id) return;
+    const appointment = events.find(
+      (app) => (app as Appointment)._id == id
+    ) as Appointment;
     if (appointment) setAppointment(appointment);
   };
 
@@ -93,7 +109,7 @@ export const WeeklyCalendarWrapper: React.FC<
       <WeeklyCalendar
         {...props}
         onRangeChange={getEvents}
-        events={events}
+        events={calendarEvents}
         onEventClick={onEventClick}
       />
       {appointment && (

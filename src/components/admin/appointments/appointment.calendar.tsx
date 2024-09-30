@@ -7,16 +7,16 @@ import {
   WeeklyCalendarProps,
 } from "../calendar/weeklyCalendar";
 import { DateTime, HourNumbers } from "luxon";
-import { Appointment } from "@/types";
+import { Appointment, Event } from "@/types";
 import { cn } from "@/lib/utils";
 
 export const AppointmentCalendar: React.FC<
   Pick<WeeklyCalendarProps, "className"> & {
     appointment: Appointment;
-    onEventsLoad?: (events: Appointment[]) => void;
+    onEventsLoad?: (events: Event[]) => void;
   }
 > = ({ appointment, onEventsLoad, ...props }) => {
-  const [appointments, setAppointments] = React.useState<Appointment[]>([]);
+  const [events, setEvents] = React.useState<Event[]>([]);
   const [loading, setLoading] = React.useState(false);
 
   const getEvents = async (start: DateTime, end: DateTime) => {
@@ -27,19 +27,19 @@ export const AppointmentCalendar: React.FC<
 
     setLoading(false);
 
-    const appointments = (await response.json()) as Appointment[];
-    const dbAppointments = (appointments || []).map((a) => ({
+    let apiEvents = (await response.json()) as Event[];
+    apiEvents = (apiEvents || []).map((a) => ({
       ...a,
       dateTime: DateTime.fromISO(a.dateTime as unknown as string).toJSDate(),
     }));
 
-    const dbAppointmentsWithoutCurrent = dbAppointments.filter(
-      (a) => a._id !== appointment._id
+    const apiEventsWithoutCurrent = apiEvents.filter(
+      (a) => (a as Appointment)._id !== appointment._id
     );
 
-    setAppointments([...dbAppointmentsWithoutCurrent, appointment]);
+    setEvents([...apiEventsWithoutCurrent, appointment]);
 
-    onEventsLoad?.(dbAppointments);
+    onEventsLoad?.(apiEvents);
   };
 
   React.useEffect(() => {
@@ -50,19 +50,33 @@ export const AppointmentCalendar: React.FC<
     );
   }, [appointment]);
 
-  const events = React.useMemo(
+  const calendarEvents: CalendarEvent[] = React.useMemo(
     () =>
-      appointments.map((app) => {
+      events.map((app) => {
         const start = DateTime.fromJSDate(app.dateTime);
-        return {
-          start: start.toJSDate(),
-          end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
-          id: app._id,
-          title: `${app.fields.name} for ${app.option.name}`,
-          isSecondary: app._id !== appointment._id,
-        };
+        if ("_id" in app) {
+          return {
+            start: start.toJSDate(),
+            end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
+            id: app._id,
+            title: `${app.fields.name} for ${app.option.name}`,
+            variant:
+              app._id === appointment._id
+                ? "primary"
+                : app.status === "confirmed"
+                ? "tertiary"
+                : "secondary",
+          };
+        } else {
+          return {
+            start: start.toJSDate(),
+            end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
+            title: app.title,
+            variant: "tertiary",
+          };
+        }
       }),
-    [appointments]
+    [events]
   );
 
   return (
@@ -97,7 +111,7 @@ export const AppointmentCalendar: React.FC<
       <WeeklyCalendar
         className={cn("min-w-[200px] h-[60vh] pt-0", props.className)}
         date={appointment.dateTime}
-        events={events}
+        events={calendarEvents}
         variant="days-around"
         daysAround={1}
         scrollToHour={

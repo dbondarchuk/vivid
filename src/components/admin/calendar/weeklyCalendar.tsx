@@ -21,12 +21,14 @@ const rowStartClass = "row-start-[var(--calendar-row-start)]";
 const rowSpanClass = "row-end-[var(--calendar-row-end)]";
 const colsRepeatClass = "grid-cols-[var(--calendar-grid-cols)]";
 
+export type CalendarEventVariant = "primary" | "secondary" | "tertiary";
+
 export type CalendarEvent = {
-  id: string;
+  id?: string;
   start: Date;
   end: Date;
   title: string;
-  isSecondary?: boolean;
+  variant?: CalendarEventVariant;
 };
 
 export type WeeklyCalendarProps = {
@@ -39,7 +41,7 @@ export type WeeklyCalendarProps = {
   slotInterval?: 5 | 10 | 15 | 20 | 30;
   disableTimeChange?: boolean;
   onRangeChange?: (start: Date, end: Date) => void;
-  onEventClick?: (id: string) => void;
+  onEventClick?: (id?: string) => void;
 };
 
 export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
@@ -212,15 +214,19 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         )}`,
       };
 
+      const variants: Record<CalendarEventVariant, string> = {
+        primary: "bg-slate-800 text-white hover:bg-indigo-900",
+        secondary: "bg-slate-300 text-darkNavyBlue hover:bg-slate-200",
+        tertiary: "bg-slate-600 text-white hover:bg-indigo-200",
+      };
+
       const classes = cn(
         "flex max-h-full flex-col break-words rounded p-[7px_6px_5px] text-[13px] leading-[20px] no-underline transition-[background-color] z-10 hover:z-10 hover:h-min hover:max-h-none hover:min-h-full cursor-pointer",
         colStartClass,
         event.isMultiDay && colSpanClass,
         rowStartClass,
         !event.isMultiDay && rowSpanClass,
-        !event.isSecondary
-          ? "bg-slate-800 text-white hover:bg-indigo-900"
-          : "bg-slate-300 text-darkNavyBlue hover:bg-slate-200",
+        variants[event.variant || "primary"] || variants.primary,
         isOverlappingNonMultiDay &&
           "w-[75%] ml-[25%] border border-white text-right z-20 hover:z-[21]"
       );
@@ -311,17 +317,25 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
           {events
             .filter(({ isMultiDay }) => isMultiDay)
-            .map((event) => {
+            .map((event, index) => {
+              const classes = getEventClassNames(event);
+              const {
+                "--calendar-row-end": _,
+                "--calendar-row-start": __,
+                ...restStyles
+              } = classes.styles;
               return (
                 <div
-                  key={`event-${event.id}`}
-                  onClick={() => onEventClick?.(event.id)}
+                  key={`event-${index}`}
+                  onClick={() => event.id && onEventClick?.(event.id)}
                   className={cn(
-                    getEventClassNames(event),
+                    classes.classes,
                     dates[0].startOf("day") > event.start && "rounded-l-none ",
                     dates[dates.length - 1].plus({ days: 1 }).startOf("day") <
-                      event.end && "rounded-r-none "
+                      event.end && "rounded-r-none ",
+                    "mt-0.5"
                   )}
+                  style={restStyles}
                 >
                   {event.title}
                 </div>
@@ -415,13 +429,13 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
               const hours = event.end.diff(event.start, "hours").hours;
               return hours < 24;
             })
-            .map((event) => {
+            .map((event, index) => {
               const { classes, styles } = getEventClassNames(event);
               return (
                 <div
                   data-id={event.id}
-                  key={`time-slot-event-${event.id}`}
-                  onClick={() => onEventClick?.(event.id)}
+                  key={`time-slot-event-${index}`}
+                  onClick={() => event.id && onEventClick?.(event.id)}
                   className={classes}
                   style={styles}
                 >
@@ -437,6 +451,8 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             })}
         </div>
       </div>
+
+      <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
 };

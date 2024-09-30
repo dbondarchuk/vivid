@@ -63,13 +63,15 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
         <ScrollArea className="max-h-[80vh]">
           <AppointmentView appointment={appointment} />
         </ScrollArea>
-        <DialogFooter className="sm:justify-between">
-          <div className="flex flex-row gap-2">
+        <DialogFooter className="sm:justify-between gap-2">
+          <div className="flex flex-col md:flex-row w-full gap-2">
             {appointment.status !== "declined" && (
               <>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="secondary">Decline</Button>
+                    <Button variant="secondary" className="max-md:flex-grow">
+                      Decline
+                    </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
@@ -99,6 +101,7 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
                 {appointment.status === "pending" && (
                   <AppointmentActionButton
                     variant="default"
+                    className="max-md:flex-grow"
                     _id={appointment._id}
                     status="confirmed"
                     onSuccess={updateAppointmentStatus}

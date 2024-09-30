@@ -4,6 +4,7 @@ import type {
   AppointmentEvent,
   AppointmentStatus,
   DateRange,
+  Event,
   Period,
   WithTotal,
 } from "@/types";
@@ -197,6 +198,39 @@ export class EventsService {
       total: result.totalCount?.[0]?.count || 0,
       items: result.paginatedResults || [],
     };
+  }
+
+  public async getEvents(
+    start: Date,
+    end: Date,
+    status: AppointmentStatus[]
+  ): Promise<Event[]> {
+    const appointments = await this.getAppointments({
+      range: {
+        start,
+        end,
+      },
+      status,
+    });
+
+    const config = await this.configurationService.getConfiguration("booking");
+    const { url } = await this.configurationService.getConfiguration("general");
+
+    const ics = new IcsBusyTimeProvider(config.ics);
+    const icsTimes = await ics.getBusyTimes(
+      DateTime.fromJSDate(start),
+      DateTime.fromJSDate(end),
+      appointments.items.map((app) => getIcsEventUid(app._id, url))
+    );
+
+    const icsEvents: Event[] = icsTimes.map((x) => ({
+      title: x.title || "Busy",
+      dateTime: x.startAt.toJSDate(),
+      totalDuration: x.endAt.diff(x.startAt, "minutes").minutes,
+      uid: x.uid,
+    }));
+
+    return [...appointments.items, ...icsEvents];
   }
 
   public async getAppointment(id: string) {

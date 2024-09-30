@@ -318,12 +318,6 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                 </dd>
               </div>
             )}
-            {/* {appointment.totalDuration && (
-              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt>Duration:</dt>
-                <dd className="col-span-2">{appointment.totalDuration} min</dd>
-              </div>
-            )} */}
 
             {appointment.totalPrice && (
               <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

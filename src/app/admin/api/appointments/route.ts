@@ -24,11 +24,13 @@ export async function GET(request: NextRequest) {
     (s) => includeDeclined || s !== "declined"
   );
 
-  const response = await Services.EventsService().getEvents(
-    start.toJSDate(),
-    end.toJSDate(),
-    statuses
-  );
+  const response = await Services.EventsService().getAppointments({
+    range: {
+      start: start.toJSDate(),
+      end: end.toJSDate(),
+    },
+    status: statuses,
+  });
 
-  return NextResponse.json(response);
+  return NextResponse.json(response.items);
 }
