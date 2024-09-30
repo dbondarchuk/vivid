@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Appointment } from "@/types";
+import { Appointment, Event } from "@/types";
 import { DialogProps } from "@radix-ui/react-dialog";
 import React from "react";
 import {
@@ -89,7 +89,7 @@ export const AppointmentRescheduleDialog: React.FC<
   const [confirmOverlap, setConfirmOverlap] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
-  const [calendarEvents, setCalendarEvents] = React.useState<Appointment[]>([]);
+  const [calendarEvents, setCalendarEvents] = React.useState<Event[]>([]);
 
   const isOpen = rest.open;
 
@@ -137,7 +137,7 @@ export const AppointmentRescheduleDialog: React.FC<
     });
 
     return calendarEvents.some((app) => {
-      if (app._id === appointment._id) return false;
+      if ((app as Appointment)._id === appointment._id) return false;
       const appStart = DateTime.fromJSDate(app.dateTime);
       const appEnd = appStart.plus({ minutes: app.totalDuration });
 
