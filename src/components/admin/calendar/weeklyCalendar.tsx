@@ -68,9 +68,15 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     )
   );
 
+  const scrollAreaRef = React.useRef<HTMLDivElement | null>(null);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
-    scrollRef?.current?.scrollIntoView({ behavior: "instant" });
+    const offset = scrollRef?.current?.offsetTop;
+
+    scrollAreaRef?.current?.scrollTo({
+      top: offset,
+      behavior: "instant",
+    });
   }, [scrollRef]);
 
   const getDates = (day: Date) => {
@@ -221,14 +227,14 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
       };
 
       const classes = cn(
-        "flex max-h-full flex-col break-words rounded p-[7px_6px_5px] text-[13px] leading-[20px] no-underline transition-[background-color] z-10 hover:z-10 hover:h-min hover:max-h-none hover:min-h-full cursor-pointer",
+        "flex max-h-full flex-col break-words rounded p-[7px_6px_5px] text-[13px] leading-[20px] no-underline transition-[background-color] z-[2] hover:z-[2] hover:h-min hover:max-h-none hover:min-h-full cursor-pointer",
         colStartClass,
         event.isMultiDay && colSpanClass,
         rowStartClass,
         !event.isMultiDay && rowSpanClass,
         variants[event.variant || "primary"] || variants.primary,
         isOverlappingNonMultiDay &&
-          "w-[75%] ml-[25%] border border-white text-right z-20 hover:z-[21]"
+          "w-[75%] ml-[25%] border border-white text-right z-[3] hover:z-[4]"
       );
 
       return {
@@ -242,10 +248,13 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   const sizePerRow = 64 / (timeSlots.length / 24);
 
   return (
-    <ScrollArea className={cn("p-3 max-w-full", className)}>
+    <ScrollArea
+      className={cn("p-3 max-w-full", className)}
+      viewportRef={scrollAreaRef}
+    >
       <div
         className={cn(
-          "flex flex-row items-center pb-2 bg-background sticky z-30 top-0 h-12",
+          "flex flex-row items-center pb-2 bg-background sticky z-[5] top-0 h-12",
           disableTimeChange ? "justify-center" : "justify-between"
         )}
       >
@@ -267,7 +276,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
       <div className="w-full h-full border-x border-b border-secondary">
         <div
           className={cn(
-            "px-2 grid grid-rows-1 gap-0 sticky top-12 bg-background z-30 shadow-md  border-y border-secondary",
+            "px-2 grid grid-rows-1 gap-0 sticky top-12 bg-background z-[5] shadow-md  border-y border-secondary",
             colsRepeatClass
             //colsRepeatClasses[dates.length as keyof typeof colsRepeatClasses]
           )}

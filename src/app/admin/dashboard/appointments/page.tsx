@@ -73,7 +73,9 @@ export default async function AppointmentsPage({ searchParams }: Params) {
                 href={"/admin/dashboard/appointments/new"}
                 variant="default"
               >
-                <CalendarClock className="mr-2 h-4 w-4" /> Schedule Appointment
+                <CalendarClock className="mr-2 h-4 w-4" />{" "}
+                <span className="max-md:hidden">Schedule Appointment</span>
+                <span className="md:hidden">Add New</span>
               </Link>
             </div>
           </div>
