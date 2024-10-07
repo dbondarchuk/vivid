@@ -2,12 +2,16 @@ import { MdxContent } from "@/components/web/mdx/mdxContent";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { Services } from "@/lib/services";
+import { cache } from "react";
 
 type Props = {
   params: { slug: string[] };
 };
 
-const getSource = async (slug: string[]) => {
+export const dynamicParams = true;
+export const revalidate = 60;
+
+const getSource = cache(async (slug: string[]) => {
   if (!slug || !slug.length) {
     slug = ["home"];
   }
@@ -21,7 +25,7 @@ const getSource = async (slug: string[]) => {
   }
 
   return page;
-};
+});
 
 export async function generateMetadata(
   { params }: Props,
@@ -50,7 +54,7 @@ export default async function Page({ params }: Props) {
   const page = await getSource(params.slug);
 
   return (
-    <div className="container mx-auto flex flex-col gap-20 px-4">
+    <div className="container mx-auto flex flex-col gap-5 px-4">
       <MdxContent source={page.content} />
     </div>
   );

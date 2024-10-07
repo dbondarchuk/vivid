@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../ui/card";
-import { Markdown } from "../markdown/Markdown";
+import { MdxContent } from "../mdx/mdxContentClient";
 
 export type AppointmentsCardProps = {
   options: AppointmentChoice[];
@@ -75,7 +75,7 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Markdown markdown={option.description} />
+              <MdxContent source={option.description} />
             </CardContent>
           </Card>
         );

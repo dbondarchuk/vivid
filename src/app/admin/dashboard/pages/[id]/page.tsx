@@ -30,7 +30,7 @@ export default async function EditPagesPage({ params }: Props) {
         <div className="flex flex-col gap-2 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-start justify-between">
-            <Heading title="Edit page" description={page.slug} />
+            <Heading title="Edit page" description={`/${page.slug}`} />
 
             <Link
               button

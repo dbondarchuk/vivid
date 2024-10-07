@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Timer, DollarSign } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Markdown } from "../markdown/Markdown";
+import { MdxContent } from "../mdx/mdxContentClient";
 
 export type AddonsCardProps = BaseCardProps & {
   onAddonSelectionChange: (addons: AppointmentAddon[]) => void;
@@ -110,7 +110,7 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <Markdown markdown={option.description} />
+                  <MdxContent source={option.description} />
                 </CardContent>
               </Card>
             );

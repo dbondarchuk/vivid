@@ -36,8 +36,8 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       .string()
       .min(1, { message: "Page slug must be at least 1 character" })
       .regex(
-        /^[a-z0-9]+(?:-[a-z0-9]+)*$/g,
-        "Page slug must contain only latin lower case letters, digits, and hyphens"
+        /^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g,
+        "Page slug must contain only latin lower case letters, digits, slash, and hyphens"
       )
       .refine((filename) => checkUniqueSlug(filename, initialData?._id), {
         message: "Page slug must be unique",

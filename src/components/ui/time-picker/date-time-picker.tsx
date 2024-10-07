@@ -72,6 +72,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          suppressHydrationWarning
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",

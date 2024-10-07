@@ -3,10 +3,12 @@ import { AppointmentsTable } from "@/components/admin/appointments/table/appoint
 import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Heading } from "@/components/ui/heading";
+import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
 import { Services } from "@/lib/services";
 import { AppointmentStatus, appointmentStatuses } from "@/types";
 import { Query } from "@/types/database/query";
+import { CalendarClock } from "lucide-react";
 import { DateTime } from "luxon";
 
 type Params = {
@@ -61,8 +63,20 @@ export default async function AppointmentsPage({ searchParams }: Params) {
     <PageContainer scrollable={true}>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2 justify-between">
-          <Breadcrumbs items={breadcrumbItems} />
-          <Heading title="Appointments" description="Manage appoinments" />
+          <div className="flex flex-col gap-2 justify-between">
+            <Breadcrumbs items={breadcrumbItems} />
+            <div className="flex items-start justify-between">
+              <Heading title="Appointments" description="Manage appoinments" />
+
+              <Link
+                button
+                href={"/admin/dashboard/appointments/new"}
+                variant="default"
+              >
+                <CalendarClock className="mr-2 h-4 w-4" /> Schedule Appointment
+              </Link>
+            </div>
+          </div>
           <Separator />
         </div>
         <AppointmentsTable

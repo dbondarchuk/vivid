@@ -212,7 +212,7 @@ export const AddonCard: React.FC<AddonProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Description <SupportsMarkdownTooltip />
+                Description <SupportsMarkdownTooltip supportsMdx />
               </FormLabel>
               <FormControl>
                 <Textarea

@@ -4,13 +4,14 @@ import { Icon } from "../../ui/icon";
 import { Link } from "../../ui/link";
 import { Services } from "@/lib/services";
 import { cn } from "@/lib/utils";
+import { MenuItem } from "@/types";
+import { MdxContent } from "../mdx/mdxContent";
 
-export const Footer: React.FC = async () => {
+const DefaultFooter: React.FC<{ links: MenuItem[] }> = async ({ links }) => {
   const configurationService = Services.ConfigurationService();
-  const { phone, email, address, name, mapsUrl } =
+  const { phone, email, address, name } =
     await configurationService.getConfiguration("general");
 
-  const { links } = await configurationService.getConfiguration("footer");
   const { instagram, facebook } = await configurationService.getConfiguration(
     "social"
   );
@@ -103,75 +104,78 @@ export const Footer: React.FC = async () => {
       }
     });
   };
+
   return (
-    <footer className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col gap-10">
-          <div className="flex flex-col md:flex-row justify-between gap-4">
-            <div className="flex flex-col gap-10 flex-grow">
-              <h3 className="font-header text-4xl font-normal">Contact us</h3>
+    <div className="container mx-auto px-4">
+      <div className="flex flex-col gap-10">
+        <div className="flex flex-col md:flex-row justify-between gap-4">
+          <div className="flex flex-col gap-10 flex-grow">
+            <h3 className="font-header text-4xl font-normal">Contact us</h3>
+            <div className="flex flex-col gap-4 w-full">
               <div className="flex flex-col gap-4 w-full">
-                <div className="flex flex-col gap-4 w-full">
-                  <div>
-                    <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
-                      Phone
-                    </h2>
-                    <p className="mt-1 font-thin">
-                      <Link href={`tel:${phone}`}>{phone}</Link>
-                    </p>
-                  </div>
-                  <div>
-                    <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
-                      Email
-                    </h2>
-                    <p className="mt-1 font-thin">
-                      <Link href={`mailto:${email}`}>{email}</Link>
-                    </p>
-                  </div>
-                  {address && (
-                    <div>
-                      <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
-                        Address
-                      </h2>
-                      <p className="mt-1 font-thin">
-                        <Link
-                          href={`https://www.google.com/maps/place/${encodeURIComponent(
-                            address
-                          )}`}
-                        >
-                          {address}
-                        </Link>
-                      </p>
-                    </div>
-                  )}
-                  {mapsUrl && (
-                    <div className="relative bg-gray-100 h-52 overflow-hidden rounded-lg">
-                      <iframe
-                        sandbox="allow-scripts"
-                        className="absolute inset-0 grayscale contrast opacity-40"
-                        width="100%"
-                        height="100%"
-                        title="map"
-                        scrolling="no"
-                        src={mapsUrl}
-                      ></iframe>
-                    </div>
-                  )}
+                <div>
+                  <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
+                    Phone
+                  </h2>
+                  <p className="mt-1 font-thin">
+                    <Link href={`tel:${phone}`}>{phone}</Link>
+                  </p>
                 </div>
+                <div>
+                  <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
+                    Email
+                  </h2>
+                  <p className="mt-1 font-thin">
+                    <Link href={`mailto:${email}`}>{email}</Link>
+                  </p>
+                </div>
+                {address && (
+                  <div>
+                    <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
+                      Address
+                    </h2>
+                    <p className="mt-1 font-thin">
+                      <Link
+                        href={`https://www.google.com/maps/place/${encodeURIComponent(
+                          address
+                        )}`}
+                      >
+                        {address}
+                      </Link>
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-            <nav className="flex-grow flex flex-col gap-8 text-lg md:items-end justify-center">
-              {getLink()}
-            </nav>
           </div>
-          <div className="text-sm md:items-center flex flex-col gap-2 ">
-            <div>
-              &copy; {new Date().getFullYear()} {name}
-            </div>
-            <SocialIcons icons={{ instagram, facebook }} />
+          <nav className="flex-grow flex flex-col gap-8 text-lg md:items-end justify-center">
+            {getLink()}
+          </nav>
+        </div>
+        <div className="text-sm md:items-center flex flex-col gap-2 ">
+          <div>
+            &copy; {new Date().getFullYear()} {name}
           </div>
+          <SocialIcons icons={{ instagram, facebook }} />
         </div>
       </div>
+    </div>
+  );
+};
+
+export const Footer: React.FC = async () => {
+  const configurationService = Services.ConfigurationService();
+  const footer = await configurationService.getConfiguration("footer");
+
+  if (footer.isCustom && !footer.content) return null;
+
+  return (
+    <footer className="py-20 bg-white">
+      {footer.isCustom ? (
+        <MdxContent source={footer.content!} />
+      ) : (
+        <DefaultFooter links={footer.links || []} />
+      )}
     </footer>
   );
 };

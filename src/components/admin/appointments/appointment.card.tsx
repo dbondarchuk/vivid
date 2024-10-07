@@ -74,7 +74,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </div>
           <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt className="flex self-center items-center gap-1">
-              <Calendar size={16} /> Date &amp; Time::
+              <Calendar size={16} /> Date &amp; Time:
             </dt>
             <dd className="col-span-2">
               {DateTime.fromJSDate(appointment.dateTime, {

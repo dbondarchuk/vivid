@@ -30,3 +30,32 @@ export type Fields<TData extends Record<string, any> | undefined = undefined> =
 export type FieldsWithId<
   TData extends Record<string, any> | undefined = undefined
 > = WithId<Field<TData>>[];
+
+export const getFields = (
+  fields: Fields<WithLabelFieldData>,
+  defaultFieldLabels = false
+): Fields<any> => {
+  return [
+    {
+      name: "name",
+      required: true,
+      type: FieldType.Name,
+      data: defaultFieldLabels
+        ? {
+            label: "Name",
+          }
+        : undefined,
+    },
+    {
+      name: "email",
+      required: true,
+      type: FieldType.Email,
+      data: defaultFieldLabels
+        ? {
+            label: "Email",
+          }
+        : undefined,
+    },
+    ...fields,
+  ];
+};

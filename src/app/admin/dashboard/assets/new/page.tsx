@@ -1,9 +1,9 @@
+import React from "react";
 import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
-import { AssetForm } from "../../../../../components/admin/assets/form";
+import { AssetForm } from "@/components/admin/assets/form";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },

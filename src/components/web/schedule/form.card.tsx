@@ -7,6 +7,7 @@ import {
   AppointmentFields,
   Fields,
   WithLabelFieldData,
+  getFields,
 } from "@/types";
 
 import React from "react";
@@ -28,80 +29,12 @@ import { MultiLineField } from "../forms/multiLine";
 import { OneLineField } from "../forms/oneLine";
 import { BaseCard, BaseCardProps } from "./baseCard";
 import { formatTime } from "@/lib/time";
+import { fieldSchemaMapper, fieldsComponentMap } from "../forms/fields";
 
 export type FormCardProps = BaseCardProps & {
   dateTime: DateTime;
   duration: number;
   onSubmit: (values: AppointmentFields) => void;
-};
-
-const fieldsSchemaMap = {
-  [FieldType.Name]: (field: Field) =>
-    z.string().min(2, {
-      message: "name_required_error",
-    }),
-
-  [FieldType.Email]: (field: Field) => z.string().email("invalid_email_error"),
-  [FieldType.Phone]: (field: Field) =>
-    z.string().refine((s) => !s?.includes("_"), "invalid_phone_error"),
-  [FieldType.OneLine]: (field: Field) =>
-    z.string().min(field.required ? 1 : 0, "field_required_error"),
-  [FieldType.MultiLine]: (field: Field) =>
-    z.string().min(field.required ? 1 : 0, "field_required_error"),
-};
-
-const fieldSchemaMapper = (field: Field) => {
-  let schema: z.ZodType = fieldsSchemaMap[field.type](field);
-  if (!field.required) schema = schema.optional();
-
-  return schema;
-};
-
-type FieldComponentMapFn = (
-  field: Field<any>,
-  control: Control<
-    {
-      [x: string]: any;
-    },
-    any
-  >
-) => React.ReactNode;
-
-const fieldsComponentMap: Record<FieldType, FieldComponentMapFn> = {
-  [FieldType.Name]: (field, control) => (
-    <NameField control={control} {...field} />
-  ),
-  [FieldType.Email]: (field, control) => (
-    <EmailField control={control} {...field} />
-  ),
-  [FieldType.Phone]: (field, control) => (
-    <PhoneField control={control} {...(field as Field<WithLabelFieldData>)} />
-  ),
-  [FieldType.OneLine]: (field, control) => (
-    <OneLineField control={control} {...(field as Field<WithLabelFieldData>)} />
-  ),
-  [FieldType.MultiLine]: (field, control) => (
-    <MultiLineField
-      control={control}
-      {...(field as Field<WithLabelFieldData>)}
-    />
-  ),
-};
-
-const getFields = (fields: Fields<WithLabelFieldData>): Fields<any> => {
-  return [
-    {
-      name: "name",
-      required: true,
-      type: FieldType.Name,
-    },
-    {
-      name: "email",
-      required: true,
-      type: FieldType.Email,
-    },
-    ...fields,
-  ];
 };
 
 const timeZones = getTimeZones();
@@ -210,7 +143,10 @@ class _FormCard extends BaseCard<_FormCardProps> {
                 </div>
 
                 {fields.map((field) =>
-                  fieldsComponentMap[field.type](field, this.props.form.control)
+                  fieldsComponentMap()[field.type](
+                    field,
+                    this.props.form.control
+                  )
                 )}
               </div>
             </div>

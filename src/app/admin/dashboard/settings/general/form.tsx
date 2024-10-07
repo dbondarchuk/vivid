@@ -44,7 +44,6 @@ const formSchema = z.object({
     .string()
     .url("Website url should be valid URL address")
     .min(3, { message: "Website Name must be at least 3 characters" }),
-  mapsUrl: z.string().url("Maps URL should be a valid URL").optional(),
   //   logo: string,
 });
 
@@ -235,28 +234,6 @@ export const GeneralSettingsForm: React.FC<{
               <FormItem>
                 <FormLabel>
                   Address <InfoTooltip>Physical office address</InfoTooltip>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Website description"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="mapsUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Google Maps URL{" "}
-                  <InfoTooltip>
-                    Url to the physical office address on Google Maps
-                  </InfoTooltip>
                 </FormLabel>
                 <FormControl>
                   <Input

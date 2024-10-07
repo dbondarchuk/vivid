@@ -6,8 +6,6 @@ import "../globals.css";
 import { TwLoad } from "../twLoad";
 import { Toaster } from "@/components/ui/toaster";
 
-export const dynamic = "force-dynamic";
-
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",

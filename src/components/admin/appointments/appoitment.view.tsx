@@ -146,6 +146,12 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                             ({appointment.timeZone})
                           </span>
                         </div>
+                        <div>Request at:</div>
+                        <div>
+                          {DateTime.fromJSDate(
+                            appointment.createdAt
+                          ).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                        </div>
                       </div>
                       {appointment.status !== "declined" && (
                         <AppointmentRescheduleDialog
@@ -341,7 +347,6 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                 name="note"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>Note</FormLabel> */}
                     <FormControl>
                       <Textarea
                         disabled={loading}

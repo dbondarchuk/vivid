@@ -82,9 +82,15 @@ export type HeaderConfiguration = {
   menu: MenuItem[];
 };
 
-export type FooterConfiguration = {
-  links: MenuItem[];
-};
+export type FooterConfiguration =
+  | {
+      isCustom: false;
+      links?: MenuItem[];
+    }
+  | {
+      isCustom: true;
+      content?: string;
+    };
 
 export type BookingConfiguration = {
   ics: string;
@@ -109,7 +115,6 @@ export type GeneralConfiguration = {
   email: string;
   address?: string;
   url: string;
-  mapsUrl?: string;
   logo: string;
 };
 

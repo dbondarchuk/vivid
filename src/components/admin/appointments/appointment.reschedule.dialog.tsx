@@ -177,7 +177,7 @@ export const AppointmentRescheduleDialog: React.FC<
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <DialogContent className="sm:max-w-[80%]">
+          <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
             <DialogHeader>
               <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
                 Reschedule the appointment
@@ -186,7 +186,7 @@ export const AppointmentRescheduleDialog: React.FC<
                 {appointment.option.name} by {appointment.fields.name}
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="max-h-[80vh]">
+            <div className="flex-1 w-full overflow-auto">
               <div className="flex flex-col gap-4 w-full">
                 <div className="md:grid grid-cols-2">
                   <div className="w-full space-y-8 relative px-1 content-center">
@@ -267,8 +267,8 @@ export const AppointmentRescheduleDialog: React.FC<
                   </div>
                 </div>
               </div>
-            </ScrollArea>
-            <DialogFooter className="sm:justify-between">
+            </div>
+            <DialogFooter className="!justify-between flex-row gap-2">
               <DialogClose asChild>
                 <Button variant="secondary">Close</Button>
               </DialogClose>

@@ -15,8 +15,8 @@ import { Mask, MaskedInput } from "@/components/ui/maskedInput";
 import React from "react";
 
 import countries from "countries-phone-masks";
-import { FieldValues } from "react-hook-form";
-import { IFormFieldProps } from "./formFieldProps";
+import { FieldValues, Path } from "react-hook-form";
+import { getFieldName, IFormFieldProps } from "./formFieldProps";
 
 import { useI18n } from "@/i18n/i18n";
 import "./css/flags.css";
@@ -85,7 +85,7 @@ export const PhoneField: <T extends FieldValues>(
   return (
     <FormField
       control={props.control}
-      name={props.name}
+      name={getFieldName(props)}
       render={({ field }) => (
         <FormItem>
           <FormFieldLabel

@@ -46,7 +46,7 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
 
   return (
     <Dialog {...rest}>
-      <DialogContent className="sm:max-w-[80%]">
+      <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
         <DialogHeader>
           <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
             <span>{appointment.option.name}</span>
@@ -60,11 +60,14 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
           </DialogTitle>
           <DialogDescription>By {appointment.fields.name}</DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[80vh]">
+        <div className="flex-1 w-full overflow-auto">
           <AppointmentView appointment={appointment} />
-        </ScrollArea>
-        <DialogFooter className="sm:justify-between gap-2">
-          <div className="flex flex-col md:flex-row w-full gap-2">
+        </div>
+        <DialogFooter className="flex-row !justify-between gap-2">
+          <DialogClose asChild>
+            <Button variant="secondary">Close</Button>
+          </DialogClose>
+          <div className="flex flex-row gap-2">
             {appointment.status !== "declined" && (
               <>
                 <AlertDialog>
@@ -112,9 +115,6 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
               </>
             )}
           </div>
-          <DialogClose asChild>
-            <Button variant="secondary">Close</Button>
-          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

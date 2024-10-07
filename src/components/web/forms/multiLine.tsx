@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { FieldValues } from "react-hook-form";
 import { FormFieldLabel } from "./formFieldLabel";
-import { IFormFieldProps } from "./formFieldProps";
+import { getFieldName, IFormFieldProps } from "./formFieldProps";
 import { WithLabelFieldData } from "@/types";
 
 export const MultiLineField: <T extends FieldValues>(
@@ -17,7 +17,7 @@ export const MultiLineField: <T extends FieldValues>(
 ) => React.ReactElement<IFormFieldProps<T, WithLabelFieldData>> = (props) => (
   <FormField
     control={props.control}
-    name={props.name}
+    name={getFieldName(props)}
     render={({ field }) => (
       <FormItem>
         <FormFieldLabel label={props.data.label} required={props.required} />

@@ -119,7 +119,6 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
     fetch("/api/event", {
       method: "POST",
       body: JSON.stringify({
-        date: LuxonDateTime.fromJSDate(dateTime!.date).toISODate(),
         dateTime: LuxonDateTime.fromObject(
           {
             year: dateTime.date.getFullYear(),
@@ -133,7 +132,6 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         )
           .toUTC()
           .toISO(),
-        time: dateTime!.time,
         totalPrice: getTotalPrice() || undefined,
         timeZone: dateTime!.timeZone,
         totalDuration: getTotalDuration(),

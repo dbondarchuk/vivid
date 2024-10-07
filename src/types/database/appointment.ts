@@ -12,4 +12,5 @@ export type Appointment = Omit<AppointmentEvent, "dateTime"> & {
   _id: string;
   dateTime: Date;
   status: AppointmentStatus;
+  createdAt: Date;
 };

@@ -1,43 +1,24 @@
-import type { CompileOptions } from "@mdx-js/mdx";
-import { MDXRemote } from "next-mdx-remote-client/rsc";
-import { evaluate } from "next-mdx-remote-client/rsc";
 import type { VFileCompatible } from "vfile";
+
+import { evaluate, EvaluateOptions } from "@mdx-js/mdx";
+import { jsx, jsxs, Fragment } from "react/jsx-runtime";
+
 import { Components } from "../../components";
-export interface SerializeOptions {
-  /**
-   * Pass-through variables for use in the MDX content
-   */
-  scope?: Record<string, unknown>;
-  /**
-   * These options are passed to the MDX compiler.
-   * See [the MDX docs.](https://github.com/mdx-js/mdx/blob/master/packages/mdx/index.js).
-   */
-  mdxOptions?: Omit<CompileOptions, "outputFormat" | "providerImportSource"> & {
-    useDynamicImport?: boolean;
-  };
-}
+import { MdxError } from "./mdxError";
 
-export const getFrontMatter = async (
-  source: VFileCompatible,
-  options?: SerializeOptions
-) => {
-  const { frontmatter } = await evaluate({
-    source,
-    components: Components,
-    options: { parseFrontmatter: true, ...options },
-  });
-  return frontmatter;
-};
+type Runtime = Pick<EvaluateOptions, "jsx" | "jsxs" | "Fragment">;
 
+const runtime = { jsx, jsxs, Fragment } as Runtime;
 export const MdxContent: React.FC<{
   source: VFileCompatible;
-  options?: SerializeOptions;
-}> = ({ source, options }) => {
-  return (
-    <MDXRemote
-      source={source}
-      components={Components}
-      options={{ parseFrontmatter: true, ...options }}
-    />
-  );
+  options?: any;
+}> = async ({ source, options }) => {
+  try {
+    const evalResult = await evaluate(source, runtime);
+    const MdxContent = evalResult.default;
+
+    return <MdxContent components={Components} />;
+  } catch (error) {
+    return <MdxError error={error} />;
+  }
 };

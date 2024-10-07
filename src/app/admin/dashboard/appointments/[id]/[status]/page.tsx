@@ -22,5 +22,5 @@ export default async function Page({ params }: Props) {
       break;
   }
 
-  redirect("/admin/dashboard?activeTab=appointments");
+  redirect(`/admin/dashboard/appointments/${params.id}`);
 }

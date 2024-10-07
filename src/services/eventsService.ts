@@ -48,12 +48,21 @@ export class EventsService {
     return [...dbEvents, ...icsEvents];
   }
 
-  public async createEvent(event: AppointmentEvent): Promise<Appointment> {
-    const appointment = await this.saveEvent(event);
+  public async createEvent(
+    event: AppointmentEvent,
+    status: AppointmentStatus = "pending"
+  ): Promise<Appointment> {
+    const appointment = await this.saveEvent(event, status);
 
     await this.notificationService.sendAppointmentRequestedNotification(
       appointment
     );
+
+    if (status === "confirmed") {
+      await this.notificationService.sendAppointmentConfirmedNotification(
+        appointment
+      );
+    }
 
     return appointment;
   }
@@ -63,19 +72,26 @@ export class EventsService {
     after?: Date
   ): Promise<WithTotal<Appointment>> {
     const db = await getDbConnection();
-    const cursor = db
-      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
-      .find({
-        status: "pending",
-        dateTime: after
-          ? {
-              $gte: after,
-            }
-          : undefined,
-      });
+    const filter: Filter<Appointment> = {
+      status: "pending",
+      dateTime: after
+        ? {
+            $gte: after,
+          }
+        : undefined,
+    };
 
-    const appointments = await cursor.limit(limit).toArray();
-    const total = await cursor.count();
+    const collection = db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME);
+
+    const total = await collection.countDocuments(filter);
+    if (limit === 0) {
+      return {
+        items: [],
+        total,
+      };
+    }
+
+    const appointments = await collection.find(filter).limit(limit).toArray();
 
     return {
       items: appointments,
@@ -391,7 +407,10 @@ export class EventsService {
     return ids;
   }
 
-  private async saveEvent(event: AppointmentEvent) {
+  private async saveEvent(
+    event: AppointmentEvent,
+    status: AppointmentStatus = "pending"
+  ) {
     const db = await getDbConnection();
     const appointments = db.collection<Appointment>(
       APPOINTMENTS_COLLECTION_NAME
@@ -401,7 +420,8 @@ export class EventsService {
       ...event,
       _id: new ObjectId().toString(),
       dateTime: DateTime.fromISO(event.dateTime, { zone: "utc" }).toJSDate(),
-      status: "pending",
+      status,
+      createdAt: DateTime.now().toJSDate(),
     };
 
     await appointments.insertOne(dbEvent);

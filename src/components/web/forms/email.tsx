@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { IFormFieldProps } from "./formFieldProps";
+import { getFieldName, IFormFieldProps } from "./formFieldProps";
 import { FieldValues } from "react-hook-form";
 import { FormFieldLabel } from "./formFieldLabel";
 
@@ -16,12 +16,15 @@ export const EmailField: <T extends FieldValues>(
 ) => React.ReactElement<IFormFieldProps<T>> = (props) => (
   <FormField
     control={props.control}
-    name={props.name}
+    name={getFieldName(props)}
     render={({ field }) => (
       <FormItem>
-        <FormFieldLabel label="form_email_label" required={props.required} />
+        <FormFieldLabel
+          label={props.data?.label || "form_email_label"}
+          required={props.required}
+        />
         <FormControl>
-          <Input {...field} />
+          <Input type="email" {...field} />
         </FormControl>
         <FormDescription></FormDescription>
         <FormMessage />

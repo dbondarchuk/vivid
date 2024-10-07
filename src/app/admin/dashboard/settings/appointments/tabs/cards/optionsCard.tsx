@@ -243,7 +243,7 @@ export const OptionCard: React.FC<OptionProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Description <SupportsMarkdownTooltip />
+                Description <SupportsMarkdownTooltip supportsMdx />
               </FormLabel>
               <FormControl>
                 <Textarea

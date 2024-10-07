@@ -189,6 +189,11 @@ export const columns: ColumnDef<Appointment>[] = [
     header: "Date & time",
   },
   {
+    accessorFn: (app) =>
+      DateTime.fromJSDate(app.createdAt).toLocaleString(DateTime.DATETIME_MED),
+    header: "Requested at",
+  },
+  {
     header: "Duration",
     cell: ({ row }) => <span>{row.original.totalDuration} min</span>,
   },

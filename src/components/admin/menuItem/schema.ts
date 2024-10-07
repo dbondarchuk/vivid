@@ -80,12 +80,13 @@ export const buttonMenuItemSchema = linkMenuItemSchema.merge(
   })
 );
 
-export const menuItemsSchema = z.array(
-  z.discriminatedUnion("type", [
-    iconMenuItemSchema,
-    linkMenuItemSchema,
-    buttonMenuItemSchema,
-  ])
-);
+export const menuItemSchema = z.discriminatedUnion("type", [
+  iconMenuItemSchema,
+  linkMenuItemSchema,
+  buttonMenuItemSchema,
+]);
 
+export const menuItemsSchema = z.array(menuItemSchema);
+
+export type MenuItemSchema = z.infer<typeof menuItemSchema>;
 export type LinkMenuItemSchema = z.infer<typeof linkMenuItemSchema>;

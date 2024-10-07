@@ -1,6 +1,13 @@
 "use client";
 
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -15,20 +22,36 @@ import {
   menuItemsSchema,
 } from "@/components/admin/menuItem/schema";
 import { SaveButton } from "@/components/admin/forms/save-button";
+import { FooterConfiguration } from "@/types";
+import { Switch } from "@/components/ui/switch";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import { SupportsMarkdownTooltip } from "@/components/admin/tooltip/supportsMarkdown";
+import { Editor } from "@monaco-editor/react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { MdxContent } from "@/components/web/mdx/mdxContentClient";
 
 const formSchema = z.object({
-  links: menuItemsSchema,
+  links: menuItemsSchema.optional(),
+  content: z.string().optional(),
+  isCustom: z.coerce.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export const FooterSettingsForm: React.FC<{
-  values: FormValues;
+  values: FooterConfiguration;
 }> = ({ values }) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: "all",
-    values,
+    values: values || {
+      isCustom: false,
+      links: [],
+    },
   });
 
   const [loading, setLoading] = React.useState(false);
@@ -77,31 +100,94 @@ export const FooterSettingsForm: React.FC<{
     } as Partial<LinkMenuItemSchema> as LinkMenuItemSchema);
   };
 
+  const isCustom = form.watch("isCustom");
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-8 relative"
       >
-        <div className="gap-8 flex-col">
-          <Sortable title="Links" ids={ids} onSort={sort} onAdd={addNew}>
-            <div className="flex flex-grow flex-col gap-4">
-              {fields.map((item, index) => {
-                return (
-                  <MenuItemCard
-                    form={form}
-                    item={item}
-                    key={item.id}
-                    name={`links.${index}`}
-                    disabled={loading}
-                    remove={() => remove(index)}
-                    update={(newValue) => update(index, newValue)}
-                  />
-                );
-              })}
-            </div>
-          </Sortable>
-        </div>
+        <FormField
+          control={form.control}
+          name="isCustom"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between">
+              <div className="space-y-0.5">
+                <FormLabel>Use custom footer</FormLabel>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {isCustom ? (
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="max-md:hidden"
+              >
+                <ResizablePanel className="pr-1">
+                  <FormItem>
+                    <FormLabel>
+                      Footer content
+                      <SupportsMarkdownTooltip supportsMdx />
+                    </FormLabel>
+                    <FormControl>
+                      <Editor
+                        height="60vh"
+                        language="mdx"
+                        theme="vs-dark"
+                        value={field.value}
+                        onChange={field.onChange}
+                        onValidate={() => form.trigger(field.name)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel className="pl-1">
+                  <FormItem>
+                    <FormLabel>Preview</FormLabel>
+                    {/* <IFrame className="h-[60vh] w-full"> */}
+                    <ScrollArea className="h-[60vh] w-full">
+                      <MdxContent source={field.value || ""} />
+                    </ScrollArea>
+                    {/* </IFrame> */}
+                  </FormItem>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            )}
+          />
+        ) : (
+          <div className="gap-8 flex-col">
+            <Sortable title="Links" ids={ids} onSort={sort} onAdd={addNew}>
+              <div className="flex flex-grow flex-col gap-4">
+                {fields.map((item, index) => {
+                  return (
+                    <MenuItemCard
+                      form={form}
+                      item={item}
+                      key={item.id}
+                      name={`links.${index}`}
+                      disabled={loading}
+                      remove={() => remove(index)}
+                      update={(newValue) => update(index, newValue)}
+                    />
+                  );
+                })}
+              </div>
+            </Sortable>
+          </div>
+        )}
         <SaveButton form={form} disabled={loading} />
       </form>
     </Form>

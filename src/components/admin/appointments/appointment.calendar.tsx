@@ -16,10 +16,17 @@ export const AppointmentCalendar: React.FC<
     onEventsLoad?: (events: Event[]) => void;
   }
 > = ({ appointment, onEventsLoad, ...props }) => {
+  const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
   const [events, setEvents] = React.useState<Event[]>([]);
   const [loading, setLoading] = React.useState(false);
 
-  const getEvents = async (start: DateTime, end: DateTime) => {
+  const appointmentDateTime = appointment.dateTime;
+  const appointmentDate = React.useMemo(
+    () => DateTime.fromJSDate(appointment.dateTime).toISODate(),
+    [appointmentDateTime]
+  );
+
+  const getApiEvents = async (start: DateTime, end: DateTime) => {
     setLoading(true);
     const response = await fetch(
       `/admin/api/events?start=${start.toISO()}&end=${end.toISO()}`
@@ -33,6 +40,10 @@ export const AppointmentCalendar: React.FC<
       dateTime: DateTime.fromISO(a.dateTime as unknown as string).toJSDate(),
     }));
 
+    setApiEvents(apiEvents);
+  };
+
+  React.useEffect(() => {
     const apiEventsWithoutCurrent = apiEvents.filter(
       (a) => (a as Appointment)._id !== appointment._id
     );
@@ -40,15 +51,15 @@ export const AppointmentCalendar: React.FC<
     setEvents([...apiEventsWithoutCurrent, appointment]);
 
     onEventsLoad?.(apiEvents);
-  };
+  }, [apiEvents, appointment, onEventsLoad, setEvents]);
 
   React.useEffect(() => {
-    const date = DateTime.fromJSDate(appointment.dateTime);
-    getEvents(
+    const date = DateTime.fromJSDate(appointmentDateTime);
+    getApiEvents(
       date.minus({ days: 1 }).startOf("day"),
       date.plus({ days: 1 }).endOf("day")
     );
-  }, [appointment]);
+  }, [appointmentDate]);
 
   const calendarEvents: CalendarEvent[] = React.useMemo(
     () =>
