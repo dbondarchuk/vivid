@@ -38,6 +38,11 @@ export const mainTabFormSchema = z.object({
     .min(2, "The minimum amount of weeks must be 2")
     .max(20, "The maximum amount of weeks must be 20")
     .optional(),
+  minHoursBeforeBooking: z.coerce
+    .number()
+    .min(0, "The minimum amount of hours must be 0")
+    .max(72, "The maximum amount of hours must be 72")
+    .optional(),
   minAvailableTimeBeforeSlot: z.coerce
     .number()
     .min(0, "The minimum available time before time slot must be 0")
@@ -134,6 +139,47 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                 </InputGroupInput>
                 <InputSuffix className={InputGroupSuffixClasses()}>
                   weeks
+                </InputSuffix>
+              </InputGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="minHoursBeforeBooking"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              Minimum number of hours before booking
+              <InfoTooltip>
+                <p>
+                  Specifies the minimum number of hours required in advance for
+                  a booking to be made. This parameter helps ensure that users
+                  cannot book an appointment with less notice than the
+                  designated time frame, allowing you to prepare accordingly
+                </p>
+                <p>
+                  <span className="font-semibold">Example:</span> If set to 24,
+                  a booking can only be made if it is at least 24 hours before
+                  the desired start time.
+                </p>
+              </InfoTooltip>
+            </FormLabel>
+            <FormControl>
+              <InputGroup>
+                <InputGroupInput>
+                  <Input
+                    disabled={disabled}
+                    placeholder="24"
+                    type="number"
+                    className={InputGroupInputClasses()}
+                    {...field}
+                  />
+                </InputGroupInput>
+                <InputSuffix className={InputGroupSuffixClasses()}>
+                  hours
                 </InputSuffix>
               </InputGroup>
             </FormControl>

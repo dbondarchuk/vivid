@@ -95,6 +95,7 @@ export type FooterConfiguration =
 export type BookingConfiguration = {
   ics: string;
   maxWeeksInFuture?: number;
+  minHoursBeforeBooking?: number;
   minAvailableTimeAfterSlot?: number;
   minAvailableTimeBeforeSlot?: number;
   slotStartMinuteStep?: number;

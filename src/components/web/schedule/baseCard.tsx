@@ -1,12 +1,4 @@
-import type {
-  AppointmentAddon,
-  AppointmentChoice,
-  AppointmentOption,
-  Fields,
-  FieldsWithId,
-  WithId,
-  WithLabelFieldData,
-} from "@/types";
+import type { AppointmentAddon, AppointmentChoice } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +12,6 @@ import {
 import { IWithI18nProps } from "@/i18n/withI18n";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
-import { Markdown } from "../markdown/Markdown";
 
 export type BaseCardProps = IWithI18nProps & {
   next?: () => void;
