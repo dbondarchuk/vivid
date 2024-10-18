@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "../../ui/card";
 import { MdxContent } from "../mdx/mdxContentClient";
+import { durationToTime } from "@/lib/time";
 
 export type AppointmentsCardProps = {
   options: AppointmentChoice[];
@@ -50,15 +51,19 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
                   className="flex flex-row items-center"
                   aria-label={
                     option.duration
-                      ? i18n("form_duration_label_format", {
-                          duration: option.duration,
-                        })
+                      ? i18n(
+                          "form_duration_hour_minutes_label_format",
+                          durationToTime(option.duration)
+                        )
                       : i18n("custom_duration_label_format")
                   }
                 >
                   <Timer className="mr-1" />
                   {option.duration
-                    ? i18n("duration_min_format", { duration: option.duration })
+                    ? i18n(
+                        "duration_hour_min_format",
+                        durationToTime(option.duration)
+                      )
                     : i18n("duration_custom")}
                 </div>
                 {option.price && (

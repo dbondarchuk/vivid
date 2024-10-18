@@ -15,7 +15,7 @@ import { FieldType } from "@/types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
-import { GripVertical, Trash } from "lucide-react";
+import { Copy, GripVertical, Trash } from "lucide-react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { OptionSchema } from "./optionsCard";
@@ -70,9 +70,9 @@ export type FieldProps = {
   name: string;
   form: UseFormReturn<any>;
   disabled?: boolean;
-  isOverlay?: boolean;
   remove: () => void;
   update: (newValue: FieldSchema) => void;
+  clone: () => void;
 };
 
 export type FielDragdType = "Field";
@@ -87,42 +87,10 @@ export const FieldCard: React.FC<FieldProps> = ({
   form,
   name,
   disabled,
-  isOverlay,
   remove,
   update,
+  clone,
 }) => {
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: item.id,
-    data: {
-      type: "Field",
-      item,
-    } satisfies FieldDragData,
-    attributes: {
-      roleDescription: "Field",
-    },
-  });
-
-  const style = {
-    transition,
-    transform: CSS.Translate.toString(transform),
-  };
-
-  const variants = cva("", {
-    variants: {
-      dragging: {
-        over: "ring-2 opacity-30",
-        overlay: "ring-2 ring-primary",
-      },
-    },
-  });
-
   const nameValue = form.getValues(`${name}.name`);
 
   const { fields: options, update: updateOption } = useFieldArray({
@@ -144,59 +112,56 @@ export const FieldCard: React.FC<FieldProps> = ({
   };
 
   return (
-    <Card
-      ref={setNodeRef}
-      style={style}
-      className={variants({
-        dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
-      })}
-    >
-      <CardHeader className="justify-between relative flex flex-row border-b-2 border-secondary px-3 py-3 w-full">
-        <Button
-          type="button"
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
-        >
-          <></>
-          <span className="sr-only">Move appointment field</span>
-          <GripVertical />
-        </Button>
-        <span>{nameValue || "Invalid field"}</span>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
-              type="button"
-            >
-              <Trash size={20} />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                <p>Are you sure you want to remove this field?</p>
-                <p>
-                  <strong>NOTE: </strong>This will also remove this field from
-                  all the options
-                </p>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction asChild>
-                <Button variant="destructive" onClick={removeField}>
-                  Delete
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+    <Card>
+      <CardHeader className="justify-between relative flex flex-row items-center border-b-2 border-secondary px-3 py-3 w-full">
+        <div className="w-full text-center">{nameValue || "Invalid field"}</div>
+        <div className="flex flex-row gap-2">
+          <Button
+            disabled={disabled}
+            variant="outline"
+            className=""
+            size="sm"
+            type="button"
+            title="Clone"
+            onClick={clone}
+          >
+            <Copy size={20} />
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={disabled}
+                variant="destructive"
+                className=""
+                size="sm"
+                type="button"
+                title="Remove"
+              >
+                <Trash size={20} />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  <p>Are you sure you want to remove this field?</p>
+                  <p>
+                    <strong>NOTE: </strong>This will also remove this field from
+                    all the options
+                  </p>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <Button variant="destructive" onClick={removeField}>
+                    Delete
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </CardHeader>
       <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
         <FormField

@@ -21,7 +21,10 @@ export class ConfigurationService {
       key,
     });
 
-    if (!value?.value) throw new Error(`Can't find configuration for '${key}'`);
+    if (!value?.value) {
+      console.error(`Can't find configuration for '${key}'`);
+      return {} as ConfigurationOption<T>["value"];
+    }
 
     return value.value;
   }

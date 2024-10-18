@@ -8,6 +8,7 @@ import {
 } from "./booking/appointmentOption";
 import { AvailablePeriod } from "./booking/timeSlot";
 import { AppointmentStatus } from "./database";
+import { Reminder } from "./reminders";
 
 export type Id = {
   id: string;
@@ -78,6 +79,22 @@ export type EmailConfiguration = {
   event: EventConfiguration;
 };
 
+export type SmsTemplateConfiguration = {
+  body?: string;
+};
+
+export type SmsConfiguration = {
+  authToken: string;
+  autoReply?: string;
+};
+
+export type TextMessagesConfiguration = {
+  phoneField?: string[];
+  templates: Record<AppointmentStatus, SmsTemplateConfiguration> & {
+    rescheduled: SmsTemplateConfiguration;
+  };
+};
+
 export type HeaderConfiguration = {
   menu: MenuItem[];
 };
@@ -105,6 +122,8 @@ export type BookingConfiguration = {
   fields?: FieldsWithId<WithLabelFieldData>;
   options: WithId<AppointmentOption>[];
   email: EmailConfiguration;
+  textMessages: TextMessagesConfiguration;
+  reminders?: Reminder[];
 };
 
 export type GeneralConfiguration = {
@@ -124,6 +143,23 @@ export type SocialConfiguration = {
   facebook?: string;
 };
 
+export type InlineScript = {
+  type: "inline";
+  value: string;
+};
+
+export type RemoteScript = {
+  type: "remote";
+  url: string;
+};
+
+export type Script = InlineScript | RemoteScript;
+
+export type ScriptsConfiguration = {
+  headerScripts?: Script[];
+  footerScripts?: Script[];
+};
+
 export type Configuration = {
   general: GeneralConfiguration;
   social: SocialConfiguration;
@@ -131,4 +167,6 @@ export type Configuration = {
   footer: FooterConfiguration;
   booking: BookingConfiguration;
   smtp: SmtpConfiguration;
+  sms: SmsConfiguration;
+  scripts: ScriptsConfiguration;
 };

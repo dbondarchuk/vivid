@@ -2,10 +2,9 @@ import { template } from "@/lib/string";
 import { Appointment } from "@/types";
 import { readFile } from "fs/promises";
 import { join } from "path";
-import {
-  IcalEventMethod,
-  IEmailNotificationService,
-} from "./emailNotificationService";
+import { IcalEventMethod } from "../notificaionService.base";
+import { IEmailNotificationService } from "./emailNotificationService";
+import { sendEmail } from "./sendEmail";
 
 export class OwnEmailNotificationService extends IEmailNotificationService {
   public async sendAppointmentRequestedNotification(
@@ -47,7 +46,8 @@ export class OwnEmailNotificationService extends IEmailNotificationService {
     templateName: string,
     eventMethod: IcalEventMethod
   ) {
-    const { booking, arg } = await this.getArguments(appointment);
+    const { bookingConfiguration, arg } = await this.getArguments(appointment);
+    const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventSummary = this.getEventSummary(appointment);
 
@@ -65,15 +65,20 @@ export class OwnEmailNotificationService extends IEmailNotificationService {
       eventMethod
     );
 
-    await this.sendEmail({
-      to: booking.email.to,
-      subject: `Appointment for ${arg.option.name} by ${arg.fields.name} at ${arg.dateTime}`,
-      body: description,
-      icalEvent: {
-        method: eventMethod,
-        content: eventContent,
+    await sendEmail(
+      {
+        to: bookingConfiguration.email.to,
+        subject: `Appointment for ${arg.option!.name} by ${
+          arg.fields!.name
+        } at ${arg.dateTime}`,
+        body: description,
+        icalEvent: {
+          method: eventMethod,
+          content: eventContent,
+        },
       },
-    });
+      smtpConfiguration
+    );
   }
 
   private getEventSummary(appointment: Appointment) {

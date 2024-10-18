@@ -136,7 +136,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </AlertDialog>
           {appointment.status === "pending" && (
             <AppointmentActionButton
-              variant="primary"
+              variant="default"
               _id={appointment._id}
               status="confirmed"
             >

@@ -17,7 +17,7 @@ import { BaseCard, BaseCardProps, BaseCardState } from "./baseCard";
 
 import { fallbackLanguage } from "@/i18n/i18n";
 import * as Locales from "date-fns/locale";
-import { areTimesEqual, formatTime } from "@/lib/time";
+import { areTimesEqual, formatTimeLocale } from "@/lib/time";
 
 const asJsDate = (dateTime: Luxon) =>
   new Date(dateTime.year, dateTime.month - 1, dateTime.day);
@@ -182,13 +182,13 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
             ) : (
               <div className="flex flex-row gap-2 justify-around flex-wrap">
                 {(times[formatDate(date)] || []).map((t) => (
-                  <div className="" key={formatTime(t)}>
+                  <div className="" key={formatTimeLocale(t)}>
                     <Button
                       className="w-24"
                       variant={isTimeSelected(t) ? "default" : "outline"}
                       onClick={() => setTime(isTimeSelected(t) ? undefined : t)}
                     >
-                      {formatTime(t)}
+                      {formatTimeLocale(t)}
                     </Button>
                   </div>
                 ))}

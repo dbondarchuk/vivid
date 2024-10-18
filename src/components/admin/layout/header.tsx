@@ -2,6 +2,8 @@ import ThemeToggle from "./ThemeToggle/theme-toggle";
 import { cn } from "@/lib/utils";
 import { MobileSidebar } from "./mobile-sidebar";
 import { UserNav } from "./user-nav";
+import { Link } from "@/components/ui/link";
+import { Globe2 } from "lucide-react";
 
 export default function Header() {
   return (
@@ -13,6 +15,15 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <UserNav />
           <ThemeToggle />
+          <Link
+            href="/"
+            target="_blank"
+            button
+            variant="default"
+            className="inline-flex items-center gap-1"
+          >
+            <Globe2 size={16} /> View website
+          </Link>
         </div>
       </nav>
     </header>

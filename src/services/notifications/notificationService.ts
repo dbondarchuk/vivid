@@ -1,8 +1,9 @@
 import { Appointment } from "@/types";
 import { ConfigurationService } from "../configurationService";
-import { CustomerEmailNotificationService } from "./customerEmailNotificationService";
+import { CustomerEmailNotificationService } from "./email/customerEmailNotificationService";
+import { OwnEmailNotificationService } from "./email/ownEmailNotificationService";
 import { INotificationService } from "./notificaionService.interface";
-import { OwnEmailNotificationService } from "./ownEmailNotificationService";
+import { CustomerSmsNotificationService } from "./sms/customerSmsNotificationService";
 
 export class NotificationService implements INotificationService {
   private readonly services: INotificationService[] = [];
@@ -10,6 +11,7 @@ export class NotificationService implements INotificationService {
     this.services = [
       new OwnEmailNotificationService(configurationService),
       new CustomerEmailNotificationService(configurationService),
+      new CustomerSmsNotificationService(configurationService),
     ];
   }
 

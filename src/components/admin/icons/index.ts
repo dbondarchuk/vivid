@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CircuitBoardIcon,
+  Code2,
   Cog,
   Command,
   CreditCard,
@@ -21,6 +22,7 @@ import {
   LogIn,
   LucideIcon,
   Mail,
+  MessageCircle,
   Moon,
   MoreVertical,
   PanelBottom,
@@ -75,4 +77,6 @@ export const Icons = {
   footer: PanelBottom,
   assets: Paperclip,
   pages: Globe,
+  sms: MessageCircle,
+  script: Code2,
 };

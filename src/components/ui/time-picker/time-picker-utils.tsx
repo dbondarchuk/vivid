@@ -152,6 +152,10 @@ export function getDateByType(date: Date, type: TimePickerType) {
   }
 }
 
+export function getDatePeriod(date: Date): Period {
+  return parseInt(getDateByType(date, "hours")) >= 12 ? "PM" : "AM";
+}
+
 export function getArrowByType(
   value: string,
   step: number,

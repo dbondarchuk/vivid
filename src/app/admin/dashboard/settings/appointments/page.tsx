@@ -16,6 +16,12 @@ export default async function Page() {
     "booking"
   );
 
+  const generalSettings =
+    await Services.ConfigurationService().getConfiguration("general");
+  const socialSettings = await Services.ConfigurationService().getConfiguration(
+    "social"
+  );
+
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-col gap-8">
@@ -27,7 +33,11 @@ export default async function Page() {
           />
           <Separator />
         </div>
-        <AppointmentsSettingsForm values={settings} />
+        <AppointmentsSettingsForm
+          values={settings}
+          generalSettings={generalSettings}
+          socialSettings={socialSettings}
+        />
       </div>
     </PageContainer>
   );

@@ -12,6 +12,7 @@ import {
 import { IWithI18nProps } from "@/i18n/withI18n";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
+import { durationToTime } from "@/lib/time";
 
 export type BaseCardProps = IWithI18nProps & {
   next?: () => void;
@@ -64,9 +65,10 @@ export abstract class BaseCard<
               {this.duration && (
                 <div className="flex flex-row items-center">
                   <Timer className="mr-1" />
-                  {this.props.i18n("duration_min_format", {
-                    duration: this.duration,
-                  })}
+                  {this.props.i18n(
+                    "duration_hour_min_format",
+                    durationToTime(this.duration)
+                  )}
                 </div>
               )}
               {this.price && (

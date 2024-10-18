@@ -12,6 +12,7 @@ import {
 import { Timer, DollarSign } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MdxContent } from "../mdx/mdxContentClient";
+import { durationToTime } from "@/lib/time";
 
 export type AddonsCardProps = BaseCardProps & {
   onAddonSelectionChange: (addons: AppointmentAddon[]) => void;
@@ -69,17 +70,19 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
                         className="flex flex-row items-center"
                         aria-label={
                           option.duration
-                            ? this.props.i18n("form_duration_label_format", {
-                                duration: option.duration,
-                              })
+                            ? this.props.i18n(
+                                "form_duration_hour_minutes_label_format",
+                                durationToTime(option.duration)
+                              )
                             : this.props.i18n("custom_duration_label_format")
                         }
                       >
                         <Timer className="mr-1" />
                         {option.duration
-                          ? this.props.i18n("duration_min_format", {
-                              duration: option.duration,
-                            })
+                          ? this.props.i18n(
+                              "duration_hour_min_format",
+                              durationToTime(option.duration)
+                            )
                           : this.props.i18n("duration_custom")}
                       </div>
                       {option.price && (

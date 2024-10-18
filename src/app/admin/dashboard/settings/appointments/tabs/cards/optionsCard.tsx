@@ -21,7 +21,7 @@ import { Sortable } from "@/components/ui/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
-import { GripVertical, Trash } from "lucide-react";
+import { Copy, GripVertical, Trash } from "lucide-react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { AddonSelectCard } from "./addonSelectCard";
@@ -29,6 +29,17 @@ import { FieldSelectCard } from "./fieldSelectCard";
 import { SupportsMarkdownTooltip } from "@/components/admin/tooltip/supportsMarkdown";
 import { Textarea } from "@/components/ui/textarea";
 import { WithId } from "@/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const optionSchema = z.object({
   name: z.string().min(2, "Option name must me at least 2 characters long"),
@@ -67,6 +78,7 @@ export type OptionProps = {
   isOverlay?: boolean;
   remove: () => void;
   update: (newValue: OptionSchema) => void;
+  clone: () => void;
 };
 
 export type OptionType = "Option";
@@ -84,6 +96,7 @@ export const OptionCard: React.FC<OptionProps> = ({
   isOverlay,
   remove,
   update,
+  clone,
 }) => {
   const {
     setNodeRef,
@@ -207,16 +220,49 @@ export const OptionCard: React.FC<OptionProps> = ({
           <GripVertical />
         </Button>
         <span>{nameValue || "Invalid option"}</span>
-        <Button
-          disabled={disabled}
-          variant="destructive"
-          className=""
-          onClick={remove}
-          size="sm"
-          type="button"
-        >
-          <Trash size={20} />
-        </Button>
+        <div className="flex flex-row gap-2">
+          <Button
+            disabled={disabled}
+            variant="outline"
+            className=""
+            size="sm"
+            type="button"
+            title="Clone"
+            onClick={clone}
+          >
+            <Copy size={20} />
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={disabled}
+                variant="destructive"
+                className=""
+                size="sm"
+                type="button"
+                title="Remove"
+              >
+                <Trash size={20} />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to remove this option?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <Button variant="destructive" onClick={remove}>
+                    Delete
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </CardHeader>
       <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
         <FormField

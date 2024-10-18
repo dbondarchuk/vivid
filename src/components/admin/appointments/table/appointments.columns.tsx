@@ -20,6 +20,7 @@ import {
 import { Link } from "@/components/ui/link";
 import { AppointmentDialog } from "../appointment.dialog";
 import { Button } from "@/components/ui/button";
+import { durationToTime } from "@/lib/time";
 
 const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   appointment,
@@ -129,7 +130,10 @@ const OptionCell: React.FC<{ appointment: Appointment }> = ({
               {appointment.totalDuration && (
                 <>
                   <div className="font-medium">Duration:</div>
-                  <div>{appointment.totalDuration} min</div>
+                  <div>
+                    {durationToTime(appointment.totalDuration).hours} hr{" "}
+                    {durationToTime(appointment.totalDuration).minutes} min
+                  </div>
                 </>
               )}
 
@@ -195,6 +199,20 @@ export const columns: ColumnDef<Appointment>[] = [
   },
   {
     header: "Duration",
-    cell: ({ row }) => <span>{row.original.totalDuration} min</span>,
+    cell: ({ row }) => {
+      const { hours, minutes } = durationToTime(row.original.totalDuration);
+
+      return (
+        <span>
+          {hours > 0 && <>{hours} hr</>}
+          {hours > 0 && minutes > 0 && <> </>}
+          {minutes > 0 && <>{minutes} min</>}
+        </span>
+      );
+    },
+  },
+  {
+    accessorFn: (app) => `$${app.totalPrice}`,
+    header: "Price",
   },
 ];

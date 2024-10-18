@@ -11,7 +11,7 @@ export const optionsSchema = z
   .min(1, "Options are required");
 
 export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
-  const { fields, append, remove, swap, update } = useFieldArray({
+  const { fields, append, remove, swap, update, insert } = useFieldArray({
     control: form.control,
     name: "options",
   });
@@ -33,6 +33,13 @@ export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
     } as Partial<OptionSchema> as OptionSchema);
   };
 
+  const clone = (index: number) => {
+    insert(index + 1, {
+      ...form.getValues(`options.${index}`),
+      id: v4(),
+    });
+  };
+
   return (
     <Sortable title="Options" ids={ids} onSort={sort} onAdd={addNew}>
       <div className="flex flex-grow flex-col gap-4">
@@ -46,6 +53,7 @@ export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
               disabled={disabled}
               remove={() => remove(index)}
               update={(newValue) => update(index, newValue)}
+              clone={() => clone(index)}
             />
           );
         })}

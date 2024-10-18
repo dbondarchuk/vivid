@@ -8,8 +8,32 @@ export function format(template: string, ...args: any[]) {
   });
 }
 
-export function template(template: string, args?: Record<string, any>) {
-  return Mustache.render(template, args);
+export function template(
+  template: string,
+  args?: Record<string, any>,
+  plainText = false
+) {
+  const originalEscape = Mustache.escape;
+
+  try {
+    if (plainText) Mustache.escape = (val) => val;
+
+    return Mustache.render(template, args);
+  } finally {
+    Mustache.escape = originalEscape;
+  }
+}
+
+export function templateSafeWithError(
+  templateString: string,
+  args?: Record<string, any>,
+  plainText = false
+) {
+  try {
+    return template(templateString, args, plainText);
+  } catch (e) {
+    return (e as Error).message;
+  }
 }
 
 export function formatJsx(template: string, ...args: any | ReactNode[]) {

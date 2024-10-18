@@ -11,7 +11,6 @@ import Editor from "@monaco-editor/react";
 import React from "react";
 import { z } from "zod";
 import { TabProps } from "./types";
-import { AppointmentStatus, appointmentStatuses } from "@/types";
 import { StatusText } from "@/components/admin/appointments/types";
 import {
   ResizableHandle,
@@ -21,6 +20,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IFrame } from "@/components/ui/iframe";
 import { AppointmentsSettingsFormValues } from "../schema";
+import { templateSafeWithError } from "@/lib/string";
 
 const emailTemplateSchema = z.object({
   subject: z
@@ -61,8 +61,9 @@ const EmailTemplateForm: React.FC<
   TabProps & {
     type: TemplateKeys;
     whenText: string;
+    demoArguments: Record<string, any>;
   }
-> = ({ form, disabled, type, whenText }) => {
+> = ({ form, disabled, type, whenText, demoArguments }) => {
   return (
     <div className="flex flex-col gap-2">
       <h3 className="m-0 text-center">
@@ -126,7 +127,14 @@ const EmailTemplateForm: React.FC<
                 <FormLabel>Preview</FormLabel>
                 <IFrame className="h-[60vh] w-full">
                   <ScrollArea className="h-[60vh] w-full">
-                    <div dangerouslySetInnerHTML={{ __html: field.value }} />
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: templateSafeWithError(
+                          field.value,
+                          demoArguments
+                        ),
+                      }}
+                    />
                   </ScrollArea>
                 </IFrame>
               </FormItem>
@@ -138,7 +146,9 @@ const EmailTemplateForm: React.FC<
   );
 };
 
-export const EmailTab: React.FC<TabProps> = ({ form, disabled }) => {
+export const EmailTab: React.FC<
+  TabProps & { demoArguments: Record<string, any> }
+> = ({ form, disabled, demoArguments }) => {
   return (
     <div className="flex flex-col gap-8 w-full">
       <div className="gap-8 md:grid md:grid-cols-2">
@@ -195,24 +205,28 @@ export const EmailTab: React.FC<TabProps> = ({ form, disabled }) => {
         disabled={disabled}
         type={"pending"}
         whenText="they book new appointment"
+        demoArguments={demoArguments}
       />
       <EmailTemplateForm
         form={form}
         disabled={disabled}
         type={"confirmed"}
         whenText="the appointment was confirmed"
+        demoArguments={demoArguments}
       />
       <EmailTemplateForm
         form={form}
         disabled={disabled}
         type={"declined"}
         whenText="the appointment was declined"
+        demoArguments={demoArguments}
       />
       <EmailTemplateForm
         form={form}
         disabled={disabled}
         type={"rescheduled"}
         whenText="the appointment was rescheduled"
+        demoArguments={demoArguments}
       />
       <div className="flex flex-col gap-2">
         <h3 className="m-0 text-center">Calendar event template</h3>
@@ -277,7 +291,14 @@ export const EmailTab: React.FC<TabProps> = ({ form, disabled }) => {
                   <FormLabel>Preview</FormLabel>
                   <IFrame className="h-[60vh] w-full">
                     <ScrollArea className="h-[60vh] w-full">
-                      <div dangerouslySetInnerHTML={{ __html: field.value }} />
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: templateSafeWithError(
+                            field.value,
+                            demoArguments
+                          ),
+                        }}
+                      />
                     </ScrollArea>
                   </IFrame>
                 </FormItem>

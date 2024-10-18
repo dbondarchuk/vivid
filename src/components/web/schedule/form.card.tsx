@@ -1,34 +1,20 @@
 "use client";
-import {
-  DateTime,
-  Time,
-  Field,
-  FieldType,
-  AppointmentFields,
-  Fields,
-  WithLabelFieldData,
-  getFields,
-} from "@/types";
+import { DateTime, Time, AppointmentFields, getFields } from "@/types";
 
 import React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Control, UseFormReturn, useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Form } from "@/components/ui/form";
 import { Calendar, Clock, DollarSign, Globe2, Timer } from "lucide-react";
-import { EmailField } from "../forms/email";
-import { NameField } from "../forms/name";
-import { PhoneField } from "../forms/phone";
 
 import { fallbackLanguage, useI18n } from "@/i18n/i18n";
 import { TimeZone, getTimeZones } from "@vvo/tzdb";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
-import { MultiLineField } from "../forms/multiLine";
-import { OneLineField } from "../forms/oneLine";
 import { BaseCard, BaseCardProps } from "./baseCard";
-import { formatTime } from "@/lib/time";
+import { durationToTime, formatTimeLocale } from "@/lib/time";
 import { fieldSchemaMapper, fieldsComponentMap } from "../forms/fields";
 
 export type FormCardProps = BaseCardProps & {
@@ -110,16 +96,19 @@ class _FormCard extends BaseCard<_FormCardProps> {
                 <div className="flex items-center">
                   <Clock className="mr-1" />
                   {this.props.i18n("form_time_label_format", {
-                    start: formatTime(this.props.dateTime.time),
-                    end: formatTime(timeEnd),
+                    start: formatTimeLocale(this.props.dateTime.time),
+                    end: formatTimeLocale(timeEnd),
                   })}
                 </div>
-                <div className="flex items-center">
-                  <Timer className="mr-1" />
-                  {this.props.i18n("form_duration_label_format", {
-                    duration: this.duration,
-                  })}
-                </div>
+                {this.duration && (
+                  <div className="flex items-center">
+                    <Timer className="mr-1" />
+                    {this.props.i18n(
+                      "form_duration_hour_minutes_label_format",
+                      durationToTime(this.duration)
+                    )}
+                  </div>
+                )}
                 {this.price && (
                   <div className="flex items-center">
                     <DollarSign className="mr-1" />

@@ -55,7 +55,10 @@ export type AppointmentScheduleFormProps = {
 export const AppointmentScheduleForm: React.FC<
   AppointmentScheduleFormProps
 > = ({ options, timeZone }) => {
-  const now = React.useMemo(() => DateTime.now().toJSDate(), []);
+  const now = React.useMemo(
+    () => DateTime.now().set({ second: 0 }).toJSDate(),
+    []
+  );
 
   const formSchema = z
     .object({

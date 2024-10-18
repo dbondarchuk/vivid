@@ -2,7 +2,11 @@
 
 import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
-import { BookingConfiguration } from "@/types";
+import {
+  BookingConfiguration,
+  GeneralConfiguration,
+  SocialConfiguration,
+} from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -21,16 +25,29 @@ import { AddonsTab } from "./tabs/addons";
 import { OptionsTab } from "./tabs/options";
 import { cn } from "@/lib/utils";
 import { FieldsTab } from "./tabs/fields";
+import { TextMessagesTab } from "./tabs/textMessages";
+import { RemindersTab } from "./tabs/reminders";
+import { demoAppointment } from "./fixtures";
+import { getArguments } from "@/services/notifications/getArguments";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
-}> = ({ values }) => {
+  generalSettings: GeneralConfiguration;
+  socialSettings: SocialConfiguration;
+}> = ({ values, generalSettings, socialSettings }) => {
   const form = useForm<AppointmentsSettingsFormValues>({
     resolver: zodResolver(appointmentsSettingsFormSchema),
     mode: "all",
     reValidateMode: "onChange",
     values,
   });
+
+  const { arg: demoArguments } = getArguments(
+    demoAppointment,
+    form.getValues(),
+    generalSettings,
+    socialSettings
+  );
 
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
@@ -56,6 +73,8 @@ export const AppointmentsSettingsForm: React.FC<{
     }
   };
 
+  console.log(JSON.stringify(form.formState.errors));
+
   const mainTabInvalid =
     form.getFieldState("ics").invalid ||
     form.getFieldState("maxWeeksInFuture").invalid ||
@@ -67,6 +86,8 @@ export const AppointmentsSettingsForm: React.FC<{
   const triggerValidation = () => {
     form.trigger();
     form.trigger("email");
+    form.trigger("textMessages");
+    form.trigger("reminders");
     form.trigger("addons");
     form.trigger("fields");
     form.trigger("options");
@@ -100,6 +121,26 @@ export const AppointmentsSettingsForm: React.FC<{
               )}
             >
               Emails
+            </TabsTrigger>
+            <TabsTrigger
+              value="textMessages"
+              className={cn(
+                form.getFieldState("textMessages").invalid
+                  ? "text-destructive"
+                  : ""
+              )}
+            >
+              Text Messages
+            </TabsTrigger>
+            <TabsTrigger
+              value="reminders"
+              className={cn(
+                form.getFieldState("reminders").invalid
+                  ? "text-destructive"
+                  : ""
+              )}
+            >
+              Reminders
             </TabsTrigger>
             <TabsTrigger
               value="shifts"
@@ -140,7 +181,13 @@ export const AppointmentsSettingsForm: React.FC<{
             <MainTab form={form} />
           </TabsContent>
           <TabsContent value="email">
-            <EmailTab form={form} />
+            <EmailTab form={form} demoArguments={demoArguments} />
+          </TabsContent>
+          <TabsContent value="textMessages">
+            <TextMessagesTab form={form} demoArguments={demoArguments} />
+          </TabsContent>
+          <TabsContent value="reminders">
+            <RemindersTab form={form} demoArguments={demoArguments} />
           </TabsContent>
           <TabsContent value="shifts">
             <ShiftsTab form={form} />

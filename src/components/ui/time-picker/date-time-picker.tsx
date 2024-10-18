@@ -94,6 +94,7 @@ export const DateTimePicker: React.FC<DateTimePickerProps> = ({
           selected={date?.toJSDate()}
           onSelect={(d) => handleSelect(d)}
           initialFocus
+          className="*:justify-center"
           {...calendarProps}
         />
         <div className="p-3 border-t border-border">

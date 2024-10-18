@@ -48,6 +48,12 @@ export const navItems: NavItemWithOptionalChildren[] = [
         label: "SMTP",
       },
       {
+        title: "SMS",
+        href: "/admin/dashboard/settings/sms",
+        icon: "sms",
+        label: "SMS",
+      },
+      {
         title: "Header",
         href: "/admin/dashboard/settings/header",
         icon: "header",
@@ -58,6 +64,12 @@ export const navItems: NavItemWithOptionalChildren[] = [
         href: "/admin/dashboard/settings/footer",
         icon: "footer",
         label: "Footer",
+      },
+      {
+        title: "Scripts",
+        href: "/admin/dashboard/settings/scripts",
+        icon: "script",
+        label: "Script",
       },
       {
         title: "Appointments",

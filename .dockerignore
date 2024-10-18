@@ -1,6 +1,7 @@
 /public/upload
 /data
 Dockerfile
+docker-compose.yaml
 .dockerignore
 node_modules
 npm-debug.log

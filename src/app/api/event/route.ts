@@ -13,7 +13,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
   )
     return NextResponse.json({ error: "event is required" }, { status: 400 });
 
-  await Services.EventsService().createEvent(event);
+  const { _id } = await Services.EventsService().createEvent(event);
 
-  return NextResponse.json({ success: true }, { status: 201 });
+  return NextResponse.json({ success: true, id: _id }, { status: 201 });
 }

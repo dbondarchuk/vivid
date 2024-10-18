@@ -4,9 +4,13 @@ import { AppointmentChoice, Fields, WithLabelFieldData } from "@/types";
 
 export type BookingProps = {
   className?: string;
+  successPage?: string;
 };
 
-export const Booking: React.FC<BookingProps> = async ({ className }) => {
+export const Booking: React.FC<BookingProps> = async ({
+  className,
+  successPage,
+}) => {
   const config = await Services.ConfigurationService().getConfiguration(
     "booking"
   );
@@ -23,5 +27,11 @@ export const Booking: React.FC<BookingProps> = async ({ className }) => {
         .filter((f) => !!f) || [],
   }));
 
-  return <Appointments options={choices} optionsClassName={className} />;
+  return (
+    <Appointments
+      options={choices}
+      optionsClassName={className}
+      successPage={successPage}
+    />
+  );
 };

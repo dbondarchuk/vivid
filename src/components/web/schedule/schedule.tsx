@@ -8,6 +8,7 @@ import type {
   AppointmentFields,
   AppointmentAddon,
   AppointmentChoice,
+  WithId,
 } from "@/types";
 import { DateTime as LuxonDateTime } from "luxon";
 import React from "react";
@@ -17,10 +18,12 @@ import { DurationCard } from "./duration.card";
 import { FormCard } from "./form.card";
 import { useToast } from "../../ui/use-toast";
 import { AddonsCard } from "./addons.card";
+import { useRouter } from "next/navigation";
 
 export type ScheduleProps = {
   appointmentOption: AppointmentChoice;
   back?: () => void;
+  successPage?: string;
 };
 
 type Step = "duration" | "addons" | "calendar" | "form" | "confirmation";
@@ -39,6 +42,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   );
 
   const { toast } = useToast();
+  const topRef = React.createRef<HTMLDivElement>();
 
   const [duration, setDuration] = React.useState<number | undefined>(
     props.appointmentOption.duration
@@ -60,6 +64,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   const [availability, setAvailability] = React.useState<Availability>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [fields, setFields] = React.useState<Record<string, any>>({});
+
+  const router = useRouter();
 
   const getTotalDuration = () => {
     if (!duration) return undefined;
@@ -148,10 +154,21 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         if (response.status >= 400) throw new Error(response.statusText);
         return response.json();
       })
-      .then(() => {
+      .then(({ id }: WithId<any>) => {
         setFields(fields);
         setIsLoading(false);
-        setStep("confirmation");
+
+        if (props.successPage) {
+          const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
+
+          document.cookie = `appointment_id=${encodeURIComponent(
+            id
+          )}; expires=${expireDate.toJSDate().toUTCString()};`;
+
+          router.push(props.successPage);
+        } else {
+          setStep("confirmation");
+        }
       })
       .catch(() => {
         setIsLoading(false);
@@ -162,6 +179,10 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         });
       });
   };
+
+  React.useEffect(() => {
+    topRef?.current?.scrollIntoView();
+  }, [step]);
 
   const nextStep = () => {
     let next: Step | undefined = undefined;
@@ -241,6 +262,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
   return (
     <div className="relative">
+      <div ref={topRef} />
       {step === "duration" && (
         <DurationCard
           prev={props.back ? prevStep : undefined}

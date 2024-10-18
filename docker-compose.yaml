@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  vivid:
+    image: vivid
+    environment:
+      - MONGODB_URI=mongodb://192.168.0.162:27017/vivid-local?retryWrites=true&w=majority
+      - TZ=America/New_York
+      - AUTH_PASSWORD=password
+      - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
+      - AUTH_TRUST_HOST=http://localhost:3000
+      - AUTH_URL=http://localhost:3000
+      - SCHEDULER_KEY="ZAvNcu8xIQOawePzQmh5JxMpFGK0g5Tp"
+
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./public/upload:/app/public/upload"

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { BaseCard, BaseCardProps } from "./baseCard";
 import { ReactNode } from "react";
 import { withI18n } from "@/i18n/withI18n";
+import { durationToTime } from "@/lib/time";
 
 export type DurationCardProps = BaseCardProps & {
   duration?: number;
@@ -37,7 +38,10 @@ class _DurationCard extends BaseCard<DurationCardProps> {
                   )
                 }
               >
-                {this.props.i18n("duration_minutes_format", { duration: dur })}
+                {this.props.i18n(
+                  "duration_hour_minutes_format",
+                  durationToTime(dur)
+                )}
               </Button>
             </div>
           ))}

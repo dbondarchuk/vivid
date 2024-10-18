@@ -25,7 +25,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AppointmentActionButton } from "@/components/admin/appointments/action.button";
 
 export type FieldSelectProps = {
   item: {
