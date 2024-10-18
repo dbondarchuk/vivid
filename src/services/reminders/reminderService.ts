@@ -77,11 +77,19 @@ export class ReminderService {
             minutes: reminder.minutes,
           });
 
+        const endDate = startDate.plus({ minutes: 1, seconds: -1 });
+
+        console.log(
+          `Looking for appointments between ${startDate.toISO()} and ${endDate.toISO()} for reminder ${
+            reminder.name
+          }`
+        );
+
         const appointments = await this.eventsService.getAppointments({
           status: ["confirmed"],
           range: {
             start: startDate.toJSDate(),
-            end: startDate.plus({ minutes: 1, seconds: -1 }).toJSDate(),
+            end: endDate.toJSDate(),
           },
         });
 
@@ -96,15 +104,26 @@ export class ReminderService {
         )
           return [];
 
-        const startDate = dt.startOf("day").plus({
-          days: 1,
-        });
+        const startDate = dt
+          .startOf("day")
+          .plus({ days: reminder.days, weeks: reminder.weeks })
+          .plus({
+            days: 1,
+          });
+
+        const endDate = startDate.plus({ days: 1, seconds: -1 });
+
+        console.log(
+          `Looking for appointments between ${startDate.toISO()} and ${endDate.toISO()} for reminder ${
+            reminder.name
+          }`
+        );
 
         const appointments = await this.eventsService.getAppointments({
           status: ["confirmed"],
           range: {
             start: startDate.toJSDate(),
-            end: startDate.plus({ days: 1, seconds: -1 }).toJSDate(),
+            end: endDate.toJSDate(),
           },
         });
 
