@@ -106,10 +106,7 @@ export class ReminderService {
 
         const startDate = dt
           .startOf("day")
-          .plus({ days: reminder.days, weeks: reminder.weeks })
-          .plus({
-            days: 1,
-          });
+          .plus({ days: reminder.days, weeks: reminder.weeks });
 
         const endDate = startDate.plus({ days: 1, seconds: -1 });
 
