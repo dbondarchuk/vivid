@@ -41,3 +41,7 @@ export function formatJsx(template: string, ...args: any | ReactNode[]) {
     return typeof args[match] != "undefined" ? args[match] : match;
   });
 }
+
+export function escapeRegex(str: string) {
+  return str.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&");
+}

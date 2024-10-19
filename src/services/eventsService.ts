@@ -1,5 +1,6 @@
 import { getDbConnection } from "@/database";
 import { buildSearchQuery } from "@/lib/query";
+import { escapeRegex } from "@/lib/string";
 import type {
   AppointmentEvent,
   AppointmentStatus,
@@ -157,7 +158,7 @@ export class EventsService {
     }
 
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<Appointment>(
         { $regex },
         "option.name",

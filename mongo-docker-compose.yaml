@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo:4.4.29
+    restart: unless-stopped
+    ports:
+      - "27017:27017"

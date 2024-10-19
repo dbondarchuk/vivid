@@ -36,6 +36,8 @@ export default function UserAuthForm() {
     defaultValues,
   });
 
+  const error = searchParams.get("error");
+
   const onSubmit = async (data: UserFormValue) => {
     signIn("credentials", {
       email: data.email,
@@ -88,6 +90,12 @@ export default function UserAuthForm() {
               </FormItem>
             )}
           />
+
+          {error && (
+            <p className="text-sm font-medium text-destructive">
+              Email or password is incorrect
+            </p>
+          )}
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
             Continue With Email

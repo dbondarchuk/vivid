@@ -42,6 +42,7 @@ import { number, z } from "zod";
 import { AppointmentRescheduleDialog } from "./appointment.reschedule.dialog";
 import { Markdown } from "@/components/web/markdown/Markdown";
 import { durationToTime } from "@/lib/time";
+import { Link } from "@/components/ui/link";
 
 const timezones = getTimeZones();
 
@@ -192,13 +193,40 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                     <AccordionContent>
                       <div className="grid grid-cols-2 gap-1">
                         <div>Name:</div>
-                        <div>{name}</div>
+                        <div>
+                          <Link
+                            variant="default"
+                            href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                              name
+                            )}`}
+                          >
+                            {name}
+                          </Link>
+                        </div>
                         <div>Email:</div>
-                        <div>{email}</div>
+                        <div>
+                          <Link
+                            variant="default"
+                            href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                              email
+                            )}`}
+                          >
+                            {email}
+                          </Link>
+                        </div>
                         {Object.entries(restFields).map(([key, value]) => (
                           <React.Fragment key={key}>
                             <div>{key}:</div>
-                            <div>{value}</div>
+                            <div>
+                              <Link
+                                variant="default"
+                                href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                                  value
+                                )}`}
+                              >
+                                {value}
+                              </Link>
+                            </div>
                           </React.Fragment>
                         ))}
                       </div>
