@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { Appointment } from "@/types";
+import { Appointment, AppointmentStatus } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getTimeZones } from "@vvo/tzdb";
 import { DateTime } from "luxon";
@@ -103,6 +103,13 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
       ...prev,
       dateTime,
       totalDuration: duration,
+    }));
+  };
+
+  const updateStatus = (newStatus: AppointmentStatus) => {
+    setAppointment((prev) => ({
+      ...prev,
+      status: newStatus,
     }));
   };
 
@@ -268,6 +275,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                                     variant="secondary"
                                     _id={appointment._id}
                                     status="declined"
+                                    onSuccess={updateStatus}
                                   >
                                     Decline
                                   </AppointmentActionButton>
@@ -281,6 +289,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                               size="sm"
                               _id={appointment._id}
                               status="confirmed"
+                              onSuccess={updateStatus}
                             >
                               Confirm
                             </AppointmentActionButton>

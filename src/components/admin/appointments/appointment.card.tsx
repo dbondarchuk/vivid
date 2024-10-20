@@ -140,7 +140,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               _id={appointment._id}
               status="confirmed"
             >
-              Accept
+              Confirm
             </AppointmentActionButton>
           )}
         </CardFooter>

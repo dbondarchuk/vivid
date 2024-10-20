@@ -50,12 +50,16 @@ export const AppointmentActionButton = React.forwardRef<
     status: AppointmentStatus;
     onSuccess?: (newStatus: AppointmentStatus) => void;
   }
->(({ _id, status, onSuccess, ...props }, ref) => {
+>(({ _id, status, onSuccess, onClick: originalOnClick, ...props }, ref) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const router = useRouter();
 
-  const onClick = () =>
-    changeStatus(_id, status, setIsLoading, router.refresh, onSuccess);
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    changeStatus(_id, status, setIsLoading, router.refresh, (newStatus) => {
+      onSuccess?.(newStatus);
+      originalOnClick?.(e);
+    });
+  };
 
   return (
     <Button
