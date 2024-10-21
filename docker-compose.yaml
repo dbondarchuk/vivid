@@ -3,7 +3,8 @@ services:
   vivid:
     image: vivid
     environment:
-      - MONGODB_URI=mongodb://192.168.0.162:27017/vivid-local?retryWrites=true&w=majority
+      # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid-local?retryWrites=true&w=majority
+      - MONGODB_URI=mongodb://192.168.0.142:27017/vivid?retryWrites=true&w=majority
       - TZ=America/New_York
       - AUTH_PASSWORD=password
       - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
