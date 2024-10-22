@@ -77,7 +77,9 @@ export class OwnEmailNotificationService extends IEmailNotificationService {
           content: eventContent,
         },
       },
-      smtpConfiguration
+      smtpConfiguration,
+      "Owner Email Notification Service",
+      appointment._id
     );
   }
 

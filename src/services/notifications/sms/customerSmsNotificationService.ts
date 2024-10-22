@@ -24,7 +24,8 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
       arg,
       bookingConfiguration,
       generalConfiguration,
-      arg.config.name
+      arg.config.name,
+      "New Request"
     );
   }
 
@@ -43,7 +44,8 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
       arg,
       bookingConfiguration,
       generalConfiguration,
-      arg.config.name
+      arg.config.name,
+      "Declined"
     );
   }
 
@@ -62,7 +64,8 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
       arg,
       bookingConfiguration,
       generalConfiguration,
-      arg.config.name
+      arg.config.name,
+      "Confirmed"
     );
   }
 
@@ -89,7 +92,8 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
       arg,
       bookingConfiguration,
       generalConfiguration,
-      arg.config.name
+      arg.config.name,
+      "Reschedule"
     );
   }
 
@@ -99,7 +103,8 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
     args: Record<string, any>,
     config: BookingConfiguration,
     generalConfiguration: GeneralConfiguration,
-    name: string
+    name: string,
+    initiator: string
   ) {
     const phone = getPhoneField(appointment, config);
     if (!phone) {
@@ -128,6 +133,8 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
       smtpConfiguration,
       sender: name,
       webhookData: appointment._id,
+      appointmentId: appointment._id,
+      initiator: `SMS Notificaiton Service - ${initiator}`,
     });
   }
 }

@@ -22,6 +22,7 @@ import {
   LogIn,
   LucideIcon,
   Mail,
+  MailSearch,
   MessageCircle,
   Moon,
   MoreVertical,
@@ -79,4 +80,5 @@ export const Icons = {
   pages: Globe,
   sms: MessageCircle,
   script: Code2,
+  communicationLogs: MailSearch,
 };

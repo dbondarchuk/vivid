@@ -41,7 +41,7 @@ export class PagesService {
         [curr.key]: curr.desc ? -1 : 1,
       }),
       {}
-    ) || { updatedAt: 1 };
+    ) || { updatedAt: -1 };
 
     const filter: Filter<Page> = {};
 

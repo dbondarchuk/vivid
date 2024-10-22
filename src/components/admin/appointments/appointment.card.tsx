@@ -33,6 +33,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Heading } from "@/components/ui/heading";
+import { durationToTime } from "@/lib/time";
 
 export type AppointmentCardProps = {
   appointment: Appointment;
@@ -41,6 +42,8 @@ export type AppointmentCardProps = {
 export const AppointmentCard: React.FC<AppointmentCardProps> = ({
   appointment,
 }) => {
+  const duration = durationToTime(appointment.totalDuration);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -86,7 +89,23 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <dt className="flex self-center items-center gap-1">
               <Clock size={16} /> Duration:
             </dt>
-            <dd className="col-span-2">{appointment.totalDuration} minutes</dd>
+            <dd className="col-span-2">
+              {duration.hours > 0 && <>{duration.hours} hours</>}
+              {duration.hours > 0 && duration.minutes > 0 && <> </>}
+              {duration.minutes > 0 && <>{duration.minutes} minutes</>}
+            </dd>
+          </div>
+          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt className="flex self-center items-center gap-1">
+              <Calendar size={16} /> Ends at:
+            </dt>
+            <dd className="col-span-2">
+              {DateTime.fromJSDate(appointment.dateTime, {
+                zone: "local",
+              })
+                .plus({ minutes: appointment.totalDuration })
+                .toLocaleString(DateTime.DATETIME_SHORT)}
+            </dd>
           </div>
           {appointment.totalPrice && (
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

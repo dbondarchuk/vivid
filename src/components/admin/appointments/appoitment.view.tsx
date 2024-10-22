@@ -163,7 +163,15 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                             ({appointment.timeZone})
                           </span>
                         </div>
-                        <div>Request at:</div>
+                        <div>Ends at:</div>
+                        <div>
+                          {DateTime.fromJSDate(appointment.dateTime)
+                            .plus({ minutes: appointment.totalDuration })
+                            .toLocaleString(
+                              DateTime.DATETIME_MED_WITH_WEEKDAY
+                            )}{" "}
+                        </div>
+                        <div>Requested at:</div>
                         <div>
                           {DateTime.fromJSDate(
                             appointment.createdAt

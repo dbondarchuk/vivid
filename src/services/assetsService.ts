@@ -28,7 +28,7 @@ export class AssetsService {
         [curr.key]: curr.desc ? -1 : 1,
       }),
       {}
-    ) || { uploadedAt: 1 };
+    ) || { uploadedAt: -1 };
 
     const filter: Filter<Asset> = {};
 

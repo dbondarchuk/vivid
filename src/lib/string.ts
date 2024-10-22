@@ -45,3 +45,10 @@ export function formatJsx(template: string, ...args: any | ReactNode[]) {
 export function escapeRegex(str: string) {
   return str.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&");
 }
+
+export function maskify(str: string) {
+  return str
+    .split("")
+    .map((c, index) => (index % 2 == 0 ? c : "#"))
+    .join("");
+}

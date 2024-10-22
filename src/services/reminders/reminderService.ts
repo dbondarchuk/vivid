@@ -79,12 +79,6 @@ export class ReminderService {
 
         const endDate = startDate.plus({ minutes: 1, seconds: -1 });
 
-        console.log(
-          `Looking for appointments between ${startDate.toISO()} and ${endDate.toISO()} for reminder ${
-            reminder.name
-          }`
-        );
-
         const appointments = await this.eventsService.getAppointments({
           status: ["confirmed"],
           range: {
@@ -92,6 +86,14 @@ export class ReminderService {
             end: endDate.toJSDate(),
           },
         });
+
+        console.log(
+          `Found ${
+            appointments.total
+          } appointments between ${startDate.toISO()} and ${endDate.toISO()} for reminder ${
+            reminder.name
+          }`
+        );
 
         return appointments.items;
       }
@@ -123,6 +125,14 @@ export class ReminderService {
             end: endDate.toJSDate(),
           },
         });
+
+        console.log(
+          `Found ${
+            appointments.total
+          } appointments between ${startDate.toISO()} and ${endDate.toISO()} for reminder ${
+            reminder.name
+          }`
+        );
 
         return appointments.items;
       }
@@ -159,7 +169,9 @@ export class ReminderService {
             subject: template(reminder.subject, arg),
             to: appointment.fields.email,
           },
-          smtpConfiguration
+          smtpConfiguration,
+          `Reminder Service - ${reminder.name}`,
+          appointment._id
         );
       case "sms":
         const phone = getPhoneField(appointment, config);
@@ -171,7 +183,7 @@ export class ReminderService {
           return;
         }
 
-        return sendSms({
+        await sendSms({
           phone,
           sender: generalConfig.name,
           generalConfiguration,
@@ -179,7 +191,11 @@ export class ReminderService {
           smtpConfiguration,
           body: template(reminder.body, arg),
           webhookData: appointment._id,
+          initiator: `Reminder service - ${reminder.name}`,
+          appointmentId: appointment._id,
         });
+
+        return;
 
       default:
         console.error(`Unknow reminder channel type: ${channel}`);

@@ -1,5 +1,6 @@
 import { AssetsService } from "@/services/assetsService";
 import { AvailabilityService } from "@/services/availabilityService";
+import { CommunicationLogService } from "@/services/communicationLogService";
 import {
   CachedConfigurationService,
   ConfigurationService,
@@ -19,6 +20,7 @@ type Types = {
   AvailabilityService: () => AvailabilityService;
   NotificationService: () => NotificationService;
   PagesService: () => PagesService;
+  CommunicationLogService: () => CommunicationLogService;
 
   RemindersService: () => ReminderService;
 };
@@ -47,6 +49,7 @@ export const Services: Types = {
     () => new NotificationService(Services.ConfigurationService())
   ),
   PagesService: cache(() => new PagesService()),
+  CommunicationLogService: cache(() => new CommunicationLogService()),
 
   RemindersService: () =>
     new ReminderService(

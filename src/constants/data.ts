@@ -79,4 +79,10 @@ export const navItems: NavItemWithOptionalChildren[] = [
       },
     ],
   },
+  {
+    title: "Communication logs",
+    href: "/admin/dashboard/communication-logs",
+    icon: "communicationLogs",
+    label: "Communication logs",
+  },
 ];

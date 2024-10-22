@@ -1,5 +1,5 @@
 import { Services } from "@/lib/services";
-import { template } from "@/lib/string";
+import { maskify, template } from "@/lib/string";
 import { sendEmail } from "@/services/notifications/email/sendEmail";
 import { getArguments } from "@/services/notifications/getArguments";
 import { sendSms } from "@/services/notifications/sms/sendSms";
@@ -66,12 +66,24 @@ export async function POST(request: NextRequest, response: NextResponse) {
   }
 
   console.log(
-    `Received TextBelt reply webhook from ${reply.fromNumber} with data ${reply.data}`
+    `Received TextBelt reply webhook from ${maskify(
+      reply.fromNumber
+    )} with data ${reply.data}`
   );
 
   const appointment = reply?.data
     ? await Services.EventsService().getAppointment(reply?.data)
     : undefined;
+
+  await Services.CommunicationLogService().log({
+    channel: "sms",
+    direction: "inbound",
+    initiator: reply.fromNumber,
+    receiver: "TextBelt Webhook",
+    text: reply.text,
+    data: reply.textId,
+    appointmentId: appointment?._id,
+  });
 
   const bodyTemplate = await readFile(
     join(process.cwd(), "templates", "email", "ownerSmsReply.html"),
@@ -97,7 +109,9 @@ export async function POST(request: NextRequest, response: NextResponse) {
       subject: "SMS reply",
       body: description,
     },
-    smtpConfiguration
+    smtpConfiguration,
+    "TextBelt Webhook - notify owner",
+    appointment?._id
   );
 
   if (smsConfiguration.autoReply) {
@@ -110,6 +124,8 @@ export async function POST(request: NextRequest, response: NextResponse) {
       smtpConfiguration,
       body: replyBody,
       webhookData: reply.data,
+      initiator: "TextBelt Webhook - auto reply",
+      appointmentId: appointment?._id,
     });
   }
 

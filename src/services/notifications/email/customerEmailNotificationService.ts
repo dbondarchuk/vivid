@@ -28,7 +28,9 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration
+      smtpConfiguration,
+      `Email Notification Service - New Request`,
+      appointment._id
     );
   }
 
@@ -57,7 +59,9 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration
+      smtpConfiguration,
+      `Email Notification Service - Declined`,
+      appointment._id
     );
   }
 
@@ -86,7 +90,9 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration
+      smtpConfiguration,
+      `Email Notification Service - Confirmed`,
+      appointment._id
     );
   }
 
@@ -125,7 +131,9 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration
+      smtpConfiguration,
+      `Email Notification Service - Rescheduled`,
+      appointment._id
     );
   }
 }

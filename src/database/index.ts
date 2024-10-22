@@ -27,5 +27,7 @@ if (env.NODE_ENV === "development") {
 }
 
 export const getDbConnection = async () => {
+  await client.connect();
+
   return client.db();
 };

@@ -1,13 +1,13 @@
+import { Toaster } from "@/components/ui/toaster";
 import { Footer } from "@/components/web/footer/Footer";
 import { Header } from "@/components/web/header/Header";
-import type { Metadata } from "next";
-import { Montserrat, Playfair_Display } from "next/font/google";
-import "../globals.css";
-import { TwLoad } from "../twLoad";
-import { Toaster } from "@/components/ui/toaster";
 import { Services } from "@/lib/services";
 import { Script } from "@/types";
+import { Montserrat, Playfair_Display } from "next/font/google";
 import NextScript from "next/script";
+import { TwLoad } from "../twLoad";
+
+import "../globals.css";
 
 const montserrat = Montserrat({
   subsets: ["latin"],

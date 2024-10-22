@@ -122,6 +122,48 @@ export class EventsService {
     return result;
   }
 
+  // This requires upgrade of MongoDB to at least 5.0
+  // public async getNextAppointments(date: Date, limit = 5) {
+  //   const db = await getDbConnection();
+  //   const appointments = db.collection<Appointment>(
+  //     APPOINTMENTS_COLLECTION_NAME
+  //   );
+
+  //   const result = await appointments
+  //     .aggregate([
+  //       {
+  //         $addFields: {
+  //           endAt: {
+  //             $dateAdd: {
+  //               startDate: "$dateTime",
+  //               unit: "minute",
+  //               amount: "$totalDuration",
+  //             },
+  //           },
+  //         },
+  //       },
+  //       {
+  //         $sort: {
+  //           dateTime: -1,
+  //         },
+  //       },
+  //       {
+  //         $match: {
+  //           endAt: {
+  //             $gte: date,
+  //           },
+  //           status: {
+  //             $ne: "declined",
+  //           },
+  //         },
+  //       },
+  //       { $limit: limit },
+  //     ])
+  //     .toArray();
+
+  //   return result as Appointment[];
+  // }
+
   public async getAppointments(
     query: Query & {
       range?: DateRange;
@@ -136,7 +178,7 @@ export class EventsService {
         [curr.key]: curr.desc ? -1 : 1,
       }),
       {}
-    ) || { dateTime: 1 };
+    ) || { dateTime: -1 };
 
     const filter: Filter<Appointment> = {};
     if (query.range?.start || query.range?.end) {

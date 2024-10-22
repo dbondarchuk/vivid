@@ -1,18 +1,16 @@
+import {
+  emailCommunicationChannel,
+  smsCommunicationChannel,
+} from "../communication";
+
 export const timeBeforeReminderType = "timeBefore" as const;
 export const atTimeReminderType = "atTime" as const;
 export const reminderTypes = [
   timeBeforeReminderType,
   atTimeReminderType,
 ] as const;
-export type ReminderType = (typeof reminderTypes)[number];
 
-export const emailReminderChannel = "email" as const;
-export const smsReminderChannel = "sms" as const;
-export const reminderChannels = [
-  emailReminderChannel,
-  smsReminderChannel,
-] as const;
-export type ReminderChannel = (typeof reminderChannels)[number];
+export type ReminderType = (typeof reminderTypes)[number];
 
 export type TimeBeforeReminder = {
   type: typeof timeBeforeReminderType;
@@ -33,13 +31,13 @@ export type AtTimeReminder = {
 };
 
 export type EmailChannelReminder = {
-  channel: typeof emailReminderChannel;
+  channel: typeof emailCommunicationChannel;
   body: string;
   subject: string;
 };
 
 export type SmsChannelReminder = {
-  channel: typeof smsReminderChannel;
+  channel: typeof smsCommunicationChannel;
   body: string;
 };
 

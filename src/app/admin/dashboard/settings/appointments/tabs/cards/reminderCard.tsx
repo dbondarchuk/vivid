@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  ReminderChannel,
-  reminderChannels,
+  CommunicationChannel,
+  communicationChannels,
   ReminderType,
   reminderTypes,
 } from "@/types";
@@ -55,8 +55,8 @@ const reminderTypeValues = Object.entries(reminderTypeLabels).map(
   ([value, label]) => ({ value, label } as IComboboxItem)
 );
 
-const reminderChannelesEnum = z.enum(reminderChannels);
-export const reminderChannelLabels: Record<ReminderChannel, string> = {
+const reminderChannelesEnum = z.enum(communicationChannels);
+export const reminderChannelLabels: Record<CommunicationChannel, string> = {
   email: "Email",
   sms: "SMS",
 };

@@ -1,4 +1,6 @@
+import { Services } from "@/lib/services";
 import { SmtpConfiguration } from "@/types";
+import { convert } from "html-to-text";
 import { createEvent, EventAttributes } from "ics";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
@@ -19,7 +21,9 @@ export type Email = {
 
 export const sendEmail = async (
   email: Email,
-  smtpConfiguration: SmtpConfiguration
+  smtpConfiguration: SmtpConfiguration,
+  initiator: string,
+  appointmentId?: string
 ) => {
   let icalEvent: Mail.IcalAttachment | undefined = undefined;
   if (email.icalEvent) {
@@ -52,5 +56,16 @@ export const sendEmail = async (
     },
   });
 
-  await transport.sendMail(mailOptions);
+  const response = await transport.sendMail(mailOptions);
+
+  Services.CommunicationLogService().log({
+    direction: "outbound",
+    channel: "email",
+    initiator,
+    receiver: Array.isArray(email.to) ? email.to.join("; ") : email.to,
+    text: convert(email.body, { wordwrap: 130 }),
+    subject: email.subject,
+    appointmentId,
+    data: response,
+  });
 };
