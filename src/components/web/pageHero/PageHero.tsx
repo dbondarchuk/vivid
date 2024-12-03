@@ -28,9 +28,9 @@ export const PageHero: React.FC<PageHeroSectionProps> = ({
     >
       <div className="py-[10vmax]  flex flex-col items-center gap-10 text-center">
         {subtitle && (
-          <h2 className="font-body font-normal text-3xl p">{subtitle}</h2>
+          <h2 className="font-primary font-normal text-3xl p">{subtitle}</h2>
         )}
-        <h1 className="font-header font-semibold text-5xl py-10">{title}</h1>
+        <h1 className="font-secondary font-semibold text-5xl py-10">{title}</h1>
         {description}
         {cta && (
           <div className="flex flex-row gap-2">

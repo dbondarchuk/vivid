@@ -22,29 +22,29 @@ export class ReminderService {
   ) {}
 
   public async sendReminders(date: Date) {
-    const config = await this.configurationService.getConfiguration("booking");
-    const generalConfig = await this.configurationService.getConfiguration(
-      "general"
-    );
-    const socialConfig = await this.configurationService.getConfiguration(
+    const {
+      booking: bookingConfig,
+      general: generalConfig,
+      social: socialConfig,
+      smtp: smtpConfiguration,
+      sms: smsConfiguration,
+    } = await this.configurationService.getConfigurations(
+      "booking",
+      "general",
+      "sms",
+      "smtp",
       "social"
     );
-    const smtpConfiguration = await this.configurationService.getConfiguration(
-      "smtp"
-    );
-    const smsConfiguration = await this.configurationService.getConfiguration(
-      "sms"
-    );
 
-    const timezone = config.timezone;
+    const timezone = bookingConfig.timezone;
 
-    const promises = (config.reminders || []).map(async (reminder) => {
+    const promises = (bookingConfig.reminders || []).map(async (reminder) => {
       const appointments = await this.getAppointments(date, reminder, timezone);
       const appointmentPromises = appointments.map((appointment) =>
         this.sendReminder(
           appointment,
           reminder,
-          config,
+          bookingConfig,
           generalConfig,
           smsConfiguration,
           smtpConfiguration,
@@ -157,7 +157,8 @@ export class ReminderService {
       appointment,
       config,
       generalConfig,
-      socialConfig
+      socialConfig,
+      true
     );
 
     const channel = reminder.channel;

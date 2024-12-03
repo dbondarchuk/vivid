@@ -5,8 +5,8 @@ import React from "react";
 
 const fonts = {
   default: "",
-  body: "font-body",
-  header: "font-header",
+  body: "font-primary",
+  header: "font-secondary",
 };
 
 const textSizes = {

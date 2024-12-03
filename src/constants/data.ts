@@ -26,6 +26,30 @@ export const navItems: NavItemWithOptionalChildren[] = [
     label: "Pages",
   },
   {
+    title: "Appearance",
+    icon: "paintbrush",
+    items: [
+      {
+        title: "Styling",
+        href: "/admin/dashboard/appearence/styling",
+        icon: "brush",
+        label: "styling",
+      },
+      {
+        title: "Header",
+        href: "/admin/dashboard/appearence/header",
+        icon: "header",
+        label: "Header",
+      },
+      {
+        title: "Footer",
+        href: "/admin/dashboard/appearence/footer",
+        icon: "footer",
+        label: "Footer",
+      },
+    ],
+  },
+  {
     title: "Settings",
     icon: "settings",
     items: [
@@ -54,22 +78,10 @@ export const navItems: NavItemWithOptionalChildren[] = [
         label: "SMS",
       },
       {
-        title: "Header",
-        href: "/admin/dashboard/settings/header",
-        icon: "header",
-        label: "Header",
-      },
-      {
-        title: "Footer",
-        href: "/admin/dashboard/settings/footer",
-        icon: "footer",
-        label: "Footer",
-      },
-      {
         title: "Scripts",
         href: "/admin/dashboard/settings/scripts",
         icon: "script",
-        label: "Script",
+        label: "Scripts",
       },
       {
         title: "Appointments",

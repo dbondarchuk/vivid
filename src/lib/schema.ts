@@ -24,5 +24,44 @@ export function zUniqueArray<
         seen.add(val);
       }
     }
-  });
+  }) as unknown as ArrSchema;
+}
+
+export function isPlainObject(
+  value: unknown
+): value is Record<string | number | symbol, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    !(value instanceof Date)
+  );
+}
+
+export function zStrictRecord<
+  K extends z.ZodType<string | number | symbol>,
+  V extends z.ZodTypeAny
+>(zKey: K, zValue: V) {
+  return z.custom<Record<z.infer<K>, z.infer<V>>>((input: unknown) => {
+    return (
+      isPlainObject(input) &&
+      Object.entries(input).every(
+        ([key, value]) =>
+          zKey.safeParse(key).success && zValue.safeParse(value).success
+      )
+    );
+  }, "zodStrictRecord: error");
+}
+
+export function zOptionalOrMinLengthString(
+  minLength: number,
+  minLengthErrorMessage?: string
+) {
+  return z
+    .union([
+      z.string().min(minLength, { message: minLengthErrorMessage }),
+      z.string().length(0),
+    ])
+    .optional()
+    .transform((e) => (e === "" ? undefined : e));
 }

@@ -10,6 +10,8 @@ import { Link } from "@/components/ui/link";
 import type { Appointment } from "@/types";
 import {
   Calendar,
+  CalendarCheck2,
+  CalendarX2,
   CheckCircle,
   Clock,
   DollarSign,
@@ -126,10 +128,15 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
         </dl>
       </CardContent>
       {appointment.status !== "declined" && (
-        <CardFooter className="justify-between">
+        <CardFooter className="justify-end gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="secondary">Decline</Button>
+              <Button
+                variant="destructive"
+                className="inline-flex flex-row gap-2 items-center"
+              >
+                <CalendarX2 size={20} /> Decline
+              </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -147,7 +154,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
                     _id={appointment._id}
                     status="declined"
                   >
-                    Decline
+                    <CalendarX2 size={20} /> Decline
                   </AppointmentActionButton>
                 </AlertDialogAction>
               </AlertDialogFooter>
@@ -159,6 +166,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               _id={appointment._id}
               status="confirmed"
             >
+              <CalendarCheck2 size={20} />
               Confirm
             </AppointmentActionButton>
           )}

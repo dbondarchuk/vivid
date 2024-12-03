@@ -1,4 +1,9 @@
-import { Field, FieldType, WithLabelFieldData } from "@/types";
+import {
+  Field,
+  FieldOptionsData,
+  FieldType,
+  WithLabelFieldData,
+} from "@/types";
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import { EmailField } from "./email";
@@ -6,6 +11,8 @@ import { MultiLineField } from "./multiLine";
 import { NameField } from "./name";
 import { OneLineField } from "./oneLine";
 import { PhoneField } from "./phone";
+import { CheckboxField } from "./checkboxField";
+import { SelectField } from "./select";
 
 export const fieldsSchemaMap = {
   [FieldType.Name]: (field: Field) =>
@@ -27,6 +34,23 @@ export const fieldsSchemaMap = {
     z.string().min(field.required ? 1 : 0, "field_required_error"),
   [FieldType.MultiLine]: (field: Field) =>
     z.string().min(field.required ? 1 : 0, "field_required_error"),
+  [FieldType.Checkbox]: (field: Field) =>
+    z
+      .boolean()
+      .default(false)
+      .refine(
+        (arg) => (field.required ? !!arg : true),
+        "checkbox_required_error"
+      ),
+  [FieldType.Select]: (field: Field) => {
+    const [firstOption, ...restOptions] = (
+      field as unknown as Field<FieldOptionsData>
+    ).data.options.map((x) => x.option);
+
+    return z
+      .enum([firstOption, ...restOptions], { message: "field_required_error" })
+      .refine((arg) => (field.required ? !!arg : true), "field_required_error");
+  },
 };
 
 export const fieldSchemaMapper = (field: Field) => {
@@ -68,6 +92,20 @@ export const fieldsComponentMap: (
     <MultiLineField
       control={control}
       {...(field as Field<WithLabelFieldData>)}
+      namespace={namespace}
+    />
+  ),
+  [FieldType.Checkbox]: (field, control) => (
+    <CheckboxField
+      control={control}
+      {...(field as Field<WithLabelFieldData>)}
+      namespace={namespace}
+    />
+  ),
+  [FieldType.Select]: (field, control) => (
+    <SelectField
+      control={control}
+      {...(field as Field<WithLabelFieldData & FieldOptionsData>)}
       namespace={namespace}
     />
   ),

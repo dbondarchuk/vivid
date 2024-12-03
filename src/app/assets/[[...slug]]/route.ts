@@ -33,9 +33,14 @@ function streamFile(
     },
   });
 }
+
+type Props = {
+  params: { slug: string[] };
+};
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string[] } }
+  { params }: Props
 ): Promise<NextResponse> {
   const file = path.join(process.cwd(), "public", "upload", ...params.slug);
 
@@ -46,6 +51,7 @@ export async function GET(
 
   const filename = path.basename(file);
   const contentType = (mimeType.contentType(filename) as string) || "";
+  const inline = request.nextUrl.searchParams.has("inline");
 
   const stats = await fs.stat(file); // Get the file size
   const data: ReadableStream<Uint8Array> = streamFile(file); // Stream the file with a 1kb chunk
@@ -53,7 +59,9 @@ export async function GET(
     status: 200,
     headers: new Headers({
       //Headers
-      "content-disposition": `attachment; filename=${filename}`, //State that this is a file attachment
+      "content-disposition": inline
+        ? "inline"
+        : `attachment; filename=${filename}`, //State that this is a file attachment
       "content-type": contentType,
       "content-length": stats.size + "",
     }),

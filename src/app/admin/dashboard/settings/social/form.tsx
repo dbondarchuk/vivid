@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { SocialConfiguration } from "@/types";
+import { SocialConfiguration, socialConfigurationSchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -19,24 +19,11 @@ import { z } from "zod";
 import { updateSocialConfiguration } from "./actions";
 import { SaveButton } from "@/components/admin/forms/save-button";
 
-const formSchema = z.object({
-  instagram: z
-    .string()
-    .min(3, { message: "Instagram handle must be at least 3 characters" })
-    .optional(),
-  facebook: z
-    .string()
-    .min(3, { message: "Facebook handle must be at least 3 characters" })
-    .optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 export const SocialSettingsForm: React.FC<{
   values: SocialConfiguration;
 }> = ({ values }) => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<SocialConfiguration>({
+    resolver: zodResolver(socialConfigurationSchema),
     mode: "all",
     values,
   });
@@ -44,7 +31,7 @@ export const SocialSettingsForm: React.FC<{
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: SocialConfiguration) => {
     try {
       setLoading(true);
       await updateSocialConfiguration(data);
@@ -71,7 +58,7 @@ export const SocialSettingsForm: React.FC<{
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-8 relative"
       >
-        <div className="gap-8 md:grid md:grid-cols-2">
+        <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
             name="instagram"

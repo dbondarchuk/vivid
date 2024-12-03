@@ -34,7 +34,7 @@ export default async function EditPagesPage({ params }: Props) {
 
             <Link
               button
-              href={`/${page.slug}`}
+              href={`/${page.slug}?preview=true`}
               variant="default"
               target="_blank"
             >

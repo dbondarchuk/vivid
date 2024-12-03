@@ -1,3 +1,4 @@
+import { ClearAllCommunicationLogsButton } from "@/components/admin/communicationLogs/clearAllButton";
 import { columns } from "@/components/admin/communicationLogs/table/communicationLogs.columns";
 import { CommunicationLogsTable } from "@/components/admin/communicationLogs/table/communicationLogs.table";
 import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
@@ -78,8 +79,10 @@ export default async function CommunicationLogsPage({ searchParams }: Params) {
             <div className="flex items-start justify-between">
               <Heading
                 title="Communication Logs"
-                description="Monitor all sent messages"
+                description="Monitor all sent and received messages"
               />
+
+              <ClearAllCommunicationLogsButton />
             </div>
           </div>
           <Separator />

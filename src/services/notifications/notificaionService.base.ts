@@ -35,11 +35,23 @@ export abstract class BaseNotificationService implements INotificationService {
     newDuration: number
   ): Promise<void>;
 
-  protected async getArguments(appointment: Appointment) {
-    const booking = await this.configurationService.getConfiguration("booking");
-    const general = await this.configurationService.getConfiguration("general");
-    const social = await this.configurationService.getConfiguration("social");
+  protected async getArguments(
+    appointment: Appointment,
+    useAppointmentTimezone = false
+  ) {
+    const { booking, general, social } =
+      await this.configurationService.getConfigurations(
+        "booking",
+        "general",
+        "social"
+      );
 
-    return getArguments(appointment, booking, general, social);
+    return getArguments(
+      appointment,
+      booking,
+      general,
+      social,
+      useAppointmentTimezone
+    );
   }
 }

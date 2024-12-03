@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { MenuItem } from "@/types";
+import { itemTypes, MenuItem } from "@/types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
@@ -41,7 +41,6 @@ export interface MenuItemDragData {
   item: MenuItemWithId;
 }
 
-export const itemTypes = ["icon", "link", "button"] as const;
 const itemTypesLabels: Record<(typeof itemTypes)[number], string> = {
   icon: "Icon",
   link: "Link",
@@ -350,6 +349,7 @@ export function MenuItemCard({
 
                   <FormControl>
                     <Combobox
+                      allowClear
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={linkVariantsValues}
@@ -372,6 +372,7 @@ export function MenuItemCard({
 
                   <FormControl>
                     <Combobox
+                      allowClear
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={linkSizesValues}
@@ -398,6 +399,7 @@ export function MenuItemCard({
 
                   <FormControl>
                     <Combobox
+                      allowClear
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={buttonVariantsValues}
@@ -420,6 +422,7 @@ export function MenuItemCard({
 
                   <FormControl>
                     <Combobox
+                      allowClear
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={buttonSizesValues}
@@ -446,6 +449,7 @@ export function MenuItemCard({
 
                   <FormControl>
                     <Combobox
+                      allowClear
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={textFontValues}
@@ -468,6 +472,7 @@ export function MenuItemCard({
 
                   <FormControl>
                     <Combobox
+                      allowClear
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={textSizesValues}
@@ -490,6 +495,7 @@ export function MenuItemCard({
 
                   <FormControl>
                     <Combobox
+                      allowClear
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={textWeightsValues}
@@ -509,7 +515,7 @@ export function MenuItemCard({
                 <FormItem>
                   <FormLabel>Prefix Icon</FormLabel>
                   <FormControl>
-                    <IconSelect field={field} disabled={disabled} />
+                    <IconSelect field={field} disabled={disabled} allowClear />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -522,7 +528,7 @@ export function MenuItemCard({
                 <FormItem>
                   <FormLabel>Suffix Icon</FormLabel>
                   <FormControl>
-                    <IconSelect field={field} disabled={disabled} />
+                    <IconSelect field={field} disabled={disabled} allowClear />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

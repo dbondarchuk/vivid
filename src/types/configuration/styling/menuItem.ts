@@ -3,12 +3,13 @@ import { LinkSizes, LinkVariants } from "@/components/ui/link";
 import { TextFonts, TextSizes, TextWeights } from "@/components/ui/text";
 import { icons } from "lucide-react";
 import { z } from "zod";
-import { itemTypes } from "./menuItemCard";
 
 const [firstIcon, ...restIcons] = Object.keys(icons);
 const iconsEnum = z.enum([firstIcon, ...restIcons], {
   required_error: "Icon is required",
 });
+
+export const itemTypes = ["icon", "link", "button"] as const;
 
 const types = z.enum(itemTypes);
 
@@ -20,20 +21,24 @@ const [firstFont, ...restFonts] = TextFonts;
 const [firstTextSize, ...restTextSizes] = TextSizes;
 const [firstTextWeight, ...restTextWeights] = TextWeights;
 
-export const baseSchema = z.object({
+export const baseMenuItemSchema = z.object({
   url: z.string({ required_error: "URL must be provided" }),
   label: z.string({ required_error: "Label is required" }),
   className: z.string().optional(),
 });
 
-export const iconMenuItemSchema = baseSchema.merge(
+export type BaseMenuItem = z.infer<typeof baseMenuItemSchema>;
+
+export const iconMenuItemSchema = baseMenuItemSchema.merge(
   z.object({
     icon: iconsEnum,
     type: types.extract(["icon"]),
   })
 );
 
-const textStyleSchema = baseSchema.merge(
+export type IconMenuItem = z.infer<typeof iconMenuItemSchema>;
+
+const textStyleSchema = baseMenuItemSchema.merge(
   z.object({
     font: z
       .enum([firstFont, ...restFonts])
@@ -49,6 +54,8 @@ const textStyleSchema = baseSchema.merge(
       .optional(),
   })
 );
+
+export type TextStyle = z.infer<typeof textStyleSchema>;
 
 export const linkMenuItemSchema = textStyleSchema.merge(
   z.object({
@@ -66,6 +73,8 @@ export const linkMenuItemSchema = textStyleSchema.merge(
   })
 );
 
+export type LinkMenuItem = z.infer<typeof linkMenuItemSchema>;
+
 export const buttonMenuItemSchema = linkMenuItemSchema.merge(
   z.object({
     variant: z
@@ -80,13 +89,16 @@ export const buttonMenuItemSchema = linkMenuItemSchema.merge(
   })
 );
 
+export type ButtonMenuItem = z.infer<typeof buttonMenuItemSchema>;
+
 export const menuItemSchema = z.discriminatedUnion("type", [
   iconMenuItemSchema,
   linkMenuItemSchema,
   buttonMenuItemSchema,
 ]);
 
+export type MenuItem = z.infer<typeof menuItemSchema>;
+
 export const menuItemsSchema = z.array(menuItemSchema);
 
-export type MenuItemSchema = z.infer<typeof menuItemSchema>;
-export type LinkMenuItemSchema = z.infer<typeof linkMenuItemSchema>;
+export type MenuItems = z.infer<typeof menuItemsSchema>;

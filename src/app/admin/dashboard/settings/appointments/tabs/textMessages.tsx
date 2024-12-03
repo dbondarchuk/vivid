@@ -11,7 +11,6 @@ import React from "react";
 import { z } from "zod";
 import { TabProps } from "./types";
 import { StatusText } from "@/components/admin/appointments/types";
-import { AppointmentsSettingsFormValues } from "../schema";
 import { Textarea } from "@/components/ui/textarea";
 import { TagInput } from "@/components/ui/tagInput";
 import {
@@ -20,34 +19,16 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import { templateSafeWithError } from "@/lib/string";
+import { TextMessagesTemplateKeys } from "@/types";
 
-const textMessagesTemplateSchema = z.object({
-  body: z.string().optional(),
-});
-
-type TemplateKeys =
-  keyof AppointmentsSettingsFormValues["textMessages"]["templates"];
-
-export const textMessagesTabFormSchema = z.object({
-  phoneField: z
-    .array(z.string().min(1, "Phone field must not be empty"))
-    .optional(),
-  templates: z.object({
-    pending: textMessagesTemplateSchema,
-    confirmed: textMessagesTemplateSchema,
-    declined: textMessagesTemplateSchema,
-    rescheduled: textMessagesTemplateSchema,
-  }),
-});
-
-const templateKeyText: Record<TemplateKeys, string> = {
+const templateKeyText: Record<TextMessagesTemplateKeys, string> = {
   ...StatusText,
   rescheduled: "Rescheduled",
 };
 
 const TextMessagesTemplateForm: React.FC<
   TabProps & {
-    type: TemplateKeys;
+    type: TextMessagesTemplateKeys;
     whenText: string;
     demoArguments: Record<string, any>;
   }
@@ -60,7 +41,7 @@ const TextMessagesTemplateForm: React.FC<
         name={`textMessages.templates.${type}.body`}
         render={({ field }) => (
           <ResizablePanelGroup direction="horizontal" className="max-md:hidden">
-            <ResizablePanel className="px-4">
+            <ResizablePanel className="pr-4">
               <FormItem>
                 <FormLabel>
                   SMS body
@@ -88,7 +69,7 @@ const TextMessagesTemplateForm: React.FC<
               </FormItem>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel className="px-4">
+            <ResizablePanel className="pl-4">
               <FormItem>
                 <FormLabel>Preview</FormLabel>
                 <div
@@ -114,7 +95,7 @@ export const TextMessagesTab: React.FC<
 > = ({ form, disabled, demoArguments }) => {
   return (
     <div className="flex flex-col gap-8 w-full">
-      <div className="gap-8 md:grid md:grid-cols-2">
+      <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
         <FormField
           control={form.control}
           name="textMessages.phoneField"

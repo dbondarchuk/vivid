@@ -1,7 +1,7 @@
+import { BookingConfiguration } from "@/types";
 import { UseFormReturn } from "react-hook-form";
-import { AppointmentsSettingsFormValues } from "../schema";
 
 export type TabProps = {
-  form: UseFormReturn<AppointmentsSettingsFormValues>;
+  form: UseFormReturn<BookingConfiguration>;
   disabled?: boolean;
 };

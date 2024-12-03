@@ -13,7 +13,7 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
     appointment: Appointment
   ): Promise<void> {
     const { bookingConfiguration, generalConfiguration, arg } =
-      await this.getArguments(appointment);
+      await this.getArguments(appointment, true);
 
     const { body } = bookingConfiguration.textMessages.templates.pending;
     if (!body || !body.length) return;
@@ -33,7 +33,7 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
     appointment: Appointment
   ): Promise<void> {
     const { bookingConfiguration, generalConfiguration, arg } =
-      await this.getArguments(appointment);
+      await this.getArguments(appointment, true);
 
     const { body } = bookingConfiguration.textMessages.templates.declined;
     if (!body || !body.length) return;
@@ -53,7 +53,7 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
     appointment: Appointment
   ): Promise<void> {
     const { bookingConfiguration, generalConfiguration, arg } =
-      await this.getArguments(appointment);
+      await this.getArguments(appointment, true);
 
     const { body } = bookingConfiguration.textMessages.templates.confirmed;
     if (!body || !body.length) return;
@@ -81,7 +81,7 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
     };
 
     const { bookingConfiguration, generalConfiguration, arg } =
-      await this.getArguments(newAppointment);
+      await this.getArguments(newAppointment, true);
 
     const { body } = bookingConfiguration.textMessages.templates.rescheduled;
     if (!body || !body.length) return;
@@ -117,13 +117,8 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
 
     const templatedBody = template(bodyTemplate, args, true);
 
-    const smtpConfiguration = await this.configurationService.getConfiguration(
-      "smtp"
-    );
-
-    const smsConfiguration = await this.configurationService.getConfiguration(
-      "sms"
-    );
+    const { smtp: smtpConfiguration, sms: smsConfiguration } =
+      await this.configurationService.getConfigurations("smtp", "sms");
 
     sendSms({
       phone,

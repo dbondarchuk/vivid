@@ -1,7 +1,6 @@
 import { Combobox } from "@/components/ui/combobox";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -22,6 +21,11 @@ import { useI18n } from "@/i18n/i18n";
 import "./css/flags.css";
 import { FormFieldLabel } from "./formFieldLabel";
 import { WithLabelFieldData } from "@/types";
+import { FormFieldDescription } from "./formFieldDescription";
+import {
+  InputGroupInputClasses,
+  InputGroupSuffixClasses,
+} from "@/components/admin/forms/inputGroupClasses";
 
 export const PhoneField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData>
@@ -94,12 +98,12 @@ export const PhoneField: <T extends FieldValues>(
           />
           <FormControl>
             <InputGroup>
-              <InputSuffix>
+              <InputSuffix className="border-r-0 rounded-r-none">
                 <label htmlFor="countryCode" className="sr-only">
                   Country code
                 </label>
                 <Combobox
-                  className="border-r-0 rounded-r-none focus:ring-0 min-w-fit"
+                  className="*:border-r-0 *:rounded-r-none focus:ring-0 min-w-fit"
                   value={defaultCountry}
                   onItemSelect={(value: string) => onCountryChange(value)}
                   values={countryList}
@@ -123,13 +127,13 @@ export const PhoneField: <T extends FieldValues>(
                 <MaskedInput
                   {...field}
                   mask={mask}
-                  className="rounded-l-none block w-full focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className={InputGroupInputClasses({ variant: "prefix" })}
                   placeholder={maskPlaceholder}
                 />
               </InputGroupInput>
             </InputGroup>
           </FormControl>
-          <FormDescription></FormDescription>
+          <FormFieldDescription description={props.data?.description} />
           <FormMessage />
         </FormItem>
       )}

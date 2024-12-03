@@ -12,15 +12,12 @@ const breadcrumbItems = [
 ];
 
 export default async function Page() {
-  const settings = await Services.ConfigurationService().getConfiguration(
-    "booking"
-  );
-
-  const generalSettings =
-    await Services.ConfigurationService().getConfiguration("general");
-  const socialSettings = await Services.ConfigurationService().getConfiguration(
-    "social"
-  );
+  const { booking, general, social } =
+    await Services.ConfigurationService().getConfigurations(
+      "booking",
+      "general",
+      "social"
+    );
 
   return (
     <PageContainer scrollable={true}>
@@ -34,9 +31,9 @@ export default async function Page() {
           <Separator />
         </div>
         <AppointmentsSettingsForm
-          values={settings}
-          generalSettings={generalSettings}
-          socialSettings={socialSettings}
+          values={booking}
+          generalSettings={general}
+          socialSettings={social}
         />
       </div>
     </PageContainer>

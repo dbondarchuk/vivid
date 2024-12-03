@@ -192,23 +192,25 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   );
 
   return (
-    <ScrollArea className="h-[60vh] max-h-screen">
+    <ScrollArea className="h-[60vh] max-h-screen relative">
       <table className="table-fixed w-full border-collapse border-spacing-1">
-        <thead>
+        <thead className="sticky top-0 bg-background shadow-sm border-gray-200">
           <tr>
             <th className="max-w-8"></th>
             {days.map((day) => (
-              <th key={day}>{Info.weekdays("short")[(day + 6) % 7]}</th>
+              <th className="border-x" key={day}>
+                {Info.weekdays("short")[(day + 6) % 7]}
+              </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="before:content-[' '] before:block before:h-0.5">
           {slots.map((slot) => (
             <tr
               key={formatTime(slot)}
               className={cn(
                 slot.minute === 0
-                  ? "border-t border-gray-200 first:border-none"
+                  ? "border-t border-gray-200 first:border-none scroll-m-7"
                   : ""
               )}
               ref={

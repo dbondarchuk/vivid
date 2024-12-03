@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { SmtpConfiguration } from "@/types";
+import { SmtpConfiguration, smtpConfigurationSchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -21,27 +21,11 @@ import { InfoTooltip } from "@/components/admin/tooltip/infoTooltip";
 import { Switch } from "@/components/ui/switch";
 import { SaveButton } from "@/components/admin/forms/save-button";
 
-const formSchema = z.object({
-  host: z.string().min(3, { message: "SMTP host is required" }),
-  port: z
-    .number()
-    .min(1, { message: "SMTP port number must be between 1 and 99999" })
-    .max(99999, { message: "SMTP port number must be between 1 and 99999" }),
-  secure: z.boolean(),
-  email: z.string().email("Email must be a correct email address"),
-  auth: z.object({
-    user: z.string().optional(),
-    pass: z.string().optional(),
-  }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 export const SmtpSettingsForm: React.FC<{
   values: SmtpConfiguration;
 }> = ({ values }) => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<SmtpConfiguration>({
+    resolver: zodResolver(smtpConfigurationSchema),
     mode: "all",
     values,
   });
@@ -49,7 +33,7 @@ export const SmtpSettingsForm: React.FC<{
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: SmtpConfiguration) => {
     try {
       setLoading(true);
       await updateSmtpConfiguration(data);
@@ -76,7 +60,7 @@ export const SmtpSettingsForm: React.FC<{
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-8 relative"
       >
-        <div className="gap-8 md:grid md:grid-cols-2">
+        <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
             name="host"

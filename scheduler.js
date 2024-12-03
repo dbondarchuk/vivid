@@ -6,12 +6,29 @@ cron.schedule("* * * * *", (arg) => {
   else date = arg;
 
   try {
-    console.log(`Running schedule for ${date.toISOString()}`);
+    console.log(`Running reminders schedule for ${date.toISOString()}`);
 
     fetch(
       `http://localhost:${
         process.env.PORT || 3000
-      }/api/scheduler?date=${encodeURIComponent(date.toISOString())}&key=${
+      }/api/scheduler/reminders?date=${encodeURIComponent(
+        date.toISOString()
+      )}&key=${process.env.SCHEDULER_KEY}`
+    );
+  } catch (e) {
+    console.error(e);
+  }
+});
+
+cron.schedule("0 3 * * *", (arg) => {
+  if (arg === "init" || arg === "manual") date = new Date();
+  else date = arg;
+
+  try {
+    console.log(`Running cleanup schedule for ${date.toISOString()}`);
+
+    fetch(
+      `http://localhost:${process.env.PORT || 3000}/api/scheduler/cleanup?key=${
         process.env.SCHEDULER_KEY
       }`
     );

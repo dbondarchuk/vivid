@@ -6,6 +6,7 @@ import { ControllerRenderProps } from "react-hook-form";
 export type IconSelectProps = {
   field: ControllerRenderProps;
   disabled?: boolean;
+  allowClear?: boolean;
 };
 
 const iconValues = Object.keys(icons).map(
@@ -20,7 +21,11 @@ const iconValues = Object.keys(icons).map(
     } as IComboboxItem)
 );
 
-export const IconSelect: React.FC<IconSelectProps> = ({ field, disabled }) => {
+export const IconSelect: React.FC<IconSelectProps> = ({
+  field,
+  disabled,
+  allowClear,
+}) => {
   return (
     <Combobox
       className="flex w-full font-normal text-base"
@@ -36,7 +41,8 @@ export const IconSelect: React.FC<IconSelectProps> = ({ field, disabled }) => {
         )
       }
       value={field.value}
-      onItemSelect={(value) => field.onChange(value)}
+      onItemSelect={(value: string | undefined) => field.onChange(value)}
+      allowClear={allowClear}
     />
   );
 };

@@ -16,6 +16,8 @@ export async function createAsset(formData: FormData) {
 
   const asset: Omit<Asset, "_id" | "uploadedAt"> = {
     filename: formData.get("filename")?.toString() || "",
+    mimeType:
+      formData.get("mimeType")?.toString() || "application/octet-stream",
     description: formData.get("description")?.toString(),
   };
 
@@ -51,7 +53,7 @@ async function saveFile(file: File, filename: string) {
 
 async function deleteFile(filename: string) {
   const filepath = getFilePath(filename);
-  if (!existsSync(filename)) return;
+  if (!existsSync(filepath)) return;
 
   await fs.rm(filepath);
 }

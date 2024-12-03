@@ -3,6 +3,7 @@ import { Icon } from "./ui/icon";
 import { Link } from "./ui/link";
 import { Gallery } from "./web/gallery/Gallery";
 import { Block } from "./web/mdx/block";
+import { Container } from "./web/mdx/container";
 import { Grid } from "./web/mdx/grid";
 import { MdxImage } from "./web/mdx/mdxImage";
 import { MdxOverrides } from "./web/mdx/overrides";
@@ -18,4 +19,5 @@ export const ClientComponents = {
   PageHero,
   Icon,
   Block,
+  Container,
 };

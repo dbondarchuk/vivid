@@ -100,7 +100,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
                     end: formatTimeLocale(timeEnd),
                   })}
                 </div>
-                {this.duration && (
+                {!!this.duration && (
                   <div className="flex items-center">
                     <Timer className="mr-1" />
                     {this.props.i18n(
@@ -109,7 +109,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
                     )}
                   </div>
                 )}
-                {this.price && (
+                {!!this.price && (
                   <div className="flex items-center">
                     <DollarSign className="mr-1" />
                     {this.props.i18n("form_price_label_format", {

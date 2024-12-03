@@ -17,55 +17,20 @@ import {
   InputGroupInput,
   InputSuffix,
 } from "@/components/ui/inputGroup";
-import { getTimeZones } from "@vvo/tzdb";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
 import { TabProps } from "./types";
+import { getTimeZones } from "@vvo/tzdb";
 
 const timezones = getTimeZones();
-const [firstTimezone, ...restTimezones] = timezones.map((tz) => tz.name);
 const timezoneValues: IComboboxItem[] = timezones.map((zone) => ({
   label: `GMT${zone.currentTimeFormat}`,
   shortLabel: `${zone.alternativeName}`,
   value: zone.name,
 }));
 
-export const mainTabFormSchema = z.object({
-  ics: z.string().url("ICS must a valid URL to your calendar"),
-  maxWeeksInFuture: z.coerce
-    .number()
-    .min(2, "The minimum amount of weeks must be 2")
-    .max(20, "The maximum amount of weeks must be 20")
-    .optional(),
-  minHoursBeforeBooking: z.coerce
-    .number()
-    .min(0, "The minimum amount of hours must be 0")
-    .max(72, "The maximum amount of hours must be 72")
-    .optional(),
-  minAvailableTimeBeforeSlot: z.coerce
-    .number()
-    .min(0, "The minimum available time before time slot must be 0")
-    .max(60, "The maximum available time before time slot must be 60")
-    .optional(),
-  minAvailableTimeAfterSlot: z.coerce
-    .number()
-    .min(0, "The minimum available time after time slot must be 0")
-    .max(60, "The maximum available time after time slot must be 60")
-    .optional(),
-  slotStartMinuteStep: z.coerce
-    .number()
-    .min(1, "The minimum time slot step must be 1")
-    .max(30, "The maximum time slot step must be 30")
-    .optional(),
-  timezone: z.enum([firstTimezone, ...restTimezones], {
-    required_error: "Unknown time zone",
-  }),
-});
-
 export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
   return (
-    <div className="gap-8 md:grid md:grid-cols-2">
+    <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
       <FormField
         control={form.control}
         name="ics"

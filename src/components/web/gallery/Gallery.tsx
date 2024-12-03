@@ -7,13 +7,22 @@ import {
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import React from "react";
-import { GalleryProps } from "./Gallery.types";
+import { GalleryItemPosition, GalleryProps } from "./Gallery.types";
+
+const itemsPositions: Record<GalleryItemPosition, string> = {
+  center: "justify-items-center",
+  start: "justify-items-start",
+  end: "justify-items-end",
+  stretch: "justify-items-stretch",
+};
 
 export const Gallery: React.FC<GalleryProps> = ({
   title,
   className,
   children,
   basis = 1,
+  itemsPos = "center",
+  itemClassName,
   ...props
 }) => {
   return (
@@ -28,7 +37,15 @@ export const Gallery: React.FC<GalleryProps> = ({
       <Carousel>
         <CarouselContent>
           {React.Children.map(children, (child, index) => (
-            <CarouselItem key={index} className={cn(`basis-1/${basis}`)}>
+            <CarouselItem
+              key={index}
+              className={cn(
+                "basis-full",
+                `md:basis-1/${basis}`,
+                itemsPositions[itemsPos],
+                itemClassName
+              )}
+            >
               {child}
             </CarouselItem>
           ))}

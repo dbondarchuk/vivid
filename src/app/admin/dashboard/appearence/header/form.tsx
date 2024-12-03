@@ -1,6 +1,13 @@
 "use client";
 
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -10,23 +17,19 @@ import { z } from "zod";
 import { updateHeaderConfiguration } from "./actions";
 import { Sortable } from "@/components/ui/sortable";
 import { MenuItemCard } from "@/components/admin/menuItem/menuItemCard";
-import {
-  LinkMenuItemSchema,
-  menuItemsSchema,
-} from "@/components/admin/menuItem/schema";
 import { SaveButton } from "@/components/admin/forms/save-button";
-
-const formSchema = z.object({
-  menu: menuItemsSchema,
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import {
+  HeaderConfiguration,
+  headerConfigurationSchema,
+  LinkMenuItem,
+} from "@/types";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const HeaderSettingsForm: React.FC<{
-  values: FormValues;
+  values: HeaderConfiguration;
 }> = ({ values }) => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<HeaderConfiguration>({
+    resolver: zodResolver(headerConfigurationSchema),
     mode: "all",
     values,
   });
@@ -34,7 +37,7 @@ export const HeaderSettingsForm: React.FC<{
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: HeaderConfiguration) => {
     try {
       setLoading(true);
       await updateHeaderConfiguration(data);
@@ -74,7 +77,7 @@ export const HeaderSettingsForm: React.FC<{
   const addNew = () => {
     append({
       type: "link",
-    } as Partial<LinkMenuItemSchema> as LinkMenuItemSchema);
+    } as Partial<LinkMenuItem> as LinkMenuItem);
   };
 
   return (
@@ -83,7 +86,30 @@ export const HeaderSettingsForm: React.FC<{
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-8 relative"
       >
-        <div className="gap-8 flex-col">
+        <div className="flex gap-3 flex-col">
+          <FormField
+            control={form.control}
+            name="showLogo"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-row items-center gap-2">
+                  <Checkbox
+                    id="showLogo"
+                    disabled={loading}
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                  <FormLabel htmlFor="showLogo" className="cursor-pointer">
+                    Show logo
+                  </FormLabel>
+                </div>
+                <FormDescription>
+                  Should be logo showed in header
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Sortable title="Menu" ids={ids} onSort={sort} onAdd={addNew}>
             <div className="flex flex-grow flex-col gap-4">
               {fields.map((item, index) => {

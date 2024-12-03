@@ -67,10 +67,10 @@ export const AppointmentActionButton = React.forwardRef<
       disabled={isLoading || props.disabled}
       ref={ref}
       onClick={onClick}
-      className={cn("flex flex-row gap-1 items-center", props.className)}
+      className={cn("inline-flex flex-row gap-1 items-center", props.className)}
     >
       {isLoading && <Spinner />}
-      <span>{props.children}</span>
+      {props.children}
     </Button>
   );
 });

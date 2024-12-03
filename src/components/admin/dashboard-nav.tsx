@@ -99,7 +99,7 @@ export function DashboardNav({
                     <TooltipTrigger asChild>
                       <AccordionTrigger
                         className={cn(
-                          "flex items-center gap-2 overflow-hidden rounded-md py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                          "flex items-center gap-2 overflow-hidden rounded-md py-2 pr-1 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
                           "hover:no-underline focus:no-underline",
                           path === item.href ||
                             (item.items.some(
@@ -132,7 +132,7 @@ export function DashboardNav({
                   </Tooltip>
                   <AccordionContent
                     className={cn(
-                      "transition-all",
+                      "transition-all flex flex-col gap-1 py-1",
                       isMobileNav || (!isMinimized && !isMobileNav)
                         ? "pl-5"
                         : "pl-2"

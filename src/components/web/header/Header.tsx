@@ -14,13 +14,16 @@ import { Link } from "../../ui/link";
 import { HeaderWithScrollShadow } from "./HeaderWithScrollShadow";
 import { Services } from "@/lib/services";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/ui/logo";
 
 export type HeaderProps = {
   menu: MenuItem[];
   name: string;
+  showLogo?: boolean;
+  logo?: string;
 };
 
-const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
+const HeaderBase: React.FC<HeaderProps> = ({ menu, name, logo, showLogo }) => {
   const getLink = (isSidebar: boolean) => {
     return menu.map((item) => {
       switch (item.type) {
@@ -112,11 +115,9 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
   };
 
   return (
-    <header className="text-black font-body w-full fixed bg-white font-light z-50 transition-all duration-300">
+    <header className="text-black font-primary w-full fixed bg-background font-light z-50 transition-all duration-300">
       <div className="container mx-auto flex flex-wrap p-5 flex-row items-center gap-4">
-        <a href="/" className="flex title-font font-medium items-center">
-          <span className="ml-3 text-xl font-body font-medium">{name}</span>
-        </a>
+        <Logo name={name} logo={logo} showLogo={showLogo} />
         <div className="hidden ml-auto md:flex flex-wrap gap-2 items-center text-base justify-center">
           <nav className="flex flex-row gap-6 items-center">
             {getLink(false)}
@@ -155,16 +156,20 @@ const HeaderBase: React.FC<HeaderProps> = ({ menu, name }) => {
 };
 
 export const Header: React.FC = async () => {
-  const { menu } = await Services.ConfigurationService().getConfiguration(
-    "header"
-  );
-  const { name } = await Services.ConfigurationService().getConfiguration(
-    "general"
-  );
+  const { header, general } =
+    await Services.ConfigurationService().getConfigurations(
+      "header",
+      "general"
+    );
 
   return (
     <HeaderWithScrollShadow>
-      <HeaderBase menu={menu} name={name} />
+      <HeaderBase
+        menu={header.menu}
+        name={general.name}
+        logo={general.logo}
+        showLogo={header.showLogo}
+      />
     </HeaderWithScrollShadow>
   );
 };

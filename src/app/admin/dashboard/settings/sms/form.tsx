@@ -15,6 +15,7 @@ import {
   BookingConfiguration,
   GeneralConfiguration,
   SmsConfiguration,
+  smsConfigurationSchema,
   SocialConfiguration,
 } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,13 +36,6 @@ import { templateSafeWithError } from "@/lib/string";
 import { getArguments } from "@/services/notifications/getArguments";
 import { demoAppointment } from "../appointments/fixtures";
 
-const formSchema = z.object({
-  authToken: z.string().min(1, { message: "Auth token is required" }),
-  autoReply: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 export const SmsSettingsForm: React.FC<{
   values: SmsConfiguration;
 
@@ -49,8 +43,8 @@ export const SmsSettingsForm: React.FC<{
   generalConfiguration: GeneralConfiguration;
   socialConfiguration: SocialConfiguration;
 }> = ({ values, ...configs }) => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<SmsConfiguration>({
+    resolver: zodResolver(smsConfigurationSchema),
     mode: "all",
     values,
   });
@@ -65,7 +59,7 @@ export const SmsSettingsForm: React.FC<{
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: SmsConfiguration) => {
     try {
       setLoading(true);
       await updateSmsConfiguration(data);
@@ -92,7 +86,7 @@ export const SmsSettingsForm: React.FC<{
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-8 relative"
       >
-        <div className="gap-8 md:grid md:grid-cols-2">
+        <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
             name="authToken"
@@ -122,7 +116,7 @@ export const SmsSettingsForm: React.FC<{
                 direction="horizontal"
                 className="max-md:hidden"
               >
-                <ResizablePanel className="px-4">
+                <ResizablePanel className="pr-4">
                   <FormItem>
                     <FormLabel>
                       Auto reply
@@ -150,7 +144,7 @@ export const SmsSettingsForm: React.FC<{
                   </FormItem>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel className="px-4">
+                <ResizablePanel className="pl-4">
                   <FormItem>
                     <FormLabel>Preview</FormLabel>
                     <div

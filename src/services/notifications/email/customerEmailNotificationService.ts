@@ -7,7 +7,10 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
   public async sendAppointmentRequestedNotification(
     appointment: Appointment
   ): Promise<void> {
-    const { bookingConfiguration, arg } = await this.getArguments(appointment);
+    const { bookingConfiguration, arg } = await this.getArguments(
+      appointment,
+      true
+    );
     const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventContent = await this.getEventCalendarContent(
@@ -37,7 +40,10 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
   async sendAppointmentDeclinedNotification(
     appointment: Appointment
   ): Promise<void> {
-    const { bookingConfiguration, arg } = await this.getArguments(appointment);
+    const { bookingConfiguration, arg } = await this.getArguments(
+      appointment,
+      true
+    );
     const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventContent = await this.getEventCalendarContent(
@@ -68,7 +74,10 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
   async sendAppointmentConfirmedNotification(
     appointment: Appointment
   ): Promise<void> {
-    const { bookingConfiguration, arg } = await this.getArguments(appointment);
+    const { bookingConfiguration, arg } = await this.getArguments(
+      appointment,
+      true
+    );
     const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventContent = await this.getEventCalendarContent(
@@ -108,7 +117,8 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
     };
 
     const { bookingConfiguration, arg } = await this.getArguments(
-      newAppointment
+      newAppointment,
+      true
     );
     const smtpConfiguration = await this.getSmtpConfiguration();
 

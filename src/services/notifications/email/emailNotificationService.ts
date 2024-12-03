@@ -24,9 +24,9 @@ export abstract class IEmailNotificationService extends BaseNotificationService 
     description: string,
     method: IcalEventMethod = "REQUEST"
   ) {
-    const booking = await this.configurationService.getConfiguration("booking");
-    const { address, name, url } =
-      await this.configurationService.getConfiguration("general");
+    const { booking, general: generalConfig } =
+      await this.configurationService.getConfigurations("booking", "general");
+    const { address, name, url } = generalConfig;
 
     const config: CalendarEventOptions = {
       from: booking.email.from,

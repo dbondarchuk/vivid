@@ -1,5 +1,6 @@
 import { getDbConnection } from "@/database";
 import { buildSearchQuery } from "@/lib/query";
+import { escapeRegex } from "@/lib/string";
 import { Asset, AssetUpdate, WithTotal } from "@/types";
 import { Query } from "@/types/database/query";
 import { DateTime } from "luxon";
@@ -19,7 +20,11 @@ export class AssetsService {
     return asset;
   }
 
-  public async getAssets(query: Query): Promise<WithTotal<Asset>> {
+  public async getAssets(
+    query: Query & {
+      mimeType?: string;
+    }
+  ): Promise<WithTotal<Asset>> {
     const db = await getDbConnection();
 
     const sort: Sort = query.sort?.reduce(
@@ -37,10 +42,21 @@ export class AssetsService {
       const queries = buildSearchQuery<Asset>(
         { $regex },
         "filename",
+        "mimeType",
         "description"
       );
 
       filter.$or = queries;
+    }
+
+    if (query.mimeType) {
+      filter.$and = [
+        {
+          mimeType: {
+            $regex: `^${escapeRegex(query.mimeType)}`,
+          },
+        },
+      ];
     }
 
     const [result] = await db

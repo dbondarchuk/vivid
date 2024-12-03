@@ -112,4 +112,22 @@ export class CommunicationLogService {
       items: result.paginatedResults || [],
     };
   }
+
+  public async clearAllLogs() {
+    const db = await getDbConnection();
+    const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
+
+    await collection.deleteMany();
+  }
+
+  public async clearOldLogs(maxDate: Date) {
+    const db = await getDbConnection();
+    const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
+
+    await collection.deleteMany({
+      dateTime: {
+        $lt: maxDate,
+      },
+    });
+  }
 }

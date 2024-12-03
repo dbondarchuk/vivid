@@ -11,7 +11,9 @@ export type AppointmentEvent = {
   dateTime: string;
   timeZone: string;
   fields: AppointmentFields;
-  option: Omit<AppointmentOption, "fields" | "addons">;
+  option: Omit<AppointmentOption, "fields" | "addons"> & {
+    fields: Record<string, string>;
+  };
   addons?: AppointmentAddon[];
   note?: string;
 };

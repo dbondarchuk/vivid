@@ -3,15 +3,20 @@ import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { Services } from "@/lib/services";
 import { cache } from "react";
+import { setPageData } from "@/lib/pageDataCache";
+import { cn } from "@/lib/utils";
 
 type Props = {
   params: { slug: string[] };
+  searchParams?: {
+    preview?: boolean;
+  };
 };
 
 export const dynamicParams = true;
 export const revalidate = 60;
 
-const getSource = cache(async (slug: string[]) => {
+const getSource = cache(async (slug: string[], preview = false) => {
   if (!slug || !slug.length) {
     slug = ["home"];
   }
@@ -19,7 +24,10 @@ const getSource = cache(async (slug: string[]) => {
   const pageSlug = slug.join("/");
   const page = await Services.PagesService().getPageBySlug(pageSlug);
 
-  if (!page) {
+  if (
+    !page ||
+    (!preview && (!page.published || page.publishDate > new Date()))
+  ) {
     console.error(`Page not found: ${pageSlug}`);
     return notFound();
   }
@@ -28,14 +36,15 @@ const getSource = cache(async (slug: string[]) => {
 });
 
 export async function generateMetadata(
-  { params }: Props,
+  { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
   const settings = await Services.ConfigurationService().getConfiguration(
     "general"
   );
-  const page = await getSource(params.slug);
+
+  const page = await getSource(params.slug, searchParams?.preview);
 
   return {
     title: page.doNotCombine?.title
@@ -50,11 +59,21 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: Props) {
-  const page = await getSource(params.slug);
+export default async function Page({ params, searchParams }: Props) {
+  const page = await getSource(params.slug, searchParams?.preview);
+  setPageData({
+    params,
+    searchParams: searchParams || {},
+    page,
+  });
 
   return (
-    <div className="container mx-auto flex flex-col gap-5 px-4">
+    <div
+      className={cn(
+        "flex flex-col gap-5",
+        page.fullWidth ? "w-full" : "container mx-auto"
+      )}
+    >
       <MdxContent source={page.content} />
     </div>
   );

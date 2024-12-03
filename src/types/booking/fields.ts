@@ -1,4 +1,4 @@
-import { WithId } from "../configuration";
+import { WithId } from "../general";
 
 export enum FieldType {
   Name = "name",
@@ -6,10 +6,13 @@ export enum FieldType {
   Phone = "phone",
   OneLine = "oneLine",
   MultiLine = "multiLine",
+  Checkbox = "checkbox",
+  Select = "select",
 }
 
 export type WithLabelFieldData = {
   label: string;
+  description?: string;
 };
 
 export type FieldData<
@@ -30,6 +33,12 @@ export type Fields<TData extends Record<string, any> | undefined = undefined> =
 export type FieldsWithId<
   TData extends Record<string, any> | undefined = undefined
 > = WithId<Field<TData>>[];
+
+export type FieldOptionsData = {
+  options: {
+    option: string;
+  }[];
+};
 
 export const getFields = (
   fields: Fields<WithLabelFieldData>,

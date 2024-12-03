@@ -1,6 +1,6 @@
 import { getDbConnection } from "@/database";
 import { buildSearchQuery } from "@/lib/query";
-import { Page, PageUpdate, WithTotal } from "@/types";
+import { Page, PageCreate, PageUpdate, WithTotal } from "@/types";
 import { Query } from "@/types/database/query";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
@@ -31,7 +31,11 @@ export class PagesService {
   }
 
   public async getPages(
-    query: Query & { publishStatus: boolean[] }
+    query: Query & {
+      publishStatus: boolean[];
+      maxPublishDate?: Date;
+      tags?: string[];
+    }
   ): Promise<WithTotal<Page>> {
     const db = await getDbConnection();
 
@@ -48,6 +52,18 @@ export class PagesService {
     if (query.publishStatus) {
       filter.published = {
         $in: query.publishStatus,
+      };
+    }
+
+    if (query.maxPublishDate) {
+      filter.publishDate = {
+        $lte: query.maxPublishDate,
+      };
+    }
+
+    if (query.tags) {
+      filter.tags = {
+        $all: query.tags,
       };
     }
 
@@ -96,13 +112,12 @@ export class PagesService {
     };
   }
 
-  public async createPage(
-    page: Omit<Page, "_id" | "updatedAt">
-  ): Promise<Page> {
+  public async createPage(page: PageCreate): Promise<Page> {
     const dbPage: Page = {
       ...page,
       _id: new ObjectId().toString(),
       updatedAt: DateTime.utc().toJSDate(),
+      createdAt: DateTime.utc().toJSDate(),
     };
 
     if (!this.checkUniqueSlug(page.slug)) {

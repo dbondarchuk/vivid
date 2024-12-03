@@ -13,7 +13,11 @@ const breadcrumbItems = [
   { title: "New", link: "/admin/dashboard/appointments/new" },
 ];
 
-export default async function NewAssetsPage() {
+type Props = {
+  searchParams: { from?: string };
+};
+
+export default async function NewAssetsPage({ searchParams }: Props) {
   const config = await Services.ConfigurationService().getConfiguration(
     "booking"
   );
@@ -29,6 +33,10 @@ export default async function NewAssetsPage() {
         .filter((f) => !!f) || [],
   }));
 
+  const from = searchParams?.from
+    ? await Services.EventsService().getAppointment(searchParams.from)
+    : undefined;
+
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-col gap-8">
@@ -40,7 +48,11 @@ export default async function NewAssetsPage() {
           />
           <Separator />
         </div>
-        <AppointmentScheduleForm timeZone={config.timezone} options={choices} />
+        <AppointmentScheduleForm
+          timeZone={config.timezone}
+          options={choices}
+          from={from}
+        />
       </div>
     </PageContainer>
   );

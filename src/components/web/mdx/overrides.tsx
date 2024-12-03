@@ -1,4 +1,5 @@
-import { forwardRef, HTMLAttributes } from "react";
+import { Link, LinkProps } from "@/components/ui/link";
+import { AnchorHTMLAttributes, forwardRef, HTMLAttributes } from "react";
 
 const h1 = forwardRef<HTMLHeadingElement>(
   (props: HTMLAttributes<HTMLHeadingElement>, ref) => (
@@ -21,7 +22,7 @@ const h3 = forwardRef<HTMLHeadingElement>(
     <h3
       ref={ref}
       {...props}
-      className="text-center font-header font-normal my-4"
+      className="text-center font-secondary font-normal my-4"
     />
   )
 );
@@ -60,6 +61,16 @@ const p = forwardRef<HTMLParagraphElement>(
 
 p.displayName = "p";
 
+const a = forwardRef<
+  HTMLAnchorElement,
+  AnchorHTMLAttributes<HTMLAnchorElement>
+>((props, ref) => (
+  // @ts-expect-error We can assume that props type is correct
+  <Link ref={ref} {...props} variant="default" />
+));
+
+a.displayName = "a";
+
 export const MdxOverrides = {
   h1,
   h2,
@@ -68,4 +79,5 @@ export const MdxOverrides = {
   h5,
   h6,
   p,
+  a,
 };

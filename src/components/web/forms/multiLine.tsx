@@ -1,7 +1,6 @@
 import {
   FormItem,
   FormControl,
-  FormDescription,
   FormMessage,
   FormField,
 } from "@/components/ui/form";
@@ -11,6 +10,7 @@ import { FieldValues } from "react-hook-form";
 import { FormFieldLabel } from "./formFieldLabel";
 import { getFieldName, IFormFieldProps } from "./formFieldProps";
 import { WithLabelFieldData } from "@/types";
+import { FormFieldDescription } from "./formFieldDescription";
 
 export const MultiLineField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData>
@@ -24,7 +24,7 @@ export const MultiLineField: <T extends FieldValues>(
         <FormControl>
           <Textarea {...field} placeholder="Type your response here" />
         </FormControl>
-        <FormDescription></FormDescription>
+        <FormFieldDescription description={props.data?.description} />
         <FormMessage />
       </FormItem>
     )}

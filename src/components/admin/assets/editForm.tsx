@@ -77,7 +77,7 @@ export const AssetEditForm: React.FC<{ asset: Asset }> = ({ asset }) => {
             />
           </div>
         )}
-        <div className="gap-8 md:grid md:grid-cols-2">
+        <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormItem>
             <FormLabel>File name</FormLabel>
             <Input

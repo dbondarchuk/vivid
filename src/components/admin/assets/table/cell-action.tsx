@@ -61,6 +61,8 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
         title: "Deleted",
         description: `Asset '${asset.filename}' was deleted.`,
       });
+
+      setOpen(false);
     } catch (error: any) {
       setLoading(false);
       toast({
@@ -68,6 +70,8 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
         title: "Uh oh! Something went wrong.",
         description: "There was a problem with your request.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -26,14 +26,14 @@ export class EventsService {
   ) {}
 
   public async getBusyEvents(): Promise<Period[]> {
-    const config = await this.configurationService.getConfiguration("booking");
-    const { url } = await this.configurationService.getConfiguration("general");
+    const { booking: config, general: generalConfig } =
+      await this.configurationService.getConfigurations("booking", "general");
 
     const start = DateTime.utc();
     const end = DateTime.utc().plus({ weeks: config.maxWeeksInFuture ?? 8 });
 
     const declinedUids = (await this.getDbDeclinedEventIds(start, end)).map(
-      (id) => getIcsEventUid(id, url)
+      (id) => getIcsEventUid(id, generalConfig.url)
     );
 
     const dbEventsPromise = this.getDbBusyTimes(start, end);
@@ -100,29 +100,6 @@ export class EventsService {
     };
   }
 
-  public async getNextAppointments(date: Date, limit = 5) {
-    const db = await getDbConnection();
-    const appointments = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME
-    );
-
-    const result = await appointments
-      .find({
-        dateTime: {
-          $gte: date,
-        },
-        status: {
-          $ne: "declined",
-        },
-      })
-      .sort("dateTime", "ascending")
-      .limit(limit)
-      .toArray();
-
-    return result;
-  }
-
-  // This requires upgrade of MongoDB to at least 5.0
   // public async getNextAppointments(date: Date, limit = 5) {
   //   const db = await getDbConnection();
   //   const appointments = db.collection<Appointment>(
@@ -130,39 +107,62 @@ export class EventsService {
   //   );
 
   //   const result = await appointments
-  //     .aggregate([
-  //       {
-  //         $addFields: {
-  //           endAt: {
-  //             $dateAdd: {
-  //               startDate: "$dateTime",
-  //               unit: "minute",
-  //               amount: "$totalDuration",
-  //             },
-  //           },
-  //         },
+  //     .find({
+  //       dateTime: {
+  //         $gte: date,
   //       },
-  //       {
-  //         $sort: {
-  //           dateTime: -1,
-  //         },
+  //       status: {
+  //         $ne: "declined",
   //       },
-  //       {
-  //         $match: {
-  //           endAt: {
-  //             $gte: date,
-  //           },
-  //           status: {
-  //             $ne: "declined",
-  //           },
-  //         },
-  //       },
-  //       { $limit: limit },
-  //     ])
+  //     })
+  //     .sort("dateTime", "ascending")
+  //     .limit(limit)
   //     .toArray();
 
-  //   return result as Appointment[];
+  //   return result;
   // }
+
+  // This requires upgrade of MongoDB to at least 5.0
+  public async getNextAppointments(date: Date, limit = 5) {
+    const db = await getDbConnection();
+    const appointments = db.collection<Appointment>(
+      APPOINTMENTS_COLLECTION_NAME
+    );
+
+    const result = await appointments
+      .aggregate([
+        {
+          $addFields: {
+            endAt: {
+              $dateAdd: {
+                startDate: "$dateTime",
+                unit: "minute",
+                amount: "$totalDuration",
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            dateTime: 1,
+          },
+        },
+        {
+          $match: {
+            endAt: {
+              $gte: date,
+            },
+            status: {
+              $ne: "declined",
+            },
+          },
+        },
+        { $limit: limit },
+      ])
+      .toArray();
+
+    return result as Appointment[];
+  }
 
   public async getAppointments(
     query: Query & {
@@ -272,14 +272,16 @@ export class EventsService {
       status,
     });
 
-    const config = await this.configurationService.getConfiguration("booking");
-    const { url } = await this.configurationService.getConfiguration("general");
+    const { booking: config, general: generalConfig } =
+      await this.configurationService.getConfigurations("booking", "general");
 
     const ics = new IcsBusyTimeProvider(config.ics);
     const icsTimes = await ics.getBusyTimes(
       DateTime.fromJSDate(start),
       DateTime.fromJSDate(end),
-      appointments.items.map((app) => getIcsEventUid(app._id, url))
+      appointments.items.map((app) =>
+        getIcsEventUid(app._id, generalConfig.url)
+      )
     );
 
     const icsEvents: Event[] = icsTimes.map((x) => ({

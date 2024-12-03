@@ -13,16 +13,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 import { updateFooterConfiguration } from "./actions";
 import { Sortable } from "@/components/ui/sortable";
 import { MenuItemCard } from "@/components/admin/menuItem/menuItemCard";
-import {
-  LinkMenuItemSchema,
-  menuItemsSchema,
-} from "@/components/admin/menuItem/schema";
 import { SaveButton } from "@/components/admin/forms/save-button";
-import { FooterConfiguration } from "@/types";
+import {
+  FooterConfiguration,
+  footerConfigurationSchema,
+  LinkMenuItem,
+} from "@/types";
 import { Switch } from "@/components/ui/switch";
 import {
   ResizableHandle,
@@ -33,20 +32,14 @@ import { SupportsMarkdownTooltip } from "@/components/admin/tooltip/supportsMark
 import { Editor } from "@monaco-editor/react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MdxContent } from "@/components/web/mdx/mdxContentClient";
-
-const formSchema = z.object({
-  links: menuItemsSchema.optional(),
-  content: z.string().optional(),
-  isCustom: z.coerce.boolean(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { InfoTooltip } from "@/components/admin/tooltip/infoTooltip";
+import { Input } from "@/components/ui/input";
 
 export const FooterSettingsForm: React.FC<{
   values: FooterConfiguration;
 }> = ({ values }) => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<FooterConfiguration>({
+    resolver: zodResolver(footerConfigurationSchema),
     mode: "all",
     values: values || {
       isCustom: false,
@@ -57,7 +50,7 @@ export const FooterSettingsForm: React.FC<{
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: FooterConfiguration) => {
     try {
       setLoading(true);
       await updateFooterConfiguration(data);
@@ -97,7 +90,7 @@ export const FooterSettingsForm: React.FC<{
   const addNew = () => {
     append({
       type: "link",
-    } as Partial<LinkMenuItemSchema> as LinkMenuItemSchema);
+    } as Partial<LinkMenuItem> as LinkMenuItem);
   };
 
   const isCustom = form.watch("isCustom");
@@ -168,7 +161,30 @@ export const FooterSettingsForm: React.FC<{
             )}
           />
         ) : (
-          <div className="gap-8 flex-col">
+          <div className="gap-8 flex flex-col">
+            <div className="gap-2 flex flex-col md:grid md:grid-cols-3 md:gap-4">
+              <FormField
+                control={form.control}
+                name="contactUsLabel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Contact us label{" "}
+                      <InfoTooltip>
+                        Defaults to &quote;Contact us&quote;
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Contact us"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
             <Sortable title="Links" ids={ids} onSort={sort} onAdd={addNew}>
               <div className="flex flex-grow flex-col gap-4">
                 {fields.map((item, index) => {

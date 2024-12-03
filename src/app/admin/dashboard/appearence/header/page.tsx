@@ -7,8 +7,8 @@ import { HeaderSettingsForm } from "./form";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Settings", link: "/admin/dashboard" },
-  { title: "Header", link: "/admin/dashboard/settings/header" },
+  { title: "Appearence", link: "/admin/dashboard" },
+  { title: "Header", link: "/admin/dashboard/appearence/header" },
 ];
 
 export default async function Page() {
@@ -21,7 +21,10 @@ export default async function Page() {
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title="Header menu" description="Adjust links in header" />
+          <Heading
+            title="Header menu"
+            description="Adjust links and style of the header"
+          />
           <Separator />
         </div>
         <HeaderSettingsForm values={settings} />

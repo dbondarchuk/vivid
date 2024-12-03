@@ -50,11 +50,12 @@ import { toast } from "@/components/ui/use-toast";
 export type AppointmentScheduleFormProps = {
   options: AppointmentChoice[];
   timeZone: string;
+  from?: Appointment | null;
 };
 
 export const AppointmentScheduleForm: React.FC<
   AppointmentScheduleFormProps
-> = ({ options, timeZone }) => {
+> = ({ options, timeZone, from }) => {
   const now = React.useMemo(
     () => DateTime.now().set({ second: 0 }).toJSDate(),
     []
@@ -70,7 +71,8 @@ export const AppointmentScheduleForm: React.FC<
       totalPrice: z.coerce
         .number({ message: "Total price must be a number" })
         .min(0, "Minimum price is 0")
-        .optional(),
+        .optional()
+        .transform((e) => (e === 0 ? undefined : e)),
       option: z.string({ message: "Option must be selected" }),
       addons: z
         .array(
@@ -120,12 +122,14 @@ export const AppointmentScheduleForm: React.FC<
     reValidateMode: "onChange",
     values: {
       dateTime: now,
-      totalDuration: options[0].duration || 0,
-      fields: {
+      totalDuration: from?.totalDuration || options[0].duration || 0,
+      totalPrice: from?.totalPrice || undefined,
+      addons: from?.addons || [],
+      fields: from?.fields || {
         name: "",
         email: "",
       },
-      option: options[0].id,
+      option: from?.option?.id || options[0].id,
       confirmed: true,
     },
   });
@@ -159,7 +163,7 @@ export const AppointmentScheduleForm: React.FC<
   const isOverlaping = React.useMemo(() => {
     const appointmentStart = DateTime.fromJSDate(dateTime);
     const appointmentEnd = appointmentStart.plus({
-      minutes: duration,
+      minutes: duration || 0,
     });
 
     return calendarEvents.some((app) => {
@@ -186,12 +190,37 @@ export const AppointmentScheduleForm: React.FC<
           .filter((add) => !!add) || [];
 
       setLoading(true);
-      const { fields: _, addons: __, ...eventOption } = option;
+      const { addons: __, ...eventOption } = option;
+
+      // Clean up fields when switching option
+      const fields = Object.entries(data.fields)
+        .filter(([key]) =>
+          eventOption.fields.some((field) => field.name === key)
+        )
+        .reduce(
+          (acc, [name, value]) => ({
+            ...acc,
+            [name]: value,
+          }),
+          {
+            name: data.fields.name,
+            email: data.fields.email,
+          }
+        );
 
       const appointmentEvent: Omit<AppointmentEvent, "timeZone"> = {
         dateTime: data.dateTime.toISOString(),
-        option: eventOption,
-        fields: data.fields,
+        option: {
+          ...eventOption,
+          fields: (eventOption.fields || []).reduce(
+            (acc, field) => ({
+              ...acc,
+              [field.name]: field.data.label,
+            }),
+            {}
+          ),
+        },
+        fields,
         totalDuration: data.totalDuration,
         totalPrice: data.totalPrice,
         addons,
@@ -239,7 +268,17 @@ export const AppointmentScheduleForm: React.FC<
       totalDuration: duration,
       totalPrice: price,
       fields: { name, email },
-      option: selectedOption,
+      option: {
+        ...selectedOption,
+        fields: (selectedOption.fields || []).reduce(
+          (acc, field) => ({
+            ...acc,
+            [field.name]: field.data.label,
+          }),
+          {}
+        ),
+        addons: undefined,
+      },
       status: "pending",
       timeZone,
       addons: selectedAddonIds,
@@ -270,6 +309,7 @@ export const AppointmentScheduleForm: React.FC<
         (prev, curr) => prev + (curr.duration || 0),
         0
       );
+
     let price: number | undefined =
       (selectedOption?.price || 0) +
       (selectedAddons || []).reduce(
@@ -277,10 +317,8 @@ export const AppointmentScheduleForm: React.FC<
         0
       );
 
-    if (!price) price = undefined;
-
     form.setValue("totalDuration", duration);
-    form.setValue("totalPrice", price);
+    form.setValue("totalPrice", price || 0);
   }, [selectedOption, selectedAddons]);
 
   const selectedFields = getFields(selectedOption?.fields || []);
@@ -311,13 +349,15 @@ export const AppointmentScheduleForm: React.FC<
                             <div className="flex flex-col gap-1">
                               <div>{x.name}</div>
                               <div className="text-sm text-muted-foreground inline-flex items-center gap-2">
-                                {x.duration && (
-                                  <div className="inline-flex items-center gap-1">
-                                    {" "}
-                                    <Clock size={16} /> {x.duration} min
-                                  </div>
-                                )}
-                                {x.price && (
+                                <div className="inline-flex items-center gap-1">
+                                  <Clock size={16} />{" "}
+                                  {!!x.duration ? (
+                                    <>{x.duration} min</>
+                                  ) : (
+                                    "Custom"
+                                  )}
+                                </div>
+                                {!!x.price && (
                                   <div className="inline-flex items-center gap-1">
                                     <DollarSign size={16} /> ${x.price}
                                   </div>

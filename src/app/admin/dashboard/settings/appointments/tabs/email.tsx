@@ -9,7 +9,6 @@ import {
 import { Input } from "@/components/ui/input";
 import Editor from "@monaco-editor/react";
 import React from "react";
-import { z } from "zod";
 import { TabProps } from "./types";
 import { StatusText } from "@/components/admin/appointments/types";
 import {
@@ -19,47 +18,17 @@ import {
 } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IFrame } from "@/components/ui/iframe";
-import { AppointmentsSettingsFormValues } from "../schema";
 import { templateSafeWithError } from "@/lib/string";
+import { EmailTemplateKeys } from "@/types";
 
-const emailTemplateSchema = z.object({
-  subject: z
-    .string({ message: "Email subject template is required" })
-    .min(1, "Email subject template is required"),
-  body: z
-    .string({ message: "Email body template is required" })
-    .min(1, "Email body template is required"),
-});
-
-type TemplateKeys = keyof AppointmentsSettingsFormValues["email"]["templates"];
-
-export const emailTabFormSchema = z.object({
-  to: z.string().email("Must be a valid email"),
-  from: z.string().email("Must be a valid email"),
-  templates: z.object({
-    pending: emailTemplateSchema,
-    confirmed: emailTemplateSchema,
-    declined: emailTemplateSchema,
-    rescheduled: emailTemplateSchema,
-  }),
-  event: z.object({
-    summary: z
-      .string({ message: "Event summary template is required" })
-      .min(1, "Event summary template is required"),
-    description: z
-      .string({ message: "Event description template is required" })
-      .min(1, "Event description template is required"),
-  }),
-});
-
-const templateKeyText: Record<TemplateKeys, string> = {
+const templateKeyText: Record<EmailTemplateKeys, string> = {
   ...StatusText,
   rescheduled: "Rescheduled",
 };
 
 const EmailTemplateForm: React.FC<
   TabProps & {
-    type: TemplateKeys;
+    type: EmailTemplateKeys;
     whenText: string;
     demoArguments: Record<string, any>;
   }
@@ -96,7 +65,7 @@ const EmailTemplateForm: React.FC<
         name={`email.templates.${type}.body`}
         render={({ field }) => (
           <ResizablePanelGroup direction="horizontal" className="max-md:hidden">
-            <ResizablePanel className="pr-1">
+            <ResizablePanel className="pr-4">
               <FormItem>
                 <FormLabel>
                   Email body
@@ -122,7 +91,7 @@ const EmailTemplateForm: React.FC<
               </FormItem>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel className="pl-1">
+            <ResizablePanel className="pl-4">
               <FormItem>
                 <FormLabel>Preview</FormLabel>
                 <IFrame className="h-[60vh] w-full">
@@ -151,7 +120,7 @@ export const EmailTab: React.FC<
 > = ({ form, disabled, demoArguments }) => {
   return (
     <div className="flex flex-col gap-8 w-full">
-      <div className="gap-8 md:grid md:grid-cols-2">
+      <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
         <FormField
           control={form.control}
           name="email.from"

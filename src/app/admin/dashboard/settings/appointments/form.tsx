@@ -4,6 +4,7 @@ import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import {
   BookingConfiguration,
+  bookingConfigurationSchema,
   GeneralConfiguration,
   SocialConfiguration,
 } from "@/types";
@@ -16,10 +17,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SaveButton } from "@/components/admin/forms/save-button";
 import { MainTab } from "./tabs/main";
 import { EmailTab } from "./tabs/email";
-import {
-  appointmentsSettingsFormSchema,
-  AppointmentsSettingsFormValues,
-} from "./schema";
 import { ShiftsTab } from "./tabs/shifts";
 import { AddonsTab } from "./tabs/addons";
 import { OptionsTab } from "./tabs/options";
@@ -35,8 +32,8 @@ export const AppointmentsSettingsForm: React.FC<{
   generalSettings: GeneralConfiguration;
   socialSettings: SocialConfiguration;
 }> = ({ values, generalSettings, socialSettings }) => {
-  const form = useForm<AppointmentsSettingsFormValues>({
-    resolver: zodResolver(appointmentsSettingsFormSchema),
+  const form = useForm<BookingConfiguration>({
+    resolver: zodResolver(bookingConfigurationSchema),
     mode: "all",
     reValidateMode: "onChange",
     values,
@@ -52,7 +49,7 @@ export const AppointmentsSettingsForm: React.FC<{
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const onSubmit = async (data: AppointmentsSettingsFormValues) => {
+  const onSubmit = async (data: BookingConfiguration) => {
     try {
       setLoading(true);
       await updateBookingConfiguration(data);
@@ -107,7 +104,7 @@ export const AppointmentsSettingsForm: React.FC<{
           className="space-y-4"
           orientation="vertical"
         >
-          <TabsList className="w-full">
+          <TabsList className="w-full flex-wrap h-auto">
             <TabsTrigger
               value="main"
               className={cn(mainTabInvalid ? "text-destructive" : "")}

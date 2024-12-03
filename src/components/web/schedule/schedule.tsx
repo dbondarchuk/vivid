@@ -45,9 +45,14 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   const { toast } = useToast();
   const topRef = React.createRef<HTMLDivElement>();
 
+  const appointmentOptionDuration = props.appointmentOption.duration;
   const [duration, setDuration] = React.useState<number | undefined>(
-    props.appointmentOption.duration
+    appointmentOptionDuration
   );
+
+  React.useEffect(() => {
+    setDuration(appointmentOptionDuration);
+  }, [appointmentOptionDuration, setDuration]);
 
   let initialStep: Step = "duration";
   if (props.appointmentOption.addons && props.appointmentOption.addons.length) {
@@ -146,7 +151,13 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         fields,
         option: {
           ...props.appointmentOption,
-          fields: undefined,
+          fields: props.appointmentOption.fields?.reduce(
+            (acc, field) => ({
+              ...acc,
+              [field.name]: field.data?.label,
+            }),
+            {}
+          ),
           addons: undefined,
         },
         addons: selectedAddons,
@@ -271,6 +282,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           appointmentOption={props.appointmentOption}
           selectedAddons={selectedAddons}
           onDurationChange={(duration) => setDuration(duration)}
+          optionDuration={duration}
           duration={duration}
           next={nextStep}
         />
@@ -284,6 +296,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           }
           next={nextStep}
           appointmentOption={props.appointmentOption}
+          optionDuration={duration}
           onAddonSelectionChange={setSelectedAddons}
           selectedAddons={selectedAddons}
         />
@@ -300,6 +313,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           }
           next={nextStep}
           appointmentOption={props.appointmentOption}
+          optionDuration={duration}
           availability={availability}
           selectedAddons={selectedAddons}
           dateTime={dateTime}
@@ -314,6 +328,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           selectedAddons={selectedAddons}
           duration={duration!}
           appointmentOption={props.appointmentOption}
+          optionDuration={duration}
         />
       )}
       {step === "confirmation" && (
@@ -322,6 +337,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           duration={duration!}
           selectedAddons={selectedAddons}
           appointmentOption={props.appointmentOption}
+          optionDuration={duration}
         />
       )}
       {isLoading && (

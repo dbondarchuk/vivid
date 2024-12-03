@@ -11,7 +11,11 @@ import {
 import { Link } from "@/components/ui/link";
 import { Appointment, AppointmentStatus } from "@/types";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { SquareArrowOutUpRight } from "lucide-react";
+import {
+  CalendarCheck2,
+  CalendarX2,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import React from "react";
 import {
   AlertDialog,
@@ -26,7 +30,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AppointmentActionButton } from "./action.button";
 import { AppointmentView } from "./appoitment.view";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export type AppointmentDialogProps = DialogProps & {
   appointment: Appointment;
@@ -63,58 +66,10 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
         <div className="flex-1 w-full overflow-auto">
           <AppointmentView appointment={appointment} />
         </div>
-        <DialogFooter className="flex-row !justify-between gap-2">
+        <DialogFooter className="flex-row gap-2">
           <DialogClose asChild>
             <Button variant="secondary">Close</Button>
           </DialogClose>
-          <div className="flex flex-row gap-2">
-            {appointment.status !== "declined" && (
-              <>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="secondary" className="max-md:flex-grow">
-                      Decline
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        decline this appointment and will notify the customer.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction asChild>
-                        <AppointmentActionButton
-                          variant="secondary"
-                          _id={appointment._id}
-                          status="declined"
-                          onSuccess={updateAppointmentStatus}
-                        >
-                          Decline
-                        </AppointmentActionButton>
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                {appointment.status === "pending" && (
-                  <AppointmentActionButton
-                    variant="default"
-                    className="max-md:flex-grow"
-                    _id={appointment._id}
-                    status="confirmed"
-                    onSuccess={updateAppointmentStatus}
-                  >
-                    Confirm
-                  </AppointmentActionButton>
-                )}
-              </>
-            )}
-          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

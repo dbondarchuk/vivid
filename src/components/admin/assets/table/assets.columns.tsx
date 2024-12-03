@@ -3,7 +3,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { Asset } from "@/types";
 import React from "react";
-import { mimeType } from "mime-type/with-db";
 import { CellAction } from "./cell-action";
 import { DateTime } from "luxon";
 import Image from "next/image";
@@ -32,10 +31,7 @@ export const columns: ColumnDef<Asset>[] = [
     header: "Preview",
     cell: ({ row }) => (
       <div>
-        {mimeType
-          .lookup(row.original.filename)
-          ?.toString()
-          .startsWith("image/") ? (
+        {row.original.mimeType.startsWith("image/") ? (
           <Image
             src={`/assets/${row.original.filename}`}
             width={64}
@@ -54,7 +50,7 @@ export const columns: ColumnDef<Asset>[] = [
   },
   {
     header: "File type",
-    accessorFn: (asset) => mimeType.lookup(asset.filename),
+    accessorFn: (asset) => asset.mimeType,
   },
   {
     accessorFn: (asset) => asset.description || "",

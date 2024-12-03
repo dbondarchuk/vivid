@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import {
   Command,
   CommandInput,
@@ -23,15 +23,26 @@ export type IComboboxItem = {
   shortLabel?: React.ReactNode;
 };
 
-export type ComboboxProps = React.ButtonHTMLAttributes<any> & {
+type BaseComboboxProps = React.ButtonHTMLAttributes<any> & {
   values: IComboboxItem[];
   searchLabel?: string;
   noResultsLabel?: string;
   value?: string;
-  onItemSelect?: (value: string) => void;
   listClassName?: string;
   customSearch?: (search: string) => IComboboxItem[];
 };
+
+type ClearableComboboxProps = BaseComboboxProps & {
+  onItemSelect?: (value: string | undefined) => void;
+  allowClear: true;
+};
+
+type NonClearableComboboxProps = BaseComboboxProps & {
+  onItemSelect?: (value: string) => void;
+  allowClear?: false;
+};
+
+export type ComboboxProps = NonClearableComboboxProps | ClearableComboboxProps;
 
 export const Loader: React.FC = () => (
   <div role="status">
@@ -58,7 +69,7 @@ export const Loader: React.FC = () => (
 const ItemComponent = React.memo(
   (props: {
     item: IComboboxItem;
-    selected: string;
+    selected: string | undefined;
     select: (value: string) => void;
     style?: React.CSSProperties;
   }) => {
@@ -86,7 +97,7 @@ ItemComponent.displayName = "ItemComponent";
 const Items = React.memo(
   (props: {
     values: IComboboxItem[];
-    selected: string;
+    selected: string | undefined;
     listRef: React.RefObject<HTMLDivElement>;
     select: (value: string) => void;
   }) => {
@@ -141,9 +152,46 @@ const Items = React.memo(
 );
 Items.displayName = "Items";
 
+const ComboboxTrigger = React.forwardRef<
+  HTMLButtonElement,
+  ButtonProps & { allowClear?: boolean; onClear?: () => void; open?: boolean }
+>(({ onClear, allowClear, open, className, children, ...props }, ref) => (
+  <div className={cn("flex-grow inline-flex flex-row", className)}>
+    <Button
+      variant="outline"
+      role="combobox"
+      aria-expanded={open}
+      {...props}
+      ref={ref}
+      className={cn(
+        "justify-between flex-grow",
+        allowClear ? "rounded-r-none" : ""
+      )}
+    >
+      {children}
+      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+    </Button>
+    {allowClear && (
+      <Button
+        variant="outline"
+        onClick={onClear}
+        type="button"
+        className="border-l-0 rounded-l-none"
+        aria-label="Clear selection"
+        disabled={props.disabled}
+      >
+        <X className="h-4 w-4 opacity-50" />
+      </Button>
+    )}
+  </div>
+));
+
+ComboboxTrigger.displayName = "ComboboxTrigger";
+
 export const Combobox: React.FC<ComboboxProps> = (props) => {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(props.value || "");
+  const [value, setValue] = React.useState<string | undefined>(props.value);
+
   const [search, setSearch] = React.useState("");
 
   let { listClassName, customSearch, searchLabel, ...rest } = props;
@@ -155,10 +203,10 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
   }
 
   const onSelect = React.useCallback(
-    (value: string) => {
+    (value: string | undefined) => {
       setValue(value);
       setOpen(false);
-      props.onItemSelect?.(value);
+      props.onItemSelect?.(value as string);
     },
     [props]
   );
@@ -180,16 +228,14 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
+        <ComboboxTrigger
+          allowClear={"allowClear" in props && props.allowClear}
+          onClear={() => onSelect(undefined)}
+          open={open}
           {...rest}
-          className={cn("justify-between", props.className || "")}
         >
           {buttonLabel}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        </ComboboxTrigger>
       </PopoverTrigger>
       <PopoverContent
         className={"min-w-max p-0 w-[var(--radix-popper-anchor-width)]"}

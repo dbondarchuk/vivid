@@ -13,7 +13,7 @@ import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Combobox, IComboboxItem } from "@/components/ui/combobox";
-import { FieldSchema, fieldTypeLabels } from "./fieldCard";
+import { fieldTypeLabels } from "./fieldCard";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,10 +25,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { FieldSchema } from "@/types";
+import { cn } from "@/lib/utils";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export type FieldSelectProps = {
   item: {
     id: string;
+    fields_id: string;
   };
   name: string;
   form: UseFormReturn<any>;
@@ -43,7 +51,7 @@ export type FieldSelectType = "FieldSelect";
 export interface FieldSelectDragData {
   type: FieldSelectType;
   item: {
-    id: string;
+    fields_id: string;
   };
 }
 
@@ -64,7 +72,7 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
     transition,
     isDragging,
   } = useSortable({
-    id: item.id,
+    id: item.fields_id,
     data: {
       type: "FieldSelect",
       item,
@@ -88,10 +96,10 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
     },
   });
 
-  const id = form.getValues(name);
-  const nameValue = form
-    .getValues("fields")
-    .find((x: FieldSchema) => x.id === id);
+  const { id } = form.getValues(name);
+  const field = form.getValues("fields").find((x: FieldSchema) => x.id === id);
+
+  const nameValue = field?.name;
 
   const fieldValues = form.getValues("fields").map(
     (field: FieldSchema) =>
@@ -117,72 +125,80 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="justify-between relative flex flex-row border-b-2 border-secondary px-3 py-3 w-full">
-        <Button
-          type="button"
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
-        >
-          <></>
-          <span className="sr-only">Move appointment field</span>
-          <GripVertical />
-        </Button>
-        <span>{nameValue || "Field"}</span>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
-              type="button"
-            >
-              <Trash size={20} />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to remove this field from this option?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction asChild>
-                <Button variant="destructive" onClick={remove}>
-                  Delete
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </CardHeader>
-      <CardContent className="px-3 pb-6 pt-3 text-left relative">
-        <FormField
-          control={form.control}
-          name={`${name}.id`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Field</FormLabel>
-
-              <FormControl>
-                <Combobox
+      <AccordionItem value={item.fields_id}>
+        <CardHeader className="justify-between relative flex flex-row border-b-2 border-secondary px-3 py-3 w-full">
+          <Button
+            type="button"
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <></>
+            <span className="sr-only">Move appointment field</span>
+            <GripVertical />
+          </Button>
+          <AccordionTrigger className={cn(!nameValue && "text-destructive")}>
+            {nameValue || "Invalid field"}
+          </AccordionTrigger>
+          <div className="flex flex-row gap-2 items-center">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
                   disabled={disabled}
-                  className="flex w-full font-normal text-base"
-                  values={fieldValues}
-                  searchLabel="Select field"
-                  value={field.value}
-                  onItemSelect={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </CardContent>
+                  variant="destructive"
+                  className=""
+                  size="sm"
+                  type="button"
+                >
+                  <Trash size={20} />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to remove this field from this option?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction asChild>
+                    <Button variant="destructive" onClick={remove}>
+                      Delete
+                    </Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </CardHeader>
+        <AccordionContent>
+          <CardContent className="px-3 pb-6 pt-3 text-left relative">
+            <FormField
+              control={form.control}
+              name={`${name}.id`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Field</FormLabel>
+
+                  <FormControl>
+                    <Combobox
+                      disabled={disabled}
+                      className="flex w-full font-normal text-base"
+                      values={fieldValues}
+                      searchLabel="Select field"
+                      value={field.value}
+                      onItemSelect={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </AccordionContent>
+      </AccordionItem>
     </Card>
   );
 };

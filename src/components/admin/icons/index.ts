@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  Brush,
   CalendarClock,
   Check,
   ChevronLeft,
@@ -26,6 +27,7 @@ import {
   MessageCircle,
   Moon,
   MoreVertical,
+  Paintbrush,
   PanelBottom,
   PanelTop,
   Paperclip,
@@ -81,4 +83,6 @@ export const Icons = {
   sms: MessageCircle,
   script: Code2,
   communicationLogs: MailSearch,
+  paintbrush: Paintbrush,
+  brush: Brush,
 };

@@ -20,6 +20,7 @@ export type BaseCardProps = IWithI18nProps & {
 
   appointmentOption: AppointmentChoice;
   selectedAddons?: AppointmentAddon[];
+  optionDuration?: number;
 };
 
 export type BaseCardState = {};
@@ -34,10 +35,12 @@ export abstract class BaseCard<
   public abstract get cardContent(): React.ReactNode;
 
   protected get duration() {
-    if (!this.props.appointmentOption.duration) return undefined;
+    const baseDuration =
+      this.props.optionDuration || this.props.appointmentOption.duration;
+    if (!baseDuration) return undefined;
 
     return (
-      this.props.appointmentOption.duration +
+      baseDuration +
       (this.props.selectedAddons || []).reduce(
         (sum, addon) => sum + (addon.duration || 0),
         0
@@ -60,7 +63,7 @@ export abstract class BaseCard<
       <Card className="sm:min-w-min md:w-full">
         <CardHeader className="text-center">
           <CardTitle>{this.props.appointmentOption.name}</CardTitle>
-          {(this.duration || this.price) && (
+          {(!!this.duration || !!this.price) && (
             <CardDescription className="flex flex-row gap-2 justify-center place-items-center">
               {this.duration && (
                 <div className="flex flex-row items-center">
@@ -71,7 +74,7 @@ export abstract class BaseCard<
                   )}
                 </div>
               )}
-              {this.price && (
+              {!!this.price && (
                 <div className="flex flex-row items-center">
                   <DollarSign className="mr-1" />
                   {this.price.toFixed(2).replace(/\.00$/, "")}

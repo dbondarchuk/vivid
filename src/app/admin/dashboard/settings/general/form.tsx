@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { GeneralConfiguration } from "@/types";
+import { GeneralConfiguration, generalConfigurationSchema } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -20,40 +20,14 @@ import { updateGeneralConfiguration } from "./actions";
 import { InfoTooltip } from "@/components/admin/tooltip/infoTooltip";
 import { TagInput } from "@/components/ui/tagInput";
 import { SaveButton } from "@/components/admin/forms/save-button";
-
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Website Name must be at least 3 characters" }),
-  title: z
-    .string()
-    .min(3, { message: "Website Title must be at least 3 characters" }),
-  description: z
-    .string()
-    .min(3, { message: "Website Description must be at least 3 characters" }),
-  keywords: z
-    .string()
-    .min(3, { message: "Website Keywords must be at least 3 characters" }),
-  phone: z.string().min(3, { message: "Phone number is required" }),
-  email: z.string().email("Email is required"),
-  address: z
-    .string()
-    .min(3, { message: "Address must be at least 3 characters" })
-    .optional(),
-  url: z
-    .string()
-    .url("Website url should be valid URL address")
-    .min(3, { message: "Website Name must be at least 3 characters" }),
-  //   logo: string,
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { Textarea } from "@/components/ui/textarea";
+import { InputAssetSelector } from "@/components/ui/inputAssetSelector";
 
 export const GeneralSettingsForm: React.FC<{
   values: GeneralConfiguration;
 }> = ({ values }) => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<GeneralConfiguration>({
+    resolver: zodResolver(generalConfigurationSchema),
     mode: "all",
     values,
   });
@@ -61,12 +35,11 @@ export const GeneralSettingsForm: React.FC<{
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: GeneralConfiguration) => {
     try {
       setLoading(true);
       await updateGeneralConfiguration({
         ...data,
-        logo: "",
       });
       router.refresh();
       toast({
@@ -98,7 +71,7 @@ export const GeneralSettingsForm: React.FC<{
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-8 relative"
       >
-        <div className="gap-8 md:grid md:grid-cols-2">
+        <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
             name="name"
@@ -140,7 +113,8 @@ export const GeneralSettingsForm: React.FC<{
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Input
+                  <Textarea
+                    autoResize
                     disabled={loading}
                     placeholder="Website description"
                     {...field}
@@ -238,8 +212,55 @@ export const GeneralSettingsForm: React.FC<{
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Website description"
+                    placeholder="Physical office address"
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="logo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Logo{" "}
+                  <InfoTooltip>
+                    URL to image to be used as logo (for example in header)
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <InputAssetSelector
+                    field={field}
+                    disabled={loading}
+                    placeholder="Logo URL"
+                    type="image"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="favicon"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Favicon{" "}
+                  <InfoTooltip>
+                    URL to image to be used as favicon (icon that is shown in
+                    browser tab)
+                  </InfoTooltip>
+                </FormLabel>
+                <FormControl>
+                  <InputAssetSelector
+                    field={field}
+                    disabled={loading}
+                    placeholder="Favicon URL"
+                    type="image"
                   />
                 </FormControl>
                 <FormMessage />

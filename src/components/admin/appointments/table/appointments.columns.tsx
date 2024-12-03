@@ -212,7 +212,7 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
-    accessorFn: (app) => `$${app.totalPrice}`,
+    accessorFn: (app) => (app.totalPrice ? `$${app.totalPrice}` : null),
     header: "Price",
   },
 ];

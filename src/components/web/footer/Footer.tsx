@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils";
 import { MenuItem } from "@/types";
 import { MdxContent } from "../mdx/mdxContent";
 
-const DefaultFooter: React.FC<{ links: MenuItem[] }> = async ({ links }) => {
+const DefaultFooter: React.FC<{
+  links: MenuItem[];
+  contactUsLabel?: string;
+}> = async ({ links, contactUsLabel }) => {
   const configurationService = Services.ConfigurationService();
   const { phone, email, address, name } =
     await configurationService.getConfiguration("general");
@@ -110,11 +113,13 @@ const DefaultFooter: React.FC<{ links: MenuItem[] }> = async ({ links }) => {
       <div className="flex flex-col gap-10">
         <div className="flex flex-col md:flex-row justify-between gap-4">
           <div className="flex flex-col gap-10 flex-grow">
-            <h3 className="font-header text-4xl font-normal">Contact us</h3>
+            <h3 className="font-secondary text-4xl font-normal">
+              {contactUsLabel || "Contact us"}
+            </h3>
             <div className="flex flex-col gap-4 w-full">
               <div className="flex flex-col gap-4 w-full">
                 <div>
-                  <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
+                  <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
                     Phone
                   </h2>
                   <p className="mt-1 font-thin">
@@ -122,7 +127,7 @@ const DefaultFooter: React.FC<{ links: MenuItem[] }> = async ({ links }) => {
                   </p>
                 </div>
                 <div>
-                  <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
+                  <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
                     Email
                   </h2>
                   <p className="mt-1 font-thin">
@@ -131,7 +136,7 @@ const DefaultFooter: React.FC<{ links: MenuItem[] }> = async ({ links }) => {
                 </div>
                 {address && (
                   <div>
-                    <h2 className="font-header font-semibold tracking-widest text-sm uppercase">
+                    <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
                       Address
                     </h2>
                     <p className="mt-1 font-thin">
@@ -170,11 +175,14 @@ export const Footer: React.FC = async () => {
   if (footer.isCustom && !footer.content) return null;
 
   return (
-    <footer className="py-20 bg-white">
+    <footer className="py-20 bg-background">
       {footer.isCustom ? (
         <MdxContent source={footer.content!} />
       ) : (
-        <DefaultFooter links={footer.links || []} />
+        <DefaultFooter
+          links={footer.links || []}
+          contactUsLabel={footer.contactUsLabel}
+        />
       )}
     </footer>
   );

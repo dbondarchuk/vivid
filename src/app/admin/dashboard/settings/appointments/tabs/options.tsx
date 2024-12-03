@@ -1,22 +1,21 @@
 import { Sortable } from "@/components/ui/sortable";
-import { z } from "zod";
 import { TabProps } from "./types";
 import { useFieldArray } from "react-hook-form";
 import React from "react";
 import { v4 } from "uuid";
-import { OptionCard, OptionSchema, optionSchema } from "./cards/optionsCard";
-
-export const optionsSchema = z
-  .array(optionSchema)
-  .min(1, "Options are required");
+import { OptionCard } from "./cards/optionCard";
+import { AppointmentOption } from "@/types";
+import { Accordion } from "@/components/ui/accordion";
 
 export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const { fields, append, remove, swap, update, insert } = useFieldArray({
     control: form.control,
     name: "options",
+    keyName: "fields_id",
   });
 
   const ids = React.useMemo(() => fields.map((x) => x.id), [fields]);
+  const [opened, setOpened] = React.useState<string[]>([]);
 
   const sort = (activeId: string, overId: string) => {
     const activeIndex = fields.findIndex((x) => x.id === activeId);
@@ -28,36 +27,55 @@ export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
   };
 
   const addNew = () => {
+    const newId = v4();
     append({
-      id: v4(),
-    } as Partial<OptionSchema> as OptionSchema);
+      id: newId,
+    } as Partial<AppointmentOption> as AppointmentOption);
+
+    setOpened([...opened, newId]);
   };
 
   const clone = (index: number) => {
+    const newId = v4();
     insert(index + 1, {
       ...form.getValues(`options.${index}`),
-      id: v4(),
+      id: newId,
     });
+
+    setOpened([...opened, newId]);
+  };
+
+  const collapse = () => {
+    setOpened(opened.length > 0 ? [] : ids);
   };
 
   return (
-    <Sortable title="Options" ids={ids} onSort={sort} onAdd={addNew}>
-      <div className="flex flex-grow flex-col gap-4">
-        {fields.map((item, index) => {
-          return (
-            <OptionCard
-              form={form}
-              item={item}
-              key={item.id}
-              name={`options.${index}`}
-              disabled={disabled}
-              remove={() => remove(index)}
-              update={(newValue) => update(index, newValue)}
-              clone={() => clone(index)}
-            />
-          );
-        })}
-      </div>
+    <Sortable
+      title="Options"
+      ids={ids}
+      onSort={sort}
+      onAdd={addNew}
+      collapse={collapse}
+      allCollapsed={opened.length === 0 && ids.length > 0}
+    >
+      <Accordion type="multiple" value={opened} onValueChange={setOpened}>
+        <div className="flex flex-grow flex-col gap-4">
+          {fields.map((item, index) => {
+            return (
+              <OptionCard
+                form={form}
+                item={item}
+                key={item.id}
+                name={`options.${index}`}
+                disabled={disabled}
+                remove={() => remove(index)}
+                update={(newValue) => update(index, newValue)}
+                clone={() => clone(index)}
+              />
+            );
+          })}
+        </div>
+      </Accordion>
     </Sortable>
   );
 };

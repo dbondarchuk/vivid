@@ -30,36 +30,23 @@ import {
   InputSuffix,
 } from "@/components/ui/inputGroup";
 import { Textarea } from "@/components/ui/textarea";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { cva } from "class-variance-authority";
 import { Copy, Trash } from "lucide-react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-import { OptionSchema } from "./optionsCard";
-
-export const addonSchema = z.object({
-  name: z.string().min(2, "Addon name must me at least 2 characters long"),
-  id: z.string(),
-  description: z
-    .string()
-    .min(2, "Addon description must be at least 2 characters long"),
-  duration: z.coerce
-    .number()
-    .min(0, "Addon duration must be at least 0 minutes")
-    .optional(),
-  price: z.coerce.number().min(0, "Addon price must be at least 0").optional(),
-});
-
-export type AddonSchema = z.infer<typeof addonSchema>;
+import { AppointmentAddon, AppointmentOption } from "@/types";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 
 export type AddonProps = {
-  item: AddonSchema;
+  item: AppointmentAddon;
   name: string;
   form: UseFormReturn<any>;
   disabled?: boolean;
   remove: () => void;
-  update: (newValue: AddonSchema) => void;
+  update: (newValue: AppointmentAddon) => void;
   clone: () => void;
 };
 
@@ -67,7 +54,7 @@ export type AddonType = "Addon";
 
 export interface AddonDragData {
   type: AddonType;
-  item: AddonSchema;
+  item: AppointmentAddon;
 }
 
 export const AddonCard: React.FC<AddonProps> = ({
@@ -88,7 +75,7 @@ export const AddonCard: React.FC<AddonProps> = ({
   });
 
   const removeAddon = () => {
-    (options as unknown as OptionSchema[]).forEach((option, index) => {
+    (options as unknown as AppointmentOption[]).forEach((option, index) => {
       const addons = option.addons?.filter((addon) => addon.id !== item.id);
       updateOption(index, {
         ...option,
@@ -101,151 +88,167 @@ export const AddonCard: React.FC<AddonProps> = ({
 
   return (
     <Card>
-      <CardHeader className="justify-between relative flex flex-row items-center border-b-2 border-secondary px-3 py-3 w-full">
-        <div className="w-full text-center">{nameValue || "Invalid addon"}</div>
-        <div className="flex flex-row gap-2">
-          <Button
-            disabled={disabled}
-            variant="outline"
-            className=""
-            size="sm"
-            type="button"
-            title="Clone"
-            onClick={clone}
+      <AccordionItem value={item.id}>
+        <CardHeader className="justify-between relative flex flex-row items-center border-b-2 border-secondary px-3 py-3 w-full">
+          <div className="hidden md:block">&nbsp;</div>
+          <AccordionTrigger
+            className={cn(
+              "w-full text-center",
+              !nameValue && "text-destructive"
+            )}
           >
-            <Copy size={20} />
-          </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                disabled={disabled}
-                variant="destructive"
-                className=""
-                size="sm"
-                type="button"
-                title="Remove"
-              >
-                <Trash size={20} />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  <p>Are you sure you want to remove this addon?</p>
-                  <p>
-                    <strong>NOTE: </strong>This will also remove this addon from
-                    all the options
-                  </p>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Button variant="destructive" onClick={removeAddon}>
-                    Delete
-                  </Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      </CardHeader>
-      <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name={`${name}.name`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
+            {nameValue || "Invalid addon"}
+          </AccordionTrigger>
+          <div className="flex flex-row gap-2">
+            <Button
+              disabled={disabled}
+              variant="outline"
+              className=""
+              size="sm"
+              type="button"
+              title="Clone"
+              onClick={clone}
+            >
+              <Copy size={20} />
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  disabled={disabled}
+                  variant="destructive"
+                  className=""
+                  size="sm"
+                  type="button"
+                  title="Remove"
+                >
+                  <Trash size={20} />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    <p>Are you sure you want to remove this addon?</p>
+                    <p>
+                      <strong>NOTE: </strong>This will also remove this addon
+                      from all the options
+                    </p>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction asChild>
+                    <Button variant="destructive" onClick={removeAddon}>
+                      Delete
+                    </Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </CardHeader>
+        <AccordionContent>
+          <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name={`${name}.name`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
 
-              <FormControl>
-                <Input
-                  disabled={disabled}
-                  placeholder="Addon name"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name={`${name}.description`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Description <SupportsMarkdownTooltip supportsMdx />
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  className="min-h-10"
-                  autoResize
-                  disabled={disabled}
-                  placeholder="Description"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name={`${name}.duration`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration</FormLabel>
-              <FormControl>
-                <InputGroup>
-                  <InputGroupInput>
+                  <FormControl>
                     <Input
                       disabled={disabled}
-                      placeholder="30"
-                      type="number"
-                      className={InputGroupInputClasses()}
+                      placeholder="Addon name"
                       {...field}
                     />
-                  </InputGroupInput>
-                  <InputSuffix className={InputGroupSuffixClasses()}>
-                    minutes
-                  </InputSuffix>
-                </InputGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name={`${name}.price`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <InputGroup>
-                  <InputSuffix
-                    className={InputGroupSuffixClasses({ variant: "prefix" })}
-                  >
-                    $
-                  </InputSuffix>
-                  <InputGroupInput>
-                    <Input
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`${name}.description`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Description <SupportsMarkdownTooltip supportsMdx />
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="min-h-10"
+                      autoResize
                       disabled={disabled}
-                      placeholder="20"
-                      type="number"
-                      className={InputGroupInputClasses({ variant: "prefix" })}
+                      placeholder="Description"
                       {...field}
                     />
-                  </InputGroupInput>
-                </InputGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </CardContent>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`${name}.duration`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Duration</FormLabel>
+                  <FormControl>
+                    <InputGroup>
+                      <InputGroupInput>
+                        <Input
+                          disabled={disabled}
+                          placeholder="30"
+                          type="number"
+                          className={InputGroupInputClasses()}
+                          {...field}
+                        />
+                      </InputGroupInput>
+                      <InputSuffix className={InputGroupSuffixClasses()}>
+                        minutes
+                      </InputSuffix>
+                    </InputGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`${name}.price`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <InputGroup>
+                      <InputSuffix
+                        className={InputGroupSuffixClasses({
+                          variant: "prefix",
+                        })}
+                      >
+                        $
+                      </InputSuffix>
+                      <InputGroupInput>
+                        <Input
+                          disabled={disabled}
+                          placeholder="20"
+                          type="number"
+                          className={InputGroupInputClasses({
+                            variant: "prefix",
+                          })}
+                          {...field}
+                        />
+                      </InputGroupInput>
+                    </InputGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </AccordionContent>
+      </AccordionItem>
     </Card>
   );
 };

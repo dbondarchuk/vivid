@@ -13,7 +13,6 @@ import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Combobox, IComboboxItem } from "@/components/ui/combobox";
-import { AddonSchema } from "./addonCard";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,10 +24,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { AppointmentAddon } from "@/types";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 
 export type AddonSelectProps = {
   item: {
     id: string;
+    fields_id: string;
   };
   name: string;
   form: UseFormReturn<any>;
@@ -44,6 +51,7 @@ export interface AddonSelectDragData {
   type: AddonSelectType;
   item: {
     id: string;
+    fields_id: string;
   };
 }
 
@@ -64,7 +72,7 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
     transition,
     isDragging,
   } = useSortable({
-    id: item.id,
+    id: item.fields_id,
     data: {
       type: "AddonSelect",
       item,
@@ -88,13 +96,15 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
     },
   });
 
-  const id = form.getValues(name);
-  const nameValue = form
+  const { id } = form.getValues(name);
+  const addon = form
     .getValues("addons")
-    .find((x: AddonSchema) => x.id === id);
+    .find((x: AppointmentAddon) => x.id === id);
+
+  const nameValue = addon?.name;
 
   const addonValues = form.getValues("addons").map(
-    (addon: AddonSchema) =>
+    (addon: AppointmentAddon) =>
       ({
         value: addon.id,
         shortLabel: addon.name,
@@ -115,73 +125,81 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
         dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
       })}
     >
-      <CardHeader className="justify-between relative flex flex-row border-b-2 border-secondary px-3 py-3 w-full">
-        <Button
-          type="button"
-          variant={"ghost"}
-          {...attributes}
-          {...listeners}
-          className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
-        >
-          <></>
-          <span className="sr-only">Move appointment addon</span>
-          <GripVertical />
-        </Button>
-        <span>{nameValue || "Addon"}</span>
+      <AccordionItem value={item.fields_id}>
+        <CardHeader className="justify-between relative flex flex-row border-b-2 border-secondary px-3 py-3 w-full">
+          <Button
+            type="button"
+            variant={"ghost"}
+            {...attributes}
+            {...listeners}
+            className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
+          >
+            <></>
+            <span className="sr-only">Move appointment addon</span>
+            <GripVertical />
+          </Button>
+          <AccordionTrigger className={cn(!nameValue && "text-destructive")}>
+            {nameValue || "Invalid addon"}
+          </AccordionTrigger>
 
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              disabled={disabled}
-              variant="destructive"
-              className=""
-              size="sm"
-              type="button"
-            >
-              <Trash size={20} />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to remove this addon from this option?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction asChild>
-                <Button variant="destructive" onClick={remove}>
-                  Delete
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </CardHeader>
-      <CardContent className="px-3 pb-6 pt-3 text-left relative">
-        <FormField
-          control={form.control}
-          name={`${name}.id`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Addon</FormLabel>
-
-              <FormControl>
-                <Combobox
+          <div className="flex flex-row gap-2 items-center">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
                   disabled={disabled}
-                  className="flex w-full font-normal text-base"
-                  values={addonValues}
-                  searchLabel="Select addon"
-                  value={field.value}
-                  onItemSelect={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </CardContent>
+                  variant="destructive"
+                  className=""
+                  size="sm"
+                  type="button"
+                >
+                  <Trash size={20} />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to remove this addon from this option?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction asChild>
+                    <Button variant="destructive" onClick={remove}>
+                      Delete
+                    </Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </CardHeader>
+        <AccordionContent>
+          <CardContent className="px-3 pb-6 pt-3 text-left relative">
+            <FormField
+              control={form.control}
+              name={`${name}.id`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Addon</FormLabel>
+
+                  <FormControl>
+                    <Combobox
+                      disabled={disabled}
+                      className="flex w-full font-normal text-base"
+                      values={addonValues}
+                      searchLabel="Select addon"
+                      value={field.value}
+                      onItemSelect={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </AccordionContent>
+      </AccordionItem>
     </Card>
   );
 };

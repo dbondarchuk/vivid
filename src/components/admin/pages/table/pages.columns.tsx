@@ -40,8 +40,24 @@ export const columns: ColumnDef<Page>[] = [
   },
   {
     accessorFn: (page) =>
+      DateTime.fromJSDate(page.publishDate).toLocaleString(
+        DateTime.DATETIME_MED
+      ),
+    header: "Publish date",
+  },
+  {
+    accessorFn: (page) =>
+      DateTime.fromJSDate(page.createdAt).toLocaleString(DateTime.DATETIME_MED),
+    header: "Created at",
+  },
+  {
+    accessorFn: (page) =>
       DateTime.fromJSDate(page.updatedAt).toLocaleString(DateTime.DATETIME_MED),
     header: "Updated at",
+  },
+  {
+    accessorFn: (page) => page.tags?.join(", ") || "",
+    header: "Tags",
   },
   {
     id: "actions",

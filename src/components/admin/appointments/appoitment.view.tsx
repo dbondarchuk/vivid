@@ -43,6 +43,15 @@ import { AppointmentRescheduleDialog } from "./appointment.reschedule.dialog";
 import { Markdown } from "@/components/web/markdown/Markdown";
 import { durationToTime } from "@/lib/time";
 import { Link } from "@/components/ui/link";
+import {
+  CalendarCheck2,
+  CalendarPlus,
+  CalendarSearch,
+  CalendarSync,
+  CalendarX,
+  CalendarX2,
+} from "lucide-react";
+import { ButtonGroup } from "@/components/ui/buttonGroup";
 
 const timezones = getTimeZones();
 
@@ -117,6 +126,79 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
 
   return (
     <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-row justify-end gap-2 flex-wrap">
+        <Link
+          className="inline-flex flex-row gap-2 items-center"
+          variant="primary"
+          button
+          href={`/admin/dashboard/appointments/new?from=${appointment._id}`}
+        >
+          <CalendarSync size={20} /> Schedule again
+        </Link>
+
+        {appointment.status !== "declined" ? (
+          <>
+            <AppointmentRescheduleDialog
+              appointment={appointment}
+              onRescheduled={reschedule}
+              trigger={
+                <Button
+                  variant="primary"
+                  className="inline-flex flex-row gap-2 items-center"
+                >
+                  <CalendarSearch size={20} />
+                  Reschedule
+                </Button>
+              }
+            />
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  className="inline-flex flex-row gap-2 items-center"
+                >
+                  <CalendarX2 size={20} /> Decline
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently decline
+                    this appointment and will notify the customer.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction asChild>
+                    <AppointmentActionButton
+                      variant="destructive"
+                      _id={appointment._id}
+                      status="declined"
+                      onSuccess={updateStatus}
+                    >
+                      <CalendarX2 size={20} />
+                      Decline
+                    </AppointmentActionButton>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        ) : null}
+
+        {appointment.status === "pending" ? (
+          <AppointmentActionButton
+            variant="default"
+            _id={appointment._id}
+            status="confirmed"
+            className="gap-2"
+            onSuccess={updateStatus}
+          >
+            <CalendarCheck2 size={20} /> Confirm
+          </AppointmentActionButton>
+        ) : null}
+      </div>
       <div className="flex flex-col lg:grid grid-cols-2">
         <div className="flex flex-col gap-2">
           <dl className="divide-y">
@@ -193,6 +275,10 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
               </dd>
             </div>
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="flex self-center">Status</dt>
+              <dd className="col-span-2">{StatusText[appointment.status]}</dd>
+            </div>
+            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="flex self-center">Customer</dt>
               <dd className="col-span-2">
                 <Accordion type="single" collapsible>
@@ -206,9 +292,9 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                       </span>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="grid grid-cols-2 gap-1">
+                      <div className="grid grid-cols-3 gap-1">
                         <div>Name:</div>
-                        <div>
+                        <div className="col-span-2">
                           <Link
                             variant="default"
                             href={`/admin/dashboard/appointments?search=${encodeURIComponent(
@@ -219,7 +305,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                           </Link>
                         </div>
                         <div>Email:</div>
-                        <div>
+                        <div className="col-span-2">
                           <Link
                             variant="default"
                             href={`/admin/dashboard/appointments?search=${encodeURIComponent(
@@ -231,15 +317,29 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                         </div>
                         {Object.entries(restFields).map(([key, value]) => (
                           <React.Fragment key={key}>
-                            <div>{key}:</div>
                             <div>
+                              {appointment.option?.fields?.[key] ? (
+                                <>
+                                  <span>
+                                    {appointment.option?.fields?.[key]}
+                                  </span>{" "}
+                                  <span className="text-sm text-muted-foreground">
+                                    ({key})
+                                  </span>
+                                </>
+                              ) : (
+                                key
+                              )}
+                              :
+                            </div>
+                            <div className="col-span-2">
                               <Link
                                 variant="default"
                                 href={`/admin/dashboard/appointments?search=${encodeURIComponent(
                                   value
                                 )}`}
                               >
-                                {value}
+                                {value.toString()}
                               </Link>
                             </div>
                           </React.Fragment>
@@ -251,67 +351,6 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
               </dd>
             </div>
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">Status</dt>
-              <dd className="col-span-2">
-                {appointment.status !== "declined" ? (
-                  <Accordion type="single" collapsible>
-                    <AccordionItem value="option" className="border-none">
-                      <AccordionTrigger>
-                        {StatusText[appointment.status]}
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="flex flex-col sm:flex-row gap-1 justify-between">
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="secondary">Decline</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you absolutely sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will
-                                  permanently decline this appointment and will
-                                  notify the customer.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction asChild>
-                                  <AppointmentActionButton
-                                    variant="secondary"
-                                    _id={appointment._id}
-                                    status="declined"
-                                    onSuccess={updateStatus}
-                                  >
-                                    Decline
-                                  </AppointmentActionButton>
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                          {appointment.status === "pending" && (
-                            <AppointmentActionButton
-                              variant="default"
-                              size="sm"
-                              _id={appointment._id}
-                              status="confirmed"
-                              onSuccess={updateStatus}
-                            >
-                              Confirm
-                            </AppointmentActionButton>
-                          )}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                ) : (
-                  StatusText["declined"]
-                )}
-              </dd>
-            </div>
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="flex self-center">Selected option</dt>
               <dd className="col-span-2">
                 <Accordion type="single" collapsible>
@@ -320,21 +359,25 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                       {appointment.option.name}
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="grid grid-cols-2 gap-1">
-                        {appointment.option.duration && (
+                      <div className="grid grid-cols-3 gap-1">
+                        {!!appointment.option.duration && (
                           <>
                             <div>Duration:</div>
-                            <div>{appointment.option.duration} minutes</div>
+                            <div className="col-span-2">
+                              {appointment.option.duration} minutes
+                            </div>
                           </>
                         )}
-                        {appointment.option.price && (
+                        {!!appointment.option.price && (
                           <>
                             <div>Price:</div>
-                            <div>${appointment.option.price}</div>
+                            <div className="col-span-2">
+                              ${appointment.option.price}
+                            </div>
                           </>
                         )}
                         <div>Description:</div>
-                        <div>
+                        <div className="col-span-2">
                           <Markdown markdown={appointment.option.description} />
                         </div>
                       </div>
@@ -361,10 +404,10 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                               {addon.name}
                               {(addon.price || addon.duration) && (
                                 <ul className="pl-2">
-                                  {addon.duration && (
+                                  {!!addon.duration && (
                                     <li>Duration: {addon.duration} min</li>
                                   )}
-                                  {addon.price && (
+                                  {!!addon.price && (
                                     <li>Price: ${addon.price}</li>
                                   )}
                                 </ul>

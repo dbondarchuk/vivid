@@ -34,16 +34,19 @@ function verify(
 }
 
 export async function POST(request: NextRequest, response: NextResponse) {
-  const smsConfiguration =
-    await Services.ConfigurationService().getConfiguration("sms");
-  const smtpConfiguration =
-    await Services.ConfigurationService().getConfiguration("smtp");
-  const generalConfiguration =
-    await Services.ConfigurationService().getConfiguration("general");
-  const bookingConfiguration =
-    await Services.ConfigurationService().getConfiguration("booking");
-  const socialConfiguration =
-    await Services.ConfigurationService().getConfiguration("social");
+  const {
+    sms: smsConfiguration,
+    general: generalConfiguration,
+    smtp: smtpConfiguration,
+    booking: bookingConfiguration,
+    social: socialConfiguration,
+  } = await Services.ConfigurationService().getConfigurations(
+    "sms",
+    "smtp",
+    "general",
+    "booking",
+    "social"
+  );
 
   const bodyText = await request.text();
   const timestamp = request.headers.get("X-textbelt-timestamp");

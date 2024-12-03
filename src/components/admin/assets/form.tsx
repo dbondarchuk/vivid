@@ -19,6 +19,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueFileName, createAsset } from "./actions";
+import mimeType from "mime-type/with-db";
 
 const formSchema = z.object({
   files: z.array(z.any()).min(1, "File must be attached"),
@@ -29,6 +30,7 @@ const formSchema = z.object({
     .refine((filename) => checkUniqueFileName(filename), {
       message: "File name must be unique",
     }),
+  mimeType: z.string(),
   description: z.string().optional(),
 });
 
@@ -51,7 +53,15 @@ export const AssetForm: React.FC = () => {
   const filename = files?.[0]?.name;
   React.useEffect(() => {
     if (filename) {
+      let fileType = mimeType.lookup(filename);
+      if (!fileType) {
+        fileType = "application/octet-stream";
+      } else if (Array.isArray(fileType)) {
+        fileType = fileType[0];
+      }
+
       form.setValue("filename", filename);
+      form.setValue("mimeType", fileType);
       form.trigger("filename");
     }
   }, [filename, form]);
@@ -70,8 +80,8 @@ export const AssetForm: React.FC = () => {
 
       await createAsset(formData);
 
-      router.refresh();
       router.push(`/admin/dashboard/assets`);
+      router.refresh();
 
       toast({
         variant: "default",
@@ -93,7 +103,7 @@ export const AssetForm: React.FC = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
         <FileInput name="files" label="Asset" />
-        <div className="gap-8 md:grid md:grid-cols-2">
+        <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}
             name="filename"
