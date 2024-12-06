@@ -19,7 +19,7 @@ export const timezones = getTimeZones();
 const [firstTimezone, ...restTimezones] = timezones.map((tz) => tz.name);
 
 export const generalBookingConfigurationSchema = z.object({
-  ics: z.string().url("ICS must a valid URL to your calendar"),
+  ics: z.string().url("ICS must a valid URL to your calendar").optional(),
   maxWeeksInFuture: z.coerce
     .number()
     .min(2, "The minimum amount of weeks must be 2")

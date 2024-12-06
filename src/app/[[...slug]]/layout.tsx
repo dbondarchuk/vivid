@@ -64,9 +64,16 @@ export default async function RootLayout({
       "styling"
     );
 
-  const primaryFont = styling.fonts?.primary || "Montserrat";
-  const secondaryFont = styling.fonts?.secondary || "Playfair Display";
-  const tertiaryFont = styling.fonts?.tertiary;
+  if (!general)
+    return (
+      <html>
+        <body>{children}</body>
+      </html>
+    );
+
+  const primaryFont = styling?.fonts?.primary || "Montserrat";
+  const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
+  const tertiaryFont = styling?.fonts?.tertiary;
 
   const tertiaryFontQueryArg = tertiaryFont
     ? `&family=${encodeURIComponent(tertiaryFont)}`
@@ -84,7 +91,7 @@ export default async function RootLayout({
   );
 
   const fonts = await fontsRes.text();
-  const colors = (styling.colors || {})
+  const colors = (styling?.colors || [])
     .filter((color) => !!color.value)
     .map(({ type, value }) => `--${type}-color: ${value};`)
     .join("\n");
@@ -125,7 +132,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer />
-        {scripts.footer?.map((resource, index) => (
+        {scripts?.footer?.map((resource, index) => (
           <ScriptRenderer resource={resource} id={index} key={index} />
         ))}
         <Toaster />

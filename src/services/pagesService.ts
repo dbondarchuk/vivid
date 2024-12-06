@@ -160,6 +160,9 @@ export class PagesService {
 
     const page = await pages.findOne({ _id: id });
     if (!page) return undefined;
+    if (page.slug === "home") {
+      throw new Error("Can not delete home page");
+    }
 
     await pages.deleteOne({
       _id: id,

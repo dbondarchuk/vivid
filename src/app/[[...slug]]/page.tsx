@@ -1,10 +1,11 @@
 import { MdxContent } from "@/components/web/mdx/mdxContent";
 import { Metadata, ResolvingMetadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Services } from "@/lib/services";
 import { cache } from "react";
 import { setPageData } from "@/lib/pageDataCache";
 import { cn } from "@/lib/utils";
+import { Page as PageType } from "@/types";
 
 type Props = {
   params: { slug: string[] };
@@ -24,12 +25,16 @@ const getSource = cache(async (slug: string[], preview = false) => {
   const pageSlug = slug.join("/");
   const page = await Services.PagesService().getPageBySlug(pageSlug);
 
+  if (slug.length === 1 && slug[0] === "home" && !page) {
+    redirect("/install");
+  }
+
   if (
     !page ||
     (!preview && (!page.published || page.publishDate > new Date()))
   ) {
     console.error(`Page not found: ${pageSlug}`);
-    return notFound();
+    notFound();
   }
 
   return page;
@@ -61,6 +66,7 @@ export async function generateMetadata(
 
 export default async function Page({ params, searchParams }: Props) {
   const page = await getSource(params.slug, searchParams?.preview);
+
   setPageData({
     params,
     searchParams: searchParams || {},

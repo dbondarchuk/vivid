@@ -94,9 +94,11 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem>
+          {page.slug !== "home" && (
+            <DropdownMenuItem onClick={() => setOpen(true)}>
+              <Trash className="mr-2 h-4 w-4" /> Delete
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={copyRelative}>
             <Copy className="mr-2 h-4 w-4" /> Copy relative url

@@ -14,7 +14,7 @@ import { Query } from "@/types/database/query";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { ConfigurationService } from "./configurationService";
-import { getIcsEventUid, IcsBusyTimeProvider } from "./helpers/ics";
+import { getIcsEventUid, IcsBusyTimeProvider, IcsEvent } from "./helpers/ics";
 import { NotificationService } from "./notifications/notificationService";
 
 const APPOINTMENTS_COLLECTION_NAME = "appointments";
@@ -37,9 +37,12 @@ export class EventsService {
     );
 
     const dbEventsPromise = this.getDbBusyTimes(start, end);
+    let icsEventsPromise = Promise.resolve<IcsEvent[]>([]);
 
-    const ics = new IcsBusyTimeProvider(config.ics);
-    const icsEventsPromise = ics.getBusyTimes(start, end, declinedUids);
+    if (config.ics) {
+      const ics = new IcsBusyTimeProvider(config.ics);
+      icsEventsPromise = ics.getBusyTimes(start, end, declinedUids);
+    }
 
     const [dbEvents, icsEvents] = await Promise.all([
       dbEventsPromise,
@@ -275,21 +278,24 @@ export class EventsService {
     const { booking: config, general: generalConfig } =
       await this.configurationService.getConfigurations("booking", "general");
 
-    const ics = new IcsBusyTimeProvider(config.ics);
-    const icsTimes = await ics.getBusyTimes(
-      DateTime.fromJSDate(start),
-      DateTime.fromJSDate(end),
-      appointments.items.map((app) =>
-        getIcsEventUid(app._id, generalConfig.url)
-      )
-    );
+    let icsEvents: Event[] = [];
+    if (config.ics) {
+      const ics = new IcsBusyTimeProvider(config.ics);
+      const icsTimes = await ics.getBusyTimes(
+        DateTime.fromJSDate(start),
+        DateTime.fromJSDate(end),
+        appointments.items.map((app) =>
+          getIcsEventUid(app._id, generalConfig.url)
+        )
+      );
 
-    const icsEvents: Event[] = icsTimes.map((x) => ({
-      title: x.title || "Busy",
-      dateTime: x.startAt.toJSDate(),
-      totalDuration: x.endAt.diff(x.startAt, "minutes").minutes,
-      uid: x.uid,
-    }));
+      icsEvents = icsTimes.map((x) => ({
+        title: x.title || "Busy",
+        dateTime: x.startAt.toJSDate(),
+        totalDuration: x.endAt.diff(x.startAt, "minutes").minutes,
+        uid: x.uid,
+      }));
+    }
 
     return [...appointments.items, ...icsEvents];
   }

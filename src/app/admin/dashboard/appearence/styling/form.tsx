@@ -234,8 +234,9 @@ export const StylingsConfigurationForm: React.FC<{
               {colors.map((color, index) => {
                 const type = form.getValues(`colors.${index}.type`);
                 const hasMultipleTypes =
-                  form.getValues("colors").filter((c) => c.type === type)
-                    .length > 1;
+                  (form.getValues("colors") || []).filter(
+                    (c) => c.type === type
+                  ).length > 1;
 
                 return (
                   <Card key={index}>

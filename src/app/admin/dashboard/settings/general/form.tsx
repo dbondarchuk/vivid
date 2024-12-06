@@ -176,7 +176,7 @@ export const GeneralSettingsForm: React.FC<{
                   <Input
                     disabled={loading}
                     type="email"
-                    placeholder="Website description"
+                    placeholder="Your email address"
                     {...field}
                   />
                 </FormControl>
