@@ -87,7 +87,7 @@ export const InputAssetSelector: React.FC<InputAssetSelectorProps> = ({
 
   return (
     <InputGroup>
-      <Dialog open={open}>
+      <Dialog open={open} onOpenChange={(open) => setIsOpen(open)}>
         <DialogContent className="sm:max-w-[80%]">
           <DialogHeader>
             <DialogTitle>Select asset</DialogTitle>

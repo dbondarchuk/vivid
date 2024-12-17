@@ -1,9 +1,13 @@
 import { z } from "zod";
-import { menuItemsSchema } from "./menuItem";
+import { menuItemsWithSubMenuSchema } from "./menuItem";
+
+export const headerShadowType = z.enum(["none", "static", "on-scroll"]);
 
 export const headerConfigurationSchema = z.object({
-  menu: menuItemsSchema,
+  menu: menuItemsWithSubMenuSchema,
   showLogo: z.coerce.boolean().default(false).optional(),
+  sticky: z.coerce.boolean().default(false).optional(),
+  shadow: headerShadowType.optional(),
 });
 
 export type HeaderConfiguration = z.infer<typeof headerConfigurationSchema>;

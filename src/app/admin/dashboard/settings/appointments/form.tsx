@@ -70,8 +70,6 @@ export const AppointmentsSettingsForm: React.FC<{
     }
   };
 
-  console.log(JSON.stringify(form.formState.errors));
-
   const mainTabInvalid =
     form.getFieldState("ics").invalid ||
     form.getFieldState("maxWeeksInFuture").invalid ||

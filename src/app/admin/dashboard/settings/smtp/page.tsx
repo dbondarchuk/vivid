@@ -17,9 +17,11 @@ export default async function Page() {
     "smtp"
   );
 
-  settings.auth.pass = !settings.auth.pass
-    ? settings.auth.pass
-    : maskedPassword;
+  if (!!settings?.auth) {
+    settings.auth.pass = !settings.auth.pass
+      ? settings.auth.pass
+      : maskedPassword;
+  }
 
   return (
     <PageContainer scrollable={true}>

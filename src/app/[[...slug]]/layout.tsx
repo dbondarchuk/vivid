@@ -128,7 +128,7 @@ export default async function RootLayout({
       <TwLoad />
       <body className="font-primary">
         <Header />
-        <main className="min-h-screen bg-background pt-20 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
+        <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
           {children}
         </main>
         <Footer />

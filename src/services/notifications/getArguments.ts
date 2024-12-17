@@ -5,6 +5,7 @@ import {
   BookingConfiguration,
   GeneralConfiguration,
   SocialConfiguration,
+  socialType,
 } from "@/types";
 import { DateTime } from "luxon";
 
@@ -38,8 +39,17 @@ export const getArguments = (
       : undefined,
     config: {
       ...generalConfiguration,
-      ...socialConfiguration,
     },
+    socials:
+      socialConfiguration?.links?.map((link) =>
+        Object.keys(socialType.Values).reduce(
+          (acc, cur) => ({
+            ...acc,
+            [`is_${cur}`]: link.type === cur,
+          }),
+          { ...link }
+        )
+      ) || [],
   };
 
   return {

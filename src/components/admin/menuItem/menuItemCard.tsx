@@ -1,4 +1,4 @@
-import { Button, ButtonSizes, ButtonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   FormField,
@@ -7,25 +7,30 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { itemTypes, MenuItem } from "@/types";
+import {
+  menuItemTypes,
+  MenuItem,
+  MenuItemType,
+  MenuItemWithSubMenu,
+} from "@/types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { IconSelect } from "./iconSelect";
-import { Combobox, IComboboxItem } from "@/components/ui/combobox";
-import { Link, LinkSizes, LinkVariants } from "@/components/ui/link";
-import { Text, TextFonts, TextSizes, TextWeights } from "@/components/ui/text";
+import { Combobox } from "@/components/ui/combobox";
+import { MenuItemFields } from "./menuItemFields";
 
 export type MenuItemWithId = MenuItem & {
   id: string;
 };
 
-export type MenuItemProps = {
-  item: MenuItemWithId;
+export type MenuItemWithSubMenuWithId = MenuItemWithSubMenu & {
+  id: string;
+};
+
+type BaseMenuItemProps = {
   name: string;
   form: UseFormReturn<any>;
   disabled?: boolean;
@@ -34,152 +39,36 @@ export type MenuItemProps = {
   update: (newValue: MenuItemWithId) => void;
 };
 
-export type MenuItemType = "MenuItem";
+export type MenuItemProps = BaseMenuItemProps &
+  (
+    | {
+        item: MenuItemWithId;
+        supportsSubmenus?: false;
+      }
+    | {
+        item: MenuItemWithSubMenuWithId;
+        supportsSubmenus?: true;
+      }
+  );
+
+export type MenuItemDragType = "MenuItem";
 
 export interface MenuItemDragData {
-  type: MenuItemType;
-  item: MenuItemWithId;
+  type: MenuItemDragType;
+  item: MenuItemWithId | MenuItemWithSubMenu;
 }
 
-const itemTypesLabels: Record<(typeof itemTypes)[number], string> = {
+const itemTypesLabels: Record<MenuItemType, string> = {
   icon: "Icon",
   link: "Link",
   button: "Button",
+  submenu: "Submenu",
 };
 
-const itemTypesValues = Object.entries(itemTypesLabels).map(
-  ([value, label]) =>
-    ({
-      value,
-      label,
-    } as IComboboxItem)
-);
-
-const linkVariantsValues = LinkVariants.map(
-  (variant) =>
-    ({
-      value: variant,
-      shortLabel: variant,
-      label: (
-        <Link href="#" variant={variant} onClick={(e) => e.preventDefault()}>
-          {variant}
-        </Link>
-      ),
-    } as IComboboxItem)
-);
-
-const buttonVariantsValues = ButtonVariants.map(
-  (variant) =>
-    ({
-      value: variant,
-      shortLabel: variant,
-      label: (
-        <Link
-          button={true}
-          href="#"
-          variant={variant}
-          size="sm"
-          onClick={(e) => e.preventDefault()}
-        >
-          {variant}
-        </Link>
-      ),
-    } as IComboboxItem)
-);
-
-const linkSizesValues = LinkSizes.map(
-  (size) =>
-    ({
-      value: size,
-      shortLabel: size,
-      label: (
-        <Link
-          href="#"
-          size={size}
-          variant="default"
-          onClick={(e) => e.preventDefault()}
-        >
-          {size}
-        </Link>
-      ),
-    } as IComboboxItem)
-);
-
-const buttonSizesValues = ButtonSizes.map(
-  (size) =>
-    ({
-      value: size,
-      shortLabel: size,
-      label: (
-        <Link
-          button
-          href="#"
-          size={size}
-          variant="secondary"
-          onClick={(e) => e.preventDefault()}
-        >
-          {size}
-        </Link>
-      ),
-    } as IComboboxItem)
-);
-
-const textFontValues = TextFonts.map(
-  (variant) =>
-    ({
-      value: variant,
-      shortLabel: variant,
-      label: (
-        <Link
-          button
-          href="#"
-          font={variant}
-          variant="secondary"
-          onClick={(e) => e.preventDefault()}
-        >
-          {variant}
-        </Link>
-      ),
-    } as IComboboxItem)
-);
-
-const textSizesValues = TextSizes.map(
-  (variant) =>
-    ({
-      value: variant,
-      shortLabel: variant,
-      label: (
-        <Link
-          button
-          href="#"
-          fontSize={variant}
-          variant="secondary"
-          onClick={(e) => e.preventDefault()}
-        >
-          {variant}
-        </Link>
-      ),
-    } as IComboboxItem)
-);
-
-const textWeightsValues = TextWeights.map(
-  (variant) =>
-    ({
-      value: variant,
-      shortLabel: variant,
-      label: (
-        <Link
-          button
-          href="#"
-          fontWeight={variant}
-          variant="secondary"
-          onClick={(e) => e.preventDefault()}
-        >
-          {variant}
-        </Link>
-      ),
-    } as IComboboxItem)
-);
+const itemTypesValues = Object.keys(menuItemTypes.Values).map((value) => ({
+  value: value as MenuItemType,
+  label: itemTypesLabels[value as MenuItemType],
+}));
 
 export function MenuItemCard({
   item,
@@ -187,6 +76,7 @@ export function MenuItemCard({
   name,
   disabled,
   isOverlay,
+  supportsSubmenus,
   remove,
   update,
 }: MenuItemProps) {
@@ -223,6 +113,7 @@ export function MenuItemCard({
   });
 
   const itemType = item.type;
+  const itemLabel = form.getValues(`${name}.label`);
 
   const changeType = (value: typeof itemType) => {
     const newValue = {
@@ -257,7 +148,7 @@ export function MenuItemCard({
         <span
           className={cn(!itemTypesLabels[itemType] ? "text-destructive" : "")}
         >
-          {itemType ? itemTypesLabels[itemType] : "Invalid"}
+          {itemLabel || itemTypesLabels[itemType] || "Invalid"}
         </span>
         <Button
           disabled={disabled}
@@ -270,7 +161,7 @@ export function MenuItemCard({
           <Trash size={20} />
         </Button>
       </CardHeader>
-      <CardContent className="px-3 pb-6 pt-3 text-left relative grid md:grid-cols-2 gap-4">
+      <CardContent className="px-3 pb-6 pt-3 text-left relative flex flex-col gap-4">
         <FormField
           control={form.control}
           name={`${name}.type`}
@@ -282,7 +173,9 @@ export function MenuItemCard({
                 <Combobox
                   disabled={disabled}
                   className="flex w-full font-normal text-base"
-                  values={itemTypesValues}
+                  values={itemTypesValues.filter(
+                    (x) => !!supportsSubmenus || x.value !== "submenu"
+                  )}
                   searchLabel="Select type"
                   value={field.value}
                   onItemSelect={(value) => {
@@ -295,259 +188,11 @@ export function MenuItemCard({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name={`${name}.url`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Url</FormLabel>
-              <FormControl>
-                <Input disabled={disabled} placeholder="Link" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name={`${name}.label`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Label</FormLabel>
-              <FormControl>
-                <Input disabled={disabled} placeholder="Label" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {itemType === "icon" && (
-          <FormField
-            control={form.control}
-            name={`${name}.icon`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Icon</FormLabel>
-                <FormControl>
-                  <IconSelect field={field} disabled={disabled} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
-        {itemType === "link" && (
-          <>
-            <FormField
-              control={form.control}
-              shouldUnregister
-              name={`${name}.variant`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Variant</FormLabel>
-
-                  <FormControl>
-                    <Combobox
-                      allowClear
-                      disabled={disabled}
-                      className="flex w-full font-normal text-base"
-                      values={linkVariantsValues}
-                      searchLabel="Select link variant"
-                      value={field.value}
-                      onItemSelect={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              shouldUnregister
-              name={`${name}.size`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Size</FormLabel>
-
-                  <FormControl>
-                    <Combobox
-                      allowClear
-                      disabled={disabled}
-                      className="flex w-full font-normal text-base"
-                      values={linkSizesValues}
-                      searchLabel="Select size"
-                      value={field.value}
-                      onItemSelect={(value) => field.onChange(value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-        {itemType === "button" && (
-          <>
-            <FormField
-              control={form.control}
-              shouldUnregister
-              name={`${name}.variant`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Variant</FormLabel>
-
-                  <FormControl>
-                    <Combobox
-                      allowClear
-                      disabled={disabled}
-                      className="flex w-full font-normal text-base"
-                      values={buttonVariantsValues}
-                      searchLabel="Select button variant"
-                      value={field.value}
-                      onItemSelect={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              shouldUnregister
-              name={`${name}.size`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Size</FormLabel>
-
-                  <FormControl>
-                    <Combobox
-                      allowClear
-                      disabled={disabled}
-                      className="flex w-full font-normal text-base"
-                      values={buttonSizesValues}
-                      searchLabel="Select size"
-                      value={field.value}
-                      onItemSelect={(value) => field.onChange(value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-        {(itemType === "link" || itemType === "button") && (
-          <>
-            <FormField
-              control={form.control}
-              shouldUnregister
-              name={`${name}.font`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Text font</FormLabel>
-
-                  <FormControl>
-                    <Combobox
-                      allowClear
-                      disabled={disabled}
-                      className="flex w-full font-normal text-base"
-                      values={textFontValues}
-                      searchLabel="Select text font"
-                      value={field.value}
-                      onItemSelect={(value) => field.onChange(value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              shouldUnregister
-              name={`${name}.fontSize`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Text size</FormLabel>
-
-                  <FormControl>
-                    <Combobox
-                      allowClear
-                      disabled={disabled}
-                      className="flex w-full font-normal text-base"
-                      values={textSizesValues}
-                      searchLabel="Select text size"
-                      value={field.value}
-                      onItemSelect={(value) => field.onChange(value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              shouldUnregister
-              name={`${name}.fontWeight`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Text weight</FormLabel>
-
-                  <FormControl>
-                    <Combobox
-                      allowClear
-                      disabled={disabled}
-                      className="flex w-full font-normal text-base"
-                      values={textWeightsValues}
-                      searchLabel="Select text weight"
-                      value={field.value}
-                      onItemSelect={(value) => field.onChange(value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`${name}.prefixIcon`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Prefix Icon</FormLabel>
-                  <FormControl>
-                    <IconSelect field={field} disabled={disabled} allowClear />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`${name}.suffixIcon`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Suffix Icon</FormLabel>
-                  <FormControl>
-                    <IconSelect field={field} disabled={disabled} allowClear />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
-        )}
-        <FormField
-          control={form.control}
-          name={`${name}.className`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Additional classes</FormLabel>
-              <FormControl>
-                <Input disabled={disabled} placeholder="font-bold" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <MenuItemFields
+          type={itemType}
+          form={form}
+          name={name}
+          disabled={disabled}
         />
       </CardContent>
     </Card>

@@ -2,6 +2,7 @@
 
 import {
   Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
@@ -21,9 +22,18 @@ import { SaveButton } from "@/components/admin/forms/save-button";
 import {
   HeaderConfiguration,
   headerConfigurationSchema,
+  headerShadowType,
   LinkMenuItem,
 } from "@/types";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Combobox } from "@/components/ui/combobox";
+import { Switch } from "@/components/ui/switch";
+
+const headerShadowValues = Object.keys(headerShadowType.Values).map(
+  (value) => ({
+    value,
+    label: `${value[0].toUpperCase()}${value.substring(1)}`,
+  })
+);
 
 export const HeaderSettingsForm: React.FC<{
   values: HeaderConfiguration;
@@ -87,34 +97,91 @@ export const HeaderSettingsForm: React.FC<{
         className="w-full space-y-8 relative"
       >
         <div className="flex gap-3 flex-col">
-          <FormField
-            control={form.control}
-            name="showLogo"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row items-center gap-2">
-                  <Checkbox
-                    id="showLogo"
-                    disabled={loading}
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                  <FormLabel htmlFor="showLogo" className="cursor-pointer">
-                    Show logo
-                  </FormLabel>
-                </div>
-                <FormDescription>
-                  Should be logo showed in header
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="gap-2 flex flex-col md:grid md:grid-cols-3 md:gap-4 items-center">
+            <FormField
+              control={form.control}
+              name="showLogo"
+              render={({ field }) => (
+                <FormItem className="">
+                  <div className="flex flex-row items-center gap-2 md:gap-4">
+                    <FormControl>
+                      <Switch
+                        id="showLogo"
+                        disabled={loading}
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="flex flex-col gap-2">
+                      <FormLabel htmlFor="showLogo" className="cursor-pointer">
+                        Show logo
+                      </FormLabel>
+                      <FormDescription>
+                        Should be logo showed in header
+                      </FormDescription>
+                    </div>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sticky"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-row items-center gap-2 md:gap-4">
+                    <FormControl>
+                      <Switch
+                        id="sticky"
+                        disabled={loading}
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="flex flex-col gap-2">
+                      <FormLabel htmlFor="sticky" className="cursor-pointer">
+                        Sticky header
+                      </FormLabel>
+                      <FormDescription>
+                        Should header move with the page scroll
+                      </FormDescription>
+                    </div>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="shadow"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Header shadow</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      allowClear
+                      values={headerShadowValues}
+                      disabled={loading}
+                      className="flex w-full font-normal text-base"
+                      searchLabel="Select shadow type"
+                      value={field.value}
+                      onItemSelect={(value) => {
+                        field.onChange(value);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <Sortable title="Menu" ids={ids} onSort={sort} onAdd={addNew}>
             <div className="flex flex-grow flex-col gap-4">
               {fields.map((item, index) => {
                 return (
                   <MenuItemCard
+                    supportsSubmenus
                     form={form}
                     item={item}
                     key={item.id}

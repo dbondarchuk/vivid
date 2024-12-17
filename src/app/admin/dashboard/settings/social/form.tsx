@@ -1,23 +1,20 @@
 "use client";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
-import { SocialConfiguration, socialConfigurationSchema } from "@/types";
+import {
+  SocialConfiguration,
+  socialConfigurationSchema,
+  SocialLink,
+} from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useFieldArray, useForm } from "react-hook-form";
 import { updateSocialConfiguration } from "./actions";
 import { SaveButton } from "@/components/admin/forms/save-button";
+import { Sortable } from "@/components/ui/sortable";
+import { SocialLinkCard } from "./socialLinkCard";
 
 export const SocialSettingsForm: React.FC<{
   values: SocialConfiguration;
@@ -52,48 +49,59 @@ export const SocialSettingsForm: React.FC<{
     }
   };
 
+  const {
+    fields: links,
+    append: appendLink,
+    remove: removeLink,
+    swap: swapLinks,
+  } = useFieldArray({
+    control: form.control,
+    name: "links",
+    keyName: "fields_id",
+  });
+
+  const linksIds = React.useMemo(() => links.map((c) => c.fields_id), [links]);
+
+  const addNewLink = () => {
+    appendLink({
+      url: "",
+    } as Partial<SocialLink> as SocialLink);
+  };
+
+  const sort = (activeId: string, overId: string) => {
+    const activeIndex = links.findIndex((x) => x.fields_id === activeId);
+    const overIndex = links.findIndex((x) => x.fields_id === overId);
+
+    if (activeIndex < 0 || overIndex < 0) return;
+
+    swapLinks(activeIndex, overIndex);
+  };
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full space-y-8 relative"
       >
-        <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
-          <FormField
-            control={form.control}
-            name="instagram"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Instagram</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Instagram handle"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="facebook"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Facebook</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Facebook handle"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <Sortable
+          title="Social links"
+          ids={linksIds}
+          onAdd={addNewLink}
+          onSort={sort}
+        >
+          <div className="flex flex-grow flex-col gap-4">
+            {links.map((link, index) => (
+              <SocialLinkCard
+                form={form}
+                item={link}
+                key={link.fields_id}
+                name={`links.${index}`}
+                disabled={loading}
+                remove={() => removeLink(index)}
+              />
+            ))}
+          </div>
+        </Sortable>
         <SaveButton form={form} disabled={loading} />
       </form>
     </Form>

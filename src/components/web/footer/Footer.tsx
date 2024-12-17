@@ -1,5 +1,5 @@
 import { icons } from "lucide-react";
-import { SocialIcons } from "../socialIcons/SocialIcons";
+import { SocialIcons } from "../socialIcons";
 import { Icon } from "../../ui/icon";
 import { Link } from "../../ui/link";
 import { Services } from "@/lib/services";
@@ -15,7 +15,7 @@ const DefaultFooter: React.FC<{
   const { phone, email, address, name } =
     await configurationService.getConfiguration("general");
 
-  const { instagram, facebook } = await configurationService.getConfiguration(
+  const { links: socialLinks } = await configurationService.getConfiguration(
     "social"
   );
 
@@ -118,14 +118,16 @@ const DefaultFooter: React.FC<{
             </h3>
             <div className="flex flex-col gap-4 w-full">
               <div className="flex flex-col gap-4 w-full">
-                <div>
-                  <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
-                    Phone
-                  </h2>
-                  <p className="mt-1 font-thin">
-                    <Link href={`tel:${phone}`}>{phone}</Link>
-                  </p>
-                </div>
+                {phone && (
+                  <div>
+                    <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
+                      Phone
+                    </h2>
+                    <p className="mt-1 font-thin">
+                      <Link href={`tel:${phone}`}>{phone}</Link>
+                    </p>
+                  </div>
+                )}
                 <div>
                   <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
                     Email
@@ -161,7 +163,7 @@ const DefaultFooter: React.FC<{
           <div>
             &copy; {new Date().getFullYear()} {name}
           </div>
-          <SocialIcons icons={{ instagram, facebook }} />
+          <SocialIcons icons={socialLinks} />
         </div>
       </div>
     </div>
