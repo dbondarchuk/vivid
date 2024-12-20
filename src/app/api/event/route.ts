@@ -2,7 +2,7 @@ import { Services } from "@/lib/services";
 import { AppointmentEvent } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
   const event = (await request.json()) as AppointmentEvent;
   if (
     !event ||

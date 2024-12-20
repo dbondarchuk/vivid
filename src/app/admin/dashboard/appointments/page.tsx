@@ -12,7 +12,7 @@ import { CalendarClock } from "lucide-react";
 import { DateTime } from "luxon";
 
 type Params = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 const breadcrumbItems = [
@@ -20,7 +20,8 @@ const breadcrumbItems = [
   { title: "Appointments", link: "/admin/dashboard/appointments" },
 ];
 
-export default async function AppointmentsPage({ searchParams }: Params) {
+export default async function AppointmentsPage(props: Params) {
+  const searchParams = await props.searchParams;
   const page = Number(searchParams.page) || 1;
   const limit = Number(searchParams.limit) || 10;
   const start = searchParams.start

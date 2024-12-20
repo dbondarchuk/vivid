@@ -17,9 +17,12 @@ export const HeaderWithScrollShadow: React.FC<{
   }, [top]);
 
   const clone = React.cloneElement(children, {
-    ...children.props,
-    className: cn(children.props?.className, !top ? "drop-shadow-md" : ""),
-  });
+    ...(children.props as {}),
+    className: cn(
+      (children.props as { className: string })?.className,
+      !top ? "drop-shadow-md" : ""
+    ),
+  } as {});
 
   return clone;
 };

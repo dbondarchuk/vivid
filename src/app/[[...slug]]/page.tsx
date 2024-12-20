@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 import { Page as PageType } from "@/types";
 
 type Props = {
-  params: { slug: string[] };
-  searchParams?: {
+  params: Promise<{ slug: string[] }>;
+  searchParams?: Promise<{
     preview?: boolean;
-  };
+  }>;
 };
 
 export const dynamicParams = true;
@@ -40,10 +40,9 @@ const getSource = cache(async (slug: string[], preview = false) => {
   return page;
 });
 
-export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   // read route params
   const settings = await Services.ConfigurationService().getConfiguration(
     "general"
@@ -64,7 +63,9 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params, searchParams }: Props) {
+export default async function Page(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const page = await getSource(params.slug, searchParams?.preview);
 
   setPageData({

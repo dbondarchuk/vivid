@@ -540,7 +540,7 @@ export const ReminderCard: React.FC<ReminderProps> = ({
                         direction="horizontal"
                         className="max-md:hidden"
                       >
-                        <ResizablePanel className="px-4">
+                        <ResizablePanel className="pr-4">
                           <FormItem>
                             <FormLabel>
                               SMS body
@@ -555,6 +555,7 @@ export const ReminderCard: React.FC<ReminderProps> = ({
                               <Textarea
                                 disabled={disabled}
                                 placeholder="Body"
+                                className="mx-0 focus:mx-1 active:mx-1"
                                 autoResize
                                 {...field}
                               />
@@ -566,7 +567,7 @@ export const ReminderCard: React.FC<ReminderProps> = ({
                           </FormItem>
                         </ResizablePanel>
                         <ResizableHandle withHandle />
-                        <ResizablePanel className="px-4">
+                        <ResizablePanel className="pl-4">
                           <FormItem>
                             <FormLabel>Preview</FormLabel>
                             <div

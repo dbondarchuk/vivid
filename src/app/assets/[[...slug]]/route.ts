@@ -35,13 +35,11 @@ function streamFile(
 }
 
 type Props = {
-  params: { slug: string[] };
+  params: Promise<{ slug: string[] }>;
 };
 
-export async function GET(
-  request: NextRequest,
-  { params }: Props
-): Promise<NextResponse> {
+export async function GET(request: NextRequest, props: Props): Promise<NextResponse> {
+  const params = await props.params;
   const file = path.join(process.cwd(), "public", "upload", ...params.slug);
 
   if (!existsSync(file)) {

@@ -10,7 +10,7 @@ import { Link } from "@/components/ui/link";
 import { Eye, Globe } from "lucide-react";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 const breadcrumbItems = [
@@ -19,7 +19,8 @@ const breadcrumbItems = [
   { title: "Edit", link: "/admin/dashboard/pages" },
 ];
 
-export default async function EditPagesPage({ params }: Props) {
+export default async function EditPagesPage(props: Props) {
+  const params = await props.params;
   const page = await Services.PagesService().getPage(params.id);
 
   if (!page) return notFound();

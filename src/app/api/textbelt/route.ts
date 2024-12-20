@@ -33,7 +33,7 @@ function verify(
   );
 }
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
   const {
     sms: smsConfiguration,
     general: generalConfiguration,

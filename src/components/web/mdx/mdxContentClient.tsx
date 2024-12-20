@@ -6,6 +6,7 @@ import { evaluate } from "@mdx-js/mdx";
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import type { EvaluateOptions } from "@mdx-js/mdx";
 import type { MDXProps } from "mdx/types";
+import rehypePrettyCode from "rehype-pretty-code";
 
 import { ClientComponents } from "../../clientComponents";
 import { MdxError } from "./mdxError";
@@ -13,7 +14,12 @@ import { MdxError } from "./mdxError";
 type ReactMDXContent = (props: MDXProps) => React.ReactNode;
 type Runtime = Pick<EvaluateOptions, "jsx" | "jsxs" | "Fragment">;
 
-const runtime = { jsx, jsxs, Fragment } as Runtime;
+const runtime = {
+  jsx,
+  jsxs,
+  Fragment,
+  rehypePlugins: [rehypePrettyCode],
+} as Runtime;
 
 export const MdxContent: React.FC<{
   source: string;

@@ -14,10 +14,11 @@ const breadcrumbItems = [
 ];
 
 type Props = {
-  searchParams: { from?: string };
+  searchParams: Promise<{ from?: string }>;
 };
 
-export default async function NewAssetsPage({ searchParams }: Props) {
+export default async function NewAssetsPage(props: Props) {
+  const searchParams = await props.searchParams;
   const config = await Services.ConfigurationService().getConfiguration(
     "booking"
   );

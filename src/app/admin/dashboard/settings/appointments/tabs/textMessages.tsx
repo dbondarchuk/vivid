@@ -58,6 +58,7 @@ const TextMessagesTemplateForm: React.FC<
                   <Textarea
                     disabled={disabled}
                     placeholder="Body"
+                    className="mx-0 focus:mx-1 active:mx-1"
                     autoResize
                     {...field}
                   />

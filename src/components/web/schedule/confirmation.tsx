@@ -1,4 +1,4 @@
-import { useI18nAsync } from "@/i18n/i18n";
+import { getI18nAsync } from "@/i18n/i18n";
 import {
   Card,
   CardHeader,
@@ -13,12 +13,12 @@ import { Services } from "@/lib/services";
 import { durationToTime } from "@/lib/time";
 
 export const BookingConfirmation: React.FC = async () => {
-  const i18n = await useI18nAsync();
-
-  const appointmentIdCookie = cookies().get("appointment_id");
+  const appointmentIdCookie = (await cookies()).get("appointment_id");
   if (!appointmentIdCookie || !appointmentIdCookie.value) {
     redirect("/");
   }
+
+  const i18n = await getI18nAsync();
 
   const appointment = await Services.EventsService().getAppointment(
     appointmentIdCookie.value

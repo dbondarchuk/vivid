@@ -7,10 +7,11 @@ import { notFound } from "next/navigation";
 import { AppointmentView } from "../../../../../components/admin/appointments/appoitment.view";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default async function AppointmentPage({ params }: Props) {
+export default async function AppointmentPage(props: Props) {
+  const params = await props.params;
   const appointment = await Services.EventsService().getAppointment(params.id);
   if (!appointment) {
     return notFound();

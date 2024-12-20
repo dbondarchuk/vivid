@@ -10,7 +10,7 @@ import { Query } from "@/types/database/query";
 import { Plus } from "lucide-react";
 
 type Params = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 const breadcrumbItems = [
@@ -18,7 +18,8 @@ const breadcrumbItems = [
   { title: "Pages", link: "/admin/dashboard/pages" },
 ];
 
-export default async function PagesPage({ searchParams }: Params) {
+export default async function PagesPage(props: Params) {
+  const searchParams = await props.searchParams;
   const page = Number(searchParams.page) || 1;
   const limit = Number(searchParams.limit) || 10;
 

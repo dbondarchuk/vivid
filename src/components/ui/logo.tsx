@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 export const Logo: React.FC<{
@@ -10,7 +11,7 @@ export const Logo: React.FC<{
   imageClassName?: string;
 }> = async ({ logo, showLogo, name, className, imageClassName }) => {
   return (
-    <a
+    <Link
       href="/"
       className={cn(
         "flex title-font font-medium items-center gap-2",
@@ -26,6 +27,6 @@ export const Logo: React.FC<{
         />
       )}
       <span className="ml-3 text-xl font-primary font-medium">{name}</span>
-    </a>
+    </Link>
   );
 };

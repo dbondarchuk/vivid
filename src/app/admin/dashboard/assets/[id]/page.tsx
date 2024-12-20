@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 import { AssetEditForm } from "@/components/admin/assets/editForm";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 const breadcrumbItems = [
@@ -18,7 +18,8 @@ const breadcrumbItems = [
   { title: "Edit", link: "/admin/dashboard/assets" },
 ];
 
-export default async function EditAssetsPage({ params }: Props) {
+export default async function EditAssetsPage(props: Props) {
+  const params = await props.params;
   const asset = await Services.AssetsService().getAsset(params.id);
 
   if (!asset) return notFound();

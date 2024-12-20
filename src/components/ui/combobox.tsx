@@ -98,7 +98,7 @@ const Items = React.memo(
   (props: {
     values: IComboboxItem[];
     selected: string | undefined;
-    listRef: React.RefObject<HTMLDivElement>;
+    listRef: React.RefObject<HTMLDivElement | null>;
     select: (value: string) => void;
   }) => {
     const toLoad = 20;

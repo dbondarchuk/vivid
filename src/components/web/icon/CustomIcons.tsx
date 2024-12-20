@@ -1,4 +1,5 @@
 import { CSSProperties, PropsWithChildren } from "react";
+import type { JSX as Jsx } from "react/jsx-runtime";
 
 export const Icons = {
   instagram: [
@@ -56,6 +57,6 @@ export const CustomIcons = Object.entries(Icons).reduce(
   }),
   {} as Record<
     string,
-    (props: PropsWithChildren<CustomIconProps>) => JSX.Element
+    (props: PropsWithChildren<CustomIconProps>) => Jsx.Element
   >
 );

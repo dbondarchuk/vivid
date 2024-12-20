@@ -2,10 +2,11 @@ import { Services } from "@/lib/services";
 import { redirect } from "next/navigation";
 
 type Props = {
-  params: { id: string; status: "confirm" | "decline" };
+  params: Promise<{ id: string; status: "confirm" | "decline" }>;
 };
 
-export default async function Page({ params }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
   switch (params.status) {
     case "confirm":
       await Services.EventsService().changeAppointmentStatus(

@@ -15,7 +15,7 @@ import { Query } from "@/types/database/query";
 import { DateTime } from "luxon";
 
 type Params = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 const breadcrumbItems = [
@@ -23,7 +23,8 @@ const breadcrumbItems = [
   { title: "Communication Logs", link: "/admin/dashboard/communication-logs" },
 ];
 
-export default async function CommunicationLogsPage({ searchParams }: Params) {
+export default async function CommunicationLogsPage(props: Params) {
+  const searchParams = await props.searchParams;
   const page = Number(searchParams.page) || 1;
   const limit = Number(searchParams.limit) || 10;
   const start = searchParams.start

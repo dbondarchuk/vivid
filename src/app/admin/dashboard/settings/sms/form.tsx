@@ -133,6 +133,7 @@ export const SmsSettingsForm: React.FC<{
                       <Textarea
                         disabled={loading}
                         placeholder="Auto reply"
+                        className="mx-0 focus:mx-1 active:mx-1"
                         autoResize
                         {...field}
                       />

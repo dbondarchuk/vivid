@@ -60,6 +60,7 @@ export const PageList: React.FC<PageListProps> = async ({
                 }}
               />
             )}
+            {/* <MdxContent source={page.content} options={{ excerpt: true }} /> */}
             <div>
               <Link
                 href={`/${page.slug}`}

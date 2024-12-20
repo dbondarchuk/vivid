@@ -13,7 +13,7 @@ const i18nFunction = (translations: Record<string, string>): I18nFn => {
     template(translations[key] || key, args);
 };
 
-export const useI18nAsync = async (language?: string): Promise<I18nFn> => {
+export const getI18nAsync = async (language?: string): Promise<I18nFn> => {
   if (!language) language = fallbackLanguage;
 
   const translations = await import(`./locales/${language}/translation.json`);
