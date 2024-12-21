@@ -131,12 +131,14 @@ class _FormCard extends BaseCard<_FormCardProps> {
                   </h2>
                 </div>
 
-                {fields.map((field) =>
-                  fieldsComponentMap()[field.type](
-                    field,
-                    this.props.form.control
-                  )
-                )}
+                {fields.map((field) => (
+                  <React.Fragment key={field.name}>
+                    {fieldsComponentMap()[field.type](
+                      field,
+                      this.props.form.control
+                    )}
+                  </React.Fragment>
+                ))}
               </div>
             </div>
           </div>

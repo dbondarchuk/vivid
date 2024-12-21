@@ -196,7 +196,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
             )}
           </div>
         </div>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground" key="label">
           <Globe2Icon className="inline-block mr-1" />
           {timezoneLabel}
         </div>
