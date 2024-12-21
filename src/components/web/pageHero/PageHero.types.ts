@@ -14,4 +14,5 @@ export type PageHeroSection = HTMLAttributes<HTMLDivElement> & {
   }[];
   className?: string;
   style?: CSSProperties;
+  variant?: "background" | "imageRight" | "imageLeft";
 };

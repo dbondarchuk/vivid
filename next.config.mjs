@@ -2,6 +2,11 @@
 const nextConfig = {
   output: "standalone",
   webpack: {},
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
   rewrites: () => [
     {
       source: "/robots.txt",

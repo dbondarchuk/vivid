@@ -11,22 +11,29 @@ export const PageHero: React.FC<PageHeroSectionProps> = ({
   cta,
   className,
   style = {},
+  variant = "background",
   ...props
 }) => {
   return (
     <section
       style={{
         // @ts-ignore setting variable in css
-        "--image-url": backgroundImage ? `url(${backgroundImage})` : "",
+        "--image-url":
+          backgroundImage && variant === "background"
+            ? `url(${backgroundImage})`
+            : "",
         ...style,
       }}
       className={cn(
         "w-full bg-white bg-opacity-50 bg-[image:var(--image-url)] bg-cover bg-no-repeat bg-blend-overlay p-[6vw] appear rounded-lg",
+        variant !== "background" &&
+          "flex flex-col md:flex-row gap-2 items-center",
+        variant === "imageLeft" && "flex-col-reverse md:flex-row-reverse",
         className
       )}
       {...props}
     >
-      <div className="py-[10vmax]  flex flex-col items-center gap-10 text-center">
+      <div className="py-[10vmax] flex flex-col items-center gap-10 text-center flex-1">
         {subtitle && (
           <h2 className="font-primary font-normal text-3xl p">{subtitle}</h2>
         )}
@@ -47,6 +54,17 @@ export const PageHero: React.FC<PageHeroSectionProps> = ({
           </div>
         )}
       </div>
+      {variant !== "background" && (
+        <div
+          style={{
+            // @ts-ignore setting variable in css
+            "--image-url": backgroundImage ? `url(${backgroundImage})` : "",
+          }}
+          className={cn(
+            "w-full  bg-[image:var(--image-url)] bg-contain bg-no-repeat bg-center bg-blend-overlay p-[6vw] appear rounded-lg flex-1"
+          )}
+        />
+      )}
     </section>
   );
 };
