@@ -21,6 +21,12 @@ export async function deletePage(_id: string) {
   return okStatus;
 }
 
+export async function deleteSelectedPages(ids: string[]) {
+  await Services.PagesService().deletePages(ids);
+
+  return okStatus;
+}
+
 export async function checkUniqueSlug(slug: string, _id?: string) {
   return await Services.PagesService().checkUniqueSlug(slug, _id);
 }

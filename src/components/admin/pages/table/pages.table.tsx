@@ -2,10 +2,12 @@
 import {
   ColumnDef,
   PaginationState,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
@@ -35,28 +37,33 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MultiSelect } from "@/components/ui/multi-select";
+import { Sort } from "@/types/database/query";
+import { Page } from "@/types";
+import { DeleteSelectedPagesButton } from "./deleteSelectedButton";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps<TValue> {
+  columns: ColumnDef<Page, TValue>[];
+  data: Page[];
   page: number;
   total: number;
   pageSizeOptions?: number[];
   limit: number;
   search?: string;
+  sort: Sort;
   published?: boolean[];
 }
 
-export const PagesTable = <TData, TValue>({
+export const PagesTable = <Page, TValue>({
   columns,
   data,
   page,
   total,
   limit,
   search,
+  sort,
   pageSizeOptions = [10, 20, 30, 40, 50],
   published = [true, false],
-}: DataTableProps<TData, TValue>) => {
+}: DataTableProps<TValue>) => {
   const publishStatus = published.map((x) => x.toString());
 
   const router = useRouter();
@@ -84,6 +91,28 @@ export const PagesTable = <TData, TValue>({
     [searchParams]
   );
 
+  // Handle server-side sorting
+  const [sortingState, setSorting] = React.useState<SortingState>(
+    sort.map((x) => ({
+      desc: !!x.desc,
+      id: x.key,
+    }))
+  );
+
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        sort: sortingState.map((x) => `${x.id}:${x.desc}`),
+        page: null,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortingState]);
+
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
@@ -107,13 +136,17 @@ export const PagesTable = <TData, TValue>({
 
   const table = useReactTable({
     data,
+    getRowId: (row) => row._id,
     columns,
     rowCount: total,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       pagination: { pageIndex, pageSize },
+      sorting: sortingState,
     },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     onPaginationChange: setPagination,
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
@@ -226,8 +259,11 @@ export const PagesTable = <TData, TValue>({
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            <DeleteSelectedPagesButton
+              selected={table
+                .getFilteredSelectedRowModel()
+                .rows.map((row) => row.original._id)}
+            />
           </div>
           <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6 lg:gap-8">
             <p className="whitespace-nowrap text-sm font-medium">

@@ -5,13 +5,14 @@ import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
+import { getSort } from "@/lib/searchParams";
 import { Services } from "@/lib/services";
 import {
   CommunicationChannel,
   communicationChannels,
   CommunicationDirection,
 } from "@/types";
-import { Query } from "@/types/database/query";
+import { Query, Sort } from "@/types/database/query";
 import { DateTime } from "luxon";
 
 type Params = {
@@ -55,7 +56,7 @@ export default async function CommunicationLogsPage(props: Params) {
     end,
   };
 
-  const sort: Query["sort"] = [{ key: "dateTime", desc: true }];
+  const sort: Sort = getSort(searchParams) || [{ key: "dateTime", desc: true }];
 
   const res = await Services.CommunicationLogService().getCommunicationLogs({
     range: { start, end },
@@ -98,6 +99,7 @@ export default async function CommunicationLogsPage(props: Params) {
           directions={directions}
           channels={channels}
           search={search}
+          sort={sort}
         />
       </div>
     </PageContainer>

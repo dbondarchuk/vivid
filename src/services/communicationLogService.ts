@@ -120,6 +120,17 @@ export class CommunicationLogService {
     await collection.deleteMany();
   }
 
+  public async clearSelectedLogs(ids: string[]) {
+    const db = await getDbConnection();
+    const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
+
+    await collection.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+  }
+
   public async clearOldLogs(maxDate: Date) {
     const db = await getDbConnection();
     const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);

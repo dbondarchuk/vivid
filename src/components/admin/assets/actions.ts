@@ -38,6 +38,17 @@ export async function deleteAsset(_id: string) {
   return okStatus;
 }
 
+export async function deleteSelectedAssets(ids: string[]) {
+  const assets = await Services.AssetsService().deleteAssets(ids);
+  const promise = Promise.all(
+    assets.map((asset) => deleteFile(asset.filename))
+  );
+
+  await promise;
+
+  return okStatus;
+}
+
 export async function checkUniqueFileName(filename: string, _id?: string) {
   if (existsSync(getFilePath(filename))) return false;
 

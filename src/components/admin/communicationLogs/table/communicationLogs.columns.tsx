@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Markdown } from "@/components/web/markdown/Markdown";
+import { tableSortHeader } from "@/components/ui/tableSortHeader";
 
 export const CommunicationDirectionTexts: Record<
   CommunicationDirection,
@@ -56,27 +57,33 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     enableHiding: false,
   },
   {
-    header: "Direction",
     accessorFn: (log) => CommunicationDirectionTexts[log.direction],
+    id: "direction",
+    header: tableSortHeader("Direction", "default"),
   },
   {
-    header: "Channel",
     accessorFn: (log) => CommunicationChannelTexts[log.channel] || log.channel,
+    id: "channel",
+    header: tableSortHeader("Channel", "default"),
   },
   {
     accessorFn: (log) => log.initiator,
-    header: "Initiator",
+    id: "initiator",
+    header: tableSortHeader("Initiator", "default"),
   },
   {
     accessorFn: (log) => log.receiver,
-    header: "Receiver",
+    id: "receiver",
+    header: tableSortHeader("Receiver", "default"),
   },
   {
     accessorFn: (log) => log.subject,
-    header: "Subject",
+    id: "subject",
+    header: tableSortHeader("Subject", "string"),
   },
   {
-    header: "Text",
+    id: "text",
+    header: tableSortHeader("Text", "string"),
     cell: ({ row }) => {
       if (row.original.text.length < 50) return row.original.text;
 
@@ -109,6 +116,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
   },
   {
     header: "Data",
+    enableSorting: false,
     cell: ({ row }) => {
       if (!row.original.data) return null;
       return (
@@ -140,7 +148,8 @@ export const columns: ColumnDef<CommunicationLog>[] = [
   {
     accessorFn: (log) =>
       DateTime.fromJSDate(log.dateTime).toLocaleString(DateTime.DATETIME_MED),
-    header: "Date & time",
+    id: "dateTime",
+    header: tableSortHeader("Date & time", "date"),
   },
   {
     header: "Appointment",

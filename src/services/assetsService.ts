@@ -137,6 +137,27 @@ export class AssetsService {
     return asset;
   }
 
+  public async deleteAssets(ids: string[]): Promise<Asset[]> {
+    const db = await getDbConnection();
+    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+
+    const toRemove = await assets
+      .find({
+        _id: {
+          $in: ids,
+        },
+      })
+      .toArray();
+
+    await assets.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+
+    return toRemove;
+  }
+
   public async checkUniqueFileName(
     filename: string,
     _id?: string

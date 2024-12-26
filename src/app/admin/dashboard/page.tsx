@@ -15,12 +15,13 @@ import { DateTime } from "luxon";
 import { Suspense } from "react";
 
 export default async function Page() {
-  const beforeNow = DateTime.now().minus({ hours: 1 }).toJSDate();
+  const now = DateTime.now();
+  const beforeNow = now.minus({ hours: 1 }).toJSDate();
   const pendingAppointments =
     await Services.EventsService().getPendingAppointments(20, beforeNow);
 
   const nextAppointments = await Services.EventsService().getNextAppointments(
-    beforeNow,
+    now.toJSDate(),
     3
   );
 

@@ -2,10 +2,12 @@
 import {
   ColumnDef,
   PaginationState,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
@@ -34,35 +36,31 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { CalendarDateRangePicker } from "../../../ui/date-range-picker";
-import {
-  Appointment,
-  AppointmentStatus,
-  appointmentStatuses,
-  DateRange,
-} from "@/types";
-import { DateTime } from "luxon";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { Asset } from "@/types";
+import { Sort } from "@/types/database/query";
+import { DeleteSelectedAssetsButton } from "./deleteSelectedButton";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps<TValue> {
+  columns: ColumnDef<Asset, TValue>[];
+  data: Asset[];
   page: number;
   total: number;
   pageSizeOptions?: number[];
   limit: number;
+  sort: Sort;
   search?: string;
 }
 
-export const AssetsTable = <TData, TValue>({
+export const AssetsTable = <Asset, TValue>({
   columns,
   data,
   page,
   total,
   limit,
   search,
+  sort,
   pageSizeOptions = [10, 20, 30, 40, 50],
-}: DataTableProps<TData, TValue>) => {
+}: DataTableProps<TValue>) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -88,6 +86,28 @@ export const AssetsTable = <TData, TValue>({
     [searchParams]
   );
 
+  // Handle server-side sorting
+  const [sortingState, setSorting] = React.useState<SortingState>(
+    sort.map((x) => ({
+      desc: !!x.desc,
+      id: x.key,
+    }))
+  );
+
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        sort: sortingState.map((x) => `${x.id}:${x.desc}`),
+        page: null,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortingState]);
+
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
@@ -111,13 +131,17 @@ export const AssetsTable = <TData, TValue>({
 
   const table = useReactTable({
     data,
+    getRowId: (row) => row._id,
     columns,
     rowCount: total,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       pagination: { pageIndex, pageSize },
+      sorting: sortingState,
     },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     onPaginationChange: setPagination,
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
@@ -210,8 +234,11 @@ export const AssetsTable = <TData, TValue>({
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            <DeleteSelectedAssetsButton
+              selected={table
+                .getFilteredSelectedRowModel()
+                .rows.map((row) => row.original._id)}
+            />
           </div>
           <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6 lg:gap-8">
             <p className="whitespace-nowrap text-sm font-medium">

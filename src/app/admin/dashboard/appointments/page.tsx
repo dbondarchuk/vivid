@@ -5,9 +5,10 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Heading } from "@/components/ui/heading";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
+import { getSort } from "@/lib/searchParams";
 import { Services } from "@/lib/services";
 import { AppointmentStatus, appointmentStatuses } from "@/types";
-import { Query } from "@/types/database/query";
+import { Query, Sort } from "@/types/database/query";
 import { CalendarClock } from "lucide-react";
 import { DateTime } from "luxon";
 
@@ -45,7 +46,7 @@ export default async function AppointmentsPage(props: Params) {
     end,
   };
 
-  const sort: Query["sort"] = [{ key: "dateTime", desc: true }];
+  const sort: Sort = getSort(searchParams) || [{ key: "dateTime", desc: true }];
 
   const res = await Services.EventsService().getAppointments({
     range: { start, end },
@@ -91,6 +92,7 @@ export default async function AppointmentsPage(props: Params) {
           dateRange={range}
           statuses={statuses}
           search={search}
+          sort={sort}
         />
       </div>
     </PageContainer>

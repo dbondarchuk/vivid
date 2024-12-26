@@ -5,6 +5,7 @@ import { Page } from "@/types";
 import React from "react";
 import { CellAction } from "./cell-action";
 import { DateTime } from "luxon";
+import { tableSortHeader } from "@/components/ui/tableSortHeader";
 
 export const columns: ColumnDef<Page>[] = [
   {
@@ -19,6 +20,7 @@ export const columns: ColumnDef<Page>[] = [
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
+        disabled={row.original.slug === "home"}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
@@ -27,33 +29,39 @@ export const columns: ColumnDef<Page>[] = [
     enableHiding: false,
   },
   {
-    header: "Title",
     accessorFn: (page) => page.title,
+    id: "title",
+    header: tableSortHeader("Title", "string"),
   },
   {
-    header: "Slug",
     accessorFn: (page) => page.slug,
+    id: "slug",
+    header: tableSortHeader("Slug", "string"),
   },
   {
-    header: "Is published",
     accessorFn: (page) => (page.published ? "Published" : "Draft"),
+    id: "published",
+    header: tableSortHeader("Is published", "default"),
   },
   {
     accessorFn: (page) =>
       DateTime.fromJSDate(page.publishDate).toLocaleString(
         DateTime.DATETIME_MED
       ),
-    header: "Publish date",
+    id: "publishDate",
+    header: tableSortHeader("Publish date", "date"),
   },
   {
     accessorFn: (page) =>
       DateTime.fromJSDate(page.createdAt).toLocaleString(DateTime.DATETIME_MED),
-    header: "Created at",
+    id: "createdAt",
+    header: tableSortHeader("Created at", "date"),
   },
   {
     accessorFn: (page) =>
       DateTime.fromJSDate(page.updatedAt).toLocaleString(DateTime.DATETIME_MED),
-    header: "Updated at",
+    id: "updatedAt",
+    header: tableSortHeader("Updated at", "date"),
   },
   {
     accessorFn: (page) => page.tags?.join(", ") || "",

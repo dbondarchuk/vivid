@@ -8,3 +8,9 @@ export const clearAllCommunicationLogs = async () => {
 
   return okStatus;
 };
+
+export const clearSelectedCommunicationLogs = async (ids: string[]) => {
+  await Services.CommunicationLogService().clearSelectedLogs(ids);
+
+  return okStatus;
+};

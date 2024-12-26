@@ -6,6 +6,7 @@ import React from "react";
 import { CellAction } from "./cell-action";
 import { DateTime } from "luxon";
 import Image from "next/image";
+import { tableSortHeader } from "@/components/ui/tableSortHeader";
 
 export const columns: ColumnDef<Asset>[] = [
   {
@@ -29,6 +30,7 @@ export const columns: ColumnDef<Asset>[] = [
   },
   {
     header: "Preview",
+    enableSorting: false,
     cell: ({ row }) => (
       <div>
         {row.original.mimeType.startsWith("image/") ? (
@@ -45,23 +47,27 @@ export const columns: ColumnDef<Asset>[] = [
     ),
   },
   {
-    header: "File name",
+    id: "filename",
+    header: tableSortHeader("File name", "string"),
     accessorFn: (asset) => asset.filename,
   },
   {
-    header: "File type",
+    id: "mimeType",
+    header: tableSortHeader("File type", "string"),
     accessorFn: (asset) => asset.mimeType,
   },
   {
     accessorFn: (asset) => asset.description || "",
-    header: "Description",
+    id: "description",
+    header: tableSortHeader("Description", "string"),
   },
   {
     accessorFn: (asset) =>
       DateTime.fromJSDate(asset.uploadedAt).toLocaleString(
         DateTime.DATETIME_MED
       ),
-    header: "Upload time",
+    id: "uploadedAt",
+    header: tableSortHeader("Upload time", "date"),
   },
   {
     id: "actions",

@@ -5,8 +5,9 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Heading } from "@/components/ui/heading";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
+import { getSort } from "@/lib/searchParams";
 import { Services } from "@/lib/services";
-import { Query } from "@/types/database/query";
+import { Query, Sort } from "@/types/database/query";
 import { Plus } from "lucide-react";
 
 type Params = {
@@ -26,7 +27,9 @@ export default async function AssetsPage(props: Params) {
   const search = searchParams.search as string;
   const offset = (page - 1) * limit;
 
-  const sort: Query["sort"] = [{ key: "dateTime", desc: true }];
+  const sort: Sort = getSort(searchParams) || [
+    { key: "uploadedAt", desc: true },
+  ];
 
   const res = await Services.AssetsService().getAssets({
     offset,
@@ -58,6 +61,7 @@ export default async function AssetsPage(props: Params) {
           limit={limit}
           page={page}
           total={total}
+          sort={sort}
           search={search}
         />
       </div>

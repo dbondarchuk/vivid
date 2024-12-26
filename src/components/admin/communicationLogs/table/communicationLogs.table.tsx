@@ -2,10 +2,12 @@
 import {
   ColumnDef,
   PaginationState,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
@@ -38,6 +40,7 @@ import { CalendarDateRangePicker } from "../../../ui/date-range-picker";
 import {
   CommunicationChannel,
   CommunicationDirection,
+  CommunicationLog,
   DateRange,
 } from "@/types";
 import { DateTime } from "luxon";
@@ -46,10 +49,12 @@ import {
   CommunicationChannelTexts,
   CommunicationDirectionTexts,
 } from "./communicationLogs.columns";
+import { Sort } from "@/types/database/query";
+import { ClearSelectedCommunicationLogsButton } from "../clearSelectedButton";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps<TValue> {
+  columns: ColumnDef<CommunicationLog, TValue>[];
+  data: CommunicationLog[];
   page: number;
   total: number;
   pageSizeOptions?: number[];
@@ -57,10 +62,11 @@ interface DataTableProps<TData, TValue> {
   dateRange?: DateRange;
   directions: CommunicationDirection[];
   channels: CommunicationChannel[];
+  sort: Sort;
   search?: string;
 }
 
-export const CommunicationLogsTable = <TData, TValue>({
+export const CommunicationLogsTable = <CommunicationLog, TValue>({
   columns,
   data,
   page,
@@ -70,8 +76,9 @@ export const CommunicationLogsTable = <TData, TValue>({
   directions,
   channels,
   search,
+  sort,
   pageSizeOptions = [10, 20, 30, 40, 50],
-}: DataTableProps<TData, TValue>) => {
+}: DataTableProps<TValue>) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -96,6 +103,28 @@ export const CommunicationLogsTable = <TData, TValue>({
     },
     [searchParams]
   );
+
+  // Handle server-side sorting
+  const [sortingState, setSorting] = React.useState<SortingState>(
+    sort.map((x) => ({
+      desc: !!x.desc,
+      id: x.key,
+    }))
+  );
+
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        sort: sortingState.map((x) => `${x.id}:${x.desc}`),
+        page: null,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortingState]);
 
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
@@ -156,13 +185,17 @@ export const CommunicationLogsTable = <TData, TValue>({
 
   const table = useReactTable({
     data,
+    getRowId: (row) => row._id,
     columns,
     rowCount: total,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       pagination: { pageIndex, pageSize },
+      sorting: sortingState,
     },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     onPaginationChange: setPagination,
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
@@ -272,8 +305,11 @@ export const CommunicationLogsTable = <TData, TValue>({
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            <ClearSelectedCommunicationLogsButton
+              selected={table
+                .getFilteredSelectedRowModel()
+                .rows.map((row) => row.original._id)}
+            />
           </div>
           <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6 lg:gap-8">
             <p className="whitespace-nowrap text-sm font-medium">

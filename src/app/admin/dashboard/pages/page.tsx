@@ -6,8 +6,9 @@ import { Heading } from "@/components/ui/heading";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
 import { Services } from "@/lib/services";
-import { Query } from "@/types/database/query";
+import { Query, Sort } from "@/types/database/query";
 import { Plus } from "lucide-react";
+import { getSort } from "@/lib/searchParams";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -33,7 +34,9 @@ export default async function PagesPage(props: Params) {
   const search = searchParams.search as string;
   const offset = (page - 1) * limit;
 
-  const sort: Query["sort"] = [{ key: "dateTime", desc: true }];
+  const sort: Sort = getSort(searchParams) || [
+    { key: "updatedAt", desc: true },
+  ];
 
   const res = await Services.PagesService().getPages({
     offset,
@@ -67,6 +70,7 @@ export default async function PagesPage(props: Params) {
           page={page}
           total={total}
           search={search}
+          sort={sort}
           published={statuses}
         />
       </div>

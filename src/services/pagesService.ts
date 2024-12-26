@@ -171,6 +171,28 @@ export class PagesService {
     return page;
   }
 
+  public async deletePages(ids: string[]): Promise<void> {
+    const db = await getDbConnection();
+    const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
+
+    const homePage = await pages.findOne({
+      _id: {
+        $in: ids,
+      },
+      slug: "home",
+    });
+
+    if (homePage) {
+      throw new Error("Can not delete home page");
+    }
+
+    await pages.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+  }
+
   public async checkUniqueSlug(slug: string, _id?: string): Promise<boolean> {
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);

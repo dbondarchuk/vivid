@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Appointment } from "@/types";
 import { DateTime } from "luxon";
 import {
+  ArrowUpDown,
   CalendarCheck,
   CalendarClock,
   CalendarX,
@@ -21,6 +22,8 @@ import { Link } from "@/components/ui/link";
 import { AppointmentDialog } from "../appointment.dialog";
 import { Button } from "@/components/ui/button";
 import { durationToTime } from "@/lib/time";
+import { cn } from "@/lib/utils";
+import { tableSortHeader } from "@/components/ui/tableSortHeader";
 
 const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   appointment,
@@ -152,53 +155,58 @@ const OptionCell: React.FC<{ appointment: Appointment }> = ({
 };
 
 export const columns: ColumnDef<Appointment>[] = [
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={table.getIsAllPageRowsSelected()}
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    header: "Status",
     cell: ({ row }) => <StatusCell appointment={row.original} size={20} />,
+    id: "status",
+    header: tableSortHeader("Status", "default"),
   },
   {
-    header: "Option",
     cell: ({ row }) => <OptionCell appointment={row.original} />,
+    id: "option.name",
+    header: tableSortHeader("Option", "string"),
   },
   {
     accessorFn: (app) => app.fields.name,
-    header: "Customer",
+    id: "fields.name",
+    header: tableSortHeader("Customer", "string"),
   },
   {
     accessorFn: (app) => app.fields.email,
-    header: "Email",
+    id: "fields.email",
+    header: tableSortHeader("Email", "string"),
   },
   {
     accessorFn: (app) =>
       DateTime.fromJSDate(app.dateTime).toLocaleString(DateTime.DATETIME_MED),
-    header: "Date & time",
+    id: "dateTime",
+    header: tableSortHeader("Date & time", "date"),
   },
   {
     accessorFn: (app) =>
       DateTime.fromJSDate(app.createdAt).toLocaleString(DateTime.DATETIME_MED),
-    header: "Requested at",
+    id: "createdAt",
+    header: tableSortHeader("Requested at", "date"),
   },
   {
-    header: "Duration",
     cell: ({ row }) => {
       const { hours, minutes } = durationToTime(row.original.totalDuration);
 
@@ -210,9 +218,12 @@ export const columns: ColumnDef<Appointment>[] = [
         </span>
       );
     },
+    id: "totalDuration",
+    header: tableSortHeader("Duration at", "time"),
   },
   {
     accessorFn: (app) => (app.totalPrice ? `$${app.totalPrice}` : null),
-    header: "Price",
+    id: "totalPrice",
+    header: tableSortHeader("Price", "number"),
   },
 ];

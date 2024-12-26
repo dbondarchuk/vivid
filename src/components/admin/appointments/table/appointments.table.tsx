@@ -2,10 +2,12 @@
 import {
   ColumnDef,
   PaginationState,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
@@ -44,20 +46,22 @@ import {
 import { DateTime } from "luxon";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { StatusText } from "../types";
+import { Sort } from "@/types/database/query";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps<TValue> {
+  columns: ColumnDef<Appointment, TValue>[];
+  data: Appointment[];
   page: number;
   total: number;
   pageSizeOptions?: number[];
   limit: number;
   dateRange?: DateRange;
   statuses: AppointmentStatus[];
+  sort: Sort;
   search?: string;
 }
 
-export const AppointmentsTable = <TData, TValue>({
+export const AppointmentsTable = <Appointment, TValue>({
   columns,
   data,
   page,
@@ -66,8 +70,9 @@ export const AppointmentsTable = <TData, TValue>({
   dateRange,
   statuses,
   search,
+  sort,
   pageSizeOptions = [10, 20, 30, 40, 50],
-}: DataTableProps<TData, TValue>) => {
+}: DataTableProps<TValue>) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -99,6 +104,28 @@ export const AppointmentsTable = <TData, TValue>({
       pageIndex: page,
       pageSize: limit,
     });
+
+  // Handle server-side sorting
+  const [sortingState, setSorting] = React.useState<SortingState>(
+    sort.map((x) => ({
+      desc: !!x.desc,
+      id: x.key,
+    }))
+  );
+
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        sort: sortingState.map((x) => `${x.id}:${x.desc}`),
+        page: null,
+      })}`,
+      {
+        scroll: false,
+      }
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortingState]);
 
   React.useEffect(() => {
     router.push(
@@ -141,13 +168,17 @@ export const AppointmentsTable = <TData, TValue>({
 
   const table = useReactTable({
     data,
+    getRowId: (row) => row._id,
     columns,
     rowCount: total,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       pagination: { pageIndex, pageSize },
+      sorting: sortingState,
     },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     onPaginationChange: setPagination,
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
@@ -254,8 +285,8 @@ export const AppointmentsTable = <TData, TValue>({
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {/* {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected. */}
           </div>
           <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6 lg:gap-8">
             <p className="whitespace-nowrap text-sm font-medium">
