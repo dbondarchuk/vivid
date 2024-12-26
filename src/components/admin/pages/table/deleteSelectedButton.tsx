@@ -36,7 +36,7 @@ export const DeleteSelectedPagesButton: React.FC<{
       toast({
         variant: "default",
         title: "Done",
-        description: "Selected logs have been cleared",
+        description: "Selected pages have been deleted",
       });
 
       setIsOpen(false);

@@ -36,7 +36,7 @@ export const DeleteSelectedAssetsButton: React.FC<{
       toast({
         variant: "default",
         title: "Done",
-        description: "Selected logs have been cleared",
+        description: "Selected assets have been deleted",
       });
 
       setIsOpen(false);
