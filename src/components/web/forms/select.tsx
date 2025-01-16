@@ -1,9 +1,4 @@
-import {
-  FormItem,
-  FormControl,
-  FormMessage,
-  FormField,
-} from "@/components/ui/form";
+import { FormItem, FormControl, FormField } from "@/components/ui/form";
 
 import { FieldValues } from "react-hook-form";
 import { FormFieldLabel } from "./formFieldLabel";
@@ -17,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormFieldDescription } from "./formFieldDescription";
+import { FormFieldErrorMessage } from "./formFieldErrorMessage";
 
 export const SelectField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData & FieldOptionsData>
@@ -54,7 +50,7 @@ export const SelectField: <T extends FieldValues>(
           </Select>
         </FormControl>
         <FormFieldDescription description={props.data?.description} />
-        <FormMessage />
+        <FormFieldErrorMessage />
       </FormItem>
     )}
   />

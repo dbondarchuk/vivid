@@ -1,9 +1,4 @@
-import {
-  FormItem,
-  FormControl,
-  FormMessage,
-  FormField,
-} from "@/components/ui/form";
+import { FormItem, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { FieldValues } from "react-hook-form";
@@ -11,6 +6,7 @@ import { FormFieldLabel } from "./formFieldLabel";
 import { getFieldName, IFormFieldProps } from "./formFieldProps";
 import { WithLabelFieldData } from "@/types";
 import { FormFieldDescription } from "./formFieldDescription";
+import { FormFieldErrorMessage } from "./formFieldErrorMessage";
 
 export const OneLineField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData>
@@ -25,7 +21,7 @@ export const OneLineField: <T extends FieldValues>(
           <Input {...field} placeholder="Type your response here" />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />
-        <FormMessage />
+        <FormFieldErrorMessage />
       </FormItem>
     )}
   />

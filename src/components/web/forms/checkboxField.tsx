@@ -1,4 +1,4 @@
-import { FormControl, FormField, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField } from "@/components/ui/form";
 
 import { FieldValues } from "react-hook-form";
 import { FormFieldLabel } from "./formFieldLabel";
@@ -6,6 +6,7 @@ import { getFieldName, IFormFieldProps } from "./formFieldProps";
 import { WithLabelFieldData } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormFieldDescription } from "./formFieldDescription";
+import { FormFieldErrorMessage } from "./formFieldErrorMessage";
 
 export const CheckboxField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData>
@@ -33,7 +34,7 @@ export const CheckboxField: <T extends FieldValues>(
             className="mt-0"
           />
           <FormFieldDescription description={props.data?.description} />
-          <FormMessage />
+          <FormFieldErrorMessage />
         </div>
       </div>
     )}

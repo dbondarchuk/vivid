@@ -4,18 +4,25 @@ import { Input, InputProps } from "./input";
 export type Mask = Array<string | RegExp> | string;
 export type MaskedInputProps = InputProps & {
   mask?: React.ComponentProps<typeof InputMask>["mask"];
+  maskPlaceholder?: string;
   ref?: React.Ref<HTMLInputElement> | undefined;
 };
 
-export const MaskedInput: React.FC<MaskedInputProps> = (
-  props: MaskedInputProps
-) => {
-  return props.mask ? (
+export const MaskedInput: React.FC<MaskedInputProps> = ({
+  mask,
+  value,
+  onChange,
+  onBlur,
+  maskPlaceholder = "_",
+  ...props
+}) => {
+  return mask ? (
     <InputMask
-      mask={props.mask}
-      value={props.value}
-      onChange={props.onChange}
-      onBlur={props.onBlur}
+      mask={mask}
+      value={value}
+      maskPlaceholder={maskPlaceholder}
+      onChange={onChange}
+      onBlur={onBlur}
     >
       <Input {...props} />
     </InputMask>

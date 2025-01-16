@@ -159,7 +159,8 @@ export const FormCard: React.FC<Omit<FormCardProps, "i18n">> = (props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
-    mode: "onBlur",
+    mode: "all",
+    reValidateMode: "onChange",
   });
 
   const i18n = useI18n();

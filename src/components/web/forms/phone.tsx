@@ -1,10 +1,5 @@
 import { Combobox } from "@/components/ui/combobox";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   InputGroup,
   InputGroupInput,
@@ -26,6 +21,7 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
 } from "@/components/admin/forms/inputGroupClasses";
+import { FormFieldErrorMessage } from "./formFieldErrorMessage";
 
 export const PhoneField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData>
@@ -134,7 +130,7 @@ export const PhoneField: <T extends FieldValues>(
             </InputGroup>
           </FormControl>
           <FormFieldDescription description={props.data?.description} />
-          <FormMessage />
+          <FormFieldErrorMessage />
         </FormItem>
       )}
     />

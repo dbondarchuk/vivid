@@ -1,15 +1,11 @@
-import {
-  FormItem,
-  FormControl,
-  FormMessage,
-  FormField,
-} from "@/components/ui/form";
+import { FormItem, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { getFieldName, IFormFieldProps } from "./formFieldProps";
 import { FieldValues } from "react-hook-form";
 import { FormFieldLabel } from "./formFieldLabel";
 import { FormFieldDescription } from "./formFieldDescription";
+import { FormFieldErrorMessage } from "./formFieldErrorMessage";
 
 export const EmailField: <T extends FieldValues>(
   p: IFormFieldProps<T>
@@ -27,7 +23,7 @@ export const EmailField: <T extends FieldValues>(
           <Input type="email" {...field} />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />
-        <FormMessage />
+        <FormFieldErrorMessage />
       </FormItem>
     )}
   />
