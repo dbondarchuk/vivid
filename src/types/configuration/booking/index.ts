@@ -5,11 +5,13 @@ import {
   appointmentOptionSchema,
 } from "../../booking/appointmentOption";
 import { remindersSchema } from "../../reminders/reminder";
+import { calendarSourcesConfigurationSchema } from "./calendarSource";
 import { emailConfigurationSchema } from "./email";
 import { fieldsSchema } from "./field";
 import { shiftsSchema } from "./shift";
 import { textMessagesConfigurationSchema } from "./textMessages";
 
+export * from "./calendarSource";
 export * from "./email";
 export * from "./field";
 export * from "./shift";
@@ -19,7 +21,6 @@ export const timezones = getTimeZones();
 const [firstTimezone, ...restTimezones] = timezones.map((tz) => tz.name);
 
 export const generalBookingConfigurationSchema = z.object({
-  ics: z.string().url("ICS must a valid URL to your calendar").optional(),
   maxWeeksInFuture: z.coerce
     .number()
     .min(2, "The minimum amount of weeks must be 2")
@@ -57,6 +58,7 @@ export const appointOptionsSchema = z
 export const bookingConfigurationSchema =
   generalBookingConfigurationSchema.merge(
     z.object({
+      calendarSources: calendarSourcesConfigurationSchema,
       workHours: shiftsSchema,
       addons: appointmentAddonsSchema,
       fields: fieldsSchema,

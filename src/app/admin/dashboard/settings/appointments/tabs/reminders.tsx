@@ -1,13 +1,9 @@
-import { Sortable } from "@/components/ui/sortable";
-import { z } from "zod";
 import { TabProps } from "./types";
 import { useFieldArray } from "react-hook-form";
 import React from "react";
 import { v4 } from "uuid";
 import { ReminderCard } from "./cards/reminderCard";
 import { Reminder } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { Accordion } from "@/components/ui/accordion";
 import { NonSortable } from "@/components/ui/nonSortable";
 

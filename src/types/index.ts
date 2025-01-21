@@ -1,4 +1,5 @@
 export * from "./admin";
+export * from "./apps";
 export * from "./assets";
 export * from "./booking";
 export * from "./communication";

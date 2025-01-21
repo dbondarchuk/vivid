@@ -35,5 +35,6 @@
   "availability_fetch_failed_description": "Щось пішло не так коли ми нагались дізнатись вільний час для запису",
   "submit_event_failed_title": "Ой! Щось пішло не так",
   "submit_event_failed_description": "Щось пішло не так коли ми намагались обробити Ваш запит. Зателефонуйте нам!",
+  "submit_event_failed_time_not_available_description": "Здається, вибраний Вами час більше не доступний. Виберіть будь ласка інший час",
   "select_addons_label": "Виберіть додаткові сервіси"
 }

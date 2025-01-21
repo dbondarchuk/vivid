@@ -33,19 +33,6 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
     <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
       <FormField
         control={form.control}
-        name="ics"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>ICS calendar link</FormLabel>
-            <FormControl>
-              <Input disabled={disabled} placeholder="ICS link" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
         name="timezone"
         render={({ field }) => (
           <FormItem>

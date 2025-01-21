@@ -38,6 +38,9 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       fetchDescription: i18n("availability_fetch_failed_description"),
       submitTitle: i18n("submit_event_failed_title"),
       submitDescription: i18n("submit_event_failed_description"),
+      timeNotAvailableDescription: i18n(
+        "submit_event_failed_time_not_available_description"
+      ),
     }),
     [i18n]
   );
@@ -125,72 +128,85 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
     }
   }, [initialStep, i18n]);
 
-  const submitForm = (fields: AppointmentFields) => {
+  const submitForm = async (fields: AppointmentFields) => {
     if (!dateTime) return;
 
     setIsLoading(true);
-    fetch("/api/event", {
-      method: "POST",
-      body: JSON.stringify({
-        dateTime: LuxonDateTime.fromObject(
-          {
-            year: dateTime.date.getFullYear(),
-            month: dateTime.date.getMonth() + 1,
-            day: dateTime.date.getDate(),
-            hour: dateTime.time.hour,
-            minute: dateTime.time.minute,
-            second: 0,
+    try {
+      const response = await fetch("/api/event", {
+        method: "POST",
+        body: JSON.stringify({
+          dateTime: LuxonDateTime.fromObject(
+            {
+              year: dateTime.date.getFullYear(),
+              month: dateTime.date.getMonth() + 1,
+              day: dateTime.date.getDate(),
+              hour: dateTime.time.hour,
+              minute: dateTime.time.minute,
+              second: 0,
+            },
+            { zone: dateTime?.timeZone }
+          )
+            .toUTC()
+            .toISO(),
+          totalPrice: getTotalPrice() || undefined,
+          timeZone: dateTime!.timeZone,
+          totalDuration: getTotalDuration(),
+          fields,
+          option: {
+            ...props.appointmentOption,
+            fields: props.appointmentOption.fields?.reduce(
+              (acc, field) => ({
+                ...acc,
+                [field.name]: field.data?.label,
+              }),
+              {}
+            ),
+            addons: undefined,
           },
-          { zone: dateTime?.timeZone }
-        )
-          .toUTC()
-          .toISO(),
-        totalPrice: getTotalPrice() || undefined,
-        timeZone: dateTime!.timeZone,
-        totalDuration: getTotalDuration(),
-        fields,
-        option: {
-          ...props.appointmentOption,
-          fields: props.appointmentOption.fields?.reduce(
-            (acc, field) => ({
-              ...acc,
-              [field.name]: field.data?.label,
-            }),
-            {}
-          ),
-          addons: undefined,
-        },
-        addons: selectedAddons,
-      } as AppointmentEvent),
-    })
-      .then((response) => {
-        if (response.status >= 400) throw new Error(response.statusText);
-        return response.json();
-      })
-      .then(({ id }: WithId<any>) => {
-        setFields(fields);
-        setIsLoading(false);
-
-        if (props.successPage) {
-          const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
-
-          document.cookie = `appointment_id=${encodeURIComponent(
-            id
-          )}; expires=${expireDate.toJSDate().toUTCString()};`;
-
-          router.push(props.successPage);
-        } else {
-          setStep("confirmation");
-        }
-      })
-      .catch(() => {
-        setIsLoading(false);
-        toast({
-          variant: "destructive",
-          title: errors.submitTitle,
-          description: errors.submitDescription,
-        });
+          addons: selectedAddons,
+        } as AppointmentEvent),
       });
+
+      if (response.status === 400) {
+        const error = await response.json();
+        if (error.error === "time_not_available") {
+          toast({
+            variant: "destructive",
+            title: errors.submitTitle,
+            description: errors.timeNotAvailableDescription,
+          });
+        }
+
+        setStep("calendar");
+        return;
+      } else if (response.status > 400) {
+        throw new Error(response.statusText);
+      }
+
+      const { id } = (await response.json()) as WithId<any>;
+      setFields(fields);
+
+      if (props.successPage) {
+        const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
+
+        document.cookie = `appointment_id=${encodeURIComponent(
+          id
+        )}; expires=${expireDate.toJSDate().toUTCString()};`;
+
+        router.push(props.successPage);
+      } else {
+        setStep("confirmation");
+      }
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: errors.submitTitle,
+        description: errors.submitDescription,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   React.useEffect(() => {

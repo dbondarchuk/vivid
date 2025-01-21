@@ -1,10 +1,10 @@
 import { AssetsService } from "@/services/assetsService";
-import { AvailabilityService } from "@/services/availabilityService";
 import { CommunicationLogService } from "@/services/communicationLogService";
 import {
   CachedConfigurationService,
   ConfigurationService,
 } from "@/services/configurationService";
+import { ConnectedAppService } from "@/services/connectedAppService";
 import { EventsService } from "@/services/eventsService";
 import { MeetingService } from "@/services/meetingService";
 import { NotificationService } from "@/services/notifications/notificationService";
@@ -17,10 +17,10 @@ type Types = {
   AssetsService: () => AssetsService;
   EventsService: () => EventsService;
   MeetingService: () => MeetingService;
-  AvailabilityService: () => AvailabilityService;
   NotificationService: () => NotificationService;
   PagesService: () => PagesService;
   CommunicationLogService: () => CommunicationLogService;
+  ConnectedAppService: () => ConnectedAppService;
 
   RemindersService: () => ReminderService;
 };
@@ -32,24 +32,19 @@ export const Services: Types = {
     () =>
       new EventsService(
         Services.ConfigurationService(),
-        Services.NotificationService()
+        Services.NotificationService(),
+        Services.ConnectedAppService()
       )
   ),
   MeetingService: cache(
     () => new MeetingService(Services.ConfigurationService())
-  ),
-  AvailabilityService: cache(
-    () =>
-      new AvailabilityService(
-        Services.ConfigurationService(),
-        Services.EventsService()
-      )
   ),
   NotificationService: cache(
     () => new NotificationService(Services.ConfigurationService())
   ),
   PagesService: cache(() => new PagesService()),
   CommunicationLogService: cache(() => new CommunicationLogService()),
+  ConnectedAppService: cache(() => new ConnectedAppService()),
 
   RemindersService: () =>
     new ReminderService(

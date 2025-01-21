@@ -19,6 +19,8 @@ export default async function Page() {
       "social"
     );
 
+  const apps = await Services.ConnectedAppService().getApps();
+
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-col gap-8">
@@ -34,6 +36,7 @@ export default async function Page() {
           values={booking}
           generalSettings={general}
           socialSettings={social}
+          apps={apps}
         />
       </div>
     </PageContainer>

@@ -5,6 +5,7 @@ import { toast } from "@/components/ui/use-toast";
 import {
   BookingConfiguration,
   bookingConfigurationSchema,
+  ConnectedApp,
   GeneralConfiguration,
   SocialConfiguration,
 } from "@/types";
@@ -26,12 +27,14 @@ import { TextMessagesTab } from "./tabs/textMessages";
 import { RemindersTab } from "./tabs/reminders";
 import { demoAppointment } from "./fixtures";
 import { getArguments } from "@/services/notifications/getArguments";
+import { CalendarSourcesTab } from "./tabs/calendarSources";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
   generalSettings: GeneralConfiguration;
   socialSettings: SocialConfiguration;
-}> = ({ values, generalSettings, socialSettings }) => {
+  apps: ConnectedApp[];
+}> = ({ values, generalSettings, socialSettings, apps }) => {
   const form = useForm<BookingConfiguration>({
     resolver: zodResolver(bookingConfigurationSchema),
     mode: "all",
@@ -71,7 +74,6 @@ export const AppointmentsSettingsForm: React.FC<{
   };
 
   const mainTabInvalid =
-    form.getFieldState("ics").invalid ||
     form.getFieldState("maxWeeksInFuture").invalid ||
     form.getFieldState("timezone").invalid ||
     form.getFieldState("slotStartMinuteStep").invalid ||
@@ -108,6 +110,16 @@ export const AppointmentsSettingsForm: React.FC<{
               className={cn(mainTabInvalid ? "text-destructive" : "")}
             >
               Main
+            </TabsTrigger>
+            <TabsTrigger
+              value="calendarSources"
+              className={cn(
+                form.getFieldState("calendarSources").invalid
+                  ? "text-destructive"
+                  : ""
+              )}
+            >
+              Calendar sources
             </TabsTrigger>
             <TabsTrigger
               value="email"
@@ -174,6 +186,9 @@ export const AppointmentsSettingsForm: React.FC<{
           </TabsList>
           <TabsContent value="main">
             <MainTab form={form} />
+          </TabsContent>
+          <TabsContent value="calendarSources">
+            <CalendarSourcesTab form={form} apps={apps} />
           </TabsContent>
           <TabsContent value="email">
             <EmailTab form={form} demoArguments={demoArguments} />

@@ -1,7 +1,7 @@
+import { getIcsEventUid } from "@/services/helpers/icsUid";
 import { Appointment } from "@/types";
 import * as ics from "ics";
 import { DateTime } from "luxon";
-import { getIcsEventUid } from "../../helpers/ics";
 import {
   BaseNotificationService,
   IcalEventMethod,

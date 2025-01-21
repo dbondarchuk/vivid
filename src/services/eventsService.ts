@@ -1,11 +1,16 @@
+import { InstalledAppServices } from "@/apps/apps.services";
 import { getDbConnection } from "@/database";
 import { buildSearchQuery } from "@/lib/query";
 import { escapeRegex } from "@/lib/string";
 import type {
   AppointmentEvent,
   AppointmentStatus,
+  Availability,
+  BookingConfiguration,
   DateRange,
   Event,
+  GeneralConfiguration,
+  ICalendarBusyTimeProvider,
   Period,
   WithTotal,
 } from "@/types";
@@ -14,7 +19,9 @@ import { Query } from "@/types/database/query";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { ConfigurationService } from "./configurationService";
-import { getIcsEventUid, IcsBusyTimeProvider, IcsEvent } from "./helpers/ics";
+import { ConnectedAppService } from "./connectedAppService";
+import { getIcsEventUid } from "./helpers/icsUid";
+import { getAvailableTimeSlotsInCalendar } from "./helpers/timeSlot";
 import { NotificationService } from "./notifications/notificationService";
 
 const APPOINTMENTS_COLLECTION_NAME = "appointments";
@@ -22,8 +29,37 @@ const APPOINTMENTS_COLLECTION_NAME = "appointments";
 export class EventsService {
   constructor(
     private readonly configurationService: ConfigurationService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly appsService: ConnectedAppService
   ) {}
+
+  public async getAvailability(duration: number): Promise<Availability> {
+    const config = await this.configurationService.getConfiguration("booking");
+
+    const events = await this.getBusyEvents();
+
+    const start = DateTime.now().plus({
+      hours: config.minHoursBeforeBooking || 0,
+    });
+
+    return this.getAvailableTimes(
+      start,
+      start.plus({ weeks: config.maxWeeksInFuture ?? 8 }),
+      duration,
+      events,
+      config
+    );
+  }
+
+  public async getBusyEventsInTimeFrame(
+    start: DateTime,
+    end: DateTime
+  ): Promise<Period[]> {
+    const { booking: config, general: generalConfig } =
+      await this.configurationService.getConfigurations("booking", "general");
+
+    return await this.getBusyTimes(start, end, config, generalConfig);
+  }
 
   public async getBusyEvents(): Promise<Period[]> {
     const { booking: config, general: generalConfig } =
@@ -32,30 +68,34 @@ export class EventsService {
     const start = DateTime.utc();
     const end = DateTime.utc().plus({ weeks: config.maxWeeksInFuture ?? 8 });
 
-    const declinedUids = (await this.getDbDeclinedEventIds(start, end)).map(
-      (id) => getIcsEventUid(id, generalConfig.url)
-    );
-
-    const dbEventsPromise = this.getDbBusyTimes(start, end);
-    let icsEventsPromise = Promise.resolve<IcsEvent[]>([]);
-
-    if (config.ics) {
-      const ics = new IcsBusyTimeProvider(config.ics);
-      icsEventsPromise = ics.getBusyTimes(start, end, declinedUids);
-    }
-
-    const [dbEvents, icsEvents] = await Promise.all([
-      dbEventsPromise,
-      icsEventsPromise,
-    ]);
-
-    return [...dbEvents, ...icsEvents];
+    return await this.getBusyTimes(start, end, config, generalConfig);
   }
 
   public async createEvent(
     event: AppointmentEvent,
     status: AppointmentStatus = "pending"
   ): Promise<Appointment> {
+    const { booking: config, general: generalConfig } =
+      await this.configurationService.getConfigurations("booking", "general");
+
+    const eventTime = DateTime.fromISO(event.dateTime, { zone: "utc" });
+    const start = eventTime.startOf("day");
+    const end = start.endOf("day");
+
+    const events = await this.getBusyTimes(start, end, config, generalConfig);
+
+    const availability = await this.getAvailableTimes(
+      start,
+      end,
+      event.totalDuration,
+      events,
+      config
+    );
+
+    if (!availability.find((time) => time === eventTime.toMillis())) {
+      throw new Error("Time is not available");
+    }
+
     const appointment = await this.saveEvent(event, status);
 
     await this.notificationService.sendAppointmentRequestedNotification(
@@ -278,26 +318,35 @@ export class EventsService {
     const { booking: config, general: generalConfig } =
       await this.configurationService.getConfigurations("booking", "general");
 
-    let icsEvents: Event[] = [];
-    if (config.ics) {
-      const ics = new IcsBusyTimeProvider(config.ics);
-      const icsTimes = await ics.getBusyTimes(
+    const apps = await this.appsService.getAppsData(
+      config.calendarSources?.map((source) => source.appId) || []
+    );
+
+    const skipUids = appointments.items.map((app) =>
+      getIcsEventUid(app._id, generalConfig.url)
+    );
+
+    const appsPromises = apps.map((app) => {
+      const service = InstalledAppServices[app.name](
+        this.appsService.getAppServiceProps(app._id)
+      ) as unknown as ICalendarBusyTimeProvider;
+      return service.getBusyTimes(
+        app,
         DateTime.fromJSDate(start),
         DateTime.fromJSDate(end),
-        appointments.items.map((app) =>
-          getIcsEventUid(app._id, generalConfig.url)
-        )
+        skipUids
       );
+    });
 
-      icsEvents = icsTimes.map((x) => ({
-        title: x.title || "Busy",
-        dateTime: x.startAt.toJSDate(),
-        totalDuration: x.endAt.diff(x.startAt, "minutes").minutes,
-        uid: x.uid,
-      }));
-    }
+    const appsResponse = await Promise.all(appsPromises);
+    const appsEvents: Event[] = appsResponse.flat().map((event) => ({
+      title: event.title || "Busy",
+      dateTime: event.startAt.toJSDate(),
+      totalDuration: event.endAt.diff(event.startAt, "minutes").minutes,
+      uid: event.uid,
+    }));
 
-    return [...appointments.items, ...icsEvents];
+    return [...appointments.items, ...appsEvents];
   }
 
   public async getAppointment(id: string) {
@@ -402,6 +451,67 @@ export class EventsService {
       newTime,
       newDuration
     );
+  }
+
+  private async getAvailableTimes(
+    start: DateTime,
+    end: DateTime,
+    duration: number,
+    events: Period[],
+    config: BookingConfiguration
+  ) {
+    const results = getAvailableTimeSlotsInCalendar({
+      calendarEvents: events,
+      configuration: {
+        timeSlotDuration: duration,
+        availablePeriods: config.workHours,
+        timeZone: config.timezone || DateTime.now().zoneName!,
+        minAvailableTimeAfterSlot: config.minAvailableTimeAfterSlot ?? 0,
+        minAvailableTimeBeforeSlot: config.minAvailableTimeBeforeSlot ?? 0,
+        slotStartMinuteStep: config.slotStartMinuteStep ?? 15,
+      },
+      from: start.toJSDate(),
+      to: end.toJSDate(),
+    });
+
+    return results.map((x) => x.startAt);
+  }
+
+  private async getBusyTimes(
+    start: DateTime,
+    end: DateTime,
+    config: BookingConfiguration,
+    generalConfig: GeneralConfiguration
+  ) {
+    const declinedUids = (await this.getDbDeclinedEventIds(start, end)).map(
+      (id) => getIcsEventUid(id, generalConfig.url)
+    );
+
+    const apps = await this.appsService.getAppsData(
+      config.calendarSources?.map((source) => source.appId) || []
+    );
+
+    const dbEventsPromise = this.getDbBusyTimes(start, end);
+    const appsPromises = apps.map((app) => {
+      const service = InstalledAppServices[app.name](
+        this.appsService.getAppServiceProps(app._id)
+      ) as unknown as ICalendarBusyTimeProvider;
+      return service.getBusyTimes(app, start, end, declinedUids);
+    });
+
+    const [dbEvents, ...appsEvents] = await Promise.all([
+      dbEventsPromise,
+      ...appsPromises,
+    ]);
+    const remoteEvents = appsEvents.flat().map(
+      (event) =>
+        ({
+          startAt: event.startAt,
+          endAt: event.endAt,
+        } satisfies Period)
+    );
+
+    return [...dbEvents, ...remoteEvents];
   }
 
   private async getDbBusyTimes(

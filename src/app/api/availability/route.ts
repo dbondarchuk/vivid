@@ -17,9 +17,7 @@ export async function GET(request: NextRequest) {
       { status: 400 }
     );
 
-  const availability = await Services.AvailabilityService().getAvailability(
-    duration
-  );
+  const availability = await Services.EventsService().getAvailability(duration);
 
   return NextResponse.json(availability);
 }

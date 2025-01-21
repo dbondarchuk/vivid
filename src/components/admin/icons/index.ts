@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  Blocks,
   Brush,
   CalendarClock,
   Check,
@@ -85,4 +86,5 @@ export const Icons = {
   communicationLogs: MailSearch,
   paintbrush: Paintbrush,
   brush: Brush,
+  app: Blocks,
 };

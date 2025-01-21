@@ -194,7 +194,8 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
 
   const [search, setSearch] = React.useState("");
 
-  let { listClassName, customSearch, searchLabel, ...rest } = props;
+  let { listClassName, customSearch, searchLabel, onItemSelect, ...rest } =
+    props;
   searchLabel = searchLabel || "Select item...";
   let buttonLabel: React.ReactNode = searchLabel;
   if (value) {
@@ -206,7 +207,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
     (value: string | undefined) => {
       setValue(value);
       setOpen(false);
-      props.onItemSelect?.(value as string);
+      onItemSelect?.(value as string);
     },
     [props]
   );
