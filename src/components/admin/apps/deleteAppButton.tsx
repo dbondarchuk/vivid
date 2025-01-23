@@ -14,9 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Unplug } from "lucide-react";
 import React from "react";
-import { deleteApp } from "./app.actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { deleteApp } from "@/apps/apps.actions";
 
 export type DeleteAppButtonProps = {
   appId: string;
