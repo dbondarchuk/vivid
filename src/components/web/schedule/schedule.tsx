@@ -132,6 +132,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
     if (!dateTime) return;
 
     setIsLoading(true);
+    setFields(fields);
+
     try {
       const response = await fetch("/api/event", {
         method: "POST",
@@ -178,6 +180,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           });
         }
 
+        fetchAvailability();
+        setDateTime(undefined);
         setStep("calendar");
         return;
       } else if (response.status > 400) {
@@ -185,7 +189,6 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       }
 
       const { id } = (await response.json()) as WithId<any>;
-      setFields(fields);
 
       if (props.successPage) {
         const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
@@ -345,6 +348,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           duration={duration!}
           appointmentOption={props.appointmentOption}
           optionDuration={duration}
+          values={fields}
+          onFormChange={setFields}
         />
       )}
       {step === "confirmation" && (

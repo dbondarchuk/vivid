@@ -73,27 +73,30 @@ export class EventsService {
 
   public async createEvent(
     event: AppointmentEvent,
-    status: AppointmentStatus = "pending"
+    status: AppointmentStatus = "pending",
+    force = false
   ): Promise<Appointment> {
     const { booking: config, general: generalConfig } =
       await this.configurationService.getConfigurations("booking", "general");
 
-    const eventTime = DateTime.fromISO(event.dateTime, { zone: "utc" });
-    const start = eventTime.startOf("day");
-    const end = start.endOf("day");
+    if (!force) {
+      const eventTime = DateTime.fromISO(event.dateTime, { zone: "utc" });
+      const start = eventTime.startOf("day");
+      const end = start.endOf("day");
 
-    const events = await this.getBusyTimes(start, end, config, generalConfig);
+      const events = await this.getBusyTimes(start, end, config, generalConfig);
 
-    const availability = await this.getAvailableTimes(
-      start,
-      end,
-      event.totalDuration,
-      events,
-      config
-    );
+      const availability = await this.getAvailableTimes(
+        start,
+        end,
+        event.totalDuration,
+        events,
+        config
+      );
 
-    if (!availability.find((time) => time === eventTime.toMillis())) {
-      throw new Error("Time is not available");
+      if (!availability.find((time) => time === eventTime.toMillis())) {
+        throw new Error("Time is not available");
+      }
     }
 
     const appointment = await this.saveEvent(event, status);

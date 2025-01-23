@@ -18,7 +18,8 @@ export const createAppointment = async (
 
   const result = await Services.EventsService().createEvent(
     appointmentEvent,
-    confirmed ? "confirmed" : "pending"
+    confirmed ? "confirmed" : "pending",
+    true
   );
 
   return result._id;

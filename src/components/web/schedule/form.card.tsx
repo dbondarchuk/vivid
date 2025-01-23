@@ -148,7 +148,12 @@ class _FormCard extends BaseCard<_FormCardProps> {
   }
 }
 
-export const FormCard: React.FC<Omit<FormCardProps, "i18n">> = (props) => {
+export const FormCard: React.FC<
+  Omit<FormCardProps, "i18n"> & {
+    values?: Record<string, any>;
+    onFormChange?: (formValue: Record<string, any>) => void;
+  }
+> = ({ values, onFormChange, ...props }) => {
   const formSchema = z.object(
     getFields(props.appointmentOption.fields).reduce((prev, field) => {
       prev[field.name] = fieldSchemaMapper(field);
@@ -158,7 +163,7 @@ export const FormCard: React.FC<Omit<FormCardProps, "i18n">> = (props) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
+    defaultValues: values,
     mode: "all",
     reValidateMode: "onChange",
   });
@@ -170,9 +175,12 @@ export const FormCard: React.FC<Omit<FormCardProps, "i18n">> = (props) => {
       {...props}
       i18n={i18n}
       form={form}
-      onSubmit={props.onSubmit}
       // @ts-expect-error The form will have needed fields
       next={form.handleSubmit(props.onSubmit)}
+      prev={() => {
+        onFormChange?.(form.getValues());
+        props.prev?.();
+      }}
     />
   );
 };
