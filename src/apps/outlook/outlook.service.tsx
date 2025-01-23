@@ -120,8 +120,7 @@ export class OutlookConnectedApp
   public async getBusyTimes(
     app: ConnectedAppData,
     start: DateTime,
-    end: DateTime,
-    excludedUids?: string[]
+    end: DateTime
   ): Promise<CalendarBusyTime[]> {
     const tokens = app.data as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
@@ -143,11 +142,12 @@ export class OutlookConnectedApp
           });
 
           const endAt = DateTime.fromISO(event.end?.dateTime!, { zone: "utc" });
+          const uid = (event as any).uid || event.iCalUId;
 
           return {
             startAt,
             endAt,
-            uid: (event as any).uid || event.iCalUId,
+            uid,
             title: event.subject!,
           } satisfies CalendarBusyTime;
         });

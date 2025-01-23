@@ -72,12 +72,9 @@ export class CaldavConnectedApp
   public async getBusyTimes(
     appData: ConnectedAppData,
     start: DateTime,
-    end: DateTime,
-    excludedUids?: string[]
+    end: DateTime
   ): Promise<CalendarBusyTime[]> {
     try {
-      const excludedUidsSet = new Set(excludedUids || []);
-
       const client = this.getClient(appData.data);
 
       const startTime = start.toUTC().toISO()!;
@@ -102,9 +99,9 @@ export class CaldavConnectedApp
           },
         });
 
-        const events = objects
-          .map((obj) => parseIcsEvent(obj.data as string, timezones))
-          .filter((event) => !excludedUidsSet.has(event.uid));
+        const events = objects.map((obj) =>
+          parseIcsEvent(obj.data as string, timezones)
+        );
 
         const calDavEvents: CalendarBusyTime[] = events.map((event) => {
           const startAt = DateTime.fromJSDate(event.start.date);

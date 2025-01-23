@@ -11,7 +11,6 @@ export interface ICalendarBusyTimeProvider {
   getBusyTimes(
     app: ConnectedAppData,
     start: DateTime,
-    end: DateTime,
-    excludedUids?: string[]
+    end: DateTime
   ): Promise<CalendarBusyTime[]>;
 }

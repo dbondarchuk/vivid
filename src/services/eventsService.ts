@@ -322,8 +322,10 @@ export class EventsService {
       config.calendarSources?.map((source) => source.appId) || []
     );
 
-    const skipUids = appointments.items.map((app) =>
-      getIcsEventUid(app._id, generalConfig.url)
+    const skipUids = new Set(
+      appointments.items.map((app) =>
+        getIcsEventUid(app._id, generalConfig.url)
+      )
     );
 
     const appsPromises = apps.map((app) => {
@@ -333,18 +335,20 @@ export class EventsService {
       return service.getBusyTimes(
         app,
         DateTime.fromJSDate(start),
-        DateTime.fromJSDate(end),
-        skipUids
+        DateTime.fromJSDate(end)
       );
     });
 
     const appsResponse = await Promise.all(appsPromises);
-    const appsEvents: Event[] = appsResponse.flat().map((event) => ({
-      title: event.title || "Busy",
-      dateTime: event.startAt.toJSDate(),
-      totalDuration: event.endAt.diff(event.startAt, "minutes").minutes,
-      uid: event.uid,
-    }));
+    const appsEvents: Event[] = appsResponse
+      .flat()
+      .map((event) => ({
+        title: event.title || "Busy",
+        dateTime: event.startAt.toJSDate(),
+        totalDuration: event.endAt.diff(event.startAt, "minutes").minutes,
+        uid: event.uid,
+      }))
+      .filter((event) => !skipUids.has(event.uid));
 
     return [...appointments.items, ...appsEvents];
   }
@@ -483,8 +487,9 @@ export class EventsService {
     config: BookingConfiguration,
     generalConfig: GeneralConfiguration
   ) {
-    const declinedUids = (await this.getDbDeclinedEventIds(start, end)).map(
-      (id) => getIcsEventUid(id, generalConfig.url)
+    const declinedAppointments = await this.getDbDeclinedEventIds(start, end);
+    const declinedUids = new Set(
+      declinedAppointments.map((id) => getIcsEventUid(id, generalConfig.url))
     );
 
     const apps = await this.appsService.getAppsData(
@@ -496,20 +501,24 @@ export class EventsService {
       const service = InstalledAppServices[app.name](
         this.appsService.getAppServiceProps(app._id)
       ) as unknown as ICalendarBusyTimeProvider;
-      return service.getBusyTimes(app, start, end, declinedUids);
+      return service.getBusyTimes(app, start, end);
     });
 
     const [dbEvents, ...appsEvents] = await Promise.all([
       dbEventsPromise,
       ...appsPromises,
     ]);
-    const remoteEvents = appsEvents.flat().map(
-      (event) =>
-        ({
-          startAt: event.startAt,
-          endAt: event.endAt,
-        } satisfies Period)
-    );
+
+    const remoteEvents = appsEvents
+      .flat()
+      .filter((event) => !declinedUids.has(event.uid))
+      .map(
+        (event) =>
+          ({
+            startAt: event.startAt,
+            endAt: event.endAt,
+          } satisfies Period)
+      );
 
     return [...dbEvents, ...remoteEvents];
   }

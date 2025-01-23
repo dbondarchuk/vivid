@@ -69,8 +69,7 @@ export class IcsConnectedApp
   public async getBusyTimes(
     appData: ConnectedAppData,
     start: DateTime,
-    end: DateTime,
-    excludedUids?: string[]
+    end: DateTime
   ): Promise<CalendarBusyTime[]> {
     try {
       const link = (appData.data as IcsLinkCalendarSource).link;
@@ -79,14 +78,11 @@ export class IcsConnectedApp
 
       const calendar = parseIcsCalendar(ics);
 
-      const excludedUidsSet = new Set(excludedUids || []);
-
       const icsEvents: CalendarBusyTime[] = (calendar.events || [])
         .filter(
           (event) =>
             event.status !== "CANCELLED" &&
-            !event.summary?.toLocaleLowerCase()?.startsWith("cancel") &&
-            !excludedUidsSet.has(event.uid)
+            !event.summary?.toLocaleLowerCase()?.startsWith("cancel")
         )
         .map((event) => {
           const startAt = DateTime.fromJSDate(event.start.date);

@@ -118,7 +118,8 @@ export class CustomerTextMessageNotificationService extends BaseNotificationServ
       phone,
       body: templatedBody,
       sender: name,
-      webhookData: `customer|${appointment._id}`,
+      // webhookData: `customer|${appointment._id}`,
+      webhookData: `${appointment._id}`,
       appointmentId: appointment._id,
       initiator: `Customer Text Message Notificaiton Service - ${initiator}`,
     });
