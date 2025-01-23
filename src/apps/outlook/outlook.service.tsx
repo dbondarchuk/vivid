@@ -389,9 +389,11 @@ export class OutlookConnectedApp
     appId: string,
     baseUrl: string
   ): AuthorizationUrlRequest {
+    const redirectUri = `${baseUrl}/api/apps/oauth/outlook/redirect`;
+    console.log(`redirectUri: ${redirectUri}`);
     return {
       scopes,
-      redirectUri: `${baseUrl}/api/apps/oauth/outlook/redirect`,
+      redirectUri,
       state: appId,
     };
   }

@@ -20,7 +20,9 @@ export const ConnectedAppAccount: React.FC<
     <span className={cn("text-sm text-muted-foreground", className)}>
       {parts.join(" / ")}
     </span>
-  ) : null;
+  ) : (
+    <span />
+  );
 };
 
 export const ConnectedAppStatusMessage: React.FC<
