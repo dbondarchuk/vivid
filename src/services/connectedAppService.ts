@@ -74,10 +74,7 @@ export class ConnectedAppService {
     );
   }
 
-  public async requestLoginUrl(
-    appId: string,
-    baseUrl: string
-  ): Promise<string> {
+  public async requestLoginUrl(appId: string): Promise<string> {
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
       CONNECTED_APPS_COLLECTION_NAME
@@ -100,15 +97,10 @@ export class ConnectedAppService {
       this.getAppServiceProps(appId)
     );
 
-    return await (appService as IOAuthConnectedApp).getLoginUrl(appId, baseUrl);
+    return await (appService as IOAuthConnectedApp).getLoginUrl(appId);
   }
 
-  public async processRedirect(
-    name: string,
-    request: NextRequest,
-    baseUrl: string,
-    data?: any
-  ) {
+  public async processRedirect(name: string, request: NextRequest, data?: any) {
     const service = InstalledApps[name];
     if (!service || service.type !== "oauth") {
       throw new Error("App type is not supported");
@@ -117,7 +109,6 @@ export class ConnectedAppService {
     const appService = InstalledAppServices[name](this.getAppServiceProps(""));
     const result = await (appService as IOAuthConnectedApp).processRedirect(
       request,
-      baseUrl,
       data
     );
 

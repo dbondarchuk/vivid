@@ -23,10 +23,9 @@ export interface IConnectedApp {
 }
 
 export interface IOAuthConnectedApp extends IConnectedApp {
-  getLoginUrl: (appId: string, baseUrl: string) => Promise<string>;
+  getLoginUrl: (appId: string) => Promise<string>;
   processRedirect: (
     request: NextRequest,
-    baseUrl: string,
     data?: any
   ) => Promise<ConnectedAppResponse>;
 }

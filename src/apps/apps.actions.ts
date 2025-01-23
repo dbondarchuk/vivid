@@ -20,8 +20,8 @@ export const setAppStatus = async (
   return await Services.ConnectedAppService().updateApp(appId, status);
 };
 
-export const getAppLoginUrl = async (appId: string, baseUrl: string) => {
-  return await Services.ConnectedAppService().requestLoginUrl(appId, baseUrl);
+export const getAppLoginUrl = async (appId: string) => {
+  return await Services.ConnectedAppService().requestLoginUrl(appId);
 };
 
 export const processRequest = async (appId: string, data: any) => {

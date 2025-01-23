@@ -62,17 +62,16 @@ export class OutlookConnectedApp
     // do nothing;
   }
 
-  public async getLoginUrl(appId: string, baseUrl: string): Promise<string> {
+  public async getLoginUrl(appId: string): Promise<string> {
     const client = this.getMsalClient();
-    const authParams = this.getAuthParams(appId, baseUrl);
+    const authParams = await this.getAuthParams(appId);
 
     const authUrl = await client.getAuthCodeUrl(authParams);
     return authUrl;
   }
 
   public async processRedirect(
-    request: NextRequest,
-    baseUrl: string
+    request: NextRequest
   ): Promise<ConnectedAppResponse> {
     const appId = request.nextUrl.searchParams.get("state");
     const code = request.nextUrl.searchParams.get("code");
@@ -90,7 +89,7 @@ export class OutlookConnectedApp
 
     const client = this.getMsalClient();
     const tokenRequest = {
-      ...this.getAuthParams(appId, baseUrl),
+      ...(await this.getAuthParams(appId)),
       code,
     };
 
@@ -304,12 +303,9 @@ export class OutlookConnectedApp
     }
 
     const client = this.getMsalClient();
-    const { url } = await Services.ConfigurationService().getConfiguration(
-      "general"
-    );
 
     const tokenRequest = {
-      ...this.getAuthParams(appId, url),
+      ...(await this.getAuthParams(appId)),
       refreshToken: currentTokens.refreshToken,
     };
 
@@ -385,12 +381,12 @@ export class OutlookConnectedApp
     return { tokens, username };
   }
 
-  private getAuthParams(
-    appId: string,
-    baseUrl: string
-  ): AuthorizationUrlRequest {
-    const redirectUri = `${baseUrl}/api/apps/oauth/outlook/redirect`;
-    console.log(`redirectUri: ${redirectUri}`);
+  private async getAuthParams(appId: string): Promise<AuthorizationUrlRequest> {
+    const { url } = await Services.ConfigurationService().getConfiguration(
+      "general"
+    );
+
+    const redirectUri = `${url}/api/apps/oauth/outlook/redirect`;
     return {
       scopes,
       redirectUri,

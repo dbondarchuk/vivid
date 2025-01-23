@@ -70,7 +70,7 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
         appId = await addNewApp(OutlookApp.name);
       }
 
-      const loginUrl = await getAppLoginUrl(appId, window.location.origin);
+      const loginUrl = await getAppLoginUrl(appId);
 
       getStatus(appId);
       window.open(loginUrl, "_blank", "popup=true");

@@ -24,6 +24,9 @@ export const InstallForm: React.FC = () => {
   const form = useForm<InstallFormData>({
     resolver: zodResolver(installSchema),
     mode: "all",
+    values: {
+      url: window.location.origin,
+    } as Partial<InstallFormData> as InstallFormData,
   });
 
   const [loading, setLoading] = React.useState(false);

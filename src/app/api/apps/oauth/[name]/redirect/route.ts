@@ -8,7 +8,7 @@ export async function GET(
   const name = (await params).name;
   const service = Services.ConnectedAppService();
 
-  await service.processRedirect(name, request, request.nextUrl.origin);
+  await service.processRedirect(name, request);
 
   return new NextResponse(`<html><script>window.close()</script></html>`, {
     status: 201,
