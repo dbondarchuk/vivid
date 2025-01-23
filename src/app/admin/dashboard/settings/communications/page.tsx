@@ -3,22 +3,20 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { Services } from "@/lib/services";
-import { SmsSettingsForm } from "./form";
+import { CommunicationsConfigurationForm } from "./form";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },
   { title: "Settings", link: "/admin/dashboard" },
-  { title: "SMS", link: "/admin/dashboard/settings/sms" },
+  { title: "SMTP", link: "/admin/dashboard/settings/smtp" },
 ];
 
 export default async function Page() {
-  const { sms, booking, general, social } =
-    await Services.ConfigurationService().getConfigurations(
-      "sms",
-      "booking",
-      "general",
-      "social"
-    );
+  const settings = await Services.ConfigurationService().getConfiguration(
+    "communications"
+  );
+
+  const apps = await Services.ConnectedAppService().getApps();
 
   return (
     <PageContainer scrollable={true}>
@@ -26,17 +24,12 @@ export default async function Page() {
         <div className="flex flex-col gap-2 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="SMS Settings"
-            description="Adjust settings for sending text messages"
+            title="SMTP Settings"
+            description="Adjust settings for sending emails"
           />
           <Separator />
         </div>
-        <SmsSettingsForm
-          values={sms}
-          bookingConfiguration={booking}
-          generalConfiguration={general}
-          socialConfiguration={social}
-        />
+        <CommunicationsConfigurationForm values={settings} apps={apps} />
       </div>
     </PageContainer>
   );

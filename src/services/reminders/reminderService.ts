@@ -4,8 +4,6 @@ import {
   BookingConfiguration,
   GeneralConfiguration,
   Reminder,
-  SmsConfiguration,
-  SmtpConfiguration,
   SocialConfiguration,
 } from "@/types";
 import { DateTime } from "luxon";
@@ -13,7 +11,10 @@ import { ConfigurationService } from "../configurationService";
 import { EventsService } from "../eventsService";
 import { sendEmail } from "../notifications/email/sendEmail";
 import { getArguments } from "../notifications/getArguments";
-import { getPhoneField, sendSms } from "../notifications/sms/sendSms";
+import {
+  getPhoneField,
+  sendTextMessage,
+} from "../notifications/textMessages/sendTextMessage";
 
 export class ReminderService {
   constructor(
@@ -26,13 +27,9 @@ export class ReminderService {
       booking: bookingConfig,
       general: generalConfig,
       social: socialConfig,
-      smtp: smtpConfiguration,
-      sms: smsConfiguration,
     } = await this.configurationService.getConfigurations(
       "booking",
       "general",
-      "sms",
-      "smtp",
       "social"
     );
 
@@ -45,9 +42,6 @@ export class ReminderService {
           appointment,
           reminder,
           bookingConfig,
-          generalConfig,
-          smsConfiguration,
-          smtpConfiguration,
           generalConfig,
           socialConfig
         )
@@ -147,9 +141,6 @@ export class ReminderService {
     appointment: Appointment,
     reminder: Reminder,
     config: BookingConfiguration,
-    generalConfiguration: GeneralConfiguration,
-    smsConfiguration: SmsConfiguration,
-    smtpConfiguration: SmtpConfiguration,
     generalConfig: GeneralConfiguration,
     socialConfig: SocialConfiguration
   ): Promise<void> {
@@ -170,7 +161,6 @@ export class ReminderService {
             subject: template(reminder.subject, arg),
             to: appointment.fields.email,
           },
-          smtpConfiguration,
           `Reminder Service - ${reminder.name}`,
           appointment._id
         );
@@ -184,12 +174,9 @@ export class ReminderService {
           return;
         }
 
-        await sendSms({
+        await sendTextMessage({
           phone,
           sender: generalConfig.name,
-          generalConfiguration,
-          smsConfiguration,
-          smtpConfiguration,
           body: template(reminder.body, arg),
           webhookData: appointment._id,
           initiator: `Reminder service - ${reminder.name}`,

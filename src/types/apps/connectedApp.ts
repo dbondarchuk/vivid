@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export type ConnectedAppStatus = "pending" | "connected" | "failed";
 
@@ -15,7 +15,11 @@ export type ConnectedAppResponse = {
 );
 
 export interface IConnectedApp {
-  processRequest: (data: any) => Promise<any>;
+  processRequest: (appData: ConnectedAppData, data: any) => Promise<any>;
+  processWebhook(
+    appData: ConnectedAppData,
+    request: NextRequest
+  ): Promise<NextResponse | void | any>;
 }
 
 export interface IOAuthConnectedApp extends IConnectedApp {
@@ -37,9 +41,14 @@ export type ConnectedOauthAppTokens = {
   expiresOn: Date | undefined | null;
 };
 
-export type ConnectedAppAccount = {
-  username: string;
-};
+export type ConnectedAppAccount =
+  | {
+      username: string;
+    }
+  | {
+      username?: string;
+      serverUrl: string;
+    };
 
 export type ConnectedAppStatusWithText = {
   status: ConnectedAppStatus;

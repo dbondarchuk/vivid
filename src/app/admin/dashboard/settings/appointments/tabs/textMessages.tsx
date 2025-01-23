@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/resizable";
 import { templateSafeWithError } from "@/lib/string";
 import { TextMessagesTemplateKeys } from "@/types";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const templateKeyText: Record<TextMessagesTemplateKeys, string> = {
   ...StatusText,
@@ -124,6 +126,41 @@ export const TextMessagesTab: React.FC<
                     .min(1, "Field name must be at least 1 character")}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="textMessages.sendNewRequestNotifications"
+          render={({ field }) => (
+            <FormItem className="w-full h-full">
+              <FormLabel
+                htmlFor="sendNewRequestNotification"
+                className="cursor-pointer block mt-2"
+              >
+                Send new request notifications
+              </FormLabel>
+              <div className="flex flex-row gap-2 items-center mt-2 h-10">
+                <FormControl>
+                  <Checkbox
+                    id="sendNewRequestNotification"
+                    disabled={disabled}
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className=""
+                  />
+                </FormControl>
+                <FormDescription>
+                  <label
+                    htmlFor="sendNewRequestNotification"
+                    className="cursor-pointer"
+                  >
+                    Should be the text message notification sent to your phone
+                    about new appointment requests
+                  </label>
+                </FormDescription>
+              </div>
               <FormMessage />
             </FormItem>
           )}

@@ -43,7 +43,7 @@ export default async function AppsPage(props: Params) {
           <ConnectedAppRow app={app} key={app._id} />
         ))}
         {apps.length === 0 && (
-          <div className="">You don't have any connected apps</div>
+          <div className="">You do not have any connected apps</div>
         )}
       </div>
     </PageContainer>

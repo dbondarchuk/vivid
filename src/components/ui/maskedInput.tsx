@@ -11,6 +11,7 @@ export type MaskedInputProps = InputProps & {
 export const MaskedInput: React.FC<MaskedInputProps> = ({
   mask,
   value,
+  disabled = false,
   onChange,
   onBlur,
   maskPlaceholder = "_",
@@ -23,6 +24,7 @@ export const MaskedInput: React.FC<MaskedInputProps> = ({
       maskPlaceholder={maskPlaceholder}
       onChange={onChange}
       onBlur={onBlur}
+      disabled={disabled}
     >
       <Input {...props} />
     </InputMask>

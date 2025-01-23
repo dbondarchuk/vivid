@@ -47,7 +47,6 @@ export class OwnEmailNotificationService extends IEmailNotificationService {
     eventMethod: IcalEventMethod
   ) {
     const { bookingConfiguration, arg } = await this.getArguments(appointment);
-    const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventSummary = this.getEventSummary(appointment);
 
@@ -77,7 +76,6 @@ export class OwnEmailNotificationService extends IEmailNotificationService {
           content: eventContent,
         },
       },
-      smtpConfiguration,
       "Owner Email Notification Service",
       appointment._id
     );

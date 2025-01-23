@@ -66,16 +66,10 @@ export const navItems: NavItemWithOptionalChildren[] = [
         label: "Social",
       },
       {
-        title: "SMTP",
-        href: "/admin/dashboard/settings/smtp",
-        icon: "smtp",
-        label: "SMTP",
-      },
-      {
-        title: "SMS",
-        href: "/admin/dashboard/settings/sms",
-        icon: "sms",
-        label: "SMS",
+        title: "Communications",
+        href: "/admin/dashboard/settings/communications",
+        icon: "communications",
+        label: "Communications",
       },
       {
         title: "Scripts",

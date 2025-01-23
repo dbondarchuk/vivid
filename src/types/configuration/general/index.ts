@@ -13,7 +13,10 @@ export const generalConfigurationSchema = z.object({
   keywords: z
     .string()
     .min(3, { message: "Website Keywords must be at least 3 characters" }),
-  phone: z.string().optional(),
+  phone: z
+    .string()
+    .refine((s) => !s?.includes("_"), "Invalid phone number")
+    .optional(),
   email: z.string().email("Email is required"),
   address: z.string().optional(),
   url: z

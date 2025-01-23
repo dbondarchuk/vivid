@@ -1,10 +1,17 @@
 import { AppSetupProps, ConnectedApp } from "@/types";
 import React from "react";
-import { addNewApp, getAppLoginUrl, getAppStatus } from "../apps.actions";
+import {
+  addNewApp,
+  getAppLoginUrl,
+  getAppStatus,
+  setAppStatus,
+} from "../apps.actions";
 import { OutlookApp } from "./outlook.app";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { appStatusText, appStatusTextClasses } from "../apps.const";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@/components/admin/apps/connectedAppProperties";
 
 export const OutlookAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -52,8 +59,17 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
     try {
       setIsLoading(true);
 
-      const appId =
-        app?._id || existingAppId || (await addNewApp(OutlookApp.name));
+      let appId: string;
+      if (app?._id || existingAppId) {
+        appId = (app?._id || existingAppId)!;
+        await setAppStatus(appId, {
+          status: "pending",
+          statusText: "Pending authorization",
+        });
+      } else {
+        appId = await addNewApp(OutlookApp.name);
+      }
+
       const loginUrl = await getAppLoginUrl(appId, window.location.origin);
 
       getStatus(appId);
@@ -75,18 +91,10 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
           className="inline-flex gap-2 items-center w-full"
         >
           <span>Connect with</span>
-          <span className="inline-flex items-center gap-2">
-            <OutlookApp.Logo /> {OutlookApp.displayName}
-          </span>
+          <ConnectedAppNameAndLogo app={{ name: OutlookApp.name }} />
         </Button>
       </div>
-      {app && (
-        <div className="flex flex-col gap-2">
-          <div className={cn(appStatusTextClasses[app.status])}>
-            Status: {appStatusText[app.status]}, {app.statusText}
-          </div>
-        </div>
-      )}
+      {app && <ConnectedAppStatusMessage app={app} />}
     </>
   );
 };

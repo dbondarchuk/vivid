@@ -34,6 +34,7 @@ import {
   Paperclip,
   Pizza,
   Plus,
+  Send,
   Settings,
   SunMedium,
   Trash,
@@ -87,4 +88,5 @@ export const Icons = {
   paintbrush: Paintbrush,
   brush: Brush,
   app: Blocks,
+  communications: Send,
 };

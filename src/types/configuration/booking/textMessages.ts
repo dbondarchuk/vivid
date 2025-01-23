@@ -25,6 +25,7 @@ export const textMessagesConfigurationSchema = z.object({
   phoneField: z
     .array(z.string().min(1, "Phone field must not be empty"))
     .optional(),
+  sendNewRequestNotifications: z.coerce.boolean().optional(),
   templates: textMessagesTemplatesSchema,
 });
 

@@ -26,7 +26,12 @@ import {
 import { cn } from "@/lib/utils";
 import { InstalledApps } from "@/apps";
 import React from "react";
-import { appStatusText, appStatusTextClasses } from "@/apps/apps.const";
+import {
+  ConnectedAppAccount,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@/components/admin/apps/connectedAppProperties";
+import { AppSelector } from "@/components/admin/apps/appSelector";
 
 export type CalendarSourceCardProps = {
   item: CalendarSourceConfiguration;
@@ -39,20 +44,6 @@ export type CalendarSourceCardProps = {
   apps: ConnectedApp[];
 };
 
-const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
-  const App = InstalledApps[app.name];
-  return (
-    <span className="inline-flex items-center gap-2">
-      <App.Logo /> {App.displayName}{" "}
-      {app.account?.username && (
-        <span className="text-sm text-muted-foreground">
-          ({app.account?.username})
-        </span>
-      )}
-    </span>
-  );
-};
-
 export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   item,
   name,
@@ -63,26 +54,6 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   clone,
   apps,
 }) => {
-  const supportedApps = apps.filter(
-    (app) => InstalledApps[app.name]?.scope.indexOf("calendar-read") >= 0
-  );
-
-  const appValues = (apps: ConnectedApp[]): IComboboxItem[] =>
-    apps.map((app) => {
-      return {
-        value: app._id,
-        shortLabel: <AppShortLabel app={app} />,
-        label: (
-          <div className="flex flex-col gap-2">
-            <AppShortLabel app={app} />
-            <div className={cn("text-sm", appStatusTextClasses[app.status])}>
-              Status: {appStatusText[app.status]}, {app.statusText}
-            </div>
-          </div>
-        ),
-      };
-    });
-
   const appId = item.appId;
   const changeAppId = (value: typeof appId) => {
     const newValue = {
@@ -92,7 +63,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
     update(newValue);
   };
 
-  const appName = supportedApps.find((app) => app._id === appId)?.name;
+  const appName = apps.find((app) => app._id === appId)?.name;
   const appDisplayName = appName ? InstalledApps[appName].displayName : null;
 
   return (
@@ -160,25 +131,12 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
                 </FormLabel>
 
                 <FormControl>
-                  <Combobox
+                  <AppSelector
                     disabled={disabled}
-                    className="flex w-full font-normal text-base"
-                    values={appValues(supportedApps)}
-                    searchLabel="Select app"
+                    className="w-full"
+                    type="calendar-read"
+                    apps={apps}
                     value={field.value}
-                    customSearch={(search) =>
-                      appValues(
-                        supportedApps.filter(
-                          (app) =>
-                            app.name
-                              .toLocaleLowerCase()
-                              .includes(search.toLocaleLowerCase()) ||
-                            app.account?.username
-                              .toLocaleLowerCase()
-                              .includes(search.toLocaleLowerCase())
-                        )
-                      )
-                    }
                     onItemSelect={(value) => {
                       field.onChange(value);
                       changeAppId(value);

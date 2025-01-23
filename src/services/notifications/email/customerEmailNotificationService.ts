@@ -11,7 +11,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
       appointment,
       true
     );
-    const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventContent = await this.getEventCalendarContent(
       appointment,
@@ -31,7 +30,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration,
       `Email Notification Service - New Request`,
       appointment._id
     );
@@ -44,7 +42,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
       appointment,
       true
     );
-    const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventContent = await this.getEventCalendarContent(
       appointment,
@@ -65,7 +62,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration,
       `Email Notification Service - Declined`,
       appointment._id
     );
@@ -78,7 +74,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
       appointment,
       true
     );
-    const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventContent = await this.getEventCalendarContent(
       appointment,
@@ -99,7 +94,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration,
       `Email Notification Service - Confirmed`,
       appointment._id
     );
@@ -120,7 +114,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
       newAppointment,
       true
     );
-    const smtpConfiguration = await this.getSmtpConfiguration();
 
     const eventContent = await this.getEventCalendarContent(
       newAppointment,
@@ -141,7 +134,6 @@ export class CustomerEmailNotificationService extends IEmailNotificationService 
           content: eventContent,
         },
       },
-      smtpConfiguration,
       `Email Notification Service - Rescheduled`,
       appointment._id
     );

@@ -4,8 +4,11 @@ import {
   ConnectedAppData,
   ConnectedAppResponse,
   ConnectedOauthAppTokens,
+  Email,
+  EmailResponse,
   ICalendarBusyTimeProvider,
   IConnectedAppProps,
+  IMailSender,
   IOAuthConnectedApp,
 } from "@/types";
 import {
@@ -16,10 +19,17 @@ import {
   Configuration as MsalConfig,
 } from "@azure/msal-node";
 import { Client, ClientOptions } from "@microsoft/microsoft-graph-client";
-import { Event as OutlookEvent } from "@microsoft/microsoft-graph-types";
+import {
+  Attachment,
+  FileAttachment,
+  Event as OutlookEvent,
+  Message as OutlookMessage,
+} from "@microsoft/microsoft-graph-types";
+import { createEvent } from "ics";
 import { DateTime } from "luxon";
 import { NextRequest } from "next/server";
 import { env } from "process";
+import { v4 } from "uuid";
 
 const offlineAccessScope = "offline_access";
 
@@ -34,11 +44,21 @@ const requiredScopes = [
 const scopes = [...requiredScopes, offlineAccessScope];
 
 export class OutlookConnectedApp
-  implements IOAuthConnectedApp, ICalendarBusyTimeProvider
+  implements IOAuthConnectedApp, ICalendarBusyTimeProvider, IMailSender
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processRequest(data: any): Promise<void> {
+  public async processWebhook(
+    appData: ConnectedAppData,
+    request: NextRequest
+  ): Promise<void> {
+    // do nothing
+  }
+
+  public async processRequest(
+    appData: ConnectedAppData,
+    data: any
+  ): Promise<void> {
     // do nothing;
   }
 
@@ -109,13 +129,7 @@ export class OutlookConnectedApp
       throw new Error("No token provided");
     }
 
-    const accessToken = this.getOrRefreshAuthToken(app._id, tokens);
-
-    const client = Client.initWithMiddleware({
-      authProvider: {
-        getAccessToken: async () => await accessToken,
-      },
-    });
+    const client = await this.getClient(app._id, tokens);
 
     try {
       const events = await this.getEvents(client, start, end);
@@ -133,6 +147,86 @@ export class OutlookConnectedApp
               title: event.subject!,
             } satisfies CalendarBusyTime)
         );
+    } catch (e: any) {
+      this.props.update({
+        status: "failed",
+        statusText: e?.message || "Failed to get events",
+      });
+
+      throw e;
+    }
+  }
+
+  public async sendMail(
+    app: ConnectedAppData,
+    email: Email
+  ): Promise<EmailResponse> {
+    const tokens = app.data as ConnectedOauthAppTokens;
+    if (!tokens?.accessToken) {
+      throw new Error("No token provided");
+    }
+
+    const client = await this.getClient(app._id, tokens);
+
+    const to = Array.isArray(email.to) ? email.to : [email.to];
+    const cc = email.cc
+      ? Array.isArray(email.cc)
+        ? email.cc
+        : [email.cc]
+      : [];
+
+    const attachments: Attachment[] = [];
+    if (email.icalEvent) {
+      const { value: icsContent, error: icsError } = createEvent(
+        email.icalEvent.content
+      );
+
+      if (!icsContent || !!icsError) {
+        console.error(icsError || "Failed to parse event");
+      } else {
+        attachments.push({
+          // @ts-expect-error This is required
+          "@odata.type": "#microsoft.graph.fileAttachment",
+          contentType: `application/ics; charset=utf-8; method=${email.icalEvent.method.toUpperCase()}`,
+          name: email.icalEvent.filename || "invitation.ics",
+          contentBytes: Buffer.from(icsContent).toString("base64"),
+        } satisfies FileAttachment);
+      }
+    }
+
+    try {
+      const messageId = v4();
+      const sendMail: {
+        message: OutlookMessage;
+        saveToSentItems: boolean;
+      } = {
+        message: {
+          id: messageId,
+          subject: email.subject,
+          body: {
+            contentType: "html",
+            content: email.body,
+          },
+          toRecipients: to.map((address) => ({
+            emailAddress: {
+              address,
+            },
+          })),
+          ccRecipients: cc.map((address) => ({
+            emailAddress: {
+              address,
+            },
+          })),
+          attachments: attachments,
+        },
+        saveToSentItems: true,
+      };
+
+      await client.api("/me/sendMail").post(sendMail);
+
+      return {
+        messageId,
+      };
     } catch (e: any) {
       this.props.update({
         status: "failed",
@@ -186,11 +280,26 @@ export class OutlookConnectedApp
     return results;
   }
 
+  private async getClient(
+    appId: string,
+    tokens: ConnectedOauthAppTokens
+  ): Promise<Client> {
+    const accessToken = this.getOrRefreshAuthToken(appId, tokens);
+
+    const client = Client.initWithMiddleware({
+      authProvider: {
+        getAccessToken: async () => await accessToken,
+      },
+    });
+
+    return client;
+  }
+
   private async getOrRefreshAuthToken(
     appId: string,
     currentTokens: ConnectedOauthAppTokens
   ): Promise<string> {
-    if (!currentTokens.expiresOn || currentTokens.expiresOn <= new Date()) {
+    if (!currentTokens.expiresOn || currentTokens.expiresOn >= new Date()) {
       return currentTokens.accessToken;
     }
 

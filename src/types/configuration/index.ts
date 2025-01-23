@@ -1,8 +1,7 @@
 import { BookingConfiguration } from "./booking";
+import { CommunicationsConfiguration } from "./communications";
 import { GeneralConfiguration } from "./general";
 import { ScriptsConfiguration } from "./scripts";
-import { SmsConfiguration } from "./sms";
-import { SmtpConfiguration } from "./smtp";
 import { SocialConfiguration } from "./social";
 import {
   FooterConfiguration,
@@ -11,11 +10,10 @@ import {
 } from "./styling";
 
 export * from "./booking";
+export * from "./communications";
 export * from "./general";
 export * from "./resources";
 export * from "./scripts";
-export * from "./sms";
-export * from "./smtp";
 export * from "./social";
 export * from "./styling";
 
@@ -25,8 +23,7 @@ export type Configuration = {
   header: HeaderConfiguration;
   footer: FooterConfiguration;
   booking: BookingConfiguration;
-  smtp: SmtpConfiguration;
-  sms: SmsConfiguration;
+  communications: CommunicationsConfiguration;
   scripts: ScriptsConfiguration;
   styling: StylingConfiguration;
 };

@@ -105,16 +105,26 @@ export const FooterSettingsForm: React.FC<{
           control={form.control}
           name="isCustom"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between">
-              <div className="space-y-0.5">
-                <FormLabel>Use custom footer</FormLabel>
+            <FormItem className="">
+              <div className="flex flex-row items-center gap-2 md:gap-4">
+                <FormControl>
+                  <Switch
+                    id="useCustomFooter"
+                    disabled={loading}
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="flex flex-col gap-2">
+                  <FormLabel
+                    htmlFor="useCustomFooter"
+                    className="cursor-pointer"
+                  >
+                    Use custom footer
+                  </FormLabel>
+                </div>
               </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

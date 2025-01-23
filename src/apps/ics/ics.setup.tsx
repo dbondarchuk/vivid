@@ -23,6 +23,10 @@ import {
   IcsLinkCalendarSource,
   icsLinkCalendarSourceSchema,
 } from "./ics.models";
+import {
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+} from "@/components/admin/apps/connectedAppProperties";
 
 export const IcsAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -109,20 +113,12 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               <span>Connect with</span>
-              <span className="inline-flex items-center gap-2">
-                <IcsApp.Logo /> {IcsApp.displayName}
-              </span>
+              <ConnectedAppNameAndLogo app={{ name: IcsApp.name }} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && (
-        <div className="flex flex-col gap-2">
-          <div className={cn(appStatusTextClasses[appStatus.status])}>
-            Status: {appStatusText[appStatus.status]}, {appStatus.statusText}
-          </div>
-        </div>
-      )}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
     </>
   );
 };

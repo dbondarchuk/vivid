@@ -1,29 +1,26 @@
 import { template } from "@/lib/string";
-import {
-  Appointment,
-  BookingConfiguration,
-  GeneralConfiguration,
-} from "@/types";
+import { Appointment, BookingConfiguration } from "@/types";
 
 import { BaseNotificationService } from "../notificaionService.base";
-import { getPhoneField, sendSms } from "./sendSms";
+import { getPhoneField, sendTextMessage } from "./sendTextMessage";
 
-export class CustomerSmsNotificationService extends BaseNotificationService {
+export class CustomerTextMessageNotificationService extends BaseNotificationService {
   public async sendAppointmentRequestedNotification(
     appointment: Appointment
   ): Promise<void> {
-    const { bookingConfiguration, generalConfiguration, arg } =
-      await this.getArguments(appointment, true);
+    const { bookingConfiguration, arg } = await this.getArguments(
+      appointment,
+      true
+    );
 
     const { body } = bookingConfiguration.textMessages.templates.pending;
     if (!body || !body.length) return;
 
-    await this.sendSms(
+    await this.sendTextMessage(
       appointment,
       body,
       arg,
       bookingConfiguration,
-      generalConfiguration,
       arg.config.name,
       "New Request"
     );
@@ -32,18 +29,19 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
   async sendAppointmentDeclinedNotification(
     appointment: Appointment
   ): Promise<void> {
-    const { bookingConfiguration, generalConfiguration, arg } =
-      await this.getArguments(appointment, true);
+    const { bookingConfiguration, arg } = await this.getArguments(
+      appointment,
+      true
+    );
 
     const { body } = bookingConfiguration.textMessages.templates.declined;
     if (!body || !body.length) return;
 
-    await this.sendSms(
+    await this.sendTextMessage(
       appointment,
       body,
       arg,
       bookingConfiguration,
-      generalConfiguration,
       arg.config.name,
       "Declined"
     );
@@ -52,18 +50,19 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
   async sendAppointmentConfirmedNotification(
     appointment: Appointment
   ): Promise<void> {
-    const { bookingConfiguration, generalConfiguration, arg } =
-      await this.getArguments(appointment, true);
+    const { bookingConfiguration, arg } = await this.getArguments(
+      appointment,
+      true
+    );
 
     const { body } = bookingConfiguration.textMessages.templates.confirmed;
     if (!body || !body.length) return;
 
-    await this.sendSms(
+    await this.sendTextMessage(
       appointment,
       body,
       arg,
       bookingConfiguration,
-      generalConfiguration,
       arg.config.name,
       "Confirmed"
     );
@@ -86,23 +85,21 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
     const { body } = bookingConfiguration.textMessages.templates.rescheduled;
     if (!body || !body.length) return;
 
-    await this.sendSms(
+    await this.sendTextMessage(
       appointment,
       body,
       arg,
       bookingConfiguration,
-      generalConfiguration,
       arg.config.name,
       "Reschedule"
     );
   }
 
-  private async sendSms(
+  private async sendTextMessage(
     appointment: Appointment,
     bodyTemplate: string,
     args: Record<string, any>,
     config: BookingConfiguration,
-    generalConfiguration: GeneralConfiguration,
     name: string,
     initiator: string
   ) {
@@ -117,19 +114,13 @@ export class CustomerSmsNotificationService extends BaseNotificationService {
 
     const templatedBody = template(bodyTemplate, args, true);
 
-    const { smtp: smtpConfiguration, sms: smsConfiguration } =
-      await this.configurationService.getConfigurations("smtp", "sms");
-
-    sendSms({
+    sendTextMessage({
       phone,
       body: templatedBody,
-      generalConfiguration,
-      smsConfiguration,
-      smtpConfiguration,
       sender: name,
-      webhookData: appointment._id,
+      webhookData: `customer|${appointment._id}`,
       appointmentId: appointment._id,
-      initiator: `SMS Notificaiton Service - ${initiator}`,
+      initiator: `Customer Text Message Notificaiton Service - ${initiator}`,
     });
   }
 }

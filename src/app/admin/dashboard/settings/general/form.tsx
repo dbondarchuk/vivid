@@ -22,6 +22,7 @@ import { TagInput } from "@/components/ui/tagInput";
 import { SaveButton } from "@/components/admin/forms/save-button";
 import { Textarea } from "@/components/ui/textarea";
 import { InputAssetSelector } from "@/components/ui/inputAssetSelector";
+import { PhoneInput } from "@/components/ui/phoneInput";
 
 export const GeneralSettingsForm: React.FC<{
   values: GeneralConfiguration;
@@ -156,11 +157,7 @@ export const GeneralSettingsForm: React.FC<{
               <FormItem>
                 <FormLabel>Phone number</FormLabel>
                 <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="Phone number"
-                    {...field}
-                  />
+                  <PhoneInput {...field} disabled={loading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

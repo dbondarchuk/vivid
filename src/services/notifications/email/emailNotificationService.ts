@@ -15,9 +15,6 @@ export type CalendarEventOptions = {
 };
 
 export abstract class IEmailNotificationService extends BaseNotificationService {
-  protected getSmtpConfiguration = () =>
-    this.configurationService.getConfiguration("smtp");
-
   protected async getEventCalendarContent(
     event: Appointment,
     summary: string,

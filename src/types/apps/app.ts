@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import { ConnectedAppStatus } from "./connectedApp";
 
-export type AppScope = "calendar-read" | "calendar-write" | "mail-send";
+export type AppScope =
+  | "calendar-read"
+  | "calendar-write"
+  | "mail-send"
+  | "text-message-send";
 
 export type AppSetupProps = {
   setIsLoading: (isLoading: boolean) => void;

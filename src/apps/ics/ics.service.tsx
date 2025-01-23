@@ -11,12 +11,22 @@ import {
 import { DateTime } from "luxon";
 import { parseIcsCalendar } from "ts-ics";
 import { IcsLinkCalendarSource } from "./ics.models";
+import { NextRequest } from "next/server";
 
 export class IcsConnectedApp
   implements IConnectedApp, ICalendarBusyTimeProvider
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
+
+  public async processWebhook(
+    appData: ConnectedAppData,
+    request: NextRequest
+  ): Promise<void> {
+    // do nothing
+  }
+
   public async processRequest(
+    appData: ConnectedAppData,
     data: IcsLinkCalendarSource
   ): Promise<ConnectedAppStatusWithText> {
     let success = false;
@@ -35,7 +45,7 @@ export class IcsConnectedApp
 
       this.props.update({
         account: {
-          username: data.link,
+          serverUrl: data.link,
         },
         data,
         ...status,

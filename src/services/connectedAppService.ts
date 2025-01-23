@@ -5,6 +5,7 @@ import {
   ConnectedApp,
   ConnectedAppData,
   ConnectedAppUpdateModel,
+  IConnectedApp,
   IConnectedAppProps,
   IOAuthConnectedApp,
 } from "@/types";
@@ -162,25 +163,23 @@ export class ConnectedAppService {
     }
   }
 
-  public async processRequest(appId: string, data: any): Promise<any> {
-    const db = await getDbConnection();
-    const collection = db.collection<ConnectedAppData>(
-      CONNECTED_APPS_COLLECTION_NAME
+  public async processWebhook(appId: string, request: NextRequest) {
+    const app = await this.getApp(appId);
+    const appService = InstalledAppServices[app.name](
+      this.getAppServiceProps(appId)
     );
 
-    const app = await collection.findOne({
-      _id: appId,
-    });
+    return await appService.processWebhook(app, request);
+  }
 
-    if (!app) {
-      throw new Error("App not found");
-    }
+  public async processRequest(appId: string, data: any): Promise<any> {
+    const app = await this.getApp(appId);
 
     const appService = InstalledAppServices[app.name](
       this.getAppServiceProps(appId)
     );
 
-    return await appService.processRequest(data);
+    return await appService.processRequest(app, data);
   }
 
   public async getAppStatus(appId: string): Promise<ConnectedApp> {
@@ -249,6 +248,28 @@ export class ConnectedAppService {
     }
 
     return result;
+  }
+
+  public async getAppService(
+    appId: string
+  ): Promise<{ service: IConnectedApp; app: ConnectedApp }> {
+    const db = await getDbConnection();
+    const collection = db.collection<ConnectedAppData>(
+      CONNECTED_APPS_COLLECTION_NAME
+    );
+
+    const app = await collection.findOne({
+      _id: appId,
+    });
+
+    if (!app) {
+      throw new Error("App not found");
+    }
+
+    const service = InstalledAppServices[app.name](
+      this.getAppServiceProps(appId)
+    );
+    return { app, service };
   }
 
   public getAppServiceProps(appId: string): IConnectedAppProps {
