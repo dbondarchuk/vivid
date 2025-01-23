@@ -137,15 +137,20 @@ export class OutlookConnectedApp
           (event) =>
             event.start && event.end && event.subject && event.showAs !== "free"
         )
-        .map(
-          (event) =>
-            ({
-              startAt: DateTime.fromISO(event.start?.dateTime!),
-              endAt: DateTime.fromISO(event.end?.dateTime!),
-              uid: (event as any).uid || event.iCalUId,
-              title: event.subject!,
-            } satisfies CalendarBusyTime)
-        );
+        .map((event) => {
+          const startAt = DateTime.fromISO(event.start?.dateTime!, {
+            zone: "utc",
+          });
+
+          const endAt = DateTime.fromISO(event.end?.dateTime!, { zone: "utc" });
+
+          return {
+            startAt,
+            endAt,
+            uid: (event as any).uid || event.iCalUId,
+            title: event.subject!,
+          } satisfies CalendarBusyTime;
+        });
     } catch (e: any) {
       this.props.update({
         status: "failed",
