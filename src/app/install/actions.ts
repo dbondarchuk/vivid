@@ -21,11 +21,6 @@ export async function install(data: InstallFormData) {
     published: true,
   });
 
-  const template = {
-    body: "",
-    subject: "",
-  };
-
   const shifts = [
     {
       start: "09:00",
@@ -34,29 +29,7 @@ export async function install(data: InstallFormData) {
   ];
 
   await Services.ConfigurationService().setConfiguration("booking", {
-    email: {
-      from: data.email,
-      to: data.email,
-      event: {
-        description: "",
-        summary: "",
-      },
-      templates: {
-        confirmed: template,
-        declined: template,
-        pending: template,
-        rescheduled: template,
-      },
-    },
     options: [],
-    textMessages: {
-      templates: {
-        confirmed: {},
-        declined: {},
-        pending: {},
-        rescheduled: {},
-      },
-    },
     workHours: Array.from({ length: 5 }).map((_, index) => ({
       weekDay: index + 1,
       shifts,
@@ -74,4 +47,7 @@ export async function install(data: InstallFormData) {
 
   await Services.ConfigurationService().setConfiguration("social", {});
   await Services.ConfigurationService().setConfiguration("styling", {});
+  await Services.ConfigurationService().setConfiguration("defaultApps", {
+    email: {} as any,
+  });
 }

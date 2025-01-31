@@ -7,9 +7,9 @@ export const sendEmail = async (
   initiator: string,
   appointmentId?: string
 ) => {
-  const communicationsConfiguration =
-    await Services.ConfigurationService().getConfiguration("communications");
-  const emailAppId = communicationsConfiguration.email.appId;
+  const defaultAppsConfiguration =
+    await Services.ConfigurationService().getConfiguration("defaultApps");
+  const emailAppId = defaultAppsConfiguration?.email.appId;
 
   const { app, service } = await Services.ConnectedAppService().getAppService(
     emailAppId

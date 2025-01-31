@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Icons } from "@/components/admin/icons";
 import { cn } from "@/lib/utils";
 import { NavItemWithOptionalChildren } from "@/types";
 import { Dispatch, SetStateAction } from "react";
@@ -22,6 +21,7 @@ import {
 } from "../ui/accordion";
 import React from "react";
 import { v4 } from "uuid";
+import { Icon, icons } from "lucide-react";
 
 interface DashboardNavProps {
   items: NavItemWithOptionalChildren[];
@@ -47,7 +47,7 @@ export function DashboardNav({
     <nav className="flex flex-col gap-2">
       <TooltipProvider>
         {items.map((item, index) => {
-          const Icon = Icons[item.icon || "arrowRight"];
+          const Icon = icons[item.icon || "ArrowRight"];
           if (item.href) {
             return (
               <Tooltip key={index}>
@@ -139,7 +139,7 @@ export function DashboardNav({
                     )}
                   >
                     {item.items.map((subItem, jndex) => {
-                      const SubIcon = Icons[subItem.icon || "arrowRight"];
+                      const SubIcon = icons[subItem.icon || "ArrowRight"];
                       return (
                         <Tooltip key={jndex}>
                           <TooltipTrigger asChild>

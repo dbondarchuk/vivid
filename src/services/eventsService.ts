@@ -1,4 +1,4 @@
-import { InstalledAppServices } from "@/apps/apps.services";
+import { AvailableAppServices } from "@/apps/apps.services";
 import { getDbConnection } from "@/database";
 import { buildSearchQuery } from "@/lib/query";
 import { escapeRegex } from "@/lib/string";
@@ -10,6 +10,7 @@ import type {
   DateRange,
   Event,
   GeneralConfiguration,
+  IAppointmentHook,
   ICalendarBusyTimeProvider,
   Period,
   WithTotal,
@@ -22,14 +23,12 @@ import { ConfigurationService } from "./configurationService";
 import { ConnectedAppService } from "./connectedAppService";
 import { getIcsEventUid } from "./helpers/icsUid";
 import { getAvailableTimeSlotsInCalendar } from "./helpers/timeSlot";
-import { NotificationService } from "./notifications/notificationService";
 
 const APPOINTMENTS_COLLECTION_NAME = "appointments";
 
 export class EventsService {
   constructor(
     private readonly configurationService: ConfigurationService,
-    private readonly notificationService: NotificationService,
     private readonly appsService: ConnectedAppService
   ) {}
 
@@ -101,15 +100,26 @@ export class EventsService {
 
     const appointment = await this.saveEvent(event, status);
 
-    await this.notificationService.sendAppointmentRequestedNotification(
-      appointment
+    const hooks = await this.appsService.getAppsByScopeWithData(
+      "appointment-hook"
     );
 
-    if (status === "confirmed") {
-      await this.notificationService.sendAppointmentConfirmedNotification(
-        appointment
-      );
-    }
+    const promises = hooks.map(async (hook) => {
+      const service = AvailableAppServices[hook.name](
+        this.appsService.getAppServiceProps(hook._id)
+      ) as any as IAppointmentHook;
+      await service.onAppointmentCreated(hook, appointment);
+
+      if (status === "confirmed") {
+        await service.onAppointmentStatusChanged(
+          hook,
+          appointment,
+          "confirmed"
+        );
+      }
+    });
+
+    await Promise.all(promises);
 
     return appointment;
   }
@@ -332,7 +342,7 @@ export class EventsService {
     );
 
     const appsPromises = apps.map((app) => {
-      const service = InstalledAppServices[app.name](
+      const service = AvailableAppServices[app.name](
         this.appsService.getAppServiceProps(app._id)
       ) as unknown as ICalendarBusyTimeProvider;
       return service.getBusyTimes(
@@ -382,6 +392,7 @@ export class EventsService {
       });
 
     if (!appointment) return;
+    const oldStatus = appointment.status;
 
     await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
       {
@@ -394,21 +405,23 @@ export class EventsService {
       }
     );
 
-    switch (newStatus) {
-      case "declined":
-        this.notificationService.sendAppointmentDeclinedNotification(
-          appointment
-        );
+    const hooks = await this.appsService.getAppsByScopeWithData(
+      "appointment-hook"
+    );
 
-        break;
+    const promises = hooks.map(async (hook) => {
+      const service = AvailableAppServices[hook.name](
+        this.appsService.getAppServiceProps(hook._id)
+      ) as any as IAppointmentHook;
+      await service.onAppointmentStatusChanged(
+        hook,
+        appointment,
+        newStatus,
+        oldStatus
+      );
+    });
 
-      case "confirmed":
-        this.notificationService.sendAppointmentConfirmedNotification(
-          appointment
-        );
-
-        break;
-    }
+    await Promise.all(promises);
   }
 
   public async updateAppointmentNote(id: string, note?: string) {
@@ -440,6 +453,8 @@ export class EventsService {
       });
 
     if (!appointment) return;
+    const oldTime = appointment.dateTime;
+    const oldDuration = appointment.totalDuration;
 
     await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
       {
@@ -453,11 +468,25 @@ export class EventsService {
       }
     );
 
-    await this.notificationService.sendAppointmentRescheduledNotification(
-      appointment,
-      newTime,
-      newDuration
+    const hooks = await this.appsService.getAppsByScopeWithData(
+      "appointment-hook"
     );
+
+    const promises = hooks.map(async (hook) => {
+      const service = AvailableAppServices[hook.name](
+        this.appsService.getAppServiceProps(hook._id)
+      ) as any as IAppointmentHook;
+      await service.onAppointmentRescheduled(
+        hook,
+        appointment,
+        newTime,
+        newDuration,
+        oldTime,
+        oldDuration
+      );
+    });
+
+    await Promise.all(promises);
   }
 
   private async getAvailableTimes(
@@ -501,7 +530,7 @@ export class EventsService {
 
     const dbEventsPromise = this.getDbBusyTimes(start, end);
     const appsPromises = apps.map((app) => {
-      const service = InstalledAppServices[app.name](
+      const service = AvailableAppServices[app.name](
         this.appsService.getAppServiceProps(app._id)
       ) as unknown as ICalendarBusyTimeProvider;
       return service.getBusyTimes(app, start, end);

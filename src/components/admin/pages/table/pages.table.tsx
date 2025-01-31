@@ -40,6 +40,7 @@ import { MultiSelect } from "@/components/ui/multi-select";
 import { Sort } from "@/types/database/query";
 import { Page } from "@/types";
 import { DeleteSelectedPagesButton } from "./deleteSelectedButton";
+import { useDidUpdateEffect } from "@/hooks/useDidUpdateEffect";
 
 interface DataTableProps<TValue> {
   columns: ColumnDef<Page, TValue>[];
@@ -99,7 +100,7 @@ export const PagesTable = <Page, TValue>({
     }))
   );
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         sort: sortingState.map((x) => `${x.id}:${x.desc}`),
@@ -120,7 +121,7 @@ export const PagesTable = <Page, TValue>({
       pageSize: limit,
     });
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
@@ -156,7 +157,7 @@ export const PagesTable = <Page, TValue>({
   const [searchValue, setSearchValue] = React.useState(search);
   const deferredSearch = React.useDeferredValue(searchValue);
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: null,

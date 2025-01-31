@@ -1,32 +1,10 @@
 import { Services } from "@/lib/services";
 import { maskify } from "@/lib/string";
-import { Appointment, BookingConfiguration } from "@/types";
 import {
   ITextMessageSender,
+  TextMessageData,
   TextMessageResponse,
 } from "@/types/apps/textMessage";
-
-export const getPhoneField = (
-  appointment: Appointment,
-  config: BookingConfiguration
-): string | undefined => {
-  const fields = new Set(
-    ["phone", ...(config.textMessages.phoneField || [])].map((x) =>
-      x.toLowerCase()
-    )
-  );
-
-  const [_, phone] =
-    Object.entries(appointment.fields as Record<string, string>).find(
-      ([field]) => fields.has(field.toLowerCase())
-    ) || [];
-
-  if (!phone) {
-    return;
-  }
-
-  return phone;
-};
 
 export const sendTextMessage = async ({
   phone,
@@ -38,16 +16,16 @@ export const sendTextMessage = async ({
 }: {
   phone: string;
   body: string;
-  sender: string;
+  sender?: string;
   initiator: string;
-  webhookData?: string;
+  webhookData?: TextMessageData;
   appointmentId?: string;
 }) => {
   const trimmedPhone = phone.replaceAll(/[^+0-9]/gi, "");
 
-  const communicationsConfig =
-    await Services.ConfigurationService().getConfiguration("communications");
-  const textMessageSenderAppId = communicationsConfig?.textMessage?.appId;
+  const defaultAppsConfiguration =
+    await Services.ConfigurationService().getConfiguration("defaultApps");
+  const textMessageSenderAppId = defaultAppsConfiguration?.textMessage?.appId;
   if (!textMessageSenderAppId) {
     console.error("No text message sender app is configured");
     return;
@@ -92,7 +70,7 @@ export const sendTextMessage = async ({
   } finally {
     Services.CommunicationLogService().log({
       direction: "outbound",
-      channel: "sms",
+      channel: "text-message",
       initiator,
       receiver: phone,
       text: body,

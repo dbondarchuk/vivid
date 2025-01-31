@@ -17,14 +17,11 @@ import { updateBookingConfiguration } from "./actions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SaveButton } from "@/components/admin/forms/save-button";
 import { MainTab } from "./tabs/main";
-import { EmailTab } from "./tabs/email";
 import { ShiftsTab } from "./tabs/shifts";
 import { AddonsTab } from "./tabs/addons";
 import { OptionsTab } from "./tabs/options";
 import { cn } from "@/lib/utils";
 import { FieldsTab } from "./tabs/fields";
-import { TextMessagesTab } from "./tabs/textMessages";
-import { RemindersTab } from "./tabs/reminders";
 import { demoAppointment } from "./fixtures";
 import { getArguments } from "@/services/notifications/getArguments";
 import { CalendarSourcesTab } from "./tabs/calendarSources";
@@ -82,9 +79,6 @@ export const AppointmentsSettingsForm: React.FC<{
 
   const triggerValidation = () => {
     form.trigger();
-    form.trigger("email");
-    form.trigger("textMessages");
-    form.trigger("reminders");
     form.trigger("addons");
     form.trigger("fields");
     form.trigger("options");
@@ -120,34 +114,6 @@ export const AppointmentsSettingsForm: React.FC<{
               )}
             >
               Calendar sources
-            </TabsTrigger>
-            <TabsTrigger
-              value="email"
-              className={cn(
-                form.getFieldState("email").invalid ? "text-destructive" : ""
-              )}
-            >
-              Emails
-            </TabsTrigger>
-            <TabsTrigger
-              value="textMessages"
-              className={cn(
-                form.getFieldState("textMessages").invalid
-                  ? "text-destructive"
-                  : ""
-              )}
-            >
-              Text Messages
-            </TabsTrigger>
-            <TabsTrigger
-              value="reminders"
-              className={cn(
-                form.getFieldState("reminders").invalid
-                  ? "text-destructive"
-                  : ""
-              )}
-            >
-              Reminders
             </TabsTrigger>
             <TabsTrigger
               value="shifts"
@@ -189,15 +155,6 @@ export const AppointmentsSettingsForm: React.FC<{
           </TabsContent>
           <TabsContent value="calendarSources">
             <CalendarSourcesTab form={form} apps={apps} />
-          </TabsContent>
-          <TabsContent value="email">
-            <EmailTab form={form} demoArguments={demoArguments} />
-          </TabsContent>
-          <TabsContent value="textMessages">
-            <TextMessagesTab form={form} demoArguments={demoArguments} />
-          </TabsContent>
-          <TabsContent value="reminders">
-            <RemindersTab form={form} demoArguments={demoArguments} />
           </TabsContent>
           <TabsContent value="shifts">
             <ShiftsTab form={form} />

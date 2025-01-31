@@ -14,17 +14,30 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cva } from "class-variance-authority";
+import { Spinner } from "@/components/ui/spinner";
 
 export type SaveButtonProps = {
   form: UseFormReturn<any>;
   disabled?: boolean;
+  isLoading?: boolean;
+  text?: string;
 };
 
-export const SaveButton: React.FC<SaveButtonProps> = ({ form, disabled }) => {
-  const { isValid, isDirty, errors } = useFormState(form);
+export const SaveButton: React.FC<SaveButtonProps> = ({
+  form,
+  disabled,
+  isLoading: propsIsLoading,
+  text = "Save",
+}) => {
+  const {
+    isValid,
+    isDirty,
+    isLoading: formIsLoading,
+    errors,
+  } = useFormState(form);
 
   const classes = cva([
-    "ml-auto self-end rounded-full fixed bottom-4 right-4 h-16 w-16",
+    "flex flex-row gap-2 items-center ml-auto self-end fixed bottom-4 right-4",
   ]);
 
   // React.useEffect(() => {
@@ -64,13 +77,16 @@ export const SaveButton: React.FC<SaveButtonProps> = ({ form, disabled }) => {
   //   );
   // }
 
+  const isLoading = propsIsLoading || formIsLoading;
+
   return (
     <Button
-      disabled={disabled || !isDirty || !isValid}
+      disabled={disabled || isLoading || !isDirty || !isValid}
       className={classes()}
       type="submit"
     >
-      <Save size={30} />
+      {isLoading ? <Spinner /> : <Save />}
+      <span>{text}</span>
     </Button>
   );
 };

@@ -1,5 +1,5 @@
 import { EventAttributes } from "ics";
-import { ConnectedAppData } from "../connectedApp";
+import { ConnectedAppData } from "../connectedApp.data";
 
 export type IcalEventMethod = "PUBLISH" | "REQUEST" | "CANCEL" | "REPLY";
 

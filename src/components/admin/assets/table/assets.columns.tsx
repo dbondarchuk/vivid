@@ -6,7 +6,10 @@ import React from "react";
 import { CellAction } from "./cell-action";
 import { DateTime } from "luxon";
 import Image from "next/image";
-import { tableSortHeader } from "@/components/ui/tableSortHeader";
+import {
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@/components/ui/tableSortHeader";
 
 export const columns: ColumnDef<Asset>[] = [
   {
@@ -50,16 +53,19 @@ export const columns: ColumnDef<Asset>[] = [
     id: "filename",
     header: tableSortHeader("File name", "string"),
     accessorFn: (asset) => asset.filename,
+    sortingFn: tableSortNoopFunction,
   },
   {
     id: "mimeType",
     header: tableSortHeader("File type", "string"),
     accessorFn: (asset) => asset.mimeType,
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (asset) => asset.description || "",
     id: "description",
     header: tableSortHeader("Description", "string"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (asset) =>
@@ -68,6 +74,7 @@ export const columns: ColumnDef<Asset>[] = [
       ),
     id: "uploadedAt",
     header: tableSortHeader("Upload time", "date"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     id: "actions",

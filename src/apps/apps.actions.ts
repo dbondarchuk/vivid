@@ -3,7 +3,7 @@
 import { demoAppointment } from "@/app/admin/dashboard/settings/appointments/fixtures";
 import { Services } from "@/lib/services";
 import { getArguments } from "@/services/notifications/getArguments";
-import { ConnectedAppStatusWithText } from "@/types";
+import { AppScope, ConnectedAppStatusWithText } from "@/types";
 
 export const addNewApp = async (type: string) => {
   return await Services.ConnectedAppService().createNewApp(type);
@@ -34,6 +34,10 @@ export const deleteApp = async (appId: string) => {
 
 export const getAppData = async (appId: string) => {
   return (await Services.ConnectedAppService().getApp(appId))?.data;
+};
+
+export const getApps = async (...scope: AppScope[]) => {
+  return await Services.ConnectedAppService().getAppsByScope(...scope);
 };
 
 export const getDemoArguments = async () => {

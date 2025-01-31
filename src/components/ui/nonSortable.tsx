@@ -14,6 +14,7 @@ export type NonSortableProps = {
   disabled?: boolean;
   allCollapsed?: boolean;
   collapse?: () => void;
+  className?: string;
 };
 
 export function NonSortable({
@@ -24,13 +25,14 @@ export function NonSortable({
   allCollapsed,
   collapse,
   onAdd,
+  className,
 }: NonSortableProps) {
   const variants = cva(
-    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center"
+    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center w-full"
   );
 
   return (
-    <Card className={variants()}>
+    <Card className={variants({ className })}>
       <CardHeader className="justify-between flex flex-row items-center border-b-2 p-4 text-left font-semibold space-y-0">
         <div className="hidden md:block">&nbsp;</div>
         {title}

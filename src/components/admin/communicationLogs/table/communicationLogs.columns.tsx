@@ -21,7 +21,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Markdown } from "@/components/web/markdown/Markdown";
-import { tableSortHeader } from "@/components/ui/tableSortHeader";
+import {
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@/components/ui/tableSortHeader";
 
 export const CommunicationDirectionTexts: Record<
   CommunicationDirection,
@@ -32,7 +35,7 @@ export const CommunicationDirectionTexts: Record<
 };
 
 export const CommunicationChannelTexts: Record<CommunicationChannel, string> = {
-  sms: "SMS",
+  "text-message": "Text Message",
   email: "Email",
 } as any;
 
@@ -60,30 +63,36 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     accessorFn: (log) => CommunicationDirectionTexts[log.direction],
     id: "direction",
     header: tableSortHeader("Direction", "default"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (log) => CommunicationChannelTexts[log.channel] || log.channel,
     id: "channel",
     header: tableSortHeader("Channel", "default"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (log) => log.initiator,
     id: "initiator",
     header: tableSortHeader("Initiator", "default"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (log) => log.receiver,
     id: "receiver",
     header: tableSortHeader("Receiver", "default"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (log) => log.subject,
     id: "subject",
     header: tableSortHeader("Subject", "string"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     id: "text",
     header: tableSortHeader("Text", "string"),
+    sortingFn: tableSortNoopFunction,
     cell: ({ row }) => {
       if (row.original.text.length < 50) return row.original.text;
 
@@ -150,6 +159,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
       DateTime.fromJSDate(log.dateTime).toLocaleString(DateTime.DATETIME_MED),
     id: "dateTime",
     header: tableSortHeader("Date & time", "date"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     header: "Appointment",

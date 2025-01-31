@@ -1,4 +1,4 @@
-import { HeaderContext, SortDirection } from "@tanstack/react-table";
+import { HeaderContext, Row, SortDirection } from "@tanstack/react-table";
 import { Button } from "./button";
 import { icons } from "lucide-react";
 import { Icon } from "./icon";
@@ -63,4 +63,12 @@ export const tableSortHeader = (
   };
 
   return TableHeader;
+};
+
+export const tableSortNoopFunction = (
+  rowA: Row<any>,
+  rowB: Row<any>,
+  columnId: string
+): number => {
+  return rowA.index - rowB.index;
 };

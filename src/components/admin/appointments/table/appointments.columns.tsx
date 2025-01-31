@@ -23,7 +23,10 @@ import { AppointmentDialog } from "../appointment.dialog";
 import { Button } from "@/components/ui/button";
 import { durationToTime } from "@/lib/time";
 import { cn } from "@/lib/utils";
-import { tableSortHeader } from "@/components/ui/tableSortHeader";
+import {
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@/components/ui/tableSortHeader";
 
 const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   appointment,
@@ -178,33 +181,39 @@ export const columns: ColumnDef<Appointment>[] = [
     cell: ({ row }) => <StatusCell appointment={row.original} size={20} />,
     id: "status",
     header: tableSortHeader("Status", "default"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => <OptionCell appointment={row.original} />,
     id: "option.name",
     header: tableSortHeader("Option", "string"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (app) => app.fields.name,
     id: "fields.name",
     header: tableSortHeader("Customer", "string"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (app) => app.fields.email,
     id: "fields.email",
     header: tableSortHeader("Email", "string"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (app) =>
       DateTime.fromJSDate(app.dateTime).toLocaleString(DateTime.DATETIME_MED),
     id: "dateTime",
     header: tableSortHeader("Date & time", "date"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (app) =>
       DateTime.fromJSDate(app.createdAt).toLocaleString(DateTime.DATETIME_MED),
     id: "createdAt",
     header: tableSortHeader("Requested at", "date"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => {
@@ -225,5 +234,6 @@ export const columns: ColumnDef<Appointment>[] = [
     accessorFn: (app) => (app.totalPrice ? `$${app.totalPrice}` : null),
     id: "totalPrice",
     header: tableSortHeader("Price", "number"),
+    sortingFn: tableSortNoopFunction,
   },
 ];

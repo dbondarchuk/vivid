@@ -12,22 +12,21 @@ import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "@/components/admin/apps/connectedAppProperties";
+import { Spinner } from "@/components/ui/spinner";
 
 export const OutlookAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
-  setIsLoading,
   onError,
-  onStatusChange,
   appId: existingAppId,
 }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
   const [timer, setTimer] = React.useState<NodeJS.Timeout>();
 
   const getStatus = async (appId: string) => {
     const status = await getAppStatus(appId);
     setApp(() => status);
-
-    onStatusChange(status.status, status.statusText);
 
     if (status.status === "pending") {
       const id = setTimeout(() => getStatus(appId), 1000);
@@ -88,8 +87,10 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
           type="button"
           variant="default"
           onClick={connectApp}
+          disabled={isLoading}
           className="inline-flex gap-2 items-center w-full"
         >
+          {isLoading && <Spinner />}
           <span>Connect with</span>
           <ConnectedAppNameAndLogo app={{ name: OutlookApp.name }} />
         </Button>

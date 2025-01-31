@@ -47,6 +47,7 @@ import { DateTime } from "luxon";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { StatusText } from "../types";
 import { Sort } from "@/types/database/query";
+import { useDidUpdateEffect } from "@/hooks/useDidUpdateEffect";
 
 interface DataTableProps<TValue> {
   columns: ColumnDef<Appointment, TValue>[];
@@ -113,7 +114,7 @@ export const AppointmentsTable = <Appointment, TValue>({
     }))
   );
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         sort: sortingState.map((x) => `${x.id}:${x.desc}`),
@@ -127,7 +128,7 @@ export const AppointmentsTable = <Appointment, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortingState]);
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
@@ -188,7 +189,7 @@ export const AppointmentsTable = <Appointment, TValue>({
   const [searchValue, setSearchValue] = React.useState(search);
   const deferredSearch = React.useDeferredValue(searchValue);
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: null,
@@ -250,22 +251,25 @@ export const AppointmentsTable = <Appointment, TValue>({
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    className="cursor-pointer"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
+                table
+                  .getRowModel()
+                  .rows // .sort((a, b) => a.index - b.index)
+                  .map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                      className="cursor-pointer"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
               ) : (
                 <TableRow>
                   <TableCell

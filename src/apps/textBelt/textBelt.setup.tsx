@@ -9,8 +9,6 @@ import {
   processRequest,
 } from "../apps.actions";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { appStatusText, appStatusTextClasses } from "../apps.const";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -30,85 +28,34 @@ import {
   textBeltConfigurationSchema,
 } from "./textBelt.models";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
 import { templateSafeWithError } from "@/lib/string";
 import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "@/components/admin/apps/connectedAppProperties";
+import { useConnectedAppSetup } from "@/hooks/useConnectedAppSetup";
+import { Spinner } from "@/components/ui/spinner";
 
 export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
-  setIsLoading,
+
   onError,
-  onStatusChange,
-  appId: existingAppId,
+
+  appId,
 }) => {
-  const [appId, setAppId] = React.useState<string>();
-  const [demoArguments, setDemoArguments] = React.useState<any>({});
-
-  React.useEffect(() => {
-    getDemoArguments().then((args) => setDemoArguments(args));
-  }, []);
-
-  const [initialAppData, setInitialAppData] =
-    React.useState<TextBeltConfiguration>();
-  React.useEffect(() => {
-    if (!existingAppId) return;
-
-    const getInitialData = async () => {
-      const data = await getAppData(existingAppId);
-      setInitialAppData(data);
-    };
-
-    setAppId(existingAppId);
-    getInitialData();
-  }, [existingAppId]);
-
-  const [appStatus, setAppStatus] =
-    React.useState<ConnectedAppStatusWithText>();
-
-  const form = useForm<TextBeltConfiguration>({
-    resolver: zodResolver(textBeltConfigurationSchema),
-    mode: "all",
-    values: initialAppData,
-  });
-
-  const createApp = async (data: TextBeltConfiguration) => {
-    try {
-      setIsLoading(true);
-
-      const _appId = appId || (await addNewApp(TextBeltApp.name));
-      setAppId(_appId);
-
-      const status = (await processRequest(
-        _appId,
-        data
-      )) as ConnectedAppStatusWithText;
-
-      onStatusChange(status.status, status.statusText);
-      setAppStatus(status);
-
-      if (status.status === "connected") {
-        onSuccess();
-      } else if (status.status === "failed") {
-        onError(status.statusText);
-      }
-    } catch (e: any) {
-      onError(e?.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { appStatus, form, isLoading, isValid, onSubmit } =
+    useConnectedAppSetup<TextBeltConfiguration>({
+      appId,
+      appName: TextBeltApp.name,
+      schema: textBeltConfigurationSchema,
+      onSuccess,
+      onError,
+    });
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(createApp)} className="w-full">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-2">
             <FormField
               control={form.control}
@@ -125,64 +72,13 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="autoReply"
-              render={({ field }) => (
-                <ResizablePanelGroup
-                  direction="horizontal"
-                  className="max-md:hidden"
-                >
-                  <ResizablePanel className="pr-4">
-                    <FormItem>
-                      <FormLabel>
-                        Auto reply
-                        <InfoTooltip>
-                          <p>
-                            Can be used for notifying the user that they should
-                            not reply to text message
-                          </p>
-                          <p>Optional</p>
-                          <p>* Uses templated values</p>
-                        </InfoTooltip>
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Auto reply"
-                          className="mx-0 focus:mx-1 active:mx-1"
-                          autoResize
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        {field.value?.length || 0} characters
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  </ResizablePanel>
-                  <ResizableHandle withHandle />
-                  <ResizablePanel className="pl-4">
-                    <FormItem>
-                      <FormLabel>Preview</FormLabel>
-                      <div
-                        className="w-full text-sm"
-                        dangerouslySetInnerHTML={{
-                          __html: templateSafeWithError(
-                            field.value || "",
-                            demoArguments
-                          ).replaceAll("\n", "<br/>"),
-                        }}
-                      />
-                    </FormItem>
-                  </ResizablePanel>
-                </ResizablePanelGroup>
-              )}
-            />
             <Button
+              disabled={isLoading || !isValid}
               type="submit"
               variant="default"
               className="inline-flex gap-2 items-center w-full"
             >
+              {isLoading && <Spinner />}
               <span>Connect with</span>
               <ConnectedAppNameAndLogo app={{ name: TextBeltApp.name }} />
             </Button>

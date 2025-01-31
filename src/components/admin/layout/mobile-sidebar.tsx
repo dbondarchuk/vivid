@@ -1,13 +1,15 @@
 "use client";
 import { DashboardNav } from "@/components/admin/dashboard-nav";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { navItems } from "@/constants/data";
+import { NavItemWithOptionalChildren } from "@/types";
 import { MenuIcon } from "lucide-react";
 import { useState } from "react";
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  menuItems: NavItemWithOptionalChildren[];
+}
 
-export function MobileSidebar({ className }: SidebarProps) {
+export function MobileSidebar({ className, menuItems }: SidebarProps) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -23,7 +25,7 @@ export function MobileSidebar({ className }: SidebarProps) {
               </h2>
               <div className="space-y-1">
                 <DashboardNav
-                  items={navItems}
+                  items={menuItems}
                   isMobileNav={true}
                   setOpen={setOpen}
                 />

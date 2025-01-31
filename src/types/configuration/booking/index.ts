@@ -4,18 +4,13 @@ import {
   appointmentAddonsSchema,
   appointmentOptionSchema,
 } from "../../booking/appointmentOption";
-import { remindersSchema } from "../../reminders/reminder";
 import { calendarSourcesConfigurationSchema } from "./calendarSource";
-import { emailConfigurationSchema } from "./email";
 import { fieldsSchema } from "./field";
 import { shiftsSchema } from "./shift";
-import { textMessagesConfigurationSchema } from "./textMessages";
 
 export * from "./calendarSource";
-export * from "./email";
 export * from "./field";
 export * from "./shift";
-export * from "./textMessages";
 
 export const timezones = getTimeZones();
 const [firstTimezone, ...restTimezones] = timezones.map((tz) => tz.name);
@@ -63,9 +58,6 @@ export const bookingConfigurationSchema =
       addons: appointmentAddonsSchema,
       fields: fieldsSchema,
       options: appointOptionsSchema,
-      email: emailConfigurationSchema,
-      textMessages: textMessagesConfigurationSchema,
-      reminders: remindersSchema,
     })
   );
 

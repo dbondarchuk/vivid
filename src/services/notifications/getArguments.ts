@@ -10,7 +10,7 @@ import {
 import { DateTime } from "luxon";
 
 export const getArguments = (
-  appointment: Appointment | undefined,
+  appointment: Appointment | undefined | null,
   bookingConfiguration: BookingConfiguration,
   generalConfiguration: GeneralConfiguration,
   socialConfiguration: SocialConfiguration,
@@ -18,7 +18,7 @@ export const getArguments = (
 ) => {
   const { name, email, ...restFields } = appointment?.fields || {};
   const arg = {
-    ...appointment,
+    ...(appointment || {}),
     dateTime: appointment
       ? DateTime.fromJSDate(appointment.dateTime)
           .setZone(

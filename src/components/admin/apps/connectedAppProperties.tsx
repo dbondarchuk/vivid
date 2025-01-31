@@ -1,4 +1,4 @@
-import { InstalledApps } from "@/apps";
+import { AvailableApps } from "@/apps";
 import { appStatusText, appStatusTextClasses } from "@/apps/apps.const";
 import { cn } from "@/lib/utils";
 import { ConnectedApp } from "@/types";
@@ -34,13 +34,16 @@ export const ConnectedAppStatusMessage: React.FC<
 );
 
 export const ConnectedAppNameAndLogo: React.FC<
-  ConnectedAppPropertiesProps<"name">
-> = ({ app, className }) => {
-  const App = InstalledApps[app.name];
+  ConnectedAppPropertiesProps<"name"> & {
+    logoClassName?: string;
+    nameClassName?: string;
+  }
+> = ({ app, className, logoClassName, nameClassName }) => {
+  const App = AvailableApps[app.name];
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
-      <App.Logo className="w-6 y-6" />
-      <span>{App.displayName}</span>
+      <App.Logo className={cn("w-6 y-6", logoClassName)} />
+      <span className={nameClassName}>{App.displayName}</span>
     </div>
   );
 };

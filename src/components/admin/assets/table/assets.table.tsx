@@ -39,6 +39,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Asset } from "@/types";
 import { Sort } from "@/types/database/query";
 import { DeleteSelectedAssetsButton } from "./deleteSelectedButton";
+import { useDidUpdateEffect } from "@/hooks/useDidUpdateEffect";
 
 interface DataTableProps<TValue> {
   columns: ColumnDef<Asset, TValue>[];
@@ -94,7 +95,7 @@ export const AssetsTable = <Asset, TValue>({
     }))
   );
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         sort: sortingState.map((x) => `${x.id}:${x.desc}`),
@@ -115,7 +116,7 @@ export const AssetsTable = <Asset, TValue>({
       pageSize: limit,
     });
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
@@ -151,7 +152,7 @@ export const AssetsTable = <Asset, TValue>({
   const [searchValue, setSearchValue] = React.useState(search);
   const deferredSearch = React.useDeferredValue(searchValue);
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: null,

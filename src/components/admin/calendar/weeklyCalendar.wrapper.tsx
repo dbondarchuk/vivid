@@ -21,6 +21,8 @@ export const WeeklyCalendarWrapper: React.FC<
 
   const getEvents = async (start: Date, end: Date) => {
     setLoading(true);
+    setEvents([]);
+
     const response = await fetch(
       `/admin/api/events?start=${DateTime.fromJSDate(
         start

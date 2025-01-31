@@ -1,7 +1,6 @@
 import { InfoTooltip } from "@/components/admin/tooltip/infoTooltip";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Combobox, IComboboxItem } from "@/components/ui/combobox";
 import {
   FormField,
   FormItem,
@@ -24,13 +23,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { InstalledApps } from "@/apps";
+import { AvailableApps } from "@/apps";
 import React from "react";
-import {
-  ConnectedAppAccount,
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
-} from "@/components/admin/apps/connectedAppProperties";
 import { AppSelector } from "@/components/admin/apps/appSelector";
 
 export type CalendarSourceCardProps = {
@@ -64,7 +58,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   };
 
   const appName = apps.find((app) => app._id === appId)?.name;
-  const appDisplayName = appName ? InstalledApps[appName].displayName : null;
+  const appDisplayName = appName ? AvailableApps[appName].displayName : null;
 
   return (
     <Card>
@@ -134,7 +128,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
                   <AppSelector
                     disabled={disabled}
                     className="w-full"
-                    type="calendar-read"
+                    scope="calendar-read"
                     apps={apps}
                     value={field.value}
                     onItemSelect={(value) => {

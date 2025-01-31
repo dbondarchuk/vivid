@@ -7,7 +7,7 @@ import {
 import React from "react";
 import { Combobox, IComboboxItem } from "@/components/ui/combobox";
 import { cn } from "@/lib/utils";
-import { InstalledApps } from "@/apps";
+import { AvailableApps } from "@/apps";
 
 const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
   return (
@@ -29,7 +29,7 @@ const checkAppSearch = (app: ConnectedApp, query: string) => {
 
 type BaseAppSelectorProps = {
   apps: ConnectedApp[];
-  type: AppScope;
+  scope: AppScope;
   value?: string;
   disabled?: boolean;
   className?: string;
@@ -50,7 +50,7 @@ export type AppSelectorProps = BaseAppSelectorProps &
 
 export const AppSelector: React.FC<AppSelectorProps> = ({
   apps,
-  type,
+  scope,
   disabled,
   className,
   value,
@@ -58,7 +58,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
   allowClear,
 }) => {
   const supportedApps = apps.filter(
-    (app) => InstalledApps[app.name]?.scope.indexOf(type) >= 0
+    (app) => AvailableApps[app.name]?.scope.indexOf(scope) >= 0
   );
 
   const appValues = (apps: ConnectedApp[]): IComboboxItem[] =>

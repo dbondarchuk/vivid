@@ -23,6 +23,7 @@ export type SortableProps = {
   disabled?: boolean;
   allCollapsed?: boolean;
   collapse?: () => void;
+  className?: string;
 };
 
 export function Sortable({
@@ -34,11 +35,12 @@ export function Sortable({
   collapse,
   onSort,
   onAdd,
+  className,
 }: SortableProps) {
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const variants = cva(
-    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center",
+    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center w-full",
     {
       variants: {
         dragging: {
@@ -63,7 +65,7 @@ export function Sortable({
   }
 
   return (
-    <Card className={variants()}>
+    <Card className={variants({ className })}>
       <CardHeader className="justify-between flex flex-row items-center border-b-2 p-4 text-left font-semibold space-y-0">
         <div className="hidden md:block">&nbsp;</div>
         {title}

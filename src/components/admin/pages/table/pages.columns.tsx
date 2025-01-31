@@ -5,7 +5,10 @@ import { Page } from "@/types";
 import React from "react";
 import { CellAction } from "./cell-action";
 import { DateTime } from "luxon";
-import { tableSortHeader } from "@/components/ui/tableSortHeader";
+import {
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@/components/ui/tableSortHeader";
 
 export const columns: ColumnDef<Page>[] = [
   {
@@ -32,16 +35,19 @@ export const columns: ColumnDef<Page>[] = [
     accessorFn: (page) => page.title,
     id: "title",
     header: tableSortHeader("Title", "string"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (page) => page.slug,
     id: "slug",
     header: tableSortHeader("Slug", "string"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (page) => (page.published ? "Published" : "Draft"),
     id: "published",
     header: tableSortHeader("Is published", "default"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (page) =>
@@ -50,18 +56,21 @@ export const columns: ColumnDef<Page>[] = [
       ),
     id: "publishDate",
     header: tableSortHeader("Publish date", "date"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (page) =>
       DateTime.fromJSDate(page.createdAt).toLocaleString(DateTime.DATETIME_MED),
     id: "createdAt",
     header: tableSortHeader("Created at", "date"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (page) =>
       DateTime.fromJSDate(page.updatedAt).toLocaleString(DateTime.DATETIME_MED),
     id: "updatedAt",
     header: tableSortHeader("Updated at", "date"),
+    sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (page) => page.tags?.join(", ") || "",

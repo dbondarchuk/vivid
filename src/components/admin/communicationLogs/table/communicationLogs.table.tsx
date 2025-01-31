@@ -51,6 +51,7 @@ import {
 } from "./communicationLogs.columns";
 import { Sort } from "@/types/database/query";
 import { ClearSelectedCommunicationLogsButton } from "../clearSelectedButton";
+import { useDidUpdateEffect } from "@/hooks/useDidUpdateEffect";
 
 interface DataTableProps<TValue> {
   columns: ColumnDef<CommunicationLog, TValue>[];
@@ -112,7 +113,7 @@ export const CommunicationLogsTable = <CommunicationLog, TValue>({
     }))
   );
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         sort: sortingState.map((x) => `${x.id}:${x.desc}`),
@@ -133,7 +134,7 @@ export const CommunicationLogsTable = <CommunicationLog, TValue>({
       pageSize: limit,
     });
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
@@ -205,7 +206,7 @@ export const CommunicationLogsTable = <CommunicationLog, TValue>({
   const [searchValue, setSearchValue] = React.useState(search);
   const deferredSearch = React.useDeferredValue(searchValue);
 
-  React.useEffect(() => {
+  useDidUpdateEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: null,

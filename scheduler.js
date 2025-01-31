@@ -6,14 +6,14 @@ cron.schedule("* * * * *", (arg) => {
   else date = arg;
 
   try {
-    console.log(`Running reminders schedule for ${date.toISOString()}`);
+    console.log(`Running scheduled apps for ${date.toISOString()}`);
 
     fetch(
       `http://localhost:${
         process.env.PORT || 3000
-      }/api/scheduler/reminders?date=${encodeURIComponent(
-        date.toISOString()
-      )}&key=${process.env.SCHEDULER_KEY}`
+      }/api/scheduler?date=${encodeURIComponent(date.toISOString())}&key=${
+        process.env.SCHEDULER_KEY
+      }`
     );
   } catch (e) {
     console.error(e);

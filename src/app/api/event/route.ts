@@ -17,9 +17,9 @@ export async function POST(request: NextRequest) {
     const { _id } = await Services.EventsService().createEvent(event);
 
     return NextResponse.json({ success: true, id: _id }, { status: 201 });
-  } catch {
+  } catch (e: any) {
     return NextResponse.json(
-      { success: false, error: "time_not_available" },
+      { success: false, error: "time_not_available", message: e?.message },
       { status: 400 }
     );
   }

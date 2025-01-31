@@ -6,6 +6,5 @@ export * from "./communication";
 export * from "./database";
 export * from "./general";
 export * from "./pages";
-export * from "./reminders";
 
 export * from "./configuration";

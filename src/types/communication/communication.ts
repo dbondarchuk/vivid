@@ -1,8 +1,8 @@
 export const emailCommunicationChannel = "email" as const;
-export const smsCommunicationChannel = "sms" as const;
+export const textMessageCommunicationChannel = "text-message" as const;
 export const communicationChannels = [
   emailCommunicationChannel,
-  smsCommunicationChannel,
+  textMessageCommunicationChannel,
 ] as const;
 
 export type CommunicationDirection = "outbound" | "inbound";

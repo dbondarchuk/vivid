@@ -290,7 +290,7 @@ export const AppointmentRescheduleDialog: React.FC<
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                       This action cannot be undone. This will reschedule this
-                      appointment and will notify the customer.
+                      appointment.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

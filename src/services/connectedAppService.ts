@@ -1,7 +1,9 @@
-import { InstalledApps } from "@/apps";
-import { InstalledAppServices } from "@/apps/apps.services";
+import { AvailableApps } from "@/apps";
+import { AvailableAppServices } from "@/apps/apps.services";
 import { getDbConnection } from "@/database";
 import {
+  App,
+  AppScope,
   ConnectedApp,
   ConnectedAppData,
   ConnectedAppUpdateModel,
@@ -16,7 +18,7 @@ export const CONNECTED_APPS_COLLECTION_NAME = "connected_apps";
 
 export class ConnectedAppService {
   public async createNewApp(name: string): Promise<string> {
-    if (!InstalledApps[name]) {
+    if (!AvailableApps[name]) {
       throw new Error("Unknown app type");
     }
 
@@ -88,12 +90,12 @@ export class ConnectedAppService {
       throw new Error("App not found");
     }
 
-    const service = InstalledApps[app.name];
+    const service = AvailableApps[app.name];
     if (!service || service.type !== "oauth") {
       throw new Error("App type is not supported");
     }
 
-    const appService = InstalledAppServices[app.name](
+    const appService = AvailableAppServices[app.name](
       this.getAppServiceProps(appId)
     );
 
@@ -101,12 +103,12 @@ export class ConnectedAppService {
   }
 
   public async processRedirect(name: string, request: NextRequest, data?: any) {
-    const service = InstalledApps[name];
+    const service = AvailableApps[name];
     if (!service || service.type !== "oauth") {
       throw new Error("App type is not supported");
     }
 
-    const appService = InstalledAppServices[name](this.getAppServiceProps(""));
+    const appService = AvailableAppServices[name](this.getAppServiceProps(""));
     const result = await (appService as IOAuthConnectedApp).processRedirect(
       request,
       data
@@ -156,7 +158,7 @@ export class ConnectedAppService {
 
   public async processWebhook(appId: string, request: NextRequest) {
     const app = await this.getApp(appId);
-    const appService = InstalledAppServices[app.name](
+    const appService = AvailableAppServices[app.name](
       this.getAppServiceProps(appId)
     );
 
@@ -166,7 +168,7 @@ export class ConnectedAppService {
   public async processRequest(appId: string, data: any): Promise<any> {
     const app = await this.getApp(appId);
 
-    const appService = InstalledAppServices[app.name](
+    const appService = AvailableAppServices[app.name](
       this.getAppServiceProps(appId)
     );
 
@@ -201,6 +203,72 @@ export class ConnectedAppService {
     const result = await collection.find().toArray();
 
     return result.map(({ data: __, ...app }) => app);
+  }
+
+  public async getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]> {
+    const result = await this.getAppsByScopeWithData(...scope);
+
+    return result.map(({ data: __, ...app }) => app);
+  }
+
+  public async getAppsByApp(appName: string): Promise<ConnectedApp[]> {
+    const db = await getDbConnection();
+    const collection = db.collection<ConnectedAppData>(
+      CONNECTED_APPS_COLLECTION_NAME
+    );
+
+    const result = await collection
+      .find({
+        name: appName,
+      })
+      .toArray();
+
+    return result.map(({ data: __, ...app }) => app);
+  }
+
+  public async getAppsByScopeWithData(
+    ...scope: AppScope[]
+  ): Promise<ConnectedAppData[]> {
+    const db = await getDbConnection();
+    const collection = db.collection<ConnectedAppData>(
+      CONNECTED_APPS_COLLECTION_NAME
+    );
+
+    const possibleAppNames = Object.keys(AvailableApps).filter((appName) =>
+      AvailableApps[appName].scope.some((s) => scope.includes(s))
+    );
+
+    const result = await collection
+      .find({
+        name: {
+          $in: possibleAppNames,
+        },
+      })
+      .toArray();
+
+    return result;
+  }
+
+  public async getAppsByType(type: App["type"]) {
+    const db = await getDbConnection();
+    const collection = db.collection<ConnectedAppData>(
+      CONNECTED_APPS_COLLECTION_NAME
+    );
+
+    const possibleAppNames = Object.keys(AvailableApps).filter(
+      (appName) => AvailableApps[appName].type === type
+    );
+
+    const result = await collection
+      .find({
+        name: {
+          $in: possibleAppNames,
+        },
+      })
+      .map((app) => ({ id: app._id, name: app.name }))
+      .toArray();
+
+    return result;
   }
 
   public async getApp(appId: string): Promise<ConnectedAppData> {
@@ -257,7 +325,7 @@ export class ConnectedAppService {
       throw new Error("App not found");
     }
 
-    const service = InstalledAppServices[app.name](
+    const service = AvailableAppServices[app.name](
       this.getAppServiceProps(appId)
     );
     return { app, service };

@@ -1,13 +1,8 @@
 "use client";
 
-import { AppSetupProps, ConnectedAppStatusWithText } from "@/types";
+import { AppSetupProps } from "@/types";
 import React from "react";
-import { addNewApp, getAppData, processRequest } from "../apps.actions";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { appStatusText, appStatusTextClasses } from "../apps.const";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -27,70 +22,27 @@ import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "@/components/admin/apps/connectedAppProperties";
+import { useConnectedAppSetup } from "@/hooks/useConnectedAppSetup";
+import { Spinner } from "@/components/ui/spinner";
 
 export const IcsAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
-  setIsLoading,
   onError,
-  onStatusChange,
   appId: existingAppId,
 }) => {
-  const [appId, setAppId] = React.useState<string>();
-
-  const [initialAppData, setInitialAppData] =
-    React.useState<IcsLinkCalendarSource>();
-  React.useEffect(() => {
-    if (!existingAppId) return;
-
-    const getInitialData = async () => {
-      const data = await getAppData(existingAppId);
-      setInitialAppData(data);
-    };
-
-    setAppId(existingAppId);
-    getInitialData();
-  }, [existingAppId]);
-
-  const [appStatus, setAppStatus] =
-    React.useState<ConnectedAppStatusWithText>();
-
-  const form = useForm<IcsLinkCalendarSource>({
-    resolver: zodResolver(icsLinkCalendarSourceSchema),
-    mode: "all",
-    values: initialAppData,
-  });
-
-  const createApp = async (data: IcsLinkCalendarSource) => {
-    try {
-      setIsLoading(true);
-
-      const _appId = appId || (await addNewApp(IcsApp.name));
-      setAppId(_appId);
-
-      const status = (await processRequest(
-        _appId,
-        data
-      )) as ConnectedAppStatusWithText;
-
-      onStatusChange(status.status, status.statusText);
-      setAppStatus(status);
-
-      if (status.status === "connected") {
-        onSuccess();
-      } else if (status.status === "failed") {
-        onError(status.statusText);
-      }
-    } catch (e: any) {
-      onError(e?.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { appStatus, form, isLoading, isValid, onSubmit } =
+    useConnectedAppSetup<IcsLinkCalendarSource>({
+      appId: existingAppId,
+      appName: IcsApp.name,
+      schema: icsLinkCalendarSourceSchema,
+      onSuccess,
+      onError,
+    });
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(createApp)} className="w-full">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-2">
             <FormField
               control={form.control}
@@ -108,10 +60,12 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
               )}
             />
             <Button
+              disabled={isLoading || !isValid}
               type="submit"
               variant="default"
               className="inline-flex gap-2 items-center w-full"
             >
+              {isLoading && <Spinner />}
               <span>Connect with</span>
               <ConnectedAppNameAndLogo app={{ name: IcsApp.name }} />
             </Button>

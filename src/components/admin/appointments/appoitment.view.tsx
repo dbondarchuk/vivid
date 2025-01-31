@@ -165,7 +165,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently decline
-                    this appointment and will notify the customer.
+                    this appointment.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
