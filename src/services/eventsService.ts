@@ -80,7 +80,9 @@ export class EventsService {
       await this.configurationService.getConfigurations("booking", "general");
 
     if (!force) {
-      const eventTime = DateTime.fromISO(event.dateTime, { zone: "utc" });
+      const eventTime = DateTime.fromISO(event.dateTime, {
+        zone: "utc",
+      }).setZone(config.timezone);
       const start = eventTime.startOf("day");
       const end = start.endOf("day");
 
