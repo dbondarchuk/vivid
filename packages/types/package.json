@@ -1,0 +1,24 @@
+{
+  "name": "@vivid/types",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
+    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+  },
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@vivid/eslint-config": "*",
+    "@vivid/typescript-config": "*",
+    "@types/react": "19.0.2",
+    "eslint": "^8.57.0",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "zod": "^3.23.8",
+    "@vvo/tzdb": "^6.142.0"
+  }
+}

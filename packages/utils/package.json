@@ -1,0 +1,33 @@
+{
+  "name": "@vivid/utils",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
+    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+  },
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@vivid/eslint-config": "*",
+    "@vivid/typescript-config": "*",
+    "@types/node": "^20",
+    "@types/content-type": "1.1.5",
+    "@types/mustache": "^4.2.5",
+    "@types/react": "19.0.2",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^8.57.0",
+    "@types/luxon": "^3.4.2",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "luxon": "^3.5.0",
+    "react-string-replace": "^1.1.1",
+    "mustache": "^4.2.0",
+    "content-type": "1.0.4",
+    "raw-body": "2.4.1",
+    "uuid": "^10.0.0"
+  }
+}
