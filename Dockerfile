@@ -30,7 +30,7 @@ RUN \
 
 # Rebuild the source code only when needed
 FROM base AS builder
-ENV MONGODB_URI=mongodb://mongo:27017/vivid?retryWrites=true&w=majority
+ENV MONGODB_URI=mongodb://127.0.0.1:27017/vivid?retryWrites=true&w=majority
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules

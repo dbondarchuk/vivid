@@ -11,7 +11,7 @@ import { buildSearchQuery } from "@vivid/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { getDbConnection } from "./database";
 
-export const LOG_COLLECTION_NAME = "communication-logs";
+export const LOG_COLLECTION_NAME = "communication_logs";
 
 export class CommunicationLogService implements ICommunicationLogService {
   public async log(log: Omit<CommunicationLog, "dateTime" | "_id">) {
