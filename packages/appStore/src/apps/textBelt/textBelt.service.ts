@@ -1,8 +1,11 @@
 import {
+  ApiRequest,
+  ApiResponse,
   ConnectedAppData,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
+  IConnectedAppWithWebhook,
   ITextMessageResponder,
   ITextMessageSender,
   TextMessage,
@@ -10,7 +13,6 @@ import {
 } from "@vivid/types";
 import { maskify } from "@vivid/utils";
 import crypto from "crypto";
-import { NextApiRequest, NextApiResponse } from "next";
 import { TextBeltConfiguration } from "./textBelt.models";
 
 const scrambleKey = (key: string) => {
@@ -73,7 +75,7 @@ type SmsResponse = {
 };
 
 export default class TextBeltConnectedApp
-  implements IConnectedApp, ITextMessageSender
+  implements IConnectedApp, IConnectedAppWithWebhook, ITextMessageSender
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
@@ -135,35 +137,30 @@ export default class TextBeltConnectedApp
 
   public async processWebhook(
     appData: ConnectedAppData,
-    request: NextApiRequest,
-    result: NextApiResponse
-  ): Promise<void> {
+    request: ApiRequest
+  ): Promise<ApiResponse> {
     const config = appData.data as TextBeltConfiguration;
 
-    const bodyText = await request.body();
-    const timestamp = request.headers["X-textbelt-timestamp"] as string;
-    const signature = request.headers["X-textbelt-signature"] as string;
+    const bodyText = await request.text();
+    const timestamp = request.headers.get("X-textbelt-timestamp");
+    const signature = request.headers.get("X-textbelt-signature");
 
     if (!timestamp || !signature) {
       console.warn(`Mailformed headers in SMS webhook: ${bodyText}`);
-      result.status(400).json({ success: false });
 
-      return;
+      return Response.json({ success: false }, { status: 400 });
     }
 
     if (!verify(config?.apiKey, timestamp, signature, bodyText)) {
       console.warn(`Unverified SMS webhook: ${bodyText}`);
-      result.status(401).json({ success: false });
 
-      return;
+      return Response.json({ success: false }, { status: 400 });
     }
 
     const reply = JSON.parse(bodyText) as TextbeltWebhookData;
     if (!reply.fromNumber) {
       console.warn(`Mailformed body in SMS webhook: ${bodyText}`);
-      result.status(400).json({ success: false });
-
-      return;
+      return Response.json({ success: false }, { status: 400 });
     }
 
     console.log(
@@ -203,7 +200,7 @@ export default class TextBeltConnectedApp
       });
     }
 
-    result.status(201).json({ success: true });
+    return Response.json({ success: true }, { status: 201 });
   }
 
   public async processRequest(

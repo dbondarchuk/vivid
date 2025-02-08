@@ -33,6 +33,16 @@ export const getArguments = (
       value,
       label: appointment?.option?.fields?.[name] || name,
     })),
+    restFiles:
+      appointment?.files?.filter(
+        (file) => !file.mimeType.startsWith("image/")
+      ) || [],
+    images: appointment?.files
+      ?.filter((file) => file.mimeType.startsWith("image/"))
+      .map((file) => ({
+        ...file,
+        cid: file._id,
+      })),
     statusText: appointment ? StatusText[appointment.status] : undefined,
     duration: appointment
       ? durationToTime(appointment.totalDuration)

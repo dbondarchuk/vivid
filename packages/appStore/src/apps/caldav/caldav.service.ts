@@ -16,10 +16,6 @@ export default class CaldavConnectedApp
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processWebhook(): Promise<void> {
-    // do nothing
-  }
-
   public async processRequest(
     appData: ConnectedAppData,
     request: CaldavCalendarSource & { fetchCalendars?: boolean }

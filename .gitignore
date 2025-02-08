@@ -37,7 +37,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/data
-/public/upload
+/apps/web/data
+/apps/web/public/upload
 
 .env

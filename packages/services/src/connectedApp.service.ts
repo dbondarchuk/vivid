@@ -2,7 +2,6 @@ import { AvailableApps } from "@vivid/app-store";
 import { AvailableAppServices } from "@vivid/app-store/services";
 import {
   ApiRequest,
-  ApiResponse,
   App,
   AppScope,
   ConnectedApp,
@@ -11,6 +10,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IConnectedAppService,
+  IConnectedAppWithWebhook,
   IOAuthConnectedApp,
 } from "@vivid/types";
 import { ObjectId } from "mongodb";
@@ -160,17 +160,22 @@ export class ConnectedAppService implements IConnectedAppService {
     }
   }
 
-  public async processWebhook(
-    appId: string,
-    request: ApiRequest,
-    result: ApiResponse
-  ) {
+  public async processWebhook(appId: string, request: ApiRequest) {
     const app = await this.getApp(appId);
     const appService = AvailableAppServices[app.name](
       this.getAppServiceProps(appId)
-    );
+    ) as IConnectedAppWithWebhook;
 
-    return await appService.processWebhook(app, request, result);
+    if (!("processWebhook" in appService)) {
+      return Response.json(
+        {
+          error: `App ${app.name} does not process webhooks`,
+        },
+        { status: 405 }
+      );
+    }
+
+    return await appService.processWebhook(app, request);
   }
 
   public async processRequest(appId: string, data: any): Promise<any> {

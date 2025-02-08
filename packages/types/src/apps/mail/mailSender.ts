@@ -3,6 +3,13 @@ import { EventAttributes } from "./eventAttributes";
 
 export type IcalEventMethod = "PUBLISH" | "REQUEST" | "CANCEL" | "REPLY";
 
+export type EmailAttachment = {
+  filename: string;
+  contentType: string;
+  content: Buffer;
+  cid: string;
+};
+
 export type Email = {
   to: string | string[];
   cc?: string | string[];
@@ -13,6 +20,7 @@ export type Email = {
     filename?: string;
     content: EventAttributes;
   };
+  attachments?: EmailAttachment[];
 };
 
 export type EmailResponse = {

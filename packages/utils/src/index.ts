@@ -7,6 +7,7 @@ export * from "./pageDataCache";
 export * from "./phone";
 export * from "./query";
 export * from "./searchParams";
+export * from "./stream";
 export * from "./string";
 export * from "./stripObject";
 export * from "./time";

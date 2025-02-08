@@ -40,10 +40,6 @@ export class TextMessageNotificationConnectedApp
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processWebhook(): Promise<void> {
-    // do nothing
-  }
-
   public async processRequest(
     appData: ConnectedAppData,
     data: TextMessageNotificationConfiguration

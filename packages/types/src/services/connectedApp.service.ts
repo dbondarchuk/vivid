@@ -18,9 +18,8 @@ export interface IConnectedAppService {
   processRedirect(name: string, request: ApiRequest, data?: any): Promise<void>;
   processWebhook(
     appId: string,
-    request: ApiRequest,
-    result: ApiResponse
-  ): Promise<void>;
+    request: ApiRequest
+  ): Promise<ApiResponse | undefined>;
   processRequest(appId: string, data: any): Promise<any>;
   getAppStatus(appId: string): Promise<ConnectedApp>;
   getApps(): Promise<ConnectedApp[]>;

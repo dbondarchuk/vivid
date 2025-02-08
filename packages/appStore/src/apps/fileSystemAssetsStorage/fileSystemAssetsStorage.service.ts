@@ -15,10 +15,6 @@ export default class FileSystemAssetsStorageConnectedApp
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processWebhook(): Promise<void> {
-    // do nothing
-  }
-
   public async processRequest(): Promise<void> {
     // do nothing
   }

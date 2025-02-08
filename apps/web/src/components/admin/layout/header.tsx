@@ -13,7 +13,7 @@ export default function Header({}: {}) {
 
   return (
     <header className="sticky inset-x-0 top-0 w-full">
-      <nav className="flex items-center justify-between px-4 md:px-8 py-2 md:justify-end">
+      <nav className="flex items-center justify-between px-4 lg:px-8 py-2 lg:justify-end">
         <div className={cn("block lg:!hidden")}>
           <AppSidebarTrigger />
         </div>

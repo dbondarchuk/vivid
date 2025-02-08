@@ -14,8 +14,31 @@ export async function changeAppointmentStatus(
   return okStatus;
 }
 
-export async function updatAppointmentNote(id: string, note?: string) {
+export async function updateAppointmentNote(id: string, note?: string) {
   await ServicesContainer.EventsService().updateAppointmentNote(id, note);
+  return okStatus;
+}
+
+export async function addAppointmentFiles(formData: FormData) {
+  const file = formData.get("file") as File;
+  const id = formData.get("appointmentId") as string;
+  if (!id || !file) {
+    throw new Error("Appointment ID and file are required");
+  }
+
+  return await ServicesContainer.EventsService().addAppointmentFiles(id, [
+    file,
+  ]);
+}
+
+export async function removeAppointmentFile(
+  appointmentId: string,
+  assetId: string
+) {
+  await ServicesContainer.EventsService().removeAppointmentFiles(
+    appointmentId,
+    [assetId]
+  );
   return okStatus;
 }
 

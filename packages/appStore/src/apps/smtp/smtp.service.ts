@@ -15,10 +15,6 @@ import { SmtpConfiguration } from "./smtp.models";
 export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processWebhook(): Promise<void> {
-    // do nothing
-  }
-
   public async processRequest(
     appData: ConnectedAppData,
     data: SmtpConfiguration
@@ -89,6 +85,11 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
         subject: email.subject,
         html: email.body,
         icalEvent: icalEvent,
+        attachments: email.attachments?.map((attachment) => ({
+          cid: attachment.cid,
+          filename: attachment.filename,
+          content: attachment.content,
+        })),
       };
 
       const client = this.getClient(smtpConfiguration);

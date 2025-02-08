@@ -135,6 +135,14 @@
                       <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">{{label}} <small>({{name}})</small>: {{ value }}</p>
                     {{/restFields}}
 
+                    {{#images}}
+                        <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;"><img src="cid:{{cid}}" /></p>
+                    {{/images}}
+
+                    {{#files}}
+                      <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">File: <a href="{{ config.url }}/assets/{{filename}}">{{filename}}</a></p>
+                    {{/files}}
+
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Option selected: {{ option.name }}</p>
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">
                       Addons selected: 

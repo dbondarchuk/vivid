@@ -2,6 +2,8 @@
   "extends": "@vivid/typescript-config/react-library.json",
   "compilerOptions": {
     "declaration": false,
+    "declarationMap": false,
+    "composite": false,
     "plugins": [
       {
         "name": "next"

@@ -1,4 +1,4 @@
-import { FileInput, FormControl, FormField, FormItem, Input } from "@vivid/ui";
+import { FormControl, FormField, FormItem, Input } from "@vivid/ui";
 
 import { FieldFileData, WithLabelFieldData } from "@vivid/types";
 import { FieldValues } from "react-hook-form";

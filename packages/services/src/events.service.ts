@@ -28,6 +28,7 @@ import { getAvailableTimeSlotsInCalendar } from "@vivid/utils/src/timeSlot";
 import { DateTime } from "luxon";
 import mimeType from "mime-type/with-db";
 import { Filter, ObjectId, Sort } from "mongodb";
+import { v4 } from "uuid";
 
 const APPOINTMENTS_COLLECTION_NAME = "appointments";
 
@@ -96,7 +97,10 @@ export class EventsService implements IEventsService {
       await this.configurationService.getConfigurations("booking", "general");
 
     if (!force) {
-      const eventTime = DateTime.fromISO(event.dateTime, { zone: "utc" });
+      const eventTime = DateTime.fromISO(event.dateTime, {
+        zone: "utc",
+      }).setZone(config.timezone);
+
       const start = eventTime.startOf("day");
       const end = start.endOf("day");
 
@@ -490,7 +494,7 @@ export class EventsService implements IEventsService {
   public async addAppointmentFiles(
     appointmentId: string,
     files: File[]
-  ): Promise<void> {
+  ): Promise<Asset[]> {
     const db = await getDbConnection();
     const event = await db
       .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
@@ -499,7 +503,7 @@ export class EventsService implements IEventsService {
       });
 
     if (!event) {
-      return;
+      return [];
     }
 
     const assets: Asset[] = [];
@@ -514,9 +518,10 @@ export class EventsService implements IEventsService {
 
         const buffer = await file.arrayBuffer();
 
+        const id = v4();
         const asset = await this.assetsService.createAsset(
           {
-            filename: `${appointmentId}--${file.name}`,
+            filename: `${appointmentId}-${id}-${file.name}`,
             mimeType: fileType,
             appointmentId,
             description: `${event.fields.name} - ${event.option.name}`,
@@ -534,10 +539,14 @@ export class EventsService implements IEventsService {
       },
       {
         $addToSet: {
-          files,
+          files: {
+            $each: assets,
+          },
         },
       }
     );
+
+    return assets;
   }
 
   public async removeAppointmentFiles(

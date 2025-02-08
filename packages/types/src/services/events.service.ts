@@ -1,3 +1,4 @@
+import { Asset } from "../assets";
 import {
   Appointment,
   AppointmentEvent,
@@ -41,7 +42,7 @@ export interface IEventsService {
     newStatus: AppointmentStatus
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
-  addAppointmentFiles(id: string, files: File[]): Promise<void>;
+  addAppointmentFiles(id: string, files: File[]): Promise<Asset[]>;
   removeAppointmentFiles(id: string, filesIds: string[]): Promise<void>;
   rescheduleAppointment(
     id: string,

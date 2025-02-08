@@ -185,6 +185,7 @@ export const AppointmentsTable = <Appointment, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
     manualFiltering: true,
+    manualSorting: true,
   });
 
   const [searchValue, setSearchValue] = React.useState(search);
@@ -254,7 +255,7 @@ export const AppointmentsTable = <Appointment, TValue>({
               {table.getRowModel().rows?.length ? (
                 table
                   .getRowModel()
-                  .rows // .sort((a, b) => a.index - b.index)
+                  .rows //.sort((a, b) => a.index - b.index)
                   .map((row) => (
                     <TableRow
                       key={row.id}

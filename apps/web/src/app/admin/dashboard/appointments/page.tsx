@@ -43,7 +43,9 @@ export default async function AppointmentsPage(props: Params) {
     end,
   };
 
-  const sort: Sort = getSort(searchParams) || [{ key: "dateTime", desc: true }];
+  const sort: Sort = getSort(searchParams) || [
+    { key: "createdAt", desc: true },
+  ];
 
   const res = await ServicesContainer.EventsService().getAppointments({
     range: { start, end },

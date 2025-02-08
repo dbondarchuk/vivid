@@ -3,7 +3,7 @@
   "display": "Default",
   "compilerOptions": {
     "target": "ES2021",
-    "composite": false,
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,

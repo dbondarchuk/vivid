@@ -47,10 +47,6 @@ class OutlookConnectedApp
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processWebhook(): Promise<void> {
-    // do nothing
-  }
-
   public async processRequest(): Promise<void> {
     // do nothing;
   }
@@ -66,8 +62,9 @@ class OutlookConnectedApp
   public async processRedirect(
     request: ApiRequest
   ): Promise<ConnectedAppResponse> {
-    const appId = request.query.state as string;
-    const code = request.query.code as string;
+    const url = new URL(request.url);
+    const appId = url.searchParams.get("state") as string;
+    const code = url.searchParams.get("code") as string;
 
     if (!appId) {
       throw new Error("Redirect request does not contain app ID");
@@ -199,6 +196,19 @@ class OutlookConnectedApp
           contentType: `application/ics; charset=utf-8; method=${email.icalEvent.method.toUpperCase()}`,
           name: email.icalEvent.filename || "invitation.ics",
           contentBytes: Buffer.from(icsContent).toString("base64"),
+        } satisfies FileAttachment);
+      }
+    }
+
+    if (email.attachments) {
+      for (const attachment of email.attachments) {
+        attachments.push({
+          // @ts-expect-error This is required
+          "@odata.type": "#microsoft.graph.fileAttachment",
+          name: attachment.filename,
+          contentType: attachment.contentType,
+          contentBytes: attachment.content.toString("base64"),
+          contentId: attachment.cid,
         } satisfies FileAttachment);
       }
     }

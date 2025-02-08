@@ -151,6 +151,7 @@ export const PagesTable = <Page, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
     manualFiltering: true,
+    manualSorting: true,
   });
 
   const [searchValue, setSearchValue] = React.useState(search);

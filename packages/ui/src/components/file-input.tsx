@@ -19,7 +19,7 @@ export type FileInputProps = InputHTMLAttributes<HTMLInputElement> & {
 
 export const FileInput: React.FC<FileInputProps> = ({
   name,
-  label = name,
+  label,
   accept,
   ...rest
 }) => {
@@ -44,9 +44,9 @@ export const FileInput: React.FC<FileInputProps> = ({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel htmlFor={name}>{label}</FormLabel>
+          {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
           <FormControl>
-            <div {...getRootProps()} className="mb-8">
+            <div {...getRootProps()}>
               <input
                 type="file"
                 {...rest}

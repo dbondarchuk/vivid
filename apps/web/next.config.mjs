@@ -10,7 +10,7 @@ const nextConfig = {
   outputFileTracingRoot: join(__dirname, "../../"),
   experimental: {
     serverActions: {
-      bodySizeLimit: "10mb",
+      bodySizeLimit: "150mb",
     },
     turbo: {
       rules: {
