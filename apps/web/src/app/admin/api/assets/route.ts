@@ -1,6 +1,8 @@
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const mimeType = searchParams.get("mimeType");
@@ -13,5 +15,3 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json(response.items);
 }
-
-export const dynamic = "force-dynamic";
