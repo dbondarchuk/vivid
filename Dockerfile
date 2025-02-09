@@ -69,7 +69,8 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder /app/apps/web/src/i18n/locales ./src/i18n/locales
 
 # Copy node modules for scheduler
-COPY --from=builder /app/node_modules/node-cron ./node_modules/node-cron
+COPY --from=builder /app/node_modules/uuid ./node_modules/uuid
+COPY --from=builder /app/node_modules/node-cron ./node_modules/node-cron 
 COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
 
 # Automatically leverage output traces to reduce image size
