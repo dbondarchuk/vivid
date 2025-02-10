@@ -55,12 +55,18 @@ export const fieldsSchemaMap = {
   },
   [FieldType.File]: (field: Field) => {
     return z
-      .instanceof(File)
+      .custom((f) => typeof f === "undefined" || f instanceof File, {
+        message: "Expected file",
+      })
       .refine((file) => !field.required || !!file, "File is required.")
       .refine(
         (file) => {
+          if (field.required && !file) return false;
+
           const maxSizeMb = (field.data as unknown as FieldFileData)?.maxSizeMb;
-          return !maxSizeMb || !file || file.size < maxSizeMb * 1024 * 1024;
+          return (
+            !maxSizeMb || !file || (file as File).size < maxSizeMb * 1024 * 1024
+          );
         },
         {
           message: `Your file must be less than ${(field.data as unknown as FieldFileData).maxSizeMb}MB.`,

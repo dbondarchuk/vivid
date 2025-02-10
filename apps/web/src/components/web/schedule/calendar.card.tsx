@@ -8,8 +8,7 @@ import { getTimeZones } from "@vvo/tzdb";
 import { Button, Calendar } from "@vivid/ui";
 
 import { withI18n } from "@/i18n/withI18n";
-import { Combobox, IComboboxItem } from "@vivid/ui";
-import { formatJsx } from "@vivid/utils";
+import { Combobox, IComboboxItem, formatJsx } from "@vivid/ui";
 import { Globe2Icon } from "lucide-react";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 import { BaseCard, BaseCardProps, BaseCardState } from "./baseCard";
@@ -135,6 +134,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
   const timezoneCombobox = (
     <Combobox
       values={timeZones}
+      className="mx-2"
       searchLabel={props.i18n("search_timezone_label")}
       customSearch={(search) =>
         timeZones.filter(
@@ -166,7 +166,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
         <h2>{props.i18n("select_date_time_label")}</h2>
       </div>
       <div className="mb-3 flex-col gap-10">
-        <div className="flex flex-col md:flex-row gap-10">
+        <div className="flex flex-col md:flex-row gap-10 not-prose">
           <div className="flex flex-col">
             <div className="mb-3">
               <Calendar
@@ -201,7 +201,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
             )}
           </div>
         </div>
-        <div className="text-sm text-muted-foreground" key="label">
+        <div className="text-sm text-muted-foreground">
           <Globe2Icon className="inline-block mr-1" />
           {timezoneLabel}
         </div>

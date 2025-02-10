@@ -7,6 +7,7 @@ import type {
   AppointmentEvent,
   AppointmentFields,
   DateTime,
+  FieldSchema,
   WithId,
 } from "@vivid/types";
 import { Availability } from "@vivid/types";
@@ -24,6 +25,7 @@ export type ScheduleProps = {
   appointmentOption: AppointmentChoice;
   back?: () => void;
   successPage?: string;
+  fieldsSchema: Record<string, FieldSchema>;
 };
 
 type Step = "duration" | "addons" | "calendar" | "form" | "confirmation";
@@ -65,9 +67,28 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   const [dateTime, setDateTime] = React.useState<DateTime | undefined>(
     undefined
   );
+
   const [selectedAddons, setSelectedAddons] = React.useState<
     AppointmentAddon[]
   >([]);
+
+  const addonsFields =
+    selectedAddons?.flatMap((addon) => addon.fields || []) || [];
+  const allFormFields = [...props.appointmentOption.fields, ...addonsFields];
+  const fieldsIdsRequired = [...allFormFields].reduce(
+    (map, field) => ({
+      ...map,
+      [field.id]: !!map[field.id] || !!field.required,
+    }),
+    {} as Record<string, boolean>
+  );
+
+  const formFields = Object.entries(fieldsIdsRequired)
+    .filter(([id]) => !!props.fieldsSchema[id])
+    .map(([id, required]) => ({
+      ...props.fieldsSchema[id],
+      required: !!props.fieldsSchema[id].required || required,
+    }));
 
   const [availability, setAvailability] = React.useState<Availability>([]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -371,6 +392,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           appointmentOption={props.appointmentOption}
           optionDuration={duration}
           values={fields}
+          fields={formFields}
           onFormChange={setFields}
         />
       )}

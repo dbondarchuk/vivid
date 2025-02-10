@@ -33,7 +33,7 @@ export const getArguments = (
       value,
       label: appointment?.option?.fields?.[name] || name,
     })),
-    restFiles:
+    files:
       appointment?.files?.filter(
         (file) => !file.mimeType.startsWith("image/")
       ) || [],

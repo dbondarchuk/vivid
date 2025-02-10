@@ -1,5 +1,12 @@
 "use client";
-import { AppointmentFields, DateTime, Time, getFields } from "@vivid/types";
+import {
+  AppointmentFields,
+  DateTime,
+  Fields,
+  Time,
+  WithLabelFieldData,
+  getFields,
+} from "@vivid/types";
 
 import React from "react";
 
@@ -20,6 +27,7 @@ import { BaseCard, BaseCardProps } from "./baseCard";
 export type FormCardProps = BaseCardProps & {
   dateTime: DateTime;
   duration: number;
+  fields: Fields<WithLabelFieldData>;
   onSubmit: (values: AppointmentFields) => void;
 };
 
@@ -73,7 +81,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
       });
     }
 
-    const fields = getFields(this.props.appointmentOption.fields);
+    const fields = getFields(this.props.fields);
 
     return (
       <Form {...this.props.form}>
@@ -155,7 +163,7 @@ export const FormCard: React.FC<
   }
 > = ({ values, onFormChange, ...props }) => {
   const formSchema = z.object(
-    getFields(props.appointmentOption.fields).reduce(
+    getFields(props.fields).reduce(
       (prev, field) => {
         prev[field.name] = fieldSchemaMapper(field);
         return prev;

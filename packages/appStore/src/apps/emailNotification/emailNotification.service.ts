@@ -3,7 +3,6 @@ import {
   AppointmentStatus,
   ConnectedAppData,
   ConnectedAppStatusWithText,
-  EmailAttachment,
   IAppointmentHook,
   IConnectedApp,
   IConnectedAppProps,
@@ -12,7 +11,6 @@ import {
   AppointmentStatusToICalMethodMap,
   getArguments,
   getEventCalendarContent,
-  stream2buffer,
 } from "@vivid/utils";
 import { EmailNotificationConfiguration } from "./emailNotification.models";
 
@@ -134,29 +132,6 @@ export class EmailNotificationConnectedApp
       AppointmentStatusToICalMethodMap[status]
     );
 
-    const promises =
-      appointment.files
-        ?.filter((file) => file.mimeType.startsWith("image/"))
-        .map(async (file) => {
-          const result = await this.props.services
-            .AssetsService()
-            .streamAsset(file.filename);
-          if (!result) return null;
-
-          const buffer = await stream2buffer(result.stream);
-
-          return {
-            cid: file._id,
-            content: buffer,
-            filename: file.filename,
-            contentType: file.mimeType,
-          } satisfies EmailAttachment;
-        }) || [];
-
-    const attachments = (await Promise.all(promises)).filter(
-      (attachment) => !!attachment
-    );
-
     await this.props.services.NotificationService().sendEmail({
       email: {
         to: data?.email || generalConfiguration.email,
@@ -168,7 +143,6 @@ export class EmailNotificationConnectedApp
           method: AppointmentStatusToICalMethodMap[status],
           content: eventContent,
         },
-        attachments,
       },
       initiator: `Email Notification Service - ${initiator}`,
       appointmentId: appointment._id,

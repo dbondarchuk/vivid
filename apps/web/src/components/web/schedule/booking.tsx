@@ -29,9 +29,8 @@ export const Booking: React.FC<BookingProps> = async ({
         .filter((f) => !!f) || [];
 
     const optionFields = option.fields || [];
-    const addonsFields = addons.flatMap((addon) => addon.fields || []);
 
-    const fieldsIdsRequired = [...optionFields, ...addonsFields].reduce(
+    const fieldsIdsRequired = [...optionFields].reduce(
       (map, field) => ({
         ...map,
         [field.id]: !!map[field.id] || !!field.required,
@@ -44,6 +43,7 @@ export const Booking: React.FC<BookingProps> = async ({
       .map(([id, required]) => ({
         ...configFields[id],
         required: !!configFields[id].required || required,
+        id: id,
       }));
 
     return {
@@ -58,6 +58,7 @@ export const Booking: React.FC<BookingProps> = async ({
       options={choices}
       optionsClassName={className}
       successPage={successPage}
+      fieldsSchema={configFields}
     />
   );
 };

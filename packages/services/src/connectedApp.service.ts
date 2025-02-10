@@ -28,7 +28,7 @@ export class ConnectedAppService implements IConnectedAppService {
     const app: ConnectedAppData = {
       _id: new ObjectId().toString(),
       status: "pending",
-      statusText: "Pending authorization",
+      statusText: "Pending",
       name,
     };
 

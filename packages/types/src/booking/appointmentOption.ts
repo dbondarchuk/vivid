@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { asOptionalField } from "../utils";
-import { Fields, WithLabelFieldData } from "./fields";
+import { Field, WithLabelFieldData } from "./fields";
 
 export const appointmentOptionSchema = z.object({
   name: z.string().min(2, "Option name must me at least 2 characters long"),
@@ -64,6 +64,6 @@ export const appointmentAddonsSchema = z
 export type AppointmentAddons = z.infer<typeof appointmentAddonsSchema>;
 
 export type AppointmentChoice = Omit<AppointmentOption, "fields" | "addons"> & {
-  fields: Fields<WithLabelFieldData>;
+  fields: (Field<WithLabelFieldData> & { id: string })[];
   addons: AppointmentAddon[];
 };

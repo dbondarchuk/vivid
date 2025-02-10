@@ -1,6 +1,7 @@
-import { createInstance } from "i18next";
+import { createInstance, i18n } from "i18next";
 import resourcesToBackend from "i18next-resources-to-backend";
 import { initReactI18next } from "react-i18next/initReactI18next";
+import type { I18nFn } from "./i18n";
 import { fallbackLanguage, getOptions } from "./settings";
 
 const initI18next = async (language: string, namespace?: string) => {
@@ -17,11 +18,14 @@ const initI18next = async (language: string, namespace?: string) => {
   return i18nInstance;
 };
 
-export async function useTranslation(
+export const useTranslation = async (
   language?: string,
   namespace?: string,
   options?: { keyPrefix?: string }
-) {
+): Promise<{
+  t: I18nFn;
+  i18n: i18n;
+}> => {
   if (!language) {
     language = fallbackLanguage;
   }
@@ -35,4 +39,4 @@ export async function useTranslation(
     ),
     i18n: i18nextInstance,
   };
-}
+};

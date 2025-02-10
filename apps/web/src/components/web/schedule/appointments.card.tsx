@@ -39,7 +39,7 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
             key={option.id}
             onClick={() => onSelect(option.id)}
             onKeyDown={(e) => onKeyPress(option.id, e)}
-            className="cursor-pointer"
+            className="cursor-pointer flex flex-col justify-between"
             tabIndex={1}
             aria-describedby={`option-${option.id}`}
             role="button"
@@ -66,7 +66,7 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
                       )
                     : i18n("duration_custom")}
                 </div>
-                {option.price && (
+                {!!option.price && (
                   <div
                     className="flex flex-row items-center"
                     aria-label={i18n("form_price_label_format", {

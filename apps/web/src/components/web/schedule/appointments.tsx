@@ -3,18 +3,20 @@
 import React from "react";
 import { AppointmentsCard } from "./appointments.card";
 import { Schedule } from "./schedule";
-import { AppointmentChoice } from "@vivid/types";
+import { AppointmentChoice, FieldSchema } from "@vivid/types";
 
 export type AppointmentsProps = {
   options: AppointmentChoice[];
   optionsClassName?: string;
   successPage?: string;
+  fieldsSchema: Record<string, FieldSchema>;
 };
 
 export const Appointments: React.FC<AppointmentsProps> = ({
   options,
   optionsClassName,
   successPage,
+  fieldsSchema,
 }) => {
   const [option, setOption] = React.useState<string | undefined>();
   const selected = options.find((m) => m.id === option);
@@ -32,6 +34,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
           appointmentOption={selected}
           successPage={successPage}
           back={() => setOption(undefined)}
+          fieldsSchema={fieldsSchema}
         />
       )}
     </>

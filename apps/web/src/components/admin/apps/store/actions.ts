@@ -8,7 +8,14 @@ export const getInstalledApps = async (name: string) => {
 };
 
 export const installComplexApp = async (name: string) => {
-  return await ServicesContainer.ConnectedAppService().createNewApp(name);
+  const appId =
+    await ServicesContainer.ConnectedAppService().createNewApp(name);
+  await ServicesContainer.ConnectedAppService().updateApp(appId, {
+    status: "connected",
+    statusText: "Installed",
+  });
+
+  return appId;
 };
 
 export const setAppStatus = async (

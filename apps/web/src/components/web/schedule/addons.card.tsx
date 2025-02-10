@@ -57,7 +57,7 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
               <Card
                 key={option.id}
                 onClick={() => this.onClick(option)}
-                className="cursor-pointer"
+                className="cursor-pointer flex flex-col justify-between"
               >
                 <CardHeader
                   className="flex flex-row w-full"
@@ -66,25 +66,21 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
                   <div className="flex flex-col grow">
                     <CardTitle className="mt-0">{option.name}</CardTitle>
                     <CardDescription className="flex flex-col gap-2">
-                      <div
-                        className="flex flex-row items-center"
-                        aria-label={
-                          option.duration
-                            ? this.props.i18n(
-                                "form_duration_hour_minutes_label_format",
-                                durationToTime(option.duration)
-                              )
-                            : this.props.i18n("custom_duration_label_format")
-                        }
-                      >
-                        <Timer className="mr-1" />
-                        {option.duration
-                          ? this.props.i18n(
-                              "duration_hour_min_format",
-                              durationToTime(option.duration)
-                            )
-                          : this.props.i18n("duration_custom")}
-                      </div>
+                      {option.duration && (
+                        <div
+                          className="flex flex-row items-center"
+                          aria-label={this.props.i18n(
+                            "form_duration_hour_minutes_label_format",
+                            durationToTime(option.duration)
+                          )}
+                        >
+                          <Timer className="mr-1" />
+                          {this.props.i18n(
+                            "duration_hour_min_format",
+                            durationToTime(option.duration)
+                          )}
+                        </div>
+                      )}
                       {option.price && (
                         <div
                           className="flex flex-row items-center"
