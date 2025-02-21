@@ -1,8 +1,8 @@
 import { FormItem, FormControl, FormField } from "@vivid/ui";
 
 import { FieldValues } from "react-hook-form";
-import { FormFieldLabel } from "./formFieldLabel";
-import { getFieldName, IFormFieldProps } from "./formFieldProps";
+import { FormFieldLabel } from "./form-field-label";
+import { getFieldName, IFormFieldProps } from "./form-fiel.types";
 import { FieldOptionsData, WithLabelFieldData } from "@vivid/types";
 import {
   Select,
@@ -11,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@vivid/ui";
-import { FormFieldDescription } from "./formFieldDescription";
-import { FormFieldErrorMessage } from "./formFieldErrorMessage";
+import { FormFieldDescription } from "./form-field-description";
+import { FormFieldErrorMessage } from "./form-field-error-message";
 
 export const SelectField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData & FieldOptionsData>

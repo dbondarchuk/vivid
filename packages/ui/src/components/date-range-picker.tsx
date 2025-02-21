@@ -18,6 +18,9 @@ export const CalendarDateRangePicker: React.FC<
   CalendarDateRangePickerProps
 > = ({ className, range, onChange }) => {
   const [date, setDate] = React.useState<DateRange | undefined>(range);
+  React.useEffect(() => {
+    setDate(range);
+  }, [range]);
 
   const onSelect = (range?: DateRange) => {
     setDate(range);
@@ -32,7 +35,7 @@ export const CalendarDateRangePicker: React.FC<
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start text-left font-normal text-md",
+              "w-full justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >

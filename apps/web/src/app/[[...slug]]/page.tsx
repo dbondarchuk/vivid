@@ -1,4 +1,4 @@
-import { MdxContent } from "@/components/web/mdx/mdxContent";
+import { MdxContent } from "@/components/web/mdx/mdx-content";
 import { ServicesContainer } from "@vivid/services";
 import { cn } from "@vivid/ui";
 import { setPageData } from "@vivid/utils";

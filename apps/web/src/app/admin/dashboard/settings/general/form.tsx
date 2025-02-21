@@ -11,12 +11,12 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
-  InputAssetSelector,
+  AssetSelectorInput,
   PhoneInput,
   SaveButton,
   TagInput,
   Textarea,
-  toast,
+  toastPromise,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -39,21 +39,19 @@ export const GeneralSettingsForm: React.FC<{
   const onSubmit = async (data: GeneralConfiguration) => {
     try {
       setLoading(true);
-      await updateGeneralConfiguration({
-        ...data,
-      });
+      await toastPromise(
+        updateGeneralConfiguration({
+          ...data,
+        }),
+        {
+          success: "Your changes were saved.",
+          error: "There was a problem with your request.",
+        }
+      );
+
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -229,11 +227,13 @@ export const GeneralSettingsForm: React.FC<{
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
-                  <InputAssetSelector
-                    field={field}
+                  <AssetSelectorInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
                     disabled={loading}
                     placeholder="Logo URL"
-                    type="image"
+                    accept="image/*"
                   />
                 </FormControl>
                 <FormMessage />
@@ -253,11 +253,13 @@ export const GeneralSettingsForm: React.FC<{
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
-                  <InputAssetSelector
-                    field={field}
+                  <AssetSelectorInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
                     disabled={loading}
                     placeholder="Favicon URL"
-                    type="image"
+                    accept="image/*"
                   />
                 </FormControl>
                 <FormMessage />

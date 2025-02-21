@@ -4,15 +4,18 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogOverlay,
   DialogTitle,
 } from "./dialog";
 
 interface ModalProps {
   title: string;
-  description: string;
+  description?: string;
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  className?: string;
+  modal?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -21,6 +24,8 @@ export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   children,
+  className,
+  modal = true,
 }) => {
   const onChange = (open: boolean) => {
     if (!open) {
@@ -29,11 +34,11 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onChange}>
-      <DialogContent>
+    <Dialog open={isOpen} onOpenChange={onChange} modal={modal}>
+      <DialogContent className={className} overlayVariant="blur">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         <div>{children}</div>
       </DialogContent>

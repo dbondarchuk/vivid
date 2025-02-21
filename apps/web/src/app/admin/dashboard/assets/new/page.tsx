@@ -1,7 +1,6 @@
 import { AssetForm } from "@/components/admin/assets/form";
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
-import { Heading, Separator } from "@vivid/ui";
+import PageContainer from "@/components/admin/layout/page-container";
+import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },
@@ -12,8 +11,8 @@ const breadcrumbItems = [
 export default async function NewAssetsPage() {
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title="New asset" description="Upload new assets" />
           <Separator />

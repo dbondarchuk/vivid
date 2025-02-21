@@ -1,9 +1,8 @@
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
+import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
-import { Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { notFound } from "next/navigation";
-import { AppointmentView } from "../../../../../components/admin/appointments/appoitment.view";
+import { AppointmentView } from "../../../../../components/admin/appointments/appoitment-view";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -26,8 +25,8 @@ export default async function AppointmentPage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
             title={appointment.option.name}

@@ -90,7 +90,7 @@ export function TimePicker({
           />
         </div>
       )}
-      {/* <div className="flex h-10 items-center">
+      {/* <div className="flex h-9 items-center">
         <Clock className="ml-2 h-4 w-4" />
       </div> */}
       <div className="grid gap-1 text-center">

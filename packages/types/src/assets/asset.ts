@@ -12,3 +12,7 @@ export type AssetUpdate = Omit<
   Asset,
   "_id" | "filename" | "mimeType" | "uploadedAt" | "size"
 >;
+
+export type UploadedFile = Asset & {
+  url: string;
+};

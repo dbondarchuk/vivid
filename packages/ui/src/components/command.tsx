@@ -7,6 +7,8 @@ import { Search } from "lucide-react";
 
 import { cn } from "../utils";
 import { Dialog, DialogContent } from "./dialog";
+import { withVariants } from "../cn";
+import { inputVariants } from "./input";
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -36,6 +38,12 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
     </Dialog>
   );
 };
+
+export const InputCommand = withVariants(
+  CommandPrimitive.Input,
+  inputVariants,
+  ["variant"]
+);
 
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,

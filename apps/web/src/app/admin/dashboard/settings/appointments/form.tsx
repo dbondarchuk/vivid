@@ -1,6 +1,5 @@
 "use client";
 
-import { getArguments } from "@vivid/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   BookingConfiguration,
@@ -17,15 +16,15 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-  toast,
+  toastPromise,
 } from "@vivid/ui";
-import { demoAppointment } from "@vivid/utils";
+import { demoAppointment, getArguments } from "@vivid/utils";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { updateBookingConfiguration } from "./actions";
 import { AddonsTab } from "./tabs/addons";
-import { CalendarSourcesTab } from "./tabs/calendarSources";
+import { CalendarSourcesTab } from "./tabs/calendar-sources";
 import { FieldsTab } from "./tabs/fields";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
@@ -57,19 +56,13 @@ export const AppointmentsSettingsForm: React.FC<{
   const onSubmit = async (data: BookingConfiguration) => {
     try {
       setLoading(true);
-      await updateBookingConfiguration(data);
+      await toastPromise(updateBookingConfiguration(data), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
+      });
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }

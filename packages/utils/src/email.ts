@@ -7,7 +7,7 @@ import {
   ParticipationStatus,
 } from "@vivid/types";
 import { DateTime } from "luxon";
-import { getIcsEventUid } from "./icsUid";
+import { getIcsEventUid } from "./ics-uid";
 
 export type CalendarEventOptions = {
   from: string;

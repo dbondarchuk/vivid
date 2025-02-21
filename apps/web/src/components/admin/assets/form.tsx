@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  FileInput,
+  DndFileInput,
   Form,
   FormControl,
   FormField,
@@ -12,7 +12,8 @@ import {
   Input,
   SaveButton,
   Textarea,
-  useToast,
+  toast,
+  toastPromise,
 } from "@vivid/ui";
 import mimeType from "mime-type/with-db";
 import { useRouter } from "next/navigation";
@@ -38,7 +39,6 @@ type FileFormValues = z.infer<typeof formSchema>;
 
 export const AssetForm: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
-  const { toast } = useToast();
   const router = useRouter();
   const form = useForm<FileFormValues>({
     resolver: zodResolver(formSchema),
@@ -78,22 +78,14 @@ export const AssetForm: React.FC = () => {
         if (value) formData.append(key, value);
       });
 
-      await createAsset(formData);
+      await toastPromise(createAsset(formData), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
+      });
 
       router.push(`/admin/dashboard/assets`);
-      router.refresh();
-
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -102,7 +94,26 @@ export const AssetForm: React.FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-        <FileInput name="files" label="Asset" />
+        <FormField
+          control={form.control}
+          name="files"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Asset</FormLabel>
+              <FormControl>
+                <DndFileInput
+                  disabled={loading}
+                  value={field.value?.[0]}
+                  onChange={(value) => {
+                    field.onChange(value);
+                    field.onBlur();
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField
             control={form.control}

@@ -5,7 +5,9 @@ export const communicationChannels = [
   textMessageCommunicationChannel,
 ] as const;
 
-export type CommunicationDirection = "outbound" | "inbound";
+export const communicationDirectionSchema = ["outbound", "inbound"] as const;
+export type CommunicationDirection =
+  (typeof communicationDirectionSchema)[number];
 
 export type CommunicationChannel = (typeof communicationChannels)[number];
 

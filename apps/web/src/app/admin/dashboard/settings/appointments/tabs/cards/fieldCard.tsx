@@ -4,7 +4,6 @@ import {
   FieldSchema,
   FieldType,
   fileFieldAcceptItemSchema,
-  Time,
 } from "@vivid/types";
 import {
   AccordionContent,
@@ -51,10 +50,9 @@ import {
   Textarea,
 } from "@vivid/ui";
 import { Copy, Trash } from "lucide-react";
+import React from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { SelectFieldOptionCard } from "./selectFieldOptionCard";
-import React from "react";
-import { formatTime } from "@vivid/utils";
 
 export const fieldTypeLabels: Record<FieldType, string> = {
   email: "Email",

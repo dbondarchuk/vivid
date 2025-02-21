@@ -1,6 +1,6 @@
 "use client";
 
-import { ResourcesCard } from "@/components/admin/resource/resources.card";
+import { ResourcesCard } from "@/components/admin/resource/resources-card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   colors as colorOverrides,
@@ -33,10 +33,11 @@ import {
   FormMessage,
   IComboboxItem,
   InfoTooltip,
-  InputColorPicker,
+  ColorPickerInput,
   NonSortable,
   SaveButton,
   toast,
+  toastPromise,
 } from "@vivid/ui";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -107,21 +108,19 @@ export const StylingsConfigurationForm: React.FC<{
   const onSubmit = async (data: StylingConfiguration) => {
     try {
       setLoading(true);
-      await updateStylingConfiguration({
-        ...data,
-      });
+      await toastPromise(
+        updateStylingConfiguration({
+          ...data,
+        }),
+        {
+          success: "Your changes were saved.",
+          error: "There was a problem with your request.",
+        }
+      );
+
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -328,7 +327,7 @@ export const StylingsConfigurationForm: React.FC<{
                               </InfoTooltip>
                             </FormLabel>
                             <FormControl>
-                              <InputColorPicker
+                              <ColorPickerInput
                                 disabled={loading}
                                 placeholder="#ffffff"
                                 field={field}

@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuItemCard } from "@/components/admin/menuItem/menuItemCard";
+import { MenuItemCard } from "@/components/admin/menu-item/menu-item-card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   HeaderConfiguration,
@@ -20,7 +20,7 @@ import {
   SaveButton,
   Sortable,
   Switch,
-  toast,
+  toastPromise,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
@@ -49,19 +49,14 @@ export const HeaderSettingsForm: React.FC<{
   const onSubmit = async (data: HeaderConfiguration) => {
     try {
       setLoading(true);
-      await updateHeaderConfiguration(data);
+      await toastPromise(updateHeaderConfiguration(data), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
+      });
+
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }

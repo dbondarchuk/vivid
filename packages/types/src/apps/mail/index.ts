@@ -1,2 +1,2 @@
-export * from "./eventAttributes";
-export * from "./mailSender";
+export * from "./event-attributes";
+export * from "./mail-sender";

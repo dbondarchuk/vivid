@@ -1,6 +1,6 @@
 "use client";
 
-import { AppointmentCalendar } from "@/components/admin/appointments/appointment.calendar";
+import { AppointmentCalendar } from "@/components/admin/appointments/appointment-calendar";
 import {
   fieldSchemaMapper,
   fieldsComponentMap,
@@ -33,8 +33,10 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   MultiSelect,
+  Spinner,
   Textarea,
   toast,
+  toastPromise,
 } from "@vivid/ui";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";
@@ -227,20 +229,17 @@ export const AppointmentScheduleForm: React.FC<
         note: data.note,
       };
 
-      const id = await createAppointment(appointmentEvent, data.confirmed);
-      router.push(`/admin/dashboard/appointments/${id}`);
+      const id = await toastPromise(
+        createAppointment(appointmentEvent, data.confirmed),
+        {
+          success: "Appointment was succesfully scheduled",
+          error: "There was a problem with your request.",
+        }
+      );
 
-      toast({
-        variant: "default",
-        title: "Scheduled",
-        description: "Appointment was succesfully scheduled",
-      });
+      router.push(`/admin/dashboard/appointments/${id}`);
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -553,7 +552,12 @@ export const AppointmentScheduleForm: React.FC<
           className="ml-auto self-end fixed bottom-4 right-4 inline-flex gap-1 items-center"
           type="submit"
         >
-          <CalendarClock size={20} /> Schedule appointment
+          {loading ? (
+            <Spinner className="w-4 h-4" />
+          ) : (
+            <CalendarClock className="w-4 h-4" />
+          )}{" "}
+          Schedule appointment
         </Button>
       </form>
     </Form>

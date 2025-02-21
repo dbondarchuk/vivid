@@ -1,9 +1,10 @@
-import { Footer } from "@/components/web/footer/Footer";
+import { Footer } from "@/components/web/footer/footer";
 import { Header } from "@/components/web/header";
 import { Toaster } from "@vivid/ui";
 
 import { Resource } from "@vivid/types";
 
+import Color from "color";
 import NextScript from "next/script";
 import { TwLoad } from "../twLoad";
 
@@ -94,7 +95,10 @@ export default async function RootLayout({
   const fonts = await fontsRes.text();
   const colors = (styling?.colors || [])
     .filter((color) => !!color.value)
-    .map(({ type, value }) => `--${type}-color: ${value};`)
+    .map(({ type, value }) => {
+      const color = Color(value).hsl().object();
+      return `--${type}-color: ${color.h.toFixed(1)} ${color.s.toFixed(1)}% ${color.l.toFixed(1)}%;`;
+    })
     .join("\n");
 
   return (

@@ -1,0 +1,16 @@
+{
+  "extends": "@vivid/typescript-config/react-library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "paths": {
+    "@/*": ["./src/*"]
+  },
+  "include": [
+    "src",
+    "src/apps/email-notification/models.ts",
+    "src/apps/file-system-assets-storage/const.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

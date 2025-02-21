@@ -9,6 +9,7 @@ const nextConfig = {
   output: "standalone",
   outputFileTracingRoot: join(__dirname, "../../"),
   experimental: {
+    useCache: true,
     serverActions: {
       bodySizeLimit: "150mb",
     },

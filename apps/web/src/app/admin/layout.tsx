@@ -1,9 +1,9 @@
 import Providers from "@/components/admin/layout/providers";
-import { Toaster } from "@vivid/ui";
+import { SonnerToaster, Toaster } from "@vivid/ui";
 import type { Metadata } from "next";
 import { Inter, Montserrat, Playfair_Display } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import "../globals.css";
+import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +38,7 @@ export default async function RootLayout({
         <NextTopLoader showSpinner={false} />
         <Providers session={undefined}>
           <Toaster />
+          <SonnerToaster />
           {children}
         </Providers>
       </body>

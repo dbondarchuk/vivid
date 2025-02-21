@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AppointmentsCard } from "./appointments.card";
+import { AppointmentsCard } from "./appointments-card";
 import { Schedule } from "./schedule";
 import { AppointmentChoice, FieldSchema } from "@vivid/types";
 

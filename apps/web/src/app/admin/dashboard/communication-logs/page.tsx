@@ -1,18 +1,13 @@
-import { ClearAllCommunicationLogsButton } from "@/components/admin/communicationLogs/clearAllButton";
-import { columns } from "@/components/admin/communicationLogs/table/communicationLogs.columns";
-import { CommunicationLogsTable } from "@/components/admin/communicationLogs/table/communicationLogs.table";
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
-import { ServicesContainer } from "@vivid/services";
+import { ClearAllCommunicationLogsButton } from "@/components/admin/communication-logs/table/clear-all";
 import {
-  CommunicationChannel,
-  communicationChannels,
-  CommunicationDirection,
-  Sort,
-} from "@vivid/types";
-import { Heading, Separator } from "@vivid/ui";
-import { getSort } from "@vivid/utils";
-import { DateTime } from "luxon";
+  searchParamsCache,
+  serialize,
+} from "@/components/admin/communication-logs/table/search-params";
+import { CommunicationLogsTable } from "@/components/admin/communication-logs/table/table";
+import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
+import PageContainer from "@/components/admin/layout/page-container";
+import { Breadcrumbs, DataTableSkeleton, Heading, Separator } from "@vivid/ui";
+import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -25,57 +20,14 @@ const breadcrumbItems = [
 
 export default async function CommunicationLogsPage(props: Params) {
   const searchParams = await props.searchParams;
-  const page = (Number(searchParams.page) || 1) - 1;
-  const limit = Number(searchParams.limit) || 10;
-  const start = searchParams.start
-    ? DateTime.fromISO(searchParams.start as string).toJSDate()
-    : undefined;
-  const end = searchParams.end
-    ? DateTime.fromISO(searchParams.end as string).toJSDate()
-    : undefined;
+  const parsed = searchParamsCache.parse(searchParams);
 
-  const directions: CommunicationDirection[] | undefined =
-    searchParams.direction
-      ? Array.isArray(searchParams.direction)
-        ? (searchParams.direction as CommunicationDirection[])
-        : [searchParams.direction as CommunicationDirection]
-      : ["inbound", "outbound"];
-
-  const channels: CommunicationChannel[] | undefined = searchParams.channel
-    ? Array.isArray(searchParams.channel)
-      ? (searchParams.channel as CommunicationChannel[])
-      : [searchParams.channel as CommunicationChannel]
-    : (communicationChannels as unknown as CommunicationChannel[]);
-
-  const search = searchParams.search as string;
-  const offset = page * limit;
-
-  const range = {
-    start,
-    end,
-  };
-
-  const sort: Sort = getSort(searchParams) || [{ key: "dateTime", desc: true }];
-
-  const res =
-    await ServicesContainer.CommunicationLogService().getCommunicationLogs({
-      range: { start, end },
-      direction: directions,
-      channel: channels,
-      offset,
-      limit,
-      search: search as string,
-      sort,
-    });
-
-  const total = res.total;
-  const pageCount = Math.ceil(total / limit);
-  const logs = res.items;
+  const key = serialize({ ...parsed });
 
   return (
-    <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+    <PageContainer scrollable={false}>
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <div className="flex flex-col gap-2 justify-between">
             <Breadcrumbs items={breadcrumbItems} />
             <div className="flex items-start justify-between">
@@ -89,18 +41,13 @@ export default async function CommunicationLogsPage(props: Params) {
           </div>
           <Separator />
         </div>
-        <CommunicationLogsTable
-          columns={columns}
-          data={logs}
-          limit={limit}
-          page={page}
-          total={total}
-          dateRange={range}
-          directions={directions}
-          channels={channels}
-          search={search}
-          sort={sort}
-        />
+        <CommunicationLogsTableAction />
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={10} rowCount={10} />}
+        >
+          <CommunicationLogsTable />
+        </Suspense>
       </div>
     </PageContainer>
   );

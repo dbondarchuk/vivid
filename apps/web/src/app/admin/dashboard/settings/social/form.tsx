@@ -6,7 +6,7 @@ import {
   socialConfigurationSchema,
   SocialLink,
 } from "@vivid/types";
-import { Form, SaveButton, Sortable, toast } from "@vivid/ui";
+import { Form, SaveButton, Sortable, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -28,19 +28,13 @@ export const SocialSettingsForm: React.FC<{
   const onSubmit = async (data: SocialConfiguration) => {
     try {
       setLoading(true);
-      await updateSocialConfiguration(data);
+      await toastPromise(updateSocialConfiguration(data), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
+      });
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }

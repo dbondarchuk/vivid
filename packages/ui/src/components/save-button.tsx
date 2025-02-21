@@ -10,6 +10,7 @@ import { Spinner } from "./spinner";
 export type SaveButtonProps = {
   form: UseFormReturn<any>;
   disabled?: boolean;
+  ignoreInvalid?: boolean;
   isLoading?: boolean;
   text?: string;
 };
@@ -17,6 +18,7 @@ export type SaveButtonProps = {
 export const SaveButton: React.FC<SaveButtonProps> = ({
   form,
   disabled,
+  ignoreInvalid,
   isLoading: propsIsLoading,
   text = "Save",
 }) => {
@@ -28,7 +30,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   } = useFormState(form);
 
   const classes = cva([
-    "flex flex-row gap-2 items-center ml-auto self-end fixed bottom-4 right-4",
+    "flex flex-row gap-2 items-center ml-auto self-end fixed bottom-4 right-4 z-50",
   ]);
 
   // React.useEffect(() => {
@@ -72,11 +74,17 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
 
   return (
     <Button
-      disabled={disabled || isLoading || !isDirty || !isValid}
+      disabled={
+        disabled || isLoading || (ignoreInvalid ? !isDirty || !isValid : false)
+      }
       className={classes()}
       type="submit"
     >
-      {isLoading ? <Spinner /> : <Save />}
+      {isLoading ? (
+        <Spinner className="w-4 h-4" />
+      ) : (
+        <Save className="w-4 h-4" />
+      )}
       <span>{text}</span>
     </Button>
   );

@@ -1,4 +1,4 @@
-import { AppSelector } from "@/components/admin/apps/appSelector";
+import { AppSelector } from "@/components/admin/apps/app-selector";
 import { AvailableApps } from "@vivid/app-store";
 import { CalendarSourceConfiguration, ConnectedApp } from "@vivid/types";
 import {

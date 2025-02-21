@@ -14,6 +14,7 @@ import {
   Input,
   Spinner,
   toast,
+  toastPromise,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -36,34 +37,27 @@ export const InstallForm: React.FC = () => {
   const onSubmit = async (data: InstallFormData) => {
     try {
       setLoading(true);
-      await install({
-        ...data,
-      });
 
-      toast({
-        variant: "default",
-        title: "Success!",
-        description: "You have successfully create your website!",
-      });
+      await toastPromise(
+        install({
+          ...data,
+        }),
+        {
+          success: "You have successfully create your website!",
+          error: "There was a problem with your request.",
+        }
+      );
 
       router.push("/admin");
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   const onInvalid = () => {
-    toast({
-      variant: "destructive",
-      title: "Please fix errors",
-      description: "Please fix errors in installation form.",
-    });
+    toast.error("Please fix errors in installation form.");
   };
 
   return (

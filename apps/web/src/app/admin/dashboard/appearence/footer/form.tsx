@@ -1,7 +1,7 @@
 "use client";
 
-import { MenuItemCard } from "@/components/admin/menuItem/menuItemCard";
-import { MdxContent } from "@/components/web/mdx/mdxContentClient";
+import { MenuItemCard } from "@/components/admin/menu-item/menu-item-card";
+import { MdxContent } from "@/components/web/mdx/mdx-content-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@monaco-editor/react";
 import {
@@ -26,7 +26,7 @@ import {
   Sortable,
   SupportsMarkdownTooltip,
   Switch,
-  toast,
+  toastPromise,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
@@ -51,19 +51,15 @@ export const FooterSettingsForm: React.FC<{
   const onSubmit = async (data: FooterConfiguration) => {
     try {
       setLoading(true);
-      await updateFooterConfiguration(data);
+
+      await toastPromise(updateFooterConfiguration(data), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
+      });
+
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }

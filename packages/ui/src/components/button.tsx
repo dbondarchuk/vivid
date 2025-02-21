@@ -19,11 +19,13 @@ const buttonVariants = {
 };
 
 const buttonSizes = {
-  default: "h-10 px-4 py-2",
-  sm: "h-9 rounded-md px-3",
-  md: "h-10 rounded-md px-5",
-  lg: "h-11 rounded-md px-8",
-  icon: "h-10 w-10",
+  none: "",
+  default: "h-9 px-4 py-2",
+  xs: "h-7 rounded-md px-3 text-xs",
+  sm: "h-8 rounded-md px-3",
+  md: "h-9 rounded-md px-5",
+  lg: "h-10 rounded-md px-8",
+  icon: "h-9 w-9",
 };
 
 const buttonClasses = cva(
@@ -34,6 +36,9 @@ const buttonClasses = cva(
   ],
   {
     variants: {
+      isMenu: {
+        true: "w-full cursor-pointer justify-start",
+      },
       variant: buttonVariants,
       size: buttonSizes,
     },
@@ -71,6 +76,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       fontWeight,
       font,
       asChild = false,
+      type = "button",
       ...props
     },
     ref
@@ -83,6 +89,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           buttonClasses({ variant, size }),
           className
         )}
+        type={type}
         ref={ref}
         {...props}
       />

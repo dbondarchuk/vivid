@@ -6,11 +6,11 @@ import {
   IAssetsService,
   IAssetsStorage,
   IConfigurationService,
-  IConnectedAppService,
+  IConnectedAppsService,
   Query,
   WithTotal,
 } from "@vivid/types";
-import { buildSearchQuery, escapeRegex } from "@vivid/utils";
+import { buildSearchQuery } from "@vivid/utils";
 
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
@@ -21,7 +21,7 @@ export const ASSETS_COLLECTION_NAME = "assets";
 export class AssetsService implements IAssetsService {
   constructor(
     protected readonly configurationService: IConfigurationService,
-    protected readonly connectedAppService: IConnectedAppService
+    protected readonly connectedAppService: IConnectedAppsService
   ) {}
 
   public async getAsset(_id: string): Promise<Asset | null> {
@@ -37,7 +37,7 @@ export class AssetsService implements IAssetsService {
 
   public async getAssets(
     query: Query & {
-      mimeType?: string;
+      accept?: string[];
     }
   ): Promise<WithTotal<Asset>> {
     const db = await getDbConnection();
@@ -45,7 +45,7 @@ export class AssetsService implements IAssetsService {
     const sort: Sort = query.sort?.reduce(
       (prev, curr) => ({
         ...prev,
-        [curr.key]: curr.desc ? -1 : 1,
+        [curr.id]: curr.desc ? -1 : 1,
       }),
       {}
     ) || { uploadedAt: -1 };
@@ -64,12 +64,16 @@ export class AssetsService implements IAssetsService {
       filter.$or = queries;
     }
 
-    if (query.mimeType) {
+    if (query.accept?.length) {
       filter.$and = [
         {
-          mimeType: {
-            $regex: `^${escapeRegex(query.mimeType)}`,
-          },
+          $or: query.accept
+            .filter((accept) => !!accept)
+            .map((accept) => ({
+              mimeType: {
+                $regex: `^${accept.replaceAll("*", ".*")}$`,
+              },
+            })),
         },
       ];
     }

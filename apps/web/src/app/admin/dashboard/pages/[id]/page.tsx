@@ -1,6 +1,5 @@
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
-import { Heading, Separator } from "@vivid/ui";
+import PageContainer from "@/components/admin/layout/page-container";
+import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { PageForm } from "../../../../../components/admin/pages/form";
 
 import { ServicesContainer } from "@vivid/services";
@@ -26,8 +25,8 @@ export default async function EditPagesPage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-start justify-between">
             <Heading title="Edit page" description={`/${page.slug}`} />

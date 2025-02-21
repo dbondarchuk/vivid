@@ -8,11 +8,11 @@ import {
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import { EmailField } from "./email";
-import { MultiLineField } from "./multiLine";
+import { MultiLineField } from "./multi-line";
 import { NameField } from "./name";
-import { OneLineField } from "./oneLine";
+import { OneLineField } from "./one-line";
 import { PhoneField } from "./phone";
-import { CheckboxField } from "./checkboxField";
+import { CheckboxField } from "./checkbox-field";
 import { SelectField } from "./select";
 import { FileField } from "./file";
 

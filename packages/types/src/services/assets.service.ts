@@ -6,7 +6,7 @@ export interface IAssetsService {
   getAsset(_id: string): Promise<Asset | null>;
   getAssets(
     query: Query & {
-      mimeType?: string;
+      accept?: string[];
     }
   ): Promise<WithTotal<Asset>>;
   createAsset(

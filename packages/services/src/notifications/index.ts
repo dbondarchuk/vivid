@@ -1,1 +1,1 @@
-export * from "./getAppointmentArguments";
+export * from "./get-appointment-arguments";

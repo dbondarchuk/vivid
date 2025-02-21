@@ -1,8 +1,8 @@
 import {
   Email,
-  ICommunicationLogService,
+  ICommunicationLogsService,
   IConfigurationService,
-  IConnectedAppService,
+  IConnectedAppsService,
   IMailSender,
   INotificationService,
   ITextMessageSender,
@@ -15,8 +15,8 @@ import { convert } from "html-to-text";
 export class NotificationService implements INotificationService {
   constructor(
     private readonly configurationService: IConfigurationService,
-    private readonly connectedAppService: IConnectedAppService,
-    private readonly communicationLogService: ICommunicationLogService
+    private readonly connectedAppService: IConnectedAppsService,
+    private readonly communicationLogService: ICommunicationLogsService
   ) {}
 
   public async sendEmail({

@@ -1,9 +1,11 @@
-import { AppointmentCard } from "@/components/admin/appointments/appointment.card";
-import { WeeklyCalendarWrapper } from "@/components/admin/calendar/weeklyCalendar.wrapper";
-import PageContainer from "@/components/admin/layout/pageContainer";
+import { AppointmentCard } from "@/components/admin/appointments/appointment-card";
+import { WeeklyCalendarWrapper } from "@/components/admin/calendar/weekly-calendar-wrapper";
+import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
 import {
   Badge,
+  Breadcrumb,
+  Breadcrumbs,
   Card,
   CardContent,
   CardHeader,
@@ -14,6 +16,8 @@ import {
 } from "@vivid/ui";
 import { DateTime } from "luxon";
 import { Suspense } from "react";
+
+const breadcrumbItems = [{ title: "Dashboard", link: "/admin/dashboard" }];
 
 export default async function Page() {
   const now = DateTime.now();
@@ -35,7 +39,8 @@ export default async function Page() {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="space-y-2">
+      <Breadcrumbs items={breadcrumbItems} />
+      <div className="space-y-2 flex-1">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-2xl font-bold tracking-tight">{name}</h2>
         </div>
@@ -53,7 +58,7 @@ export default async function Page() {
                 </Badge>
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="overview" className="space-y-4">
+            <TabsContent value="overview" className="space-y-4 flex-1">
               <div className="flex flex-col-reverse lg:flex-row gap-8">
                 <div className="flex flex-col basis-2/3">
                   <WeeklyCalendarWrapper
@@ -83,7 +88,7 @@ export default async function Page() {
                 </div>
               </div>
             </TabsContent>
-            <TabsContent value="appointments" className="space-y-4">
+            <TabsContent value="appointments" className="space-y-4 flex-1">
               {pendingAppointments.total === 0 ? (
                 <Card>
                   <CardHeader className="flex text-center font-medium text-lg">

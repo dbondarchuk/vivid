@@ -9,7 +9,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  useToast,
+  toast,
+  toastPromise,
 } from "@vivid/ui";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,6 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
-  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -32,9 +32,8 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
     const url = `/assets/${asset.filename}`;
     copy(url);
 
-    toast({
-      variant: "default",
-      title: "Copied",
+    toast.info("Copied", {
+      icon: <Copy />,
       description: `Asset relative url '${url}' was copied to cliipboard.`,
     });
   };
@@ -43,33 +42,26 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
     const url = `${window.location.origin}/assets/${asset.filename}`;
     copy(url);
 
-    toast({
-      variant: "default",
-      title: "Copied",
+    toast.info("Copied", {
       description: `Asset absolute url '${url}' was copied to cliipboard.`,
+      icon: <Copy />,
     });
   };
 
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await deleteAsset(asset._id);
-      router.refresh();
 
-      toast({
-        variant: "default",
-        title: "Deleted",
-        description: `Asset '${asset.filename}' was deleted.`,
+      await toastPromise(deleteAsset(asset._id), {
+        success: `Asset ${asset.filename} was successfully deleted.`,
+        error: "There was a problem with your request.",
       });
+
+      router.refresh();
 
       setOpen(false);
     } catch (error: any) {
-      setLoading(false);
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -96,17 +88,17 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
           <DropdownMenuItem
             onClick={() => router.push(`/admin/dashboard/assets/${asset._id}`)}
           >
-            <Edit className="mr-2 h-4 w-4" /> Update
+            <Edit className="h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" /> Delete
+            <Trash className="h-4 w-4" /> Delete
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={copyRelative}>
-            <Copy className="mr-2 h-4 w-4" /> Copy relative url
+            <Copy className="h-4 w-4" /> Copy relative url
           </DropdownMenuItem>
           <DropdownMenuItem onClick={copyAbsolute}>
-            <Copy className="mr-2 h-4 w-4" /> Copy absolute url
+            <Copy className="h-4 w-4" /> Copy absolute url
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

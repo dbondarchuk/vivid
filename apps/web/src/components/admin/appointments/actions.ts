@@ -31,6 +31,16 @@ export async function addAppointmentFiles(formData: FormData) {
   ]);
 }
 
+export async function addAppointmentAsset(
+  appointmentId: string,
+  assetId: string
+) {
+  return await ServicesContainer.EventsService().addAppointmentAsset(
+    appointmentId,
+    assetId
+  );
+}
+
 export async function removeAppointmentFile(
   appointmentId: string,
   assetId: string

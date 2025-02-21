@@ -1,4 +1,8 @@
-import { AppointmentAddon, AppointmentOption, WithId } from "@vivid/types";
+import {
+  AppointmentAddon,
+  AppointmentOption,
+  WithDatabaseId,
+} from "@vivid/types";
 import {
   Accordion,
   AccordionContent,
@@ -210,7 +214,7 @@ export const AddonCard: React.FC<AddonProps> = ({
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      className="min-h-10"
+                      className="min-h-9"
                       autoResize
                       disabled={disabled}
                       placeholder="Description"
@@ -300,8 +304,8 @@ export const AddonCard: React.FC<AddonProps> = ({
                       <FieldSelectCard
                         form={form}
                         type="option"
-                        item={item as WithId<any>}
-                        key={(item as WithId<any>).id}
+                        item={item as WithDatabaseId<any>}
+                        key={(item as WithDatabaseId<any>).id}
                         name={`${name}.fields.${index}`}
                         disabled={disabled}
                         remove={() => removeField(index)}

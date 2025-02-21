@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zOptionalOrMinLengthString } from "../../utils";
-import { menuItemsSchema } from "./menuItem";
+import { menuItemsSchema } from "./menu-item";
 
 export const footerConfigurationSchema = z.discriminatedUnion("isCustom", [
   z.object({

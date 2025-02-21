@@ -1,19 +1,19 @@
 import { IServicesContainer } from "@vivid/types";
 import { cache } from "react";
 import { AssetsService } from "./assets.service";
-import { CommunicationLogService } from "./communicationLog.service";
+import { CommunicationLogsService } from "./communication-logs.service";
 import { CachedConfigurationService } from "./configuration.service";
-import { ConnectedAppService } from "./connectedApp.service";
+import { ConnectedAppsService } from "./connected-apps.service";
 import { EventsService } from "./events.service";
 import { NotificationService } from "./notifications.service";
 import { PagesService } from "./pages.service";
+import { TemplatesService } from "./templates.service";
 
 export * from "./assets.service";
-export * from "./communicationLog.service";
+export * from "./communication-logs.service";
 export * from "./configuration.service";
-export * from "./connectedApp.service";
+export * from "./connected-apps.service";
 export * from "./events.service";
-export * from "./meetingService";
 export * from "./pages.service";
 
 export * from "./notifications";
@@ -36,8 +36,9 @@ export const ServicesContainer: IServicesContainer = {
       )
   ),
   PagesService: cache(() => new PagesService()),
-  CommunicationLogService: cache(() => new CommunicationLogService()),
-  ConnectedAppService: cache(() => new ConnectedAppService()),
+  TemplatesService: cache(() => new TemplatesService()),
+  CommunicationLogService: cache(() => new CommunicationLogsService()),
+  ConnectedAppService: cache(() => new ConnectedAppsService()),
   NotificationService: cache(
     () =>
       new NotificationService(

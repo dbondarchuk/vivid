@@ -8,18 +8,18 @@ import type {
   AppointmentFields,
   DateTime,
   FieldSchema,
-  WithId,
+  WithDatabaseId,
 } from "@vivid/types";
 import { Availability } from "@vivid/types";
-import { Spinner, useToast } from "@vivid/ui";
+import { Spinner, toast } from "@vivid/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { AddonsCard } from "./addons.card";
-import { CalendarCard } from "./calendar.card";
-import { ConfirmationCard } from "./confirmation.card";
-import { DurationCard } from "./duration.card";
-import { FormCard } from "./form.card";
+import { AddonsCard } from "./addons-card";
+import { CalendarCard } from "./calendar-card";
+import { ConfirmationCard } from "./confirmation-card";
+import { DurationCard } from "./duration-card";
+import { FormCard } from "./form-card";
 
 export type ScheduleProps = {
   appointmentOption: AppointmentChoice;
@@ -46,7 +46,6 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
     [i18n]
   );
 
-  const { toast } = useToast();
   const topRef = React.createRef<HTMLDivElement>();
 
   const appointmentOptionDuration = props.appointmentOption.duration;
@@ -131,9 +130,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       })
       .catch(() => {
         setAvailability([]);
-        toast({
-          variant: "destructive",
-          title: errors.fetchTitle,
+        toast.error(errors.fetchTitle, {
           description: errors.fetchDescription,
         });
       })
@@ -216,9 +213,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       if (response.status === 400) {
         const error = await response.json();
         if (error.error === "time_not_available") {
-          toast({
-            variant: "destructive",
-            title: errors.submitTitle,
+          toast.error(errors.submitTitle, {
             description: errors.timeNotAvailableDescription,
           });
         }
@@ -231,7 +226,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         throw new Error(response.statusText);
       }
 
-      const { id } = (await response.json()) as WithId<any>;
+      const { id } = (await response.json()) as WithDatabaseId<any>;
 
       if (props.successPage) {
         const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
@@ -245,9 +240,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         setStep("confirmation");
       }
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: errors.submitTitle,
+      toast.error(errors.submitTitle, {
         description: errors.submitDescription,
       });
     } finally {

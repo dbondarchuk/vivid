@@ -3,13 +3,13 @@ import { z } from "zod";
 import {
   appointmentAddonsSchema,
   appointmentOptionSchema,
-} from "../../booking/appointmentOption";
+} from "../../booking/appointment-option";
 import { asOptionalField } from "../../utils";
-import { calendarSourcesConfigurationSchema } from "./calendarSource";
+import { calendarSourcesConfigurationSchema } from "./calendar-source";
 import { fieldsSchema } from "./field";
 import { shiftsSchema } from "./shift";
 
-export * from "./calendarSource";
+export * from "./calendar-source";
 export * from "./field";
 export * from "./shift";
 

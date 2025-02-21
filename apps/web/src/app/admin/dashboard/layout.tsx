@@ -3,12 +3,13 @@ import { AppSidebar } from "@/components/admin/layout/sidebar";
 
 import { navItems } from "@/constants/data";
 import { AvailableApps } from "@vivid/app-store";
+import { ServicesContainer } from "@vivid/services";
 import { ComplexApp, NavItemWithOptionalChildren } from "@vivid/types";
+import { BreadcrumbsProvider, SidebarInset, SidebarProvider } from "@vivid/ui";
 import { DateTime } from "luxon";
 import type { Metadata } from "next";
-import { PendingAppointmentsToast } from "./pendingAppointmentsToast";
-import { ServicesContainer } from "@vivid/services";
-import { SidebarInset, SidebarProvider } from "@vivid/ui";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { PendingAppointmentsToast } from "./pending-appointments-toast";
 
 export const metadata: Metadata = {
   title: "CMS Dashboard",
@@ -71,17 +72,21 @@ export default async function DashboardLayout({
   return (
     <div className="flex">
       <SidebarProvider>
-        <AppSidebar menuItems={menuItems} name={name} logo={logo} />
-        <PendingAppointmentsToast
-          pendingAppointmentsCount={pendingAppointments.total}
-        />
+        <BreadcrumbsProvider>
+          <NuqsAdapter>
+            <AppSidebar menuItems={menuItems} name={name} logo={logo} />
+            <PendingAppointmentsToast
+              pendingAppointmentsCount={pendingAppointments.total}
+            />
 
-        {/* <SidebarInset> */}
-        <main className="w-full flex-1 overflow-hidden">
-          <Header />
-          {children}
-        </main>
-        {/* </SidebarInset> */}
+            <SidebarInset>
+              {/* <main className="w-full flex-1 overflow-hidden"> */}
+              <Header />
+              {children}
+              {/* </main> */}
+            </SidebarInset>
+          </NuqsAdapter>
+        </BreadcrumbsProvider>
       </SidebarProvider>
     </div>
   );

@@ -1,4 +1,4 @@
-import { ClientComponents } from "./clientComponents";
+import { ClientComponents } from "./client-components";
 import { Redirect } from "./web/mdx/redirect";
 import { PageList, PagePublishDate, PageTags, PageTitle } from "./web/pages";
 import { Booking } from "./web/schedule/booking";

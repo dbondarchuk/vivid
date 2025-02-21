@@ -1,8 +1,7 @@
 import {
   IPagesService,
   Page,
-  PageCreate,
-  PageUpdate,
+  PageUpdateModel,
   Query,
   WithTotal,
 } from "@vivid/types";
@@ -14,12 +13,12 @@ import { getDbConnection } from "./database";
 export const PAGES_COLLECTION_NAME = "pages";
 
 export class PagesService implements IPagesService {
-  public async getPage(_id: string): Promise<Page | null> {
+  public async getPage(id: string): Promise<Page | null> {
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
     const page = await pages.findOne({
-      _id,
+      _id: id,
     });
 
     return page;
@@ -48,7 +47,7 @@ export class PagesService implements IPagesService {
     const sort: Sort = query.sort?.reduce(
       (prev, curr) => ({
         ...prev,
-        [curr.key]: curr.desc ? -1 : 1,
+        [curr.id]: curr.desc ? -1 : 1,
       }),
       {}
     ) || { updatedAt: -1 };
@@ -118,7 +117,7 @@ export class PagesService implements IPagesService {
     };
   }
 
-  public async createPage(page: PageCreate): Promise<Page> {
+  public async createPage(page: PageUpdateModel): Promise<Page> {
     const dbPage: Page = {
       ...page,
       _id: new ObjectId().toString(),
@@ -138,7 +137,7 @@ export class PagesService implements IPagesService {
     return dbPage;
   }
 
-  public async updatePage(id: string, update: PageUpdate): Promise<void> {
+  public async updatePage(id: string, update: PageUpdateModel): Promise<void> {
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
@@ -199,7 +198,7 @@ export class PagesService implements IPagesService {
     });
   }
 
-  public async checkUniqueSlug(slug: string, _id?: string): Promise<boolean> {
+  public async checkUniqueSlug(slug: string, id?: string): Promise<boolean> {
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
@@ -207,9 +206,9 @@ export class PagesService implements IPagesService {
       slug,
     };
 
-    if (_id) {
+    if (id) {
       filter._id = {
-        $ne: _id,
+        $ne: id,
       };
     }
 

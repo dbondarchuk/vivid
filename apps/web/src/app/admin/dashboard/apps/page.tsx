@@ -1,9 +1,8 @@
-import { ConnectedAppRow } from "@/components/admin/apps/connectedApp";
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
+import { ConnectedAppRow } from "@/components/admin/apps/connected-app";
+import PageContainer from "@/components/admin/layout/page-container";
 import { AvailableApps } from "@vivid/app-store";
 import { ServicesContainer } from "@vivid/services";
-import { Heading, Link, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading, Link, Separator } from "@vivid/ui";
 import { Boxes, Store } from "lucide-react";
 
 type Params = {
@@ -22,8 +21,8 @@ export default async function AppsPage(props: Params) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-start justify-between">
             <Heading
@@ -44,8 +43,8 @@ export default async function AppsPage(props: Params) {
               </Link>
             </div>
           </div>
+          <Separator />
         </div>
-        <Separator />
         {apps.map((app) => (
           <ConnectedAppRow app={app} key={app._id} />
         ))}

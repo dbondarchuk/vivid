@@ -2,7 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@monaco-editor/react";
-import { Page } from "@vivid/types";
+import {
+  getPageSchemaWithUniqueCheck,
+  Page,
+  pageTagSchema,
+} from "@vivid/types";
 import {
   DateTimePicker,
   Form,
@@ -18,7 +22,7 @@ import {
   Switch,
   TagInput,
   Textarea,
-  useToast,
+  toastPromise,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -27,40 +31,14 @@ import { z } from "zod";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
 
 export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
-  const tagSchema = z
-    .string()
-    .min(3, "Tag should be at least 3 characters long");
-
-  const formSchema = z.object({
-    title: z.string().min(2, "Page title must be at least 2 characters"),
-    content: z.string().min(1, "Page content must be at least 1 character"),
-    slug: z
-      .string()
-      .min(1, { message: "Page slug must be at least 1 character" })
-      .regex(
-        /^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g,
-        "Page slug must contain only latin lower case letters, digits, slash, and hyphens"
-      )
-      .refine((filename) => checkUniqueSlug(filename, initialData?._id), {
-        message: "Page slug must be unique",
-      }),
-    description: z.string().min(1, "Page description is required"),
-    keywords: z.string().min(1, "Page keywords are requried"),
-    published: z.coerce.boolean().default(false),
-    publishDate: z.date({ required_error: "Publish date is required" }),
-    tags: z.array(tagSchema).optional(),
-    doNotCombine: z.object({
-      title: z.coerce.boolean().optional(),
-      description: z.coerce.boolean().optional(),
-      keywords: z.coerce.boolean().optional(),
-    }),
-    fullWidth: z.coerce.boolean().optional(),
-  });
+  const formSchema = getPageSchemaWithUniqueCheck(
+    (slug) => checkUniqueSlug(slug, initialData?._id),
+    "Page slug must be unique"
+  );
 
   type PageFormValues = z.infer<typeof formSchema>;
 
   const [loading, setLoading] = React.useState(false);
-  const { toast } = useToast();
   const router = useRouter();
   const form = useForm<PageFormValues>({
     resolver: zodResolver(formSchema),
@@ -83,26 +61,23 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
     try {
       setLoading(true);
 
-      if (!initialData) {
-        const { _id } = await createPage(data);
-        router.push(`/admin/dashboard/pages/${_id}`);
-      } else {
-        await updatePage(initialData._id, data);
+      const fn = async () => {
+        if (!initialData) {
+          const { _id } = await createPage(data);
+          router.push(`/admin/dashboard/pages/${_id}`);
+        } else {
+          await updatePage(initialData._id, data);
 
-        router.refresh();
-      }
+          router.refresh();
+        }
+      };
 
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
+      await toastPromise(fn(), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
       });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -245,7 +220,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                         field.onChange(e);
                         field.onBlur();
                       }}
-                      tagValidator={tagSchema}
+                      tagValidator={pageTagSchema}
                     />
                   </FormControl>
                   <FormMessage />

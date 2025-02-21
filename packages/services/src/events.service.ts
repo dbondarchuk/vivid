@@ -16,15 +16,15 @@ import type {
   IAssetsService,
   ICalendarBusyTimeProvider,
   IConfigurationService,
-  IConnectedAppService,
+  IConnectedAppsService,
   IEventsService,
   Period,
   Query,
   WithTotal,
 } from "@vivid/types";
 import { buildSearchQuery, escapeRegex, parseTime } from "@vivid/utils";
-import { getIcsEventUid } from "@vivid/utils/src/icsUid";
-import { getAvailableTimeSlotsInCalendar } from "@vivid/utils/src/timeSlot";
+import { getIcsEventUid } from "@vivid/utils/src/ics-uid";
+import { getAvailableTimeSlotsInCalendar } from "@vivid/utils/src/time-slot";
 import { DateTime } from "luxon";
 import mimeType from "mime-type/with-db";
 import { Filter, ObjectId, Sort } from "mongodb";
@@ -35,7 +35,7 @@ const APPOINTMENTS_COLLECTION_NAME = "appointments";
 export class EventsService implements IEventsService {
   constructor(
     private readonly configurationService: IConfigurationService,
-    private readonly appsService: IConnectedAppService,
+    private readonly appsService: IConnectedAppsService,
     private readonly assetsService: IAssetsService
   ) {}
 
@@ -284,7 +284,7 @@ export class EventsService implements IEventsService {
     const sort: Sort = query.sort?.reduce(
       (prev, curr) => ({
         ...prev,
-        [curr.key]: curr.desc ? -1 : 1,
+        [curr.id]: curr.desc ? -1 : 1,
       }),
       {}
     ) || { dateTime: -1 };
@@ -521,7 +521,7 @@ export class EventsService implements IEventsService {
         const id = v4();
         const asset = await this.assetsService.createAsset(
           {
-            filename: `${appointmentId}-${id}-${file.name}`,
+            filename: `appointments/${appointmentId}/${id}-${file.name}`,
             mimeType: fileType,
             appointmentId,
             description: `${event.fields.name} - ${event.option.name}`,
@@ -549,6 +549,25 @@ export class EventsService implements IEventsService {
     return assets;
   }
 
+  public async addAppointmentAsset(id: string, assetId: string): Promise<void> {
+    const asset = await this.assetsService.getAsset(assetId);
+    if (!asset) {
+      throw new Error("Asset not found");
+    }
+
+    const db = await getDbConnection();
+    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
+      {
+        _id: id,
+      },
+      {
+        $addToSet: {
+          files: asset,
+        },
+      }
+    );
+  }
+
   public async removeAppointmentFiles(
     id: string,
     filesIds: string[]
@@ -569,6 +588,8 @@ export class EventsService implements IEventsService {
         },
       }
     );
+
+    await this.assetsService.deleteAssets(filesIds);
   }
 
   public async rescheduleAppointment(

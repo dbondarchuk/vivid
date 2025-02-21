@@ -1,7 +1,6 @@
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
+import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
-import { Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { ScriptsSettingsForm } from "./form";
 
 const breadcrumbItems = [
@@ -16,8 +15,8 @@ export default async function Page() {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
             title="Scripts"

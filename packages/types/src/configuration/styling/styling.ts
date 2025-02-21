@@ -36,7 +36,11 @@ export const colorsEnum = z.enum(colors, { message: "Unknown color setting" });
 
 export const colorOverrideSchema = z.object({
   type: colorsEnum,
-  value: z.string().min(1, "Color required"),
+  value: z
+    .string()
+    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, {
+      message: "Color must be a valid HEX value, starting with #",
+    }),
 });
 
 export type ColorOverrideSchema = z.infer<typeof colorOverrideSchema>;

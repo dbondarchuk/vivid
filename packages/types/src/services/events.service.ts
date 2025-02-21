@@ -43,6 +43,7 @@ export interface IEventsService {
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
   addAppointmentFiles(id: string, files: File[]): Promise<Asset[]>;
+  addAppointmentAsset(id: string, assetId: string): Promise<void>;
   removeAppointmentFiles(id: string, filesIds: string[]): Promise<void>;
   rescheduleAppointment(
     id: string,

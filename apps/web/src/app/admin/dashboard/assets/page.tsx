@@ -1,12 +1,19 @@
-import { columns } from "@/components/admin/assets/table/assets.columns";
-import { AssetsTable } from "@/components/admin/assets/table/assets.table";
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
-import { ServicesContainer } from "@vivid/services";
-import { Sort } from "@vivid/types";
-import { Heading, Link, Separator } from "@vivid/ui";
-import { getSort } from "@vivid/utils";
-import { Plus } from "lucide-react";
+import {
+  searchParamsCache,
+  serialize,
+} from "@/components/admin/assets/table/search-params";
+import { AssetsTable } from "@/components/admin/assets/table/table";
+import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
+import PageContainer from "@/components/admin/layout/page-container";
+import {
+  Breadcrumbs,
+  DataTableSkeleton,
+  Heading,
+  Link,
+  Separator,
+} from "@vivid/ui";
+import { Upload } from "lucide-react";
+import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -19,49 +26,31 @@ const breadcrumbItems = [
 
 export default async function AssetsPage(props: Params) {
   const searchParams = await props.searchParams;
-  const page = (Number(searchParams.page) || 1) - 1;
-  const limit = Number(searchParams.limit) || 10;
+  const parsed = searchParamsCache.parse(searchParams);
 
-  const search = searchParams.search as string;
-  const offset = page * limit;
-
-  const sort: Sort = getSort(searchParams) || [
-    { key: "uploadedAt", desc: true },
-  ];
-
-  const res = await ServicesContainer.AssetsService().getAssets({
-    offset,
-    limit,
-    search: search as string,
-    sort,
-  });
-
-  const total = res.total;
-  const assets = res.items;
+  const key = serialize({ ...parsed });
 
   return (
-    <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+    <PageContainer scrollable={false}>
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-start justify-between">
-            <Heading title="Assets" description="Manage assets" />
+            <Heading title="Assets" />
 
             <Link button href={"/admin/dashboard/assets/new"} variant="default">
-              <Plus className="mr-2 h-4 w-4" /> Add New
+              <Upload className="mr-2 h-4 w-4" /> Add New
             </Link>
           </div>
+          <Separator />
         </div>
-        <Separator />
-        <AssetsTable
-          columns={columns}
-          data={assets}
-          limit={limit}
-          page={page}
-          total={total}
-          sort={sort}
-          search={search}
-        />
+        <AssetsTableAction />
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={7} rowCount={10} />}
+        >
+          <AssetsTable />
+        </Suspense>
       </div>
     </PageContainer>
   );

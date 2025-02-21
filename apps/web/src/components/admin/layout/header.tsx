@@ -1,8 +1,8 @@
-import { cn, Link } from "@vivid/ui";
+import { Link, Separator, SidebarTrigger } from "@vivid/ui";
 import { Globe2 } from "lucide-react";
-import { AppSidebarTrigger } from "./sidebar";
-import ThemeToggle from "./themeToggle/themeToggle";
-import { Breadcrumbs } from "./breadcrumbs";
+import { BreadcrumbsRender } from "./breadcrumbs";
+import ThemeToggle from "./theme-toggle/theme-toggle";
+import { UserNav } from "./user-nav";
 
 export default function Header({}: {}) {
   const breadcrumbItems = [
@@ -13,10 +13,16 @@ export default function Header({}: {}) {
 
   return (
     <header className="sticky inset-x-0 top-0 w-full">
-      <nav className="flex items-center justify-between px-4 lg:px-8 py-2 lg:justify-end">
-        <div className={cn("block lg:!hidden")}>
+      <nav className="flex items-center justify-between px-4 lg:px-8 py-2">
+        {/* <div className={cn("block lg:!hidden")}>
           <AppSidebarTrigger />
+        </div> */}
+        <div className="flex items-center gap-2">
+          <SidebarTrigger className="-ml-3 h-7 w-7" iconSize={18} />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <BreadcrumbsRender />
         </div>
+
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Link
@@ -26,7 +32,8 @@ export default function Header({}: {}) {
             variant="default"
             className="inline-flex items-center gap-1"
           >
-            <Globe2 size={16} /> View website
+            <Globe2 size={16} />{" "}
+            <span className="hidden md:inline">View website</span>
           </Link>
         </div>
       </nav>

@@ -1,9 +1,9 @@
 "use client";
 
-import { ResourcesCard } from "@/components/admin/resource/resources.card";
+import { ResourcesCard } from "@/components/admin/resource/resources-card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ScriptsConfiguration, scriptsConfigurationSchema } from "@vivid/types";
-import { Form, SaveButton, toast } from "@vivid/ui";
+import { Form, SaveButton, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -24,19 +24,14 @@ export const ScriptsSettingsForm: React.FC<{
   const onSubmit = async (data: ScriptsConfiguration) => {
     try {
       setLoading(true);
-      await updateScriptsConfiguration(data);
+      await toastPromise(updateScriptsConfiguration(data), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
+      });
+
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }

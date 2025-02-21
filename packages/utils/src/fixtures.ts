@@ -1,4 +1,5 @@
 import { Appointment, AppointmentFields } from "@vivid/types";
+import { v4 } from "uuid";
 
 const proxyHandler = {
   get: function (target: Record<string, any>, name: string) {
@@ -9,8 +10,9 @@ const proxyHandler = {
   },
 };
 
+const appointmentId = "hjsjrlklfsdnx";
 export const demoAppointment: Appointment = {
-  _id: "hjsjrlklfsdnx",
+  _id: appointmentId,
   createdAt: new Date(2024, 10, 20, 9, 0, 0),
   dateTime: new Date(2024, 10, 20, 9, 0, 0),
   status: "confirmed",
@@ -26,6 +28,44 @@ export const demoAppointment: Appointment = {
     price: 50,
     fields: {},
   },
+  files: [
+    {
+      _id: v4(),
+      filename: "placeholder/400x200.png",
+      mimeType: "image/png",
+      size: 2300,
+      uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
+      appointmentId,
+      description: "Image 1",
+    },
+    {
+      _id: v4(),
+      filename: "placeholder/400x200.png",
+      mimeType: "image/png",
+      size: 2300,
+      uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
+      appointmentId,
+      description: "Image 2",
+    },
+    {
+      _id: v4(),
+      filename: "file1.mp4",
+      mimeType: "video/mp4",
+      size: 2300,
+      uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
+      appointmentId,
+      description: "Video 1",
+    },
+    {
+      _id: v4(),
+      filename: "file2.mp4",
+      mimeType: "video/mp4",
+      size: 2300,
+      uploadedAt: new Date(2024, 10, 20, 9, 0, 0),
+      appointmentId,
+      description: "Video 2",
+    },
+  ],
   addons: [
     {
       id: "addon1",

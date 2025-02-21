@@ -27,7 +27,7 @@ import {
 } from "@vivid/ui";
 import { ChevronDown, icons, Menu, X } from "lucide-react";
 import React from "react";
-import { HeaderWithScrollShadow } from "./withScrollShadow";
+import { HeaderWithScrollShadow } from "./with-scroll-shadow";
 
 export type HeaderProps = {
   name: string;

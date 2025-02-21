@@ -1,6 +1,6 @@
 "use client";
 
-import { AppSelector } from "@/components/admin/apps/appSelector";
+import { AppSelector } from "@/components/admin/apps/app-selector";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ConnectedApp,
@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
   SaveButton,
-  toast,
+  toastPromise,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -38,19 +38,14 @@ export const DefaultAppsConfigurationForm: React.FC<{
   const onSubmit = async (data: DefaultAppsConfiguration) => {
     try {
       setLoading(true);
-      await updateDefaultAppsConfiguration(data);
+      await toastPromise(updateDefaultAppsConfiguration(data), {
+        success: "Your changes were saved.",
+        error: "There was a problem with your request.",
+      });
+
       router.refresh();
-      toast({
-        variant: "default",
-        title: "Saved",
-        description: "Your changes were saved.",
-      });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }

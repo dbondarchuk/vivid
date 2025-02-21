@@ -6,6 +6,7 @@ export * from "./communication";
 export * from "./database";
 export * from "./general";
 export * from "./pages";
+export * from "./templates";
 
 export * from "./configuration";
 

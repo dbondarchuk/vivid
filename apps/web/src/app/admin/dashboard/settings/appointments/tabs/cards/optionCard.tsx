@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { AppointmentOption, WithId } from "@vivid/types";
+import { AppointmentOption, WithDatabaseId } from "@vivid/types";
 import {
   Accordion,
   AccordionContent,
@@ -275,7 +275,7 @@ export const OptionCard: React.FC<OptionProps> = ({
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      className="min-h-10"
+                      className="min-h-9"
                       autoResize
                       disabled={disabled}
                       placeholder="Description"
@@ -365,8 +365,8 @@ export const OptionCard: React.FC<OptionProps> = ({
                       <FieldSelectCard
                         form={form}
                         type="option"
-                        item={item as WithId<any>}
-                        key={(item as WithId<any>).id}
+                        item={item as WithDatabaseId<any>}
+                        key={(item as WithDatabaseId<any>).id}
                         name={`${name}.fields.${index}`}
                         disabled={disabled}
                         remove={() => removeField(index)}
@@ -397,8 +397,8 @@ export const OptionCard: React.FC<OptionProps> = ({
                     return (
                       <AddonSelectCard
                         form={form}
-                        item={item as WithId<any>}
-                        key={(item as WithId<any>).id}
+                        item={item as WithDatabaseId<any>}
+                        key={(item as WithDatabaseId<any>).id}
                         name={`${name}.addons.${index}`}
                         disabled={disabled}
                         remove={() => removeAddon(index)}

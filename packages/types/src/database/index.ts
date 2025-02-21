@@ -1,2 +1,3 @@
 export * from "./query";
-export * from "./withTotal";
+export * from "./with-id";
+export * from "./with-total";

@@ -13,15 +13,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   Link,
-  ScrollArea,
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -29,22 +26,13 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
   useSidebar,
 } from "@vivid/ui";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Folder,
-  Forward,
-  Menu,
-  Trash2,
-} from "lucide-react";
+import { ChevronRight, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { UserNav } from "./userNav";
+import { UserNav } from "./user-nav";
 
 type SidebarProps = {
   className?: string;
@@ -76,10 +64,13 @@ export const AppSidebar: React.FC<SidebarProps> = ({
   logo,
 }) => {
   const path = usePathname();
-  const { open, isMobile } = useSidebar();
+  const { open, isMobile, setOpenMobile } = useSidebar();
+  React.useEffect(() => {
+    setOpenMobile(false);
+  }, [path, setOpenMobile]);
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenuButton size="lg">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
@@ -180,7 +171,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                 ) : (
                   <SidebarMenuItem>
                     <SidebarMenuButton
-                      // className="text-sidebar-foreground/70"
+                      className="text-sidebar-foreground"
                       asChild
                       tooltip={item.title}
                     >

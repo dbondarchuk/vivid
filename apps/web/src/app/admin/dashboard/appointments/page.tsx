@@ -1,13 +1,19 @@
-import { columns } from "@/components/admin/appointments/table/appointments.columns";
-import { AppointmentsTable } from "@/components/admin/appointments/table/appointments.table";
-import { Breadcrumbs } from "@/components/admin/layout/breadcrumbs";
-import PageContainer from "@/components/admin/layout/pageContainer";
-import { ServicesContainer } from "@vivid/services";
-import { AppointmentStatus, appointmentStatuses, Sort } from "@vivid/types";
-import { Heading, Link, Separator } from "@vivid/ui";
-import { getSort } from "@vivid/utils";
+import { AppointmentsTable } from "@/components/admin/appointments/table/table";
+import {
+  searchParamsCache,
+  serialize,
+} from "@/components/admin/appointments/table/search-params";
+import { AppointmentsTableAction } from "@/components/admin/appointments/table/table-action";
+import PageContainer from "@/components/admin/layout/page-container";
+import {
+  Breadcrumbs,
+  DataTableSkeleton,
+  Heading,
+  Link,
+  Separator,
+} from "@vivid/ui";
 import { CalendarClock } from "lucide-react";
-import { DateTime } from "luxon";
+import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -20,54 +26,18 @@ const breadcrumbItems = [
 
 export default async function AppointmentsPage(props: Params) {
   const searchParams = await props.searchParams;
-  const page = (Number(searchParams.page) || 1) - 1;
-  const limit = Number(searchParams.limit) || 10;
-  const start = searchParams.start
-    ? DateTime.fromISO(searchParams.start as string).toJSDate()
-    : undefined;
-  const end = searchParams.end
-    ? DateTime.fromISO(searchParams.end as string).toJSDate()
-    : undefined;
+  const parsed = searchParamsCache.parse(searchParams);
 
-  const statuses: AppointmentStatus[] | undefined = searchParams.status
-    ? Array.isArray(searchParams.status)
-      ? (searchParams.status as AppointmentStatus[])
-      : [searchParams.status as AppointmentStatus]
-    : appointmentStatuses.filter((s) => s !== "declined");
-
-  const search = searchParams.search as string;
-  const offset = page * limit;
-
-  const range = {
-    start,
-    end,
-  };
-
-  const sort: Sort = getSort(searchParams) || [
-    { key: "createdAt", desc: true },
-  ];
-
-  const res = await ServicesContainer.EventsService().getAppointments({
-    range: { start, end },
-    status: statuses,
-    offset,
-    limit,
-    search: search as string,
-    sort,
-  });
-
-  const total = res.total;
-  const pageCount = Math.ceil(total / limit);
-  const appointments = res.items;
+  const key = serialize({ ...parsed });
 
   return (
-    <PageContainer scrollable={true}>
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2 justify-between">
+    <PageContainer scrollable={false}>
+      <div className="flex flex-1 flex-col gap-8">
+        <div className="flex flex-col gap-4 justify-between">
           <div className="flex flex-col gap-2 justify-between">
             <Breadcrumbs items={breadcrumbItems} />
             <div className="flex items-start justify-between">
-              <Heading title="Appointments" description="Manage appoinments" />
+              <Heading title="Appointments" />
 
               <Link
                 button
@@ -82,17 +52,13 @@ export default async function AppointmentsPage(props: Params) {
           </div>
           <Separator />
         </div>
-        <AppointmentsTable
-          columns={columns}
-          data={appointments}
-          limit={limit}
-          page={page}
-          total={total}
-          dateRange={range}
-          statuses={statuses}
-          search={search}
-          sort={sort}
-        />
+        <AppointmentsTableAction />
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={8} rowCount={10} />}
+        >
+          <AppointmentsTable />
+        </Suspense>
       </div>
     </PageContainer>
   );

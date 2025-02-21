@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { menuItemsWithSubMenuSchema } from "./menuItem";
+import { menuItemsWithSubMenuSchema } from "./menu-item";
 
 export const headerShadowType = z.enum(["none", "static", "on-scroll"]);
 

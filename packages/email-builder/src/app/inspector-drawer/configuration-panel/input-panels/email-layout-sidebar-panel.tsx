@@ -1,0 +1,79 @@
+import React, { useState } from "react";
+
+import EmailLayoutPropsSchema, {
+  EmailLayoutProps,
+} from "../../../../documents/blocks/email-layout/schema";
+
+import BaseSidebarPanel from "./helpers/base-sidebar-panel";
+import ColorInput, { NullableColorInput } from "./helpers/inputs/color-input";
+import { NullableFontFamily } from "./helpers/inputs/font-family";
+import SliderInput from "./helpers/inputs/slider-input";
+import { DraftingCompass } from "lucide-react";
+import TextInput from "./helpers/inputs/text-input";
+
+type EmailLayoutSidebarFieldsProps = {
+  data: EmailLayoutProps;
+  setData: (v: EmailLayoutProps) => void;
+};
+export default function EmailLayoutSidebarFields({
+  data,
+  setData,
+}: EmailLayoutSidebarFieldsProps) {
+  const [, setErrors] = useState<Zod.ZodError | null>(null);
+
+  const updateData = (d: unknown) => {
+    const res = EmailLayoutPropsSchema.safeParse(d);
+    if (res.success) {
+      setData(res.data);
+      setErrors(null);
+    } else {
+      setErrors(res.error);
+    }
+  };
+
+  return (
+    <BaseSidebarPanel title="Global">
+      <ColorInput
+        label="Backdrop color"
+        defaultValue={data.backdropColor ?? "#F5F5F5"}
+        onChange={(backdropColor) => updateData({ ...data, backdropColor })}
+      />
+      <ColorInput
+        label="Canvas color"
+        defaultValue={data.canvasColor ?? "#FFFFFF"}
+        onChange={(canvasColor) => updateData({ ...data, canvasColor })}
+      />
+      <NullableColorInput
+        label="Canvas border color"
+        defaultValue={data.borderColor ?? null}
+        onChange={(borderColor) => updateData({ ...data, borderColor })}
+      />
+      <SliderInput
+        iconLabel={<DraftingCompass />}
+        units="px"
+        step={4}
+        min={0}
+        max={48}
+        label="Canvas border radius"
+        defaultValue={data.borderRadius ?? 0}
+        onChange={(borderRadius) => updateData({ ...data, borderRadius })}
+      />
+      <NullableFontFamily
+        label="Font family"
+        defaultValue="MODERN_SANS"
+        onChange={(fontFamily) => updateData({ ...data, fontFamily })}
+      />
+      <ColorInput
+        label="Text color"
+        defaultValue={data.textColor ?? "#262626"}
+        onChange={(textColor) => updateData({ ...data, textColor })}
+      />
+      <TextInput
+        label="Preview text"
+        defaultValue=""
+        rows={5}
+        onChange={(previewText) => updateData({ ...data, previewText })}
+      />
+    </BaseSidebarPanel>
+  );
+}

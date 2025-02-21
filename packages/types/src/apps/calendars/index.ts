@@ -1,1 +1,1 @@
-export * from "./calendarBusyTimeProvider";
+export * from "./calendar-busy-time-provider";

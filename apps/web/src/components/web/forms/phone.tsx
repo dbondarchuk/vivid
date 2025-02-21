@@ -2,13 +2,13 @@ import { FormControl, FormField, FormItem } from "@vivid/ui";
 import React from "react";
 
 import { FieldValues } from "react-hook-form";
-import { getFieldName, IFormFieldProps } from "./formFieldProps";
+import { getFieldName, IFormFieldProps } from "./form-fiel.types";
 
 import { WithLabelFieldData } from "@vivid/types";
 import { PhoneInput } from "@vivid/ui";
-import { FormFieldDescription } from "./formFieldDescription";
-import { FormFieldErrorMessage } from "./formFieldErrorMessage";
-import { FormFieldLabel } from "./formFieldLabel";
+import { FormFieldDescription } from "./form-field-description";
+import { FormFieldErrorMessage } from "./form-field-error-message";
+import { FormFieldLabel } from "./form-field-label";
 import { useI18n } from "@/i18n/i18n";
 
 export const PhoneField: <T extends FieldValues>(

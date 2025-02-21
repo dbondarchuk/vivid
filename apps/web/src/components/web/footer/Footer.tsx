@@ -1,10 +1,10 @@
 import { icons } from "lucide-react";
-import { SocialIcons } from "../socialIcons";
+import { SocialIcons } from "../social-icons";
 import { Icon } from "@vivid/ui";
 import { Link } from "@vivid/ui";
 import { cn } from "@vivid/ui";
 import { MenuItem } from "@vivid/types";
-import { MdxContent } from "../mdx/mdxContent";
+import { MdxContent } from "../mdx/mdx-content";
 import { ServicesContainer } from "@vivid/services";
 
 const DefaultFooter: React.FC<{

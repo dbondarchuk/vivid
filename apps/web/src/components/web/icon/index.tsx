@@ -1,7 +1,7 @@
 import { cx } from "class-variance-authority";
 import { Children, cloneElement, isValidElement, SVGProps } from "react";
 import { twMerge } from "tailwind-merge";
-import { CustomIcons } from "./customIcons";
+import { CustomIcons } from "./custom-icons";
 import { IconProps } from "./types";
 
 export const Icon: React.FC<IconProps> = ({

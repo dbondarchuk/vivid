@@ -25,7 +25,6 @@
     "@vivid/utils": "*",
     "@vivid/app-store": "*",
     "html-to-text": "^9.0.5",
-    "mime-type": "^5.0.0",
     "mongodb": "^6.8.0"
   }
 }

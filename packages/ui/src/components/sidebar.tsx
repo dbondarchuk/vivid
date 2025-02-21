@@ -3,9 +3,9 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import { PanelLeft, PanelRight } from "lucide-react";
 
-import { useIsMobile } from "../hooks/useMobile";
+import { useIsMobile } from "../hooks/use-mobile";
 import { cn } from "../utils";
 import { Button } from "./button";
 import { Input } from "./input";
@@ -261,8 +261,11 @@ Sidebar.displayName = "Sidebar";
 
 const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
-  React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
+  React.ComponentProps<typeof Button> & {
+    position?: "left" | "right";
+    iconSize?: string | number;
+  }
+>(({ className, onClick, position = "left", iconSize, ...props }, ref) => {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -271,14 +274,18 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
+      className={cn(className)}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
       }}
       {...props}
     >
-      <PanelLeft />
+      {position === "right" ? (
+        <PanelRight size={iconSize} />
+      ) : (
+        <PanelLeft size={iconSize} />
+      )}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
@@ -316,10 +323,13 @@ SidebarRail.displayName = "SidebarRail";
 
 const SidebarInset = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"main">
->(({ className, ...props }, ref) => {
+  React.ComponentProps<"div"> & {
+    asDiv?: boolean;
+  }
+>(({ className, asDiv, ...props }, ref) => {
+  const Comp = asDiv ? "div" : "main";
   return (
-    <main
+    <Comp
       ref={ref}
       className={cn(
         "relative flex min-h-svh flex-1 flex-col bg-background",

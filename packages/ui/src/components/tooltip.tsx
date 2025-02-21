@@ -1,30 +1,92 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
+
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { withCn, withProps } from "../cn";
 
-import { cn } from "../utils";
+import { Button } from "./button";
 
-const TooltipProvider = TooltipPrimitive.Provider;
+export const TooltipProvider = withProps(TooltipPrimitive.Provider, {
+  delayDuration: 0,
+  disableHoverableContent: true,
+  skipDelayDuration: 0,
+});
 
-const Tooltip = TooltipPrimitive.Root;
+export const Tooltip = TooltipPrimitive.Root;
 
-const TooltipTrigger = TooltipPrimitive.Trigger;
+export const TooltipTrigger = TooltipPrimitive.Trigger;
 
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className
-    )}
-    {...props}
-  />
-));
-TooltipContent.displayName = TooltipPrimitive.Content.displayName;
+export const TooltipPortal = TooltipPrimitive.Portal;
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+export const TooltipContent = withCn(
+  withProps(TooltipPrimitive.Content, {
+    sideOffset: 4,
+  }),
+  "z-50 overflow-hidden rounded-md bg-black px-3 py-1.5 text-sm font-semibold text-white shadow-md"
+);
+
+type TooltipProps<T extends React.ElementType> = {
+  delayDuration?: number;
+  disableHoverableContent?: boolean;
+  skipDelayDuration?: number;
+  tooltip?: React.ReactNode;
+  tooltipContentProps?: Omit<
+    React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>,
+    "children"
+  >;
+  tooltipProps?: Omit<
+    React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>,
+    "children"
+  >;
+  tooltipTriggerProps?: React.ComponentPropsWithoutRef<
+    typeof TooltipPrimitive.Trigger
+  >;
+} & React.ComponentProps<T>;
+
+export function withTooltip<T extends React.ElementType>(Component: T) {
+  return function ExtendComponent({
+    delayDuration = 0,
+    disableHoverableContent = true,
+    skipDelayDuration = 0,
+    tooltip,
+    tooltipContentProps,
+    tooltipProps,
+    tooltipTriggerProps,
+    ...props
+  }: TooltipProps<T>) {
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+      setMounted(true);
+    }, []);
+
+    const component = <Component {...(props as React.ComponentProps<T>)} />;
+
+    if (tooltip && mounted) {
+      return (
+        <TooltipProvider
+          delayDuration={delayDuration}
+          disableHoverableContent={disableHoverableContent}
+          skipDelayDuration={skipDelayDuration}
+        >
+          <Tooltip {...tooltipProps}>
+            <TooltipTrigger asChild {...tooltipTriggerProps}>
+              {component}
+            </TooltipTrigger>
+
+            <TooltipPortal>
+              <TooltipContent {...tooltipContentProps}>
+                {tooltip}
+              </TooltipContent>
+            </TooltipPortal>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return component;
+  };
+}
+
+export const TooltipButton = withTooltip(Button);

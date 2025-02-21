@@ -5,6 +5,8 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 
 import { cn } from "../utils";
 import { buttonVariants } from "./button";
+import { withVariants } from "../cn";
+import { dialogOverlayVariants } from "./dialog";
 
 const AlertDialog = AlertDialogPrimitive.Root;
 
@@ -12,27 +14,26 @@ const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 
 const AlertDialogPortal = AlertDialogPrimitive.Portal;
 
-const AlertDialogOverlay = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Overlay
-    className={cn(
-      "fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className
-    )}
-    {...props}
-    ref={ref}
-  />
-));
+const AlertDialogOverlay = withVariants(
+  React.forwardRef<
+    React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
+  >(({ ...props }, ref) => (
+    <AlertDialogPrimitive.Overlay {...props} ref={ref} />
+  )),
+  dialogOverlayVariants,
+  ["variant"]
+);
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> & {
+    overlayVariant?: React.ComponentProps<typeof AlertDialogOverlay>["variant"];
+  }
+>(({ className, overlayVariant = "blur", ...props }, ref) => (
   <AlertDialogPortal>
-    <AlertDialogOverlay />
+    <AlertDialogOverlay variant={overlayVariant} />
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(

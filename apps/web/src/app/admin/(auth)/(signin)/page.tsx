@@ -1,4 +1,4 @@
-import UserAuthForm from "@/components/admin/forms/userAuthForm";
+import UserAuthForm from "@/components/admin/forms/user-auth-Form";
 import { ServicesContainer } from "@vivid/services";
 import { buttonVariants, cn } from "@vivid/ui";
 import { Metadata } from "next";
