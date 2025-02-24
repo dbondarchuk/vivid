@@ -6,8 +6,6 @@ export const useAutoResizeTextarea = (
 ) => {
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
 
-  React.useImperativeHandle(ref, () => textAreaRef.current!);
-
   React.useEffect(() => {
     const ref = textAreaRef?.current;
 

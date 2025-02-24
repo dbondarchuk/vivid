@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { TEditorConfiguration } from "./core";
+import { createContext, useContext } from "react";
 
 type TValue = {
   document: TEditorConfiguration;
@@ -97,4 +98,9 @@ export function setSelectedScreenSize(
   selectedScreenSize: TValue["selectedScreenSize"]
 ) {
   return editorStateStore.setState({ selectedScreenSize });
+}
+
+export const EditorArgsContext = createContext<Record<string, any>>({});
+export function useEditorArgs() {
+  return useContext(EditorArgsContext);
 }

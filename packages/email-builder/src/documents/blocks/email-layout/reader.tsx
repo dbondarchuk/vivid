@@ -1,5 +1,5 @@
 import { ReaderBlock } from "../../reader/block";
-import { EmailLayoutProps } from "./schema";
+import { EmailLayoutProps, EmailLayoutReaderProps } from "./schema";
 
 function getFontFamily(fontFamily: EmailLayoutProps["fontFamily"]) {
   const f = fontFamily ?? "MODERN_SANS";
@@ -32,7 +32,7 @@ function getBorder({ borderColor }: EmailLayoutProps) {
   return `1px solid ${borderColor}`;
 }
 
-export default function EmailLayoutReader(props: EmailLayoutProps) {
+export default function EmailLayoutReader(props: EmailLayoutReaderProps) {
   const childrenIds = props.childrenIds ?? [];
   return (
     <>
@@ -76,7 +76,12 @@ export default function EmailLayoutReader(props: EmailLayoutProps) {
             <tr style={{ width: "100%" }}>
               <td>
                 {childrenIds.map((childId) => (
-                  <ReaderBlock key={childId} id={childId} />
+                  <ReaderBlock
+                    key={childId}
+                    id={childId}
+                    args={props.args}
+                    document={props.document}
+                  />
                 ))}
               </td>
             </tr>

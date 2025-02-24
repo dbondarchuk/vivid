@@ -63,16 +63,24 @@ export const reminderAtTimeSchema = z.object({
   }),
 });
 
-export const reminderEmailSchema = z.object({
-  channel: reminderChannelesEnum.extract(["email"]),
-  body: z.string().min(1, "Email body is required"),
-  subject: z.string().min(1, "Email subject is required"),
+export const baseReminderChannelSchema = z.object({
+  templateId: z
+    .string({ message: "Template is required" })
+    .min(1, "Template is required"),
 });
 
-export const reminderTextMessageSchema = z.object({
-  channel: reminderChannelesEnum.extract(["text-message"]),
-  body: z.string().min(1, "Text message body is required"),
-});
+export const reminderEmailSchema = z
+  .object({
+    channel: reminderChannelesEnum.extract(["email"]),
+    subject: z.string().min(1, "Email subject is required"),
+  })
+  .merge(baseReminderChannelSchema);
+
+export const reminderTextMessageSchema = z
+  .object({
+    channel: reminderChannelesEnum.extract(["text-message"]),
+  })
+  .merge(baseReminderChannelSchema);
 
 export const reminderTypeSchema = z.discriminatedUnion("type", [
   reminderTimeBeforeSchema,

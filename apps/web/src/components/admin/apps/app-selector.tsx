@@ -39,13 +39,13 @@ type ClearableAppSelectorProps = {
   allowClear: true;
 };
 
-type NonClearablAppSelectorProps = {
+type NonClearableAppSelectorProps = {
   onItemSelect?: (value: string) => void;
   allowClear?: false;
 };
 
 export type AppSelectorProps = BaseAppSelectorProps &
-  (ClearableAppSelectorProps | NonClearablAppSelectorProps);
+  (ClearableAppSelectorProps | NonClearableAppSelectorProps);
 
 export const AppSelector: React.FC<AppSelectorProps> = ({
   apps,

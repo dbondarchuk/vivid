@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BaseReaderBlockProps } from "../../reader/core";
 
 const ForeachContainerPropsSchema = z.object({
   props: z
@@ -13,3 +14,5 @@ const ForeachContainerPropsSchema = z.object({
 export default ForeachContainerPropsSchema;
 
 export type ForeachContainerProps = z.infer<typeof ForeachContainerPropsSchema>;
+export type ForeachContainerReaderProps = BaseReaderBlockProps &
+  ForeachContainerProps;

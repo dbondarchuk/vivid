@@ -1,12 +1,12 @@
 "use client";
 import { Markdown } from "@/components/web/markdown";
+import {
+  CommunicationChannelTexts,
+  CommunicationDirectionTexts,
+} from "@/constants/labels";
 import { ColumnDef } from "@tanstack/react-table";
 import JsonView from "@uiw/react-json-view";
-import {
-  CommunicationChannel,
-  CommunicationDirection,
-  CommunicationLog,
-} from "@vivid/types";
+import { CommunicationLog } from "@vivid/types";
 import {
   Button,
   Checkbox,
@@ -22,19 +22,6 @@ import {
   tableSortNoopFunction,
 } from "@vivid/ui";
 import { DateTime } from "luxon";
-
-export const CommunicationDirectionTexts: Record<
-  CommunicationDirection,
-  string
-> = {
-  inbound: "Inbound",
-  outbound: "Outbound",
-};
-
-export const CommunicationChannelTexts: Record<CommunicationChannel, string> = {
-  "text-message": "Text Message",
-  email: "Email",
-} as any;
 
 export const columns: ColumnDef<CommunicationLog>[] = [
   {

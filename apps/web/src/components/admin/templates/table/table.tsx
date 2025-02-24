@@ -2,27 +2,22 @@ import { ServicesContainer } from "@vivid/services";
 import { searchParams, searchParamsCache } from "./search-params";
 import { DataTable } from "@vivid/ui";
 import { columns } from "./columns";
-import { CommunicationChannel } from "@vivid/types";
 
-export type TemplatesTableProps = {
-  type: CommunicationChannel;
-};
-
-export const TemplatesTable: React.FC<TemplatesTableProps> = async ({
-  type,
-}) => {
+export const TemplatesTable: React.FC = async () => {
   const page = searchParamsCache.get("page");
   const search = searchParamsCache.get("search") || undefined;
   const limit = searchParamsCache.get("limit");
   const sort = searchParamsCache.get("sort");
+  const type = searchParamsCache.get("type");
 
   const offset = (page - 1) * limit;
 
-  const res = await ServicesContainer.TemplatesService().getTemplates(type, {
+  const res = await ServicesContainer.TemplatesService().getTemplates({
     offset,
     limit,
     search,
     sort,
+    type,
   });
 
   return (

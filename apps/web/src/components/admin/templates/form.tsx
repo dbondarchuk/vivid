@@ -2,7 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EmailBuilder } from "@vivid/email-builder";
-import { getTemplateSchemaWithUniqueCheck, Template } from "@vivid/types";
+import {
+  CommunicationChannel,
+  getTemplateSchemaWithUniqueCheck,
+  Template,
+} from "@vivid/types";
 import {
   Form,
   FormControl,
@@ -21,18 +25,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createTemplate, updateTemplate } from "./actions";
+import { TextMessageBuilder } from "./text-message-builder";
+import { TemplatesTemplate } from "./templates/type";
 
 const checkUniqueName = async (name: string, id?: string) => {
   const url = `/admin/api/templates/check?name=${encodeURIComponent(name)}${id ? `&id=${encodeURIComponent(id)}` : ""}`;
   const response = await fetch(url, {
-    cache: "force-cache",
-    headers: {
-      "Cache-Control": "max-age=10", // Cache for 10 seconds
-    },
     method: "GET",
-    next: {
-      revalidate: 10,
-    },
+    cache: "default",
   });
 
   if (response.status >= 400) {
@@ -48,10 +48,18 @@ const checkUniqueName = async (name: string, id?: string) => {
   return (await response.json()) as boolean;
 };
 
-export const EmailTemplateForm: React.FC<{
-  initialData?: Template;
-  args: any;
-}> = ({ initialData, args }) => {
+export const TemplateForm: React.FC<
+  {
+    args: any;
+  } & (
+    | { type: CommunicationChannel; template: TemplatesTemplate }
+    | { initialData: Template }
+  )
+> = ({ args, ...rest }) => {
+  const initialData = "initialData" in rest ? rest.initialData : undefined;
+  const type = initialData?.type || ("type" in rest ? rest.type : "email");
+  const template = "template" in rest ? rest.template : undefined;
+
   const formSchema = getTemplateSchemaWithUniqueCheck(
     (name) => checkUniqueName(name, initialData?._id),
     "Template name must be unique"
@@ -66,7 +74,8 @@ export const EmailTemplateForm: React.FC<{
     mode: "onBlur",
     reValidateMode: "onChange",
     defaultValues: initialData || {
-      type: "email",
+      type,
+      ...(template || {}),
     },
   });
 
@@ -77,7 +86,7 @@ export const EmailTemplateForm: React.FC<{
       const fn = async () => {
         if (!initialData) {
           const { _id } = await createTemplate(data);
-          router.push(`/admin/dashboard/templates/email/${_id}`);
+          router.push(`/admin/dashboard/templates/${_id}`);
         } else {
           await updateTemplate(initialData._id, data);
 
@@ -123,18 +132,25 @@ export const EmailTemplateForm: React.FC<{
             control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem className="w-full flex-grow relative">
-                <FormControl>
-                  <EmailBuilder
-                    args={args}
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(value);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+              <>
+                {type === "email" && (
+                  <FormItem className="w-full flex-grow relative">
+                    <FormControl>
+                      <EmailBuilder
+                        args={args}
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+                {type === "text-message" && (
+                  <TextMessageBuilder args={args} field={field} />
+                )}
+              </>
             )}
           />
         </div>

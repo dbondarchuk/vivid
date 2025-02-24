@@ -10,18 +10,20 @@ export const CustomerEmailNotificationApp: App = {
   scope: ["appointment-hook"],
   type: "complex",
   Logo: ({ className }) => <Mails className={className} />,
-  SetUp: (props) => <CustomerEmailNotificationAppSetup {...props} />,
   isFeatured: true,
   dontAllowMultiple: true,
   isHidden: true,
   description: {
     text: "Send an email with the appointment details to customers.",
   },
-  menuItem: {
-    href: "communications/customer-email",
-    parent: "communications",
-    id: "communications-customer-email",
-    label: "Customer Email Notifications",
-    icon: <Mails />,
-  },
+  menuItems: [
+    {
+      href: "communications/customer-email",
+      parent: "communications",
+      id: "communications-customer-email",
+      label: "Customer Email Notifications",
+      icon: <Mails />,
+      Page: (props) => <CustomerEmailNotificationAppSetup {...props} />,
+    },
+  ],
 };

@@ -192,7 +192,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   return (
     <ScrollArea className="h-[60vh] max-h-screen relative">
       <table className="table-fixed w-full border-collapse border-spacing-1">
-        <thead className="sticky top-0 bg-background shadow-sm border-gray-200">
+        <thead className="sticky top-0 bg-background shadow-sm border-border">
           <tr>
             <th className="max-w-8"></th>
             {days.map((day) => (
@@ -208,7 +208,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
               key={formatTime(slot)}
               className={cn(
                 slot.minute === 0
-                  ? "border-t border-gray-200 first:border-none scroll-m-7"
+                  ? "border-t-2 border-muted first:border-none scroll-m-7"
                   : ""
               )}
               ref={
@@ -236,8 +236,8 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                     onTouchEnd={() => stopSelecting()}
                     onMouseOver={() => onSelect(day, slot)}
                     className={cn(
-                      "border h-4 cursor-pointer",
-                      selected[key] ? "bg-sky-700" : "bg-gray-100"
+                      "border h-4 cursor-pointer border-x-muted",
+                      selected[key] ? "bg-primary" : "bg-secondary/20"
                     )}
                   ></td>
                 );

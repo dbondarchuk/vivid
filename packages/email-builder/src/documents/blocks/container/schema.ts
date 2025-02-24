@@ -1,6 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { ContainerPropsSchema as BaseContainerPropsSchema } from '@usewaypoint/block-container';
+import { ContainerPropsSchema as BaseContainerPropsSchema } from "@usewaypoint/block-container";
+import { BaseReaderBlockProps } from "../../reader/core";
 
 const ContainerPropsSchema = z.object({
   style: BaseContainerPropsSchema.shape.style,
@@ -15,3 +16,4 @@ const ContainerPropsSchema = z.object({
 export default ContainerPropsSchema;
 
 export type ContainerProps = z.infer<typeof ContainerPropsSchema>;
+export type ContainerReaderProps = BaseReaderBlockProps & ContainerProps;

@@ -37,7 +37,7 @@ export function ButtonEditor({ props, style }: ButtonProps) {
     });
   };
 
-  const handleKeyPress = (e: KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { key } = e;
     if (key === "Enter") {
       e.preventDefault();
@@ -47,14 +47,11 @@ export function ButtonEditor({ props, style }: ButtonProps) {
 
   return (
     <div style={wrapperStyles}>
-      <ContentEditable
-        innerRef={(node: HTMLElement) => {
-          ref.current = node;
-        }}
-        html={props?.text || "Button"}
-        onChange={(e) => onChange(e.target.value)}
+      <input
+        className="border-0 focus:outline-none active:outline-none bg-transparent w-auto"
         style={linkStyles}
-        tagName={"a"}
+        value={props?.text ?? "Heading"}
+        onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyPress}
       />
     </div>

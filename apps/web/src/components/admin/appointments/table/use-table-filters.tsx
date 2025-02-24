@@ -49,7 +49,12 @@ export function useAppointmentsTableFilters() {
   }, [setSearchQuery, setStatusFilter, setPage, setStartValue, setEndValue]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!statusFilter || !!start || !!end;
+    return (
+      !!searchQuery ||
+      statusFilter !== searchParams.status.defaultValue ||
+      !!start ||
+      !!end
+    );
   }, [searchQuery, statusFilter, start, end]);
 
   return {

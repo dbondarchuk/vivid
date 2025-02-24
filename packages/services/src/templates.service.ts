@@ -3,6 +3,7 @@ import {
   ITemplatesService,
   Query,
   Template,
+  TemplateListModel,
   TemplateUpdateModel,
   WithTotal,
 } from "@vivid/types";
@@ -26,9 +27,10 @@ export class TemplatesService implements ITemplatesService {
   }
 
   public async getTemplates(
-    type: CommunicationChannel,
-    query: Query
-  ): Promise<WithTotal<Template>> {
+    query: Query & {
+      type?: CommunicationChannel[];
+    }
+  ): Promise<WithTotal<TemplateListModel>> {
     const db = await getDbConnection();
 
     const sort: Sort = query.sort?.reduce(
@@ -39,9 +41,13 @@ export class TemplatesService implements ITemplatesService {
       {}
     ) || { updatedAt: -1 };
 
-    const filter: Filter<Template> = {
-      type,
-    };
+    const filter: Filter<Template> = {};
+
+    if (query.type) {
+      filter.type = {
+        $in: query.type,
+      };
+    }
 
     if (query.search) {
       const $regex = new RegExp(query.search, "i");
@@ -58,6 +64,11 @@ export class TemplatesService implements ITemplatesService {
         },
         {
           $match: filter,
+        },
+        {
+          $project: {
+            value: false,
+          },
         },
         {
           $facet: {

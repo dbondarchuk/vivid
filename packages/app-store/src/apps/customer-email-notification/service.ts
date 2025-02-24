@@ -1,3 +1,4 @@
+import { renderToStaticMarkup } from "@vivid/email-builder/static";
 import {
   Appointment,
   AppointmentStatus,
@@ -11,7 +12,7 @@ import {
   AppointmentStatusToICalMethodMap,
   getArguments,
   getEventCalendarContent,
-  template,
+  templateSafeWithError,
 } from "@vivid/utils";
 import { CustomerEmailNotificationConfiguration } from "./models";
 
@@ -100,20 +101,54 @@ export default class CustomerEmailNotificationConnectedApp
 
     const data = appData.data as CustomerEmailNotificationConfiguration;
 
+    if (!data.event.templateId) {
+      return;
+    }
+
+    const eventTemplate = await this.props.services
+      .TemplatesService()
+      .getTemplate(data.event.templateId);
+    if (!eventTemplate) {
+      console.error(`Can't find template with id ${eventTemplate}`);
+      return;
+    }
+
+    const renderedEventTemplate = await renderToStaticMarkup(
+      eventTemplate.value,
+      {
+        args: arg,
+      }
+    );
+
     const eventContent = getEventCalendarContent(
       general,
       appointment,
-      template(data.event.summary, arg),
-      template(data.event.description, arg)
+      templateSafeWithError(data.event.summary, arg),
+      renderedEventTemplate
     );
 
-    const { subject, body } = data.templates[status];
+    const { subject, templateId } = data.templates[status];
+    if (!templateId) {
+      return;
+    }
+
+    const template = await this.props.services
+      .TemplatesService()
+      .getTemplate(templateId);
+    if (!template) {
+      console.error(`Can't find template with id ${templateId}`);
+      return;
+    }
+
+    const renderedTemplate = await renderToStaticMarkup(template.value, {
+      args: arg,
+    });
 
     await this.props.services.NotificationService().sendEmail({
       email: {
         to: appointment.fields.email,
-        subject: template(subject, arg),
-        body: template(body, arg),
+        subject: templateSafeWithError(subject, arg),
+        body: renderedTemplate,
         icalEvent: {
           method: AppointmentStatusToICalMethodMap[status],
           content: eventContent,

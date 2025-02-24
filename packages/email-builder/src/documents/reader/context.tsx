@@ -1,13 +1,16 @@
-import { createContext, useContext } from "react";
-import { TReaderDocument } from "./core";
+// "use client";
 
-export const ReaderContext = createContext<TReaderDocument>({});
-export const ReaderArgsContext = createContext<Record<string, any>>({});
+// import React from "react";
 
-export function useReaderDocument() {
-  return useContext(ReaderContext);
-}
+// import { TReaderDocument } from "./core";
 
-export function useReaderArgs() {
-  return useContext(ReaderArgsContext);
-}
+// export const ReaderContext = React.createContext<TReaderDocument>({});
+// export const ReaderArgsContext = React.createContext<Record<string, any>>({});
+
+// export function useReaderDocument() {
+//   return React.useContext(ReaderContext);
+// }
+
+// export function useReaderArgs() {
+//   return React.useContext(ReaderArgsContext);
+// }

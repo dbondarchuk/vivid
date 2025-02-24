@@ -101,6 +101,10 @@ export class EventsService implements IEventsService {
         zone: "utc",
       }).setZone(config.timezone);
 
+      if (eventTime < DateTime.now()) {
+        throw new Error("Time is not available");
+      }
+
       const start = eventTime.startOf("day");
       const end = start.endOf("day");
 
@@ -161,13 +165,20 @@ export class EventsService implements IEventsService {
         this.appsService.getAppServiceProps(hook._id)
       ) as any as IAppointmentHook;
 
-      await service.onAppointmentCreated(hook, appointment);
+      try {
+        await service.onAppointmentCreated(hook, appointment);
 
-      if (status === "confirmed") {
-        await service.onAppointmentStatusChanged(
-          hook,
-          appointment,
-          "confirmed"
+        if (status === "confirmed") {
+          await service.onAppointmentStatusChanged(
+            hook,
+            appointment,
+            "confirmed"
+          );
+        }
+      } catch (error: any) {
+        console.error(
+          `Hook ${hook}.onAppointmentCreatedonAppointmentStatusChanged has failed`,
+          error
         );
       }
     });
@@ -175,6 +186,22 @@ export class EventsService implements IEventsService {
     await Promise.all(promises);
 
     return appointment;
+  }
+
+  public async getPendingAppointmentsCount(after?: Date): Promise<number> {
+    const db = await getDbConnection();
+    const filter: Filter<Appointment> = {
+      status: "pending",
+      dateTime: after
+        ? {
+            $gte: after,
+          }
+        : undefined,
+    };
+
+    const collection = db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME);
+
+    return await collection.countDocuments(filter);
   }
 
   public async getPendingAppointments(
@@ -465,12 +492,19 @@ export class EventsService implements IEventsService {
         this.appsService.getAppServiceProps(hook._id)
       ) as any as IAppointmentHook;
 
-      return await service.onAppointmentStatusChanged(
-        hook,
-        appointment,
-        newStatus,
-        oldStatus
-      );
+      try {
+        return await service.onAppointmentStatusChanged(
+          hook,
+          appointment,
+          newStatus,
+          oldStatus
+        );
+      } catch (error: any) {
+        console.error(
+          `Hook ${hook}.onAppointmentStatusChanged has failed`,
+          error
+        );
+      }
     });
 
     await Promise.all(promises);
@@ -629,14 +663,21 @@ export class EventsService implements IEventsService {
         this.appsService.getAppServiceProps(hook._id)
       ) as any as IAppointmentHook;
 
-      return await service.onAppointmentRescheduled(
-        hook,
-        appointment,
-        newTime,
-        newDuration,
-        oldTime,
-        oldDuration
-      );
+      try {
+        await service.onAppointmentRescheduled(
+          hook,
+          appointment,
+          newTime,
+          newDuration,
+          oldTime,
+          oldDuration
+        );
+      } catch (error: any) {
+        console.error(
+          `Hook ${hook}.onAppointmentRescheduled has failed`,
+          error
+        );
+      }
     });
 
     await Promise.all(promises);

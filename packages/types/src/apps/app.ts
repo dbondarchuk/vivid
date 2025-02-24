@@ -34,6 +34,22 @@ type BaseApp = {
   };
   Logo: (props: AppLogoProps) => ReactNode;
   isFeatured?: boolean;
+  menuItems: {
+    parent?: string;
+    order?: number;
+    id: string;
+    label: string;
+    href: string;
+    icon: ReactElement;
+    Page: (props: ComplexAppSetupProps) => ReactNode;
+    pageBreadcrumbs?: {
+      link: string;
+      title: string;
+    }[];
+    isHidden?: boolean;
+    pageTitle?: string;
+    pageDescription?: string;
+  }[];
 };
 
 export type OAuthApp = BaseApp & {
@@ -54,14 +70,6 @@ export type ComplexApp = BaseApp & {
   type: "complex";
   dontAllowMultiple: true;
   isHidden?: boolean;
-  SetUp: (props: ComplexAppSetupProps) => ReactNode;
-  menuItem: {
-    parent?: string;
-    id: string;
-    label: string;
-    href: string;
-    icon: ReactElement;
-  };
 };
 
 export type SystemApp = BaseApp & {

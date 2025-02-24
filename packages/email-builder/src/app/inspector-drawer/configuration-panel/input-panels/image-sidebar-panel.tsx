@@ -34,7 +34,7 @@ export default function ImageSidebarPanel({
   return (
     <BaseSidebarPanel title="Image block">
       <FileInput
-        label="Source URL"
+        label="Image URL"
         accept="image/*"
         defaultValue={data.props?.url ?? ""}
         onChange={(v) => {

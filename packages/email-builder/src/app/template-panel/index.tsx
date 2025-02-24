@@ -36,7 +36,7 @@ import {
   Pencil,
   Smartphone,
 } from "lucide-react";
-import Reader from "../../documents/reader/block";
+import { Reader } from "../../documents/reader/block";
 
 type TemplatePanelProps = {
   args?: Record<string, any>;
@@ -196,7 +196,11 @@ export default function TemplatePanel({ args }: TemplatePanelProps) {
               <EditorBlock id="root" />
             </TabsContent>
             <TabsContent value="preview">
-              <Reader document={document} args={args} rootBlockId="root" />
+              <Reader
+                document={document}
+                args={args || {}}
+                rootBlockId="root"
+              />
             </TabsContent>
           </div>
         </div>

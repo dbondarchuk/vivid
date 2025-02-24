@@ -11,7 +11,6 @@ import {
   Instagram,
   LayoutDashboard,
   LayoutTemplate,
-  Mails,
   MailSearch,
   Paintbrush,
   PanelBottom,
@@ -120,25 +119,18 @@ export const navItems: NavItemWithOptionalChildren[] = [
     title: "Communications",
     items: [
       {
+        id: "templates",
+        title: "Templates",
+        href: "/admin/dashboard/templates",
+        icon: <LayoutTemplate />,
+        label: "Templates",
+      },
+      {
         id: "communications-logs",
-        title: "Communication logs",
+        title: "Logs",
         href: "/admin/dashboard/communication-logs",
         icon: <MailSearch />,
         label: "Communication logs",
-      },
-    ],
-  },
-  {
-    id: "templates",
-    icon: <LayoutTemplate />,
-    title: "Templates",
-    items: [
-      {
-        id: "templates-email",
-        title: "Email templates",
-        href: "/admin/dashboard/templates/email",
-        icon: <Mails />,
-        label: "Email templates",
       },
     ],
   },

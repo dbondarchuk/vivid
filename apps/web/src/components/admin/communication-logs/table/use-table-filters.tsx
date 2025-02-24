@@ -1,12 +1,12 @@
 "use client";
 
-import { useQueryState } from "nuqs";
-import { useCallback, useMemo } from "react";
-import { searchParams } from "./search-params";
 import {
   CommunicationChannelTexts,
   CommunicationDirectionTexts,
-} from "./columns";
+} from "@/constants/labels";
+import { useQueryState } from "nuqs";
+import { useCallback, useMemo } from "react";
+import { searchParams } from "./search-params";
 
 export const DIRECTION_OPTIONS = Object.entries(
   CommunicationDirectionTexts
@@ -75,7 +75,11 @@ export function useCommunicationLogsTableFilters() {
 
   const isAnyFilterActive = useMemo(() => {
     return (
-      !!searchQuery || !!directionFilter || !!channelFilter || !!start || !!end
+      !!searchQuery ||
+      directionFilter !== searchParams.direction.defaultValue ||
+      channelFilter !== searchParams.channel.defaultValue ||
+      !!start ||
+      !!end
     );
   }, [searchQuery, directionFilter, channelFilter, start, end]);
 

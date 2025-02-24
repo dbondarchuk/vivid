@@ -9,7 +9,7 @@ import { BreadcrumbsProvider, SidebarInset, SidebarProvider } from "@vivid/ui";
 import { DateTime } from "luxon";
 import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { PendingAppointmentsToast } from "./pending-appointments-toast";
+import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
 
 export const metadata: Metadata = {
   title: "CMS Dashboard",
@@ -25,12 +25,6 @@ export default async function DashboardLayout({
 
   const beforeNow = DateTime.now().minus({ hours: 1 }).toJSDate();
 
-  const pendingAppointments =
-    await ServicesContainer.EventsService().getPendingAppointments(
-      0,
-      beforeNow
-    );
-
   const menuItems: NavItemWithOptionalChildren[] = [
     ...navItems.map((x) => ({
       ...x,
@@ -38,15 +32,16 @@ export default async function DashboardLayout({
     })),
   ];
 
-  const appsWithMenu =
-    await ServicesContainer.ConnectedAppService().getAppsByType("complex");
-  const appsMenus = appsWithMenu.map(
-    ({ name }) => (AvailableApps[name] as ComplexApp)?.menuItem
-  );
+  const appsWithMenu = await ServicesContainer.ConnectedAppService().getApps();
+  const appsMenus = appsWithMenu
+    .map(({ name }) => AvailableApps[name]?.menuItems)
+    .filter((menus) => menus?.length > 0);
 
   appsMenus
-    .filter((item) => !item.parent)
-    .forEach((item) => {
+    .flatMap((item) => item)
+    .filter((item) => !item.parent && !item.isHidden)
+    .sort(({ order: aOrder = 0 }, { order: bOrder = 0 }) => bOrder - aOrder)
+    .forEach(({ Page: _, ...item }) => {
       menuItems.push({
         ...item,
         href: `/admin/dashboard/${item.href}`,
@@ -55,8 +50,10 @@ export default async function DashboardLayout({
     });
 
   appsMenus
-    .filter((item) => !!item.parent)
-    .forEach((item) => {
+    .flatMap((item) => item)
+    .filter((item) => !!item.parent && !item.isHidden)
+    .sort(({ order: aOrder = 0 }, { order: bOrder = 0 }) => bOrder - aOrder)
+    .forEach(({ Page: _, ...item }) => {
       const parent = menuItems.find((parent) => item.parent === parent.id);
       if (!parent) return;
 
@@ -75,9 +72,7 @@ export default async function DashboardLayout({
         <BreadcrumbsProvider>
           <NuqsAdapter>
             <AppSidebar menuItems={menuItems} name={name} logo={logo} />
-            <PendingAppointmentsToast
-              pendingAppointmentsCount={pendingAppointments.total}
-            />
+            <PendingAppointmentsToastStream />
 
             <SidebarInset>
               {/* <main className="w-full flex-1 overflow-hidden"> */}

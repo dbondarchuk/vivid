@@ -1,6 +1,6 @@
 "use client";
 import { AlertModal } from "@/components/modal/alert-modal";
-import { Template } from "@vivid/types";
+import { TemplateListModel } from "@vivid/types";
 import {
   Button,
   DropdownMenu,
@@ -9,7 +9,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  toast,
   toastPromise,
 } from "@vivid/ui";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
@@ -18,7 +17,7 @@ import { useState } from "react";
 import { deleteTemplate } from "../actions";
 
 interface CellActionProps {
-  template: Template;
+  template: TemplateListModel;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ template }) => {
@@ -36,9 +35,11 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
       });
 
       router.refresh();
+      setOpen(false);
     } catch (error: any) {
-      setLoading(false);
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,7 +63,7 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
 
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/admin/dashboard/templates/email//${template._id}`)
+              router.push(`/admin/dashboard/templates/${template._id}`)
             }
           >
             <Edit className="h-4 w-4" /> Update
@@ -73,9 +74,7 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() =>
-              router.push(
-                `/admin/dashboard/templates/email/${template._id}/clone`
-              )
+              router.push(`/admin/dashboard/templates/${template._id}/clone`)
             }
           >
             <Copy className="h-4 w-4" /> Clone

@@ -19,7 +19,8 @@ export const getTemplateSchemaWithUniqueCheck = (
 };
 
 export type TemplateUpdateModel = z.infer<typeof templateSchema>;
-export type TemplateListModel = Omit<TemplateUpdateModel, "value">;
 export type Template = WithDatabaseId<TemplateUpdateModel> & {
   updatedAt: Date;
 };
+
+export type TemplateListModel = Omit<Template, "value">;

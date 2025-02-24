@@ -56,7 +56,7 @@ export const DeleteSelectedTemplatesButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} page(s)</span>
+          <span>Delete selected {selected.length} template(s)</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

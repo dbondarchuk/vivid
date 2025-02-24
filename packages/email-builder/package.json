@@ -9,7 +9,10 @@
     "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
     "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
   },
-  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./static": "./src/documents/reader/static-render.tsx"
+  },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "19.0.2",
@@ -36,6 +39,7 @@
     "@usewaypoint/block-text": "^0.0.6",
     "@usewaypoint/document-core": "^0.0.6",
     "@usewaypoint/email-builder": "^0.0.8",
+    "react-dom": "19.0.0",
     "@vivid/ui": "*",
     "@vivid/rte": "*",
     "highlight.js": "^11.9.0",

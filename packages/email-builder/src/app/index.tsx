@@ -1,15 +1,16 @@
 "use client";
 
 import { SidebarInset, SidebarProvider, useDebounce } from "@vivid/ui";
-import InspectorDrawer from "./inspector-drawer";
-import TemplatePanel from "./template-panel";
+import React from "react";
 import {
   defaultDocument,
+  EditorArgsContext,
   setDocument,
   useDocument,
 } from "../documents/editor/context";
-import React from "react";
 import { TEditorConfiguration } from "../documents/editor/core";
+import InspectorDrawer from "./inspector-drawer";
+import TemplatePanel from "./template-panel";
 
 type EmailBuilderProps = {
   value?: TEditorConfiguration;
@@ -30,13 +31,13 @@ export const EmailBuilder = ({ args, value, onChange }: EmailBuilderProps) => {
   }, [document, onChange]);
 
   return (
-    <>
+    <EditorArgsContext.Provider value={args || {}}>
       <SidebarProvider className="!bg-transparent">
         <SidebarInset className="flex flex-col w-full" asDiv>
           <TemplatePanel args={args} />
         </SidebarInset>
         <InspectorDrawer />
       </SidebarProvider>
-    </>
+    </EditorArgsContext.Provider>
   );
 };

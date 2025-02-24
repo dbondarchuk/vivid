@@ -2,7 +2,7 @@ import { appointmentStatuses, zStrictRecord } from "@vivid/types";
 import { z } from "zod";
 
 export const textMessagesTemplateSchema = z.object({
-  body: z.string().optional(),
+  templateId: z.string().optional(),
 });
 
 export type TextMessageTemplateConfiguration = z.infer<

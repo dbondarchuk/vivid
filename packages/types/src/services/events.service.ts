@@ -20,6 +20,7 @@ export interface IEventsService {
     force?: boolean;
     files?: Record<string, File>;
   }): Promise<Appointment>;
+  getPendingAppointmentsCount(after?: Date): Promise<number>;
   getPendingAppointments(
     limit?: number,
     after?: Date

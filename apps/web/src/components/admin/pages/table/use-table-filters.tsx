@@ -34,7 +34,9 @@ export function usePagesTableFilters() {
   }, [setSearchQuery, setStatusFilter, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!statusFilter;
+    return (
+      !!searchQuery || statusFilter !== searchParams.published.defaultValue
+    );
   }, [searchQuery, statusFilter]);
 
   return {

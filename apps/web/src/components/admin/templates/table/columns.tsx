@@ -1,11 +1,17 @@
 "use client";
+import { CommunicationChannelTexts } from "@/constants/labels";
 import { ColumnDef } from "@tanstack/react-table";
-import { Template } from "@vivid/types";
-import { Checkbox, tableSortHeader, tableSortNoopFunction } from "@vivid/ui";
+import { TemplateListModel } from "@vivid/types";
+import {
+  Checkbox,
+  Link,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@vivid/ui";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
 
-export const columns: ColumnDef<Template>[] = [
+export const columns: ColumnDef<TemplateListModel>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -26,14 +32,29 @@ export const columns: ColumnDef<Template>[] = [
     enableHiding: false,
   },
   {
-    accessorFn: (page) => page.name,
+    accessorFn: (template) => CommunicationChannelTexts[template.type],
+    id: "type",
+    header: tableSortHeader("Type", "string"),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    cell: ({ row }) => (
+      <Link
+        variant="ghost"
+        href={`/admin/dashboard/templates/${row.original._id}`}
+      >
+        {row.original.name}
+      </Link>
+    ),
     id: "name",
     header: tableSortHeader("Name", "string"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (page) =>
-      DateTime.fromJSDate(page.updatedAt).toLocaleString(DateTime.DATETIME_MED),
+    accessorFn: (template) =>
+      DateTime.fromJSDate(template.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED
+      ),
     id: "updatedAt",
     header: tableSortHeader("Updated at", "date"),
     sortingFn: tableSortNoopFunction,

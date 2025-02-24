@@ -1,28 +1,46 @@
-import { buildBlockComponent } from "@usewaypoint/document-core";
+import { BlockConfiguration } from "@usewaypoint/document-core";
 import { z } from "zod";
 
-import { READER_DICTIONARY, ReaderBlockSchema } from "./core";
-import { ReaderArgsContext, ReaderContext, useReaderDocument } from "./context";
+import {
+  BaseReaderBlockProps,
+  BaseZodDictionary,
+  DocumentBlocksDictionary,
+  READER_DICTIONARY,
+  TReaderDocument,
+} from "./core";
+
+export function buildBlockComponent<T extends BaseZodDictionary>(
+  blocks: DocumentBlocksDictionary<T>
+) {
+  return function BlockComponent({
+    type,
+    data,
+    args,
+    document,
+  }: BlockConfiguration<T> & BaseReaderBlockProps) {
+    const Component = blocks[type].Component;
+    return <Component {...data} args={args} document={document} />;
+  };
+}
 
 export const BaseReaderBlock = buildBlockComponent(READER_DICTIONARY);
 
-export type TReaderBlockProps = { id: string };
-export function ReaderBlock({ id }: TReaderBlockProps) {
-  const document = useReaderDocument();
-  return <BaseReaderBlock {...document[id]} />;
+export type TReaderBlockProps = BaseReaderBlockProps & {
+  id: string;
+};
+
+export function ReaderBlock({ id, document, args }: TReaderBlockProps) {
+  return <BaseReaderBlock {...document[id]} args={args} document={document} />;
 }
 
-export type TReaderProps = {
-  document: Record<string, z.infer<typeof ReaderBlockSchema>>;
+export type TReaderProps = BaseReaderBlockProps & {
   rootBlockId: string;
-  args?: Record<string, any>;
 };
-export default function Reader({ document, rootBlockId, args }: TReaderProps) {
+
+export function Reader({ document, rootBlockId, args }: TReaderProps) {
   return (
-    <ReaderContext.Provider value={document}>
-      <ReaderArgsContext.Provider value={args || {}}>
-        <ReaderBlock id={rootBlockId} />
-      </ReaderArgsContext.Provider>
-    </ReaderContext.Provider>
+    // <ReaderContext.Provider value={document}>
+    <ReaderBlock id={rootBlockId} document={document} args={args} />
+    // </ReaderContext.Provider>
   );
 }

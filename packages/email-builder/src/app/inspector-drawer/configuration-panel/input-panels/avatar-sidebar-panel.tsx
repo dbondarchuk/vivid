@@ -13,6 +13,7 @@ import { RadioGroupInputItem } from "./helpers/inputs/radio-group-input-item";
 import SliderInput from "./helpers/inputs/slider-input";
 import TextInput from "./helpers/inputs/text-input";
 import MultiStylePropertyPanel from "./helpers/style-inputs/multi-style-property-panel";
+import FileInput from "./helpers/inputs/file-input";
 
 type AvatarSidebarPanelProps = {
   data: AvatarProps;
@@ -63,11 +64,13 @@ export default function AvatarSidebarPanel({
         <RadioGroupInputItem value="square">Square</RadioGroupInputItem>
         <RadioGroupInputItem value="rounded">Rounded</RadioGroupInputItem>
       </RadioGroupInput>
-      <TextInput
+      <FileInput
         label="Image URL"
-        defaultValue={imageUrl}
-        onChange={(imageUrl) => {
-          updateData({ ...data, props: { ...data.props, imageUrl } });
+        accept="image/*"
+        defaultValue={imageUrl ?? ""}
+        onChange={(v) => {
+          const url = v.trim().length === 0 ? null : v.trim();
+          updateData({ ...data, props: { ...data.props, imageUrl: url } });
         }}
       />
       <TextInput

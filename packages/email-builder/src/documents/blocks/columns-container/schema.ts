@@ -1,8 +1,11 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { ColumnsContainerPropsSchema as BaseColumnsContainerPropsSchema } from '@usewaypoint/block-columns-container';
+import { ColumnsContainerPropsSchema as BaseColumnsContainerPropsSchema } from "@usewaypoint/block-columns-container";
+import { BaseReaderBlockProps } from "../../reader/core";
 
-const BasePropsShape = BaseColumnsContainerPropsSchema.shape.props.unwrap().unwrap().shape;
+const BasePropsShape = BaseColumnsContainerPropsSchema.shape.props
+  .unwrap()
+  .unwrap().shape;
 
 const ColumnsContainerPropsSchema = z.object({
   style: BaseColumnsContainerPropsSchema.shape.style,
@@ -20,4 +23,6 @@ const ColumnsContainerPropsSchema = z.object({
 });
 
 export type ColumnsContainerProps = z.infer<typeof ColumnsContainerPropsSchema>;
+export type ColumnsContainerReaderProps = ColumnsContainerProps &
+  BaseReaderBlockProps;
 export default ColumnsContainerPropsSchema;

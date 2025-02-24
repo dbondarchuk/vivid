@@ -1,12 +1,13 @@
 "use client";
 
 import {
+  DataTableFilterBox,
   DataTableResetFilter,
   DataTableSearch,
   useSelectedRowsStore,
 } from "@vivid/ui";
 import { DeleteSelectedTemplatesButton } from "./delete-selected";
-import { useTemplatesTableFilters } from "./use-table-filters";
+import { TYPE_OPTIONS, useTemplatesTableFilters } from "./use-table-filters";
 
 export function TemplatesTableAction() {
   const {
@@ -15,6 +16,8 @@ export function TemplatesTableAction() {
     searchQuery,
     setPage,
     setSearchQuery,
+    typeFilter,
+    setTypeFilter,
   } = useTemplatesTableFilters();
   const { rowSelection } = useSelectedRowsStore();
 
@@ -26,6 +29,13 @@ export function TemplatesTableAction() {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setPage={setPage}
+        />
+        <DataTableFilterBox
+          filterKey="type"
+          title="Type"
+          options={TYPE_OPTIONS}
+          setFilterValue={setTypeFilter as any}
+          filterValue={typeFilter}
         />
         <DataTableResetFilter
           isFilterActive={isAnyFilterActive}

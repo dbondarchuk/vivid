@@ -25,6 +25,7 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
+    "@vivid/email-builder": "*",
     "@vivid/types": "*",
     "@vivid/utils": "*",
     "@vivid/ui": "*",

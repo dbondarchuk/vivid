@@ -35,6 +35,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   ScrollArea,
+  TemplateSelector,
   Textarea,
   TimePicker,
   useTheme,
@@ -106,6 +107,7 @@ export const ReminderCard: React.FC<ReminderProps> = ({
       ...form.getValues(name),
       channel: value,
       id: itemId,
+      templateId: undefined,
     };
 
     const strippedValue = stripObject(newValue, reminderSchema) as Reminder;
@@ -471,121 +473,31 @@ export const ReminderCard: React.FC<ReminderProps> = ({
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name={`${name}.body`}
-                    render={({ field }) => (
-                      <ResizablePanelGroup
-                        direction="horizontal"
-                        className="max-md:hidden"
-                      >
-                        <ResizablePanel className="pr-1">
-                          <FormItem>
-                            <FormLabel>
-                              Email body
-                              <InfoTooltip>
-                                <p>
-                                  Body of the email, that your customers will
-                                  see
-                                </p>
-                                <p>* Uses templated values</p>
-                              </InfoTooltip>
-                            </FormLabel>
-                            <FormControl>
-                              <Editor
-                                height="60vh"
-                                language="html"
-                                theme={
-                                  resolvedTheme === "dark" ? "vs-dark" : "light"
-                                }
-                                value={field.value}
-                                onChange={field.onChange}
-                                onValidate={() => form.trigger(field.name)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        </ResizablePanel>
-                        <ResizableHandle withHandle />
-                        <ResizablePanel className="pl-1">
-                          <FormItem>
-                            <FormLabel>Preview</FormLabel>
-                            <IFrame className="h-[60vh] w-full">
-                              <ScrollArea className="h-[60vh] w-full">
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: templateSafeWithError(
-                                      field.value,
-                                      demoArguments
-                                    ),
-                                  }}
-                                />
-                              </ScrollArea>
-                            </IFrame>
-                          </FormItem>
-                        </ResizablePanel>
-                      </ResizablePanelGroup>
-                    )}
-                  />
                 </>
               )}
-              {itemChannel === "text-message" && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name={`${name}.body`}
-                    render={({ field }) => (
-                      <ResizablePanelGroup
-                        direction="horizontal"
-                        className="max-md:hidden"
-                      >
-                        <ResizablePanel className="pr-4">
-                          <FormItem>
-                            <FormLabel>
-                              Text Message body
-                              <InfoTooltip>
-                                <p>
-                                  Body of the Text Message, that your customers
-                                  will see
-                                </p>
-                                <p>* Uses templated values</p>
-                              </InfoTooltip>
-                            </FormLabel>
-                            <FormControl>
-                              <Textarea
-                                disabled={disabled}
-                                placeholder="Body"
-                                className="mx-0 focus:mx-1 active:mx-1"
-                                autoResize
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormDescription>
-                              {field.value?.length || 0} characters
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        </ResizablePanel>
-                        <ResizableHandle withHandle />
-                        <ResizablePanel className="pl-4">
-                          <FormItem>
-                            <FormLabel>Preview</FormLabel>
-                            <div
-                              className="w-full text-sm"
-                              dangerouslySetInnerHTML={{
-                                __html: templateSafeWithError(
-                                  field.value || "",
-                                  demoArguments
-                                ).replaceAll("\n", "<br/>"),
-                              }}
-                            />
-                          </FormItem>
-                        </ResizablePanel>
-                      </ResizablePanelGroup>
-                    )}
-                  />
-                </>
-              )}
+              <FormField
+                control={form.control}
+                name={`${name}.templateId`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Tempalte
+                      <InfoTooltip>
+                        Reminder body, that your customers will see.
+                      </InfoTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <TemplateSelector
+                        type={itemChannel}
+                        disabled={disabled}
+                        value={field.value}
+                        onItemSelect={(value) => field.onChange(value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </CardContent>
         </AccordionContent>

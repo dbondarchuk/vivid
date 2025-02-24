@@ -27,6 +27,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
     isDirty,
     isLoading: formIsLoading,
     errors,
+    isSubmitted,
   } = useFormState(form);
 
   const classes = cva([
@@ -75,7 +76,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   return (
     <Button
       disabled={
-        disabled || isLoading || (ignoreInvalid ? !isDirty || !isValid : false)
+        disabled || isLoading || (!ignoreInvalid ? !isDirty || !isValid : false)
       }
       className={classes()}
       type="submit"

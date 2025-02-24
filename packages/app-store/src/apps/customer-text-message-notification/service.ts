@@ -11,7 +11,12 @@ import {
 } from "@vivid/types";
 import { CustomerTextMessageNotificationConfiguration } from "./models";
 
-import { getArguments, getPhoneField, template } from "@vivid/utils";
+import {
+  getArguments,
+  getPhoneField,
+  template,
+  templateSafeWithError,
+} from "@vivid/utils";
 
 import ownerTextMessageReplyTemplate from "./emails/owner-text-message-reply.html";
 
@@ -152,8 +157,16 @@ export default class CustomerTextMessageNotificationConnectedApp
     initiator: string
   ) {
     const data = appData.data as CustomerTextMessageNotificationConfiguration;
-    const body = data.templates[status].body;
-    if (!body) {
+    const templateId = data.templates[status].templateId;
+    if (!templateId) {
+      return;
+    }
+
+    const template = await this.props.services
+      .TemplatesService()
+      .getTemplate(templateId);
+    if (!template) {
+      console.error(`Can't find template with id ${templateId}`);
       return;
     }
 
@@ -171,7 +184,11 @@ export default class CustomerTextMessageNotificationConnectedApp
     }
 
     const { arg } = getArguments(appointment, booking, general, social, true);
-    const templatedBody = template(body, arg, true);
+    const templatedBody = templateSafeWithError(
+      template.value as string,
+      arg,
+      true
+    );
 
     await this.props.services.NotificationService().sendTextMessage({
       phone,

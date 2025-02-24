@@ -22,6 +22,19 @@ export function template(
   }
 }
 
+export function useIsTemplateSafe(
+  templateString: string,
+  args?: Record<string, any>,
+  plainText = false
+) {
+  try {
+    template(templateString, args, plainText);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export function templateSafeWithError(
   templateString: string,
   args?: Record<string, any>,

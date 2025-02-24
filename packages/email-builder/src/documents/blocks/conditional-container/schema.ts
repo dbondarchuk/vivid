@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BaseReaderBlockProps } from "../../reader/core";
 
 const ConditionalContainerPropsSchema = z.object({
   props: z
@@ -20,3 +21,6 @@ export default ConditionalContainerPropsSchema;
 export type ConditionalContainerProps = z.infer<
   typeof ConditionalContainerPropsSchema
 >;
+
+export type ConditionalContainerReaderProps = BaseReaderBlockProps &
+  ConditionalContainerProps;

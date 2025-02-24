@@ -10,17 +10,28 @@ export const RemindersApp: App = {
   type: "complex",
   category: ["Notifications"],
   Logo: ({ className }) => <BellRing className={className} />,
-  SetUp: (props) => <RemindersAppSetup {...props} />,
   dontAllowMultiple: true,
   isHidden: true,
   description: {
     text: "Send appointment reminders to customers.",
   },
-  menuItem: {
-    href: "communications/reminders",
-    parent: "communications",
-    id: "communications-reminders",
-    label: "Reminders",
-    icon: <BellRing />,
-  },
+  menuItems: [
+    {
+      href: "communications/reminders",
+      parent: "communications",
+      id: "communications-reminders",
+      order: 100,
+      label: "Reminders",
+      icon: <BellRing />,
+      Page: (props) => <RemindersAppSetup {...props} />,
+      pageBreadcrumbs: [
+        {
+          title: "Reminders",
+          link: "/admin/dashboard/communications/reminders",
+        },
+      ],
+      pageTitle: "Reminders",
+      pageDescription: "Add or update appointment reminders",
+    },
+  ],
 };

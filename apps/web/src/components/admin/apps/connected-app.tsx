@@ -31,7 +31,7 @@ export const ConnectedAppRow: React.FC<ConnectedAppRowProps> = ({ app }) => {
         ) : (
           <Link
             button
-            href={`/admin/dashboard/${appDescriptor.menuItem.href}`}
+            href={`/admin/dashboard/${appDescriptor.menuItems.href}`}
             variant="secondary"
           >
             <RefreshCcw /> Update app

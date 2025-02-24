@@ -26,15 +26,22 @@ import ForeachContainerEditor from "../blocks/foreach-container/editor";
 import ForeachContainerPropsSchema from "../blocks/foreach-container/schema";
 import { HeadingEditor } from "../blocks/heading/editor";
 import EditorBlockWrapper from "../blocks/helpers/block-wrappers/editor-block-wrapper";
+import { templateProps } from "../blocks/helpers/block-wrappers/utils";
 import { TextEditor } from "../blocks/text/editor";
 import TextPropsSchema from "../blocks/text/schema";
+import { useEditorArgs } from "./context";
+
+const templatePropsFromContext = (props: any) => {
+  const args = useEditorArgs();
+  return templateProps(props, args);
+};
 
 const EDITOR_DICTIONARY = buildBlockConfigurationDictionary({
   Avatar: {
     schema: AvatarPropsSchema,
     Component: (props) => (
       <EditorBlockWrapper>
-        <Avatar {...props} />
+        <Avatar {...templatePropsFromContext(props)} />
       </EditorBlockWrapper>
     ),
   },
@@ -108,7 +115,7 @@ const EDITOR_DICTIONARY = buildBlockConfigurationDictionary({
       };
       return (
         <EditorBlockWrapper>
-          <Image {...props} />
+          <Image {...templatePropsFromContext(props)} />
         </EditorBlockWrapper>
       );
     },

@@ -184,6 +184,9 @@ ComboboxTrigger.displayName = "ComboboxTrigger";
 export const Combobox: React.FC<ComboboxProps> = (props) => {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState<string | undefined>(props.value);
+  React.useEffect(() => {
+    setValue(props.value);
+  }, [props.value, setValue]);
 
   const [search, setSearch] = React.useState("");
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BaseReaderBlockProps } from "../../reader/core";
 
 const COLOR_SCHEMA = z
   .string()
@@ -35,3 +36,4 @@ const EmailLayoutPropsSchema = z.object({
 export default EmailLayoutPropsSchema;
 
 export type EmailLayoutProps = z.infer<typeof EmailLayoutPropsSchema>;
+export type EmailLayoutReaderProps = BaseReaderBlockProps & EmailLayoutProps;

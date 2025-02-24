@@ -1,3 +1,4 @@
+import { renderToStaticMarkup } from "@vivid/email-builder/static";
 import {
   Appointment,
   BookingConfiguration,
@@ -11,7 +12,12 @@ import {
   SocialConfiguration,
   TextMessageReply,
 } from "@vivid/types";
-import { getArguments, getPhoneField, template } from "@vivid/utils";
+import {
+  getArguments,
+  getPhoneField,
+  template,
+  templateSafeWithError,
+} from "@vivid/utils";
 import { DateTime } from "luxon";
 import ownerTextMessageReplyTemplate from "./emails/owner-text-message-reply.html";
 import { Reminder, RemindersConfiguration } from "./models";
@@ -188,17 +194,26 @@ export default class RemindersConnectedApp
     );
 
     const channel = reminder.channel;
+    const template = await this.props.services
+      .TemplatesService()
+      .getTemplate(reminder.templateId);
+    if (!template) {
+      console.warn(`Can't find template ${reminder.templateId}`);
+      return;
+    }
+
     switch (channel) {
       case "email":
         return this.props.services.NotificationService().sendEmail({
           email: {
-            body: template(reminder.body, arg),
-            subject: template(reminder.subject, arg),
+            body: await renderToStaticMarkup(template.value, { args: arg }),
+            subject: templateSafeWithError(reminder.subject, arg),
             to: appointment.fields.email,
           },
           initiator: `Reminder Service - ${reminder.name}`,
           appointmentId: appointment._id,
         });
+
       case "text-message":
         const phone = getPhoneField(appointment, config);
         if (!phone) {
@@ -212,7 +227,7 @@ export default class RemindersConnectedApp
         await this.props.services.NotificationService().sendTextMessage({
           phone,
           sender: generalConfig.name,
-          body: template(reminder.body, arg),
+          body: templateSafeWithError(template.value, arg),
           webhookData: {
             data: appointment._id,
             appId: appData._id,

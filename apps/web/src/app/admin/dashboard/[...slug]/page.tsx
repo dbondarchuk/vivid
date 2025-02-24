@@ -19,10 +19,11 @@ export default async function Page(props: Props) {
   const path = params.slug.join("/").toLocaleLowerCase();
   const app = Object.values(AvailableApps).find(
     (app) =>
-      app.type === "complex" && app.menuItem.href.toLocaleLowerCase() === path
+      app.type === "complex" &&
+      app.menuItems.some(({ href }) => href.toLocaleLowerCase() === path)
   );
 
-  if (!app || app.type !== "complex") {
+  if (!app) {
     redirect("/admin/dashboard");
   }
 
@@ -33,10 +34,23 @@ export default async function Page(props: Props) {
     redirect("/admin/dashboard");
   }
 
+  const menuItem = app.menuItems.find(
+    ({ href }) => href.toLocaleLowerCase() === path
+  );
+
+  if (!menuItem) {
+    redirect("/admin/dashboard");
+  }
+
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },
     { title: "Apps", link: "/admin/dashboard/apps" },
-    { title: app.displayName, link: `/admin/dashboard/${path}` },
+    ...(menuItem.pageBreadcrumbs || [
+      {
+        title: menuItem.pageTitle || app.displayName,
+        link: `/admin/dashboard/${path}`,
+      },
+    ]),
   ];
 
   return (
@@ -45,14 +59,14 @@ export default async function Page(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title={app.displayName}
-            description={`Update ${app.displayName} settings`}
+            title={menuItem.pageTitle || app.displayName}
+            description={
+              menuItem.pageDescription || `Update ${app.displayName} settings`
+            }
           />
           <Separator />
         </div>
-        {(app as ComplexApp).SetUp({
-          appId,
-        })}
+        <menuItem.Page appId={appId} />
       </div>
     </PageContainer>
   );
