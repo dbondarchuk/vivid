@@ -1,4 +1,4 @@
-import { Footer } from "@/components/web/footer/footer";
+import { Footer } from "@/components/web/footer";
 import { Header } from "@/components/web/header";
 import { Toaster } from "@vivid/ui";
 
