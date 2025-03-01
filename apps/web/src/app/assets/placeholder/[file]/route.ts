@@ -2,11 +2,11 @@ type Props = {
   params: Promise<{ file: string }>;
 };
 
-import { createCanvas } from "canvas";
 import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 
-const generatePlaceholderImage = ({
+const generatePlaceholderImage = async ({
   width,
   height,
   r = 128,
@@ -23,23 +23,26 @@ const generatePlaceholderImage = ({
   text: string;
   format?: "png" | "jpg";
 }) => {
-  const canvas = createCanvas(width, height);
-  const ctx = canvas.getContext("2d");
+  const overlay = `<svg width="${width - 20}" height="${height - 20}">
+    <text x="50%" y="50%" font-family="sans-serif" font-size="16" text-anchor="middle">${text}</text>
+  </svg>`;
 
-  ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.font = "20px Arial";
-  ctx.fillStyle = "white";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(text || `${width}x${height}`, width / 2, height / 2);
-
-  const bufferFormat = format === "jpg" ? "image/jpeg" : "image/png";
-  // @ts-expect-error passing down the correct format
-  const buffer = canvas.toBuffer(bufferFormat) as Buffer;
-
-  return buffer;
+  return await sharp({
+    create: {
+      width: width,
+      height: height,
+      channels: 4,
+      background: { r, g, b, alpha: 1 },
+    },
+  })
+    .composite([
+      {
+        input: Buffer.from(overlay),
+        gravity: "center",
+      },
+    ])
+    [format === "jpg" ? "jpeg" : "png"]()
+    .toBuffer();
 };
 
 export async function GET(
@@ -59,7 +62,7 @@ export async function GET(
     return notFound();
   }
 
-  const result = generatePlaceholderImage({
+  const result = await generatePlaceholderImage({
     width,
     height,
     format: ext as any,

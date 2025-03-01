@@ -22,7 +22,6 @@
     "@vivid/ui": "*",
     "@vivid/utils": "*",
     "@vvo/tzdb": "^6.142.0",
-    "canvas": "^3.1.0",
     "class-variance-authority": "^0.7.1",
     "color": "^5.0.0",
     "copy-text-to-clipboard": "^3.2.0",

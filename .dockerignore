@@ -7,6 +7,9 @@ node_modules
 npm-debug.log
 README.md
 .next
-!.next/static
-!.next/standalone
+.next
+.next
+out/
+build
+dist
 .git
