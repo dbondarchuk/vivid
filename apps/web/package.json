@@ -53,6 +53,7 @@
     "shiki": "^1.24.2"
   },
   "devDependencies": {
+    "@types/color": "^4.2.0",
     "@types/node": "^20",
     "@types/node-cron": "^3.0.11",
     "@types/react": "19.0.2",
