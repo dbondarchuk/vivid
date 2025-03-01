@@ -73,7 +73,10 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
   const addonsFields =
     selectedAddons?.flatMap((addon) => addon.fields || []) || [];
-  const allFormFields = [...props.appointmentOption.fields, ...addonsFields];
+  const allFormFields = [
+    ...(props.appointmentOption.fields || []),
+    ...addonsFields,
+  ];
   const fieldsIdsRequired = [...allFormFields].reduce(
     (map, field) => ({
       ...map,
@@ -178,15 +181,17 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
             }),
             {} as AppointmentFields
           ),
+        fieldsLabels: formFields.reduce(
+          (acc, field) => ({
+            ...acc,
+            [field.name]: field.data?.label,
+          }),
+          {}
+        ),
         option: {
           ...props.appointmentOption,
-          fields: props.appointmentOption.fields?.reduce(
-            (acc, field) => ({
-              ...acc,
-              [field.name]: field.data?.label,
-            }),
-            {}
-          ),
+          // @ts-ignore we need to clear them
+          fields: undefined,
           // @ts-ignore we need it here
           addons: undefined,
         },

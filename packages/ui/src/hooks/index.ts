@@ -7,3 +7,4 @@ export * from "./use-is-touch-device";
 export * from "./use-mobile";
 export * from "./use-mounted";
 export * from "./use-upload-file";
+export * from "./use-window-size";

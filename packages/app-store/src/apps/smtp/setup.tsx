@@ -2,6 +2,7 @@
 
 import { ComplexAppSetupProps } from "@vivid/types";
 import {
+  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -15,7 +16,6 @@ import {
 } from "@vivid/ui";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
-import { ConnectedAppStatusMessage } from "../../ui/connected-app-properties";
 import { SmtpApp } from "./app";
 import { SmtpConfiguration, smtpConfigurationSchema } from "./models";
 

@@ -18,8 +18,8 @@ export const InstallComplexAppButton: React.FC<{
 
     const installFn = async () => {
       const appId = await installComplexApp(appName);
-      if (app.type === "complex") {
-        router.push(`/admin/dashboard/${app.menuItems.href}`);
+      if (app.type === "complex" && app.settingsHref) {
+        router.push(`/admin/dashboard/${app.settingsHref}`);
       } else if (app.type === "system") {
         await setAppStatus(appId, {
           status: "connected",

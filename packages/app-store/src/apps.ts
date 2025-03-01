@@ -1,6 +1,6 @@
 import { App } from "@vivid/types";
-import { CaldavApp } from "./apps/caldav/caldav.app";
-import { CALDAV_APP_NAME } from "./apps/caldav/caldav.const";
+import { CaldavApp } from "./apps/caldav/app";
+import { CALDAV_APP_NAME } from "./apps/caldav/const";
 import { CustomerEmailNotificationApp } from "./apps/customer-email-notification/app";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";
 import { CustomerTextMessageNotificationApp } from "./apps/customer-text-message-notification/app";
@@ -40,7 +40,7 @@ export const AvailableApps: Record<string, App> = {
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
 };
 
-export { CALDAV_APP_NAME } from "./apps/caldav/caldav.const";
+export { CALDAV_APP_NAME } from "./apps/caldav/const";
 export { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";
 export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";

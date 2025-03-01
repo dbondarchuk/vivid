@@ -14,7 +14,6 @@
     "@schedule-x/calendar": "^1.60.1",
     "@schedule-x/react": "^1.59.1",
     "@schedule-x/theme-default": "^1.60.1",
-    "@tailwindcss/typography": "^0.5.13",
     "@vivid/app-store": "*",
     "@vivid/email-builder": "*",
     "@vivid/rte": "*",

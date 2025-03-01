@@ -3,6 +3,8 @@
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -15,10 +17,6 @@ import {
 } from "@vivid/ui";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
-import {
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
-} from "../../ui/connected-app-properties";
 import { EmailNotificationApp } from "./app";
 import {
   EmailNotificationConfiguration,

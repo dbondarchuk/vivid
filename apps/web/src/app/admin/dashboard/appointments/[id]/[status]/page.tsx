@@ -13,15 +13,15 @@ export default async function Page(props: Props) {
         params.id,
         "confirmed"
       );
-      break;
+
+      redirect(`/admin/dashboard/appointments/${params.id}`);
 
     case "decline":
-      await ServicesContainer.EventsService().changeAppointmentStatus(
-        params.id,
-        "declined"
-      );
-      break;
-  }
+      // await ServicesContainer.EventsService().changeAppointmentStatus(
+      //   params.id,
+      //   "declined"
+      // );
 
-  redirect(`/admin/dashboard/appointments/${params.id}`);
+      redirect(`/admin/dashboard/appointments/${params.id}?decline`);
+  }
 }

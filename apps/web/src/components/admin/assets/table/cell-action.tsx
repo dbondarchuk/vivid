@@ -12,12 +12,13 @@ import {
   toast,
   toastPromise,
 } from "@vivid/ui";
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Download, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteAsset } from "../actions";
 
 import copy from "copy-text-to-clipboard";
+import Link from "next/link";
 
 interface CellActionProps {
   asset: Asset;
@@ -85,10 +86,10 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={() => router.push(`/admin/dashboard/assets/${asset._id}`)}
-          >
-            <Edit className="h-4 w-4" /> Update
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/dashboard/assets/${asset._id}`}>
+              <Edit className="h-4 w-4" /> Update
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="h-4 w-4" /> Delete
@@ -99,6 +100,12 @@ export const CellAction: React.FC<CellActionProps> = ({ asset }) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={copyAbsolute}>
             <Copy className="h-4 w-4" /> Copy absolute url
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href={`/assets/${asset.filename}`} target="_blank">
+              <Download className="h-4 w-4" /> Download
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

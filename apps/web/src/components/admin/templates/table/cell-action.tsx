@@ -15,6 +15,7 @@ import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteTemplate } from "../actions";
+import Link from "next/link";
 
 interface CellActionProps {
   template: TemplateListModel;
@@ -61,23 +62,19 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(`/admin/dashboard/templates/${template._id}`)
-            }
-          >
-            <Edit className="h-4 w-4" /> Update
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/dashboard/templates/${template._id}`}>
+              <Edit className="h-4 w-4" /> Update
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="h-4 w-4" /> Delete
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(`/admin/dashboard/templates/${template._id}/clone`)
-            }
-          >
-            <Copy className="h-4 w-4" /> Clone
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/dashboard/templates/${template._id}/clone`}>
+              <Copy className="h-4 w-4" /> Clone
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

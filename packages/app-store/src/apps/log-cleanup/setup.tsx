@@ -3,6 +3,8 @@
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -11,10 +13,6 @@ import {
   FormMessage,
 } from "@vivid/ui";
 import React from "react";
-import {
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
-} from "../../ui/connected-app-properties";
 import { LogCleanupApp } from "./app";
 import {
   CleanUpIntervalType,

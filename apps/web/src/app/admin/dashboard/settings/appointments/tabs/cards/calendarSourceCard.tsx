@@ -1,4 +1,3 @@
-import { AppSelector } from "@/components/admin/apps/app-selector";
 import { AvailableApps } from "@vivid/app-store";
 import { CalendarSourceConfiguration, ConnectedApp } from "@vivid/types";
 import {
@@ -11,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
+  AppSelector,
   Button,
   Card,
   CardContent,
@@ -35,7 +35,6 @@ export type CalendarSourceCardProps = {
   remove: () => void;
   update: (newValue: CalendarSourceConfiguration) => void;
   clone: () => void;
-  apps: ConnectedApp[];
 };
 
 export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
@@ -46,8 +45,9 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   remove,
   update,
   clone,
-  apps,
 }) => {
+  const [appName, setAppName] = React.useState<string | undefined>();
+
   const appId = item.appId;
   const changeAppId = (value: typeof appId) => {
     const newValue = {
@@ -57,7 +57,6 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
     update(newValue);
   };
 
-  const appName = apps.find((app) => app._id === appId)?.name;
   const appDisplayName = appName ? AvailableApps[appName].displayName : null;
 
   return (
@@ -129,12 +128,12 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
                     disabled={disabled}
                     className="w-full"
                     scope="calendar-read"
-                    apps={apps}
                     value={field.value}
                     onItemSelect={(value) => {
                       field.onChange(value);
                       changeAppId(value);
                     }}
+                    setAppName={setAppName}
                   />
                 </FormControl>
                 <FormMessage />

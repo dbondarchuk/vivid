@@ -1,6 +1,5 @@
-import { AvailableApps } from "@vivid/app-store";
 import { AppScope, ConnectedApp } from "@vivid/types";
-import { cn, Combobox, IComboboxItem } from "@vivid/ui";
+import { cn, Combobox, IComboboxItem, toast } from "@vivid/ui";
 import React from "react";
 import {
   ConnectedAppAccount,
@@ -17,6 +16,24 @@ const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
   );
 };
 
+const getApps = async (scope: string) => {
+  const url = `/admin/api/apps?scope=${encodeURIComponent(scope)}`;
+  const response = await fetch(url, {
+    method: "GET",
+    cache: "default",
+  });
+
+  if (response.status >= 400) {
+    toast.error("Request failed.");
+    const text = await response.text();
+    console.error(`Request to fetch apps failed: ${response.status}; ${text}`);
+
+    return [];
+  }
+
+  return (await response.json()) as ConnectedApp[];
+};
+
 const checkAppSearch = (app: ConnectedApp, query: string) => {
   const search = query.toLocaleLowerCase();
   return (
@@ -27,11 +44,11 @@ const checkAppSearch = (app: ConnectedApp, query: string) => {
 };
 
 type BaseAppSelectorProps = {
-  apps: ConnectedApp[];
   scope: AppScope;
   value?: string;
   disabled?: boolean;
   className?: string;
+  setAppName?: (appName?: string) => void;
 };
 
 type ClearableAppSelectorProps = {
@@ -48,17 +65,34 @@ export type AppSelectorProps = BaseAppSelectorProps &
   (ClearableAppSelectorProps | NonClearableAppSelectorProps);
 
 export const AppSelector: React.FC<AppSelectorProps> = ({
-  apps,
   scope,
   disabled,
   className,
   value,
   onItemSelect,
   allowClear,
+  setAppName,
 }) => {
-  const supportedApps = apps.filter(
-    (app) => AvailableApps[app.name].scope.indexOf(scope) >= 0
-  );
+  const [apps, setApps] = React.useState<ConnectedApp[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const fn = async () => {
+      try {
+        setIsLoading(true);
+        const apps = await getApps(scope);
+        setApps(apps);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fn();
+  }, [scope]);
+
+  React.useEffect(() => {
+    setAppName?.(apps?.find((app) => app._id === value)?.name);
+  }, [apps, value]);
 
   const appValues = (apps: ConnectedApp[]): IComboboxItem[] =>
     apps.map((app) => {
@@ -78,13 +112,13 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
     // @ts-ignore Allow clear passthrough
     <Combobox
       allowClear={allowClear}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
-      values={appValues(supportedApps)}
-      searchLabel="Select app"
+      values={appValues(apps)}
+      searchLabel={isLoading ? "Loading apps..." : "Select app"}
       value={value}
       customSearch={(search) =>
-        appValues(supportedApps.filter((app) => checkAppSearch(app, search)))
+        appValues(apps.filter((app) => checkAppSearch(app, search)))
       }
       onItemSelect={onItemSelect}
     />

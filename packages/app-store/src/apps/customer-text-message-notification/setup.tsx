@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
+  Skeleton,
   TemplateSelector,
 } from "@vivid/ui";
 import React from "react";
@@ -32,8 +33,9 @@ const TextMessagesTemplateForm: React.FC<{
   form: UseFormReturn<CustomerTextMessageNotificationConfiguration>;
   disabled?: boolean;
   type: TextMessagesTemplateKeys;
+  isDataLoading?: boolean;
   whenText: string;
-}> = ({ form, disabled, type, whenText }) => {
+}> = ({ form, disabled, type, whenText, isDataLoading }) => {
   return (
     <FormField
       control={form.control}
@@ -51,13 +53,17 @@ const TextMessagesTemplateForm: React.FC<{
             </InfoTooltip>
           </FormLabel>
           <FormControl>
-            <TemplateSelector
-              type="text-message"
-              disabled={disabled}
-              value={field.value}
-              onItemSelect={(value) => field.onChange(value)}
-              allowClear
-            />
+            {isDataLoading ? (
+              <Skeleton className="w-full h-10" />
+            ) : (
+              <TemplateSelector
+                type="text-message"
+                disabled={disabled}
+                value={field.value}
+                onItemSelect={(value) => field.onChange(value)}
+                allowClear
+              />
+            )}
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -69,7 +75,7 @@ const TextMessagesTemplateForm: React.FC<{
 export const CustomerTextMessageNotificationAppSetup: React.FC<
   ComplexAppSetupProps
 > = ({ appId }) => {
-  const { form, isLoading, onSubmit } =
+  const { form, isLoading, isDataLoading, onSubmit } =
     useConnectedAppSetup<CustomerTextMessageNotificationConfiguration>({
       appId,
       appName: CustomerTextMessageNotificationApp.name,
@@ -84,24 +90,28 @@ export const CustomerTextMessageNotificationAppSetup: React.FC<
             <TextMessagesTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"pending"}
               whenText="they book new appointment"
             />
             <TextMessagesTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"confirmed"}
               whenText="the appointment was confirmed"
             />
             <TextMessagesTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"declined"}
               whenText="the appointment was declined"
             />
             <TextMessagesTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"rescheduled"}
               whenText="the appointment was rescheduled"
             />
@@ -121,13 +131,17 @@ export const CustomerTextMessageNotificationAppSetup: React.FC<
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <TemplateSelector
-                      type="text-message"
-                      disabled={isLoading}
-                      value={field.value}
-                      onItemSelect={(value) => field.onChange(value)}
-                      allowClear
-                    />
+                    {isDataLoading ? (
+                      <Skeleton className="w-full h-10" />
+                    ) : (
+                      <TemplateSelector
+                        type="text-message"
+                        disabled={isLoading}
+                        value={field.value}
+                        onItemSelect={(value) => field.onChange(value)}
+                        allowClear
+                      />
+                    )}
                   </FormControl>
                   <FormMessage />
                 </FormItem>

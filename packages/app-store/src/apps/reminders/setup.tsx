@@ -1,10 +1,9 @@
 "use client";
 
 import { ComplexAppSetupProps } from "@vivid/types";
-import { Form } from "@vivid/ui";
+import { ConnectedAppStatusMessage, Form, Skeleton } from "@vivid/ui";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
-import { ConnectedAppStatusMessage } from "../../ui/connected-app-properties";
 import { RemindersApp } from "./app";
 import {
   Reminder,
@@ -22,7 +21,7 @@ export const RemindersAppSetup: React.FC<ComplexAppSetupProps> = ({
   appId,
 }) => {
   const demoArguments = useDemoArguments();
-  const { appStatus, form, isLoading, isValid, onSubmit } =
+  const { appStatus, form, isLoading, isDataLoading, onSubmit } =
     useConnectedAppSetup<RemindersConfiguration>({
       appId,
       appName: RemindersApp.name,
@@ -65,45 +64,49 @@ export const RemindersAppSetup: React.FC<ComplexAppSetupProps> = ({
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-          <div className="flex flex-col items-center gap-4 w-full">
-            <NonSortable
-              title="Reminders"
-              ids={ids}
-              onAdd={addNew}
-              collapse={collapse}
-              allCollapsed={opened.length === 0 && ids.length > 0}
-            >
-              <Accordion
-                type="multiple"
-                value={opened}
-                onValueChange={setOpened}
-                className="w-full"
+          {isDataLoading ? (
+            <Skeleton className="w-full h-40" />
+          ) : (
+            <div className="flex flex-col items-center gap-4 w-full">
+              <NonSortable
+                title="Reminders"
+                ids={ids}
+                onAdd={addNew}
+                collapse={collapse}
+                allCollapsed={opened.length === 0 && ids.length > 0}
               >
-                <div className="flex flex-grow flex-col gap-4">
-                  {fields.map((item, index) => {
-                    return (
-                      <ReminderCard
-                        form={form}
-                        item={item}
-                        key={item.id}
-                        name={`reminders.${index}`}
-                        disabled={isLoading}
-                        remove={() => remove(index)}
-                        clone={() => clone(index)}
-                        update={(newValue) => update(index, newValue)}
-                        demoArguments={demoArguments}
-                      />
-                    );
-                  })}
-                </div>
-              </Accordion>
-            </NonSortable>
-            <SaveButton
-              form={form}
-              disabled={isLoading}
-              isLoading={isLoading}
-            />
-          </div>
+                <Accordion
+                  type="multiple"
+                  value={opened}
+                  onValueChange={setOpened}
+                  className="w-full"
+                >
+                  <div className="flex flex-grow flex-col gap-4">
+                    {fields.map((item, index) => {
+                      return (
+                        <ReminderCard
+                          form={form}
+                          item={item}
+                          key={item.id}
+                          name={`reminders.${index}`}
+                          disabled={isLoading}
+                          remove={() => remove(index)}
+                          clone={() => clone(index)}
+                          update={(newValue) => update(index, newValue)}
+                          demoArguments={demoArguments}
+                        />
+                      );
+                    })}
+                  </div>
+                </Accordion>
+              </NonSortable>
+              <SaveButton
+                form={form}
+                disabled={isLoading}
+                isLoading={isLoading}
+              />
+            </div>
+          )}
         </form>
       </Form>
       {appStatus && <ConnectedAppStatusMessage app={appStatus} />}

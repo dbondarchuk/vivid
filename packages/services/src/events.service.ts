@@ -177,7 +177,7 @@ export class EventsService implements IEventsService {
         }
       } catch (error: any) {
         console.error(
-          `Hook ${hook}.onAppointmentCreatedonAppointmentStatusChanged has failed`,
+          `Hook ${hook.name}.onAppointmentCreatedonAppointmentStatusChanged has failed`,
           error
         );
       }
@@ -501,7 +501,7 @@ export class EventsService implements IEventsService {
         );
       } catch (error: any) {
         console.error(
-          `Hook ${hook}.onAppointmentStatusChanged has failed`,
+          `Hook ${hook.name}.onAppointmentStatusChanged has failed`,
           error
         );
       }
@@ -674,7 +674,7 @@ export class EventsService implements IEventsService {
         );
       } catch (error: any) {
         console.error(
-          `Hook ${hook}.onAppointmentRescheduled has failed`,
+          `Hook ${hook.name}.onAppointmentRescheduled has failed`,
           error
         );
       }

@@ -15,8 +15,6 @@ export default async function Page() {
       "defaultApps"
     );
 
-  const apps = await ServicesContainer.ConnectedAppService().getApps();
-
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-8">
@@ -25,7 +23,7 @@ export default async function Page() {
           <Heading title="Default apps" description="Select default apps" />
           <Separator />
         </div>
-        <DefaultAppsConfigurationForm values={settings} apps={apps} />
+        <DefaultAppsConfigurationForm values={settings} />
       </div>
     </PageContainer>
   );

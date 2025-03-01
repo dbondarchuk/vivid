@@ -26,4 +26,5 @@ export const CustomerEmailNotificationApp: App = {
       Page: (props) => <CustomerEmailNotificationAppSetup {...props} />,
     },
   ],
+  settingsHref: "communications/customer-email",
 };

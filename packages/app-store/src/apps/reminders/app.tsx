@@ -34,4 +34,5 @@ export const RemindersApp: App = {
       pageDescription: "Add or update appointment reminders",
     },
   ],
+  settingsHref: "communications/reminders",
 };

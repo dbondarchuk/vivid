@@ -21,7 +21,19 @@ export const durationToTime = (minutes: number) => {
   };
 };
 
+export const timeToDuration = (time?: { hours: number; minutes: number }) => {
+  if (!time) return undefined;
+  return time.hours * 60 + time.minutes;
+};
+
 export const areTimesEqual = (
   timeA: Time | undefined | null,
   timeB: Time | undefined | null
 ) => timeA?.hour === timeB?.hour && timeA?.minute === timeB?.minute;
+
+export const is12hourUserTimeFormat = () => {
+  const format = new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+  }).resolvedOptions().hourCycle;
+  return format?.startsWith("h12");
+};

@@ -1,10 +1,11 @@
 "use server";
 
 import { ServicesContainer } from "@vivid/services";
-import { AppointmentEvent } from "@vivid/types";
+import { Appointment, AppointmentEvent } from "@vivid/types";
 
 export const createAppointment = async (
   appointment: Omit<AppointmentEvent, "timeZone">,
+  files: Record<string, File> | undefined,
   confirmed: boolean = false
 ) => {
   const { timezone } =
@@ -12,6 +13,12 @@ export const createAppointment = async (
 
   const appointmentEvent: AppointmentEvent = {
     ...appointment,
+    fields: Object.entries(appointment.fields)
+      .filter(([key]) => !(key in (files || {})))
+      .reduce(
+        (map, [key, value]) => ({ ...map, [key]: value }),
+        {} as Appointment["fields"]
+      ),
     timeZone: timezone,
   };
 
@@ -19,6 +26,7 @@ export const createAppointment = async (
     event: appointmentEvent,
     status: confirmed ? "confirmed" : "pending",
     force: true,
+    files,
   });
 
   return result._id;

@@ -32,8 +32,8 @@ export const EmailBuilder = ({ args, value, onChange }: EmailBuilderProps) => {
 
   return (
     <EditorArgsContext.Provider value={args || {}}>
-      <SidebarProvider className="!bg-transparent">
-        <SidebarInset className="flex flex-col w-full" asDiv>
+      <SidebarProvider className="!bg-transparent h-full min-h-full">
+        <SidebarInset className="flex flex-col w-full h-full min-h-full" asDiv>
           <TemplatePanel args={args} />
         </SidebarInset>
         <InspectorDrawer />

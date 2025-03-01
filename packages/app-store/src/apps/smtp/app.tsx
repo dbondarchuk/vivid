@@ -25,4 +25,5 @@ export const SmtpApp: App = {
       Page: (props) => <SmtpAppSetup {...props} />,
     },
   ],
+  settingsHref: "settings/smtp",
 };

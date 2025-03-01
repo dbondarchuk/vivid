@@ -34,7 +34,7 @@ type BaseApp = {
   };
   Logo: (props: AppLogoProps) => ReactNode;
   isFeatured?: boolean;
-  menuItems: {
+  menuItems?: {
     parent?: string;
     order?: number;
     id: string;
@@ -69,6 +69,7 @@ export type BasicApp = BaseApp & {
 export type ComplexApp = BaseApp & {
   type: "complex";
   dontAllowMultiple: true;
+  settingsHref?: string;
   isHidden?: boolean;
 };
 

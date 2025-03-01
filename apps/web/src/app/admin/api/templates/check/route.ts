@@ -17,8 +17,9 @@ export async function GET(request: NextRequest) {
     id || undefined
   );
 
-  const headers = new Headers();
-  headers.append("Cache-Control", "max-age=10");
-
-  return NextResponse.json(result, { headers });
+  return NextResponse.json(result, {
+    headers: new Headers({
+      "Cache-Control": "max-age=10",
+    }),
+  });
 }

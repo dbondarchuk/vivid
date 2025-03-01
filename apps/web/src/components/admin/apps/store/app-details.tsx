@@ -7,6 +7,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  ConnectedAppNameAndLogo,
   Heading,
   Link,
 } from "@vivid/ui";
@@ -14,7 +15,6 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { AddOrUpdateAppButton } from "../add-or-update-app-dialog";
-import { ConnectedAppNameAndLogo } from "../connected-app-properties";
 import { getInstalledApps } from "./actions";
 import { AppScopeLabels } from "./app-scope-labels";
 import { InstallComplexAppButton } from "./install-complex-app-button";

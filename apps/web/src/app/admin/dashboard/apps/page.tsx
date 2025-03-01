@@ -1,9 +1,8 @@
-import { ConnectedAppRow } from "@/components/admin/apps/connected-app";
 import PageContainer from "@/components/admin/layout/page-container";
-import { AvailableApps } from "@vivid/app-store";
-import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Link, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading, Link, Separator, Skeleton } from "@vivid/ui";
 import { Boxes, Store } from "lucide-react";
+import { Suspense } from "react";
+import { InstalledApps } from "./installed-apps";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -15,10 +14,6 @@ const breadcrumbItems = [
 ];
 
 export default async function AppsPage(props: Params) {
-  const apps = (await ServicesContainer.ConnectedAppService().getApps()).filter(
-    (app) => !AvailableApps[app.name].isHidden
-  );
-
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-8">
@@ -45,12 +40,15 @@ export default async function AppsPage(props: Params) {
           </div>
           <Separator />
         </div>
-        {apps.map((app) => (
-          <ConnectedAppRow app={app} key={app._id} />
-        ))}
-        {apps.length === 0 && (
-          <div className="">You do not have any connected apps</div>
-        )}
+        <div className="grid  gap-4">
+          <Suspense
+            fallback={Array.from({ length: 3 }).map((_, index) => (
+              <Skeleton key={index} className="w-full h-32" />
+            ))}
+          >
+            <InstalledApps />
+          </Suspense>
+        </div>
       </div>
     </PageContainer>
   );

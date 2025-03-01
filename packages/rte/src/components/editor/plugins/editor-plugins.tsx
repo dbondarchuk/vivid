@@ -49,7 +49,7 @@ export const viewPlugins = [
   HorizontalRulePlugin,
   linkPlugin,
   DatePlugin,
-  mentionPlugin,
+  // mentionPlugin,
   tablePlugin,
   TogglePlugin,
   tocPlugin,

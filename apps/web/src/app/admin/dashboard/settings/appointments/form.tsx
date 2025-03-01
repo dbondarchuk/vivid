@@ -1,13 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  BookingConfiguration,
-  bookingConfigurationSchema,
-  ConnectedApp,
-  GeneralConfiguration,
-  SocialConfiguration,
-} from "@vivid/types";
+import { BookingConfiguration, bookingConfigurationSchema } from "@vivid/types";
 import {
   cn,
   Form,
@@ -18,7 +12,6 @@ import {
   TabsTrigger,
   toastPromise,
 } from "@vivid/ui";
-import { demoAppointment, getArguments } from "@vivid/utils";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -32,23 +25,13 @@ import { ShiftsTab } from "./tabs/shifts";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
-  generalSettings: GeneralConfiguration;
-  socialSettings: SocialConfiguration;
-  apps: ConnectedApp[];
-}> = ({ values, generalSettings, socialSettings, apps }) => {
+}> = ({ values }) => {
   const form = useForm<BookingConfiguration>({
     resolver: zodResolver(bookingConfigurationSchema),
     mode: "all",
     reValidateMode: "onChange",
     values,
   });
-
-  const { arg: demoArguments } = getArguments(
-    demoAppointment,
-    form.getValues(),
-    generalSettings,
-    socialSettings
-  );
 
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
@@ -152,7 +135,7 @@ export const AppointmentsSettingsForm: React.FC<{
             <MainTab form={form} />
           </TabsContent>
           <TabsContent value="calendarSources">
-            <CalendarSourcesTab form={form} apps={apps} />
+            <CalendarSourcesTab form={form} />
           </TabsContent>
           <TabsContent value="shifts">
             <ShiftsTab form={form} />

@@ -18,6 +18,7 @@ import { useState } from "react";
 import { deletePage } from "../actions";
 
 import copy from "copy-text-to-clipboard";
+import Link from "next/link";
 
 interface CellActionProps {
   page: Page;
@@ -82,10 +83,10 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={() => router.push(`/admin/dashboard/pages/${page._id}`)}
-          >
-            <Edit className="h-4 w-4" /> Update
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/dashboard/pages/${page._id}`}>
+              <Edit className="h-4 w-4" /> Update
+            </Link>
           </DropdownMenuItem>
           {page.slug !== "home" && (
             <DropdownMenuItem onClick={() => setOpen(true)}>

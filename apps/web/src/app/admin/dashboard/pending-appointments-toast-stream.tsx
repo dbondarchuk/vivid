@@ -1,13 +1,35 @@
 "use client";
 
-import { Link, toast } from "@vivid/ui";
-import { useRouter } from "next/navigation";
+import { Badge, toast } from "@vivid/ui";
 import React from "react";
+import { create } from "zustand";
+
+export type PendingAppointmentsContextProps = {
+  count: number;
+  setCount: (count: number) => void;
+};
+
+export const usePendingAppointmentsStore =
+  create<PendingAppointmentsContextProps>((set) => ({
+    count: 0,
+    setCount: (count) => {
+      return set(() => ({
+        count,
+      }));
+    },
+  }));
+
+export const PendingAppointmentsBadge: React.FC = () => {
+  const { count } = usePendingAppointmentsStore();
+  return (
+    <Badge variant="default" className="ml-1 px-2 scale-75 -translate-y-1">
+      {count > 9 ? `9+` : count}
+    </Badge>
+  );
+};
 
 export const PendingAppointmentsToastStream: React.FC = () => {
-  const [count, setCount] = React.useState(0);
-
-  const router = useRouter();
+  const { count, setCount } = usePendingAppointmentsStore();
 
   React.useEffect(() => {
     // Create an EventSource to listen to SSE events
@@ -36,8 +58,7 @@ export const PendingAppointmentsToastStream: React.FC = () => {
         action: {
           label: "View",
           onClick: () => {
-            router.push("/admin/dashboard?activeTab=appointments");
-            router.refresh();
+            location.href = "/admin/dashboard?activeTab=appointments";
           },
         },
       });

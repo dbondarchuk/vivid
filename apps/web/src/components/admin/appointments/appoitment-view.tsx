@@ -306,9 +306,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                         <div>
                           {DateTime.fromJSDate(
                             appointment.dateTime
-                          ).toLocaleString(
-                            DateTime.DATETIME_MED_WITH_WEEKDAY
-                          )}{" "}
+                          ).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                         </div>
                         <div>Duration:</div>
                         <div>
@@ -402,11 +400,9 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                         {Object.entries(restFields).map(([key, value]) => (
                           <React.Fragment key={key}>
                             <div>
-                              {appointment.option?.fields?.[key] ? (
+                              {appointment.fieldsLabels?.[key] ? (
                                 <>
-                                  <span>
-                                    {appointment.option?.fields?.[key]}
-                                  </span>{" "}
+                                  <span>{appointment.fieldsLabels?.[key]}</span>{" "}
                                   <span className="text-sm text-muted-foreground">
                                     ({key})
                                   </span>

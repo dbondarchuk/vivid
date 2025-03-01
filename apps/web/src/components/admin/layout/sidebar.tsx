@@ -153,7 +153,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                             <DropdownMenuItem asChild key={subItem.title}>
                               <Link
                                 href={subItem.href || "/"}
-                                className="inline-flex items-center gap-2 cursor-pointer"
+                                className="inline-flex items-center gap-2 cursor-pointer text-sidebar-foreground hover:text-sidebar-accent-foreground bg-background hover:bg-sidebar-accent"
                               >
                                 {subItem.icon && (
                                   <NavIcon className={`size-5`}>

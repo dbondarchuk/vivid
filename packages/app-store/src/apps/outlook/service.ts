@@ -192,11 +192,72 @@ class OutlookConnectedApp
       } else {
         attachments.push({
           // @ts-expect-error This is required
+          // "@odata.type": "#microsoft.graph.itemAttachment",
           "@odata.type": "#microsoft.graph.fileAttachment",
-          contentType: `application/ics; charset=utf-8; method=${email.icalEvent.method.toUpperCase()}`,
+          isInline: false,
+          contentType: `text/calendar; charset=utf-8; method=${email.icalEvent.method.toUpperCase()}`,
           name: email.icalEvent.filename || "invitation.ics",
           contentBytes: Buffer.from(icsContent).toString("base64"),
         } satisfies FileAttachment);
+        // attachments.push({
+        //   // @ts-expect-error This is required
+        //   "@odata.type": "#microsoft.graph.itemAttachment",
+        //   name: email.icalEvent.filename || "invitation.ics",
+        //   item: {
+        //     "@odata.type": "microsoft.graph.event",
+        //     attendees: email.icalEvent.content.attendees?.map((a) => ({
+        //       emailAddress: {
+        //         address: a.email,
+        //         name: a.name,
+        //       },
+        //       status: {
+        //         response:
+        //           a.partstat === "ACCEPTED"
+        //             ? "accepted"
+        //             : a.partstat === "DECLINED"
+        //               ? "declined"
+        //               : "tentativelyAccepted",
+        //       },
+        //     })),
+        //     allowNewTimeProposals: false,
+        //     id: email.icalEvent.content.uid,
+        //     isCancelled: email.icalEvent.content.method === "CANCEL",
+        //     subject: email.icalEvent.content.title,
+        //     location: {
+        //       address: email.icalEvent.content.location,
+        //     },
+        //     iCalUId: email.icalEvent.content.uid,
+        //     start: {
+        //       dateTime: DateTime.fromMillis(
+        //         parseInt(email.icalEvent.content.start.toString())
+        //       ).toISO({
+        //         includeOffset: false,
+        //       }),
+        //       timeZone: "UTC",
+        //     },
+        //     end: {
+        //       dateTime: DateTime.fromMillis(
+        //         // @ts-ignore exists
+        //         parseInt(email.icalEvent.content.end.toString())
+        //       ).toISO({
+        //         includeOffset: false,
+        //       }),
+        //       timeZone: "UTC",
+        //     },
+        //     originalStartTimeZone: email.icalEvent.content.startInputType,
+        //     originalEndTimeZone: email.icalEvent.content.endInputType,
+        //     body: {
+        //       content: email.icalEvent.content.description,
+        //       contentType: "html",
+        //     },
+        //     organizer: {
+        //       emailAddress: {
+        //         name: email.icalEvent.content.organizer?.name,
+        //         address: email.icalEvent.content.organizer?.email,
+        //       },
+        //     },
+        //   } as OutlookEvent,
+        // } satisfies ItemAttachment);
       }
     }
 
@@ -212,6 +273,41 @@ class OutlookConnectedApp
         } satisfies FileAttachment);
       }
     }
+
+    // let icalEvent: Mail.IcalAttachment | undefined = undefined;
+    // if (email.icalEvent) {
+    //   const { value: icsContent, error: icsError } = createEvent(
+    //     email.icalEvent.content
+    //   );
+    //   icalEvent = {
+    //     filename: email.icalEvent.filename || "invitation.ics",
+    //     method: email.icalEvent.method,
+    //     content: icsContent,
+    //   };
+    // }
+
+    // const { email: from } = await this.props.services
+    //   .ConfigurationService()
+    //   .getConfiguration("general");
+    // const mailOptions: nodemailer.SendMailOptions = {
+    //   from,
+    //   to: email.to,
+    //   cc: email.cc,
+    //   subject: email.subject,
+    //   html: email.body,
+    //   icalEvent: icalEvent,
+    //   attachments: email.attachments?.map((attachment) => ({
+    //     cid: attachment.cid,
+    //     filename: attachment.filename,
+    //     content: attachment.content,
+    //   })),
+    // };
+
+    // let transporter = nodemailer.createTransport({
+    //   streamTransport: true,
+    //   // newline: "windows",
+    //   buffer: true,
+    // });
 
     try {
       const messageId = v4();
@@ -241,7 +337,10 @@ class OutlookConnectedApp
         saveToSentItems: true,
       };
 
-      await client.api("/me/sendMail").post(sendMail);
+      await client
+        .api("/me/sendMail")
+        // .header("Content-type", "text/plain")
+        .post(sendMail);
 
       this.props.update({
         status: "connected",

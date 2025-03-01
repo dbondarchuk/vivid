@@ -1,9 +1,9 @@
 import { Button, ButtonProps } from "@usewaypoint/block-button";
+import { ArgumentsAutocomplete, cn } from "@vivid/ui";
 import { useRef } from "react";
-import ContentEditable from "react-contenteditable";
 import sanitizeHtml from "sanitize-html";
 import { useCurrentBlockId } from "../../editor/block";
-import { setDocument, useDocument } from "../../editor/context";
+import { setDocument, useDocument, useEditorArgs } from "../../editor/context";
 
 export function ButtonEditor({ props, style }: ButtonProps) {
   const ref = useRef<HTMLElement>(null);
@@ -16,6 +16,7 @@ export function ButtonEditor({ props, style }: ButtonProps) {
 
   const document = useDocument();
   const currentBlockId = useCurrentBlockId();
+  const args = useEditorArgs();
 
   const sanitizeConf = {
     allowedTags: [],
@@ -37,7 +38,7 @@ export function ButtonEditor({ props, style }: ButtonProps) {
     });
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     const { key } = e;
     if (key === "Enter") {
       e.preventDefault();
@@ -47,11 +48,16 @@ export function ButtonEditor({ props, style }: ButtonProps) {
 
   return (
     <div style={wrapperStyles}>
-      <input
-        className="border-0 focus:outline-none active:outline-none bg-transparent w-auto"
-        style={linkStyles}
-        value={props?.text ?? "Heading"}
-        onChange={(e) => onChange(e.target.value)}
+      <ArgumentsAutocomplete
+        args={args}
+        asInput
+        className={cn(
+          "border-0 bg-transparent focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
+          props?.fullWidth ? "w-full" : "w-auto"
+        )}
+        style={{ ...linkStyles, textAlign: style?.textAlign }}
+        value={props?.text ?? "Button"}
+        onChange={onChange}
         onKeyDown={handleKeyPress}
       />
     </div>

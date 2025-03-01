@@ -1,5 +1,10 @@
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
-import { Button, Spinner } from "@vivid/ui";
+import {
+  Button,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
+  Spinner,
+} from "@vivid/ui";
 import React from "react";
 import {
   addNewApp,
@@ -7,10 +12,6 @@ import {
   getAppStatus,
   setAppStatus,
 } from "../../actions";
-import {
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
-} from "../../ui/connected-app-properties";
 import { OutlookApp } from "./app";
 
 export const OutlookAppSetup: React.FC<AppSetupProps> = ({

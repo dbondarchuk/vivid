@@ -9,9 +9,9 @@ export const InputGroupSuffixClasses = cva(
     "border",
     "border-input",
     "bg-background",
-    "px-3",
     "py-2",
     "text-sm",
+    "text-muted-foreground",
     "ring-offset-background",
     "focus-visible:outline-none",
     "focus-visible:ring-2",
@@ -23,8 +23,8 @@ export const InputGroupSuffixClasses = cva(
   {
     variants: {
       variant: {
-        suffix: ["border-l-0", "rounded-l-none"],
-        prefix: ["border-r-0", "rounded-r-none"],
+        suffix: ["pr-3", "border-l-0", "rounded-l-none"],
+        prefix: ["pl-3", "border-r-0", "rounded-r-none"],
       },
     },
     defaultVariants: {
@@ -43,8 +43,8 @@ export const InputGroupInputClasses = cva(
   {
     variants: {
       variant: {
-        suffix: ["rounded-r-none"],
-        prefix: ["rounded-l-none"],
+        suffix: ["border-r-0", "rounded-r-none"],
+        prefix: ["border-l-0", "rounded-l-none"],
       },
     },
     defaultVariants: {

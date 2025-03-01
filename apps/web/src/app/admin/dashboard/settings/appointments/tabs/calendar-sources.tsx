@@ -1,13 +1,11 @@
-import { CalendarSourceConfiguration, ConnectedApp } from "@vivid/types";
+import { CalendarSourceConfiguration } from "@vivid/types";
 import { NonSortable } from "@vivid/ui";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import { CalendarSourceCard } from "./cards/calendarSourceCard";
 import { TabProps } from "./types";
 
-export const CalendarSourcesTab: React.FC<
-  TabProps & { apps: ConnectedApp[] }
-> = ({ form, disabled, apps }) => {
+export const CalendarSourcesTab: React.FC<TabProps> = ({ form, disabled }) => {
   const { fields, append, remove, swap, update, insert } = useFieldArray({
     control: form.control,
     name: "calendarSources",
@@ -42,7 +40,6 @@ export const CalendarSourcesTab: React.FC<
               remove={() => remove(index)}
               clone={() => clone(index)}
               update={(newValue) => update(index, newValue)}
-              apps={apps}
             />
           );
         })}

@@ -5,6 +5,7 @@ import { darkTheme } from "@uiw/react-json-view/dark";
 import { lightTheme } from "@uiw/react-json-view/light";
 
 import {
+  ArgumentsAutocomplete,
   Button,
   cn,
   Dialog,
@@ -20,7 +21,6 @@ import {
   FormMessage,
   InfoTooltip,
   ScrollArea,
-  TextareaMentions,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -31,40 +31,11 @@ import { Braces, ClipboardCopy } from "lucide-react";
 import React from "react";
 import { ControllerRenderProps } from "react-hook-form";
 
-type KeyValuePair = { id: string; display: any };
-const propertiesToArray = (obj: Record<string, any>) => {
-  if (!obj) return [];
-
-  const isObject = (val: any) => !!val && typeof val === "object";
-
-  const addDelimiter = (a: string, b: string) => (a ? `${a}.${b}` : b);
-
-  const paths = (obj: Record<string, any> = {}, head = "") => {
-    return Object.entries(obj).reduce((product, [key, value]) => {
-      let fullPath = addDelimiter(head, key);
-      if (Array.isArray(value)) {
-        product.push({ id: fullPath, display: "[]" });
-      }
-
-      if (isObject(value)) {
-        product.push(...paths(value, fullPath));
-      } else {
-        product.push({ id: fullPath, display: value.toString() });
-      }
-      return product;
-    }, [] as KeyValuePair[]);
-  };
-
-  return paths(obj);
-};
-
 export const TextMessageBuilder: React.FC<{
   field: ControllerRenderProps<any>;
   args?: any;
 }> = ({ field, args }) => {
   const { resolvedTheme } = useTheme();
-
-  const argsData = args ? propertiesToArray(args) : [];
 
   return (
     <div className="flex flex-col md:flex-row gap-4">
@@ -142,27 +113,11 @@ export const TextMessageBuilder: React.FC<{
           </Dialog>
         </FormLabel>
         <FormControl>
-          <TextareaMentions
-            trigger="{{"
-            data={argsData}
+          <ArgumentsAutocomplete
+            args={args}
             className="!h-72 max-h-72"
             value={field.value}
             onChange={field.onChange}
-            insertTransform={(value) => {
-              if (value.display === "[]") {
-                return `{{#${value.id}}}{{.}}{{/${value.id}}}`;
-              }
-
-              return `{{${value.id}}}`;
-            }}
-            itemRenderer={(item) => (
-              <div className="flex flex-col gap2">
-                {item.id}
-                <span className="text-xs text-muted-foreground">
-                  {item.display}
-                </span>
-              </div>
-            )}
           />
         </FormControl>
         <FormDescription>{field.value?.length || 0} characters</FormDescription>

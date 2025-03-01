@@ -26,4 +26,5 @@ export const CustomerTextMessageNotificationApp: App = {
       Page: (props) => <CustomerTextMessageNotificationAppSetup {...props} />,
     },
   ],
+  settingsHref: "communications/customer-text-message",
 };

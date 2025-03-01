@@ -16,6 +16,7 @@ import { BaseCard, BaseCardProps, BaseCardState } from "./base-card";
 import { fallbackLanguage } from "@/i18n/i18n";
 import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
 import * as Locales from "date-fns/locale";
+import { max } from "date-fns";
 
 const asJsDate = (dateTime: Luxon) =>
   new Date(dateTime.year, dateTime.month - 1, dateTime.day);
@@ -173,8 +174,10 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
                 locale={calendarLocale}
                 mode="single"
                 selected={date}
-                fromDate={minDate}
-                toDate={maxDate}
+                startMonth={Luxon.fromJSDate(minDate)
+                  .startOf("month")
+                  .toJSDate()}
+                endMonth={Luxon.fromJSDate(maxDate).endOf("month").toJSDate()}
                 onSelect={changeDate}
                 className="rounded-md border"
                 disabled={(day: Date) => isDisabledDay(day)}

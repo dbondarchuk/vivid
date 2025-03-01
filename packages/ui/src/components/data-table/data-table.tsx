@@ -5,6 +5,7 @@ import {
 } from "@radix-ui/react-icons";
 import {
   ColumnDef,
+  ColumnSizingState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
@@ -16,7 +17,8 @@ import { Sort } from "@vivid/types";
 import { template } from "@vivid/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { cn } from "../../utils";
 import { Button } from "../button";
 import { ScrollArea, ScrollBar } from "../scroll-area";
 import {
@@ -36,6 +38,60 @@ import {
 } from "../table";
 import { baseSearchParams } from "./search-params";
 import { useSelectedRowsStore } from "./use-data-table-context";
+
+// function getSize(size = 100, max = Number.MAX_SAFE_INTEGER, min = 40) {
+//   return Math.max(Math.min(size, max), min);
+// }
+
+// const calculateTableSizing = <DataType,>(
+//   columns: Header<DataType, unknown>[],
+//   totalWidth: number
+// ): Record<string, number> => {
+//   let totalAvailableWidth = totalWidth;
+//   let totalIsGrow = 0;
+
+//   columns.forEach((header) => {
+//     const column = header.column.columnDef;
+//     if (!column.size) {
+//       if (column.meta?.dontGrow) {
+//         let calculatedSize = 100;
+//         if (column?.meta?.widthPercentage) {
+//           calculatedSize = column.meta.widthPercentage * totalWidth * 0.01;
+//         } else {
+//           calculatedSize = totalWidth / columns.length;
+//         }
+
+//         const size = getSize(calculatedSize, column.maxSize, column.minSize);
+
+//         column.size = size;
+//       }
+//     }
+
+//     if (!column.meta?.dontGrow) totalIsGrow += 1;
+//     else
+//       totalAvailableWidth -= getSize(
+//         column.size,
+//         column.maxSize,
+//         column.minSize
+//       );
+//   });
+
+//   const sizing: Record<string, number> = {};
+
+//   columns.forEach((header) => {
+//     const column = header.column.columnDef;
+//     if (!column.meta?.dontGrow) {
+//       let calculatedSize = 100;
+//       calculatedSize = Math.floor(totalAvailableWidth / totalIsGrow);
+//       const size = getSize(calculatedSize, column.maxSize, column.minSize);
+//       column.size = size;
+//     }
+
+//     sizing[`${column.id}`] = Number(column.size);
+//   });
+
+//   return sizing;
+// };
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -106,19 +162,24 @@ export function DataTable<TData, TValue>({
   };
 
   const { setRowSelection } = useSelectedRowsStore((state) => state);
+  const [colSizing, setColSizing] = useState<ColumnSizingState>({});
 
   const table = useReactTable({
     data,
     columns: columns,
     pageCount: pageCount,
+    // enableColumnResizing: true,
+    // columnResizeMode: "onChange",
     state: {
       pagination: paginationState,
       sorting: sortingState,
+      columnSizing: colSizing,
     },
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    // onColumnSizingChange: setColSizing,
     manualPagination: true,
     manualFiltering: true,
     manualSorting: true,
@@ -134,23 +195,48 @@ export function DataTable<TData, TValue>({
     setRowSelection(selectedRows);
   }, [selectedRows]);
 
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  // const windowDimensions = useWindowSize();
+  // const headers = table.getFlatHeaders();
+  // useLayoutEffect(() => {
+  //   if (tableContainerRef.current) {
+  //     const initialColumnSizing = calculateTableSizing(
+  //       headers,
+  //       tableContainerRef.current?.clientWidth
+  //     );
+
+  //     table.setColumnSizing(initialColumnSizing);
+  //   }
+
+  //   // Use Dependencies to trigger a reset in column widths
+  // }, [headers, windowDimensions.width]);
+
   return (
     <div className="flex flex-1 flex-col space-y-4">
-      <div className="relative flex flex-1">
+      <div className="relative flex flex-1" ref={tableContainerRef}>
         <div className="absolute bottom-0 left-0 right-0 top-0 flex overflow-scroll rounded-md border md:overflow-auto">
           <ScrollArea className="flex-1">
-            <Table className="relative">
+            <Table
+            //  style={{ width: table.getTotalSize() }}
+            >
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
+                      <TableHead
+                        key={header.id}
+                        className="relative group/thead"
+                        // style={{
+                        //   width: header.getSize(),
+                        // }}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
                               header.getContext()
                             )}
+                        {/* <ColumnResizer header={header} /> */}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -164,7 +250,17 @@ export function DataTable<TData, TValue>({
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            cell.column.getIsResizing() &&
+                              "border-r border-dashed"
+                          )}
+                          // style={{
+                          //   width: cell.column.getSize(),
+                          //   minWidth: cell.column.columnDef.minSize,
+                          // }}
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

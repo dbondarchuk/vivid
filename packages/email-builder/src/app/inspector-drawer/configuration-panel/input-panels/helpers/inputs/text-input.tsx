@@ -8,7 +8,10 @@ import {
   Input,
   FormDescription,
   Label,
+  ArgumentsAutocomplete,
+  cn,
 } from "@vivid/ui";
+import { useEditorArgs } from "../../../../../../documents/editor/context";
 
 type Props = {
   label: string;
@@ -27,35 +30,24 @@ export default function TextInput({
   onChange,
 }: Props) {
   const [value, setValue] = useState(defaultValue);
+  const args = useEditorArgs();
   const isMultiline = typeof rows === "number" && rows > 1;
   return (
     <div className="flex flex-col gap-2">
       <Label>{label}</Label>
       <div className="flex w-full">
-        {isMultiline ? (
-          <Textarea
-            className="w-full max-h-48"
-            placeholder={placeholder}
-            value={value}
-            autoResize
-            onChange={(ev) => {
-              const v = ev.target.value;
-              setValue(v);
-              onChange(v);
-            }}
-          />
-        ) : (
-          <Input
-            className="w-full"
-            placeholder={placeholder}
-            value={value}
-            onChange={(ev) => {
-              const v = ev.target.value;
-              setValue(v);
-              onChange(v);
-            }}
-          />
-        )}
+        <ArgumentsAutocomplete
+          args={args}
+          asInput={!isMultiline}
+          className={cn("w-full", isMultiline && "max-h-40")}
+          autoResize
+          placeholder={placeholder}
+          value={value}
+          onChange={(v) => {
+            setValue(v);
+            onChange(v);
+          }}
+        />
       </div>
       {helperText && <FormDescription>{helperText}</FormDescription>}
     </div>

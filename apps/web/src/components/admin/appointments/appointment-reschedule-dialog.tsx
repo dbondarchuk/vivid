@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DurationInput,
   Form,
   FormControl,
   FormDescription,
@@ -28,15 +29,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
-  InputGroup,
-  InputGroupInput,
-  InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
   Spinner,
   toastPromise,
 } from "@vivid/ui";
+import { is12hourUserTimeFormat } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -183,8 +179,9 @@ export const AppointmentRescheduleDialog: React.FC<
                           <FormLabel>DateTime</FormLabel>
                           <FormControl>
                             <DateTimePicker
+                              use12HourFormat={is12hourUserTimeFormat()}
                               disabled={loading}
-                              fromDate={new Date()}
+                              min={new Date()}
                               {...field}
                               className="flex w-full"
                             />
@@ -200,22 +197,7 @@ export const AppointmentRescheduleDialog: React.FC<
                         <FormItem>
                           <FormLabel>Duration</FormLabel>
                           <FormControl>
-                            <InputGroup>
-                              <InputGroupInput>
-                                <Input
-                                  disabled={loading}
-                                  placeholder="30"
-                                  type="number"
-                                  className={InputGroupInputClasses()}
-                                  {...field}
-                                />
-                              </InputGroupInput>
-                              <InputSuffix
-                                className={InputGroupSuffixClasses()}
-                              >
-                                minutes
-                              </InputSuffix>
-                            </InputGroup>
+                            <DurationInput disabled={loading} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

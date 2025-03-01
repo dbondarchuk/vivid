@@ -12,6 +12,7 @@ import {
 import { cn } from "../utils";
 import { mergeRefs } from "../utils/merge-refs";
 import { escapeRegex } from "@vivid/utils";
+import { Input } from "./input";
 
 // https://github.com/component/textarea-caret-position
 
@@ -64,14 +65,17 @@ const isBrowser = typeof window !== "undefined";
 // @ts-expect-error
 const isFirefox = isBrowser && window.mozInnerScreenX != null;
 
-function getCaretPosition(element: HTMLTextAreaElement) {
+function getCaretPosition(element: HTMLTextAreaElement | HTMLInputElement) {
   return {
     caretStartIndex: element.selectionStart || 0,
     caretEndIndex: element.selectionEnd || 0,
   };
 }
 
-function getCurrentWordPos(element: HTMLTextAreaElement, trigger: string) {
+function getCurrentWordPos(
+  element: HTMLTextAreaElement | HTMLInputElement,
+  trigger: string
+) {
   const text = element.value;
   const { caretStartIndex } = getCaretPosition(element);
 
@@ -94,7 +98,10 @@ function getCurrentWordPos(element: HTMLTextAreaElement, trigger: string) {
   return { start, end, text };
 }
 
-function getCurrentWord(element: HTMLTextAreaElement, trigger: string) {
+function getCurrentWord(
+  element: HTMLTextAreaElement | HTMLInputElement,
+  trigger: string
+) {
   const { start, end, text } = getCurrentWordPos(element, trigger);
   const w = text.substring(start, end);
 
@@ -102,7 +109,7 @@ function getCurrentWord(element: HTMLTextAreaElement, trigger: string) {
 }
 
 function replaceWord(
-  element: HTMLTextAreaElement,
+  element: HTMLTextAreaElement | HTMLInputElement,
   value: string,
   trigger: string
 ) {
@@ -131,8 +138,8 @@ function replaceWord(
   // Replace the word with a new word using document.execCommand
   if (startIndex !== undefined && endIndex !== undefined) {
     // Preserve the current selection range
-    const selectionStart = element.selectionStart;
-    const selectionEnd = element.selectionEnd;
+    const selectionStart = element.selectionStart || 0;
+    const selectionEnd = element.selectionEnd || 0;
 
     // Modify the selected range to encompass the word to be replaced
     element.setSelectionRange(startIndex, endIndex);
@@ -150,7 +157,7 @@ function replaceWord(
 }
 
 function getCaretCoordinates(
-  element: HTMLTextAreaElement,
+  element: HTMLTextAreaElement | HTMLInputElement,
   position: number,
   options?: { debug: boolean }
 ) {
@@ -256,17 +263,26 @@ export type MentionData = {
   display?: string;
 };
 
-type Props = TextareaProps & {
+type Props = {
   value: string;
-  onChange: React.Dispatch<React.SetStateAction<string>>;
+  onChange?: (value: string) => void;
   data: MentionData[];
   trigger?: string;
   itemRenderer?: (item: MentionData) => React.ReactNode;
   insertTransform?: (item: MentionData) => string;
-  className?: string;
-};
+} & (
+  | (Omit<TextareaProps, "onChange"> & {
+      asInput?: boolean;
+    })
+  | (Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> & {
+      asInput: true;
+    })
+);
 
-export const TextareaMentions = React.forwardRef<HTMLTextAreaElement, Props>(
+export const TextareaMentions = React.forwardRef<
+  HTMLTextAreaElement | HTMLInputElement,
+  Props
+>(
   (
     {
       value: textValue,
@@ -280,7 +296,10 @@ export const TextareaMentions = React.forwardRef<HTMLTextAreaElement, Props>(
     },
     ref
   ) => {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const textareaRef = rest.asInput
+      ? useRef<HTMLInputElement>(null)
+      : useRef<HTMLTextAreaElement>(null);
+
     const dropdownRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const [commandValue, setCommandValue] = useState("");
@@ -325,15 +344,18 @@ export const TextareaMentions = React.forwardRef<HTMLTextAreaElement, Props>(
     }, []);
 
     const onTextValueChange = useCallback(
-      (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const text = e.target.value;
         const textarea = textareaRef.current;
         const dropdown = dropdownRef.current;
 
         if (textarea && dropdown) {
-          const caret = getCaretCoordinates(textarea, textarea.selectionEnd);
+          const caret = getCaretCoordinates(
+            textarea,
+            textarea.selectionEnd || 0
+          );
           const currentWord = getCurrentWord(textarea, trigger);
-          setTextValue(text);
+          setTextValue?.(text);
           if (currentWord.startsWith(trigger)) {
             setCommandValue(currentWord.substring(trigger.length));
             dropdown.style.left = caret.left + "px";
@@ -390,12 +412,13 @@ export const TextareaMentions = React.forwardRef<HTMLTextAreaElement, Props>(
     useEffect(() => {
       const textarea = textareaRef.current;
       const dropdown = dropdownRef.current;
-      textarea?.addEventListener("keydown", handleKeyDown);
+      const keyDownHandler = (e: Event) => handleKeyDown(e as KeyboardEvent);
+      textarea?.addEventListener("keydown", keyDownHandler);
       textarea?.addEventListener("blur", handleBlur);
       document?.addEventListener("selectionchange", handleSectionChange);
       dropdown?.addEventListener("mousedown", handleMouseDown);
       return () => {
-        textarea?.removeEventListener("keydown", handleKeyDown);
+        textarea?.removeEventListener("keydown", keyDownHandler);
         textarea?.removeEventListener("blur", handleBlur);
         document?.removeEventListener("selectionchange", handleSectionChange);
         dropdown?.removeEventListener("mousedown", handleMouseDown);
@@ -404,19 +427,35 @@ export const TextareaMentions = React.forwardRef<HTMLTextAreaElement, Props>(
 
     return (
       <div className="relative w-full">
-        <Textarea
-          ref={mergeRefs(ref, textareaRef)}
-          autoComplete="off"
-          autoCorrect="off"
-          className={cn("h-auto resize-none", className)}
-          value={textValue}
-          onChange={onTextValueChange}
-          {...rest}
-        />
+        {rest.asInput ? (
+          <Input
+            ref={mergeRefs(
+              ref as React.RefObject<HTMLInputElement | null>,
+              textareaRef as React.RefObject<HTMLInputElement | null>
+            )}
+            value={textValue}
+            onChange={onTextValueChange}
+            className={className}
+            {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
+          />
+        ) : (
+          <Textarea
+            ref={mergeRefs(
+              ref as React.RefObject<HTMLTextAreaElement | null>,
+              textareaRef as React.RefObject<HTMLTextAreaElement | null>
+            )}
+            autoComplete="off"
+            autoCorrect="off"
+            className={cn("h-auto resize-none", className)}
+            value={textValue}
+            onChange={onTextValueChange}
+            {...rest}
+          />
+        )}
         <Command
           ref={dropdownRef}
           className={cn(
-            "absolute hidden h-auto max-h-32 max-w-min overflow-y-scroll border border-popover shadow"
+            "absolute hidden h-auto max-w-min border border-popover shadow z-[1]"
           )}
         >
           <div className="hidden">
@@ -424,7 +463,7 @@ export const TextareaMentions = React.forwardRef<HTMLTextAreaElement, Props>(
             <CommandInput ref={inputRef} value={commandValue} />
           </div>
           <CommandList>
-            <CommandGroup className="max-w-min overflow-auto">
+            <CommandGroup className="max-w-min ">
               {data.map((item) => {
                 return (
                   <CommandItem

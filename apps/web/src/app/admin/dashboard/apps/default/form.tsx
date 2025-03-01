@@ -1,13 +1,12 @@
 "use client";
 
-import { AppSelector } from "@/components/admin/apps/app-selector";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ConnectedApp,
   DefaultAppsConfiguration,
   defaultAppsConfigurationSchema,
 } from "@vivid/types";
 import {
+  AppSelector,
   Form,
   FormControl,
   FormField,
@@ -24,8 +23,7 @@ import { updateDefaultAppsConfiguration } from "./actions";
 
 export const DefaultAppsConfigurationForm: React.FC<{
   values: DefaultAppsConfiguration;
-  apps: ConnectedApp[];
-}> = ({ values, apps }) => {
+}> = ({ values }) => {
   const form = useForm<DefaultAppsConfiguration>({
     resolver: zodResolver(defaultAppsConfigurationSchema),
     mode: "all",
@@ -66,7 +64,6 @@ export const DefaultAppsConfigurationForm: React.FC<{
                 <FormLabel>Email sender</FormLabel>
                 <FormControl>
                   <AppSelector
-                    apps={apps}
                     onItemSelect={field.onChange}
                     scope="mail-send"
                     value={field.value}
@@ -86,7 +83,6 @@ export const DefaultAppsConfigurationForm: React.FC<{
                 <FormLabel>Text message sender</FormLabel>
                 <FormControl>
                   <AppSelector
-                    apps={apps}
                     onItemSelect={field.onChange}
                     scope="text-message-send"
                     value={field.value}
@@ -107,7 +103,6 @@ export const DefaultAppsConfigurationForm: React.FC<{
                 <FormLabel>Assets storage</FormLabel>
                 <FormControl>
                   <AppSelector
-                    apps={apps}
                     onItemSelect={field.onChange}
                     scope="assets-storage"
                     value={field.value}

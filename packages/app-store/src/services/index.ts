@@ -1,6 +1,6 @@
 import { IConnectedApp, IConnectedAppProps } from "@vivid/types";
-import { CALDAV_APP_NAME } from "../apps/caldav/caldav.const";
-import CaldavConnectedApp from "../apps/caldav/caldav.service";
+import { CALDAV_APP_NAME } from "../apps/caldav/const";
+import CaldavConnectedApp from "../apps/caldav/service";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "../apps/customer-email-notification/const";
 import CustomerEmailNotificationConnectedApp from "../apps/customer-email-notification/service";
 import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/customer-text-message-notification/const";

@@ -29,6 +29,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
+import { is12hourUserTimeFormat } from "@vivid/utils";
 
 export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const formSchema = getPageSchemaWithUniqueCheck(
@@ -192,6 +193,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                   </FormLabel>
                   <FormControl>
                     <DateTimePicker
+                      use12HourFormat={is12hourUserTimeFormat()}
                       onChange={(e) => {
                         field.onChange(e);
                         field.onBlur();

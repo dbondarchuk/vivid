@@ -9,7 +9,7 @@ import {
 import { DateTime } from "luxon";
 import { parseIcsCalendar, parseIcsEvent } from "ts-ics";
 import { DAVClient } from "tsdav";
-import { CaldavCalendarSource } from "./caldav.models";
+import { CaldavCalendarSource } from "./models";
 
 export default class CaldavConnectedApp
   implements IConnectedApp, ICalendarBusyTimeProvider

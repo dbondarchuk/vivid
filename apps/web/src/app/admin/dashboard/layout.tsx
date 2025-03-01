@@ -4,9 +4,8 @@ import { AppSidebar } from "@/components/admin/layout/sidebar";
 import { navItems } from "@/constants/data";
 import { AvailableApps } from "@vivid/app-store";
 import { ServicesContainer } from "@vivid/services";
-import { ComplexApp, NavItemWithOptionalChildren } from "@vivid/types";
+import { NavItemWithOptionalChildren } from "@vivid/types";
 import { BreadcrumbsProvider, SidebarInset, SidebarProvider } from "@vivid/ui";
-import { DateTime } from "luxon";
 import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
@@ -23,8 +22,6 @@ export default async function DashboardLayout({
   const { name, logo } =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
 
-  const beforeNow = DateTime.now().minus({ hours: 1 }).toJSDate();
-
   const menuItems: NavItemWithOptionalChildren[] = [
     ...navItems.map((x) => ({
       ...x,
@@ -34,11 +31,11 @@ export default async function DashboardLayout({
 
   const appsWithMenu = await ServicesContainer.ConnectedAppService().getApps();
   const appsMenus = appsWithMenu
-    .map(({ name }) => AvailableApps[name]?.menuItems)
-    .filter((menus) => menus?.length > 0);
+    .map(({ name }) => AvailableApps[name]?.menuItems || [])
+    .filter((menus) => menus && menus.length > 0)
+    .flatMap((item) => item);
 
   appsMenus
-    .flatMap((item) => item)
     .filter((item) => !item.parent && !item.isHidden)
     .sort(({ order: aOrder = 0 }, { order: bOrder = 0 }) => bOrder - aOrder)
     .forEach(({ Page: _, ...item }) => {
@@ -50,7 +47,6 @@ export default async function DashboardLayout({
     });
 
   appsMenus
-    .flatMap((item) => item)
     .filter((item) => !!item.parent && !item.isHidden)
     .sort(({ order: aOrder = 0 }, { order: bOrder = 0 }) => bOrder - aOrder)
     .forEach(({ Page: _, ...item }) => {

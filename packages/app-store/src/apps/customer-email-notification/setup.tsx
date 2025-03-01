@@ -2,6 +2,8 @@
 
 import { ComplexAppSetupProps, StatusText } from "@vivid/types";
 import {
+  ArgumentsAutocomplete,
+  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -10,11 +12,11 @@ import {
   FormMessage,
   InfoTooltip,
   Input,
+  Skeleton,
   TemplateSelector,
 } from "@vivid/ui";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
-import { ConnectedAppStatusMessage } from "../../ui/connected-app-properties";
 import { CustomerEmailNotificationApp } from "./app";
 import {
   CustomerEmailNotificationConfiguration,
@@ -34,10 +36,11 @@ const templateKeyText: Record<EmailTemplateKeys, string> = {
 const EmailTemplateForm: React.FC<{
   form: UseFormReturn<CustomerEmailNotificationConfiguration>;
   disabled?: boolean;
+  isDataLoading?: boolean;
   type: EmailTemplateKeys;
   whenText: string;
   demoArguments: Record<string, any>;
-}> = ({ form, disabled, type, whenText, demoArguments }) => {
+}> = ({ form, disabled, isDataLoading, type, whenText, demoArguments }) => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <h3 className="m-0 text-center">
@@ -60,7 +63,17 @@ const EmailTemplateForm: React.FC<{
                 </InfoTooltip>
               </FormLabel>
               <FormControl>
-                <Input disabled={disabled} placeholder="Subject" {...field} />
+                {isDataLoading ? (
+                  <Skeleton className="w-full h-10" />
+                ) : (
+                  <ArgumentsAutocomplete
+                    disabled={disabled}
+                    placeholder="Subject"
+                    {...field}
+                    asInput
+                    args={demoArguments}
+                  />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,12 +91,16 @@ const EmailTemplateForm: React.FC<{
                 </InfoTooltip>
               </FormLabel>
               <FormControl>
-                <TemplateSelector
-                  type="email"
-                  disabled={disabled}
-                  value={field.value}
-                  onItemSelect={(value) => field.onChange(value)}
-                />
+                {isDataLoading ? (
+                  <Skeleton className="w-full h-10" />
+                ) : (
+                  <TemplateSelector
+                    type="email"
+                    disabled={disabled}
+                    value={field.value}
+                    onItemSelect={(value) => field.onChange(value)}
+                  />
+                )}
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,7 +115,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
   ComplexAppSetupProps
 > = ({ appId }) => {
   const demoArguments = useDemoArguments();
-  const { appStatus, form, isLoading, isValid, onSubmit } =
+  const { appStatus, form, isLoading, isDataLoading, isValid, onSubmit } =
     useConnectedAppSetup<CustomerEmailNotificationConfiguration>({
       appId,
       appName: CustomerEmailNotificationApp.name,
@@ -113,6 +130,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
             <EmailTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"pending"}
               whenText="they book new appointment"
               demoArguments={demoArguments}
@@ -120,6 +138,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
             <EmailTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"confirmed"}
               whenText="the appointment was confirmed"
               demoArguments={demoArguments}
@@ -127,6 +146,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
             <EmailTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"declined"}
               whenText="the appointment was declined"
               demoArguments={demoArguments}
@@ -134,6 +154,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
             <EmailTemplateForm
               form={form}
               disabled={isLoading}
+              isDataLoading={isDataLoading}
               type={"rescheduled"}
               whenText="the appointment was rescheduled"
               demoArguments={demoArguments}
@@ -157,11 +178,15 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                         </InfoTooltip>
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          disabled={isLoading}
-                          placeholder="Subject"
-                          {...field}
-                        />
+                        {isDataLoading ? (
+                          <Skeleton className="w-full h-10" />
+                        ) : (
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Subject"
+                            {...field}
+                          />
+                        )}
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -180,12 +205,16 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                         </InfoTooltip>
                       </FormLabel>
                       <FormControl>
-                        <TemplateSelector
-                          type="email"
-                          disabled={isLoading}
-                          value={field.value}
-                          onItemSelect={(value) => field.onChange(value)}
-                        />
+                        {isDataLoading ? (
+                          <Skeleton className="w-full h-10" />
+                        ) : (
+                          <TemplateSelector
+                            type="email"
+                            disabled={isLoading}
+                            value={field.value}
+                            onItemSelect={(value) => field.onChange(value)}
+                          />
+                        )}
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -6,6 +6,7 @@ export * from "./ics-uid";
 export * from "./incoming-message";
 export * from "./page-data-cache";
 export * from "./phone";
+export * from "./properties-to-array";
 export * from "./query";
 export * from "./stream";
 export * from "./string";

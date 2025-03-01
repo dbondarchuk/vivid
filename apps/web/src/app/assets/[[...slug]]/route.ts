@@ -65,6 +65,7 @@ export async function GET(
         : `attachment; filename=${filename}`, //State that this is a file attachment
       "content-type": contentType,
       "content-length": `${asset.size}`,
+      "Cache-Control": `public, max-age=31536000, immutable`,
     }),
   });
 

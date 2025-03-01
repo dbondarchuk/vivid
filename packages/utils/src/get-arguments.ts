@@ -31,7 +31,7 @@ export const getArguments = (
     restFields: Object.entries(restFields).map(([name, value]) => ({
       name,
       value,
-      label: appointment?.option?.fields?.[name] || name,
+      label: appointment?.fieldsLabels?.[name] || name,
     })),
     files:
       appointment?.files?.filter(

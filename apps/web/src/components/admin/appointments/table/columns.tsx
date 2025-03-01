@@ -82,22 +82,26 @@ const OptionCell: React.FC<{ appointment: Appointment }> = ({
               {appointment.option.name}
             </Button>
           </TooltipTrigger>
-          <TooltipContent className="flex flex-col w-full py-2 px-4">
+          <TooltipContent className="flex flex-col gap-2 w-full py-2 px-4">
             <div className="grid grid-cols-2 gap-1 pb-2 border-b">
               <div>Option name:</div>
               <div>{appointment.option.name}</div>
-              {appointment.option.price && (
+              {(appointment.option.price ?? 0) > 0 && (
                 <>
                   <div>Option price:</div>
                   <div>${appointment.option.price}</div>
                 </>
               )}
-              {appointment.option.duration && (
-                <>
-                  <div>Option duration:</div>
-                  <div>{appointment.option.duration} min</div>
-                </>
-              )}
+              {appointment.option.duration &&
+                appointment.option.duration > 0 && (
+                  <>
+                    <div>Option duration:</div>
+                    <div>
+                      {durationToTime(appointment.option.duration).hours} hr{" "}
+                      {durationToTime(appointment.option.duration).minutes} min
+                    </div>
+                  </>
+                )}
               {appointment.addons && appointment.addons.length > 0 && (
                 <>
                   <div>Selected addons:</div>
@@ -126,7 +130,7 @@ const OptionCell: React.FC<{ appointment: Appointment }> = ({
               )}
             </div>
             <div className="grid grid-cols-2 gap-1">
-              {appointment.totalDuration && (
+              {(appointment.totalDuration ?? 0) > 0 && (
                 <>
                   <div className="font-medium">Duration:</div>
                   <div>
@@ -136,7 +140,7 @@ const OptionCell: React.FC<{ appointment: Appointment }> = ({
                 </>
               )}
 
-              {appointment.totalPrice && (
+              {(appointment.totalPrice ?? 0) > 0 && (
                 <>
                   <div className="font-medium">Price:</div>
                   <div>${appointment.totalPrice}</div>
@@ -175,6 +179,10 @@ export const columns: ColumnDef<Appointment>[] = [
     id: "status",
     header: tableSortHeader("Status", "default"),
     sortingFn: tableSortNoopFunction,
+    enableResizing: false,
+    meta: {
+      dontGrow: true,
+    },
   },
   {
     cell: ({ row }) => <OptionCell appointment={row.original} />,

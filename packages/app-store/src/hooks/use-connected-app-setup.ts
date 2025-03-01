@@ -27,6 +27,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
 }: UseConnectedAppSetupProps<T>) {
   const [appId, setAppId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isDataLoading, setIsDataLoading] = React.useState(false);
   const [appStatus, setAppStatus] =
     React.useState<ConnectedAppStatusWithText>();
 
@@ -35,8 +36,14 @@ export function useConnectedAppSetup<T extends FieldValues>({
     if (!existingAppId) return;
 
     const getInitialData = async () => {
+      setIsDataLoading(true);
+      setIsLoading(true);
+
       const data = await getAppData(existingAppId);
       setInitialAppData(data);
+
+      setIsDataLoading(false);
+      setIsLoading(false);
     };
 
     setAppId(existingAppId);
@@ -100,6 +107,8 @@ export function useConnectedAppSetup<T extends FieldValues>({
   return {
     appId,
     isLoading,
+    isDataLoading,
+    setIsDataLoading,
     setIsLoading,
     form,
     isValid,

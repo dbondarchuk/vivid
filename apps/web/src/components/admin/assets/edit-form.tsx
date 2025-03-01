@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Asset } from "@vivid/types";
 import {
+  AssetPreview,
   Form,
   FormControl,
   FormField,
@@ -60,16 +61,9 @@ export const AssetEditForm: React.FC<{ asset: Asset }> = ({ asset }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-        {mimeType.lookup(asset.filename)?.toString().startsWith("image/") && (
-          <div className="w-full flex items-center justify-center">
-            <Image
-              src={`/assets/${asset.filename}`}
-              width={500}
-              height={500}
-              alt={asset.filename}
-            />
-          </div>
-        )}
+        <div className="w-full flex items-center justify-center">
+          <AssetPreview asset={asset} size="lg" />
+        </div>
         <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormItem>
             <FormLabel>File name</FormLabel>

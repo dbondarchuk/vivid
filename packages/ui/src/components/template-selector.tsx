@@ -15,7 +15,7 @@ const getTemplates = async (type: string) => {
     toast.error("Request failed.");
     const text = await response.text();
     console.error(
-      `Request to validate template name failed: ${response.status}; ${text}`
+      `Request to fetch templates failed: ${response.status}; ${text}`
     );
 
     return [];
@@ -29,7 +29,7 @@ const checkTemplateSearch = (template: TemplateListModel, query: string) => {
   return template.name.toLocaleLowerCase().includes(search);
 };
 
-type BaseAppSelectorProps = {
+type BaseTemplateSelectorProps = {
   type: CommunicationChannel;
   value?: string;
   disabled?: boolean;
@@ -46,7 +46,7 @@ type NonClearableTemplateSelectorProps = {
   allowClear?: false;
 };
 
-export type TemplateSelectorProps = BaseAppSelectorProps &
+export type TemplateSelectorProps = BaseTemplateSelectorProps &
   (ClearableTemplateSelectorProps | NonClearableTemplateSelectorProps);
 
 export const TemplateSelector: React.FC<TemplateSelectorProps> = ({

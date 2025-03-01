@@ -20,10 +20,6 @@ export default async function NewAssetsPage(props: Props) {
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
   const choices: AppointmentChoice[] = config.options.map((option) => ({
     ...option,
-    fields:
-      option.fields
-        ?.map((f) => config.fields?.find((x) => x.id === f.id))
-        .filter((f) => !!f) || [],
     addons:
       option.addons
         ?.map((f) => config.addons?.find((x) => x.id === f.id))
@@ -48,6 +44,7 @@ export default async function NewAssetsPage(props: Props) {
         <AppointmentScheduleForm
           timeZone={config.timezone}
           options={choices}
+          knownFields={config.fields || []}
           from={from}
         />
       </div>

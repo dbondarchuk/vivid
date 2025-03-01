@@ -15,7 +15,7 @@ export default async function UpdateTemplatePage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-8 h-full">
         <div className="flex flex-col gap-4 justify-between">
           <div className="flex items-start justify-between">
             <Heading title={`Update template`} />

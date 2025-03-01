@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { MentionPlugin } from '@udecode/plate-mention/react';
+import { ArgsPlugin } from "./args-plugin";
 
-export const mentionPlugin = MentionPlugin.configure({
+export const mentionPlugin = ArgsPlugin.configure({
   options: { triggerPreviousCharPattern: /^$|^[\s"']$/ },
 });

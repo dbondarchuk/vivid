@@ -3,6 +3,8 @@
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
+  ConnectedAppNameAndLogo,
+  ConnectedAppStatusMessage,
   Form,
   FormControl,
   FormField,
@@ -22,15 +24,8 @@ import {
 import React from "react";
 import { processRequest } from "../../actions";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
-import {
-  ConnectedAppNameAndLogo,
-  ConnectedAppStatusMessage,
-} from "../../ui/connected-app-properties";
-import { CaldavApp } from "./caldav.app";
-import {
-  CaldavCalendarSource,
-  caldavCalendarSourceSchema,
-} from "./caldav.models";
+import { CaldavApp } from "./app";
+import { CaldavCalendarSource, caldavCalendarSourceSchema } from "./models";
 
 export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,

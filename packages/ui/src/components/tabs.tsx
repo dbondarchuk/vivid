@@ -5,6 +5,7 @@ import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 import { cn } from "../utils";
 import { useSearchParams } from "next/navigation";
+import { Link } from "./link";
 
 const Tabs = TabsPrimitive.Root;
 
@@ -49,6 +50,21 @@ const TabsTrigger = React.forwardRef<
 ));
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
+const TabsLinkTrigger: React.FC<{
+  value: string;
+  children: React.ReactNode;
+}> = ({ value, children }) => (
+  <TabsTrigger value={value} asChild>
+    <Link
+      href={`?activeTab=${encodeURIComponent(value)}`}
+      className="text-foreground inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    >
+      {children}
+    </Link>
+  </TabsTrigger>
+);
+TabsLinkTrigger.displayName = "TabsLinkTrigger";
+
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
@@ -64,4 +80,11 @@ const TabsContent = React.forwardRef<
 ));
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
-export { Tabs, TabsViaUrl, TabsList, TabsTrigger, TabsContent };
+export {
+  Tabs,
+  TabsViaUrl,
+  TabsList,
+  TabsTrigger,
+  TabsLinkTrigger,
+  TabsContent,
+};

@@ -4,5 +4,5 @@ import base from "@vivid/tailwind-config";
 module.exports = {
   ...base,
   content: [...base.content],
-  plugins: [...base.plugins, require("tailwindcss-animate")],
+  plugins: [...base.plugins],
 };

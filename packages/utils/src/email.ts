@@ -69,6 +69,7 @@ export const getEventCalendarContent = (
     url: `${config.url}/admin/dashboard/appointments/${event._id}`,
     title: summary,
     description: description,
+    htmlContent: description,
     location: config.address,
     sequence: getIcsSequence(),
     attendees: [

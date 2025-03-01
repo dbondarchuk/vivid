@@ -61,21 +61,21 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </Link>
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-sm flex flex-col w-full gap-4">
+      <CardContent className="text-sm flex flex-col w-full @container">
         <dl className="divide-y">
-          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
               <Presentation size={16} /> Appointment:
             </dt>
             <dd className="col-span-2">{appointment.option.name}</dd>
           </div>
-          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
               <CheckCircle size={16} /> Status:
             </dt>
             <dd className="col-span-2">{StatusText[appointment.status]}</dd>
           </div>
-          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
               <Calendar size={16} /> Date &amp; Time:
             </dt>
@@ -85,7 +85,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               }).toLocaleString(DateTime.DATETIME_SHORT)}
             </dd>
           </div>
-          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
               <Clock size={16} /> Duration:
             </dt>
@@ -95,7 +95,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               {duration.minutes > 0 && <>{duration.minutes} minutes</>}
             </dd>
           </div>
-          <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
               <Calendar size={16} /> Ends at:
             </dt>
@@ -108,7 +108,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </dd>
           </div>
           {appointment.totalPrice && (
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
               <dt className="flex self-center items-center gap-1">
                 <DollarSign size={16} /> Price:
               </dt>
@@ -116,7 +116,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </div>
           )}
           {appointment.note && (
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
               <dt className="flex self-center items-center gap-1">
                 <StickyNote size={16} /> Note:
               </dt>

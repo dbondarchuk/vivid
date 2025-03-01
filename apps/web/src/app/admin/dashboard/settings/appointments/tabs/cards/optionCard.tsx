@@ -20,6 +20,7 @@ import {
   CardContent,
   CardHeader,
   cn,
+  DurationInput,
   FormControl,
   FormField,
   FormItem,
@@ -293,20 +294,7 @@ export const OptionCard: React.FC<OptionProps> = ({
                 <FormItem>
                   <FormLabel>Duration</FormLabel>
                   <FormControl>
-                    <InputGroup>
-                      <InputGroupInput>
-                        <Input
-                          disabled={disabled}
-                          placeholder="30"
-                          type="number"
-                          className={InputGroupInputClasses()}
-                          {...field}
-                        />
-                      </InputGroupInput>
-                      <InputSuffix className={InputGroupSuffixClasses()}>
-                        minutes
-                      </InputSuffix>
-                    </InputGroup>
+                    <DurationInput {...field} disabled={disabled} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

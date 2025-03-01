@@ -1,6 +1,5 @@
 "use client";
 
-import { Editor } from "@monaco-editor/react";
 import { CommunicationChannel } from "@vivid/types";
 import {
   AccordionContent,
@@ -15,6 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
+  ArgumentsAutocomplete,
   Button,
   Card,
   CardContent,
@@ -22,25 +22,18 @@ import {
   cn,
   Combobox,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
   IComboboxItem,
-  IFrame,
   InfoTooltip,
   Input,
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-  ScrollArea,
+  SimpleTimePicker,
   TemplateSelector,
-  Textarea,
-  TimePicker,
   useTheme,
 } from "@vivid/ui";
-import { stripObject, templateSafeWithError } from "@vivid/utils";
+import { is12hourUserTimeFormat, stripObject } from "@vivid/utils";
 import { Copy, Trash } from "lucide-react";
 import { DateTime } from "luxon";
 import { UseFormReturn } from "react-hook-form";
@@ -392,13 +385,14 @@ export const ReminderCard: React.FC<ReminderProps> = ({
                         </FormLabel>
 
                         <FormControl>
-                          <TimePicker
-                            date={DateTime.fromObject({
+                          <SimpleTimePicker
+                            use12HourFormat={is12hourUserTimeFormat()}
+                            value={DateTime.fromObject({
                               hour: field.value?.hour,
                               minute: field.value?.minute,
                               second: field.value?.second,
                             }).toJSDate()}
-                            setDate={(date) => {
+                            onChange={(date) => {
                               const dateTime = date
                                 ? DateTime.fromJSDate(date)
                                 : undefined;
@@ -463,10 +457,13 @@ export const ReminderCard: React.FC<ReminderProps> = ({
                           </InfoTooltip>
                         </FormLabel>
                         <FormControl>
-                          <Input
+                          <ArgumentsAutocomplete
+                            args={demoArguments}
+                            asInput
+                            value={field.value}
+                            onChange={(value) => field.onChange(value)}
                             disabled={disabled}
                             placeholder="Subject"
-                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
@@ -481,7 +478,7 @@ export const ReminderCard: React.FC<ReminderProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Tempalte
+                      Template
                       <InfoTooltip>
                         Reminder body, that your customers will see.
                       </InfoTooltip>

@@ -20,7 +20,7 @@ export default async function Page(props: Props) {
   const app = Object.values(AvailableApps).find(
     (app) =>
       app.type === "complex" &&
-      app.menuItems.some(({ href }) => href.toLocaleLowerCase() === path)
+      app.menuItems?.some(({ href }) => href.toLocaleLowerCase() === path)
   );
 
   if (!app) {
@@ -34,7 +34,7 @@ export default async function Page(props: Props) {
     redirect("/admin/dashboard");
   }
 
-  const menuItem = app.menuItems.find(
+  const menuItem = app.menuItems?.find(
     ({ href }) => href.toLocaleLowerCase() === path
   );
 

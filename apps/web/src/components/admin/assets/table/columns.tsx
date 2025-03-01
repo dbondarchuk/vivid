@@ -1,9 +1,13 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Asset } from "@vivid/types";
-import { Checkbox, tableSortHeader, tableSortNoopFunction } from "@vivid/ui";
+import {
+  AssetPreview,
+  Checkbox,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@vivid/ui";
 import { DateTime } from "luxon";
-import Image from "next/image";
 import { CellAction } from "./cell-action";
 
 export const columns: ColumnDef<Asset>[] = [
@@ -29,20 +33,7 @@ export const columns: ColumnDef<Asset>[] = [
   {
     header: "Preview",
     enableSorting: false,
-    cell: ({ row }) => (
-      <div>
-        {row.original.mimeType.startsWith("image/") ? (
-          <Image
-            src={`/assets/${row.original.filename}`}
-            width={64}
-            height={64}
-            alt={row.original.description || row.original.filename}
-          />
-        ) : (
-          <></>
-        )}
-      </div>
-    ),
+    cell: ({ row }) => <AssetPreview asset={row.original} />,
   },
   {
     id: "filename",

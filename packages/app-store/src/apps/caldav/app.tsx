@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
-import { CALDAV_APP_NAME } from "./caldav.const";
-import { CaldavLogo } from "./caldav.logo";
-import { CaldavAppSetup } from "./caldav.setup";
+import { CALDAV_APP_NAME } from "./const";
+import { CaldavLogo } from "./logo";
+import { CaldavAppSetup } from "./setup";
 import image from "./images/image.png";
 
 export const CaldavApp: App = {

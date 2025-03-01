@@ -20,10 +20,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SimpleTimePicker,
   TagInput,
-  TimePicker,
 } from "@vivid/ui";
-import { formatTime, parseTime, formatTimeLocale } from "@vivid/utils";
+import {
+  formatTime,
+  formatTimeLocale,
+  is12hourUserTimeFormat,
+  parseTime,
+} from "@vivid/utils";
 import { getTimeZones } from "@vvo/tzdb";
 import React from "react";
 import { TabProps } from "./types";
@@ -53,11 +58,12 @@ const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
 
   return (
     <div className="flex flex-col gap-2 p-3">
-      <TimePicker
-        setDate={(d) => {
+      <SimpleTimePicker
+        use12HourFormat={is12hourUserTimeFormat()}
+        onChange={(d) => {
           setDate(d);
         }}
-        date={date}
+        value={date || new Date()}
       />
       <Button
         type="button"

@@ -24,8 +24,8 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
   }
 
   return (
-    <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col gap-8">
+    <PageContainer scrollable={true}>
+      <div className="flex flex-1 flex-col gap-8 h-full">
         <div className="flex flex-col gap-4 justify-between">
           <Heading
             title={`New ${CommunicationChannelTexts[type].toLowerCase()} template`}

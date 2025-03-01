@@ -52,7 +52,7 @@ export const TemplateForm: React.FC<
   {
     args: any;
   } & (
-    | { type: CommunicationChannel; template: TemplatesTemplate }
+    | { type: CommunicationChannel; template?: TemplatesTemplate }
     | { initialData: Template }
   )
 > = ({ args, ...rest }) => {
@@ -107,8 +107,11 @@ export const TemplateForm: React.FC<
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-        <div className="flex flex-col gap-4 w-full">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full h-full space-y-8"
+      >
+        <div className="flex flex-col gap-4 w-full h-full">
           <FormField
             control={form.control}
             name="name"
@@ -134,7 +137,7 @@ export const TemplateForm: React.FC<
             render={({ field }) => (
               <>
                 {type === "email" && (
-                  <FormItem className="w-full flex-grow relative">
+                  <FormItem className="w-full flex-grow relative h-full">
                     <FormControl>
                       <EmailBuilder
                         args={args}

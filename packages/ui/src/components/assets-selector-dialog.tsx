@@ -1,17 +1,13 @@
 "use client";
 
 import { UploadedFile } from "@vivid/types";
-import { mimeTypeToExtension } from "@vivid/utils";
-import { SquarePlay } from "lucide-react";
-import Image from "next/image";
 import React from "react";
 import { Accept } from "react-dropzone";
-import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
 import { DndFileInput, ScrollArea, toast } from ".";
 import { useUploadFile } from "../hooks";
 import { cn } from "../utils";
+import { AssetPreview } from "./asset-preview";
 import { Button } from "./button";
-import { Dialog, DialogContent, DialogTrigger } from "./dialog";
 import { Input } from "./input";
 import { Modal } from "./modal";
 import { Progress } from "./progress";
@@ -208,78 +204,16 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
                     )}
                     key={asset._id}
                   >
-                    {asset.mimeType.startsWith("image/") ? (
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Image
-                            alt={asset.description || ""}
-                            src={`/assets/${asset.filename}`}
-                            width={60}
-                            height={60}
-                            className="cursor-pointer"
-                          />
-                        </DialogTrigger>
-                        <DialogContent
-                          className="max-w-7xl border-0 bg-transparent p-0 shadow-none"
-                          closeClassName="bg-background"
-                        >
-                          <div className="relative h-[calc(100vh-220px)] w-full overflow-clip rounded-md bg-transparent shadow-none">
-                            <Image
-                              src={`/assets/${asset.filename}`}
-                              fill
-                              alt={asset.description || asset.filename}
-                              className="h-full w-full object-contain"
-                            />
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    ) : asset.mimeType.startsWith("video/") ? (
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <div className="rounded-sm border-dashed border  p-2 flex flex-col gap-1 items-center">
-                            <SquarePlay className="w-8 h-8" />
-                            <span className="text-muted-foreground">
-                              {asset.mimeType}
-                            </span>
-                          </div>
-                        </DialogTrigger>
-                        <DialogContent
-                          className="max-w-7xl border-0 bg-transparent p-0 shadow-none"
-                          closeClassName="bg-background"
-                        >
-                          <div className="relative h-[calc(100vh-220px)] w-full overflow-clip rounded-md bg-transparent shadow-none">
-                            <video
-                              controls
-                              src={`/assets/${asset.filename}`}
-                              className="cursor-pointer object-cover max-h-full"
-                            />
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    ) : (
-                      <div className="rounded-sm border-dashed border  p-2 flex flex-col gap-1 items-center">
-                        <div className="max-w-8 flex self-center">
-                          <FileIcon
-                            extension={asset.filename.substring(
-                              asset.filename.lastIndexOf(".") + 1
-                            )}
-                            {...defaultStyles[
-                              mimeTypeToExtension(
-                                asset.mimeType
-                              ) as DefaultExtensionType
-                            ]}
-                          />
-                        </div>
-                        <span className="text-muted-foreground">
-                          {asset.mimeType}
-                        </span>
-                      </div>
-                    )}
+                    <AssetPreview asset={asset} />
                     <div className="flex flex-col gap-1 items-center text-center">
                       <span className="text-muted-foreground">
                         {asset.description}
                       </span>
-                      <span>{asset.filename}</span>
+                      <span>
+                        {asset.filename?.substring(
+                          asset.filename?.lastIndexOf("/") + 1
+                        )}
+                      </span>
                     </div>
                   </div>
                 ))}
