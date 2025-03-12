@@ -10,8 +10,8 @@
     "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./static": "./src/documents/reader/static-render.tsx"
+    ".": "./src/index.tsx",
+    "./static": "./src/static.ts"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -26,24 +26,12 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "@uiw/react-json-view": "2.0.0-alpha.30",
-    "@usewaypoint/block-avatar": "^0.0.3",
-    "@usewaypoint/block-button": "^0.0.3",
-    "@usewaypoint/block-columns-container": "^0.0.3",
-    "@usewaypoint/block-container": "^0.0.2",
-    "@usewaypoint/block-divider": "^0.0.4",
-    "@usewaypoint/block-heading": "^0.0.3",
-    "@usewaypoint/block-html": "^0.0.3",
-    "@usewaypoint/block-image": "^0.0.5",
-    "@usewaypoint/block-spacer": "^0.0.3",
-    "@usewaypoint/block-text": "^0.0.6",
-    "@usewaypoint/document-core": "^0.0.6",
-    "@usewaypoint/email-builder": "^0.0.8",
     "react-dom": "19.0.0",
+    "@vivid/builder": "*",
     "@vivid/ui": "*",
     "@vivid/rte": "*",
     "highlight.js": "^11.9.0",
-    "lucide-react": "^0.462.0",
+    "lucide-react": "^0.479.0",
     "react-contenteditable": "^3.3.7",
     "sanitize-html": "^2.14.0"
   }

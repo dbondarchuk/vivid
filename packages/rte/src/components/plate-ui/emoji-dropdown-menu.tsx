@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 import {
   type EmojiDropdownMenuOptions,
   useEmojiDropdownMenuState,
-} from '@udecode/plate-emoji/react';
-import { Smile } from 'lucide-react';
+} from "@udecode/plate-emoji/react";
+import { Smile } from "lucide-react";
 
-import { emojiCategoryIcons, emojiSearchIcons } from './emoji-icons';
-import { EmojiPicker } from './emoji-picker';
-import { EmojiToolbarDropdown } from './emoji-toolbar-dropdown';
-import { ToolbarButton } from './toolbar';
+import { ToolbarButton } from "@vivid/ui";
+import { emojiCategoryIcons, emojiSearchIcons } from "./emoji-icons";
+import { EmojiPicker } from "./emoji-picker";
+import { EmojiToolbarDropdown } from "./emoji-toolbar-dropdown";
+
 type EmojiDropdownMenuProps = {
   options?: EmojiDropdownMenuOptions;
 } & React.ComponentPropsWithoutRef<typeof ToolbarButton>;

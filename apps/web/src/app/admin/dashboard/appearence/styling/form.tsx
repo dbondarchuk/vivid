@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   colors as colorOverrides,
   ColorOverrideSchema,
+  colorsLabels,
   fontsNames,
   StylingConfiguration,
   stylingConfigurationSchema,
@@ -24,6 +25,7 @@ import {
   CardContent,
   CardHeader,
   cn,
+  ColorPickerInput,
   Combobox,
   Form,
   FormControl,
@@ -33,10 +35,8 @@ import {
   FormMessage,
   IComboboxItem,
   InfoTooltip,
-  ColorPickerInput,
   NonSortable,
   SaveButton,
-  toast,
   toastPromise,
 } from "@vivid/ui";
 import { Trash } from "lucide-react";
@@ -61,25 +61,6 @@ const fontTransform = (font: string) => ({
     </div>
   ),
 });
-
-const colorsLabels: Record<(typeof colorOverrides)[number], string> = {
-  background: "Background",
-  foreground: "Text",
-  card: "Card",
-  "card-foreground": "Card text",
-  popover: "Popover",
-  "popover-foreground": "Popover text",
-  primary: "Primary",
-  "primary-foreground": "Primary text",
-  secondary: "Secondary",
-  "secondary-foreground": "Secondary text",
-  muted: "Muted",
-  "muted-foreground": "Muted text",
-  accent: "Accent",
-  "accent-foreground": "Accent text",
-  destructive: "Destructive",
-  "destructive-foreground": "Destructive text",
-};
 
 const customFontSearch = (search: string) => {
   const lowerSearch = search.toLocaleLowerCase();
@@ -330,7 +311,7 @@ export const StylingsConfigurationForm: React.FC<{
                               <ColorPickerInput
                                 disabled={loading}
                                 placeholder="#ffffff"
-                                field={field}
+                                {...field}
                               />
                             </FormControl>
                             <FormMessage />

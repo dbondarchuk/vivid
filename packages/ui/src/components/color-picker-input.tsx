@@ -2,51 +2,68 @@
 
 import React from "react";
 import { ControllerRenderProps } from "react-hook-form";
-import { ColorChangeHandler, SketchPicker } from "react-color";
+import { SketchProps, Sketch } from "@uiw/react-color";
 import { InputGroupInputClasses, InputGroupSuffixClasses } from "./input-group";
 import { Button } from "./button";
-import { Input } from "./input";
+import { Input, InputProps } from "./input";
 import { InputGroup, InputGroupInput } from "./input-group";
 import { Palette } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { cn } from "../utils";
 
-export type ColorPickerInputProps = {
-  field: ControllerRenderProps<any>;
-  disabled?: boolean;
-  placeholder?: string;
+export type ColorPickerInputProps = Omit<
+  InputProps,
+  "value" | "onChange" | "onBlur"
+> & {
   enableAlpha?: boolean;
+  value?: string;
+  onChange?: (value?: string) => void;
+  onBlur?: () => void;
 };
 
 export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
-  field,
-  placeholder,
+  value,
+  onChange,
   disabled,
   enableAlpha,
+  ...props
 }) => {
-  const onColorChange: ColorChangeHandler = (color) => {
+  const onColorChange: SketchProps["onChange"] = (color) => {
     const newValue =
-      (color.rgb.a ?? 1) === 1
+      (color.rgba.a ?? 1) === 1
         ? color.hex
-        : `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
+        : `rgba(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b}, ${color.rgba.a})`;
 
-    field.onChange(newValue);
+    onChange?.(newValue);
   };
 
   return (
     <InputGroup>
+      <div
+        className={cn(
+          InputGroupSuffixClasses({ variant: "prefix" }),
+          "w-9 h-9",
+          "transition-colors"
+        )}
+        style={{ backgroundColor: value }}
+      ></div>
       <InputGroupInput>
         <Input
           disabled={disabled}
-          placeholder={placeholder}
-          className={InputGroupInputClasses()}
-          {...field}
+          className={cn(
+            InputGroupInputClasses({ variant: "prefix" }),
+            InputGroupInputClasses({ variant: "suffix" })
+          )}
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
+          {...props}
         />
       </InputGroupInput>
-      <Popover onOpenChange={(open) => !open && field.onBlur()}>
+      <Popover onOpenChange={(open) => !open && props.onBlur?.()}>
         <PopoverTrigger asChild>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             disabled={disabled}
             className={InputGroupSuffixClasses()}
           >
@@ -54,9 +71,9 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="bg-transparent border-none shadow-none w-fit">
-          <SketchPicker
-            color={field.value}
-            onChangeComplete={onColorChange}
+          <Sketch
+            color={value}
+            onChange={onColorChange}
             disableAlpha={!enableAlpha}
           />
         </PopoverContent>

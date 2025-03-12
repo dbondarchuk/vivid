@@ -10,17 +10,15 @@ export type ArgumentsAutocompleteProps = Omit<TextareaProps, "onChange"> & {
   onChange?: (value: string) => void;
 };
 
-export const ArgumentsAutocomplete: React.FC<ArgumentsAutocompleteProps> = ({
-  args,
-  asInput,
-  value,
-  onChange,
-  ...rest
-}) => {
+export const ArgumentsAutocomplete = React.forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  ArgumentsAutocompleteProps
+>(({ args, asInput, value, onChange, ...rest }, ref) => {
   const argsData = args ? propertiesToArray(args) : [];
 
   return (
     <TextareaMentions
+      ref={ref}
       trigger="{{"
       asInput={asInput}
       data={argsData}
@@ -42,4 +40,4 @@ export const ArgumentsAutocomplete: React.FC<ArgumentsAutocompleteProps> = ({
       {...rest}
     />
   );
-};
+});

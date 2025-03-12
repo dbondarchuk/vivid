@@ -14,13 +14,11 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  useOpenState,
-} from "@vivid/ui";
-import {
   ToolbarSplitButton,
   ToolbarSplitButtonPrimary,
   ToolbarSplitButtonSecondary,
-} from "./toolbar";
+  useOpenState,
+} from "@vivid/ui";
 
 export function NumberedIndentListToolbarButton() {
   const editor = useEditorRef();

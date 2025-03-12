@@ -8,10 +8,14 @@ import { toUnitLess } from "@udecode/plate-font";
 import { FontSizePlugin } from "@udecode/plate-font/react";
 import { HEADING_KEYS } from "@udecode/plate-heading";
 import { useEditorPlugin, useEditorSelector } from "@udecode/plate/react";
-import { cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+import {
+  cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  ToolbarButton,
+} from "@vivid/ui";
 import { Minus, Plus } from "lucide-react";
-
-import { ToolbarButton } from "./toolbar";
 
 const DEFAULT_FONT_SIZE = "16";
 

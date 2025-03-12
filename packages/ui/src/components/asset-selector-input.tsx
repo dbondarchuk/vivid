@@ -14,7 +14,7 @@ import {
 } from "./input-group";
 
 export type AssetSelectorInputProps = {
-  value?: string;
+  value?: string | null;
   onChange?: (value: string) => void;
   onBlur?: () => void;
   accept?: string;
@@ -58,7 +58,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
           disabled={disabled}
           placeholder={placeholder}
           className={InputGroupInputClasses()}
-          value={value}
+          value={value ?? undefined}
           onChange={(e) => onChange?.(e.target.value)}
           onBlur={onBlur}
         />

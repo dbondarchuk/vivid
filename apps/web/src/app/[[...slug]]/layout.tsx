@@ -4,12 +4,12 @@ import { Toaster } from "@vivid/ui";
 
 import { Resource } from "@vivid/types";
 
-import Color from "color";
 import NextScript from "next/script";
 import { TwLoad } from "../twLoad";
 
 import { ServicesContainer } from "@vivid/services";
 import "../globals.css";
+import { getColorsCss } from "@vivid/utils";
 
 const ScriptRenderer = ({
   resource,
@@ -93,13 +93,7 @@ export default async function RootLayout({
   );
 
   const fonts = await fontsRes.text();
-  const colors = (styling?.colors || [])
-    .filter((color) => !!color.value)
-    .map(({ type, value }) => {
-      const color = Color(value).hsl().object();
-      return `--${type}-color: ${color.h.toFixed(1)} ${color.s.toFixed(1)}% ${color.l.toFixed(1)}%;`;
-    })
-    .join("\n");
+  const colors = getColorsCss(styling?.colors);
 
   return (
     <html lang="en" className="scroll-smooth">

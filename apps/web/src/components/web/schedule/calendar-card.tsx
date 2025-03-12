@@ -16,7 +16,6 @@ import { BaseCard, BaseCardProps, BaseCardState } from "./base-card";
 import { fallbackLanguage } from "@/i18n/i18n";
 import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
 import * as Locales from "date-fns/locale";
-import { max } from "date-fns";
 
 const asJsDate = (dateTime: Luxon) =>
   new Date(dateTime.year, dateTime.month - 1, dateTime.day);
@@ -33,6 +32,7 @@ const formatDate = (date: Date): string =>
 export type CalendarCardProps = BaseCardProps & {
   availability: Availability;
   dateTime?: DateTime;
+  timezone: string;
   onDateTimeSelected: (dateTime: DateTime | undefined) => void;
 };
 
@@ -46,7 +46,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     props.dateTime?.time
   );
   const [timeZone, setTimeZone] = React.useState<string>(
-    props.dateTime?.timeZone || Luxon.now().zoneName!
+    props.dateTime?.timeZone || props.timezone
   );
 
   const changeDate = (date: Date | undefined) => {

@@ -10,6 +10,7 @@ export type AppointmentsProps = {
   optionsClassName?: string;
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
+  timezone: string;
 };
 
 export const Appointments: React.FC<AppointmentsProps> = ({
@@ -17,6 +18,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
   optionsClassName,
   successPage,
   fieldsSchema,
+  timezone,
 }) => {
   const [option, setOption] = React.useState<string | undefined>();
   const selected = options.find((m) => m.id === option);
@@ -35,6 +37,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
           successPage={successPage}
           back={() => setOption(undefined)}
           fieldsSchema={fieldsSchema}
+          timezone={timezone}
         />
       )}
     </>

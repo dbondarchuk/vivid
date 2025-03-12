@@ -200,7 +200,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
                     }
                     className={cn(
                       "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3",
-                      selected?._id === asset._id ? "bg-blue-50" : ""
+                      selected?._id === asset._id ? "bg-accent" : ""
                     )}
                     key={asset._id}
                   >

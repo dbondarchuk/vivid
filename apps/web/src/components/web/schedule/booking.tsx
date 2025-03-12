@@ -59,6 +59,7 @@ export const Booking: React.FC<BookingProps> = async ({
       optionsClassName={className}
       successPage={successPage}
       fieldsSchema={configFields}
+      timezone={config.timezone}
     />
   );
 };

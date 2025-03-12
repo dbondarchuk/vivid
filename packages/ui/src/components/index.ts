@@ -75,4 +75,5 @@ export * from "./textarea";
 export * from "./textarea-mention";
 export * from "./time-picker";
 export * from "./toaster";
+export * from "./toolbar";
 export * from "./tooltip";

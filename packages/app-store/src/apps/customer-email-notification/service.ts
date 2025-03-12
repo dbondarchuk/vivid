@@ -113,18 +113,17 @@ export default class CustomerEmailNotificationConnectedApp
       return;
     }
 
-    const renderedEventTemplate = await renderToStaticMarkup(
-      eventTemplate.value,
-      {
-        args: arg,
-      }
-    );
+    const renderedEventTemplate = await renderToStaticMarkup({
+      document: eventTemplate.value,
+      args: arg,
+    });
 
     const eventContent = getEventCalendarContent(
       general,
       appointment,
       templateSafeWithError(data.event.summary, arg),
-      renderedEventTemplate
+      renderedEventTemplate,
+      AppointmentStatusToICalMethodMap[status]
     );
 
     const { subject, templateId } = data.templates[status];
@@ -140,8 +139,9 @@ export default class CustomerEmailNotificationConnectedApp
       return;
     }
 
-    const renderedTemplate = await renderToStaticMarkup(template.value, {
+    const renderedTemplate = await renderToStaticMarkup({
       args: arg,
+      document: template.value,
     });
 
     await this.props.services.NotificationService().sendEmail({

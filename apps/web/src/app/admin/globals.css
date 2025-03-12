@@ -22,7 +22,8 @@
     --secondary-foreground: 20 12% 32%;
     --accent: 20 12% 92%;
     --accent-foreground: 20 12% 32%;
-    --destructive: 11 80% 22%;
+    --destructive: 11 85% 39%;
+    /* --destructive: 11 80% 22%; */
     --destructive-foreground: 11 80% 82%;
     --ring: 20 48% 72%;
     --radius: 0.5rem;
@@ -96,4 +97,44 @@
     height: 100vh; /* Fallback */
     height: 100dvh;
   }
+}
+
+.dark .w-color-sketch {
+  --sketch-background: #323232 !important;
+}
+
+.dark .w-color-swatch {
+  --sketch-swatch-border-top: 1px solid #525252 !important;
+}
+
+.dark .w-color-block {
+  --block-background-color: #323232 !important;
+  --block-box-shadow: rgb(0 0 0 / 10%) 0 1px !important;
+}
+
+.dark .w-color-editable-input {
+  --editable-input-label-color: #757575 !important;
+  --editable-input-box-shadow: #616161 0px 0px 0px 1px inset !important;
+  --editable-input-color: #bbb !important;
+}
+
+.dark .w-color-github {
+  --github-border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  --github-background-color: #323232 !important;
+  --github-box-shadow: rgb(0 0 0 / 15%) 0px 3px 12px !important;
+  --github-arrow-border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+.dark .w-color-compact {
+  --compact-background-color: #323232 !important;
+}
+
+.dark .w-color-material {
+  --material-background-color: #323232 !important;
+  --material-border-bottom-color: #707070 !important;
+}
+
+.dark .w-color-alpha {
+  --alpha-pointer-background-color: #6a6a6a !important;
+  --alpha-pointer-box-shadow: rgb(0 0 0 / 37%) 0px 1px 4px 0px !important;
 }

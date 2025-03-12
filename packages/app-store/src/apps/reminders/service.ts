@@ -206,7 +206,10 @@ export default class RemindersConnectedApp
       case "email":
         return this.props.services.NotificationService().sendEmail({
           email: {
-            body: await renderToStaticMarkup(template.value, { args: arg }),
+            body: await renderToStaticMarkup({
+              args: arg,
+              document: template.value,
+            }),
             subject: templateSafeWithError(reminder.subject, arg),
             to: appointment.fields.email,
           },

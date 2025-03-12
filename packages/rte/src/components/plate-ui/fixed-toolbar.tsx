@@ -1,8 +1,6 @@
 "use client";
 
-import { withCn } from "@udecode/cn";
-
-import { Toolbar } from "./toolbar";
+import { Toolbar, withCn } from "@vivid/ui";
 
 export const FixedToolbar = withCn(
   Toolbar,

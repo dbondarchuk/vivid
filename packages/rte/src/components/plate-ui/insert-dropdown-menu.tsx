@@ -57,9 +57,9 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  ToolbarButton,
   useOpenState,
 } from "@vivid/ui";
-import { ToolbarButton } from "./toolbar";
 
 type Group = {
   group: string;

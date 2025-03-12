@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { useFilePicker } from "use-file-picker";
 
+import { UploadedFile } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,14 +40,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   FloatingInput,
-  useOpenState,
-} from "@vivid/ui";
-import {
   ToolbarSplitButton,
   ToolbarSplitButtonPrimary,
   ToolbarSplitButtonSecondary,
-} from "./toolbar";
-import { Asset, UploadedFile } from "@vivid/types";
+  useOpenState,
+} from "@vivid/ui";
 
 const MEDIA_CONFIG: Record<
   string,

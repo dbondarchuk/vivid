@@ -14,7 +14,6 @@
     "@types/node": "^20",
     "@types/react": "19.0.2",
     "@types/react-big-calendar": "^1.8.10",
-    "@types/react-color": "^3.0.12",
     "@types/react-dom": "19.0.2",
     "@types/react-window": "^1.8.8",
     "@vivid/eslint-config": "*",
@@ -53,6 +52,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@tanstack/react-table": "^8.20.5",
+    "@uiw/react-color": "^2.4.1",
     "@vivid/types": "*",
     "@vivid/utils": "*",
     "date-fns": "^3.6.0",
@@ -62,9 +62,9 @@
     "countries-phone-masks": "^1.1.0",
     "effect": "^3.8.3",
     "embla-carousel-react": "^8.1.7",
-    "lucide-react": "^0.474.0",
+    "lucide-react": "^0.479.0",
     "luxon": "^3.5.0",
-    "next": "15.2.0-canary.33",
+    "next": "15.2.1",
     "next-themes": "^0.4.4",
     "nuqs": "^2.4.0",
     "react": "19.0.0",
@@ -84,6 +84,6 @@
     "zustand": "^4.5.5"
   },
   "peerDependencies": {
-    "next": "15.2.0-canary.33"
+    "next": "15.2.1"
   }
 }

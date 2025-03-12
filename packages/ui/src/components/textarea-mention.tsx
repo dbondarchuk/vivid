@@ -292,11 +292,12 @@ export const TextareaMentions = React.forwardRef<
       itemRenderer,
       insertTransform,
       className,
+      asInput,
       ...rest
     },
     ref
   ) => {
-    const textareaRef = rest.asInput
+    const textareaRef = asInput
       ? useRef<HTMLInputElement>(null)
       : useRef<HTMLTextAreaElement>(null);
 
@@ -427,7 +428,7 @@ export const TextareaMentions = React.forwardRef<
 
     return (
       <div className="relative w-full">
-        {rest.asInput ? (
+        {asInput ? (
           <Input
             ref={mergeRefs(
               ref as React.RefObject<HTMLInputElement | null>,
@@ -449,7 +450,7 @@ export const TextareaMentions = React.forwardRef<
             className={cn("h-auto resize-none", className)}
             value={textValue}
             onChange={onTextValueChange}
-            {...rest}
+            {...(rest as React.InputHTMLAttributes<HTMLTextAreaElement>)}
           />
         )}
         <Command

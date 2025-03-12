@@ -29,9 +29,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
+  ToolbarButton,
   useOpenState,
 } from "@vivid/ui";
-import { ToolbarButton } from "./toolbar";
 
 export function TableDropdownMenu(props: DropdownMenuProps) {
   const tableSelected = useEditorSelector(

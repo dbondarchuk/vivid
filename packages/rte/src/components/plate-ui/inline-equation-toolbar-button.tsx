@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { insertInlineEquation } from '@udecode/plate-math';
-import { useEditorRef, withRef } from '@udecode/plate/react';
-import { RadicalIcon } from 'lucide-react';
-
-import { ToolbarButton } from './toolbar';
+import { insertInlineEquation } from "@udecode/plate-math";
+import { useEditorRef, withRef } from "@udecode/plate/react";
+import { ToolbarButton } from "@vivid/ui";
+import { RadicalIcon } from "lucide-react";
 
 export const InlineEquationToolbarButton = withRef<typeof ToolbarButton>(
   (props, ref) => {

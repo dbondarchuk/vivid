@@ -21,9 +21,9 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  ToolbarButton,
   useOpenState,
 } from "@vivid/ui";
-import { ToolbarButton } from "./toolbar";
 
 export function MoreDropdownMenu(props: DropdownMenuProps) {
   const editor = useEditorRef();

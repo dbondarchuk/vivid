@@ -45,6 +45,9 @@ import {
   DropdownMenuTrigger,
   Popover,
   PopoverContent,
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
 } from "@vivid/ui";
 import { PlateElement } from "./plate-element";
 import {
@@ -55,7 +58,6 @@ import {
   BorderRight,
   BorderTop,
 } from "./table-icons";
-import { Toolbar, ToolbarButton, ToolbarGroup } from "./toolbar";
 
 export const TableElement = withHOC(
   TableProvider,

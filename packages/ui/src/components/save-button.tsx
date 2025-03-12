@@ -11,6 +11,7 @@ export type SaveButtonProps = {
   form: UseFormReturn<any>;
   disabled?: boolean;
   ignoreInvalid?: boolean;
+  ignoreDirty?: boolean;
   isLoading?: boolean;
   text?: string;
 };
@@ -19,6 +20,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   form,
   disabled,
   ignoreInvalid,
+  ignoreDirty,
   isLoading: propsIsLoading,
   text = "Save",
 }) => {
@@ -76,7 +78,8 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   return (
     <Button
       disabled={
-        disabled || isLoading || (!ignoreInvalid ? !isDirty || !isValid : false)
+        disabled || isLoading || !(ignoreInvalid || isValid) //||
+        // !(ignoreDirty || !isDirty)
       }
       className={classes()}
       type="submit"

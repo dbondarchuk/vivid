@@ -1,0 +1,78 @@
+import z from "zod";
+import { TReaderBlock } from "./reader/core";
+
+export type BaseZodDictionary = {
+  [name: string]: z.AnyZodObject;
+};
+
+export type ConfigurationProps<T> = {
+  data: T;
+  setData: (data: T) => void;
+};
+
+export type EditorProps<T> = T;
+export type ReaderProps<T> = T & {
+  document: TReaderBlock;
+  args: Record<string, any>;
+};
+
+export type BuilderSchema = BaseZodDictionary;
+
+export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
+  [K in keyof T]: {
+    displayName: string;
+    icon: React.ReactNode;
+    Editor: React.ComponentType<EditorProps<z.infer<T[K]>>>;
+    Configuration: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
+    Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
+    defaultValue: z.infer<T[K]>;
+    category: string;
+  };
+};
+
+export type ReaderDocumentBlocksDictionary<T extends BuilderSchema = any> = {
+  [K in keyof T]: {
+    Reader: React.ComponentType<
+      ReaderProps<
+        z.infer<T[K]> & {
+          blocks: ReaderDocumentBlocksDictionary<T>;
+        }
+      >
+    >;
+  };
+};
+
+export type BlockConfiguration<T extends BuilderSchema> = {
+  [TType in keyof T]: {
+    type: TType;
+    data: z.infer<T[TType]>;
+  };
+}[keyof T];
+
+// export function buildBlockConfigurationSchema<T extends BuilderSchema>(
+//   blocks: BuilderSchema
+// ) {
+//   const blockObjects = Object.keys(blocks).map((type: keyof T) =>
+//     z.object({
+//       type: z.literal(type),
+//       data: blocks[type],
+//     })
+//   );
+
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   return z
+//     .discriminatedUnion("type", blockObjects as any)
+//     .transform((v) => v as BlockConfiguration<T>);
+// }
+
+export function buildReaderBlockConfigurationDictionary<
+  T extends BaseZodDictionary,
+>(blocks: ReaderDocumentBlocksDictionary<T>) {
+  return blocks;
+}
+
+export function buildBlockConfigurationDictionary<T extends BaseZodDictionary>(
+  blocks: EditorDocumentBlocksDictionary<T>
+) {
+  return blocks;
+}

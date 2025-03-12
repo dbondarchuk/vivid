@@ -31,7 +31,7 @@
     "@vivid/ui": "*",
     "@azure/msal-node": "^3.0.1",
     "@microsoft/microsoft-graph-client": "^3.0.7",
-    "lucide-react": "^0.462.0",
+    "lucide-react": "^0.479.0",
     "ics": "^3.7.6",
     "nodemailer": "^6.9.14",
     "ts-ics": "^1.4.2",

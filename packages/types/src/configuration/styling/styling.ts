@@ -32,15 +32,32 @@ export const colors = [
   "destructive-foreground",
 ] as const;
 
+export const colorsLabels: Record<(typeof colors)[number], string> = {
+  background: "Background",
+  foreground: "Text",
+  card: "Card",
+  "card-foreground": "Card text",
+  popover: "Popover",
+  "popover-foreground": "Popover text",
+  primary: "Primary",
+  "primary-foreground": "Primary text",
+  secondary: "Secondary",
+  "secondary-foreground": "Secondary text",
+  muted: "Muted",
+  "muted-foreground": "Muted text",
+  accent: "Accent",
+  "accent-foreground": "Accent text",
+  destructive: "Destructive",
+  "destructive-foreground": "Destructive text",
+};
+
 export const colorsEnum = z.enum(colors, { message: "Unknown color setting" });
 
 export const colorOverrideSchema = z.object({
   type: colorsEnum,
-  value: z
-    .string()
-    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, {
-      message: "Color must be a valid HEX value, starting with #",
-    }),
+  value: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, {
+    message: "Color must be a valid HEX value, starting with #",
+  }),
 });
 
 export type ColorOverrideSchema = z.infer<typeof colorOverrideSchema>;

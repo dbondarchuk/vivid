@@ -11,3 +11,16 @@ export type Leaves<T> = T extends object
         : `.${Leaves<T[K]>}`}`;
     }[keyof T]
   : never;
+
+export type NestedOmit<
+  Schema,
+  Path extends string,
+> = Path extends `${infer Head}.${infer Tail}`
+  ? Head extends keyof Schema
+    ? {
+        [K in keyof Schema]: K extends Head
+          ? NestedOmit<Schema[K], Tail>
+          : Schema[K];
+      }
+    : Schema
+  : Omit<Schema, Path>;

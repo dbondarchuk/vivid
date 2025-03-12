@@ -105,6 +105,17 @@ export const TemplateForm: React.FC<
     }
   };
 
+  const { setError, trigger } = form;
+  const onEmailBuilderValidChange = React.useCallback(
+    (isValid: boolean) =>
+      isValid
+        ? trigger()
+        : setError("value", {
+            message: "Template is not valid",
+          }),
+    [setError, trigger]
+  );
+
   return (
     <Form {...form}>
       <form
@@ -142,6 +153,7 @@ export const TemplateForm: React.FC<
                       <EmailBuilder
                         args={args}
                         value={field.value}
+                        onIsValidChange={onEmailBuilderValidChange}
                         onChange={(value) => {
                           field.onChange(value);
                         }}
@@ -157,7 +169,7 @@ export const TemplateForm: React.FC<
             )}
           />
         </div>
-        <SaveButton form={form} />
+        <SaveButton form={form} ignoreDirty />
       </form>
     </Form>
   );

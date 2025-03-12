@@ -1,11 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-
-import { useCommentAddButton } from '@udecode/plate-comments/react';
-import { MessageSquarePlus } from 'lucide-react';
-
-import { ToolbarButton } from './toolbar';
+import { useCommentAddButton } from "@udecode/plate-comments/react";
+import { ToolbarButton } from "@vivid/ui";
+import { MessageSquarePlus } from "lucide-react";
 
 export function CommentToolbarButton() {
   const { hidden, props } = useCommentAddButton();

@@ -26,6 +26,7 @@ export type ScheduleProps = {
   back?: () => void;
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
+  timezone: string;
 };
 
 type Step = "duration" | "addons" | "calendar" | "form" | "confirmation";
@@ -378,6 +379,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           selectedAddons={selectedAddons}
           dateTime={dateTime}
           onDateTimeSelected={(dateTime) => setDateTime(dateTime)}
+          timezone={props.timezone}
         />
       )}
       {step === "form" && dateTime && (

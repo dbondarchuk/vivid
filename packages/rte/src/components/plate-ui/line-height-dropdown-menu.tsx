@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 import type { DropdownMenuProps } from "@radix-ui/react-dropdown-menu";
 
 import {
@@ -16,9 +14,9 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
+  ToolbarButton,
   useOpenState,
 } from "@vivid/ui";
-import { ToolbarButton } from "./toolbar";
 
 export function LineHeightDropdownMenu({ ...props }: DropdownMenuProps) {
   const openState = useOpenState();
