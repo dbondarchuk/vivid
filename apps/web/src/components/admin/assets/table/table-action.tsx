@@ -19,8 +19,8 @@ export function AssetsTableAction() {
   const { rowSelection } = useSelectedRowsStore();
 
   return (
-    <div className="flex flex-col flex-wrap items-center justify-between gap-4 md:flex-row">
-      <div className="flex flex-1 flex-wrap items-center gap-4">
+    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+      <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
           searchQuery={searchQuery}

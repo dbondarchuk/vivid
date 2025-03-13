@@ -45,7 +45,9 @@ export const AddNewTemplateButton: React.FC = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="default">
-          <Plus className="mr-2 h-4 w-4" /> Add new template
+          <Plus className="mr-2 h-4 w-4" />{" "}
+          <span className="md:hidden">Add</span>
+          <span className="hidden md:inline">Add new template</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-96" overlayVariant="blur">

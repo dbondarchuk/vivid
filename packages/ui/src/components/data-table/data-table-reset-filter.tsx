@@ -1,4 +1,5 @@
 "use client";
+import { FilterX } from "lucide-react";
 import { Button } from "../button";
 
 type DataTableResetFilterProps = {
@@ -14,7 +15,10 @@ export function DataTableResetFilter({
     <>
       {isFilterActive ? (
         <Button variant="outline" onClick={onReset}>
-          Reset filters
+          <span className="max-md:hidden">Reset filters</span>
+          <span className="md:hidden">
+            <FilterX size={16} />
+          </span>
         </Button>
       ) : null}
     </>

@@ -1,10 +1,14 @@
 "use client";
 
 import {
+  Button,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
   DataTableSearch,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   useSelectedRowsStore,
 } from "@vivid/ui";
 
@@ -15,6 +19,7 @@ import {
 } from "./use-table-filters";
 import { ClearSelectedCommunicationLogsButton } from "./clear-selected";
 import { ClearAllCommunicationLogsButton } from "./clear-all";
+import { Settings2 } from "lucide-react";
 
 export function CommunicationLogsTableAction() {
   const {
@@ -34,35 +39,52 @@ export function CommunicationLogsTableAction() {
   } = useCommunicationLogsTableFilters();
 
   const { rowSelection } = useSelectedRowsStore();
+
+  const additionalFilters = (
+    <>
+      <DataTableFilterBox
+        filterKey="direction"
+        title="Direction"
+        options={DIRECTION_OPTIONS}
+        setFilterValue={setDirectionFilter as any}
+        filterValue={directionFilter}
+      />
+      <DataTableFilterBox
+        filterKey="channel"
+        title="Channel"
+        options={CHANNEL_OPTIONS}
+        setFilterValue={setChannelFilter as any}
+        filterValue={channelFilter}
+      />
+      <DataTableRangeBox
+        startValue={start}
+        endValue={end}
+        setStartValue={setStartValue}
+        setEndValue={setEndValue}
+      />
+    </>
+  );
+
   return (
-    <div className="flex flex-col flex-wrap items-center justify-between gap-4 md:flex-row">
-      <div className="flex flex-1 flex-wrap items-center gap-4">
+    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+      <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setPage={setPage}
         />
-        <DataTableFilterBox
-          filterKey="direction"
-          title="Direction"
-          options={DIRECTION_OPTIONS}
-          setFilterValue={setDirectionFilter as any}
-          filterValue={directionFilter}
-        />
-        <DataTableFilterBox
-          filterKey="channel"
-          title="Channel"
-          options={CHANNEL_OPTIONS}
-          setFilterValue={setChannelFilter as any}
-          filterValue={channelFilter}
-        />
-        <DataTableRangeBox
-          startValue={start}
-          endValue={end}
-          setStartValue={setStartValue}
-          setEndValue={setEndValue}
-        />
+        <Popover>
+          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+            <Button variant="outline">
+              <Settings2 size={16} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="flex flex-col gap-2">
+            {additionalFilters}
+          </PopoverContent>
+        </Popover>
+        <div className="hidden md:flex flex-row gap-4">{additionalFilters}</div>
         <DataTableResetFilter
           isFilterActive={isAnyFilterActive}
           onReset={resetFilters}

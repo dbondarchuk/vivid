@@ -169,7 +169,7 @@ export const AppointmentRescheduleDialog: React.FC<
             </DialogHeader>
             <div className="flex-1 w-full overflow-auto">
               <div className="flex flex-col gap-4 w-full">
-                <div className="md:grid grid-cols-2">
+                <div className="flex flex-col md:grid md:grid-cols-2 gap-2">
                   <div className="w-full space-y-8 relative px-1 content-center">
                     <FormField
                       control={form.control}

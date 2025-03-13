@@ -5,10 +5,11 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import { cn } from "../utils";
 import { cva, VariantProps } from "class-variance-authority";
+import { withTooltip } from "./tooltip";
 
 const Popover = PopoverPrimitive.Root;
 
-const PopoverTrigger = PopoverPrimitive.Trigger;
+const PopoverTrigger = withTooltip(PopoverPrimitive.Trigger);
 
 const PopoverAnchor = PopoverPrimitive.Anchor;
 

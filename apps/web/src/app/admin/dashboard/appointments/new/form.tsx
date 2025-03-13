@@ -391,7 +391,7 @@ export const AppointmentScheduleForm: React.FC<
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4 w-full">
-          <div className="md:grid grid-cols-2">
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-2">
             <div className="w-full space-y-8 relative px-1 content-start">
               <FormField
                 control={form.control}
@@ -609,7 +609,7 @@ export const AppointmentScheduleForm: React.FC<
         </div>
         <Button
           disabled={loading || !isValid || (isOverlaping && !confirmOverlap)}
-          className="ml-auto self-end fixed bottom-4 right-4 inline-flex gap-1 items-center"
+          className="ml-auto self-end fixed bottom-4 right-4 inline-flex gap-1 items-center z-50"
           type="submit"
         >
           {loading ? (

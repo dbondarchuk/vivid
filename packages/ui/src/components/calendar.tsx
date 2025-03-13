@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "./select";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useIsMobile } from "../hooks";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -23,6 +24,7 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  const isMobile = useIsMobile();
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -30,7 +32,7 @@ function Calendar({
       className={cn("p-3", className)}
       classNames={{
         month: "space-y-4",
-        months: "flex flex-col space-y-0 relative gap-4",
+        months: "flex flex-col md:flex-row space-y-0 relative gap-4",
         month_caption: "flex justify-center pt-1 relative items-center",
         month_grid: "border-collapse space-y-1 justify-self-center w-full",
 
@@ -111,6 +113,7 @@ function Calendar({
           ),
       }}
       {...props}
+      numberOfMonths={isMobile ? 1 : props.numberOfMonths}
     />
   );
 }
