@@ -227,7 +227,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
               onRescheduled={reschedule}
               trigger={
                 <Button
-                  variant="primary"
+                  variant="secondary"
                   className="inline-flex flex-row gap-2 items-center"
                 >
                   <CalendarSearch size={20} />

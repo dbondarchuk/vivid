@@ -60,14 +60,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/web/public ./public
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 # Copy of i18n jsons
-COPY --from=builder /app/apps/web/src/i18n/locales ./src/i18n/locales
+COPY --from=builder /app/apps/web/src/i18n/locales ./apps/web/src/i18n/locales
 
 # Copy node modules for scheduler
 COPY --from=builder /app/node_modules/uuid ./node_modules/uuid

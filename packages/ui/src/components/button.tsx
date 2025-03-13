@@ -7,7 +7,8 @@ import { TextVariants, textVariants } from "./text";
 
 const buttonVariants = {
   primary:
-    "border border-primary bg-background text-primary hover:bg-primary hover:text-primary-foreground ",
+    // "border border-primary bg-background text-primary hover:bg-primary hover:text-primary-foreground ",
+    "bg-primary text-primary-foreground hover:bg-primary/90",
   default: "bg-primary text-primary-foreground hover:bg-primary/90",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90",

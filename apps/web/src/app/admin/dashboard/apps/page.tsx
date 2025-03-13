@@ -27,7 +27,7 @@ export default async function AppsPage(props: Params) {
 
             <div className="flex flex-row gap-2 items-center">
               <Link
-                variant="primary"
+                variant="secondary"
                 button
                 href="/admin/dashboard/apps/default"
               >
