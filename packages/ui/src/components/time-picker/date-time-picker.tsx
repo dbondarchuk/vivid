@@ -233,6 +233,8 @@ export type DateTimePickerProps = {
   renderTrigger?: (props: DateTimeRenderTriggerProps) => React.ReactNode;
   /** Trigger onChange after each change */
   commitOnChange?: boolean;
+  /** If present, only show minutes that are divisible by this number */
+  minutesDivisibleBy?: number;
 };
 
 export type DateTimeRenderTriggerProps = {
@@ -257,8 +259,9 @@ export function DateTimePicker({
   clearable,
   classNames,
   showSeconds = false,
-  modal = false,
+  modal = true,
   commitOnChange = false,
+  minutesDivisibleBy,
   ...props
 }: DateTimePickerProps & DateTimeCalendarProps) {
   const [open, setOpen] = useState(false);
@@ -532,6 +535,7 @@ export function DateTimePicker({
               showSeconds={showSeconds}
               min={minDate}
               max={maxDate}
+              minutesDivisibleBy={minutesDivisibleBy}
             />
           )}
           <div className="flex flex-row-reverse items-center justify-between">

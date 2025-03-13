@@ -92,7 +92,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
         >
           <div className="py-4">
             <div className="mb-3 grid md:grid-cols-3 gap-2 ">
-              <div className="md:col-span-1 md:pr-5 md:flex gap-3 md:flex-col grid grid-cols-2">
+              <div className="grid md:col-span-1 md:pr-5 md:flex gap-3 md:flex-col">
                 <div className="flex items-center">
                   <Calendar className="mr-1" />
                   {this.props.i18n("form_date_label_format", {

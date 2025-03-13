@@ -166,8 +166,8 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
       <div className="mb-3">
         <h2>{props.i18n("select_date_time_label")}</h2>
       </div>
-      <div className="mb-3 flex-col gap-10">
-        <div className="flex flex-col md:flex-row gap-10 not-prose">
+      <div className="mb-3 flex flex-col gap-4">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-10 not-prose">
           <div className="flex flex-col">
             <div className="mb-3">
               <Calendar
@@ -204,7 +204,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
             )}
           </div>
         </div>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground leading-10">
           <Globe2Icon className="inline-block mr-1" />
           {timezoneLabel}
         </div>

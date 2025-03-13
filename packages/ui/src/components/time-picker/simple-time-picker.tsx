@@ -41,6 +41,7 @@ export function SimpleTimePicker({
   disabled,
   modal,
   showSeconds = false,
+  minutesDivisibleBy,
 }: {
   use12HourFormat?: boolean;
   value: Date;
@@ -51,6 +52,7 @@ export function SimpleTimePicker({
   className?: string;
   modal?: boolean;
   showSeconds?: boolean;
+  minutesDivisibleBy?: number;
 }) {
   // hours24h = HH
   // hours12h = hh
@@ -121,7 +123,9 @@ export function SimpleTimePicker({
         label: i.toString().padStart(2, "0"),
         disabled,
       };
-    });
+    }).filter(
+      (minute) => !minutesDivisibleBy || minute.value % minutesDivisibleBy === 0
+    );
   }, [value, min, max, _hourIn24h]);
   const seconds: SimpleTimeOption[] = useMemo(() => {
     const anchorDate = setMilliseconds(

@@ -21,7 +21,9 @@ export const durationToTime = (minutes: number) => {
   };
 };
 
-export const timeToDuration = (time?: { hours: number; minutes: number }) => {
+export const timeToDuration = (
+  time?: { hours: number; minutes: number } | null
+) => {
   if (!time) return undefined;
   return time.hours * 60 + time.minutes;
 };

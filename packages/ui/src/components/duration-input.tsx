@@ -1,22 +1,14 @@
 import { durationToTime, timeToDuration } from "@vivid/utils";
-import { Input, InputProps } from "./input";
-import { cn } from "../utils";
-import {
-  InputGroup,
-  InputGroupInput,
-  InputGroupInputClasses,
-  InputGroupSuffixClasses,
-  InputSuffix,
-} from "./input-group";
-import React from "react";
 import { Clock } from "lucide-react";
+import React from "react";
+import { Input, InputProps } from "./input";
 
 export type DurationInputProps = Omit<
   InputProps,
   "type" | "value" | "onChange" | "placeholder" | "min" | "max"
 > & {
-  value?: number;
-  onChange?: (value?: number) => void;
+  value?: number | null;
+  onChange?: (value: number | null) => void;
   inputClassName?: string;
   placeholderHours?: string;
   placeholderMinutes?: string;
@@ -37,30 +29,30 @@ export const DurationInput: React.FC<DurationInputProps> = ({
   const minutesRef = React.useRef<HTMLInputElement>(null);
   const hoursRef = React.useRef<HTMLInputElement>(null);
   const onHoursChange = (v?: string) => {
-    const value = typeof v !== "undefined" ? parseInt(v) : undefined;
+    const value = parseInt(v as string) ?? undefined;
     onChange?.(
       timeToDuration(
         !duration?.minutes && !value
-          ? undefined
+          ? null
           : {
               hours: value || 0,
               minutes: duration?.minutes || 0,
             }
-      )
+      ) ?? null
     );
   };
 
   const onMinutesChange = (v?: string) => {
-    const value = typeof v !== "undefined" ? parseInt(v) : undefined;
+    const value = parseInt(v as string) ?? undefined;
     onChange?.(
       timeToDuration(
         !duration?.hours && !value
-          ? undefined
+          ? null
           : {
               minutes: value || 0,
               hours: duration?.hours || 0,
             }
-      )
+      ) ?? null
     );
   };
 
@@ -118,7 +110,8 @@ export const DurationInput: React.FC<DurationInputProps> = ({
         if (
           field === "hours" &&
           minutesRef.current &&
-          (e.currentTarget.selectionStart ?? 0) > 0
+          (!e.currentTarget.value?.length ||
+            (e.currentTarget.selectionStart ?? 0) > 0)
         ) {
           minutesRef.current.focus();
         }
@@ -187,7 +180,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           type="text"
           inputMode="numeric"
           placeholder={placeholderMinutes || "00"}
-          value={duration?.minutes}
+          value={duration?.minutes?.toString()}
           onChange={handleMinutesChange}
           onKeyDown={(e) => handleKeyDown(e, "minutes")}
           min={0}
@@ -202,36 +195,5 @@ export const DurationInput: React.FC<DurationInputProps> = ({
         <span className="pr-3 text-sm text-muted-foreground">min</span>
       </div>
     </div>
-    // <div className={cn("flex flex-col md:flex-row gap-4 w-full", className)}>
-    //   <InputGroup className="flex-1">
-    //     <InputGroupInput>
-    //       <Input
-    //         value={duration?.hours}
-    //         type="number"
-    //         onChange={(e) => onHoursChange(e.target.value)}
-    //         className={cn(InputGroupInputClasses(), inputClassName)}
-    //         placeholder={placeholderHours}
-    //         min={0}
-    //         {...rest}
-    //       />
-    //     </InputGroupInput>
-    //     <InputSuffix className={InputGroupSuffixClasses()}>hr</InputSuffix>
-    //   </InputGroup>
-    //   <InputGroup className="flex-1">
-    //     <InputGroupInput>
-    //       <Input
-    //         value={duration?.minutes}
-    //         type="number"
-    //         onChange={(e) => onMinutesChange(e.target.value)}
-    //         className={cn(InputGroupInputClasses(), inputClassName)}
-    //         placeholder={placeholderMinutes}
-    //         min={0}
-    //         max={59}
-    //         {...rest}
-    //       />
-    //     </InputGroupInput>
-    //     <InputSuffix className={InputGroupSuffixClasses()}>min</InputSuffix>
-    //   </InputGroup>
-    // </div>
   );
 };

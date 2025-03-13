@@ -383,6 +383,8 @@ export const AppointmentScheduleForm: React.FC<
 
     form.setValue("totalDuration", duration);
     form.setValue("totalPrice", price || 0);
+
+    form.trigger("totalDuration");
   }, [selectedOption, selectedAddons]);
 
   return (
@@ -439,7 +441,7 @@ export const AppointmentScheduleForm: React.FC<
                 name="dateTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>DateTime</FormLabel>
+                    <FormLabel>Date & Time</FormLabel>
                     <FormControl>
                       <DateTimePicker
                         use12HourFormat={is12hourUserTimeFormat()}
@@ -448,6 +450,7 @@ export const AppointmentScheduleForm: React.FC<
                         min={new Date()}
                         {...field}
                         className="flex w-full"
+                        minutesDivisibleBy={5}
                       />
                     </FormControl>
                     <FormMessage />
@@ -481,10 +484,15 @@ export const AppointmentScheduleForm: React.FC<
                   </FormItem>
                 )}
               />
-              {selectedFields.map((field) =>
-                // @ts-expect-error ignore typecheck for form.control
-                fieldsComponentMap("fields")[field.type](field, form.control)
-              )}
+              {selectedFields.map((field) => (
+                <React.Fragment key={field.name}>
+                  {fieldsComponentMap("fields")[field.type](
+                    field,
+                    // @ts-expect-error ignore typecheck for form.control
+                    form.control
+                  )}
+                </React.Fragment>
+              ))}
               <FormField
                 control={form.control}
                 name="totalDuration"

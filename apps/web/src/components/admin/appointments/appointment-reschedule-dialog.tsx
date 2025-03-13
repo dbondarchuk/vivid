@@ -176,7 +176,7 @@ export const AppointmentRescheduleDialog: React.FC<
                       name="dateTime"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>DateTime</FormLabel>
+                          <FormLabel>Date & Time</FormLabel>
                           <FormControl>
                             <DateTimePicker
                               use12HourFormat={is12hourUserTimeFormat()}
@@ -184,6 +184,7 @@ export const AppointmentRescheduleDialog: React.FC<
                               min={new Date()}
                               {...field}
                               className="flex w-full"
+                              minutesDivisibleBy={5}
                             />
                           </FormControl>
                           <FormMessage />
