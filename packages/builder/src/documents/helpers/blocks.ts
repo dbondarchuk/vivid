@@ -197,7 +197,7 @@ const recursiveValidateBlocks = (
     }
   > = {};
 
-  if (!block) return results;
+  if (!block || !schemas[block?.type]) return results;
 
   const parseResult = schemas[block.type].safeParse(block.data);
   if (!parseResult.success) {
