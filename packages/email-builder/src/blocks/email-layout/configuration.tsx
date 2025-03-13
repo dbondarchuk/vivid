@@ -15,18 +15,6 @@ export const EmailLayoutConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<EmailLayoutProps>) => {
-  // const [, setErrors] = useState<Zod.ZodError | null>(null);
-
-  // const updateData = (d: unknown) => {
-  //   const res = EmailLayoutPropsSchema.safeParse(d);
-  //   if (res.success) {
-  //     setData(res.data);
-  //     setErrors(null);
-  //   } else {
-  //     setErrors(res.error);
-  //   }
-  // };
-
   const updateData = (d: unknown) => setData(d as EmailLayoutProps);
 
   return (
@@ -73,7 +61,7 @@ export const EmailLayoutConfiguration = ({
       />
       <TextInput
         label="Preview text"
-        defaultValue=""
+        defaultValue={data.previewText || ""}
         rows={5}
         onChange={(previewText) => updateData({ ...data, previewText })}
       />

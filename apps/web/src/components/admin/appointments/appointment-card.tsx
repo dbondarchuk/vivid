@@ -51,14 +51,15 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <Heading
             title={appointment.option.name}
             description={`By ${appointment.fields.name}`}
+            href={`/admin/dashboard/appointments/${appointment._id}`}
           />
-          <Link
+          {/* <Link
             variant="ghost"
             title="View full appointment information"
             href={`/admin/dashboard/appointments/${appointment._id}`}
           >
             <SquareArrowOutUpRight size={20} />
-          </Link>
+          </Link> */}
         </CardTitle>
       </CardHeader>
       <CardContent className="text-sm flex flex-col w-full @container">

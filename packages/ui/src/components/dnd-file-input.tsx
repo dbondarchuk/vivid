@@ -4,6 +4,7 @@ import { mimeTypeToExtension } from "@vivid/utils";
 import React, { InputHTMLAttributes } from "react";
 import { Accept, useDropzone } from "react-dropzone";
 import { DefaultExtensionType, defaultStyles, FileIcon } from "react-file-icon";
+import { cn } from "../utils";
 
 export type DndFileInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -43,10 +44,10 @@ py-2 px-3 leading-tight text-background shadow focus:outline-none"
         {...getInputProps()}
       />
       <div
-        className={
-          "w-full border border-dashed border-primary rounded-md p-2 text-black " +
-          (isDragActive && "bg-primary/20")
-        }
+        className={cn(
+          "w-full border border-dashed border-primary rounded-md p-2 text-muted-foreground",
+          isDragActive && "bg-primary/20"
+        )}
       >
         {isDragActive ? (
           <p className="my-2 text-center">Drop the files here ...</p>
