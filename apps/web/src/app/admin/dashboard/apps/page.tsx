@@ -25,7 +25,7 @@ export default async function AppsPage(props: Params) {
               description="Manage your connected apps"
             />
 
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-col [&>a]:max-md:w-full md:flex-row gap-2 items-center">
               <Link
                 variant="secondary"
                 button

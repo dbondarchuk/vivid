@@ -106,6 +106,10 @@
     height: 100vh; /* Fallback */
     height: 100dvh;
   }
+
+  .wrap-anywhere {
+    overflow-wrap: anywhere;
+  }
 }
 
 .dark .w-color-sketch {

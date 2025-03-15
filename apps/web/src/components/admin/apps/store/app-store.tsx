@@ -22,7 +22,7 @@ export type AppStoreProps = {};
 
 const AppCard: React.FC<{ app: App }> = ({ app }) => (
   <Card className="pt-4 h-full">
-    <CardContent className="w-full flex flex-col gap-4 h-full">
+    <CardContent className="flex flex-col gap-4 h-full">
       <ConnectedAppNameAndLogo app={{ name: app.name }} />
       <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
         <Markdown markdown={app.description.text} notProse />
@@ -78,7 +78,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
 
   return (
     <div className="flex flex-col w-full gap-8">
-      <div className="flex flex-col-reverse md:flex-row justify-between gap-2">
+      <div className="flex flex-col md:flex-row justify-between gap-2">
         <Heading title="App store" description="Add new apps" />
         <Input
           placeholder="Search"
@@ -94,7 +94,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
         }}
         className="w-full"
       >
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 w-full">
           <div className="flex flex-row justify-between items-center">
             <div>
               <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
@@ -106,12 +106,12 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
               <CarouselNext className="relative translate-y-0 rounded-none border-none right-0 top-0" />
             </div>
           </div>
-          <CarouselContent className="items-stretch">
+          <CarouselContent className="items-stretch w-0 min-w-full">
             {apps
               .filter((app) => app.isFeatured)
               .map((app) => (
                 <CarouselItem
-                  className="md:basis-1/2 lg:basis-1/3"
+                  className="w-full md:basis-1/2 lg:basis-1/3"
                   key={app.name}
                 >
                   <AppCard app={app} />
@@ -121,13 +121,13 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
         </div>
       </Carousel>
       <div className="flex flex-col gap-6">
-        <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
             <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
               All apps
             </h2>
           </div>
-          <div className="flex flex-row flex-wrap gap-2 justify-end">
+          <div className="flex flex-row flex-wrap gap-2 md:justify-end">
             <Button
               variant={!!category ? "secondary" : "default"}
               onClick={() => setCategory(undefined)}
