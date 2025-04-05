@@ -75,6 +75,8 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
         success: "Saved!",
         error: "There was a problem with your request.",
       });
+
+      setIsDefault(false);
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -85,7 +87,6 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
   React.useEffect(() => {
     if (!delayedSchedule) return;
     onScheduleChange(delayedSchedule);
-    setIsDefault(false);
   }, [delayedSchedule]);
 
   const onWeekChange = React.useCallback(
