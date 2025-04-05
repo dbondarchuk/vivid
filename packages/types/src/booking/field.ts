@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 import { WithDatabaseId } from "../database";
-import { asOptionalField, zUniqueArray } from "../utils";
+import {
+  asOptionalField,
+  zOptionalOrMinLengthString,
+  zUniqueArray,
+} from "../utils";
 import { fieldTypes } from "./fields";
 
 const fieldTypeEnum = z.enum(fieldTypes, {
@@ -11,7 +15,10 @@ const fieldTypeEnum = z.enum(fieldTypes, {
 export const defaultFieldDataSchema = z.object({
   label: z.string().min(1, "Field label is required"),
   // description: z.array(z.any()),
-  description: z.string().min(2, "Field description is required"),
+  description: zOptionalOrMinLengthString(
+    3,
+    "Field description should be at least 3 characters long"
+  ),
 });
 
 export const selectFieldDataSchema = defaultFieldDataSchema.merge(
