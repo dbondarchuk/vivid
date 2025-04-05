@@ -1,12 +1,12 @@
-import { Appointment, BookingConfiguration, FieldType } from "@vivid/types";
+import { Appointment, FieldType, ServiceField } from "@vivid/types";
 
 export const getPhoneField = (
   appointment: Appointment,
-  bookingConfiguration: BookingConfiguration
+  serviceFields: ServiceField[]
 ): string | undefined => {
   const phoneFields =
-    bookingConfiguration.fields
-      ?.filter((x) => (x.type as any) === FieldType.Phone)
+    serviceFields
+      ?.filter((x) => (x.type as FieldType) === "phone")
       .map((x) => x.name) || [];
 
   const fields = new Set(

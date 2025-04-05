@@ -62,7 +62,7 @@ export const ToolbarColorMenu = <T,>({
           <X />
         </Button>
         <Sketch
-          // className="!bg-transparent !shadow-none"
+          className="!shadow-none"
           color={propValue ?? defaultValue}
           onChange={(value) => {
             setData(

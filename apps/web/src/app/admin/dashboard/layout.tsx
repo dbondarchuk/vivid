@@ -4,10 +4,11 @@ import { AppSidebar } from "@/components/admin/layout/sidebar";
 import { navItems } from "@/constants/data";
 import { AvailableApps } from "@vivid/app-store";
 import { ServicesContainer } from "@vivid/services";
-import { NavItemWithOptionalChildren } from "@vivid/types";
+import { NavItemGroup } from "@vivid/types";
 import { BreadcrumbsProvider, SidebarInset, SidebarProvider } from "@vivid/ui";
 import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { CookiesProvider } from "./cookies-provider";
 import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
 
 export const metadata: Metadata = {
@@ -22,12 +23,19 @@ export default async function DashboardLayout({
   const { name, logo } =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
 
-  const menuItems: NavItemWithOptionalChildren[] = [
+  const groups: NavItemGroup[] = [
     ...navItems.map((x) => ({
       ...x,
-      items: x.items ? [...x.items] : [],
+      children: [
+        ...x.children.map((y) => ({
+          ...y,
+          items: y.items ? [...y.items] : [],
+        })),
+      ],
     })),
   ];
+
+  const menuItems = groups.flatMap((group) => group.children);
 
   const appsWithMenu = await ServicesContainer.ConnectedAppService().getApps();
   const appsMenus = appsWithMenu
@@ -66,17 +74,19 @@ export default async function DashboardLayout({
     <div className="flex">
       <SidebarProvider>
         <BreadcrumbsProvider>
-          <NuqsAdapter>
-            <AppSidebar menuItems={menuItems} name={name} logo={logo} />
-            <PendingAppointmentsToastStream />
+          <CookiesProvider>
+            <NuqsAdapter>
+              <AppSidebar menuItems={groups} name={name} logo={logo} />
+              <PendingAppointmentsToastStream />
 
-            <SidebarInset>
-              {/* <main className="w-full flex-1 overflow-hidden"> */}
-              <Header />
-              {children}
-              {/* </main> */}
-            </SidebarInset>
-          </NuqsAdapter>
+              <SidebarInset>
+                {/* <main className="w-full flex-1 overflow-hidden"> */}
+                <Header />
+                {children}
+                {/* </main> */}
+              </SidebarInset>
+            </NuqsAdapter>
+          </CookiesProvider>
         </BreadcrumbsProvider>
       </SidebarProvider>
     </div>

@@ -18,11 +18,21 @@ export default async function NewAssetsPage(props: Props) {
   const searchParams = await props.searchParams;
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
-  const choices: AppointmentChoice[] = config.options.map((option) => ({
+  const [fields, addons, options] = await Promise.all([
+    ServicesContainer.ServicesService().getFields({}),
+    ServicesContainer.ServicesService().getAddons({}),
+    ServicesContainer.ServicesService().getOptions({}),
+  ]);
+
+  const optionsChoices = (config.options || [])
+    .map((o) => options.items?.find(({ _id }) => o.id == _id))
+    .filter((o) => !!o);
+
+  const choices: AppointmentChoice[] = optionsChoices.map((option) => ({
     ...option,
     addons:
       option.addons
-        ?.map((f) => config.addons?.find((x) => x.id === f.id))
+        ?.map((f) => addons.items?.find((x) => x._id === f.id))
         .filter((f) => !!f) || [],
   }));
 
@@ -44,7 +54,7 @@ export default async function NewAssetsPage(props: Props) {
         <AppointmentScheduleForm
           timeZone={config.timezone}
           options={choices}
-          knownFields={config.fields || []}
+          knownFields={fields.items || []}
           from={from}
         />
       </div>

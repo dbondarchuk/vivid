@@ -19,6 +19,7 @@ export const CheckboxField: <T extends FieldValues>(
         <div>
           <FormControl>
             <Checkbox
+              id={`field-${getFieldName(props)}`}
               checked={field.value}
               onCheckedChange={(e) => {
                 field.onChange(e);
@@ -32,6 +33,7 @@ export const CheckboxField: <T extends FieldValues>(
             label={props.data.label}
             required={props.required}
             className="mt-0"
+            htmlFor={`field-${getFieldName(props)}`}
           />
           <FormFieldDescription description={props.data?.description} />
           <FormFieldErrorMessage />

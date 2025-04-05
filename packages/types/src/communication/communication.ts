@@ -18,6 +18,7 @@ export type CommunicationLog = {
   initiator: string;
   receiver: string;
   text: string;
+  html?: string;
   subject?: string;
   appointmentId?: string;
   data?: any;

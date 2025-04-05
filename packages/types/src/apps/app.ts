@@ -7,7 +7,8 @@ export type AppScope =
   | "text-message-send"
   | "appointment-hook"
   | "assets-storage"
-  | "scheduled";
+  | "scheduled"
+  | "schedule";
 
 export type AppSetupProps = {
   onSuccess: () => void;

@@ -51,6 +51,7 @@ const formSchema = z.object({
   dateTime: z.date({ message: "New date and time are required" }),
   duration: z.coerce
     .number({ message: "New duration is required" })
+    .int("Should be the integer value")
     .min(1, "Minimum duration is 1")
     .max(60 * 24 * 10, "Maximum duration is 10 days"),
 });
@@ -123,8 +124,8 @@ export const AppointmentRescheduleDialog: React.FC<
       const appEnd = appStart.plus({ minutes: app.totalDuration });
 
       return (
-        (appStart > appointmentStart && appStart < appointmentEnd) ||
-        (appointmentStart > appStart && appointmentStart < appEnd)
+        (appStart >= appointmentStart && appStart <= appointmentEnd) ||
+        (appointmentStart >= appStart && appointmentStart <= appEnd)
       );
     });
   }, [appointment, calendarEvents]);
@@ -185,6 +186,7 @@ export const AppointmentRescheduleDialog: React.FC<
                               {...field}
                               className="flex w-full"
                               minutesDivisibleBy={5}
+                              commitOnChange
                             />
                           </FormControl>
                           <FormMessage />

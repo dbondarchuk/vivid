@@ -1,5 +1,6 @@
 import { BookingConfiguration, customTimeSlotSchema, Time } from "@vivid/types";
 import {
+  AppSelector,
   Button,
   Combobox,
   FormControl,
@@ -118,6 +119,25 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
       />
       <FormField
         control={form.control}
+        name="scheduleAppId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Schedule provider app</FormLabel>
+            <FormControl>
+              <AppSelector
+                scope="schedule"
+                allowClear
+                disabled={disabled}
+                value={field.value}
+                onItemSelect={(value) => field.onChange(value)}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
         name="maxWeeksInFuture"
         render={({ field }) => (
           <FormItem>
@@ -132,6 +152,9 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   <span className="font-semibold">Example:</span> If set to 6,
                   users can only schedule events up to 6 weeks from the current
                   date.
+                </p>
+                <p>
+                  <span className="font-semibold">Default:</span> 8 weeks
                 </p>
               </InfoTooltip>
             </FormLabel>
@@ -177,6 +200,9 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   there must be at least 30 minutes of free time before each
                   scheduled slot before the next slot can begin.
                 </p>
+                <p>
+                  <span className="font-semibold">Default:</span> 0 minutes
+                </p>
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -220,6 +246,9 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   <span className="font-semibold">Example:</span> If set to 30,
                   there must be at least 30 minutes of free time after each
                   scheduled slot before the next slot can begin.
+                </p>
+                <p>
+                  <span className="font-semibold">Default:</span> 0 minutes
                 </p>
               </InfoTooltip>
             </FormLabel>
@@ -292,7 +321,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormLabel>
               Allowed slot start times
               <InfoTooltip>
-                Defines at which minute appointments allowed to start
+                Defines at which times appointments allowed to start
               </InfoTooltip>
             </FormLabel>
             <FormControl>

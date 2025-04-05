@@ -98,8 +98,12 @@ export class PagesService implements IPagesService {
         {
           $facet: {
             paginatedResults: [
-              { $skip: query.offset || 0 },
-              { $limit: query.limit || 1000000000000000 },
+              ...(typeof query.offset !== "undefined"
+                ? [{ $skip: query.offset }]
+                : []),
+              ...(typeof query.limit !== "undefined"
+                ? [{ $limit: query.limit }]
+                : []),
             ],
             totalCount: [
               {
@@ -159,12 +163,12 @@ export class PagesService implements IPagesService {
     );
   }
 
-  public async deletePage(id: string): Promise<Page | undefined> {
+  public async deletePage(id: string): Promise<Page | null> {
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
     const page = await pages.findOne({ _id: id });
-    if (!page) return undefined;
+    if (!page) return null;
     if (page.slug === "home") {
       throw new Error("Can not delete home page");
     }

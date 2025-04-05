@@ -13,7 +13,7 @@ export interface IPagesService {
   ): Promise<WithTotal<Page>>;
   createPage(page: PageUpdateModel): Promise<Page>;
   updatePage(id: string, update: PageUpdateModel): Promise<void>;
-  deletePage(id: string): Promise<Page | undefined>;
+  deletePage(id: string): Promise<Page | null>;
   deletePages(ids: string[]): Promise<void>;
   checkUniqueSlug(slug: string, id?: string): Promise<boolean>;
 }

@@ -1,7 +1,6 @@
 import { DateTime as Luxon } from "luxon";
 
 import {
-  AvailablePeriod,
   Period,
   PeriodMoment,
   Shift,
@@ -54,10 +53,10 @@ export function getAvailableTimeSlotsInCalendar(
   let fromMoment = firstFromMoment;
   while (fromMoment < lastToMoment) {
     // Retrieve availablePeriods shifs for the given weekday
-    const weekDayConfig = _getWeekDayConfigForMoment(usedConfig, fromMoment);
-    if (weekDayConfig) {
+    const shifts = _getWeekDayConfigForMoment(usedConfig, fromMoment);
+    if (shifts) {
       /* Go through each shift of the week day */
-      weekDayConfig.shifts.forEach((shift: Shift) => {
+      shifts.forEach((shift: Shift) => {
         const { startAt, endAt } = _getMomentsFromShift(fromMoment, shift);
         /* Ensure that shift boundaries don't exceed global boundaries */
         const partialFrom = Luxon.max(firstFromMoment, startAt);
@@ -95,9 +94,9 @@ function _checkSearchParameters(
   let usedConfig = configuration;
   try {
     const formattedPeriods = _mergeOverlappingShiftsInAvailablePeriods(
-      configuration.availablePeriods
+      configuration.schedule
     );
-    usedConfig = { ...configuration, availablePeriods: formattedPeriods };
+    usedConfig = { ...configuration, schedule: formattedPeriods };
   } catch (_) {
     /* If workedPeriods aren't formatted well and provoke an error, the validation will fail */
   }
@@ -140,11 +139,7 @@ function _getWeekDayConfigForMoment(
   configuration: TimeSlotsFinderConfiguration,
   searchMoment: Luxon
 ) {
-  return (
-    configuration.availablePeriods.find(
-      (p) => p.weekDay === searchMoment.weekday
-    ) || null
-  );
+  return configuration.schedule[searchMoment.toISODate() ?? ""] ?? [];
 }
 
 function _getMomentsFromShift(fromMoment: Luxon, shift: Shift) {
@@ -422,18 +417,21 @@ function _nextSearchMoment(
 }
 
 /**
- * Return a reformatted array of availablePeriods without overlapping shifts. Not mutating the
+ * Return a reformatted schedulewithout overlapping shifts. Not mutating the
  * originals data.
- * @param {AvailablePeriod[]} availablePeriods The array of availablePeriods to reformat
- * @return {AvailablePeriod[]}
+ * @param {Record<string, Shift[]>} schedule The map of day formated to ISO and shifts
+ * @return {Record<string, Shift[]>}
  */
 export function _mergeOverlappingShiftsInAvailablePeriods(
-  availablePeriods: AvailablePeriod[]
-): AvailablePeriod[] {
-  return availablePeriods.map((availablePeriod) => ({
-    ...availablePeriod,
-    shifts: _mergeOverlappingShifts(availablePeriod.shifts ?? []),
-  }));
+  schedule: Record<string, Shift[]>
+): Record<string, Shift[]> {
+  return Object.entries(schedule).reduce(
+    (map, [day, shifts]) => ({
+      ...map,
+      [day]: _mergeOverlappingShifts(shifts ?? []),
+    }),
+    {} as Record<string, Shift[]>
+  );
 }
 
 /**
@@ -493,42 +491,21 @@ export function _isUnavailablePeriodValid(period: TimeSlotPeriod): boolean {
 
 /**
  * Indicate if a worked period is valid or not. Throws if not valid.
- * @param {AvailablePeriod} availablePeriod The period to check.
- * @param {number} index The index of the worked period in the list.
+ * @param {Record<string, Shift[]>} schedule The schedule to check.
  * @returns {boolean}
  */
-function _isAvailablePeriodValid(
-  availablePeriod: AvailablePeriod,
-  index: number
-) {
-  if (!Number.isInteger(availablePeriod.weekDay)) {
-    throw new TimeSlotsFinderError(
-      `ISO Weekday must and integer for available period nº${index + 1}`
-    );
-  }
-  if (availablePeriod.weekDay < 1 || availablePeriod.weekDay > 7) {
-    throw new TimeSlotsFinderError(
-      `ISO Weekday must be contains between 1 (Monday) and 7 (Sunday) for available period nº${
-        index + 1
-      }`
-    );
-  }
-  for (const shift of availablePeriod.shifts) {
-    if (!_isShiftValid(shift)) {
-      throw new TimeSlotsFinderError(
-        `Daily shift ${shift.start} - ${shift.end} for available period nº${
-          index + 1
-        } is invalid`
-      );
+function _isScheduleValid(schedule: Record<string, Shift[]>) {
+  for (const [day, shifts] of Object.entries(schedule)) {
+    for (const shift of shifts) {
+      if (!_isShiftValid(shift)) {
+        throw new TimeSlotsFinderError(
+          `Daily shift ${shift.start} - ${shift.end} for ${day} is invalid`
+        );
+      }
     }
-  }
-  if (
-    _mergeOverlappingShifts(availablePeriod.shifts).length !==
-    availablePeriod.shifts.length
-  ) {
-    throw new TimeSlotsFinderError(
-      `Some shifts are overlapping for available period nº${index + 1}`
-    );
+    if (_mergeOverlappingShifts(shifts).length !== shifts.length) {
+      throw new TimeSlotsFinderError(`Some shifts are overlapping for ${day}`);
+    }
   }
 
   return true;
@@ -604,12 +581,11 @@ export function isConfigurationValid(
   _checkPrimitiveValue(configuration);
 
   /* Worked periods */
-  if (!Array.isArray(configuration.availablePeriods)) {
-    throw new TimeSlotsFinderError("A list of available periods is expected");
+  if (!configuration.schedule) {
+    throw new TimeSlotsFinderError("Schedule is expected");
   }
-  for (let i = 0; i < configuration.availablePeriods.length; i += 1) {
-    _isAvailablePeriodValid(configuration.availablePeriods[i], i);
-  }
+
+  _isScheduleValid(configuration.schedule);
 
   /* Unworked periods */
   if (

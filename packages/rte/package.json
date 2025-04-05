@@ -29,8 +29,8 @@
     "@emoji-mart/data": "1.2.1",
     "@faker-js/faker": "^9.5.0",
     "@radix-ui/react-toolbar": "^1.1.2",
-    "@udecode/cn": "^44.0.1",
     "@udecode/cmdk": "^0.2.0",
+    "@udecode/cn": "^44.0.1",
     "@udecode/plate": "^44.0.1",
     "@udecode/plate-ai": "^44.0.3",
     "@udecode/plate-alignment": "^44.0.0",
@@ -86,6 +86,7 @@
     "react-resizable-panels": "^2.1.7",
     "react-textarea-autosize": "^8.5.7",
     "react-tweet": "^3.2.1",
+    "remark-emoji": "^5.0.1",
     "use-file-picker": "^2.1.2"
   }
 }

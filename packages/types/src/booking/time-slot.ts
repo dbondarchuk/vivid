@@ -38,7 +38,7 @@ export interface TimeSlotsFinderConfiguration {
   /** Duration of a appointment in minutes. */
   timeSlotDuration: number;
   /** The periods where booking is possible in a week. */
-  availablePeriods: AvailablePeriod[];
+  schedule: Record<string, Shift[]>;
   /**
    * A number indicating the step for the start minute of a slot.
    * E.g. if the multiple is 15, slots can only begin at XX:00, XX:15, XX:30 or XX:45.

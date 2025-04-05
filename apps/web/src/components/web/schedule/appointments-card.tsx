@@ -11,6 +11,7 @@ import { durationToTime } from "@vivid/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
 import { MdxContent } from "../mdx/mdx-content-client";
+import { PlateStaticEditor } from "@vivid/rte";
 
 export type AppointmentsCardProps = {
   options: AppointmentChoice[];
@@ -36,15 +37,15 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
       {meetings.map((option) => {
         return (
           <Card
-            key={option.id}
-            onClick={() => onSelect(option.id)}
-            onKeyDown={(e) => onKeyPress(option.id, e)}
+            key={option._id}
+            onClick={() => onSelect(option._id)}
+            onKeyDown={(e) => onKeyPress(option._id, e)}
             className="cursor-pointer flex flex-col justify-between"
             tabIndex={1}
-            aria-describedby={`option-${option.id}`}
+            aria-describedby={`option-${option._id}`}
             role="button"
           >
-            <CardHeader id={`option-${option.id}`}>
+            <CardHeader id={`option-${option._id}`}>
               <CardTitle>{option.name}</CardTitle>
               <CardDescription className="flex flex-col gap-2">
                 <div
@@ -81,6 +82,7 @@ const _AppointmentsCard: React.FC<AppointmentsCardProps & IWithI18nProps> = ({
             </CardHeader>
             <CardContent>
               <MdxContent source={option.description} />
+              {/* <PlateStaticEditor value={option.description} /> */}
             </CardContent>
           </Card>
         );

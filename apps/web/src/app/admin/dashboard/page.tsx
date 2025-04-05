@@ -1,19 +1,15 @@
-import { WeeklyCalendarWrapper } from "@/components/admin/calendar/weekly-calendar-wrapper";
 import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
 import {
   Breadcrumbs,
-  Link,
-  ScrollArea,
   Skeleton,
   TabsContent,
   TabsLinkTrigger,
   TabsList,
-  TabsTrigger,
   TabsViaUrl,
 } from "@vivid/ui";
-import { DateTime } from "luxon";
 import { Suspense } from "react";
+import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
 import { PendingAppointmentsBadge } from "./pending-appointments-toast-stream";
@@ -58,10 +54,7 @@ export default async function Page({ searchParams }: Params) {
               <TabsContent value="overview" className="space-y-4">
                 <div className="flex flex-col-reverse lg:flex-row gap-8">
                   <div className="flex flex-col basis-2/3 flex-shrink">
-                    <WeeklyCalendarWrapper
-                      date={DateTime.now().startOf("day").toJSDate()}
-                      className="h-[100vh] w-full grid"
-                    />
+                    <EventsCalendar />
                   </div>
                   <div className="basis-1/3 flex flex-col gap-2 ">
                     <h2 className="tracking-tight text-lg font-medium">

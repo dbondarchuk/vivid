@@ -23,12 +23,15 @@ import { TextBeltApp } from "./apps/text-belt/app";
 import { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 import { TextMessageNotificationApp } from "./apps/text-message-notification/app";
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
+import { WeeklyScheduleApp } from "./apps/weekly-schedule/app";
+import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 
 export const AvailableApps: Record<string, App> = {
   [OUTLOOK_APP_NAME]: OutlookApp,
   [ICS_APP_NAME]: IcsApp,
   [CALDAV_APP_NAME]: CaldavApp,
   [SMTP_APP_NAME]: SmtpApp,
+  [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleApp,
   [TEXTBELT_APP_NAME]: TextBeltApp,
   [CUSTOMER_EMAIL_NOTIFICATION_APP_NAME]: CustomerEmailNotificationApp,
   [EMAIL_NOTIFICATION_APP_NAME]: EmailNotificationApp,
@@ -52,3 +55,4 @@ export { REMINDERS_APP_NAME } from "./apps/reminders/const";
 export { SMTP_APP_NAME } from "./apps/smtp/const";
 export { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
 export { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
+export { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";

@@ -16,7 +16,12 @@ export const DividerPropsSchema = z.object({
   props: z
     .object({
       lineColor: zColor,
-      lineHeight: z.coerce.number().positive().optional().nullable(),
+      lineHeight: z.coerce
+        .number()
+        .int("Should be the integer value")
+        .positive()
+        .optional()
+        .nullable(),
     })
     .optional()
     .nullable(),

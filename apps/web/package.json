@@ -41,6 +41,7 @@
     "node-cron": "^3.0.3",
     "npm": "^10.8.2",
     "react": "19.0.0",
+    "react-cookie": "^8.0.1",
     "react-i18next": "^15.0.0",
     "react-markdown": "^9.0.1",
     "react-window": "^1.8.10",

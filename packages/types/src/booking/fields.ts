@@ -1,15 +1,28 @@
 import { WithId } from "../general";
 
-export enum FieldType {
-  Name = "name",
-  Email = "email",
-  Phone = "phone",
-  OneLine = "oneLine",
-  MultiLine = "multiLine",
-  Checkbox = "checkbox",
-  Select = "select",
-  File = "file",
-}
+// export enum FieldType {
+//   Name = "name",
+//   Email = "email",
+//   Phone = "phone",
+//   OneLine = "oneLine",
+//   MultiLine = "multiLine",
+//   Checkbox = "checkbox",
+//   Select = "select",
+//   File = "file",
+// }
+
+export const fieldTypes = [
+  "name",
+  "email",
+  "phone",
+  "oneLine",
+  "multiLine",
+  "checkbox",
+  "select",
+  "file",
+] as const;
+
+export type FieldType = (typeof fieldTypes)[number];
 
 export type WithLabelFieldData = {
   label: string;
@@ -54,7 +67,7 @@ export const getFields = (
     {
       name: "name",
       required: true,
-      type: FieldType.Name,
+      type: "name",
       data: defaultFieldLabels
         ? {
             label: "Name",
@@ -64,7 +77,7 @@ export const getFields = (
     {
       name: "email",
       required: true,
-      type: FieldType.Email,
+      type: "email",
       data: defaultFieldLabels
         ? {
             label: "Email",

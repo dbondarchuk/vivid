@@ -9,6 +9,7 @@ import {
   IConnectedAppProps,
   IScheduled,
   ITextMessageResponder,
+  ServiceField,
   SocialConfiguration,
   TextMessageReply,
 } from "@vivid/types";
@@ -67,6 +68,12 @@ export default class RemindersConnectedApp
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
 
+    const phoneFields = (
+      await this.props.services.ServicesService().getFields({
+        type: ["phone"],
+      })
+    ).items;
+
     const timezone = bookingConfig.timezone;
     const data = appData.data as RemindersConfiguration;
 
@@ -79,7 +86,8 @@ export default class RemindersConnectedApp
           reminder,
           bookingConfig,
           generalConfig,
-          socialConfig
+          socialConfig,
+          phoneFields
         )
       );
 
@@ -183,7 +191,8 @@ export default class RemindersConnectedApp
     reminder: Reminder,
     config: BookingConfiguration,
     generalConfig: GeneralConfiguration,
-    socialConfig: SocialConfiguration
+    socialConfig: SocialConfiguration,
+    phoneFields: ServiceField[]
   ): Promise<void> {
     const { arg } = getArguments(
       appointment,
@@ -218,7 +227,7 @@ export default class RemindersConnectedApp
         });
 
       case "text-message":
-        const phone = getPhoneField(appointment, config);
+        const phone = getPhoneField(appointment, phoneFields);
         if (!phone) {
           console.warn(
             `Can't find the phone field for appointment ${appointment._id}`

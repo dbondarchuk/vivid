@@ -53,7 +53,7 @@ import { TableDropdownMenu } from "./table-dropdown-menu";
 import { ToggleToolbarButton } from "./toggle-toolbar-button";
 import { TurnIntoDropdownMenu } from "./turn-into-dropdown-menu";
 
-export function FixedToolbarButtons() {
+export function FixedToolbarButtons({ isMarkdown }: { isMarkdown?: boolean }) {
   const readOnly = useEditorReadOnly();
 
   return (
@@ -64,27 +64,25 @@ export function FixedToolbarButtons() {
             <UndoToolbarButton />
             <RedoToolbarButton />
           </ToolbarGroup>
-
           {/* <ToolbarGroup>
             <AIToolbarButton tooltip="AI commands">
               <WandSparklesIcon />
             </AIToolbarButton>
           </ToolbarGroup> */}
-
-          <ToolbarGroup>
-            {/* <ExportToolbarButton>
+          {/* <ToolbarGroup>
+            <ExportToolbarButton>
               <ArrowUpToLineIcon />
-            </ExportToolbarButton> */}
+            </ExportToolbarButton>
 
             <ImportToolbarButton />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <InsertDropdownMenu />
-            <TurnIntoDropdownMenu />
-            <FontSizeToolbarButton />
-          </ToolbarGroup>
-
+          </ToolbarGroup> */}
+          {!isMarkdown && (
+            <ToolbarGroup>
+              <InsertDropdownMenu />
+              <TurnIntoDropdownMenu />
+              <FontSizeToolbarButton />
+            </ToolbarGroup>
+          )}
           <ToolbarGroup>
             <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
               <BoldIcon />
@@ -97,12 +95,14 @@ export function FixedToolbarButtons() {
               <ItalicIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton
-              nodeType={UnderlinePlugin.key}
-              tooltip="Underline (⌘+U)"
-            >
-              <UnderlineIcon />
-            </MarkToolbarButton>
+            {!isMarkdown && (
+              <MarkToolbarButton
+                nodeType={UnderlinePlugin.key}
+                tooltip="Underline (⌘+U)"
+              >
+                <UnderlineIcon />
+              </MarkToolbarButton>
+            )}
 
             <MarkToolbarButton
               nodeType={StrikethroughPlugin.key}
@@ -115,52 +115,63 @@ export function FixedToolbarButtons() {
               <Code2Icon />
             </MarkToolbarButton>
 
-            <ColorDropdownMenu
-              nodeType={FontColorPlugin.key}
-              tooltip="Text color"
-            >
-              <BaselineIcon />
-            </ColorDropdownMenu>
+            {!isMarkdown && (
+              <>
+                <ColorDropdownMenu
+                  nodeType={FontColorPlugin.key}
+                  tooltip="Text color"
+                >
+                  <BaselineIcon />
+                </ColorDropdownMenu>
 
-            <ColorDropdownMenu
-              nodeType={FontBackgroundColorPlugin.key}
-              tooltip="Background color"
-            >
-              <PaintBucketIcon />
-            </ColorDropdownMenu>
+                <ColorDropdownMenu
+                  nodeType={FontBackgroundColorPlugin.key}
+                  tooltip="Background color"
+                >
+                  <PaintBucketIcon />
+                </ColorDropdownMenu>
+              </>
+            )}
           </ToolbarGroup>
-
           <ToolbarGroup>
             <AlignDropdownMenu />
 
             <NumberedIndentListToolbarButton />
             <BulletedIndentListToolbarButton />
-            <IndentTodoToolbarButton />
-            <ToggleToolbarButton />
+            {!isMarkdown && (
+              <>
+                <IndentTodoToolbarButton />
+                <ToggleToolbarButton />
+              </>
+            )}
           </ToolbarGroup>
-
           <ToolbarGroup>
             <LinkToolbarButton />
-            <TableDropdownMenu />
+            {!isMarkdown && <TableDropdownMenu />}
             <EmojiDropdownMenu />
           </ToolbarGroup>
-
           <ToolbarGroup>
             <MediaToolbarButton nodeType={ImagePlugin.key} />
-            <MediaToolbarButton nodeType={VideoPlugin.key} />
-            <MediaToolbarButton nodeType={AudioPlugin.key} />
-            <MediaToolbarButton nodeType={FilePlugin.key} />
+            {!isMarkdown && (
+              <>
+                <MediaToolbarButton nodeType={VideoPlugin.key} />
+                <MediaToolbarButton nodeType={AudioPlugin.key} />
+                <MediaToolbarButton nodeType={FilePlugin.key} />
+              </>
+            )}
           </ToolbarGroup>
-
-          <ToolbarGroup>
-            <LineHeightDropdownMenu />
-            <OutdentToolbarButton />
-            <IndentToolbarButton />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <MoreDropdownMenu />
-          </ToolbarGroup>
+          {!isMarkdown && (
+            <ToolbarGroup>
+              <LineHeightDropdownMenu />
+              <OutdentToolbarButton />
+              <IndentToolbarButton />
+            </ToolbarGroup>
+          )}
+          {!isMarkdown && (
+            <ToolbarGroup>
+              <MoreDropdownMenu />
+            </ToolbarGroup>
+          )}
         </>
       )}
 

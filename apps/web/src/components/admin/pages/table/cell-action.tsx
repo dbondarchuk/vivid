@@ -58,10 +58,13 @@ export const CellAction: React.FC<CellActionProps> = ({ page: page }) => {
         error: "There was a problem with your request.",
       });
 
+      setOpen(false);
       router.refresh();
     } catch (error: any) {
       setLoading(false);
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -1,4 +1,3 @@
-import { durationToTime } from "@vivid/utils";
 import type { Appointment } from "@vivid/types";
 import { StatusText } from "@vivid/types";
 import {
@@ -18,8 +17,8 @@ import {
   CardHeader,
   CardTitle,
   Heading,
-  Link,
 } from "@vivid/ui";
+import { durationToTime } from "@vivid/utils";
 import {
   Calendar,
   CalendarCheck2,
@@ -28,7 +27,6 @@ import {
   Clock,
   DollarSign,
   Presentation,
-  SquareArrowOutUpRight,
   StickyNote,
 } from "lucide-react";
 import { DateTime } from "luxon";

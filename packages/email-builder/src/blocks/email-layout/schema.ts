@@ -9,7 +9,11 @@ import {
 const EmailLayoutPropsSchema = z.object({
   backdropColor: zColor,
   borderColor: zColorNullable,
-  borderRadius: z.coerce.number().optional().nullable(),
+  borderRadius: z.coerce
+    .number()
+    .int("Should be the integer value")
+    .optional()
+    .nullable(),
   canvasColor: zColor,
   textColor: zColor,
   fontFamily: zFontFamily,

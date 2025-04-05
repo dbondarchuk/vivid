@@ -1,24 +1,27 @@
-import { AppointmentOption } from "@vivid/types";
-import { Accordion, Sortable } from "@vivid/ui";
+import { Id } from "@vivid/types";
+import { Sortable } from "@vivid/ui";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
-import { v4 } from "uuid";
-import { OptionCard } from "./cards/optionCard";
+import { OptionSelectCard } from "./cards/option-select-card";
 import { TabProps } from "./types";
 
 export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
-  const { fields, append, remove, swap, update, insert } = useFieldArray({
+  const {
+    fields: options,
+    append,
+    remove,
+    swap,
+  } = useFieldArray({
     control: form.control,
     name: "options",
     keyName: "fields_id",
   });
 
-  const ids = React.useMemo(() => fields.map((x) => x.id), [fields]);
-  const [opened, setOpened] = React.useState<string[]>([]);
+  const ids = React.useMemo(() => options.map((x) => x.fields_id), [options]);
 
   const sort = (activeId: string, overId: string) => {
-    const activeIndex = fields.findIndex((x) => x.id === activeId);
-    const overIndex = fields.findIndex((x) => x.id === overId);
+    const activeIndex = options.findIndex((x) => x.fields_id === activeId);
+    const overIndex = options.findIndex((x) => x.fields_id === overId);
 
     if (activeIndex < 0 || overIndex < 0) return;
 
@@ -26,55 +29,29 @@ export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
   };
 
   const addNew = () => {
-    const newId = v4();
-    append({
-      id: newId,
-    } as Partial<AppointmentOption> as AppointmentOption);
-
-    setOpened([...opened, newId]);
-  };
-
-  const clone = (index: number) => {
-    const newId = v4();
-    insert(index + 1, {
-      ...form.getValues(`options.${index}`),
-      id: newId,
-    });
-
-    setOpened([...opened, newId]);
-  };
-
-  const collapse = () => {
-    setOpened(opened.length > 0 ? [] : ids);
+    append({} as Partial<Id> as Id);
   };
 
   return (
-    <Sortable
-      title="Options"
-      ids={ids}
-      onSort={sort}
-      onAdd={addNew}
-      collapse={collapse}
-      allCollapsed={opened.length === 0 && ids.length > 0}
-    >
-      <Accordion type="multiple" value={opened} onValueChange={setOpened}>
-        <div className="flex flex-grow flex-col gap-4">
-          {fields.map((item, index) => {
-            return (
-              <OptionCard
-                form={form}
-                item={item}
-                key={item.id}
-                name={`options.${index}`}
-                disabled={disabled}
-                remove={() => remove(index)}
-                update={(newValue) => update(index, newValue)}
-                clone={() => clone(index)}
-              />
-            );
-          })}
-        </div>
-      </Accordion>
+    <Sortable title="Options" ids={ids} onSort={sort} onAdd={addNew}>
+      <div className="flex flex-grow flex-col gap-4">
+        {options.map((item, index) => {
+          return (
+            <OptionSelectCard
+              form={form}
+              item={item}
+              key={item.fields_id}
+              excludeIds={form
+                .getValues("options")
+                ?.map((o) => o.id)
+                .filter((id) => id !== form.getValues(`options.${index}`).id)}
+              name={`options.${index}`}
+              disabled={disabled}
+              remove={() => remove(index)}
+            />
+          );
+        })}
+      </div>
     </Sortable>
   );
 };

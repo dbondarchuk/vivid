@@ -1,4 +1,5 @@
 import { IConnectedApp, IConnectedAppProps } from "@vivid/types";
+import { WEEKLY_SCHEDULE_APP_NAME } from "../apps";
 import { CALDAV_APP_NAME } from "../apps/caldav/const";
 import CaldavConnectedApp from "../apps/caldav/service";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "../apps/customer-email-notification/const";
@@ -23,6 +24,7 @@ import { TEXTBELT_APP_NAME } from "../apps/text-belt/const";
 import TextBeltConnectedApp from "../apps/text-belt/service";
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/text-message-notification/const";
 import { TextMessageNotificationConnectedApp } from "../apps/text-message-notification/service";
+import WeeklyScheduleConnectedApp from "../apps/weekly-schedule/service";
 
 export const AvailableAppServices: Record<
   string,
@@ -31,6 +33,7 @@ export const AvailableAppServices: Record<
   [OUTLOOK_APP_NAME]: (props) => new OutlookConnectedApp(props),
   [ICS_APP_NAME]: (props) => new IcsConnectedApp(props),
   [CALDAV_APP_NAME]: (props) => new CaldavConnectedApp(props),
+  [WEEKLY_SCHEDULE_APP_NAME]: (props) => new WeeklyScheduleConnectedApp(props),
   [SMTP_APP_NAME]: (props) => new SmtpConnectedApp(props),
   [TEXTBELT_APP_NAME]: (props) => new TextBeltConnectedApp(props),
   [CUSTOMER_EMAIL_NOTIFICATION_APP_NAME]: (props) =>

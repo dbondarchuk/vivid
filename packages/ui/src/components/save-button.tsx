@@ -6,6 +6,16 @@ import React from "react";
 import { UseFormReturn, useFormState } from "react-hook-form";
 import { cva } from "class-variance-authority";
 import { Spinner } from "./spinner";
+// import {
+//   AlertDialog,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogFooter,
+//   AlertDialogHeader,
+//   AlertDialogTitle,
+//   AlertDialogTrigger,
+// } from "./alert-dialog";
 
 export type SaveButtonProps = {
   form: UseFormReturn<any>;
@@ -36,9 +46,9 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
     "flex flex-row gap-2 items-center ml-auto self-end fixed bottom-4 right-4 z-50",
   ]);
 
-  // React.useEffect(() => {
-  //   form.trigger();
-  // }, [form]);
+  React.useEffect(() => {
+    form.trigger();
+  }, [form]);
 
   // if (!isValid && errors) {
   //   return (
@@ -60,7 +70,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   //               .filter(([_, error]) => !!error?.message)
   //               .map(([key, error]) => (
   //                 <div key={key} className="text-destructive">
-  //                   {error?.message?.toString()}
+  //                   {key}: {JSON.stringify(error?.message || "")}
   //                 </div>
   //               ))}
   //           </AlertDialogDescription>

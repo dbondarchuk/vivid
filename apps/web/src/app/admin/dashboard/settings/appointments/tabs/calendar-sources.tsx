@@ -2,7 +2,7 @@ import { CalendarSourceConfiguration } from "@vivid/types";
 import { NonSortable } from "@vivid/ui";
 import React from "react";
 import { useFieldArray } from "react-hook-form";
-import { CalendarSourceCard } from "./cards/calendarSourceCard";
+import { CalendarSourceCard } from "./cards/calendar-source-card";
 import { TabProps } from "./types";
 
 export const CalendarSourcesTab: React.FC<TabProps> = ({ form, disabled }) => {
@@ -40,6 +40,13 @@ export const CalendarSourcesTab: React.FC<TabProps> = ({ form, disabled }) => {
               remove={() => remove(index)}
               clone={() => clone(index)}
               update={(newValue) => update(index, newValue)}
+              excludeIds={form
+                .getValues("calendarSources")
+                ?.map(({ appId }) => appId)
+                .filter(
+                  (appId) =>
+                    appId !== form.getValues(`calendarSources.${index}`).appId
+                )}
             />
           );
         })}

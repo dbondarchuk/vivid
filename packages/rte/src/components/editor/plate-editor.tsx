@@ -15,6 +15,9 @@ export type PlateEditorProps = {
   value?: Value;
   style?: React.CSSProperties;
   className?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  singleLine?: boolean;
 };
 
 export const PlateEditor: React.FC<PlateEditorProps> = ({
@@ -22,8 +25,11 @@ export const PlateEditor: React.FC<PlateEditorProps> = ({
   onChange,
   style,
   className,
+  disabled,
+  placeholder,
+  singleLine,
 }) => {
-  const editor = useCreateEditor(value);
+  const editor = useCreateEditor(value, { singleLine });
 
   React.useEffect(() => {
     editor.tf.focus({ edge: "endEditor" });
@@ -33,7 +39,13 @@ export const PlateEditor: React.FC<PlateEditorProps> = ({
     <DndProvider backend={HTML5Backend}>
       <Plate editor={editor} onChange={({ value }) => onChange?.(value)}>
         <EditorContainer>
-          <Editor variant="fullWidth" className={className} style={style} />
+          <Editor
+            variant="fullWidth"
+            className={className}
+            style={style}
+            disabled={disabled}
+            placeholder={placeholder}
+          />
         </EditorContainer>
 
         {/* <SettingsDialog /> */}

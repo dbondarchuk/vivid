@@ -24,7 +24,11 @@ import { MarkToolbarButton } from "./mark-toolbar-button";
 import { MoreDropdownMenu } from "./more-dropdown-menu";
 import { TurnIntoDropdownMenu } from "./turn-into-dropdown-menu";
 
-export function FloatingToolbarButtons() {
+export function FloatingToolbarButtons({
+  isMarkdown,
+}: {
+  isMarkdown?: boolean;
+}) {
   const readOnly = useEditorReadOnly();
 
   return (
@@ -39,7 +43,7 @@ export function FloatingToolbarButtons() {
           </ToolbarGroup> */}
 
           <ToolbarGroup>
-            <TurnIntoDropdownMenu />
+            <TurnIntoDropdownMenu isMarkdown={isMarkdown} />
 
             <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
               <BoldIcon />
@@ -52,12 +56,14 @@ export function FloatingToolbarButtons() {
               <ItalicIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton
-              nodeType={UnderlinePlugin.key}
-              tooltip="Underline (⌘+U)"
-            >
-              <UnderlineIcon />
-            </MarkToolbarButton>
+            {!isMarkdown && (
+              <MarkToolbarButton
+                nodeType={UnderlinePlugin.key}
+                tooltip="Underline (⌘+U)"
+              >
+                <UnderlineIcon />
+              </MarkToolbarButton>
+            )}
 
             <MarkToolbarButton
               nodeType={StrikethroughPlugin.key}
@@ -70,18 +76,16 @@ export function FloatingToolbarButtons() {
               <Code2Icon />
             </MarkToolbarButton>
 
-            <InlineEquationToolbarButton />
+            {!isMarkdown && <InlineEquationToolbarButton />}
 
             <LinkToolbarButton />
           </ToolbarGroup>
         </>
       )}
 
-      <ToolbarGroup>
-        <CommentToolbarButton />
-
-        {!readOnly && <MoreDropdownMenu />}
-      </ToolbarGroup>
+      {isMarkdown && (
+        <ToolbarGroup>{!readOnly && <MoreDropdownMenu />}</ToolbarGroup>
+      )}
     </>
   );
 }

@@ -86,12 +86,14 @@ const turnIntoItems = [
     keywords: ["checklist", "task", "checkbox", "[]"],
     label: "To-do list",
     value: INDENT_LIST_KEYS.todo,
+    fullOnly: true,
   },
   {
     icon: <ChevronRightIcon />,
     keywords: ["collapsible", "expandable"],
     label: "Toggle list",
     value: TogglePlugin.key,
+    fullOnly: true,
   },
   {
     icon: <FileCodeIcon />,
@@ -109,10 +111,14 @@ const turnIntoItems = [
     icon: <Columns3Icon />,
     label: "3 columns",
     value: "action_three_columns",
+    fullOnly: true,
   },
 ];
 
-export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
+export function TurnIntoDropdownMenu({
+  isMarkdown,
+  ...props
+}: DropdownMenuProps & { isMarkdown?: boolean }) {
   const editor = useEditorRef();
   const openState = useOpenState();
 
@@ -157,16 +163,18 @@ export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
           }}
           label="Turn into"
         >
-          {turnIntoItems.map(({ icon, label, value: itemValue }) => (
-            <DropdownMenuRadioItem
-              key={itemValue}
-              className="min-w-[180px]"
-              value={itemValue}
-            >
-              {icon}
-              {label}
-            </DropdownMenuRadioItem>
-          ))}
+          {turnIntoItems
+            .filter(({ fullOnly }) => !isMarkdown || !fullOnly)
+            .map(({ icon, label, value: itemValue }) => (
+              <DropdownMenuRadioItem
+                key={itemValue}
+                className="min-w-[180px]"
+                value={itemValue}
+              >
+                {icon}
+                {label}
+              </DropdownMenuRadioItem>
+            ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

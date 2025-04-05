@@ -11,7 +11,11 @@ export const ParagraphElementStatic = ({
   ...props
 }: SlateElementProps) => {
   return (
-    <SlateElement className={cn(className, "m-0 px-0 py-1")} {...props}>
+    <SlateElement
+      className={cn(className, "m-0 px-0 py-1")}
+      style={{ whiteSpace: "pre-line" }}
+      {...props}
+    >
       {children}
     </SlateElement>
   );

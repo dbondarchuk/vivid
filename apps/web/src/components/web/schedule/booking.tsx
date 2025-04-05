@@ -14,18 +14,28 @@ export const Booking: React.FC<BookingProps> = async ({
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
-  const configFields = (config.fields || []).reduce(
+  const [fields, addons, options] = await Promise.all([
+    ServicesContainer.ServicesService().getFields({}),
+    ServicesContainer.ServicesService().getAddons({}),
+    ServicesContainer.ServicesService().getOptions({}),
+  ]);
+
+  const configFields = (fields?.items || []).reduce(
     (map, field) => ({
       ...map,
-      [field.id]: field,
+      [field._id]: field,
     }),
     {} as Record<string, FieldSchema>
   );
 
-  const choices: AppointmentChoice[] = config.options.map((option) => {
-    const addons =
+  const optionsChoices = (config.options || [])
+    .map((o) => options.items?.find(({ _id }) => o.id == _id))
+    .filter((o) => !!o);
+
+  const choices: AppointmentChoice[] = optionsChoices.map((option) => {
+    const addonsFiltered =
       option.addons
-        ?.map((f) => config.addons?.find((x) => x.id === f.id))
+        ?.map((o) => addons.items?.find((x) => x._id === o.id))
         .filter((f) => !!f) || [];
 
     const optionFields = option.fields || [];
@@ -48,7 +58,7 @@ export const Booking: React.FC<BookingProps> = async ({
 
     return {
       ...option,
-      addons,
+      addons: addonsFiltered,
       fields,
     };
   });

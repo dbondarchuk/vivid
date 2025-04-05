@@ -8,7 +8,12 @@ export const zColorNullable = zColor.optional().nullable();
 export const zFontFamily = z.enum(FONT_FAMILY_NAMES).optional().nullable();
 export type FontFamily = z.infer<typeof zFontFamily>;
 
-export const zFontSize = z.coerce.number().min(0).optional().nullable();
+export const zFontSize = z.coerce
+  .number()
+  .min(0)
+  .int("Should be the integer value")
+  .optional()
+  .nullable();
 
 export const zFontWeight = z.enum(["bold", "normal"]);
 export type FontWeight = z.infer<typeof zFontWeight>;

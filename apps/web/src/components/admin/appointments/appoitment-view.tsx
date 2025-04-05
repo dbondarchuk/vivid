@@ -5,7 +5,6 @@ import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
 
 import { AppointmentActionButton } from "@/components/admin/appointments/action-button";
 import {
-  addAppointmentAsset,
   removeAppointmentFile,
   updateAppointmentNote,
 } from "@/components/admin/appointments/actions";
@@ -210,7 +209,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex flex-row justify-end gap-2 flex-wrap">
+      <div className="flex flex-row justify-end gap-2 flex-wrap [&>form]:hidden">
         <Link
           className="inline-flex flex-row gap-2 items-center"
           variant="primary"
@@ -561,7 +560,10 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                       </div>
                     )}
                     {appointment.files?.map((file) => (
-                      <div className="w-full relative flex justify-center">
+                      <div
+                        className="w-full relative flex justify-center"
+                        key={file._id}
+                      >
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button
@@ -643,7 +645,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                       modal
                     >
                       <DialogContent
-                        className="sm:max-w-[80%] flex flex-col max-h-[100%] bg-transparent p-0 shadow-none border-0"
+                        className="sm:max-w-[80%] flex flex-col max-h-lvh bg-transparent p-0 shadow-none border-0"
                         overlayVariant="blur"
                         closeClassName="bg-background"
                       >
@@ -651,12 +653,13 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                           <CarouselContent>
                             {galleryItems.map((file, index) => (
                               <CarouselItem key={index}>
-                                <div className="flex flex-col gap-2 justify-center h-full">
-                                  <div className="w-full flex justify-center">
+                                <div className="flex flex-col gap-2 justify-center h-full max-h-lvh">
+                                  <div className="w-full flex justify-center max-h-[80%]">
                                     <Image
                                       src={`/assets/${file.filename}`}
                                       width={800}
                                       height={800}
+                                      className="object-contain"
                                       alt={file.description || file.filename}
                                     />
                                   </div>

@@ -14,7 +14,12 @@ export const AvatarPropsSchema = z.object({
     .nullable(),
   props: z
     .object({
-      size: z.coerce.number().gt(0).optional().nullable(),
+      size: z.coerce
+        .number()
+        .gt(0)
+        .int("Should be the integer value")
+        .optional()
+        .nullable(),
       shape: shape.optional().nullable(),
       imageUrl: z.string().optional().nullable(),
       alt: z.string().optional().nullable(),

@@ -7,6 +7,8 @@ import { ConnectedAppsService } from "./connected-apps.service";
 import { EventsService } from "./events.service";
 import { NotificationService } from "./notifications.service";
 import { PagesService } from "./pages.service";
+import { ScheduleService } from "./schedule.service";
+import { ServicesService } from "./services.service";
 import { TemplatesService } from "./templates.service";
 
 export * from "./assets.service";
@@ -15,6 +17,8 @@ export * from "./configuration.service";
 export * from "./connected-apps.service";
 export * from "./events.service";
 export * from "./pages.service";
+export * from "./schedule.service";
+export * from "./services.service";
 
 export * from "./notifications";
 
@@ -32,10 +36,19 @@ export const ServicesContainer: IServicesContainer = {
       new EventsService(
         ServicesContainer.ConfigurationService(),
         ServicesContainer.ConnectedAppService(),
-        ServicesContainer.AssetsService()
+        ServicesContainer.AssetsService(),
+        ServicesContainer.ScheduleService()
       )
   ),
   PagesService: cache(() => new PagesService()),
+  ServicesService: cache(() => new ServicesService()),
+  ScheduleService: cache(
+    () =>
+      new ScheduleService(
+        ServicesContainer.ConnectedAppService(),
+        ServicesContainer.ConfigurationService()
+      )
+  ),
   TemplatesService: cache(() => new TemplatesService()),
   CommunicationLogService: cache(() => new CommunicationLogsService()),
   ConnectedAppService: cache(() => new ConnectedAppsService()),

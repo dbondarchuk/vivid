@@ -18,23 +18,27 @@ export const reminderTimeBeforeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
+      .int("Should be the integer value")
       .min(0, "Min amount of weeks is 0")
       .max(10, "Max amount of weeks is 10")
   ),
   days: asOptinalNumberField(
     z.coerce
       .number()
+      .int("Should be the integer value")
       .min(0, "Min amount of days is 0")
       .max(31, "Max amount of days is 31")
   ),
   hours: asOptinalNumberField(
     z.coerce
       .number()
+      .int("Should be the integer value")
       .min(0, "Min amount of hours is 0")
       .max(24 * 5, "Max amount of hours is 120")
   ),
   minutes: z.coerce
     .number()
+    .int("Should be the integer value")
     .min(0, "Min amount of minutes is 0")
     .max(60 * 10, "Max amount of minutes is 600"),
 });
@@ -44,20 +48,24 @@ export const reminderAtTimeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
+      .int("Should be the integer value")
       .min(0, "Min amount of weeks is 0")
       .max(10, "Max amount of weeks is 10")
   ),
   days: z.coerce
     .number()
+    .int("Should be the integer value")
     .min(0, "Min amount of days is 0")
     .max(31, "Max amount of days is 31"),
   time: z.object({
     hour: z.coerce
       .number()
+      .int("Should be the integer value")
       .min(0, "Hour should be between 0 and 23")
       .max(23, "Hour should be between 0 and 23"),
     minute: z.coerce
       .number()
+      .int("Should be the integer value")
       .min(0, "Minute should be between 0 and 59")
       .max(59, "Minute should be between 0 and 59"),
   }),

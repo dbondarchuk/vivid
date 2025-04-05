@@ -37,7 +37,6 @@ import {
   PlaceholderPlugin,
   VideoPlugin,
 } from "@udecode/plate-media/react";
-import { SlashInputPlugin } from "@udecode/plate-slash-command/react";
 import {
   TableCellHeaderPlugin,
   TableCellPlugin,
@@ -52,6 +51,7 @@ import {
 } from "@udecode/plate/react";
 
 import { Value } from "@udecode/plate";
+import { SingleLinePlugin } from "@udecode/plate-break/react";
 import { BlockquoteElement } from "../plate-ui/blockquote-element";
 import { CodeBlockElement } from "../plate-ui/code-block-element";
 import { CodeLeaf } from "../plate-ui/code-leaf";
@@ -78,7 +78,6 @@ import { MediaPlaceholderElement } from "../plate-ui/media-placeholder-element";
 import { MediaVideoElement } from "../plate-ui/media-video-element";
 import { ParagraphElement } from "../plate-ui/paragraph-element";
 import { withPlaceholders } from "../plate-ui/placeholder";
-import { SlashInputElement } from "../plate-ui/slash-input-element";
 import {
   TableCellElement,
   TableCellHeaderElement,
@@ -91,7 +90,10 @@ import { editorPlugins } from "./plugins/editor-plugins";
 import { FixedToolbarPlugin } from "./plugins/fixed-toolbar-plugin";
 import { FloatingToolbarPlugin } from "./plugins/floating-toolbar-plugin";
 
-export const useCreateEditor = (value?: Value) => {
+export const useCreateEditor = (
+  value?: Value,
+  options?: { singleLine?: boolean }
+) => {
   return usePlateEditor({
     override: {
       components: withPlaceholders({
@@ -129,7 +131,7 @@ export const useCreateEditor = (value?: Value) => {
         // [ArgsPlugin.key]: MentionElement,
         [ParagraphPlugin.key]: ParagraphElement,
         [PlaceholderPlugin.key]: MediaPlaceholderElement,
-        [SlashInputPlugin.key]: SlashInputElement,
+        // [SlashInputPlugin.key]: SlashInputElement,
         [StrikethroughPlugin.key]: withProps(PlateLeaf, { as: "s" }),
         [SubscriptPlugin.key]: withProps(PlateLeaf, { as: "sub" }),
         [SuperscriptPlugin.key]: withProps(PlateLeaf, { as: "sup" }),
@@ -146,8 +148,9 @@ export const useCreateEditor = (value?: Value) => {
     plugins: [
       // ...copilotPlugins,
       ...editorPlugins,
-      FixedToolbarPlugin,
-      FloatingToolbarPlugin,
+      FixedToolbarPlugin(),
+      FloatingToolbarPlugin(),
+      ...(options?.singleLine ? [SingleLinePlugin] : []),
     ],
     value: value || [],
   });

@@ -349,6 +349,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     return {
       update: (updateModel) => this.updateApp(appId, updateModel),
       services: ServicesContainer,
+      getDbConnection: getDbConnection,
     };
   }
 }

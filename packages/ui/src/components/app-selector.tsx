@@ -9,7 +9,7 @@ import {
 
 const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
   return (
-    <span className="inline-flex items-center gap-2">
+    <span className="inline-flex items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
       <ConnectedAppNameAndLogo app={app} logoClassName="w-4 h-4" />
       <ConnectedAppAccount app={app} />
     </span>
@@ -48,6 +48,7 @@ type BaseAppSelectorProps = {
   value?: string;
   disabled?: boolean;
   className?: string;
+  excludeIds?: string[];
   setAppName?: (appName?: string) => void;
 };
 
@@ -68,6 +69,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
   scope,
   disabled,
   className,
+  excludeIds,
   value,
   onItemSelect,
   allowClear,
@@ -95,18 +97,20 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
   }, [apps, value]);
 
   const appValues = (apps: ConnectedApp[]): IComboboxItem[] =>
-    apps.map((app) => {
-      return {
-        value: app._id,
-        shortLabel: <AppShortLabel app={app} />,
-        label: (
-          <div className="flex flex-col gap-2">
-            <AppShortLabel app={app} />
-            <ConnectedAppStatusMessage app={app} />
-          </div>
-        ),
-      };
-    });
+    apps
+      .filter(({ _id }) => !excludeIds?.find((id) => id === _id))
+      .map((app) => {
+        return {
+          value: app._id,
+          shortLabel: <AppShortLabel app={app} />,
+          label: (
+            <div className="flex flex-col gap-2">
+              <AppShortLabel app={app} />
+              <ConnectedAppStatusMessage app={app} />
+            </div>
+          ),
+        };
+      });
 
   return (
     // @ts-ignore Allow clear passthrough

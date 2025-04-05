@@ -37,11 +37,14 @@ export async function install(data: InstallFormData) {
 
   await ServicesContainer.ConfigurationService().setConfiguration("booking", {
     options: [],
-    workHours: Array.from({ length: 5 }).map((_, index) => ({
+    timezone: DateTime.now().zoneName,
+  });
+
+  await ServicesContainer.ConfigurationService().setConfiguration("schedule", {
+    schedule: Array.from({ length: 5 }).map((_, index) => ({
       weekDay: index + 1,
       shifts,
     })),
-    timezone: DateTime.now().zoneName,
   });
 
   await ServicesContainer.ConfigurationService().setConfiguration("footer", {

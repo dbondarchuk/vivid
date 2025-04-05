@@ -7,5 +7,6 @@ export const AppScopeLabels: Record<AppScope, string> = {
   "text-message-send": "Text message",
   "appointment-hook": "Appointment hooks",
   scheduled: "Scheduled",
+  schedule: "Schedule provider",
   "assets-storage": "Assets storage",
 };

@@ -13,6 +13,7 @@ import { DollarSign, Timer } from "lucide-react";
 import { ReactNode } from "react";
 import { MdxContent } from "../mdx/mdx-content-client";
 import { BaseCard, BaseCardProps } from "./base-card";
+import { PlateStaticEditor } from "@vivid/rte";
 
 export type AddonsCardProps = BaseCardProps & {
   onAddonSelectionChange: (addons: AppointmentAddon[]) => void;
@@ -29,7 +30,7 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
 
   private onClick(option: AppointmentAddon): void {
     const index = (this.props.selectedAddons || []).findIndex(
-      (addon) => addon.id === option.id
+      (addon) => addon._id === option._id
     );
 
     if (index < 0) {
@@ -52,64 +53,65 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
           <h2>{this.props.i18n("select_addons_label")}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {(this.props.appointmentOption.addons || []).map((option) => {
+          {(this.props.appointmentOption.addons || []).map((addon) => {
             return (
               <Card
-                key={option.id}
-                onClick={() => this.onClick(option)}
+                key={addon._id}
+                onClick={() => this.onClick(addon)}
                 className="cursor-pointer flex flex-col justify-between"
               >
                 <CardHeader
                   className="flex flex-row w-full"
-                  id={`addon-${option.id}`}
+                  id={`addon-${addon._id}`}
                 >
                   <div className="flex flex-col grow">
-                    <CardTitle className="mt-0">{option.name}</CardTitle>
+                    <CardTitle className="mt-0">{addon.name}</CardTitle>
                     <CardDescription className="flex flex-col gap-2">
-                      {option.duration && (
+                      {addon.duration && (
                         <div
                           className="flex flex-row items-center"
                           aria-label={this.props.i18n(
                             "form_duration_hour_minutes_label_format",
-                            durationToTime(option.duration)
+                            durationToTime(addon.duration)
                           )}
                         >
                           <Timer className="mr-1" />
                           {this.props.i18n(
                             "duration_hour_min_format",
-                            durationToTime(option.duration)
+                            durationToTime(addon.duration)
                           )}
                         </div>
                       )}
-                      {option.price && (
+                      {addon.price && (
                         <div
                           className="flex flex-row items-center"
                           aria-label={this.props.i18n(
                             "form_price_label_format",
                             {
-                              price: option.price
+                              price: addon.price
                                 .toFixed(2)
                                 .replace(/\.00$/, ""),
                             }
                           )}
                         >
                           <DollarSign className="mr-1" />
-                          {option.price.toFixed(2).replace(/\.00$/, "")}
+                          {addon.price.toFixed(2).replace(/\.00$/, "")}
                         </div>
                       )}
                     </CardDescription>
                   </div>
                   <div className="flex place-content-start">
                     <Checkbox
-                      aria-describedby={`addon-${option.id}`}
+                      aria-describedby={`addon-${addon._id}`}
                       checked={this.props.selectedAddons?.some(
-                        (addon) => addon.id === option.id
+                        (a) => a._id === addon._id
                       )}
                     />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <MdxContent source={option.description} />
+                  {/* <PlateStaticEditor value={addon.description} /> */}
+                  <MdxContent source={addon.description} />
                 </CardContent>
               </Card>
             );

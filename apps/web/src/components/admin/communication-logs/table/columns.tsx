@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  IFrame,
   Link,
   tableSortHeader,
   tableSortNoopFunction,
@@ -74,8 +75,8 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    id: "text",
-    header: tableSortHeader("Text", "string"),
+    id: "content",
+    header: tableSortHeader("Content", "string"),
     sortingFn: tableSortNoopFunction,
     cell: ({ row }) => {
       if (row.original.text.length < 50) return row.original.text;
@@ -90,11 +91,22 @@ export const columns: ColumnDef<CommunicationLog>[] = [
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>
                 <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  Log text
+                  Log content
                 </DialogTitle>
               </DialogHeader>
               <div className="flex-1 w-full overflow-auto">
-                <Markdown markdown={row.original.text} className="not-prose" />
+                {row.original.channel === "email" && row.original.html ? (
+                  <IFrame className="w-full h-[80vh]">
+                    <div
+                      dangerouslySetInnerHTML={{ __html: row.original.html }}
+                    />
+                  </IFrame>
+                ) : (
+                  <Markdown
+                    markdown={row.original.text}
+                    className="not-prose"
+                  />
+                )}
               </div>
               <DialogFooter className="flex-row !justify-between gap-2">
                 <DialogClose asChild>

@@ -73,8 +73,12 @@ export class TemplatesService implements ITemplatesService {
         {
           $facet: {
             paginatedResults: [
-              { $skip: query.offset || 0 },
-              { $limit: query.limit || 1000000000000000 },
+              ...(typeof query.offset !== "undefined"
+                ? [{ $skip: query.offset }]
+                : []),
+              ...(typeof query.limit !== "undefined"
+                ? [{ $limit: query.limit }]
+                : []),
             ],
             totalCount: [
               {

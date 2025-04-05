@@ -14,7 +14,6 @@ import {
   asOptionalField,
   Event,
   Field,
-  FieldType,
   getFields,
   WithLabelFieldData,
 } from "@vivid/types";
@@ -40,9 +39,9 @@ import {
   MultiSelect,
   Spinner,
   Textarea,
-  toast,
   toastPromise,
 } from "@vivid/ui";
+import { is12hourUserTimeFormat } from "@vivid/utils";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
@@ -50,12 +49,10 @@ import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { createAppointment } from "./actions";
-import { is12hourUserTimeFormat } from "@vivid/utils";
-import { kn } from "date-fns/locale";
 
 export type AppointmentScheduleFormProps = {
   options: AppointmentChoice[];
-  knownFields: (Field<WithLabelFieldData> & { id: string })[];
+  knownFields: (Field<WithLabelFieldData> & { _id: string })[];
   timeZone: string;
   from?: Appointment | null;
 };
@@ -81,12 +78,11 @@ const getSelectedFields = (
     );
 
   const fieldsWithData = knownFields
-    .filter((f) => f.id in optionAndAddonFields)
+    .filter((f) => f._id in optionAndAddonFields)
     .map((f) => ({
       ...f,
       required:
-        (!!f.required || optionAndAddonFields[f.id]) &&
-        f.type !== FieldType.File,
+        (!!f.required || optionAndAddonFields[f._id]) && f.type !== "file",
     }));
 
   return getFields(fieldsWithData);
@@ -105,6 +101,7 @@ export const AppointmentScheduleForm: React.FC<
       dateTime: z.date({ message: "Date and time are required" }),
       totalDuration: z.coerce
         .number({ message: "Duration is required" })
+        .int("Should be the integer value")
         .min(1, "Minimum duration is 1 minute")
         .max(60 * 24 * 10, "Maximum duration is 10 days"),
       totalPrice: asOptionalField(
@@ -131,11 +128,11 @@ export const AppointmentScheduleForm: React.FC<
       confirmed: z.coerce.boolean().optional(),
     })
     .superRefine((args, ctx) => {
-      const option = options.find((x) => x.id === args.option);
+      const option = options.find((x) => x._id === args.option);
       if (!option) return;
 
       const addons =
-        option.addons.filter((x) => args.addons?.some((a) => a.id === x.id)) ||
+        option.addons.filter((x) => args.addons?.some((a) => a.id === x._id)) ||
         [];
       const selectedFields = getSelectedFields(option, addons, knownFields);
 
@@ -171,12 +168,12 @@ export const AppointmentScheduleForm: React.FC<
       dateTime: now,
       totalDuration: from?.totalDuration || options[0].duration || 0,
       totalPrice: from?.totalPrice || undefined,
-      addons: from?.addons || [],
+      addons: from?.addons?.map(({ _id }) => ({ id: _id })) || [],
       fields: from?.fields || {
         name: "",
         email: "",
       },
-      option: from?.option?.id || options[0].id,
+      option: from?.option?._id || options[0]._id,
       confirmed: true,
     },
   });
@@ -195,14 +192,14 @@ export const AppointmentScheduleForm: React.FC<
   const selectedAddonIds = form.watch("addons");
 
   const selectedOption = React.useMemo(
-    () => options.find((x) => x.id === selectedOptionId),
+    () => options.find((x) => x._id === selectedOptionId),
     [options, selectedOptionId]
   );
 
   const selectedAddons = React.useMemo(
     () =>
       selectedOption?.addons?.filter((x) =>
-        (selectedAddonIds || []).find((y) => y.id === x.id)
+        (selectedAddonIds || []).find((y) => y.id === x._id)
       ),
     [selectedOption, selectedAddonIds]
   );
@@ -218,8 +215,8 @@ export const AppointmentScheduleForm: React.FC<
       const appEnd = appStart.plus({ minutes: app.totalDuration });
 
       return (
-        (appStart > appointmentStart && appStart < appointmentEnd) ||
-        (appointmentStart > appStart && appointmentStart < appEnd)
+        (appStart >= appointmentStart && appStart <= appointmentEnd) ||
+        (appointmentStart >= appStart && appointmentStart <= appEnd)
       );
     });
   }, [dateTime, duration, calendarEvents]);
@@ -228,12 +225,12 @@ export const AppointmentScheduleForm: React.FC<
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const option = options.find((opt) => opt.id === data.option);
+      const option = options.find((opt) => opt._id === data.option);
       if (!option) return;
 
       const addons =
         data.addons
-          ?.map((add) => (option.addons || []).find((a) => a.id === add.id))
+          ?.map((add) => (option.addons || []).find((a) => a._id === add.id))
           .filter((add) => !!add) || [];
 
       setLoading(true);
@@ -360,8 +357,10 @@ export const AppointmentScheduleForm: React.FC<
 
   React.useEffect(() => {
     const newAddons = (selectedAddons || [])
-      .filter((addon) => selectedOption?.addons?.some((x) => x.id === addon.id))
-      .map(({ id }) => ({ id }));
+      .filter((addon) =>
+        selectedOption?.addons?.some((x) => x._id === addon._id)
+      )
+      .map(({ _id }) => ({ id: _id }));
 
     form.setValue("addons", newAddons);
   }, [selectedOption]);
@@ -407,7 +406,7 @@ export const AppointmentScheduleForm: React.FC<
                         value={field.value}
                         onItemSelect={field.onChange}
                         values={options.map((x) => ({
-                          value: x.id,
+                          value: x._id,
                           shortLabel: x.name,
                           label: (
                             <div className="flex flex-col gap-1">
@@ -474,7 +473,7 @@ export const AppointmentScheduleForm: React.FC<
                         }
                         options={
                           selectedOption?.addons.map((addon) => ({
-                            value: addon.id,
+                            value: addon._id,
                             label: addon.name,
                           })) || []
                         }

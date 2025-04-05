@@ -73,20 +73,22 @@ export default async function RootLayout({
       </html>
     );
 
+  const weights = `:wght@100..900`;
+
   const primaryFont = styling?.fonts?.primary || "Montserrat";
   const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
   const tertiaryFont = styling?.fonts?.tertiary;
 
   const tertiaryFontQueryArg = tertiaryFont
-    ? `&family=${encodeURIComponent(tertiaryFont)}`
+    ? `&family=${encodeURIComponent(tertiaryFont)}${weights}`
     : "";
 
   const fontsRes = await fetch(
     `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
       primaryFont
-    )}&family=${encodeURIComponent(
+    )}${weights}&family=${encodeURIComponent(
       secondaryFont
-    )}${tertiaryFontQueryArg}&display=swap`,
+    )}${weights}${tertiaryFontQueryArg}&display=swap`,
     {
       cache: "force-cache",
     }

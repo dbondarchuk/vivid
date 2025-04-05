@@ -4,6 +4,7 @@ export * from "./appointment-option";
 export * from "./availability";
 export * from "./date-time";
 export * from "./event";
+export * from "./field";
 export * from "./fields";
 export * from "./period";
 export * from "./time-slot";

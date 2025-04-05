@@ -1,6 +1,7 @@
 import { DefaultAppsConfiguration } from "./apps";
 import { BookingConfiguration } from "./booking";
 import { GeneralConfiguration } from "./general";
+import { ScheduleConfiguration } from "./schedule";
 import { ScriptsConfiguration } from "./scripts";
 import { SocialConfiguration } from "./social";
 import {
@@ -13,6 +14,7 @@ export * from "./apps";
 export * from "./booking";
 export * from "./general";
 export * from "./resources";
+export * from "./schedule";
 export * from "./scripts";
 export * from "./social";
 export * from "./styling";
@@ -26,6 +28,7 @@ export type Configuration = {
   defaultApps: DefaultAppsConfiguration;
   scripts: ScriptsConfiguration;
   styling: StylingConfiguration;
+  schedule: ScheduleConfiguration;
 };
 
 export type ConfigurationKey = keyof Configuration;

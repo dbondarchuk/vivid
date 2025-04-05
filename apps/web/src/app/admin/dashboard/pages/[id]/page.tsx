@@ -11,17 +11,17 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Pages", link: "/admin/dashboard/pages" },
-  { title: "Edit", link: "/admin/dashboard/pages" },
-];
-
 export default async function EditPagesPage(props: Props) {
   const params = await props.params;
   const page = await ServicesContainer.PagesService().getPage(params.id);
 
   if (!page) return notFound();
+
+  const breadcrumbItems = [
+    { title: "Dashboard", link: "/admin/dashboard" },
+    { title: "Pages", link: "/admin/dashboard/pages" },
+    { title: `/${page.slug}`, link: `/admin/dashboard/pages/${params.id}` },
+  ];
 
   return (
     <PageContainer scrollable={true}>

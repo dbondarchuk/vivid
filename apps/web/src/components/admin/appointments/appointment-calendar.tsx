@@ -1,23 +1,26 @@
 "use client";
 
-import { Appointment, Event } from "@vivid/types";
+import { Appointment, DaySchedule, Event } from "@vivid/types";
 import { cn } from "@vivid/ui";
 import { DateTime, HourNumbers } from "luxon";
 import React from "react";
 import {
   CalendarEvent,
-  WeeklyCalendar,
-  WeeklyCalendarProps,
-} from "../calendar/weekly-calendar";
+  WeeklyEventCalendar,
+  WeeklyEventCalendarProps,
+} from "../event-calendar";
 
 export const AppointmentCalendar: React.FC<
-  Pick<WeeklyCalendarProps, "className"> & {
+  Pick<WeeklyEventCalendarProps, "className"> & {
     appointment: Appointment;
     onEventsLoad?: (events: Event[]) => void;
   }
 > = ({ appointment, onEventsLoad, ...props }) => {
   const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
   const [events, setEvents] = React.useState<Event[]>([]);
+  const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
+    {}
+  );
   const [loading, setLoading] = React.useState(false);
 
   const appointmentDateTime = appointment.dateTime;
@@ -28,19 +31,25 @@ export const AppointmentCalendar: React.FC<
 
   const getApiEvents = async (start: DateTime, end: DateTime) => {
     setLoading(true);
-    const response = await fetch(
-      `/admin/api/events?start=${start.toISO()}&end=${end.toISO()}`
-    );
+    const [eventsResponse, scheduleResponse] = await Promise.all([
+      fetch(`/admin/api/events?start=${start.toISO()}&end=${end.toISO()}`),
+      fetch(`/admin/api/schedule?start=${start.toISO()}&end=${end.toISO()}`),
+    ]);
 
-    setLoading(false);
-
-    let apiEvents = (await response.json()) as Event[];
+    let apiEvents = (await eventsResponse.json()) as Event[];
     apiEvents = (apiEvents || []).map((a) => ({
       ...a,
       dateTime: DateTime.fromISO(a.dateTime as unknown as string).toJSDate(),
     }));
 
+    const schedule = (await scheduleResponse.json()) as Record<
+      string,
+      DaySchedule
+    >;
+
+    setLoading(false);
     setApiEvents(apiEvents);
+    setSchedule(schedule);
   };
 
   React.useEffect(() => {
@@ -119,10 +128,11 @@ export const AppointmentCalendar: React.FC<
           </div>
         </div>
       )}
-      <WeeklyCalendar
+      <WeeklyEventCalendar
         className={cn("min-w-[200px] h-[60vh] pt-0", props.className)}
         date={appointment.dateTime}
         events={calendarEvents}
+        schedule={schedule}
         variant="days-around"
         daysAround={1}
         scrollToHour={

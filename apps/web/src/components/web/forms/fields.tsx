@@ -6,7 +6,7 @@ import {
   WithLabelFieldData,
 } from "@vivid/types";
 import { Control } from "react-hook-form";
-import { z } from "zod";
+import { z, ZodSchema } from "zod";
 import { EmailField } from "./email";
 import { MultiLineField } from "./multi-line";
 import { NameField } from "./name";
@@ -16,27 +16,27 @@ import { CheckboxField } from "./checkbox-field";
 import { SelectField } from "./select";
 import { FileField } from "./file";
 
-export const fieldsSchemaMap = {
-  [FieldType.Name]: (field: Field) =>
+export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
+  name: (field: Field) =>
     z.string().min(2, {
       message: "name_required_error",
     }),
 
-  [FieldType.Email]: (field: Field) =>
+  email: (field: Field) =>
     z
       .string()
       .min(field.required ? 1 : 0, "field_required_error")
       .email("invalid_email_error"),
-  [FieldType.Phone]: (field: Field) =>
+  phone: (field: Field) =>
     z
       .string()
       .min(field.required ? 1 : 0, "field_required_error")
       .refine((s) => !s?.includes("_"), "invalid_phone_error"),
-  [FieldType.OneLine]: (field: Field) =>
+  oneLine: (field: Field) =>
     z.string().min(field.required ? 1 : 0, "field_required_error"),
-  [FieldType.MultiLine]: (field: Field) =>
+  multiLine: (field: Field) =>
     z.string().min(field.required ? 1 : 0, "field_required_error"),
-  [FieldType.Checkbox]: (field: Field) =>
+  checkbox: (field: Field) =>
     z
       .boolean()
       .default(false)
@@ -44,7 +44,7 @@ export const fieldsSchemaMap = {
         (arg) => (field.required ? !!arg : true),
         "checkbox_required_error"
       ),
-  [FieldType.Select]: (field: Field) => {
+  select: (field: Field) => {
     const [firstOption, ...restOptions] = (
       field as unknown as Field<FieldOptionsData>
     ).data.options.map((x) => x.option);
@@ -53,7 +53,7 @@ export const fieldsSchemaMap = {
       .enum([firstOption, ...restOptions], { message: "field_required_error" })
       .refine((arg) => (field.required ? !!arg : true), "field_required_error");
   },
-  [FieldType.File]: (field: Field) => {
+  file: (field: Field) => {
     return z
       .custom((f) => typeof f === "undefined" || f instanceof File, {
         message: "Expected file",
@@ -90,48 +90,48 @@ export type FieldComponentMapFn = (
 export const fieldsComponentMap: (
   namespace?: string
 ) => Record<FieldType, FieldComponentMapFn> = (namespace) => ({
-  [FieldType.Name]: (field, control) => (
+  name: (field, control) => (
     <NameField control={control} {...field} namespace={namespace} />
   ),
-  [FieldType.Email]: (field, control) => (
+  email: (field, control) => (
     <EmailField control={control} {...field} namespace={namespace} />
   ),
-  [FieldType.Phone]: (field, control) => (
+  phone: (field, control) => (
     <PhoneField
       control={control}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  [FieldType.OneLine]: (field, control) => (
+  oneLine: (field, control) => (
     <OneLineField
       control={control}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  [FieldType.MultiLine]: (field, control) => (
+  multiLine: (field, control) => (
     <MultiLineField
       control={control}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  [FieldType.Checkbox]: (field, control) => (
+  checkbox: (field, control) => (
     <CheckboxField
       control={control}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  [FieldType.Select]: (field, control) => (
+  select: (field, control) => (
     <SelectField
       control={control}
       {...(field as Field<WithLabelFieldData & FieldOptionsData>)}
       namespace={namespace}
     />
   ),
-  [FieldType.File]: (field, control) => (
+  file: (field, control) => (
     <FileField
       control={control}
       {...(field as Field<WithLabelFieldData & FieldFileData>)}

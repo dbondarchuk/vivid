@@ -44,6 +44,7 @@ export class NotificationService implements INotificationService {
       initiator,
       receiver: Array.isArray(email.to) ? email.to.join("; ") : email.to,
       text: convert(email.body, { wordwrap: 130 }),
+      html: email.body,
       subject: email.subject,
       appointmentId,
       data: response,

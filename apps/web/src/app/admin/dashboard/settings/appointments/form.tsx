@@ -16,12 +16,9 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { updateBookingConfiguration } from "./actions";
-import { AddonsTab } from "./tabs/addons";
 import { CalendarSourcesTab } from "./tabs/calendar-sources";
-import { FieldsTab } from "./tabs/fields";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
-import { ShiftsTab } from "./tabs/shifts";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
@@ -60,8 +57,7 @@ export const AppointmentsSettingsForm: React.FC<{
 
   const triggerValidation = () => {
     form.trigger();
-    form.trigger("addons");
-    form.trigger("fields");
+    form.trigger("calendarSources");
     form.trigger("options");
   };
 
@@ -97,32 +93,6 @@ export const AppointmentsSettingsForm: React.FC<{
               Calendar sources
             </TabsTrigger>
             <TabsTrigger
-              value="shifts"
-              className={cn(
-                form.getFieldState("workHours").invalid
-                  ? "text-destructive"
-                  : ""
-              )}
-            >
-              Shifts
-            </TabsTrigger>
-            <TabsTrigger
-              value="fields"
-              className={cn(
-                form.getFieldState("fields").invalid ? "text-destructive" : ""
-              )}
-            >
-              Fields
-            </TabsTrigger>
-            <TabsTrigger
-              value="addons"
-              className={cn(
-                form.getFieldState("addons").invalid ? "text-destructive" : ""
-              )}
-            >
-              Addons
-            </TabsTrigger>
-            <TabsTrigger
               value="options"
               className={cn(
                 form.getFieldState("options").invalid ? "text-destructive" : ""
@@ -136,15 +106,6 @@ export const AppointmentsSettingsForm: React.FC<{
           </TabsContent>
           <TabsContent value="calendarSources">
             <CalendarSourcesTab form={form} />
-          </TabsContent>
-          <TabsContent value="shifts">
-            <ShiftsTab form={form} />
-          </TabsContent>
-          <TabsContent value="addons">
-            <AddonsTab form={form} />
-          </TabsContent>
-          <TabsContent value="fields">
-            <FieldsTab form={form} />
           </TabsContent>
           <TabsContent value="options">
             <OptionsTab form={form} />

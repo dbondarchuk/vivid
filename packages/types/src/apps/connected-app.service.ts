@@ -5,6 +5,8 @@ import {
   ConnectedAppUpdateModel,
 } from "./connected-app.data";
 
+import type { Db } from "mongodb";
+
 export interface ApiRequest extends Request {
   // query: Partial<{
   //   [key: string]: string | string[];
@@ -47,4 +49,5 @@ export interface IOAuthConnectedApp extends IConnectedApp {
 export type IConnectedAppProps = {
   update: (updateMode: ConnectedAppUpdateModel) => Promise<void>;
   services: IServicesContainer;
+  getDbConnection: () => Promise<Db>;
 };

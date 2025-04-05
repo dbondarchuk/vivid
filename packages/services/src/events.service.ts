@@ -10,6 +10,7 @@ import type {
   Availability,
   BookingConfiguration,
   DateRange,
+  DaySchedule,
   Event,
   GeneralConfiguration,
   IAppointmentHook,
@@ -18,6 +19,7 @@ import type {
   IConfigurationService,
   IConnectedAppsService,
   IEventsService,
+  IScheduleService,
   Period,
   Query,
   WithTotal,
@@ -36,7 +38,8 @@ export class EventsService implements IEventsService {
   constructor(
     private readonly configurationService: IConfigurationService,
     private readonly appsService: IConnectedAppsService,
-    private readonly assetsService: IAssetsService
+    private readonly assetsService: IAssetsService,
+    private readonly scheduleService: IScheduleService
   ) {}
 
   public async getAvailability(duration: number): Promise<Availability> {
@@ -48,12 +51,20 @@ export class EventsService implements IEventsService {
       hours: config.minHoursBeforeBooking || 0,
     });
 
+    const end = start.plus({ weeks: config.maxWeeksInFuture ?? 8 });
+
+    const schedule = await this.scheduleService.getSchedule(
+      start.toJSDate(),
+      end.toJSDate()
+    );
+
     return this.getAvailableTimes(
       start,
-      start.plus({ weeks: config.maxWeeksInFuture ?? 8 }),
+      end,
       duration,
       events,
-      config
+      config,
+      schedule
     );
   }
 
@@ -110,12 +121,18 @@ export class EventsService implements IEventsService {
 
       const events = await this.getBusyTimes(start, end, config, generalConfig);
 
+      const schedule = await this.scheduleService.getSchedule(
+        start.toJSDate(),
+        end.toJSDate()
+      );
+
       const availability = await this.getAvailableTimes(
         start,
         end,
         event.totalDuration,
         events,
-        config
+        config,
+        schedule
       );
 
       if (!availability.find((time) => time === eventTime.toMillis())) {
@@ -376,8 +393,12 @@ export class EventsService implements IEventsService {
         {
           $facet: {
             paginatedResults: [
-              { $skip: query.offset || 0 },
-              { $limit: query.limit || 1000000000000000 },
+              ...(typeof query.offset !== "undefined"
+                ? [{ $skip: query.offset }]
+                : []),
+              ...(typeof query.limit !== "undefined"
+                ? [{ $limit: query.limit }]
+                : []),
             ],
             totalCount: [
               {
@@ -688,14 +709,15 @@ export class EventsService implements IEventsService {
     end: DateTime,
     duration: number,
     events: Period[],
-    config: BookingConfiguration
+    config: BookingConfiguration,
+    schedule: Record<string, DaySchedule>
   ) {
     const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
     const results = getAvailableTimeSlotsInCalendar({
       calendarEvents: events,
       configuration: {
         timeSlotDuration: duration,
-        availablePeriods: config.workHours,
+        schedule,
         timeZone: config.timezone || DateTime.now().zoneName!,
         minAvailableTimeAfterSlot: config.minAvailableTimeAfterSlot ?? 0,
         minAvailableTimeBeforeSlot: config.minAvailableTimeBeforeSlot ?? 0,

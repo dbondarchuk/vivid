@@ -174,7 +174,13 @@ export default class CustomerTextMessageNotificationConnectedApp
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
 
-    const phone = getPhoneField(appointment, booking);
+    const phoneFields = (
+      await this.props.services.ServicesService().getFields({
+        type: ["phone"],
+      })
+    ).items;
+
+    const phone = getPhoneField(appointment, phoneFields);
     if (!phone) {
       console.warn(
         `Can't find the phone field for appointment ${appointment._id}`

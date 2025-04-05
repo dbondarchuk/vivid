@@ -4,6 +4,7 @@ import React from "react";
 import { AppointmentsCard } from "./appointments-card";
 import { Schedule } from "./schedule";
 import { AppointmentChoice, FieldSchema } from "@vivid/types";
+import { useSearchParams } from "next/navigation";
 
 export type AppointmentsProps = {
   options: AppointmentChoice[];
@@ -20,8 +21,9 @@ export const Appointments: React.FC<AppointmentsProps> = ({
   fieldsSchema,
   timezone,
 }) => {
-  const [option, setOption] = React.useState<string | undefined>();
-  const selected = options.find((m) => m.id === option);
+  const fromQuery = useSearchParams().get("option");
+  const [option, setOption] = React.useState<string | null>(fromQuery);
+  const selected = options.find((m) => m._id === option);
 
   return (
     <>
@@ -35,7 +37,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
         <Schedule
           appointmentOption={selected}
           successPage={successPage}
-          back={() => setOption(undefined)}
+          back={() => setOption(null)}
           fieldsSchema={fieldsSchema}
           timezone={timezone}
         />

@@ -8,7 +8,11 @@ export const ContainerPropsSchema = z.object({
     .merge(
       z.object({
         borderColor: zColorNullable,
-        borderRadius: z.coerce.number().optional().nullable(),
+        borderRadius: z.coerce
+          .number()
+          .int("Should be the integer value")
+          .optional()
+          .nullable(),
       })
     )
     .optional()
