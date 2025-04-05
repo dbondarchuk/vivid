@@ -1,6 +1,7 @@
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
 export const fetchCache = "force-cache";
 export const revalidate = 3;
 
