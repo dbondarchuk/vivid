@@ -6,10 +6,10 @@ import {
   scheduleConfigurationSchema,
 } from "@vivid/types";
 import {
-  DayScheduleSelector,
   Form,
   FormField,
   SaveButton,
+  Scheduler,
   toastPromise,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
@@ -59,10 +59,7 @@ export const ScheduleSettingsForm: React.FC<ScheduleSettingsFormProps> = ({
           control={form.control}
           name="schedule"
           render={({ field }) => (
-            <DayScheduleSelector
-              value={field.value}
-              onChange={field.onChange}
-            />
+            <Scheduler value={field.value} onChange={field.onChange} />
           )}
         />
         <SaveButton form={form} disabled={loading} />

@@ -1,4 +1,6 @@
 import { App } from "@vivid/types";
+import { BusyEventsApp } from "./apps/busy-events/app";
+import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 import { CaldavApp } from "./apps/caldav/app";
 import { CALDAV_APP_NAME } from "./apps/caldav/const";
 import { CustomerEmailNotificationApp } from "./apps/customer-email-notification/app";
@@ -32,6 +34,7 @@ export const AvailableApps: Record<string, App> = {
   [CALDAV_APP_NAME]: CaldavApp,
   [SMTP_APP_NAME]: SmtpApp,
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleApp,
+  [BUSY_EVENTS_APP_NAME]: BusyEventsApp,
   [TEXTBELT_APP_NAME]: TextBeltApp,
   [CUSTOMER_EMAIL_NOTIFICATION_APP_NAME]: CustomerEmailNotificationApp,
   [EMAIL_NOTIFICATION_APP_NAME]: EmailNotificationApp,
@@ -43,6 +46,7 @@ export const AvailableApps: Record<string, App> = {
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
 };
 
+export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 export { CALDAV_APP_NAME } from "./apps/caldav/const";
 export { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";
 export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";

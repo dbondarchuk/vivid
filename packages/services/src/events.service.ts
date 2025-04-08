@@ -455,8 +455,11 @@ export class EventsService implements IEventsService {
       .flat()
       .map((event) => ({
         title: event.title || "Busy",
-        dateTime: event.startAt.toJSDate(),
-        totalDuration: event.endAt.diff(event.startAt, "minutes").minutes,
+        dateTime: event.startAt,
+        totalDuration: DateTime.fromJSDate(event.endAt).diff(
+          DateTime.fromJSDate(event.startAt),
+          "minutes"
+        ).minutes,
         uid: event.uid,
       }))
       .filter((event) => !skipUids.has(event.uid));
@@ -714,7 +717,11 @@ export class EventsService implements IEventsService {
   ) {
     const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
     const results = getAvailableTimeSlotsInCalendar({
-      calendarEvents: events,
+      calendarEvents: events.map((event) => ({
+        ...event,
+        startAt: DateTime.fromJSDate(event.startAt),
+        endAt: DateTime.fromJSDate(event.endAt),
+      })),
       configuration: {
         timeSlotDuration: duration,
         schedule,
@@ -799,10 +806,12 @@ export class EventsService implements IEventsService {
       .toArray();
 
     return events.map((x) => ({
-      startAt: DateTime.fromJSDate(x.dateTime, { zone: "utc" }),
-      endAt: DateTime.fromJSDate(x.dateTime, { zone: "utc" }).plus({
-        minutes: x.duration,
-      }),
+      startAt: DateTime.fromJSDate(x.dateTime, { zone: "utc" }).toJSDate(),
+      endAt: DateTime.fromJSDate(x.dateTime, { zone: "utc" })
+        .plus({
+          minutes: x.duration,
+        })
+        .toJSDate(),
     }));
   }
 

@@ -91,7 +91,12 @@ export default class IcsConnectedApp
         .filter(
           (event) =>
             event.endAt >= startDateTime && event.startAt <= endDateTime
-        );
+        )
+        .map((event) => ({
+          ...event,
+          startAt: event.startAt.toJSDate(),
+          endAt: event.endAt.toJSDate(),
+        }));
 
       return icsEvents;
     } catch (e: any) {

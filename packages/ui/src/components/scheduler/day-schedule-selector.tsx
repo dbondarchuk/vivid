@@ -9,9 +9,17 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { cn } from "../utils";
+import { cn } from "../../utils";
 import { is12hourUserTimeFormat } from "@vivid/utils";
 import { DateTime } from "luxon";
+import {
+  formatTime,
+  generateId,
+  generateTimeSlots,
+  minutesToTime,
+  timeToMinutes,
+  weekDayMap,
+} from "./utils";
 
 // Define types
 export interface DayScheduleSelectorProps {
@@ -53,48 +61,6 @@ type DragState =
     }
   | null;
 
-// Utility functions
-const generateTimeSlots = (
-  startTime: { hour: number; minute: number },
-  endTime: { hour: number; minute: number },
-  interval: number
-): string[] => {
-  const slots: string[] = [];
-  let currentHour = startTime.hour;
-  let currentMinute = startTime.minute;
-
-  while (
-    currentHour < endTime.hour ||
-    (currentHour === endTime.hour && currentMinute <= endTime.minute)
-  ) {
-    const time = `${currentHour.toString().padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
-    slots.push(time);
-
-    currentMinute += interval;
-    if (currentMinute >= 60) {
-      currentHour += 1;
-      currentMinute %= 60;
-    }
-  }
-
-  return slots;
-};
-
-const generateId = (): string => {
-  return Math.random().toString(36).substring(2, 15);
-};
-
-const timeToMinutes = (time: string): number => {
-  const [hours, minutes] = time.split(":").map(Number);
-  return hours * 60 + minutes;
-};
-
-const minutesToTime = (minutes: number): string => {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
-};
-
 // Define grid classes
 const gridColsClasses = {
   1: "grid-cols-[100px_1fr]",
@@ -104,17 +70,6 @@ const gridColsClasses = {
   5: "grid-cols-[100px_repeat(5,minmax(150px,_1fr))]",
   6: "grid-cols-[100px_repeat(6,minmax(150px,_1fr))]",
   7: "grid-cols-[100px_repeat(7,minmax(150px,_1fr))]",
-};
-
-// Define week day map
-const weekDayMap: Record<number, string> = {
-  1: "Monday",
-  2: "Tuesday",
-  3: "Wednesday",
-  4: "Thursday",
-  5: "Friday",
-  6: "Saturday",
-  7: "Sunday",
 };
 
 export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
@@ -140,7 +95,8 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     day: number;
     time: string;
   } | null>(null);
-  const [uses12HourFormat, setUses12HourFormat] = useState(false);
+
+  const uses12HourFormat = useMemo(() => is12hourUserTimeFormat(), []);
   const [cellDimensions, setCellDimensions] = useState<
     Record<number, { width: number; height: number }>
   >({});
@@ -180,6 +136,11 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
 
     return initialBlocks;
   });
+
+  // Format time with the utility function
+  const formatTimeWithLocale = (time: string) => {
+    return formatTime(time, uses12HourFormat);
+  };
 
   // Convert blocks to AvailablePeriod[] format
   const blocksToAvailablePeriods = useCallback(
@@ -343,24 +304,6 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
       }
     }
   }, [scrollToHour, timeSlots]);
-
-  // Detect locale time format preference
-  useEffect(() => {
-    setUses12HourFormat(is12hourUserTimeFormat());
-  }, []);
-
-  // Format time based on locale preference
-  const formatTime = (time: string) => {
-    if (!uses12HourFormat) return time; // Keep 24-hour format
-
-    const [hourStr, minute] = time.split(":");
-    const hour = Number.parseInt(hourStr, 10);
-
-    if (hour === 0) return `12:${minute} AM`;
-    if (hour < 12) return `${hour}:${minute} AM`;
-    if (hour === 12) return `12:${minute} PM`;
-    return `${hour - 12}:${minute} PM`;
-  };
 
   // Check if two blocks overlap
   const blocksOverlap = (block1: Block, block2: Block): boolean => {
@@ -919,7 +862,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                   isHourStart(time) && "border-t-2 border-t-gray-300 pt-2"
                 )}
               >
-                {formatTime(time)}
+                {formatTimeWithLocale(time)}
               </div>
               {days.map((day, dayIndex) => (
                 <div
@@ -1001,9 +944,9 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                     onTouchStart={(e) => handleBlockMoveStart(e, block)}
                   >
                     <div className="text-xs font-medium select-none">
-                      <span>{formatTime(block.startTime)}</span>
+                      <span>{formatTimeWithLocale(block.startTime)}</span>
                       <span> - </span>
-                      <span>{formatTime(block.endTime)}</span>
+                      <span>{formatTimeWithLocale(block.endTime)}</span>
                     </div>
                     <button
                       disabled={disabled}

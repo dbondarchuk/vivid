@@ -134,9 +134,11 @@ class OutlookConnectedApp
         .map((event) => {
           const startAt = DateTime.fromISO(event.start?.dateTime!, {
             zone: "utc",
-          });
+          }).toJSDate();
 
-          const endAt = DateTime.fromISO(event.end?.dateTime!, { zone: "utc" });
+          const endAt = DateTime.fromISO(event.end?.dateTime!, {
+            zone: "utc",
+          }).toJSDate();
           const uid = (event as any).uid || event.iCalUId;
 
           return {

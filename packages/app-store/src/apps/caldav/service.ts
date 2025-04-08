@@ -118,10 +118,10 @@ export default class CaldavConnectedApp
       );
 
       const calDavEvents: CalendarBusyTime[] = events.map((event) => {
-        const startAt = DateTime.fromJSDate(event.start.date);
+        const startAt = event.start.date;
         const endAt = event.end
-          ? DateTime.fromJSDate(event.end.date)
-          : DateTime.fromJSDate(event.start.date).plus({ years: 1 });
+          ? event.end.date
+          : DateTime.fromJSDate(event.start.date).plus({ years: 1 }).toJSDate();
 
         return {
           startAt,

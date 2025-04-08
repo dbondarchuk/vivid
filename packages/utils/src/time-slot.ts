@@ -1,7 +1,6 @@
 import { DateTime as Luxon } from "luxon";
 
 import {
-  Period,
   PeriodMoment,
   Shift,
   TimeSlot,
@@ -9,6 +8,11 @@ import {
   TimeSlotsFinderConfiguration,
   TimeSlotsFinderError,
 } from "@vivid/types";
+
+type DateTimePeriod = {
+  startAt: Luxon;
+  endAt: Luxon;
+};
 
 export interface TimeSlotsFinderParameters {
   /** The calendar data. */
@@ -158,7 +162,7 @@ function _getMomentsFromShift(fromMoment: Luxon, shift: Shift) {
 
 function _getAvailableTimeSlotsForShift(
   configuration: TimeSlotsFinderConfiguration,
-  eventList: Period[],
+  eventList: DateTimePeriod[],
   from: Luxon,
   to: Luxon
 ) {
@@ -187,7 +191,7 @@ function _getAvailableTimeSlotsForShift(
    */
   const filteringMin = from.minus({ minute: minAvailableTimeBeforeSlot });
   const filteringMax = to.plus({ minute: minAvailableTimeAfterSlot });
-  const cleanedList: Period[] = _prepareEvents(
+  const cleanedList: DateTimePeriod[] = _prepareEvents(
     eventList,
     filteringMin,
     filteringMax
@@ -196,7 +200,7 @@ function _getAvailableTimeSlotsForShift(
   /* Find index of the first event that is not yet ended at searchMoment */
   let eventIndex = cleanedList.findIndex((event) => event.endAt > searchMoment);
   while (true) {
-    const focusedEvent: Period | null =
+    const focusedEvent: DateTimePeriod | null =
       (eventIndex >= 0 && cleanedList[eventIndex]) || null;
 
     /* Adjust searchMoment according to the slotStartMinuteMultiple param */
@@ -238,7 +242,7 @@ function _getAvailableTimeSlotsForShift(
  * then sort by startDate (to make binary sort possible)
  * then filter encompassed events (using binary search)
  */
-function _prepareEvents(periods: Period[], from: Luxon, to: Luxon) {
+function _prepareEvents(periods: DateTimePeriod[], from: Luxon, to: Luxon) {
   const filteredPeriods = _filterPeriods(periods, from, to);
   const sortedPeriods = _sortPeriods(filteredPeriods);
   return sortedPeriods.filter(
@@ -247,17 +251,20 @@ function _prepareEvents(periods: Period[], from: Luxon, to: Luxon) {
 }
 
 /* Comparison function to sort DayjsPeriod on start date */
-function _sortPeriods(periods: Period[]) {
+function _sortPeriods(periods: DateTimePeriod[]) {
   return periods.sort((a, b) => (a.startAt > b.startAt ? 1 : -1));
 }
 
 /* Filter DayjsPeriod which are strictly outside the provided boundaries */
-function _filterPeriods(periods: Period[], from: Luxon, to: Luxon) {
+function _filterPeriods(periods: DateTimePeriod[], from: Luxon, to: Luxon) {
   return periods.filter((period) => period.startAt < to && period.endAt > from);
 }
 
 /* Uses a sorted search technique. Event list must be sorted on event.startAt */
-function _findEmcompassingEvent(eventList: Period[], event: Period): boolean {
+function _findEmcompassingEvent(
+  eventList: DateTimePeriod[],
+  event: DateTimePeriod
+): boolean {
   for (const currentEvent of eventList) {
     // Found condition
     if (
