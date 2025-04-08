@@ -1,5 +1,6 @@
 "use client";
 
+import { DaySchedule, Shift } from "@vivid/types";
 import {
   Button,
   cn,
@@ -14,14 +15,9 @@ import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { DateTime, HourNumbers, SecondNumbers } from "luxon";
 import React, { CSSProperties, Fragment, useCallback } from "react";
-import {
-  CalendarEvent,
-  CalendarEventVariant,
-  WeeklyEventCalendarProps,
-} from "./types";
-import { EventVariantClasses } from "./styles";
 import { EventPopover } from "./event-popover";
-import { DaySchedule, Shift } from "@vivid/types";
+import { EventVariantClasses } from "./styles";
+import { CalendarEvent, WeeklyEventCalendarProps } from "./types";
 
 const colStartClass = "col-start-[var(--calendar-col-start)]";
 const colSpanClass = "col-end-[var(--calendar-col-end)]";
@@ -70,6 +66,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   date,
   variant = "week-of",
   events: propsEvents,
+  timezone,
   className,
   scrollToHour = 8,
   disableTimeChange = false,
@@ -166,8 +163,8 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   }, [dates, getDates]);
 
   const events = (propsEvents || []).map((event) => {
-    const start = DateTime.fromJSDate(event.start);
-    const end = DateTime.fromJSDate(event.end);
+    const start = DateTime.fromJSDate(event.start).setZone(timezone);
+    const end = DateTime.fromJSDate(event.end).setZone(timezone);
     return {
       ...event,
       start,

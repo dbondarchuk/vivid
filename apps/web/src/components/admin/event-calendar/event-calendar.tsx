@@ -1,28 +1,19 @@
 "use client";
 
-import React from "react";
-import { WeeklyEventCalendar } from "./weekly-event-calendar";
-import { DateTime } from "luxon";
+import { Appointment, DaySchedule, Event, StatusText } from "@vivid/types";
 import {
-  Appointment,
-  DaySchedule,
-  Event,
-  HourNumbers,
-  StatusText,
-} from "@vivid/types";
-import { AppointmentDialog } from "../appointments/appointment-dialog";
-import { CalendarEvent, EventCalendarProps } from "./types";
-import { MonthlyEventCalendar } from "./monthly-event-calendar";
-import { EventPopover } from "./event-popover";
-import { AgendaEventCalendar } from "./agenda-event-calendar";
-import {
-  Presentation,
   CheckCircle,
-  Calendar,
-  Clock,
   DollarSign,
+  Presentation,
   StickyNote,
 } from "lucide-react";
+import { DateTime } from "luxon";
+import React from "react";
+import { AppointmentDialog } from "../appointments/appointment-dialog";
+import { AgendaEventCalendar } from "./agenda-event-calendar";
+import { MonthlyEventCalendar } from "./monthly-event-calendar";
+import { CalendarEvent, EventCalendarProps } from "./types";
+import { WeeklyEventCalendar } from "./weekly-event-calendar";
 
 export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
   const [events, setEvents] = React.useState<Event[]>([]);
@@ -35,46 +26,41 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
   );
 
   const [loading, setLoading] = React.useState(false);
+  const [timezone, setTimezone] = React.useState<string>();
 
   const getEvents = async (start: Date, end: Date) => {
     setLoading(true);
     setEvents([]);
 
-    const [eventsResponse, scheduleResponse] = await Promise.all([
-      fetch(
-        `/admin/api/events?start=${DateTime.fromJSDate(start)
-          .startOf("day")
-          .toISO()}&end=${DateTime.fromJSDate(end).endOf("day").toISO()}`
-      ),
-      fetch(
-        `/admin/api/schedule?start=${DateTime.fromJSDate(start)
-          .startOf("day")
-          .toISO()}&end=${DateTime.fromJSDate(end).endOf("day").toISO()}`
-      ),
-    ]);
+    const response = await fetch(
+      `/admin/api/calendar?start=${encodeURIComponent(DateTime.fromJSDate(start).startOf("day").toISO()!)}&end=${encodeURIComponent(DateTime.fromJSDate(end).endOf("day").toISO()!)}`
+    );
 
-    const apiEvents = (await eventsResponse.json()) as Event[];
-    const schedule = (await scheduleResponse.json()) as Record<
-      string,
-      DaySchedule
-    >;
+    const body = (await response.json()) as {
+      events: Event[];
+      schedule: Record<string, DaySchedule>;
+      timezone: string;
+    };
 
     setLoading(false);
 
-    setSchedule(schedule);
+    setSchedule(body.schedule);
+    setTimezone(body.timezone);
     setEvents(
-      (apiEvents || []).map((a) => {
+      (body.events || []).map((a) => {
         if ("createdAt" in a) {
-          a.createdAt = DateTime.fromISO(
-            a.createdAt as unknown as string
-          ).toJSDate();
+          a.createdAt = DateTime.fromISO(a.createdAt as unknown as string)
+            .setZone(body.timezone)
+            .toJSDate();
         }
+
+        const dateTime = DateTime.fromISO(a.dateTime as unknown as string)
+          .setZone(body.timezone)
+          .toJSDate();
 
         return {
           ...a,
-          dateTime: DateTime.fromISO(
-            a.dateTime as unknown as string
-          ).toJSDate(),
+          dateTime: dateTime,
         };
       })
     );
@@ -203,6 +189,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           onEventClick={onEventClick}
           variant="week-of"
           schedule={schedule}
+          timezone={timezone}
           {...props}
         />
       ) : props.type === "daily" ? (
@@ -213,6 +200,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           events={calendarEvents}
           onEventClick={onEventClick}
           schedule={schedule}
+          timezone={timezone}
           {...props}
         />
       ) : props.type === "days-around" ? (
@@ -222,6 +210,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           variant="days-around"
           onEventClick={onEventClick}
           schedule={schedule}
+          timezone={timezone}
           {...props}
         />
       ) : props.type === "agenda" ? (
@@ -231,6 +220,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           onEventClick={onEventClick}
           renderEvent={renderEventAgenda}
           schedule={schedule}
+          timezone={timezone}
           {...props}
         />
       ) : (
@@ -239,6 +229,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           events={calendarEvents}
           onEventClick={onEventClick}
           schedule={schedule}
+          timezone={timezone}
           {...props}
         />
       )}
@@ -248,6 +239,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           appointment={appointment}
           open={true}
           onOpenChange={onDialogOpenChange}
+          timezone={timezone}
         />
       )}
     </div>

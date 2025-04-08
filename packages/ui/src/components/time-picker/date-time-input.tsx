@@ -3,7 +3,6 @@
 import * as React from "react";
 
 import { cn } from "../../utils";
-import { format, parse, isValid, getYear } from "date-fns";
 import {
   useRef,
   useState,
@@ -21,7 +20,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../tooltip";
-import { TZDate } from "react-day-picker";
+import { DateTime } from "luxon";
+import { DateTimePicker } from "./date-time-picker";
 
 type DateTimeInputProps = {
   className?: string;
@@ -32,7 +32,7 @@ type DateTimeInputProps = {
   clearable?: boolean;
   timezone?: string;
   hideCalendarIcon?: boolean;
-  onCalendarClick?: () => void;
+  use12HourFormat?: boolean;
 };
 
 // https://date-fns.org/v4.1.0/docs/format
@@ -90,14 +90,21 @@ const mergeRefs = (...refs: any) => {
 };
 const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
   (options: DateTimeInputProps, ref) => {
-    const { format: formatProp, value: _value, timezone, ...rest } = options;
+    const {
+      format: formatProp,
+      value: _value,
+      timezone,
+      use12HourFormat,
+      ...rest
+    } = options;
     const value = useMemo(
-      () => (_value ? new TZDate(_value, timezone) : undefined),
+      () =>
+        _value ? DateTime.fromJSDate(_value).setZone(timezone) : undefined,
       [_value, timezone]
     );
     const form = useFormContext();
     const formatStr = React.useMemo(
-      () => formatProp || "dd/MM/yyyy-hh:mm aa",
+      () => formatProp || `dd/MM/yyyy hh:mm${use12HourFormat ? " a" : ""}`,
       [formatProp]
     );
 
@@ -154,22 +161,18 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
     const inputValue = useMemo(() => {
       const allHasValue = !validSegments.some((s) => !s.value);
       if (!allHasValue) return;
-      const date = parse(
-        inputStr,
-        formatStr,
-        value || new TZDate(new Date(), timezone)
-      );
-      const year = getYear(date);
+      const date = DateTime.fromFormat(inputStr, formatStr).setZone(timezone);
+      const year = date.year;
       // console.log('inputValue', {allHasValue, validSegments, inputStr, formatStr, date, year});
-      if (isValid(date) && year > 1900 && year < 2100) {
+      if (date.isValid && year > 1900 && year < 2100) {
         return date;
       }
     }, [validSegments, inputStr, formatStr]);
     useEffect(() => {
       if (!inputValue) return;
-      if (value?.getTime() !== inputValue.getTime()) {
+      if (value?.toISO() !== inputValue.toISO()) {
         // console.log('inputValueChanged', {formatStr, inputStr, value, inputValue, });
-        options.onChange?.(inputValue);
+        options.onChange?.(inputValue.toJSDate());
       }
     }, [inputValue]);
 
@@ -229,14 +232,15 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           const length = segment.symbols.length;
           const rawValue = parseInt(segment.value).toString();
           let newValue = rawValue.length < length ? rawValue + num : num;
-          let parsedDate = parse(
+          let parsedDate = DateTime.fromFormat(
             newValue.padStart(length, "0"),
-            segment.symbols,
-            safeDate(timezone)
-          );
-          if (!isValid(parsedDate) && newValue.length > 1) {
+            segment.symbols
+          ).setZone(timezone);
+          if (!parsedDate.isValid && newValue.length > 1) {
             newValue = num;
-            parsedDate = parse(newValue, segment.symbols, safeDate(timezone));
+            parsedDate = DateTime.fromFormat(newValue, segment.symbols).setZone(
+              timezone
+            );
           }
           const updatedSegments = segments.map((s) =>
             s.index === segment.index ? { ...segment, value: newValue } : s
@@ -357,9 +361,28 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
         )}
       >
         {!options.hideCalendarIcon && (
-          <Button variant="ghost" size="icon" onClick={options.onCalendarClick}>
-            <CalendarIcon className="size-4 text-muted-foreground" />
-          </Button>
+          <DateTimePicker
+            value={inputValue?.toJSDate()}
+            use12HourFormat={use12HourFormat}
+            onChange={(d) => {
+              setSegments(
+                parseFormat(
+                  formatStr,
+                  d ? DateTime.fromJSDate(d).setZone(timezone) : undefined
+                )
+              );
+            }}
+            timezone={timezone}
+            renderTrigger={(props) => (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => props.setOpen(true)}
+              >
+                <CalendarIcon className="size-4 text-muted-foreground" />
+              </Button>
+            )}
+          />
         )}
         <input
           ref={mergeRefs(inputRef)}
@@ -374,11 +397,11 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           disabled={options.disabled}
           spellCheck={false}
         />
-        <div className="me-3">
-          {inputValue ? (
-            <CircleCheck className="size-4 text-green-500" />
-          ) : (
-            <TooltipProvider>
+        <TooltipProvider>
+          <div className="me-3">
+            {inputValue ? (
+              <CircleCheck className="size-4 text-green-500" />
+            ) : (
               <Tooltip>
                 <TooltipTrigger className="flex items-center justify-center">
                   <CircleAlert
@@ -395,9 +418,9 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
                   </p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
+            )}
+          </div>
+        </TooltipProvider>
       </div>
     );
   }
@@ -413,7 +436,7 @@ interface Segment {
   index: number;
   value: string;
 }
-function parseFormat(formatStr: string, value?: Date) {
+function parseFormat(formatStr: string, value?: DateTime) {
   const views: Segment[] = [];
   let lastPattern: any = "";
   let symbols = "";
@@ -428,7 +451,7 @@ function parseFormat(formatStr: string, value?: Date) {
           type: lastPattern,
           symbols,
           index: patternIndex,
-          value: value ? format(value, symbols) : "",
+          value: value ? value.toFormat(symbols) : "",
         });
       lastPattern = pattern?.type || "";
       symbols = c;
@@ -443,14 +466,10 @@ function parseFormat(formatStr: string, value?: Date) {
       type: lastPattern,
       symbols,
       index: patternIndex,
-      value: value ? format(value, symbols) : "",
+      value: value ? value.toFormat(symbols) : "",
     });
   return views;
 }
-
-const safeDate = (timezone?: string) => {
-  return new TZDate("2000-01-01T00:00:00", timezone);
-};
 
 const isAndroid = () => /Android/i.test(navigator.userAgent);
 

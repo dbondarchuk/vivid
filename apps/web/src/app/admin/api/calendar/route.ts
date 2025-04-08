@@ -24,27 +24,22 @@ export async function GET(request: NextRequest) {
     (s) => includeDeclined || s !== "declined"
   );
 
-  let events = await ServicesContainer.EventsService().getEvents(
-    start.toJSDate(),
-    end.toJSDate(),
-    statuses
-  );
+  const [events, schedule, config] = await Promise.all([
+    ServicesContainer.EventsService().getEvents(
+      start.toJSDate(),
+      end.toJSDate(),
+      statuses
+    ),
+    ServicesContainer.ScheduleService().getSchedule(
+      start.toJSDate(),
+      end.toJSDate()
+    ),
+    ServicesContainer.ConfigurationService().getConfiguration("booking"),
+  ]);
 
-  // const config =
-  //   await ServicesContainer.ConfigurationService().getConfiguration("booking");
-
-  // events = events.map((event) => ({
-  //   ...event,
-  //   dateTime: DateTime.fromJSDate(event.dateTime)
-  //     .setZone(config.timezone)
-  //     .toJSDate(),
-  //   createdAt:
-  //     "createdAt" in event
-  //       ? DateTime.fromJSDate(event.createdAt)
-  //           .setZone(config.timezone)
-  //           .toJSDate()
-  //       : undefined,
-  // }));
-
-  return NextResponse.json(events);
+  return NextResponse.json({
+    events,
+    schedule,
+    timezone: config.timezone,
+  });
 }

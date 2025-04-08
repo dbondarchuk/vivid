@@ -32,6 +32,7 @@ RUN \
 # Rebuild the source code only when needed
 FROM base AS builder
 ARG MONGODB_URI=mongodb://mongo:27017/vivid?retryWrites=true&w=majority
+# ENV NODE_OPTIONS="--max_old_space_size=4096"
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules

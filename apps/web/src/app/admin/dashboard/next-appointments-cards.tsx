@@ -11,6 +11,9 @@ export const NextAppointmentsCards: React.FC = async () => {
       3
     );
 
+  const { timezone } =
+    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+
   return (
     <div className="flex flex-col gap-2">
       {!nextAppointments.length && (
@@ -21,7 +24,11 @@ export const NextAppointmentsCards: React.FC = async () => {
         </Card>
       )}
       {nextAppointments.map((appointment) => (
-        <AppointmentCard appointment={appointment} key={appointment._id} />
+        <AppointmentCard
+          appointment={appointment}
+          timezone={timezone}
+          key={appointment._id}
+        />
       ))}
     </div>
   );

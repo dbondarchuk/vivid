@@ -24,7 +24,6 @@
     "@vvo/tzdb": "^6.142.0",
     "class-variance-authority": "^0.7.1",
     "copy-text-to-clipboard": "^3.2.0",
-    "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.23.0",
     "i": "^0.3.7",

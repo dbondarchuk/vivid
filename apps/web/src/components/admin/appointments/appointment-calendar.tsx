@@ -13,15 +13,19 @@ import {
 export const AppointmentCalendar: React.FC<
   Pick<WeeklyEventCalendarProps, "className"> & {
     appointment: Appointment;
+    timezone?: string;
     onEventsLoad?: (events: Event[]) => void;
   }
-> = ({ appointment, onEventsLoad, ...props }) => {
+> = ({ appointment, timezone: propTimezone, onEventsLoad, ...props }) => {
   const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
   const [events, setEvents] = React.useState<Event[]>([]);
   const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
     {}
   );
   const [loading, setLoading] = React.useState(false);
+  const [timezone, setTimezone] = React.useState<string | undefined>(
+    propTimezone
+  );
 
   const appointmentDateTime = appointment.dateTime;
   const appointmentDate = React.useMemo(
@@ -29,27 +33,29 @@ export const AppointmentCalendar: React.FC<
     [appointmentDateTime]
   );
 
-  const getApiEvents = async (start: DateTime, end: DateTime) => {
+  const getData = async (start: DateTime, end: DateTime) => {
     setLoading(true);
-    const [eventsResponse, scheduleResponse] = await Promise.all([
-      fetch(`/admin/api/events?start=${start.toISO()}&end=${end.toISO()}`),
-      fetch(`/admin/api/schedule?start=${start.toISO()}&end=${end.toISO()}`),
-    ]);
+    const response = await fetch(
+      `/admin/api/calendar?start=${encodeURIComponent(start.toISO()!)}&end=${encodeURIComponent(end.toISO()!)}`
+    );
 
-    let apiEvents = (await eventsResponse.json()) as Event[];
-    apiEvents = (apiEvents || []).map((a) => ({
+    const body = (await response.json()) as {
+      events: Event[];
+      schedule: Record<string, DaySchedule>;
+      timezone: string;
+    };
+
+    const apiEvents = (body.events || []).map((a) => ({
       ...a,
-      dateTime: DateTime.fromISO(a.dateTime as unknown as string).toJSDate(),
+      dateTime: DateTime.fromISO(a.dateTime as unknown as string)
+        .setZone(body.timezone)
+        .toJSDate(),
     }));
-
-    const schedule = (await scheduleResponse.json()) as Record<
-      string,
-      DaySchedule
-    >;
 
     setLoading(false);
     setApiEvents(apiEvents);
-    setSchedule(schedule);
+    setSchedule(body.schedule);
+    setTimezone(body.timezone);
   };
 
   React.useEffect(() => {
@@ -64,7 +70,7 @@ export const AppointmentCalendar: React.FC<
 
   React.useEffect(() => {
     const date = DateTime.fromJSDate(appointmentDateTime);
-    getApiEvents(
+    getData(
       date.minus({ days: 1 }).startOf("day"),
       date.plus({ days: 1 }).endOf("day")
     );
@@ -135,6 +141,7 @@ export const AppointmentCalendar: React.FC<
         schedule={schedule}
         variant="days-around"
         daysAround={1}
+        timezone={timezone}
         scrollToHour={
           Math.max(appointment.dateTime.getHours() - 2, 0) as HourNumbers
         }

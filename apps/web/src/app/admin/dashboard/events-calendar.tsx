@@ -66,7 +66,10 @@ export const EventsCalendar = () => {
       <EventCalendar
         date={date.toJSDate()}
         type={type}
-        className={cn("w-full", type !== "monthly" && "h-[100vh]")}
+        className={cn(
+          "w-full",
+          type !== "monthly" && type !== "agenda" && "h-[100vh]"
+        )}
         onDateClick={(date) => {
           setDate(DateTime.fromJSDate(date));
           setType("daily");

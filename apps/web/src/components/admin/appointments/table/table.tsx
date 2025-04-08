@@ -23,9 +23,13 @@ export const AppointmentsTable: React.FC = async () => {
     sort,
   });
 
+  const { timezone } =
+    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+
   return (
     <DataTable
       columns={columns}
+      additionalCellProps={{ timezone }}
       data={res.items}
       totalItems={res.total}
       sortSchemaDefault={searchParams.sort.defaultValue}

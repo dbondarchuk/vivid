@@ -108,44 +108,17 @@
  */
 "use client";
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CalendarIcon } from "@radix-ui/react-icons";
+
 import {
-  endOfHour,
-  endOfMinute,
-  format,
-  parse,
-  getMonth,
-  getYear,
-  setHours,
-  setMinutes,
-  setMonth as setMonthFns,
-  setSeconds,
-  setYear,
-  startOfHour,
-  startOfMinute,
-  startOfYear,
-  startOfMonth,
-  endOfMonth,
-  endOfYear,
-  addMonths,
-  subMonths,
-  setMilliseconds,
-  addHours,
-  subHours,
-  startOfDay,
-  endOfDay,
-} from "date-fns";
-import {
-  CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
-  Clock,
   XCircle,
 } from "lucide-react";
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DayPicker, Matcher, TZDate } from "react-day-picker";
 
 import { cn } from "../../utils";
@@ -153,6 +126,7 @@ import { Button, buttonVariants } from "../button";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { ScrollArea } from "../scroll-area";
 import { SimpleTimePicker } from "./simple-time-picker";
+import { DateTime } from "luxon";
 
 export type DateTimeCalendarProps = Omit<
   React.ComponentProps<typeof DayPicker>,
@@ -269,59 +243,60 @@ export function DateTimePicker({
     "month" | "year" | false
   >(false);
   const initDate = useMemo(
-    () => new TZDate(value || new Date(), timezone),
+    () => DateTime.fromJSDate(value || new Date()).setZone(timezone),
     [value, timezone]
   );
 
-  const [month, setMonth] = useState<Date>(initDate);
-  const [date, setDate] = useState<Date>(initDate);
+  const [month, setMonth] = useState<DateTime>(initDate);
+  const [date, setDate] = useState<DateTime>(initDate);
 
   const endMonth = useMemo(() => {
-    return setYear(month, getYear(month) + 1);
+    return month.plus({ years: 1 });
   }, [month]);
+
   const minDate = useMemo(
-    () => (min ? new TZDate(min, timezone) : undefined),
+    () => (min ? DateTime.fromJSDate(min).setZone(timezone) : undefined),
     [min, timezone]
   );
   const maxDate = useMemo(
-    () => (max ? new TZDate(max, timezone) : undefined),
+    () => (max ? DateTime.fromJSDate(max).setZone(timezone) : undefined),
     [max, timezone]
   );
 
   const onDayChanged = useCallback(
-    (d: Date) => {
-      d.setHours(
-        date.getHours(),
-        date.getMinutes(),
-        showSeconds ? date.getSeconds() : 0
-      );
-      if (min && d < min) {
-        d.setHours(
-          min.getHours(),
-          min.getMinutes(),
-          showSeconds ? min.getSeconds() : 0
-        );
+    (d: DateTime) => {
+      let day = d.set({
+        hour: date.hour,
+        minute: date.minute,
+        second: showSeconds ? date.second : 0,
+      });
+      if (minDate && d < minDate) {
+        day = day.set({
+          hour: minDate.hour,
+          minute: minDate.minute,
+          second: showSeconds ? minDate.second : 0,
+        });
       }
-      if (max && d > max) {
-        d.setHours(
-          max.getHours(),
-          max.getMinutes(),
-          showSeconds ? max.getSeconds() : 0
-        );
+      if (maxDate && d > maxDate) {
+        day = day.set({
+          hour: maxDate.hour,
+          minute: maxDate.minute,
+          second: showSeconds ? maxDate.second : 0,
+        });
       }
-      setDate(d);
-      if (commitOnChange) onChange?.(d);
+      setDate(day);
+      if (commitOnChange) onChange?.(day.toJSDate());
     },
     [setDate, setMonth, onChange, commitOnChange]
   );
 
   const onSubmit = useCallback(() => {
-    onChange(new Date(date));
+    onChange(date.toJSDate());
     setOpen(false);
   }, [date, onChange]);
 
   const onMonthYearChanged = useCallback(
-    (d: Date, mode: "month" | "year") => {
+    (d: DateTime, mode: "month" | "year") => {
       setMonth(d);
       if (mode === "year") {
         setMonthYearPicker("month");
@@ -332,10 +307,10 @@ export function DateTimePicker({
     [setMonth, setMonthYearPicker]
   );
   const onNextMonth = useCallback(() => {
-    setMonth(addMonths(month, 1));
+    setMonth(month.plus({ months: 1 }));
   }, [month]);
   const onPrevMonth = useCallback(() => {
-    setMonth(subMonths(month, 1));
+    setMonth(month.minus({ months: 1 }));
   }, [month]);
 
   useEffect(() => {
@@ -355,16 +330,18 @@ export function DateTimePicker({
     if (!displayValue) return "Pick a date";
     const secondsFormat = showSeconds ? ":ss" : "";
 
-    return format(
-      displayValue,
+    return displayValue.toFormat(
       `${!hideTime ? "MMM" : "MMMM"} d, yyyy${!hideTime ? (use12HourFormat ? ` hh:mm${secondsFormat} a` : ` HH:mm${secondsFormat}`) : ""}`
     );
   }, [displayValue, hideTime, use12HourFormat, showSeconds]);
 
   const onTimeChanged = useCallback(
     (date: Date) => {
-      setDate(date);
-      if (commitOnChange) onChange?.(date);
+      const d = DateTime.fromJSDate(date).setZone(timezone, {
+        keepLocalTime: true,
+      });
+      setDate(d);
+      if (commitOnChange) onChange?.(d.toJSDate());
     },
     [setDate, commitOnChange]
   );
@@ -374,7 +351,7 @@ export function DateTimePicker({
       <PopoverTrigger asChild>
         {renderTrigger ? (
           renderTrigger({
-            value: displayValue,
+            value: displayValue?.toJSDate(),
             open,
             timezone,
             disabled,
@@ -428,7 +405,7 @@ export function DateTimePicker({
                   )
                 }
               >
-                {format(month, "MMMM")}
+                {month.toFormat("MMMM")}
               </span>
               <span
                 className="ms-1"
@@ -438,7 +415,7 @@ export function DateTimePicker({
                   )
                 }
               >
-                {format(month, "yyyy")}
+                {month.toFormat("yyyy")}
               </span>
             </div>
             <Button
@@ -466,17 +443,21 @@ export function DateTimePicker({
           <DayPicker
             timeZone={timezone}
             mode="single"
-            selected={date}
-            onSelect={(d) => d && onDayChanged(d)}
-            month={month}
-            endMonth={endMonth}
+            selected={date.toJSDate()}
+            onSelect={(d) =>
+              d && onDayChanged(DateTime.fromJSDate(d).setZone(timezone))
+            }
+            month={month.toJSDate()}
+            endMonth={endMonth.toJSDate()}
             disabled={
               [
                 max ? { after: max } : null,
                 min ? { before: min } : null,
               ].filter(Boolean) as Matcher[]
             }
-            onMonthChange={setMonth}
+            onMonthChange={(d) =>
+              setMonth(DateTime.fromJSDate(d).setZone(timezone))
+            }
             classNames={{
               dropdowns: "flex w-full gap-2",
               months: "flex w-full h-fit",
@@ -529,25 +510,26 @@ export function DateTimePicker({
         <div className="flex flex-col gap-2">
           {!hideTime && (
             <SimpleTimePicker
-              value={date}
+              value={date.toJSDate()}
               onChange={onTimeChanged}
               use12HourFormat={use12HourFormat}
               showSeconds={showSeconds}
-              min={minDate}
-              max={maxDate}
+              min={minDate?.toJSDate()}
+              max={maxDate?.toJSDate()}
               minutesDivisibleBy={minutesDivisibleBy}
+              timezone={timezone}
             />
           )}
           <div className="flex flex-row-reverse items-center justify-between">
             <Button className="ms-2 h-7 px-2" onClick={onSubmit}>
               Done
             </Button>
-            {timezone && (
+            {/* {timezone && (
               <div className="text-sm">
                 <span>Timezone:</span>
                 <span className="font-semibold ms-1">{timezone}</span>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </PopoverContent>
@@ -569,11 +551,11 @@ function MonthYearPicker({
   onChange,
   className,
 }: {
-  value: Date;
+  value: DateTime;
   mode: "month" | "year";
-  minDate?: Date;
-  maxDate?: Date;
-  onChange: (value: Date, mode: "month" | "year") => void;
+  minDate?: DateTime;
+  maxDate?: DateTime;
+  onChange: (value: DateTime, mode: "month" | "year") => void;
   className?: string;
 }) {
   const yearRef = useRef<HTMLDivElement>(null);
@@ -581,8 +563,9 @@ function MonthYearPicker({
     const years: TimeOption[] = [];
     for (let i = 1912; i < 2100; i++) {
       let disabled = false;
-      const startY = startOfYear(setYear(value, i));
-      const endY = endOfYear(setYear(value, i));
+      const startY = value.set({ year: i }).startOf("year");
+      const endY = value.set({ year: i }).endOf("year");
+
       if (minDate && endY < minDate) disabled = true;
       if (maxDate && startY > maxDate) disabled = true;
       years.push({ value: i, label: i.toString(), disabled });
@@ -593,24 +576,31 @@ function MonthYearPicker({
     const months: TimeOption[] = [];
     for (let i = 0; i < 12; i++) {
       let disabled = false;
-      const startM = startOfMonth(setMonthFns(value, i));
-      const endM = endOfMonth(setMonthFns(value, i));
+      const startM = value.set({ month: i }).startOf("month");
+      const endM = value.set({ month: i }).endOf("month");
+
       if (minDate && endM < minDate) disabled = true;
       if (maxDate && startM > maxDate) disabled = true;
-      months.push({ value: i, label: format(new Date(0, i), "MMM"), disabled });
+
+      months.push({
+        value: i,
+        label: DateTime.fromObject({ month: i }).toFormat("MMM"),
+        disabled,
+      });
     }
     return months;
   }, [value]);
 
   const onYearChange = useCallback(
     (v: TimeOption) => {
-      let newDate = setYear(value, v.value);
+      let newDate = value.set({ year: v.value });
       if (minDate && newDate < minDate) {
-        newDate = setMonthFns(newDate, getMonth(minDate));
+        newDate = newDate.set({ month: minDate.month });
       }
       if (maxDate && newDate > maxDate) {
-        newDate = setMonthFns(newDate, getMonth(maxDate));
+        newDate = newDate.set({ month: maxDate.month });
       }
+
       onChange(newDate, "year");
     },
     [onChange, value, minDate, maxDate]
@@ -629,11 +619,11 @@ function MonthYearPicker({
             {years.map((year) => (
               <div
                 key={year.value}
-                ref={year.value === getYear(value) ? yearRef : undefined}
+                ref={year.value === value.year ? yearRef : undefined}
               >
                 <Button
                   disabled={year.disabled}
-                  variant={getYear(value) === year.value ? "default" : "ghost"}
+                  variant={value.year === year.value ? "default" : "ghost"}
                   className="rounded-full"
                   onClick={() => onYearChange(year)}
                 >
@@ -650,10 +640,10 @@ function MonthYearPicker({
                 key={month.value}
                 size="lg"
                 disabled={month.disabled}
-                variant={getMonth(value) === month.value ? "default" : "ghost"}
+                variant={value.month === month.value ? "default" : "ghost"}
                 className="rounded-full"
                 onClick={() =>
-                  onChange(setMonthFns(value, month.value), "month")
+                  onChange(value.set({ month: month.value }), "month")
                 }
               >
                 {month.label}

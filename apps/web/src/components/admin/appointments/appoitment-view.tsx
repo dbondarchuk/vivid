@@ -76,9 +76,10 @@ const noteFormSchema = z.object({
 
 type NoteFormSchema = z.infer<typeof noteFormSchema>;
 
-export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
-  appointment: propAppointment,
-}) => {
+export const AppointmentView: React.FC<{
+  appointment: Appointment;
+  timezone?: string;
+}> = ({ appointment: propAppointment, timezone }) => {
   const router = useRouter();
 
   const [appointment, setAppointment] = React.useState(propAppointment);
@@ -208,7 +209,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4 w-full @container">
       <div className="flex flex-row justify-end gap-2 flex-wrap [&>form]:hidden">
         <Link
           className="inline-flex flex-row gap-2 items-center"
@@ -223,6 +224,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
           <>
             <AppointmentRescheduleDialog
               appointment={appointment}
+              timezone={timezone}
               onRescheduled={reschedule}
               trigger={
                 <Button
@@ -282,7 +284,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
           </AppointmentActionButton>
         ) : null}
       </div>
-      <div className="flex flex-col lg:grid grid-cols-2">
+      <div className="flex flex-col @4xl:grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <dl className="divide-y">
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -291,11 +293,14 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                 <Accordion type="single" collapsible>
                   <AccordionItem value="dateTime" className="border-none">
                     <AccordionTrigger>
-                      {DateTime.fromJSDate(appointment.dateTime).toLocaleString(
-                        DateTime.DATETIME_MED_WITH_WEEKDAY
-                      )}{" "}
+                      {DateTime.fromJSDate(appointment.dateTime)
+                        .setZone(timezone)
+                        .toLocaleString(
+                          DateTime.DATETIME_MED_WITH_WEEKDAY
+                        )}{" "}
                       -{" "}
                       {DateTime.fromJSDate(appointment.dateTime)
+                        .setZone(timezone)
                         .plus({ minutes: appointment.totalDuration })
                         .toLocaleString(DateTime.TIME_SIMPLE)}
                     </AccordionTrigger>
@@ -303,9 +308,9 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                       <div className="grid grid-cols-2 gap-1">
                         <div>Date and time:</div>
                         <div>
-                          {DateTime.fromJSDate(
-                            appointment.dateTime
-                          ).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                          {DateTime.fromJSDate(appointment.dateTime)
+                            .setZone(timezone)
+                            .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                         </div>
                         <div>Duration:</div>
                         <div>
@@ -329,6 +334,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                         <div>Ends at:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.dateTime)
+                            .setZone(timezone)
                             .plus({ minutes: appointment.totalDuration })
                             .toLocaleString(
                               DateTime.DATETIME_MED_WITH_WEEKDAY
@@ -336,9 +342,9 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
                         </div>
                         <div>Requested at:</div>
                         <div>
-                          {DateTime.fromJSDate(
-                            appointment.createdAt
-                          ).toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                          {DateTime.fromJSDate(appointment.createdAt)
+                            .setZone(timezone)
+                            .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                         </div>
                       </div>
                       {appointment.status !== "declined" && (
@@ -717,7 +723,7 @@ export const AppointmentView: React.FC<{ appointment: Appointment }> = ({
           </Form>
         </div>
         <div className="flex flex-col gap-2">
-          <AppointmentCalendar appointment={appointment} />
+          <AppointmentCalendar appointment={appointment} timezone={timezone} />
         </div>
       </div>
     </div>

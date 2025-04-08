@@ -12,6 +12,9 @@ export const PendingAppointmentsTab: React.FC = async () => {
       beforeNow
     );
 
+  const { timezone } =
+    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+
   return (
     <>
       {pendingAppointments.total === 0 ? (
@@ -26,7 +29,11 @@ export const PendingAppointmentsTab: React.FC = async () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
           {pendingAppointments.items.map((appointment) => (
-            <AppointmentCard key={appointment._id} appointment={appointment} />
+            <AppointmentCard
+              key={appointment._id}
+              timezone={timezone}
+              appointment={appointment}
+            />
           ))}
         </div>
       )}

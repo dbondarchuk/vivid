@@ -447,7 +447,21 @@ export const AppointmentScheduleForm: React.FC<
                         disabled={loading}
                         commitOnChange
                         min={new Date()}
+                        timezone={timeZone}
                         {...field}
+                        // value={DateTime.fromJSDate(field.value)
+                        //   .setZone("local")
+                        //   .toJSDate()}
+                        // onChange={(d) => {
+                        //   field.onChange(
+                        //     d
+                        //       ? DateTime.fromJSDate(d)
+                        //           .setZone(timeZone)
+                        //           .toJSDate()
+                        //       : undefined
+                        //   );
+                        //   field.onBlur();
+                        // }}
                         className="flex w-full"
                         minutesDivisibleBy={5}
                       />
@@ -599,6 +613,7 @@ export const AppointmentScheduleForm: React.FC<
             <div className="flex flex-col gap-2">
               {appointment && (
                 <AppointmentCalendar
+                  timezone={timeZone}
                   appointment={appointment}
                   onEventsLoad={setCalendarEvents}
                 />

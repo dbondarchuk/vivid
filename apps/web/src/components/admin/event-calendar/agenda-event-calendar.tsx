@@ -30,6 +30,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   disableTimeChange = false,
   daysToShow = 3,
   schedule = {},
+  timezone,
   onEventClick,
   onRangeChange,
   renderEvent,
@@ -158,7 +159,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
           </Button>
         )}
       </div>
-      <ScrollArea className="py-3 max-w-full max-h-[700px]">
+      <ScrollArea className="py-3 max-w-full">
         {/* <div className="p-4 overflow-y-auto max-h-[700px]"> */}
         <div className="space-y-1">
           {eventsByDate.map(({ date, events }) => {
@@ -263,15 +264,19 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                       </div>
                     ) : (
                       events.map((event, idx) => {
-                        const eventDate = DateTime.fromJSDate(event.start);
-                        const duration = durationToTime(
-                          DateTime.fromJSDate(event.end)
-                            .diff(eventDate, "minutes")
-                            .toObject().minutes ?? 0
+                        const eventDate = DateTime.fromJSDate(
+                          event.start
+                        ).setZone(timezone);
+                        const endDate = DateTime.fromJSDate(event.end).setZone(
+                          timezone
                         );
 
                         return (
-                          <EventPopover key={idx} event={event}>
+                          <EventPopover
+                            key={idx}
+                            event={event}
+                            timezone={timezone}
+                          >
                             <div
                               className="flex items-start space-x-3 p-3 rounded-md hover:bg-accent/50 cursor-pointer transition-colors"
                               onClick={(e) => {
@@ -297,9 +302,9 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                                       DateTime.TIME_SIMPLE
                                     )}{" "}
                                     -{" "}
-                                    {DateTime.fromJSDate(
-                                      event.end
-                                    ).toLocaleString(DateTime.TIME_SIMPLE)}
+                                    {endDate.toLocaleString(
+                                      DateTime.TIME_SIMPLE
+                                    )}
                                   </div>
                                 </div>
                                 {renderEvent && renderEvent(event)}

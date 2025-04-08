@@ -1,5 +1,5 @@
 "use client";
-import { ColumnDef } from "@tanstack/react-table";
+import { CellContext, ColumnDef, RowData } from "@tanstack/react-table";
 import { Appointment, StatusText } from "@vivid/types";
 import {
   Button,
@@ -57,14 +57,16 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   );
 };
 
-const OptionCell: React.FC<{ appointment: Appointment }> = ({
+const OptionCell: React.FC<{ appointment: Appointment; timezone?: string }> = ({
   appointment,
+  timezone,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   return (
     <>
       {isDialogOpen && (
         <AppointmentDialog
+          timezone={timezone}
           defaultOpen={isDialogOpen}
           onOpenChange={(open) => !open && setIsDialogOpen(false)}
           appointment={appointment}
@@ -154,6 +156,13 @@ const OptionCell: React.FC<{ appointment: Appointment }> = ({
   );
 };
 
+type TimezoneCellContext<TData extends RowData, TValue = unknown> = CellContext<
+  TData,
+  TValue
+> & {
+  timezone?: string;
+};
+
 export const columns: ColumnDef<Appointment>[] = [
   // {
   //   id: "select",
@@ -185,7 +194,9 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
-    cell: ({ row }) => <OptionCell appointment={row.original} />,
+    cell: ({ row, timezone }: TimezoneCellContext<Appointment>) => (
+      <OptionCell appointment={row.original} timezone={timezone} />
+    ),
     id: "option.name",
     header: tableSortHeader("Option", "string"),
     sortingFn: tableSortNoopFunction,
@@ -203,15 +214,19 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (app) =>
-      DateTime.fromJSDate(app.dateTime).toLocaleString(DateTime.DATETIME_MED),
+    cell: ({ row, timezone }: TimezoneCellContext<Appointment>) =>
+      DateTime.fromJSDate(row.original.dateTime)
+        .setZone(timezone)
+        .toLocaleString(DateTime.DATETIME_MED),
     id: "dateTime",
     header: tableSortHeader("Date & time", "date"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (app) =>
-      DateTime.fromJSDate(app.createdAt).toLocaleString(DateTime.DATETIME_MED),
+    cell: ({ row, timezone }: TimezoneCellContext<Appointment>) =>
+      DateTime.fromJSDate(row.original.createdAt)
+        .setZone(timezone)
+        .toLocaleString(DateTime.DATETIME_MED),
     id: "createdAt",
     header: tableSortHeader("Requested at", "date"),
     sortingFn: tableSortNoopFunction,

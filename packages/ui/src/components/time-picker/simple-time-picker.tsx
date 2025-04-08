@@ -6,22 +6,7 @@ import { cn } from "../../utils";
 import { Clock, ChevronDownIcon, CheckIcon } from "lucide-react";
 import { Button } from "../button";
 import { ScrollArea } from "../scroll-area";
-import {
-  format,
-  parse,
-  setHours,
-  startOfHour,
-  endOfHour,
-  setMinutes,
-  startOfMinute,
-  endOfMinute,
-  setSeconds,
-  startOfDay,
-  endOfDay,
-  addHours,
-  subHours,
-  setMilliseconds,
-} from "date-fns";
+import { DateTime } from "luxon";
 
 interface SimpleTimeOption {
   value: any;
@@ -33,7 +18,7 @@ const AM_VALUE = 0;
 const PM_VALUE = 1;
 
 export function SimpleTimePicker({
-  value,
+  value: valueDateJs,
   onChange,
   use12HourFormat,
   min,
@@ -42,6 +27,7 @@ export function SimpleTimePicker({
   modal,
   showSeconds = false,
   minutesDivisibleBy,
+  timezone,
 }: {
   use12HourFormat?: boolean;
   value: Date;
@@ -53,6 +39,7 @@ export function SimpleTimePicker({
   modal?: boolean;
   showSeconds?: boolean;
   minutesDivisibleBy?: number;
+  timezone?: string;
 }) {
   // hours24h = HH
   // hours12h = hh
@@ -63,14 +50,30 @@ export function SimpleTimePicker({
         : "yyyy-MM-dd HH:mm:ss.SSS xxxx",
     [use12HourFormat]
   );
+
+  const value = useMemo(
+    () => DateTime.fromJSDate(valueDateJs).setZone(timezone),
+    [valueDateJs, timezone]
+  );
+
   const [ampm, setAmpm] = useState(
-    format(value, "a") === "AM" ? AM_VALUE : PM_VALUE
+    value.toFormat("a") === "AM" ? AM_VALUE : PM_VALUE
   );
+
+  const minDate = useMemo(
+    () => (min ? DateTime.fromJSDate(min).setZone(timezone) : undefined),
+    [min, timezone]
+  );
+  const maxDate = useMemo(
+    () => (max ? DateTime.fromJSDate(max).setZone(timezone) : undefined),
+    [max, timezone]
+  );
+
   const [hour, setHour] = useState(
-    use12HourFormat ? +format(value, "hh") : value.getHours()
+    use12HourFormat ? +value.toFormat("hh") : value.hour
   );
-  const [minute, setMinute] = useState(value.getMinutes());
-  const [second, setSecond] = useState(value.getSeconds());
+  const [minute, setMinute] = useState(value.minute);
+  const [second, setSecond] = useState(value.second);
 
   useEffect(() => {
     onChange(
@@ -83,7 +86,7 @@ export function SimpleTimePicker({
         second,
         ampm,
         showSeconds,
-      })
+      }).toJSDate()
     );
   }, [hour, minute, second, ampm, formatStr, use12HourFormat]);
 
@@ -96,11 +99,11 @@ export function SimpleTimePicker({
       Array.from({ length: use12HourFormat ? 12 : 24 }, (_, i) => {
         let disabled = false;
         const hourValue = use12HourFormat ? (i === 0 ? 12 : i) : i;
-        const hDate = setHours(value, use12HourFormat ? i + ampm * 12 : i);
-        const hStart = startOfHour(hDate);
-        const hEnd = endOfHour(hDate);
-        if (min && hEnd < min) disabled = true;
-        if (max && hStart > max) disabled = true;
+        const hDate = value.set({ hour: use12HourFormat ? i + ampm * 12 : i });
+        const hStart = hDate.startOf("hour");
+        const hEnd = hDate.endOf("hour");
+        if (minDate && hEnd < minDate) disabled = true;
+        if (maxDate && hStart > maxDate) disabled = true;
         return {
           value: hourValue,
           label: hourValue.toString().padStart(2, "0"),
@@ -110,14 +113,14 @@ export function SimpleTimePicker({
     [value, min, max, use12HourFormat, ampm]
   );
   const minutes: SimpleTimeOption[] = useMemo(() => {
-    const anchorDate = setHours(value, _hourIn24h);
+    const anchorDate = value.set({ hour: _hourIn24h });
     return Array.from({ length: 60 }, (_, i) => {
       let disabled = false;
-      const mDate = setMinutes(anchorDate, i);
-      const mStart = startOfMinute(mDate);
-      const mEnd = endOfMinute(mDate);
-      if (min && mEnd < min) disabled = true;
-      if (max && mStart > max) disabled = true;
+      const mDate = anchorDate.set({ minute: i });
+      const mStart = mDate.startOf("minute");
+      const mEnd = mDate.endOf("minute");
+      if (minDate && mEnd < minDate) disabled = true;
+      if (maxDate && mStart > maxDate) disabled = true;
       return {
         value: i,
         label: i.toString().padStart(2, "0"),
@@ -127,16 +130,25 @@ export function SimpleTimePicker({
       (minute) => !minutesDivisibleBy || minute.value % minutesDivisibleBy === 0
     );
   }, [value, min, max, _hourIn24h]);
+
   const seconds: SimpleTimeOption[] = useMemo(() => {
-    const anchorDate = setMilliseconds(
-      setMinutes(setHours(value, _hourIn24h), minute),
-      0
-    );
-    const _min = min ? setMilliseconds(min, 0) : undefined;
-    const _max = max ? setMilliseconds(max, 0) : undefined;
+    const anchorDate = value.set({
+      hour: _hourIn24h,
+      minute,
+      second: 0,
+      millisecond: 0,
+    });
+
+    const _min = minDate
+      ? minDate.set({ second: 0, millisecond: 0 })
+      : undefined;
+    const _max = maxDate
+      ? maxDate.set({ second: 0, millisecond: 0 })
+      : undefined;
+
     return Array.from({ length: 60 }, (_, i) => {
       let disabled = false;
-      const sDate = setSeconds(anchorDate, i);
+      const sDate = anchorDate.set({ second: i });
       if (_min && sDate < _min) disabled = true;
       if (_max && sDate > _max) disabled = true;
       return {
@@ -147,17 +159,17 @@ export function SimpleTimePicker({
     });
   }, [value, minute, min, max, _hourIn24h]);
   const ampmOptions = useMemo(() => {
-    const startD = startOfDay(value);
-    const endD = endOfDay(value);
+    const startD = value.startOf("day");
+    const endD = value.endOf("day");
     return [
       { value: AM_VALUE, label: "AM" },
       { value: PM_VALUE, label: "PM" },
     ].map((v) => {
       let disabled = false;
-      const start = addHours(startD, v.value * 12);
-      const end = subHours(endD, (1 - v.value) * 12);
-      if (min && end < min) disabled = true;
-      if (max && start > max) disabled = true;
+      const start = startD.plus({ hours: v.value * 12 });
+      const end = endD.minus({ hours: (1 - v.value) * 12 });
+      if (minDate && end < minDate) disabled = true;
+      if (maxDate && start > maxDate) disabled = true;
       return { ...v, disabled };
     });
   }, [value, min, max]);
@@ -181,7 +193,7 @@ export function SimpleTimePicker({
   }, [open]);
   const onHourChange = useCallback(
     (v: SimpleTimeOption) => {
-      if (min) {
+      if (minDate) {
         let newTime = buildTime({
           use12HourFormat,
           value,
@@ -191,12 +203,12 @@ export function SimpleTimePicker({
           second,
           ampm,
         });
-        if (newTime < min) {
-          setMinute(min.getMinutes());
-          setSecond(min.getSeconds());
+        if (newTime < minDate) {
+          setMinute(minDate.minute);
+          setSecond(minDate.second);
         }
       }
-      if (max) {
+      if (maxDate) {
         let newTime = buildTime({
           use12HourFormat,
           value,
@@ -206,9 +218,9 @@ export function SimpleTimePicker({
           second,
           ampm,
         });
-        if (newTime > max) {
-          setMinute(max.getMinutes());
-          setSecond(max.getSeconds());
+        if (newTime > maxDate) {
+          setMinute(maxDate.minute);
+          setSecond(maxDate.second);
         }
       }
       setHour(v.value);
@@ -218,7 +230,7 @@ export function SimpleTimePicker({
 
   const onMinuteChange = useCallback(
     (v: SimpleTimeOption) => {
-      if (min) {
+      if (minDate) {
         let newTime = buildTime({
           use12HourFormat,
           value,
@@ -228,11 +240,11 @@ export function SimpleTimePicker({
           second,
           ampm,
         });
-        if (newTime < min) {
-          setSecond(min.getSeconds());
+        if (newTime < minDate) {
+          setSecond(minDate.second);
         }
       }
-      if (max) {
+      if (maxDate) {
         let newTime = buildTime({
           use12HourFormat,
           value,
@@ -242,8 +254,8 @@ export function SimpleTimePicker({
           second,
           ampm,
         });
-        if (newTime > max) {
-          setSecond(newTime.getSeconds());
+        if (newTime > maxDate) {
+          setSecond(newTime.second);
         }
       }
       setMinute(v.value);
@@ -253,7 +265,7 @@ export function SimpleTimePicker({
 
   const onAmpmChange = useCallback(
     (v: SimpleTimeOption) => {
-      if (min) {
+      if (minDate) {
         let newTime = buildTime({
           use12HourFormat,
           value,
@@ -263,14 +275,14 @@ export function SimpleTimePicker({
           second,
           ampm: v.value,
         });
-        if (newTime < min) {
-          const minH = min.getHours() % 12;
+        if (newTime < minDate) {
+          const minH = minDate.hour % 12;
           setHour(minH === 0 ? 12 : minH);
-          setMinute(min.getMinutes());
-          setSecond(min.getSeconds());
+          setMinute(minDate.minute);
+          setSecond(minDate.second);
         }
       }
-      if (max) {
+      if (maxDate) {
         let newTime = buildTime({
           use12HourFormat,
           value,
@@ -280,11 +292,11 @@ export function SimpleTimePicker({
           second,
           ampm: v.value,
         });
-        if (newTime > max) {
-          const maxH = max.getHours() % 12;
+        if (newTime > maxDate) {
+          const maxH = maxDate.hour % 12;
           setHour(maxH === 0 ? 12 : maxH);
-          setMinute(max.getMinutes());
-          setSecond(max.getSeconds());
+          setMinute(maxDate.minute);
+          setSecond(maxDate.second);
         }
       }
       setAmpm(v.value);
@@ -297,8 +309,7 @@ export function SimpleTimePicker({
     [showSeconds]
   );
   const display = useMemo(() => {
-    return format(
-      value,
+    return value.toFormat(
       use12HourFormat ? `hh:mm${secondsFormat} a` : `HH:mm${secondsFormat}`
     );
   }, [value, use12HourFormat, secondsFormat]);
@@ -432,7 +443,7 @@ const TimeItem = ({
 
 interface BuildTimeOptions {
   use12HourFormat?: boolean;
-  value: Date;
+  value: DateTime;
   formatStr: string;
   hour: number;
   minute: number;
@@ -453,9 +464,9 @@ function buildTime(options: BuildTimeOptions) {
     showSeconds,
   } = options;
 
-  let date: Date;
+  let date: DateTime;
   if (use12HourFormat) {
-    const dateStrRaw = format(value, formatStr);
+    const dateStrRaw = value.toFormat(formatStr);
     // yyyy-MM-dd hh:mm:ss.SSS a zzzz
     // 2024-10-14 01:20:07.524 AM GMT+00:00
     let dateStr =
@@ -474,15 +485,14 @@ function buildTime(options: BuildTimeOptions) {
       dateStr.slice(0, 24) +
       (ampm == AM_VALUE ? "AM" : "PM") +
       dateStr.slice(26);
-    date = parse(dateStr, formatStr, value);
+    date = DateTime.fromFormat(dateStr, formatStr);
   } else {
-    date = setHours(
-      setMinutes(
-        setSeconds(setMilliseconds(value, 0), showSeconds ? second : 0),
-        minute
-      ),
-      hour
-    );
+    date = value.set({
+      hour,
+      minute,
+      second: showSeconds ? second : 0,
+      millisecond: 0,
+    });
   }
   return date;
 }

@@ -99,6 +99,7 @@ interface DataTableProps<TData, TValue> {
   totalItems: number;
   pageSizeOptions?: number[];
   sortSchemaDefault?: Sort;
+  additionalCellProps?: Record<string, any>;
 }
 
 export function DataTable<TData, TValue>({
@@ -107,6 +108,7 @@ export function DataTable<TData, TValue>({
   totalItems,
   pageSizeOptions = [10, 20, 30, 40, 50],
   sortSchemaDefault,
+  additionalCellProps,
 }: DataTableProps<TData, TValue>) {
   const [currentPage, setCurrentPage] = useQueryState(
     "page",
@@ -261,10 +263,10 @@ export function DataTable<TData, TValue>({
                           //   minWidth: cell.column.columnDef.minSize,
                           // }}
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                          {flexRender(cell.column.columnDef.cell, {
+                            ...cell.getContext(),
+                            ...(additionalCellProps ?? {}),
+                          })}
                         </TableCell>
                       ))}
                     </TableRow>
