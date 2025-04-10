@@ -61,6 +61,21 @@ export default class WeeklyScheduleConnectedApp
     }
   }
 
+  public async unInstall(appData: ConnectedAppData): Promise<void> {
+    const db = await this.props.getDbConnection();
+    const collection = db.collection<ScheduleOverrideEntity>(
+      SCHEDULE_COLLECTION_NAME
+    );
+    await collection.deleteMany({
+      appId: appData._id,
+    });
+
+    const count = await collection.countDocuments({});
+    if (count === 0) {
+      await db.dropCollection(SCHEDULE_COLLECTION_NAME);
+    }
+  }
+
   protected async setSchedule(
     appId: string,
     weekIdentifier: WeekIdentifier,

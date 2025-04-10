@@ -47,6 +47,7 @@ type BaseApp = {
       link: string;
       title: string;
     }[];
+    notScrollable?: boolean;
     isHidden?: boolean;
     pageTitle?: string;
     pageDescription?: string;

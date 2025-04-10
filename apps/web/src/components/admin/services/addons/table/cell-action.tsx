@@ -1,7 +1,7 @@
 "use client";
-import { AlertModal } from "@/components/modal/alert-modal";
 import { AppointmentAddon, ServiceField } from "@vivid/types";
 import {
+  AlertModal,
   Button,
   DropdownMenu,
   DropdownMenuContent,

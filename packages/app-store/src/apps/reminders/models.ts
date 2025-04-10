@@ -1,4 +1,10 @@
-import { asOptinalNumberField, communicationChannels } from "@vivid/types";
+import {
+  asOptinalNumberField,
+  CommunicationChannel,
+  communicationChannels,
+  Query,
+  WithDatabaseId,
+} from "@vivid/types";
 import { z } from "zod";
 
 export const timeBeforeReminderType = "timeBefore" as const;
@@ -36,11 +42,13 @@ export const reminderTimeBeforeSchema = z.object({
       .min(0, "Min amount of hours is 0")
       .max(24 * 5, "Max amount of hours is 120")
   ),
-  minutes: z.coerce
-    .number()
-    .int("Should be the integer value")
-    .min(0, "Min amount of minutes is 0")
-    .max(60 * 10, "Max amount of minutes is 600"),
+  minutes: asOptinalNumberField(
+    z.coerce
+      .number()
+      .int("Should be the integer value")
+      .min(0, "Min amount of minutes is 0")
+      .max(60 * 10, "Max amount of minutes is 600")
+  ),
 });
 
 export const reminderAtTimeSchema = z.object({
@@ -102,7 +110,6 @@ export const reminderChannelSchema = z.discriminatedUnion("channel", [
 
 export const reminderGeneralSchema = z.object({
   name: z.string().min(2, "Reminder name must me at least 2 characters long"),
-  id: z.string(),
 });
 
 export const reminderSchema = z
@@ -118,8 +125,37 @@ export const reminderSchema = z
         message:
           "Reminder should be sent at least 1 day before the appointment",
       });
+    } else if (
+      arg.type === "timeBefore" &&
+      !arg.weeks &&
+      !arg.days &&
+      !arg.hours &&
+      !arg.minutes
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["minutes"],
+        message:
+          "Reminder should be sent at least 1 minute before the appointment",
+      });
     }
   });
+
+export const getReminderSchemaWithUniqueCheck = (
+  uniqueNameCheckFn: (name: string) => Promise<boolean>,
+  message: string
+) => {
+  return reminderSchema.superRefine(async (args, ctx) => {
+    const isUnique = await uniqueNameCheckFn(args.name);
+    if (!isUnique) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["name"],
+        message,
+      });
+    }
+  });
+};
 
 export const remindersSchema = z.array(reminderSchema).optional();
 
@@ -131,13 +167,79 @@ export type TextMessageChannelReminder = z.infer<
   typeof reminderTextMessageSchema
 >;
 
-export type Reminder = z.infer<typeof reminderSchema>;
-export type Reminders = z.infer<typeof remindersSchema>;
+export type ReminderUpdateModel = z.infer<typeof reminderSchema>;
 
-export const remindersConfigurationSchema = z.object({
-  reminders: remindersSchema,
-});
+export type Reminder = WithDatabaseId<ReminderUpdateModel> & {
+  appId: string;
+  updatedAt: Date;
+};
 
-export type RemindersConfiguration = z.infer<
-  typeof remindersConfigurationSchema
->;
+export type GetRemindersAction = {
+  query: Query & {
+    channel?: CommunicationChannel[];
+  };
+};
+
+export const GetRemindersActionType = "get-reminders" as const;
+
+export type GetReminderAction = {
+  id: string;
+};
+
+export const GetReminderActionType = "get-reminder" as const;
+
+export type DeleteRemindersAction = {
+  ids: string[];
+};
+
+export const DeleteRemindersActionType = "delete-reminders" as const;
+
+export type CreateNewReminderAction = {
+  reminder: ReminderUpdateModel;
+};
+
+export const CreateNewReminderActionType = "create-reminder" as const;
+
+export type UpdateReminderAction = {
+  id: string;
+  update: ReminderUpdateModel;
+};
+
+export const UpdateReminderActionType = "update-reminder" as const;
+
+export type CheckUniqueReminderNameAction = {
+  id?: string;
+  name: string;
+};
+
+export const CheckUniqueReminderNameActionType = "check-unique-name" as const;
+
+export type RequestAction =
+  | ({
+      type: typeof GetRemindersActionType;
+    } & GetRemindersAction)
+  | ({
+      type: typeof GetReminderActionType;
+    } & GetReminderAction)
+  | ({
+      type: typeof DeleteRemindersActionType;
+    } & DeleteRemindersAction)
+  | ({
+      type: typeof CreateNewReminderActionType;
+    } & CreateNewReminderAction)
+  | ({
+      type: typeof UpdateReminderActionType;
+    } & UpdateReminderAction)
+  | ({
+      type: typeof CheckUniqueReminderNameActionType;
+    } & CheckUniqueReminderNameAction);
+
+// export type Reminders = z.infer<typeof remindersSchema>;
+
+// export const remindersConfigurationSchema = z.object({
+//   reminders: remindersSchema,
+// });
+
+// export type RemindersConfiguration = z.infer<
+//   typeof remindersConfigurationSchema
+// >;

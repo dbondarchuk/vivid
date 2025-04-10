@@ -100,6 +100,7 @@ interface DataTableProps<TData, TValue> {
   pageSizeOptions?: number[];
   sortSchemaDefault?: Sort;
   additionalCellProps?: Record<string, any>;
+  className?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -109,6 +110,7 @@ export function DataTable<TData, TValue>({
   pageSizeOptions = [10, 20, 30, 40, 50],
   sortSchemaDefault,
   additionalCellProps,
+  className,
 }: DataTableProps<TData, TValue>) {
   const [currentPage, setCurrentPage] = useQueryState(
     "page",
@@ -216,7 +218,12 @@ export function DataTable<TData, TValue>({
   return (
     <div className="flex flex-1 flex-col space-y-4">
       <div className="relative flex flex-1" ref={tableContainerRef}>
-        <div className="absolute bottom-0 left-0 right-0 top-0 flex overflow-scroll rounded-md border md:overflow-auto">
+        <div
+          className={cn(
+            "absolute bottom-0 left-0 right-0 top-0 flex overflow-scroll rounded-md border md:overflow-auto",
+            className
+          )}
+        >
           <ScrollArea className="flex-1">
             <Table
             //  style={{ width: table.getTotalSize() }}

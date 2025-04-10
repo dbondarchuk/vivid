@@ -1,6 +1,8 @@
 "use client";
-import { Button, Modal, Spinner } from "@vivid/ui";
 import { useEffect, useState } from "react";
+import { Modal } from "./modal";
+import { Button } from "./button";
+import { Spinner } from "./spinner";
 
 interface AlertModalProps {
   isOpen: boolean;

@@ -12,16 +12,26 @@ import {
   ServiceField,
   SocialConfiguration,
   TextMessageReply,
+  WithTotal,
 } from "@vivid/types";
 import {
+  buildSearchQuery,
   getArguments,
   getPhoneField,
   template,
   templateSafeWithError,
 } from "@vivid/utils";
 import { DateTime } from "luxon";
+import { ObjectId, type Filter, type Sort } from "mongodb";
 import ownerTextMessageReplyTemplate from "./emails/owner-text-message-reply.html";
-import { Reminder, RemindersConfiguration } from "./models";
+import {
+  GetRemindersAction,
+  Reminder,
+  ReminderUpdateModel,
+  RequestAction,
+} from "./models";
+
+const REMINDERS_COLLECTION_NAME = "reminders";
 
 export default class RemindersConnectedApp
   implements IConnectedApp, IScheduled, ITextMessageResponder
@@ -30,33 +40,232 @@ export default class RemindersConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RemindersConfiguration
-  ): Promise<ConnectedAppStatusWithText> {
-    const defaultApps = await this.props.services
-      .ConfigurationService()
-      .getConfiguration("defaultApps");
+    data: RequestAction
+  ): Promise<any> {
+    switch (data.type) {
+      case "get-reminder":
+        return await this.getReminder(appData._id, data.id);
 
-    try {
-      const emailAppId = defaultApps.email?.appId;
-      await this.props.services.ConnectedAppService().getApp(emailAppId!);
-    } catch {
-      return {
-        status: "failed",
-        statusText: "Text message sender default app is not configured",
+      case "get-reminders":
+        return await this.getReminders(appData._id, data.query);
+
+      case "delete-reminders":
+        return await this.deleteReminders(appData._id, data.ids);
+
+      case "create-reminder":
+        return await this.createReminder(appData._id, data.reminder);
+
+      case "update-reminder":
+        return await this.updateReminder(appData._id, data.id, data.update);
+
+      case "check-unique-name":
+        return await this.checkUniqueName(appData._id, data.name, data.id);
+
+      default: {
+        const defaultApps = await this.props.services
+          .ConfigurationService()
+          .getConfiguration("defaultApps");
+
+        try {
+          const emailAppId = defaultApps.email?.appId;
+          await this.props.services.ConnectedAppService().getApp(emailAppId!);
+        } catch {
+          return {
+            status: "failed",
+            statusText: "Text message sender default app is not configured",
+          };
+        }
+
+        const status: ConnectedAppStatusWithText = {
+          status: "connected",
+          statusText: `Successfully set up`,
+        };
+
+        this.props.update({
+          data,
+          ...status,
+        });
+
+        return status;
+      }
+    }
+  }
+
+  public async unInstall(appData: ConnectedAppData): Promise<void> {
+    const db = await this.props.getDbConnection();
+    const collection = db.collection<Reminder>(REMINDERS_COLLECTION_NAME);
+    await collection.deleteMany({
+      appId: appData._id,
+    });
+
+    const count = await collection.countDocuments({});
+    if (count === 0) {
+      await db.dropCollection(REMINDERS_COLLECTION_NAME);
+    }
+  }
+
+  protected async getReminder(appId: string, id: string) {
+    const db = await this.props.getDbConnection();
+
+    return await db.collection<Reminder>(REMINDERS_COLLECTION_NAME).findOne({
+      appId,
+      _id: id,
+    });
+  }
+
+  protected async getReminders(
+    appId: string,
+    query: GetRemindersAction["query"]
+  ): Promise<WithTotal<Reminder>> {
+    const db = await this.props.getDbConnection();
+
+    const sort: Sort = query.sort?.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.id]: curr.desc ? -1 : 1,
+      }),
+      {}
+    ) || { updatedAt: -1 };
+
+    const filter: Filter<Reminder> = {
+      appId,
+    };
+
+    if (query.channel) {
+      filter.channel = {
+        $in: query.channel,
       };
     }
 
-    const status: ConnectedAppStatusWithText = {
-      status: "connected",
-      statusText: `Successfully set up`,
+    if (query.search) {
+      const $regex = new RegExp(query.search, "i");
+      const queries = buildSearchQuery<Reminder>({ $regex }, "name");
+
+      filter.$or = queries;
+    }
+
+    const [result] = await db
+      .collection<Reminder>(REMINDERS_COLLECTION_NAME)
+      .aggregate([
+        {
+          $sort: sort,
+        },
+        {
+          $match: filter,
+        },
+        {
+          $project: {
+            value: false,
+          },
+        },
+        {
+          $facet: {
+            paginatedResults: [
+              ...(typeof query.offset !== "undefined"
+                ? [{ $skip: query.offset }]
+                : []),
+              ...(typeof query.limit !== "undefined"
+                ? [{ $limit: query.limit }]
+                : []),
+            ],
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
+
+    return {
+      total: result.totalCount?.[0]?.count || 0,
+      items: result.paginatedResults || [],
+    };
+  }
+
+  protected async createReminder(
+    appId: string,
+    reminder: ReminderUpdateModel
+  ): Promise<Reminder> {
+    const dbReminder: Reminder = {
+      ...reminder,
+      appId,
+      _id: new ObjectId().toString(),
+      updatedAt: DateTime.utc().toJSDate(),
     };
 
-    this.props.update({
-      data,
-      ...status,
-    });
+    if (!this.checkUniqueName(appId, reminder.name)) {
+      throw new Error("Name already exists");
+    }
 
-    return status;
+    const db = await this.props.getDbConnection();
+    const reminders = db.collection<Reminder>(REMINDERS_COLLECTION_NAME);
+
+    await reminders.insertOne(dbReminder);
+
+    return dbReminder;
+  }
+
+  protected async updateReminder(
+    appId: string,
+    id: string,
+    update: ReminderUpdateModel
+  ): Promise<void> {
+    const db = await this.props.getDbConnection();
+    const reminders = db.collection<Reminder>(REMINDERS_COLLECTION_NAME);
+
+    const { _id, ...updateObj } = update as Reminder; // Remove fields in case it slips here
+
+    if (!this.checkUniqueName(appId, update.name, id)) {
+      throw new Error("Name already exists");
+    }
+
+    updateObj.updatedAt = DateTime.utc().toJSDate();
+
+    await reminders.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: updateObj,
+      }
+    );
+  }
+
+  protected async deleteReminders(appId: string, ids: string[]): Promise<void> {
+    const db = await this.props.getDbConnection();
+    const reminders = db.collection<Reminder>(REMINDERS_COLLECTION_NAME);
+
+    await reminders.deleteMany({
+      appId,
+      _id: {
+        $in: ids,
+      },
+    });
+  }
+
+  protected async checkUniqueName(
+    appId: string,
+    name: string,
+    id?: string
+  ): Promise<boolean> {
+    const db = await this.props.getDbConnection();
+    const templates = db.collection<Reminder>(REMINDERS_COLLECTION_NAME);
+
+    const filter: Filter<Reminder> = {
+      name,
+      appId,
+    };
+
+    if (id) {
+      filter._id = {
+        $ne: id,
+      };
+    }
+
+    const result = await templates.countDocuments(filter);
+    return result === 0;
   }
 
   public async onTime(appData: ConnectedAppData, date: Date): Promise<void> {
@@ -75,9 +284,16 @@ export default class RemindersConnectedApp
     ).items;
 
     const timezone = bookingConfig.timezone;
-    const data = appData.data as RemindersConfiguration;
+    const db = await this.props.getDbConnection();
 
-    const promises = (data?.reminders || []).map(async (reminder) => {
+    const reminders = await db
+      .collection<Reminder>(REMINDERS_COLLECTION_NAME)
+      .find({
+        appId: appData._id,
+      })
+      .toArray();
+
+    const promises = (reminders || []).map(async (reminder) => {
       const appointments = await this.getAppointments(date, reminder, timezone);
       const appointmentPromises = appointments.map((appointment) =>
         this.sendReminder(

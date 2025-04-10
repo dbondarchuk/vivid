@@ -48,6 +48,11 @@ export class ConnectedAppsService implements IConnectedAppsService {
       CONNECTED_APPS_COLLECTION_NAME
     );
 
+    const { app, service } = await this.getAppService(appId);
+    if (service.unInstall) {
+      await service.unInstall(app);
+    }
+
     await collection.deleteOne({
       _id: appId,
     });
@@ -315,10 +320,6 @@ export class ConnectedAppsService implements IConnectedAppsService {
       })
       .toArray();
 
-    if (!result) {
-      throw new Error("App not found");
-    }
-
     return result;
   }
 
@@ -335,7 +336,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     });
 
     if (!app) {
-      throw new Error("App not found");
+      throw new Error(`App ${appId} was not found`);
     }
 
     const service = AvailableAppServices[app.name](

@@ -25,6 +25,21 @@ export default class BusyEventsConnectedApp
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
+  public async unInstall(appData: ConnectedAppData): Promise<void> {
+    const db = await this.props.getDbConnection();
+    const collection = db.collection<BusyEventsEntity>(
+      BUSY_EVENTS_COLLECTION_NAME
+    );
+    await collection.deleteMany({
+      appId: appData._id,
+    });
+
+    const count = await collection.countDocuments({});
+    if (count === 0) {
+      await db.dropCollection(BUSY_EVENTS_COLLECTION_NAME);
+    }
+  }
+
   public async processRequest(
     appData: ConnectedAppData,
     data: RequestAction

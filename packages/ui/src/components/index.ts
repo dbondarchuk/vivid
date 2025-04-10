@@ -1,6 +1,7 @@
 export { toast } from "sonner";
 export * from "./accordion";
 export * from "./alert-dialog";
+export * from "./alert-modal";
 export * from "./app-selector";
 export * from "./arguments-autocomplete";
 export * from "./asset-preview";
