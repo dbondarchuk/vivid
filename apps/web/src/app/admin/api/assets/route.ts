@@ -46,15 +46,13 @@ export async function POST(request: NextRequest) {
     fileType = fileType[0];
   }
 
-  const buffer = await file.arrayBuffer();
-
   const asset = await ServicesContainer.AssetsService().createAsset(
     {
       filename: `${bucket ? `${bucket}/` : ""}${v4()}-${file.name}`,
       mimeType: fileType,
       description: formData.get("description") as string,
     },
-    Buffer.from(buffer)
+    file
   );
 
   const { url } =

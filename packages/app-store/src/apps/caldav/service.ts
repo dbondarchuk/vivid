@@ -18,24 +18,16 @@ export default class CaldavConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    request: CaldavCalendarSource & { fetchCalendars?: boolean }
+    data: CaldavCalendarSource
   ): Promise<ConnectedAppStatusWithText | string[]> {
     try {
-      const { fetchCalendars, ...data } = request;
-
       const client = this.getClient(data);
       await client.login();
 
+      // Try to connect
       const calendars = await client.fetchCalendars();
-
-      if (fetchCalendars) {
-        return calendars
-          .map((calendar) => calendar.displayName)
-          .map((name) => {
-            if (!name || typeof name === "string") return name;
-            return Object.keys(name)[0];
-          })
-          .filter((name) => !!name) as string[];
+      if (!calendars.some((c) => c.displayName === data.calendarName)) {
+        throw new Error(`Calendar '${data.calendarName}' was not found`);
       }
 
       const status: ConnectedAppStatusWithText = {
@@ -64,6 +56,30 @@ export default class CaldavConnectedApp
       });
 
       return status;
+    }
+  }
+
+  public async processStaticRequest(
+    request: CaldavCalendarSource & { fetchCalendars: true }
+  ): Promise<string[]> {
+    try {
+      const { fetchCalendars, ...data } = request;
+
+      const client = this.getClient(data);
+      await client.login();
+
+      const calendars = await client.fetchCalendars();
+
+      return calendars
+        .map((calendar) => calendar.displayName)
+        .map((name) => {
+          if (!name || typeof name === "string") return name;
+          return Object.keys(name)[0];
+        })
+        .filter((name) => !!name) as string[];
+    } catch (e: any) {
+      console.error(`Failed to fetch calendars`, e);
+      throw e;
     }
   }
 

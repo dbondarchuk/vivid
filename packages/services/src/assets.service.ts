@@ -115,7 +115,7 @@ export class AssetsService implements IAssetsService {
 
   public async createAsset(
     asset: Omit<Asset, "_id" | "uploadedAt">,
-    file: Buffer
+    file: File
   ): Promise<Asset> {
     const storage = await this.getAssetsStorage();
 
@@ -130,13 +130,18 @@ export class AssetsService implements IAssetsService {
       throw new Error(`File '${asset.filename}' already exists`);
     }
 
-    await storage.service.saveFile(storage.app, asset.filename, file);
+    await storage.service.saveFile(
+      storage.app,
+      asset.filename,
+      Readable.fromWeb(file.stream() as any),
+      file.size
+    );
 
     const dbAsset: Asset = {
       ...asset,
       _id: new ObjectId().toString(),
       uploadedAt: DateTime.utc().toJSDate(),
-      size: file.byteLength,
+      size: file.size,
     };
 
     await assets.insertOne(dbAsset);

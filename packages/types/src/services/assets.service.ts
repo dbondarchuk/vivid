@@ -11,7 +11,7 @@ export interface IAssetsService {
   ): Promise<WithTotal<Asset>>;
   createAsset(
     asset: Omit<Asset, "_id" | "uploadedAt" | "size">,
-    file: Buffer
+    file: File
   ): Promise<Asset>;
   updateAsset(id: string, update: AssetUpdate): Promise<void>;
   deleteAsset(id: string): Promise<Asset | undefined>;

@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger, cn } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
-import { Clock, Timer } from "lucide-react";
+import { CalendarClock, Clock, Timer } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { EventVariantClasses } from "./styles";
@@ -18,9 +18,9 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
   children,
 }) => {
   const eventDate = DateTime.fromJSDate(event.start).setZone(timezone);
+  const endDate = DateTime.fromJSDate(event.end).setZone(timezone);
   const duration = durationToTime(
-    DateTime.fromJSDate(event.end).diff(eventDate, "minutes").toObject()
-      .minutes ?? 0
+    endDate.diff(eventDate, "minutes").toObject().minutes ?? 0
   );
 
   return (
@@ -41,11 +41,17 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
             <Clock className="mr-2 h-4 w-4" />
             <span>{eventDate.toLocaleString(DateTime.DATETIME_FULL)}</span>
           </div>
+          {duration.hours < 23 && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Timer className="mr-2 h-4 w-4" />
+              <span>
+                {duration.hours} hr {duration.minutes} min
+              </span>
+            </div>
+          )}
           <div className="flex items-center text-sm text-muted-foreground">
-            <Timer className="mr-2 h-4 w-4" />
-            <span>
-              {duration.hours} hr {duration.minutes} min
-            </span>
+            <CalendarClock className="mr-2 h-4 w-4" />
+            <span>{endDate.toLocaleString(DateTime.DATETIME_FULL)}</span>
           </div>
 
           {/* {event.location && (

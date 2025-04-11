@@ -23,11 +23,14 @@ import { z } from "zod";
 import { checkUniqueFileName, createAsset } from "./actions";
 
 const formSchema = z.object({
-  files: z.array(z.any()).min(1, "File must be attached"),
+  file: z.instanceof(File, { message: "File must be attached" }),
   filename: z
     .string()
     .min(3, { message: "File name must be at least 3 characters" })
-    .regex(/^[\w,\s-]+\.[A-Za-z0-9]{1,6}$/gi, "File name must have an exension")
+    .regex(
+      /^[\w,\.\(\)\s-]+\.[A-Za-z0-9]{1,6}$/gi,
+      "File name must have an exension"
+    )
     .refine((filename) => checkUniqueFileName(filename), {
       message: "File name must be unique",
     }),
@@ -44,13 +47,11 @@ export const AssetForm: React.FC = () => {
     resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
-    defaultValues: {
-      files: [],
-    },
+    defaultValues: {},
   });
 
-  const files = form.watch("files");
-  const filename = files?.[0]?.name;
+  const file = form.watch("file");
+  const filename = file?.name;
   React.useEffect(() => {
     if (filename) {
       let fileType = mimeType.lookup(filename);
@@ -71,9 +72,9 @@ export const AssetForm: React.FC = () => {
       setLoading(true);
 
       const formData = new FormData();
-      const { files, ...rest } = data;
+      const { file, ...rest } = data;
 
-      formData.append("file", files[0]);
+      formData.append("file", file);
       Object.entries(rest).forEach(([key, value]) => {
         if (value) formData.append(key, value);
       });
@@ -96,14 +97,14 @@ export const AssetForm: React.FC = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
         <FormField
           control={form.control}
-          name="files"
+          name="file"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Asset</FormLabel>
               <FormControl>
                 <DndFileInput
                   disabled={loading}
-                  value={field.value?.[0]}
+                  value={field.value}
                   onChange={(value) => {
                     field.onChange(value);
                     field.onBlur();

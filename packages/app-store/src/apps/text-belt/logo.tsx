@@ -6,6 +6,7 @@ export const TextBeltLogo: React.FC<React.HTMLAttributes<SVGElement>> = (
     width="24"
     height="24"
     viewBox="0 0 24 24"
+    {...props}
   >
     <g id="surface1">
       <path

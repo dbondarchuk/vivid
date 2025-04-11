@@ -47,7 +47,7 @@ export default async function AssetsPage(props: Params) {
         <AssetsTableAction />
         <Suspense
           key={key}
-          fallback={<DataTableSkeleton columnCount={7} rowCount={10} />}
+          fallback={<DataTableSkeleton columnCount={8} rowCount={10} />}
         >
           <AssetsTable />
         </Suspense>

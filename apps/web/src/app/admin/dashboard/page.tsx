@@ -51,7 +51,10 @@ export default async function Page({ searchParams }: Params) {
               </TabsLinkTrigger>
             </TabsList>
             {activeTab === "overview" && (
-              <TabsContent value="overview" className="space-y-4 @container">
+              <TabsContent
+                value="overview"
+                className="space-y-4 @container [contain:layout]"
+              >
                 <div className="flex flex-col-reverse @6xl:flex-row gap-8">
                   <div className="flex flex-col @6xl:basis-2/3 flex-shrink">
                     <EventsCalendar />

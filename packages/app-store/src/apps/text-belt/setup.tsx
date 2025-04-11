@@ -47,7 +47,7 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    API key <InfoTooltip>TextBelt auth tokenr</InfoTooltip>
+                    API key <InfoTooltip>TextBelt auth token</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="API key" {...field} />

@@ -9,7 +9,7 @@ import {
 
 const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
   return (
-    <span className="inline-flex items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
+    <span className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
       <ConnectedAppNameAndLogo app={app} logoClassName="w-4 h-4" />
       <ConnectedAppAccount app={app} />
     </span>
@@ -117,7 +117,10 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
     <Combobox
       allowClear={allowClear}
       disabled={disabled || isLoading}
-      className={cn("flex font-normal text-base", className)}
+      className={cn(
+        "flex font-normal text-base max-w-full  [&>button]:w-full",
+        className
+      )}
       values={appValues(apps)}
       searchLabel={isLoading ? "Loading apps..." : "Select app"}
       value={value}

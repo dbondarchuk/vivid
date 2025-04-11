@@ -6,7 +6,8 @@ export interface IAssetsStorage {
   saveFile(
     appData: ConnectedAppData,
     filename: string,
-    file: Buffer
+    file: Readable,
+    fileLength: number
   ): Promise<void>;
   deleteFile(appData: ConnectedAppData, filename: string): Promise<void>;
   deleteFiles(appData: ConnectedAppData, filenames: string[]): Promise<void>;

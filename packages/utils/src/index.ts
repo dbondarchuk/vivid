@@ -1,6 +1,7 @@
 export * from "./assets";
 export * from "./colors";
 export * from "./email";
+export * from "./file";
 export * from "./fixtures";
 export * from "./get-arguments";
 export * from "./ics-uid";

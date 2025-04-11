@@ -22,17 +22,18 @@ import {
   toast,
 } from "@vivid/ui";
 import React from "react";
-import { processRequest } from "../../actions";
+import { processStaticRequest } from "../../actions";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CaldavApp } from "./app";
 import { CaldavCalendarSource, caldavCalendarSourceSchema } from "./models";
+import { CALDAV_APP_NAME } from "./const";
 
 export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
   appId: existingAppId,
 }) => {
-  const { appId, appStatus, form, isLoading, setIsLoading, isValid, onSubmit } =
+  const { appStatus, form, isLoading, setIsLoading, isValid, onSubmit } =
     useConnectedAppSetup<CaldavCalendarSource>({
       appId: existingAppId,
       appName: CaldavApp.name,
@@ -47,13 +48,14 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   React.useEffect(() => {
     if (!calendarName) return;
     setCalendars(Array.from(new Set(calendars || []).add(calendarName)));
+    form.setValue("calendarName", calendarName);
   }, [calendarName]);
 
   const [fetchingCalendars, setFetchingCalendars] = React.useState(false);
   const fetchCalendars = async () => {
     setFetchingCalendars(true);
     try {
-      const result = await processRequest(appId || "", {
+      const result = await processStaticRequest(CALDAV_APP_NAME, {
         ...form.getValues(),
         fetchCalendars: true,
       });
@@ -131,7 +133,7 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Calendar</FormLabel>
-                  <div className="flex flex-row gap-1 items-center">
+                  <div className="flex flex-row gap-2 items-center">
                     <FormControl className="flex-grow">
                       <Select
                         value={field.value}

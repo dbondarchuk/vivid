@@ -49,6 +49,8 @@ export * from "./navigation-menu";
 export * from "./non-sortable";
 export * from "./phone-input";
 export * from "./popover";
+export * from "./progress";
+export * from "./progress-segment";
 export * from "./radio-button-group";
 export * from "./radio-group";
 export * from "./resizable";

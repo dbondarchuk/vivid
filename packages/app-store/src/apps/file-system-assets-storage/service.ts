@@ -30,7 +30,8 @@ export default class FileSystemAssetsStorageConnectedApp
   public async saveFile(
     appData: ConnectedAppData,
     filename: string,
-    file: Buffer
+    file: Readable,
+    fileLength: number
   ): Promise<void> {
     const filepath = this.getFilePath(filename);
     await this.ensureDirectoryExistence(filepath);

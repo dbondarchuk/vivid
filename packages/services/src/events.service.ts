@@ -151,8 +151,6 @@ export class EventsService implements IEventsService {
           fileType = fileType[0];
         }
 
-        const buffer = await file.arrayBuffer();
-
         const asset = await this.assetsService.createAsset(
           {
             filename: `${appointmentId}-${fieldId}-${file.name}`,
@@ -160,7 +158,7 @@ export class EventsService implements IEventsService {
             appointmentId,
             description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
           },
-          Buffer.from(buffer)
+          file
         );
 
         assets.push(asset);
@@ -574,8 +572,6 @@ export class EventsService implements IEventsService {
           fileType = fileType[0];
         }
 
-        const buffer = await file.arrayBuffer();
-
         const id = v4();
         const asset = await this.assetsService.createAsset(
           {
@@ -584,7 +580,7 @@ export class EventsService implements IEventsService {
             appointmentId,
             description: `${event.fields.name} - ${event.option.name}`,
           },
-          Buffer.from(buffer)
+          file
         );
 
         assets.push(asset);
@@ -596,9 +592,18 @@ export class EventsService implements IEventsService {
         _id: appointmentId,
       },
       {
-        $addToSet: {
+        $set: {
           files: {
-            $each: assets,
+            // @ts-expect-error $cond is needed here
+            $cond: {
+              if: {
+                $eq: ["$files", null],
+              },
+              then: assets,
+              else: {
+                $concatArrays: ["$files", assets],
+              },
+            },
           },
         },
       }
@@ -854,7 +859,7 @@ export class EventsService implements IEventsService {
       dateTime: DateTime.fromISO(event.dateTime, { zone: "utc" }).toJSDate(),
       status,
       createdAt: DateTime.now().toJSDate(),
-      files,
+      files: files ?? [],
     };
 
     await appointments.insertOne(dbEvent);

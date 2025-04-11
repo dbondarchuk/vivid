@@ -62,7 +62,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </Link> */}
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-sm flex flex-col w-full @container">
+      <CardContent className="text-sm flex flex-col w-full @container [contain:layout]">
         <dl className="divide-y">
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">

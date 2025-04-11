@@ -39,6 +39,7 @@
     "nextjs-toploader": "^1.6.12",
     "node-cron": "^3.0.3",
     "npm": "^10.8.2",
+    "p-limit": "^6.2.0",
     "react": "19.0.0",
     "react-cookie": "^8.0.1",
     "react-i18next": "^15.0.0",

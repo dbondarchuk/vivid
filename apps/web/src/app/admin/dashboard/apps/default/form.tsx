@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { updateDefaultAppsConfiguration } from "./actions";
+import { MigrateAssetsDialog } from "./migrate-assets-dialog";
 
 export const DefaultAppsConfigurationForm: React.FC<{
   values: DefaultAppsConfiguration;
@@ -95,27 +96,29 @@ export const DefaultAppsConfigurationForm: React.FC<{
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="assetsStorage.appId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Assets storage</FormLabel>
+        </div>
+        <FormField
+          control={form.control}
+          name="assetsStorage.appId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Assets storage</FormLabel>
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                 <FormControl>
                   <AppSelector
                     onItemSelect={field.onChange}
                     scope="assets-storage"
                     value={field.value}
                     disabled={loading}
-                    className="w-full"
-                    allowClear
+                    className="flex-1"
                   />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+                <MigrateAssetsDialog disabled={loading} appId={field.value} />
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <SaveButton form={form} disabled={loading} />
       </form>
     </Form>

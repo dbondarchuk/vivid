@@ -193,6 +193,18 @@ export class ConnectedAppsService implements IConnectedAppsService {
     return await appService.processRequest(app, data);
   }
 
+  public async processStaticRequest(appName: string, data: any): Promise<any> {
+    const appService = AvailableAppServices[appName](
+      this.getAppServiceStaticProps(appName)
+    );
+
+    if (!appService.processStaticRequest) {
+      throw new Error(`App ${appName} does not support static requests`);
+    }
+
+    return await appService.processStaticRequest(data);
+  }
+
   public async getAppStatus(appId: string): Promise<ConnectedApp> {
     const db = await getDbConnection();
     const collection = db.collection<ConnectedAppData>(
@@ -349,6 +361,18 @@ export class ConnectedAppsService implements IConnectedAppsService {
   public getAppServiceProps(appId: string): IConnectedAppProps {
     return {
       update: (updateModel) => this.updateApp(appId, updateModel),
+      services: ServicesContainer,
+      getDbConnection: getDbConnection,
+    };
+  }
+
+  public getAppServiceStaticProps(appName: string): IConnectedAppProps {
+    return {
+      update: async (updateModel) => {
+        console.error(
+          `App ${appName} called update method from static request`
+        );
+      },
       services: ServicesContainer,
       getDbConnection: getDbConnection,
     };

@@ -14,11 +14,7 @@ export async function createAsset(formData: FormData) {
     description: formData.get("description")?.toString(),
   };
 
-  const data = await file.arrayBuffer();
-  return await ServicesContainer.AssetsService().createAsset(
-    asset,
-    Buffer.from(data)
-  );
+  return await ServicesContainer.AssetsService().createAsset(asset, file);
 }
 
 export async function updateAsset(_id: string, update: AssetUpdate) {

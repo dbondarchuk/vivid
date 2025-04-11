@@ -30,6 +30,13 @@ export const processRequest = async (appId: string, data: any) => {
   );
 };
 
+export const processStaticRequest = async (appName: string, data: any) => {
+  return await ServicesContainer.ConnectedAppService().processStaticRequest(
+    appName,
+    data
+  );
+};
+
 export const deleteApp = async (appId: string) => {
   return await ServicesContainer.ConnectedAppService().deleteApp(appId);
 };

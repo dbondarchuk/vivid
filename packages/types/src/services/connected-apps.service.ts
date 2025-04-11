@@ -21,6 +21,7 @@ export interface IConnectedAppsService {
     request: ApiRequest
   ): Promise<ApiResponse | undefined>;
   processRequest(appId: string, data: any): Promise<any>;
+  processStaticRequest(appName: string, data: any): Promise<any>;
   getAppStatus(appId: string): Promise<ConnectedApp>;
   getApps(): Promise<ConnectedApp[]>;
   getAppsByScope(...scope: AppScope[]): Promise<ConnectedApp[]>;

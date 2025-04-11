@@ -209,7 +209,7 @@ export const AppointmentView: React.FC<{
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full @container">
+    <div className="flex flex-col gap-4 w-full @container [contain:layout]">
       <div className="flex flex-row justify-end gap-2 flex-wrap [&>form]:hidden">
         <Link
           className="inline-flex flex-row gap-2 items-center"

@@ -29,6 +29,7 @@ export interface ApiResponse extends Response {}
 
 export interface IConnectedApp {
   processRequest: (appData: ConnectedAppData, data: any) => Promise<any>;
+  processStaticRequest?: (data: any) => Promise<any>;
   unInstall?: (appData: ConnectedAppData) => Promise<void>;
 }
 

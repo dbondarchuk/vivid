@@ -9,6 +9,7 @@ import {
 } from "@vivid/ui";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
+import { humanFileSize } from "@vivid/utils";
 
 export const columns: ColumnDef<Asset>[] = [
   {
@@ -45,6 +46,12 @@ export const columns: ColumnDef<Asset>[] = [
     id: "mimeType",
     header: tableSortHeader("File type", "string"),
     accessorFn: (asset) => asset.mimeType,
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    id: "size",
+    header: tableSortHeader("File size", "number"),
+    accessorFn: (asset) => humanFileSize(asset.size),
     sortingFn: tableSortNoopFunction,
   },
   {

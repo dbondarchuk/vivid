@@ -8,6 +8,7 @@ import {
   ScrollBar,
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
   useMouse,
 } from "@vivid/ui";

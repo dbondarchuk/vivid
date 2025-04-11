@@ -7,11 +7,6 @@
   "paths": {
     "@/*": ["./src/*"]
   },
-  "include": [
-    "src",
-    "src/apps/email-notification/models.ts",
-    "src/apps/file-system-assets-storage/const.ts",
-    "src/apps/caldav/.setup.tsx"
-  ],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
