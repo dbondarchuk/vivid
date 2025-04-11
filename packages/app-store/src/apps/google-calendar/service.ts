@@ -10,7 +10,11 @@ import {
 import { DateTime } from "luxon";
 import { env } from "process";
 
-import googleCalendar from "@googleapis/calendar";
+import {
+  calendar_v3,
+  auth as googleAuth,
+  calendar as googleCalendar,
+} from "@googleapis/calendar";
 import { Credentials, OAuth2Client } from "google-auth-library";
 
 const accessType = "offline";
@@ -160,7 +164,7 @@ class GoogleCalendarConnectedApp
     top: number,
     pageToken?: string
   ) {
-    const calendarClient = googleCalendar.calendar({
+    const calendarClient = googleCalendar({
       version: "v3",
       auth: client,
     });
@@ -180,7 +184,7 @@ class GoogleCalendarConnectedApp
     start: DateTime,
     end: DateTime
   ) {
-    const results: googleCalendar.calendar_v3.Schema$Event[] = [];
+    const results: calendar_v3.Schema$Event[] = [];
     let pageToken: string | undefined | null = undefined;
     const top = 1000;
     do {
@@ -207,7 +211,7 @@ class GoogleCalendarConnectedApp
     const redirectUri = `${url}/api/apps/oauth/google-calendar/redirect`;
     // const redirectUri = `http://localhost:3000/api/apps/oauth/google-calendar/redirect`;
 
-    return new googleCalendar.auth.OAuth2(
+    return new googleAuth.OAuth2(
       env.GOOGLE_CALENDAR_APP_CLIENT_ID!,
       env.GOOGLE_CALENDAR_APP_CLIENT_SECRET,
       redirectUri
