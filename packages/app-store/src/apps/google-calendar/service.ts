@@ -42,6 +42,7 @@ class GoogleCalendarConnectedApp
       // If you only need one scope, you can pass it as a string
       scope: requiredScopes,
       state: appId,
+      prompt: "consent",
     });
 
     return url;
@@ -70,14 +71,12 @@ class GoogleCalendarConnectedApp
     try {
       const tokenResponse = await client.getToken(code);
       const tokens = tokenResponse.tokens;
-      if (
-        !tokens?.access_token ||
-        !tokens.refresh_token ||
-        !tokens.id_token ||
-        !requiredScopes.every((s) => !!tokens.scope?.includes(s))
-      ) {
-        console.error(`Google calendar: ${JSON.stringify(tokens)}`);
+      if (!tokens?.access_token || !tokens.refresh_token || !tokens.id_token) {
         throw new Error("App was not authorized properly");
+      }
+
+      if (!requiredScopes.every((s) => !!tokens.scope?.includes(s))) {
+        throw new Error("App was not given required scopes");
       }
 
       const ticket = await client.verifyIdToken({ idToken: tokens.id_token });
