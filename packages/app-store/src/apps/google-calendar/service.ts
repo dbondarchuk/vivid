@@ -76,6 +76,7 @@ class GoogleCalendarConnectedApp
         !tokens.id_token ||
         !requiredScopes.every((s) => !!tokens.scope?.includes(s))
       ) {
+        console.error(`Google calendar: ${JSON.stringify(tokens)}`);
         throw new Error("App was not authorized properly");
       }
 
