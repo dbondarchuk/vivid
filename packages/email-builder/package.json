@@ -1,0 +1,38 @@
+{
+  "name": "@vivid/email-builder",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
+    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+  },
+  "exports": {
+    ".": "./src/index.tsx",
+    "./static": "./src/static.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
+    "@types/react-window": "^1.8.8",
+    "@types/sanitize-html": "^2.13.0",
+    "@vivid/eslint-config": "*",
+    "@vivid/tailwind-config": "*",
+    "@vivid/typescript-config": "*",
+    "eslint": "^8.57.0",
+    "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "react-dom": "19.0.0",
+    "@vivid/builder": "*",
+    "@vivid/ui": "*",
+    "@vivid/rte": "*",
+    "highlight.js": "^11.9.0",
+    "lucide-react": "^0.479.0",
+    "react-contenteditable": "^3.3.7",
+    "sanitize-html": "^2.14.0"
+  }
+}

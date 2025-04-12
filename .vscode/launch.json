@@ -18,6 +18,8 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "yarn run dev",
+      "cwd": "${workspaceFolder}/apps/web/",
+      "skipFiles": ["<node_internals>/**"],
       "serverReadyAction": {
         "pattern": "- Local:.+(https?://.+)",
         "uriFormat": "%s",

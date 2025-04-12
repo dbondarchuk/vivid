@@ -1,13 +1,27 @@
-FROM node:20-alpine AS base
+# syntax=docker/dockerfile:1.7-labs
+
+FROM node:21-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat tzdata
+
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY --parents apps/*/package.json .
+COPY --parents packages/*/package.json .
+# COPY apps/web/package.json ./apps/web/package.json
+# COPY packages/appStore/package.json ./packages/appStore/package.json
+# COPY packages/eslint-config/package.json ./packages/eslint-config/package.json
+# COPY packages/services/package.json ./packages/services/package.json
+# COPY packages/tailwind-config/package.json ./packages/tailwind-config/package.json
+# COPY packages/types/package.json ./packages/types/package.json
+# COPY packages/typescript-config/package.json ./packages/typescript-config/package.json
+# COPY packages/ui/package.json ./packages/ui/package.json
+# COPY packages/utils/package.json ./packages/utils/package.json
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
@@ -17,7 +31,8 @@ RUN \
 
 # Rebuild the source code only when needed
 FROM base AS builder
-ENV MONGODB_URI=mongodb://mongo:27017/vivid?retryWrites=true&w=majority
+ARG MONGODB_URI=mongodb://mongo:27017/vivid?retryWrites=true&w=majority
+# ENV NODE_OPTIONS="--max_old_space_size=4096"
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -46,26 +61,28 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 # Copy of i18n jsons
-COPY --from=builder /app/src/i18n/locales ./src/i18n/locales
+COPY --from=builder /app/apps/web/src/i18n/locales ./apps/web/src/i18n/locales
 
 # Copy node modules for scheduler
-COPY --from=builder /app/node_modules/node-cron ./node_modules/node-cron
+COPY --from=builder /app/node_modules/uuid ./node_modules/uuid
+COPY --from=builder /app/node_modules/node-cron ./node_modules/node-cron 
 COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
-COPY --from=builder --chown=nextjs:nodejs /app/scheduler.js ./scheduler.js
-COPY --from=builder --chown=nextjs:nodejs /app/entrypoint.sh ./entrypoint.sh
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/scheduler.js ./scheduler.js
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/entrypoint.sh ./entrypoint.sh
 
 RUN chmod +x ./entrypoint.sh
 

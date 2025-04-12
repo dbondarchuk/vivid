@@ -4,7 +4,7 @@ services:
     image: vivid
     environment:
       # - MONGODB_URI=mongodb://192.168.0.162:27017/vivid-local?retryWrites=true&w=majority
-      - MONGODB_URI=mongodb://192.168.0.142:27017/vivid?retryWrites=true&w=majority
+      - MONGODB_URI=mongodb://192.168.0.70:27017/vivid?retryWrites=true&w=majority
       - TZ=America/New_York
       - AUTH_PASSWORD=password
       - AUTH_SECRET="n6WKAuaUVdOYMRReNYXEd/sHLF/Ddfams+FAGMe7vzk="
@@ -16,4 +16,4 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - "./public/upload:/app/public/upload"
+      - "./apps/web/public/upload:/app/public/upload"

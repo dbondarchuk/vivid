@@ -1,0 +1,20 @@
+{
+  "extends": ["@vivid/typescript-config/nextjs.json"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "next.config.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../packages/ui/src/hooks/use-mounted.ts",
+    "../../packages/ui/src/hooks/use-is-touch-device.ts",
+    "../../packages/ui/src/hooks/use-debounce.ts"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,141 @@
+import {
+  Field,
+  FieldFileData,
+  FieldOptionsData,
+  FieldType,
+  WithLabelFieldData,
+} from "@vivid/types";
+import { Control } from "react-hook-form";
+import { z, ZodSchema } from "zod";
+import { EmailField } from "./email";
+import { MultiLineField } from "./multi-line";
+import { NameField } from "./name";
+import { OneLineField } from "./one-line";
+import { PhoneField } from "./phone";
+import { CheckboxField } from "./checkbox-field";
+import { SelectField } from "./select";
+import { FileField } from "./file";
+
+export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
+  name: (field: Field) =>
+    z.string().min(2, {
+      message: "name_required_error",
+    }),
+
+  email: (field: Field) =>
+    z
+      .string()
+      .min(field.required ? 1 : 0, "field_required_error")
+      .email("invalid_email_error"),
+  phone: (field: Field) =>
+    z
+      .string()
+      .min(field.required ? 1 : 0, "field_required_error")
+      .refine((s) => !s?.includes("_"), "invalid_phone_error"),
+  oneLine: (field: Field) =>
+    z.string().min(field.required ? 1 : 0, "field_required_error"),
+  multiLine: (field: Field) =>
+    z.string().min(field.required ? 1 : 0, "field_required_error"),
+  checkbox: (field: Field) =>
+    z
+      .boolean()
+      .default(false)
+      .refine(
+        (arg) => (field.required ? !!arg : true),
+        "checkbox_required_error"
+      ),
+  select: (field: Field) => {
+    const [firstOption, ...restOptions] = (
+      field as unknown as Field<FieldOptionsData>
+    ).data.options.map((x) => x.option);
+
+    return z
+      .enum([firstOption, ...restOptions], { message: "field_required_error" })
+      .refine((arg) => (field.required ? !!arg : true), "field_required_error");
+  },
+  file: (field: Field) => {
+    return z
+      .custom((f) => typeof f === "undefined" || f instanceof File, {
+        message: "Expected file",
+      })
+      .refine((file) => !field.required || !!file, "File is required.")
+      .refine(
+        (file) => {
+          if (field.required && !file) return false;
+
+          const maxSizeMb = (field.data as unknown as FieldFileData)?.maxSizeMb;
+          return (
+            !maxSizeMb || !file || (file as File).size < maxSizeMb * 1024 * 1024
+          );
+        },
+        {
+          message: `Your file must be less than ${(field.data as unknown as FieldFileData).maxSizeMb}MB.`,
+        }
+      );
+  },
+};
+
+export const fieldSchemaMapper = (field: Field) => {
+  let schema: z.ZodType = fieldsSchemaMap[field.type](field);
+  if (!field.required) schema = schema.optional();
+
+  return schema;
+};
+
+export type FieldComponentMapFn = (
+  field: Field<any>,
+  control: Control
+) => React.ReactNode;
+
+export const fieldsComponentMap: (
+  namespace?: string
+) => Record<FieldType, FieldComponentMapFn> = (namespace) => ({
+  name: (field, control) => (
+    <NameField control={control} {...field} namespace={namespace} />
+  ),
+  email: (field, control) => (
+    <EmailField control={control} {...field} namespace={namespace} />
+  ),
+  phone: (field, control) => (
+    <PhoneField
+      control={control}
+      {...(field as Field<WithLabelFieldData>)}
+      namespace={namespace}
+    />
+  ),
+  oneLine: (field, control) => (
+    <OneLineField
+      control={control}
+      {...(field as Field<WithLabelFieldData>)}
+      namespace={namespace}
+    />
+  ),
+  multiLine: (field, control) => (
+    <MultiLineField
+      control={control}
+      {...(field as Field<WithLabelFieldData>)}
+      namespace={namespace}
+    />
+  ),
+  checkbox: (field, control) => (
+    <CheckboxField
+      control={control}
+      {...(field as Field<WithLabelFieldData>)}
+      namespace={namespace}
+    />
+  ),
+  select: (field, control) => (
+    <SelectField
+      control={control}
+      {...(field as Field<WithLabelFieldData & FieldOptionsData>)}
+      namespace={namespace}
+    />
+  ),
+  file: (field, control) => (
+    <FileField
+      control={control}
+      {...(field as Field<WithLabelFieldData & FieldFileData>)}
+      namespace={namespace}
+    />
+  ),
+});
