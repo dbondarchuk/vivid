@@ -153,7 +153,7 @@ export class EventsService implements IEventsService {
 
         const asset = await this.assetsService.createAsset(
           {
-            filename: `${appointmentId}-${fieldId}-${file.name}`,
+            filename: `appointments/${appointmentId}/${fieldId}-${file.name}`,
             mimeType: fileType,
             appointmentId,
             description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
