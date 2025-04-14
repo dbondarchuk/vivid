@@ -59,6 +59,7 @@ import {
   CalendarSearch,
   CalendarSync,
   CalendarX2,
+  ExternalLink,
   Trash,
 } from "lucide-react";
 import { DateTime } from "luxon";
@@ -370,7 +371,7 @@ export const AppointmentView: React.FC<{
               <dd className="col-span-2">
                 <Accordion type="single" collapsible>
                   <AccordionItem value="option" className="border-none">
-                    <AccordionTrigger>
+                    <AccordionTrigger className="text-left">
                       <span>
                         {name}{" "}
                         <span className="text-sm text-muted-foreground">
@@ -418,14 +419,22 @@ export const AppointmentView: React.FC<{
                               :
                             </div>
                             <div className="col-span-2">
-                              <Link
-                                variant="default"
-                                href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                                  value
-                                )}`}
-                              >
-                                {value.toString()}
-                              </Link>
+                              {typeof value === "boolean" ? (
+                                value ? (
+                                  "Yes"
+                                ) : (
+                                  "No"
+                                )
+                              ) : (
+                                <Link
+                                  variant="default"
+                                  href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                                    value
+                                  )}`}
+                                >
+                                  {value.toString()}
+                                </Link>
+                              )}
                             </div>
                           </React.Fragment>
                         ))}
@@ -445,6 +454,15 @@ export const AppointmentView: React.FC<{
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="grid grid-cols-3 gap-1">
+                        <div>Option:</div>
+                        <div className="col-span-2">
+                          <Link
+                            href={`/admin/dashboard/services/options/${appointment.option._id}`}
+                            variant="dashed"
+                          >
+                            {appointment.option.name}
+                          </Link>
+                        </div>
                         {!!appointment.option.duration && (
                           <>
                             <div>Duration:</div>
@@ -489,7 +507,12 @@ export const AppointmentView: React.FC<{
                         <ul>
                           {appointment.addons.map((addon, index) => (
                             <li key={index}>
-                              {addon.name}
+                              <Link
+                                href={`/admin/dashboard/services/addons/${addon._id}`}
+                                variant="dashed"
+                              >
+                                {addon.name}
+                              </Link>
                               {(addon.price || addon.duration) && (
                                 <ul className="pl-2">
                                   {!!addon.duration && (
