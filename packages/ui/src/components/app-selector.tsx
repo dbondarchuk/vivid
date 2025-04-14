@@ -117,10 +117,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
     <Combobox
       allowClear={allowClear}
       disabled={disabled || isLoading}
-      className={cn(
-        "flex font-normal text-base max-w-full  [&>button]:w-full",
-        className
-      )}
+      className={cn("flex font-normal text-base max-w-full", className)}
       values={appValues(apps)}
       searchLabel={isLoading ? "Loading apps..." : "Select app"}
       value={value}

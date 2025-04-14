@@ -1,3 +1,4 @@
+import { parseIcsCalendar } from "@ts-ics/schema-zod";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -7,7 +8,6 @@ import {
   IConnectedAppProps,
 } from "@vivid/types";
 import { DateTime } from "luxon";
-import { parseIcsCalendar } from "ts-ics";
 import { IcsLinkCalendarSource } from "./models";
 
 export default class IcsConnectedApp

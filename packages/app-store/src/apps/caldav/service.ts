@@ -1,3 +1,4 @@
+import { parseIcsCalendar, parseIcsEvent } from "@ts-ics/schema-zod";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -7,7 +8,7 @@ import {
   IConnectedAppProps,
 } from "@vivid/types";
 import { DateTime } from "luxon";
-import { parseIcsCalendar, parseIcsEvent } from "ts-ics";
+import { getEventRegex } from "ts-ics";
 import { DAVClient } from "tsdav";
 import { CaldavCalendarSource } from "./models";
 
@@ -129,9 +130,15 @@ export default class CaldavConnectedApp
         },
       });
 
-      const events = objects.map((obj) =>
-        parseIcsEvent(obj.data as string, timezones)
-      );
+      const events = objects
+        .map((obj) => {
+          const dataStr = obj.data as string;
+          const eventStr = dataStr.match(getEventRegex)?.[0];
+          if (!eventStr) return null;
+
+          return parseIcsEvent(eventStr, { timezones });
+        })
+        .filter((e) => !!e);
 
       const calDavEvents: CalendarBusyTime[] = events.map((event) => {
         const startAt = event.start.date;
