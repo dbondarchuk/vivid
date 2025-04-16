@@ -17,6 +17,7 @@ export const ConnectedAppAccount: React.FC<
   const parts = [
     (app?.account as any)?.serverUrl,
     app?.account?.username,
+    app?.account?.additional,
   ].filter((p) => !!p);
 
   return parts.length > 0 ? (

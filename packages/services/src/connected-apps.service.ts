@@ -190,6 +190,10 @@ export class ConnectedAppsService implements IConnectedAppsService {
       this.getAppServiceProps(appId)
     );
 
+    if (!appService.processRequest) {
+      throw new Error(`App ${app.name} does not implement processRequest`);
+    }
+
     return await appService.processRequest(app, data);
   }
 

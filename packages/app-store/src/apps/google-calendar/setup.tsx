@@ -1,18 +1,29 @@
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import {
   Button,
+  Combobox,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
+  Label,
   Spinner,
+  toast,
+  toastPromise,
 } from "@vivid/ui";
 import React from "react";
 import {
   addNewApp,
   getAppLoginUrl,
   getAppStatus,
+  processRequest,
   setAppStatus,
 } from "../../actions";
 import { GoogleCalendarApp } from "./app";
+import { CalendarListItem, RequestAction } from "./models";
+
+const primaryCalendar: CalendarListItem = {
+  id: "primary",
+  name: "Primary",
+};
 
 export const GoogleAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -23,6 +34,65 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
   const [timer, setTimer] = React.useState<NodeJS.Timeout>();
+
+  const appId = app?._id ?? existingAppId;
+
+  const [calendars, setCalendars] = React.useState<CalendarListItem[]>([
+    primaryCalendar,
+  ]);
+
+  const [selectedCalendar, setSelectedCalendar] =
+    React.useState<string>("primary");
+
+  React.useEffect(() => {
+    if (!appId) return;
+
+    const fn = async () => {
+      setIsLoading(true);
+      try {
+        const [calendarList, selected] = await Promise.all([
+          processRequest(appId, {
+            type: "get-calendar-list",
+          } as RequestAction),
+          processRequest(appId, {
+            type: "get-selected-calendar",
+          } as RequestAction),
+        ]);
+
+        setCalendars([primaryCalendar, ...(calendarList ?? [])]);
+        setSelectedCalendar(selected ?? primaryCalendar.id);
+      } catch (e: any) {
+        console.error(e);
+        toast.error("Failed to retrieve calendar list");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fn();
+  }, [appId]);
+
+  const updateCalendarObject = async (calendar?: CalendarListItem) => {
+    if (!appId || !calendar) return;
+
+    setIsLoading(true);
+    try {
+      await toastPromise(
+        processRequest(appId, {
+          type: "set-calendar",
+          calendar,
+        } as RequestAction),
+        {
+          success: "Your changes were saved.",
+          error: "There was a problem with your request.",
+        }
+      );
+    } catch (e: any) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getStatus = async (appId: string) => {
     const status = await getAppStatus(appId);
@@ -80,8 +150,33 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     }
   };
 
+  const calendarListValues = React.useMemo(
+    () =>
+      calendars?.map((c) => ({
+        value: c.id,
+        label: c.name,
+      })) ?? [],
+    [calendars]
+  );
+
   return (
     <>
+      {appId && (
+        <div className="flex flex-col gap-2">
+          <Label>Select calendar</Label>
+          <Combobox
+            values={calendarListValues}
+            disabled={isLoading}
+            className="flex w-full font-normal text-base"
+            searchLabel="Select calendar"
+            value={selectedCalendar}
+            onItemSelect={(value) => {
+              setSelectedCalendar(value);
+              updateCalendarObject(calendars?.find((c) => c.id === value));
+            }}
+          />
+        </div>
+      )}
       <div className="flex items-center gap-4">
         <Button
           type="button"
@@ -91,7 +186,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
           className="inline-flex gap-2 items-center w-full"
         >
           {isLoading && <Spinner />}
-          <span>Connect with</span>
+          <span>{appId ? "Reconnect" : "Connect with"}</span>
           <ConnectedAppNameAndLogo app={{ name: GoogleCalendarApp.name }} />
         </Button>
       </div>

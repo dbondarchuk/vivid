@@ -15,9 +15,10 @@ export default class FileSystemAssetsStorageConnectedApp
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processRequest(): Promise<void> {
-    // do nothing
-  }
+  processRequest?: any;
+  // public async processRequest(): Promise<void> {
+  //   // do nothing
+  // }
 
   public async getFile(
     appData: ConnectedAppData,

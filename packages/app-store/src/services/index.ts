@@ -1,6 +1,7 @@
 import { IConnectedApp, IConnectedAppProps } from "@vivid/types";
 import {
   BUSY_EVENTS_APP_NAME,
+  CALENDAR_WRITER_APP_NAME,
   GOOGLE_CALENDAR_APP_NAME,
   S3_ASSETS_STORAGE_APP_NAME,
   WEEKLY_SCHEDULE_APP_NAME,
@@ -8,6 +9,7 @@ import {
 import BusyEventsConnectedApp from "../apps/busy-events/service";
 import { CALDAV_APP_NAME } from "../apps/caldav/const";
 import CaldavConnectedApp from "../apps/caldav/service";
+import { CalendarWriterConnectedApp } from "../apps/calendar-writer/service";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "../apps/customer-email-notification/const";
 import CustomerEmailNotificationConnectedApp from "../apps/customer-email-notification/service";
 import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/customer-text-message-notification/const";
@@ -50,6 +52,7 @@ export const AvailableAppServices: Record<
     new CustomerEmailNotificationConnectedApp(props),
   [EMAIL_NOTIFICATION_APP_NAME]: (props) =>
     new EmailNotificationConnectedApp(props),
+  [CALENDAR_WRITER_APP_NAME]: (props) => new CalendarWriterConnectedApp(props),
   [CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME]: (props) =>
     new CustomerTextMessageNotificationConnectedApp(props),
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: (props) =>

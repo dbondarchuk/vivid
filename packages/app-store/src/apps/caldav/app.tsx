@@ -8,7 +8,7 @@ export const CaldavApp: App = {
   name: CALDAV_APP_NAME,
   displayName: "CalDAV Calendar",
   category: ["Calendar"],
-  scope: ["calendar-read"],
+  scope: ["calendar-read", "calendar-write"],
   type: "basic",
   Logo: ({ className }) => <CaldavLogo className={className} />,
   SetUp: (props) => <CaldavAppSetup {...props} />,

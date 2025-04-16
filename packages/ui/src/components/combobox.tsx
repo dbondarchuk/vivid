@@ -213,9 +213,10 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
     setSearch("");
   };
 
+  const propsValues = props.values;
   const values = React.useMemo(
-    () => (customSearch ? customSearch(search) : props.values),
-    [customSearch, search]
+    () => (customSearch ? customSearch(search) : propsValues),
+    [customSearch, search, propsValues]
   );
 
   const listId = React.useId();
@@ -223,7 +224,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
   const listRef = React.createRef<HTMLDivElement>();
 
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
+    <Popover open={open} onOpenChange={onOpenChange} modal>
       <PopoverTrigger asChild>
         <ComboboxTrigger
           allowClear={"allowClear" in props && props.allowClear}

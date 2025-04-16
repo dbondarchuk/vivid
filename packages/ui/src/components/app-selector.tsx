@@ -39,7 +39,8 @@ const checkAppSearch = (app: ConnectedApp, query: string) => {
   return (
     app.name.toLocaleLowerCase().includes(search) ||
     app.account?.username?.toLocaleLowerCase().includes(search) ||
-    (app.account as any)?.serverUrl?.toLocaleLowerCase().includes(search)
+    (app.account as any)?.serverUrl?.toLocaleLowerCase().includes(search) ||
+    app.account?.additional?.toLocaleLowerCase().includes(search)
   );
 };
 

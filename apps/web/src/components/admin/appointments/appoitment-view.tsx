@@ -59,7 +59,6 @@ import {
   CalendarSearch,
   CalendarSync,
   CalendarX2,
-  ExternalLink,
   Trash,
 } from "lucide-react";
 import { DateTime } from "luxon";
@@ -256,17 +255,17 @@ export const AppointmentView: React.FC<{
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction asChild>
-                    <AppointmentActionButton
-                      variant="destructive"
-                      _id={appointment._id}
-                      status="declined"
-                      onSuccess={updateStatus}
-                    >
-                      <CalendarX2 size={20} />
-                      Decline
-                    </AppointmentActionButton>
-                  </AlertDialogAction>
+                  {/* <AlertDialogAction asChild> */}
+                  <AppointmentActionButton
+                    variant="destructive"
+                    _id={appointment._id}
+                    status="declined"
+                    onSuccess={updateStatus}
+                  >
+                    <CalendarX2 size={20} />
+                    Decline
+                  </AppointmentActionButton>
+                  {/* </AlertDialogAction> */}
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

@@ -18,25 +18,28 @@ export type ConnectedOauthAppTokens = {
   expiresOn: Date | undefined | null;
 };
 
-export type ConnectedAppAccount =
+export type ConnectedAppAccount = (
   | {
       username: string;
     }
   | {
       username?: string;
       serverUrl: string;
-    };
+    }
+) & {
+  additional?: string;
+};
 
 export type ConnectedAppStatusWithText = {
   status: ConnectedAppStatus;
   statusText: string;
 };
 
-export type ConnectedAppData = ConnectedAppStatusWithText & {
+export type ConnectedAppData<T = any> = ConnectedAppStatusWithText & {
   _id: string;
   name: string;
   account?: ConnectedAppAccount;
-  data?: any;
+  data?: T;
 };
 
 export type ConnectedAppUpdateModel = Partial<

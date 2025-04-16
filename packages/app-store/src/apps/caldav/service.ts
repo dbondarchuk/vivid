@@ -1,19 +1,47 @@
 import { parseIcsCalendar, parseIcsEvent } from "@ts-ics/schema-zod";
 import {
   CalendarBusyTime,
+  CalendarEvent,
+  CalendarEventAttendee,
+  CalendarEventResult,
   ConnectedAppData,
   ConnectedAppStatusWithText,
   ICalendarBusyTimeProvider,
+  ICalendarWriter,
   IConnectedApp,
   IConnectedAppProps,
 } from "@vivid/types";
 import { DateTime } from "luxon";
-import { getEventRegex } from "ts-ics";
+import {
+  generateIcsCalendar,
+  getEventRegex,
+  IcsAttendeePartStatusType,
+  IcsStatusType,
+} from "ts-ics";
 import { DAVClient } from "tsdav";
 import { CaldavCalendarSource } from "./models";
 
+const attendeeStatusToPartStatusMap: Record<
+  CalendarEventAttendee["status"],
+  IcsAttendeePartStatusType
+> = {
+  confirmed: "ACCEPTED",
+  declined: "DECLINED",
+  tentative: "TENTATIVE",
+  organizer: "ACCEPTED",
+};
+
+const evetStatusToIcsEventStatus: Record<
+  CalendarEvent["status"],
+  IcsStatusType
+> = {
+  confirmed: "CONFIRMED",
+  declined: "CANCELLED",
+  pending: "TENTATIVE",
+};
+
 export default class CaldavConnectedApp
-  implements IConnectedApp, ICalendarBusyTimeProvider
+  implements IConnectedApp, ICalendarBusyTimeProvider, ICalendarWriter
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
@@ -90,31 +118,10 @@ export default class CaldavConnectedApp
     end: Date
   ): Promise<CalendarBusyTime[]> {
     try {
-      const client = this.getClient(appData.data);
-
       const startTime = DateTime.fromJSDate(start).toUTC().toISO()!;
       const endTime = DateTime.fromJSDate(end).toUTC().toISO()!;
 
-      await client.login();
-
-      const calendarName = (appData.data as CaldavCalendarSource)?.calendarName;
-      if (!calendarName) {
-        throw new Error("Calendar name is not set");
-      }
-
-      const calendars = await client.fetchCalendars();
-      const calendar = calendars.find((c) => {
-        if (!c.displayName) return false;
-        if (typeof c.displayName === "string")
-          return c.displayName === calendarName;
-
-        return Object.keys(c.displayName)[0] === calendarName;
-      });
-
-      if (!calendar) {
-        throw new Error(`Can't find calendar '${calendarName}'`);
-      }
-
+      const { client, calendar } = await this.getCalendar(appData.data);
       const timezones =
         (calendar.timezone
           ? parseIcsCalendar(calendar.timezone).timezones
@@ -172,6 +179,132 @@ export default class CaldavConnectedApp
 
       throw e;
     }
+  }
+
+  public async createEvent(
+    app: ConnectedAppData,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult> {
+    const { client, calendar } = await this.getCalendar(app.data);
+
+    const ics = this.getEventIcs(event);
+    const result = await client.createCalendarObject({
+      calendar,
+      iCalString: ics,
+      filename: `${event.id}.ics`,
+    });
+
+    return {
+      uid: event.uid,
+    };
+  }
+
+  public async updateEvent(
+    app: ConnectedAppData,
+    uid: string,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult> {
+    const { client, calendar } = await this.getCalendar(app.data);
+    const ics = this.getEventIcs(event);
+
+    const url = `${calendar.url.replace(/\/?$/, "/")}${event.id}.ics`;
+    await client.updateCalendarObject({
+      calendarObject: {
+        url,
+        data: ics,
+      },
+    });
+
+    return {
+      uid,
+    };
+  }
+
+  public async deleteEvent(
+    app: ConnectedAppData,
+    uid: string,
+    eventId: string
+  ): Promise<void> {
+    const { client, calendar } = await this.getCalendar(app.data);
+    const url = `${calendar.url.replace(/\/?$/, "/")}${eventId}.ics`;
+
+    await client.deleteCalendarObject({
+      calendarObject: {
+        url,
+      },
+    });
+  }
+
+  protected getEventIcs(event: CalendarEvent) {
+    const start = DateTime.fromJSDate(event.startTime).setZone(event.timezone);
+    const end = start.plus({ minutes: event.duration });
+
+    return generateIcsCalendar({
+      version: "2.0",
+      prodId: "-//vivid-caldav//EN",
+      events: [
+        {
+          start: {
+            date: start.toUTC().toJSDate(),
+            local: {
+              date: start.toJSDate(),
+              timezone: event.timezone,
+              tzoffset: start.toFormat("ZZ"),
+            },
+          },
+          end: {
+            date: end.toUTC().toJSDate(),
+            local: {
+              date: end.toJSDate(),
+              timezone: event.timezone,
+              tzoffset: end.toFormat("ZZ"),
+            },
+          },
+          summary: event.title,
+          description: event.description.plainText
+            .replace(/(\r\n|\r|\n){2,}/g, "$1\n")
+            .replace(/\r\n/g, "\n"),
+          url: event.description.url,
+          location: event.location.address ?? event.location.name,
+          stamp: {
+            date: DateTime.utc().toJSDate(),
+          },
+          uid: event.uid,
+          attendees: event.attendees.map((attendee) => ({
+            email: attendee.email,
+            name: attendee.name,
+            partstat: attendeeStatusToPartStatusMap[attendee.status],
+          })),
+          status: evetStatusToIcsEventStatus[event.status],
+        },
+      ],
+    }).replace(/(?<!\r)\n/g, "\r\n ");
+  }
+
+  protected async getCalendar(config: CaldavCalendarSource) {
+    const client = this.getClient(config);
+
+    await client.login();
+
+    const calendarName = config?.calendarName;
+    if (!calendarName) {
+      throw new Error("Calendar name is not set");
+    }
+
+    const calendars = await client.fetchCalendars();
+    const calendar = calendars.find((c) => {
+      if (!c.displayName) return false;
+      if (typeof c.displayName === "string")
+        return c.displayName === calendarName;
+
+      return Object.keys(c.displayName)[0] === calendarName;
+    });
+
+    if (!calendar) {
+      throw new Error(`Can't find calendar '${calendarName}'`);
+    }
+
+    return { client, calendar };
   }
 
   protected getClient(config: CaldavCalendarSource): DAVClient {

@@ -1,11 +1,16 @@
 import {
   ApiRequest,
   CalendarBusyTime,
+  CalendarEvent,
+  CalendarEventAttendee,
+  CalendarEventResult,
   ConnectedAppData,
   ConnectedAppResponse,
   ICalendarBusyTimeProvider,
+  ICalendarWriter,
   IConnectedAppProps,
   IOAuthConnectedApp,
+  okStatus,
 } from "@vivid/types";
 import { DateTime } from "luxon";
 import { env } from "process";
@@ -16,6 +21,11 @@ import {
   calendar as googleCalendar,
 } from "@googleapis/calendar";
 import { Credentials, OAuth2Client } from "google-auth-library";
+import {
+  CalendarListItem,
+  GoogleCalendarConfiguration,
+  RequestAction,
+} from "./models";
 
 const accessType = "offline";
 
@@ -25,13 +35,73 @@ const requiredScopes = [
   "https://www.googleapis.com/auth/calendar",
 ];
 
+const attendeeStatusToResponseStatusMap: Record<
+  CalendarEventAttendee["status"],
+  string
+> = {
+  confirmed: "accepted",
+  declined: "declined",
+  tentative: "tentative",
+  organizer: "accepted",
+};
+
+const evetStatusToGoogleEventStatus: Record<CalendarEvent["status"], string> = {
+  confirmed: "accepted",
+  declined: "cancelled",
+  pending: "tentative",
+};
+
+const base32hexAlphabet = "0123456789abcdefghijklmnopqrstuv";
+const base32hexEncode = (str: string): string => {
+  let binary = "";
+  for (let i = 0; i < str.length; i++) {
+    const byte = str.charCodeAt(i);
+    binary += byte.toString(2).padStart(8, "0");
+  }
+
+  let encoded = "";
+  for (let i = 0; i < binary.length; i += 5) {
+    const chunk = binary.slice(i, i + 5).padEnd(5, "0");
+    const index = parseInt(chunk, 2);
+    encoded += base32hexAlphabet[index];
+  }
+
+  return encoded;
+};
+
 class GoogleCalendarConnectedApp
-  implements IOAuthConnectedApp, ICalendarBusyTimeProvider
+  implements IOAuthConnectedApp, ICalendarBusyTimeProvider, ICalendarWriter
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processRequest(): Promise<void> {
-    // do nothing;
+  public async processRequest(
+    appData: ConnectedAppData<GoogleCalendarConfiguration>,
+    data: RequestAction
+  ) {
+    switch (data.type) {
+      case "get-selected-calendar":
+        return appData.data?.calendar?.id;
+
+      case "get-calendar-list":
+        return await this.getCalendarList(appData);
+
+      case "set-calendar":
+        await this.props.update({
+          data: {
+            ...(appData.data ?? {}),
+            calendar: data.calendar,
+          },
+          account: {
+            ...((appData.account as any) ?? {}),
+            additional: data.calendar.name,
+          },
+        });
+
+        return;
+
+      default:
+        return okStatus;
+    }
   }
 
   public async getLoginUrl(appId: string): Promise<string> {
@@ -101,7 +171,7 @@ class GoogleCalendarConnectedApp
   }
 
   public async getBusyTimes(
-    app: ConnectedAppData,
+    app: ConnectedAppData<GoogleCalendarConfiguration>,
     start: Date,
     end: Date
   ): Promise<CalendarBusyTime[]> {
@@ -111,7 +181,8 @@ class GoogleCalendarConnectedApp
       const events = await this.getEvents(
         client,
         DateTime.fromJSDate(start),
-        DateTime.fromJSDate(end)
+        DateTime.fromJSDate(end),
+        app.data?.calendar?.id
       );
 
       const result = events
@@ -131,7 +202,10 @@ class GoogleCalendarConnectedApp
             zone: "utc",
           }).toJSDate();
 
-          const uid = (event as any).uid || event.iCalUID;
+          const uid =
+            event.extendedProperties?.private?.uid ??
+            (event as any).uid ??
+            event.iCalUID;
 
           return {
             startAt,
@@ -157,12 +231,127 @@ class GoogleCalendarConnectedApp
     }
   }
 
+  public async createEvent(
+    app: ConnectedAppData<GoogleCalendarConfiguration>,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult> {
+    const client = await this.getOAuthClientWithCredentials(app);
+    const calendarClient = googleCalendar({
+      version: "v3",
+      auth: client,
+    });
+
+    const googleEvent = this.getGoogleEvent(event);
+
+    const result = await calendarClient.events.insert({
+      calendarId: app.data?.calendar?.id ?? "primary",
+      sendNotifications: true,
+      requestBody: googleEvent,
+    });
+
+    return {
+      uid: result.data.iCalUID ?? event.uid,
+    };
+  }
+
+  public async updateEvent(
+    app: ConnectedAppData<GoogleCalendarConfiguration>,
+    uid: string,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult> {
+    const client = await this.getOAuthClientWithCredentials(app);
+    const calendarClient = googleCalendar({
+      version: "v3",
+      auth: client,
+    });
+
+    const result = await calendarClient.events.patch({
+      calendarId: app.data?.calendar?.id ?? "primary",
+      eventId: base32hexEncode(uid),
+      requestBody: this.getGoogleEvent(event),
+    });
+
+    return {
+      uid: result.data.iCalUID ?? event.uid,
+    };
+  }
+
+  public async deleteEvent(
+    app: ConnectedAppData<GoogleCalendarConfiguration>,
+    uid: string
+  ): Promise<void> {
+    const client = await this.getOAuthClientWithCredentials(app);
+    const calendarClient = googleCalendar({
+      version: "v3",
+      auth: client,
+    });
+
+    await calendarClient.events.delete({
+      eventId: base32hexEncode(uid),
+      calendarId: app.data?.calendar?.id ?? "primary",
+    });
+  }
+
+  private async getCalendarList(app: ConnectedAppData) {
+    const client = await this.getOAuthClientWithCredentials(app);
+    const calendarClient = googleCalendar({
+      version: "v3",
+      auth: client,
+    });
+
+    const list = await calendarClient.calendarList.list({});
+    return list.data.items?.map(
+      (item) =>
+        ({
+          id: item.id!,
+          name: item.summary!,
+        }) as CalendarListItem
+    );
+  }
+
+  private getGoogleEvent(event: CalendarEvent): calendar_v3.Schema$Event {
+    const start = DateTime.fromJSDate(event.startTime).setZone(event.timezone);
+    const end = start.plus({ minutes: event.duration });
+    return {
+      summary: event.title,
+      description: event.description.plainText,
+      source: {
+        title: event.title,
+        url: event.description.url,
+      },
+      start: {
+        dateTime: start.toISO(),
+        timeZone: event.timezone,
+      },
+      id: base32hexEncode(event.uid),
+      status: evetStatusToGoogleEventStatus[event.status],
+      end: {
+        dateTime: end.toISO(),
+        timeZone: event.timezone,
+      },
+      location: event.location.address ?? event.location.name,
+      extendedProperties: {
+        private: {
+          uid: event.uid,
+        },
+      },
+      attendees: event.attendees.map((attendee) => ({
+        email: attendee.email,
+        displayName: attendee.name,
+        organizer: attendee.status === "organizer",
+        optional: attendee.type === "optional",
+        responseStatus: attendeeStatusToResponseStatusMap[attendee.status],
+      })),
+    };
+  }
+
   private async getEventsPaginated(
     client: OAuth2Client,
     start: DateTime,
     end: DateTime,
     top: number,
-    pageToken?: string
+    pageToken?: string,
+    calendarId?: string
   ) {
     const calendarClient = googleCalendar({
       version: "v3",
@@ -170,7 +359,7 @@ class GoogleCalendarConnectedApp
     });
 
     return await calendarClient.events.list({
-      calendarId: "primary",
+      calendarId: calendarId ?? "primary",
       timeMin: start.toISO()!,
       timeMax: end.toISO()!,
       singleEvents: true,
@@ -182,7 +371,8 @@ class GoogleCalendarConnectedApp
   private async getEvents(
     client: OAuth2Client,
     start: DateTime,
-    end: DateTime
+    end: DateTime,
+    calendarId?: string
   ) {
     const results: calendar_v3.Schema$Event[] = [];
     let pageToken: string | undefined | null = undefined;
@@ -193,7 +383,8 @@ class GoogleCalendarConnectedApp
         start,
         end,
         top,
-        pageToken
+        pageToken,
+        calendarId
       );
 
       results.push(...(response.data.items || []));

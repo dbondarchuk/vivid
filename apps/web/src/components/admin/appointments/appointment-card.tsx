@@ -2,7 +2,6 @@ import type { Appointment } from "@vivid/types";
 import { StatusText } from "@vivid/types";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -147,15 +146,15 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <AppointmentActionButton
-                    variant="secondary"
-                    _id={appointment._id}
-                    status="declined"
-                  >
-                    <CalendarX2 size={20} /> Decline
-                  </AppointmentActionButton>
-                </AlertDialogAction>
+                {/* <AlertDialogAction asChild> */}
+                <AppointmentActionButton
+                  variant="destructive"
+                  _id={appointment._id}
+                  status="declined"
+                >
+                  <CalendarX2 size={20} /> Decline
+                </AppointmentActionButton>
+                {/* </AlertDialogAction> */}
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

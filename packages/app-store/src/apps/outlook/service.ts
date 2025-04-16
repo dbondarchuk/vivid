@@ -11,16 +11,21 @@ import {
   FileAttachment,
   Event as OutlookEvent,
   Message as OutlookMessage,
+  ResponseType,
 } from "@microsoft/microsoft-graph-types";
 import {
   ApiRequest,
   CalendarBusyTime,
+  CalendarEvent,
+  CalendarEventAttendee,
+  CalendarEventResult,
   ConnectedAppData,
   ConnectedAppResponse,
   ConnectedOauthAppTokens,
   Email,
   EmailResponse,
   ICalendarBusyTimeProvider,
+  ICalendarWriter,
   IConnectedAppProps,
   IMailSender,
   IOAuthConnectedApp,
@@ -32,6 +37,8 @@ import { v4 } from "uuid";
 
 const offlineAccessScope = "offline_access";
 
+const uidPropertyName = `String {d0594c28-e3bf-4348-aa31-32829298f576} Name uid`;
+
 // Redirect request won't contain offline access
 const requiredScopes = [
   "openid",
@@ -40,16 +47,30 @@ const requiredScopes = [
   "Mail.Send",
 ];
 
+const attendeeStatusToResponseStatusMap: Record<
+  CalendarEventAttendee["status"],
+  ResponseType
+> = {
+  confirmed: "accepted",
+  declined: "declined",
+  tentative: "tentativelyAccepted",
+  organizer: "organizer",
+};
+
 const scopes = [...requiredScopes, offlineAccessScope];
 
 class OutlookConnectedApp
-  implements IOAuthConnectedApp, ICalendarBusyTimeProvider, IMailSender
+  implements
+    IOAuthConnectedApp,
+    ICalendarBusyTimeProvider,
+    IMailSender,
+    ICalendarWriter
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
-  public async processRequest(): Promise<void> {
-    // do nothing;
-  }
+  processRequest?:
+    | ((appData: ConnectedAppData, data: any) => Promise<any>)
+    | undefined;
 
   public async getLoginUrl(appId: string): Promise<string> {
     const client = this.getMsalClient();
@@ -139,7 +160,13 @@ class OutlookConnectedApp
           const endAt = DateTime.fromISO(event.end?.dateTime!, {
             zone: "utc",
           }).toJSDate();
-          const uid = (event as any).uid || event.iCalUId;
+
+          const uid: string =
+            event.singleValueExtendedProperties?.find(
+              (p) => p.id === uidPropertyName
+            )?.value ??
+            (event as any).uid ??
+            event.iCalUId;
 
           return {
             startAt,
@@ -362,6 +389,127 @@ class OutlookConnectedApp
     }
   }
 
+  public async createEvent(
+    app: ConnectedAppData,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult> {
+    const tokens = app.data as ConnectedOauthAppTokens;
+    if (!tokens?.accessToken) {
+      throw new Error("No token provided");
+    }
+
+    const client = await this.getClient(app._id, tokens);
+
+    const result = (await client
+      .api("/me/calendar/events")
+      .post(this.getOutlookEvent(event))) as OutlookEvent;
+
+    return {
+      uid: result.id!,
+    };
+  }
+
+  public async updateEvent(
+    app: ConnectedAppData,
+    uid: string,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult> {
+    const tokens = app.data as ConnectedOauthAppTokens;
+    if (!tokens?.accessToken) {
+      throw new Error("No token provided");
+    }
+
+    const client = await this.getClient(app._id, tokens);
+    const eventId = await this.getOutlookEventId(client, uid);
+
+    const result = (await client
+      .api(`/me/calendar/events/${eventId}`)
+      .patch(this.getOutlookEvent(event))) as OutlookEvent;
+
+    return {
+      uid: result.id!,
+    };
+  }
+
+  public async deleteEvent(app: ConnectedAppData, uid: string): Promise<void> {
+    const tokens = app.data as ConnectedOauthAppTokens;
+    if (!tokens?.accessToken) {
+      throw new Error("No token provided");
+    }
+
+    const client = await this.getClient(app._id, tokens);
+
+    const id = await this.getOutlookEventId(client, uid);
+    await client.api(`/me/calendar/events/${id}`).delete();
+  }
+
+  private async getOutlookEventId(
+    client: Client,
+    uid: string
+  ): Promise<string> {
+    const response = await client
+      .api("/me/calendar/events")
+      .filter(
+        `singleValueExtendedProperties/Any(ep: ep/id eq '${uidPropertyName}' and ep/value eq '${uid}')`
+      )
+      .select("id")
+      .get();
+
+    const id = (response.value as OutlookEvent[])?.[0]?.id;
+    if (!id) {
+      throw new Error(`Failed to find Outlook Event ID for UID ${uid}`);
+    }
+
+    return id;
+  }
+
+  private getOutlookEvent(event: CalendarEvent): OutlookEvent {
+    const start = DateTime.fromJSDate(event.startTime)
+      .setZone(event.timezone)
+      .toUTC();
+
+    const end = start.plus({ minutes: event.duration });
+
+    const outlookEvent: OutlookEvent = {
+      subject: event.title,
+      body: {
+        content: event.description.html,
+        contentType: "html",
+      },
+      start: {
+        dateTime: start.toISO()!,
+        timeZone: "UTC",
+      },
+      end: {
+        dateTime: end.toISO()!,
+        timeZone: "UTC",
+      },
+      attendees: event.attendees
+        ?.filter((attendee) => attendee.status !== "organizer") // Will be added automatically
+        .map((attendee) => ({
+          emailAddress: {
+            address: attendee.email,
+            name: attendee.name,
+          },
+          type: attendee.type,
+          status: {
+            response: attendeeStatusToResponseStatusMap[attendee.status],
+          },
+        })),
+      location: {
+        displayName: `${event.location.name}${event.location.address ? `, ${event.location.address}` : ""}`,
+      },
+      singleValueExtendedProperties: [
+        {
+          id: uidPropertyName,
+          value: event.uid,
+        },
+      ],
+    };
+
+    return outlookEvent;
+  }
+
   private async getEventsPaginated(
     client: Client,
     start: DateTime,
@@ -372,6 +520,9 @@ class OutlookConnectedApp
     return await client
       .api("/me/calendarview")
       .query(`startDateTime=${start.toISO()}&endDateTime=${end.toISO()}`)
+      .expand(
+        `singleValueExtendedProperties($filter=id eq '${uidPropertyName}')`
+      )
       // .select("uid,start,end,showAs,subject")
       .count(true)
       .skip(skip)

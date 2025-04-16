@@ -3,6 +3,8 @@ import { BusyEventsApp } from "./apps/busy-events/app";
 import { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 import { CaldavApp } from "./apps/caldav/app";
 import { CALDAV_APP_NAME } from "./apps/caldav/const";
+import { CalendarWriterApp } from "./apps/calendar-writer/app";
+import { CALENDAR_WRITER_APP_NAME } from "./apps/calendar-writer/const";
 import { CustomerEmailNotificationApp } from "./apps/customer-email-notification/app";
 import { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";
 import { CustomerTextMessageNotificationApp } from "./apps/customer-text-message-notification/app";
@@ -43,6 +45,7 @@ export const AvailableApps: Record<string, App> = {
   [TEXTBELT_APP_NAME]: TextBeltApp,
   [CUSTOMER_EMAIL_NOTIFICATION_APP_NAME]: CustomerEmailNotificationApp,
   [EMAIL_NOTIFICATION_APP_NAME]: EmailNotificationApp,
+  [CALENDAR_WRITER_APP_NAME]: CalendarWriterApp,
   [CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME]:
     CustomerTextMessageNotificationApp,
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: TextMessageNotificationApp,
@@ -54,6 +57,7 @@ export const AvailableApps: Record<string, App> = {
 
 export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
 export { CALDAV_APP_NAME } from "./apps/caldav/const";
+export { CALENDAR_WRITER_APP_NAME } from "./apps/calendar-writer/const";
 export { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-notification/const";
 export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
