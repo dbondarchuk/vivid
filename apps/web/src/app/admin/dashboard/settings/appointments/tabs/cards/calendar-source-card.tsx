@@ -76,7 +76,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
               <FormControl>
                 <AppSelector
                   disabled={disabled}
-                  className="w-full [&>button]:w-full"
+                  className="w-full"
                   scope="calendar-read"
                   value={field.value}
                   onItemSelect={(value) => {

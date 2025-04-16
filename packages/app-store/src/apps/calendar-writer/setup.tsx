@@ -58,7 +58,7 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
                   <FormControl>
                     <AppSelector
                       disabled={isLoading}
-                      className="w-full [&>button]:w-full"
+                      className="w-full"
                       scope="calendar-write"
                       value={field.value}
                       onItemSelect={(value) => {

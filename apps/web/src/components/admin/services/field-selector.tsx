@@ -90,7 +90,7 @@ export const FieldSelector: React.FC<FieldSelectorProps> = ({
     // @ts-ignore Allow clear passthrough
     <Combobox
       disabled={disabled || isLoading}
-      className={cn("flex font-normal text-base [&>button]:w-full", className)}
+      className={cn("flex font-normal text-base", className)}
       values={FieldValues(fields)}
       searchLabel={isLoading ? "Loading fields..." : "Select field"}
       value={value}

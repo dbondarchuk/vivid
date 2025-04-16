@@ -98,7 +98,7 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
   return (
     <Combobox
       disabled={disabled || isLoading}
-      className={cn("flex font-normal text-base [&>button]:w-full", className)}
+      className={cn("flex font-normal text-base", className)}
       values={AddonValues(addons)}
       searchLabel={isLoading ? "Loading addons..." : "Select addon"}
       value={value}

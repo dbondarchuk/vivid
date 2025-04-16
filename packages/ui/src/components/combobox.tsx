@@ -190,8 +190,14 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
 
   const [search, setSearch] = React.useState("");
 
-  let { listClassName, customSearch, searchLabel, onItemSelect, ...rest } =
-    props;
+  let {
+    listClassName,
+    customSearch,
+    searchLabel,
+    onItemSelect,
+    className,
+    ...rest
+  } = props;
   searchLabel = searchLabel || "Select item...";
   let buttonLabel: React.ReactNode = searchLabel;
   if (value) {
@@ -230,6 +236,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
           allowClear={"allowClear" in props && props.allowClear}
           onClear={() => onSelect(undefined)}
           open={open}
+          className={cn("[&>button]:max-w-full", className)}
           {...rest}
         >
           {buttonLabel}

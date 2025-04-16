@@ -98,7 +98,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
   return (
     <Combobox
       disabled={disabled || isLoading}
-      className={cn("flex font-normal text-base [&>button]:w-full", className)}
+      className={cn("flex font-normal text-base", className)}
       values={OptionValues(options)}
       searchLabel={isLoading ? "Loading options..." : "Select option"}
       value={value}
