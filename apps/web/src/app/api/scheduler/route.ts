@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       ServicesContainer.ConnectedAppService().getAppServiceProps(app._id)
     );
 
-    return (service as any as IScheduled).onTime(app, date.toJSDate());
+    return (service as any as IScheduled).onTime(app, date.toUTC().toJSDate());
   });
 
   Promise.all(promises);

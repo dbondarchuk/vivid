@@ -44,8 +44,12 @@ export default class LogCleanupConnectedApp
       data.type = "months";
     }
 
-    const dateTime = DateTime.fromJSDate(date);
-    if (dateTime.hour !== 3 && dateTime.minute !== 0) return;
+    const { timezone } = await this.props.services
+      .ConfigurationService()
+      .getConfiguration("booking");
+
+    const dateTime = DateTime.fromJSDate(date).setZone(timezone);
+    if (dateTime.hour !== 3 || dateTime.minute !== 0) return;
 
     const maxDate = dateTime.minus({
       [data.type]: data.amount,
