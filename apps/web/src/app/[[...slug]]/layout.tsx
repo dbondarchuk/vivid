@@ -10,6 +10,7 @@ import { TwLoad } from "../twLoad";
 import { ServicesContainer } from "@vivid/services";
 import "../globals.css";
 import { getColorsCss } from "@vivid/utils";
+import { CookiesProvider } from "@/components/cookies-provider";
 
 const ScriptRenderer = ({
   resource,
@@ -98,11 +99,12 @@ export default async function RootLayout({
   const colors = getColorsCss(styling?.colors);
 
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
+    <CookiesProvider>
+      <html lang="en" className="scroll-smooth">
+        <head>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
             @layer base {
               ${fonts}
 
@@ -114,30 +116,31 @@ export default async function RootLayout({
               }
             }
           `,
-          }}
-        />
-        {general.favicon && (
-          <link rel="icon" href={general.favicon} sizes="any" />
-        )}
-        {scripts?.header?.map((resource, index) => (
-          <ScriptRenderer resource={resource} id={index} key={index} />
-        ))}
-        {styling?.css?.map((resource, index) => (
-          <CssRenderer resource={resource} id={index} key={index} />
-        ))}
-      </head>
-      <TwLoad />
-      <body className="font-primary">
-        <Header />
-        <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
-          {children}
-        </main>
-        <Footer />
-        {scripts?.footer?.map((resource, index) => (
-          <ScriptRenderer resource={resource} id={index} key={index} />
-        ))}
-        <Toaster />
-      </body>
-    </html>
+            }}
+          />
+          {general.favicon && (
+            <link rel="icon" href={general.favicon} sizes="any" />
+          )}
+          {scripts?.header?.map((resource, index) => (
+            <ScriptRenderer resource={resource} id={index} key={index} />
+          ))}
+          {styling?.css?.map((resource, index) => (
+            <CssRenderer resource={resource} id={index} key={index} />
+          ))}
+        </head>
+        <TwLoad />
+        <body className="font-primary">
+          <Header />
+          <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
+            {children}
+          </main>
+          <Footer />
+          {scripts?.footer?.map((resource, index) => (
+            <ScriptRenderer resource={resource} id={index} key={index} />
+          ))}
+          <Toaster />
+        </body>
+      </html>
+    </CookiesProvider>
   );
 }

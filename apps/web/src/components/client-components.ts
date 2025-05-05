@@ -5,6 +5,7 @@ import { Container } from "./web/mdx/container";
 import { Grid } from "./web/mdx/grid";
 import { MdxImage } from "./web/mdx/mdx-image";
 import { MdxOverrides } from "./web/mdx/overrides";
+import { Popup } from "./web/mdx/popup";
 import { PageHero } from "./web/page-hero";
 
 export const ClientComponents = {
@@ -18,4 +19,5 @@ export const ClientComponents = {
   Icon,
   Block,
   Container,
+  Popup,
 };
