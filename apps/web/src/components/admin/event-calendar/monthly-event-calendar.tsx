@@ -31,18 +31,18 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
   className,
   disableTimeChange = false,
   schedule = {},
-  timezone,
+  timeZone,
   onEventClick,
   onRangeChange,
   onDateClick,
 }) => {
   const [dates, setDates] = React.useState<Dates>(
-    getDates(DateTime.fromJSDate(date || new Date()).setZone(timezone))
+    getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone))
   );
 
   React.useEffect(() => {
     setDates(
-      getDates(DateTime.fromJSDate(date || new Date()).setZone(timezone))
+      getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone))
     );
   }, [date]);
 
@@ -127,7 +127,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
           </div>
           <div className="mt-2 space-y-1 overflow-y-auto max-h-24">
             {dayEvents.map((event, idx) => (
-              <EventPopover key={idx} event={event} timezone={timezone}>
+              <EventPopover key={idx} event={event} timeZone={timeZone}>
                 <div
                   key={idx}
                   className={cn(

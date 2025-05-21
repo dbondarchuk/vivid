@@ -68,7 +68,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AppointmentRescheduleDialog } from "./appointment-reschedule-dialog";
 
-const timezones = getTimeZones();
+const timeZones = getTimeZones();
 
 const noteFormSchema = z.object({
   note: z.string().optional(),
@@ -78,8 +78,8 @@ type NoteFormSchema = z.infer<typeof noteFormSchema>;
 
 export const AppointmentView: React.FC<{
   appointment: Appointment;
-  timezone?: string;
-}> = ({ appointment: propAppointment, timezone }) => {
+  timeZone?: string;
+}> = ({ appointment: propAppointment, timeZone }) => {
   const router = useRouter();
 
   const [appointment, setAppointment] = React.useState(propAppointment);
@@ -224,7 +224,7 @@ export const AppointmentView: React.FC<{
           <>
             <AppointmentRescheduleDialog
               appointment={appointment}
-              timezone={timezone}
+              timeZone={timeZone}
               onRescheduled={reschedule}
               trigger={
                 <Button
@@ -294,13 +294,13 @@ export const AppointmentView: React.FC<{
                   <AccordionItem value="dateTime" className="border-none">
                     <AccordionTrigger>
                       {DateTime.fromJSDate(appointment.dateTime)
-                        .setZone(timezone)
+                        .setZone(timeZone)
                         .toLocaleString(
                           DateTime.DATETIME_MED_WITH_WEEKDAY
                         )}{" "}
                       -{" "}
                       {DateTime.fromJSDate(appointment.dateTime)
-                        .setZone(timezone)
+                        .setZone(timeZone)
                         .plus({ minutes: appointment.totalDuration })
                         .toLocaleString(DateTime.TIME_SIMPLE)}
                     </AccordionTrigger>
@@ -309,7 +309,7 @@ export const AppointmentView: React.FC<{
                         <div>Date and time:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.dateTime)
-                            .setZone(timezone)
+                            .setZone(timeZone)
                             .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                         </div>
                         <div>Duration:</div>
@@ -323,7 +323,7 @@ export const AppointmentView: React.FC<{
                         <div>Timezone:</div>
                         <div>
                           {
-                            timezones.find(
+                            timeZones.find(
                               (tz) => tz.name === appointment.timeZone
                             )?.currentTimeFormat
                           }{" "}
@@ -334,7 +334,7 @@ export const AppointmentView: React.FC<{
                         <div>Ends at:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.dateTime)
-                            .setZone(timezone)
+                            .setZone(timeZone)
                             .plus({ minutes: appointment.totalDuration })
                             .toLocaleString(
                               DateTime.DATETIME_MED_WITH_WEEKDAY
@@ -343,7 +343,7 @@ export const AppointmentView: React.FC<{
                         <div>Requested at:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.createdAt)
-                            .setZone(timezone)
+                            .setZone(timeZone)
                             .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                         </div>
                       </div>
@@ -745,7 +745,7 @@ export const AppointmentView: React.FC<{
           </Form>
         </div>
         <div className="flex flex-col gap-2">
-          <AppointmentCalendar appointment={appointment} timezone={timezone} />
+          <AppointmentCalendar appointment={appointment} timeZone={timeZone} />
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   disableTimeChange = false,
   daysToShow = 3,
   schedule = {},
-  timezone,
+  timeZone,
   onEventClick,
   onRangeChange,
   renderEvent,
@@ -266,16 +266,16 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                       events.map((event, idx) => {
                         const eventDate = DateTime.fromJSDate(
                           event.start
-                        ).setZone(timezone);
+                        ).setZone(timeZone);
                         const endDate = DateTime.fromJSDate(event.end).setZone(
-                          timezone
+                          timeZone
                         );
 
                         return (
                           <EventPopover
                             key={idx}
                             event={event}
-                            timezone={timezone}
+                            timeZone={timeZone}
                           >
                             <div
                               className="flex items-start space-x-3 p-3 rounded-md hover:bg-accent/50 cursor-pointer transition-colors"

@@ -35,6 +35,7 @@ export interface IServicesService {
     },
     includeUsage?: T
   ): Promise<WithTotal<FieldsType<T>>>;
+  getFieldsById(ids: string[]): Promise<ServiceField[]>;
   createField(field: ServiceFieldUpdateModel): Promise<ServiceField>;
   updateField(id: string, update: ServiceFieldUpdateModel): Promise<void>;
   deleteField(id: string): Promise<ServiceField | null>;
@@ -47,6 +48,7 @@ export interface IServicesService {
     query: Query,
     includeUsage?: T
   ): Promise<WithTotal<AddonsType<T>>>;
+  getAddonsById(ids: string[]): Promise<AppointmentAddon[]>;
   createAddon(addon: AppointmentAddonUpdateModel): Promise<AppointmentAddon>;
   updateAddon(id: string, update: AppointmentAddonUpdateModel): Promise<void>;
   deleteAddon(id: string): Promise<AppointmentAddon | null>;

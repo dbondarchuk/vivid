@@ -145,6 +145,19 @@ export class ServicesService implements IServicesService {
     };
   }
 
+  public async getFieldsById(ids: string[]): Promise<ServiceField[]> {
+    const db = await getDbConnection();
+    const fields = db.collection<ServiceField>(FIELDS_COLLECTION_NAME);
+
+    return await fields
+      .find({
+        _id: {
+          $in: ids,
+        },
+      })
+      .toArray();
+  }
+
   public async createField(
     field: ServiceFieldUpdateModel
   ): Promise<ServiceField> {
@@ -295,11 +308,24 @@ export class ServicesService implements IServicesService {
     const db = await getDbConnection();
     const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
 
-    const field = await addons.findOne({
+    const addon = await addons.findOne({
       _id: id,
     });
 
-    return field;
+    return addon;
+  }
+
+  public async getAddonsById(ids: string[]): Promise<AppointmentAddon[]> {
+    const db = await getDbConnection();
+    const addons = db.collection<AppointmentAddon>(ADDONS_COLLECTION_NAME);
+
+    return await addons
+      .find({
+        _id: {
+          $in: ids,
+        },
+      })
+      .toArray();
   }
 
   public async getAddons<T extends boolean | undefined>(

@@ -40,6 +40,6 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     events,
     schedule,
-    timezone: config.timezone,
+    timeZone: config.timeZone,
   });
 }

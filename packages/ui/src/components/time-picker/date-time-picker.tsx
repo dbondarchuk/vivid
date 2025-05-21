@@ -102,7 +102,7 @@
 // };
 
 /**
- * Shadcn Datetime Picker with support for timezone, date and time selection, minimum and maximum date limits, and 12-hour format...
+ * Shadcn Datetime Picker with support for timeZone, date and time selection, minimum and maximum date limits, and 12-hour format...
  * Check out the live demo at https://shadcn-datetime-picker-pro.vercel.app/
  * Find the latest source code at https://github.com/huybuidac/shadcn-datetime-picker
  */
@@ -161,12 +161,12 @@ export type DateTimePickerProps = {
    */
   max?: Date;
   /**
-   * The timezone to display the datetime in, based on the date-fns.
+   * The timeZone to display the datetime in, based on the date-fns.
    * For a complete list of valid time zone identifiers, refer to:
    * https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
    * @default undefined
    */
-  timezone?: string;
+  timeZone?: string;
   /**
    * Whether the datetime picker is disabled.
    * @default false
@@ -214,7 +214,7 @@ export type DateTimePickerProps = {
 export type DateTimeRenderTriggerProps = {
   value: Date | undefined;
   open: boolean;
-  timezone?: string;
+  timeZone?: string;
   disabled?: boolean;
   use12HourFormat?: boolean;
   setOpen: (open: boolean) => void;
@@ -226,7 +226,7 @@ export function DateTimePicker({
   renderTrigger,
   min,
   max,
-  timezone,
+  timeZone,
   hideTime,
   use12HourFormat,
   disabled,
@@ -243,8 +243,8 @@ export function DateTimePicker({
     "month" | "year" | false
   >(false);
   const initDate = useMemo(
-    () => DateTime.fromJSDate(value || new Date()).setZone(timezone),
-    [value, timezone]
+    () => DateTime.fromJSDate(value || new Date()).setZone(timeZone),
+    [value, timeZone]
   );
 
   const [month, setMonth] = useState<DateTime>(initDate);
@@ -255,12 +255,12 @@ export function DateTimePicker({
   }, [month]);
 
   const minDate = useMemo(
-    () => (min ? DateTime.fromJSDate(min).setZone(timezone) : undefined),
-    [min, timezone]
+    () => (min ? DateTime.fromJSDate(min).setZone(timeZone) : undefined),
+    [min, timeZone]
   );
   const maxDate = useMemo(
-    () => (max ? DateTime.fromJSDate(max).setZone(timezone) : undefined),
-    [max, timezone]
+    () => (max ? DateTime.fromJSDate(max).setZone(timeZone) : undefined),
+    [max, timeZone]
   );
 
   const onDayChanged = useCallback(
@@ -337,7 +337,7 @@ export function DateTimePicker({
 
   const onTimeChanged = useCallback(
     (date: Date) => {
-      const d = DateTime.fromJSDate(date).setZone(timezone, {
+      const d = DateTime.fromJSDate(date).setZone(timeZone, {
         keepLocalTime: true,
       });
       setDate(d);
@@ -353,7 +353,7 @@ export function DateTimePicker({
           renderTrigger({
             value: displayValue?.toJSDate(),
             open,
-            timezone,
+            timeZone,
             disabled,
             use12HourFormat,
             setOpen,
@@ -441,11 +441,11 @@ export function DateTimePicker({
         </div>
         <div className="relative overflow-hidden">
           <DayPicker
-            timeZone={timezone}
+            timeZone={timeZone}
             mode="single"
             selected={date.toJSDate()}
             onSelect={(d) =>
-              d && onDayChanged(DateTime.fromJSDate(d).setZone(timezone))
+              d && onDayChanged(DateTime.fromJSDate(d).setZone(timeZone))
             }
             month={month.toJSDate()}
             endMonth={endMonth.toJSDate()}
@@ -456,7 +456,7 @@ export function DateTimePicker({
               ].filter(Boolean) as Matcher[]
             }
             onMonthChange={(d) =>
-              setMonth(DateTime.fromJSDate(d).setZone(timezone))
+              setMonth(DateTime.fromJSDate(d).setZone(timeZone))
             }
             classNames={{
               dropdowns: "flex w-full gap-2",
@@ -517,17 +517,17 @@ export function DateTimePicker({
               min={minDate?.toJSDate()}
               max={maxDate?.toJSDate()}
               minutesDivisibleBy={minutesDivisibleBy}
-              timezone={timezone}
+              timeZone={timeZone}
             />
           )}
           <div className="flex flex-row-reverse items-center justify-between">
             <Button className="ms-2 h-7 px-2" onClick={onSubmit}>
               Done
             </Button>
-            {/* {timezone && (
+            {/* {timeZone && (
               <div className="text-sm">
                 <span>Timezone:</span>
-                <span className="font-semibold ms-1">{timezone}</span>
+                <span className="font-semibold ms-1">{timeZone}</span>
               </div>
             )} */}
           </div>

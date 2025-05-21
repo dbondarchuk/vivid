@@ -4,7 +4,8 @@ import { ConnectedAppData } from "../connected-app.data";
 export interface IAppointmentHook {
   onAppointmentCreated(
     appData: ConnectedAppData,
-    appointment: Appointment
+    appointment: Appointment,
+    confirmed: boolean
   ): Promise<void>;
   onAppointmentStatusChanged(
     appData: ConnectedAppData,

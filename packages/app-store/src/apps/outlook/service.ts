@@ -465,7 +465,7 @@ class OutlookConnectedApp
 
   private getOutlookEvent(event: CalendarEvent): OutlookEvent {
     const start = DateTime.fromJSDate(event.startTime)
-      .setZone(event.timezone)
+      .setZone(event.timeZone)
       .toUTC();
 
     const end = start.plus({ minutes: event.duration });

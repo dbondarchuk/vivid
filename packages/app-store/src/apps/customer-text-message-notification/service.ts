@@ -58,9 +58,15 @@ export default class CustomerTextMessageNotificationConnectedApp
 
   public async onAppointmentCreated(
     appData: ConnectedAppData,
-    appointment: Appointment
+    appointment: Appointment,
+    confirmed: boolean
   ): Promise<void> {
-    await this.sendNotification(appData, appointment, "pending", "New Request");
+    await this.sendNotification(
+      appData,
+      appointment,
+      confirmed ? "confirmed" : "pending",
+      "New Request"
+    );
   }
 
   public async onAppointmentStatusChanged(

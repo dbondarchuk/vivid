@@ -30,7 +30,7 @@ type DateTimeInputProps = {
   format?: string;
   disabled?: boolean;
   clearable?: boolean;
-  timezone?: string;
+  timeZone?: string;
   hideCalendarIcon?: boolean;
   use12HourFormat?: boolean;
 };
@@ -93,14 +93,14 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
     const {
       format: formatProp,
       value: _value,
-      timezone,
+      timeZone,
       use12HourFormat,
       ...rest
     } = options;
     const value = useMemo(
       () =>
-        _value ? DateTime.fromJSDate(_value).setZone(timezone) : undefined,
-      [_value, timezone]
+        _value ? DateTime.fromJSDate(_value).setZone(timeZone) : undefined,
+      [_value, timeZone]
     );
     const form = useFormContext();
     const formatStr = React.useMemo(
@@ -161,7 +161,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
     const inputValue = useMemo(() => {
       const allHasValue = !validSegments.some((s) => !s.value);
       if (!allHasValue) return;
-      const date = DateTime.fromFormat(inputStr, formatStr).setZone(timezone);
+      const date = DateTime.fromFormat(inputStr, formatStr).setZone(timeZone);
       const year = date.year;
       // console.log('inputValue', {allHasValue, validSegments, inputStr, formatStr, date, year});
       if (date.isValid && year > 1900 && year < 2100) {
@@ -235,11 +235,11 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           let parsedDate = DateTime.fromFormat(
             newValue.padStart(length, "0"),
             segment.symbols
-          ).setZone(timezone);
+          ).setZone(timeZone);
           if (!parsedDate.isValid && newValue.length > 1) {
             newValue = num;
             parsedDate = DateTime.fromFormat(newValue, segment.symbols).setZone(
-              timezone
+              timeZone
             );
           }
           const updatedSegments = segments.map((s) =>
@@ -368,11 +368,11 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
               setSegments(
                 parseFormat(
                   formatStr,
-                  d ? DateTime.fromJSDate(d).setZone(timezone) : undefined
+                  d ? DateTime.fromJSDate(d).setZone(timeZone) : undefined
                 )
               );
             }}
-            timezone={timezone}
+            timeZone={timeZone}
             renderTrigger={(props) => (
               <Button
                 variant="ghost"

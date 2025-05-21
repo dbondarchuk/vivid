@@ -20,7 +20,7 @@ export type CalendarEvent = {
 type BaseEventCalendarProps = {
   date?: Date;
   events?: CalendarEvent[];
-  timezone?: string;
+  timeZone?: string;
   className?: string;
   disableTimeChange?: boolean;
   schedule?: Record<string, DaySchedule>;

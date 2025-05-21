@@ -32,7 +32,7 @@ const formatDate = (date: Date): string =>
 export type CalendarCardProps = BaseCardProps & {
   availability: Availability;
   dateTime?: DateTime;
-  timezone: string;
+  timeZone: string;
   onDateTimeSelected: (dateTime: DateTime | undefined) => void;
 };
 
@@ -46,7 +46,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     props.dateTime?.time
   );
   const [timeZone, setTimeZone] = React.useState<string>(
-    props.dateTime?.timeZone || props.timezone
+    props.dateTime?.timeZone || props.timeZone
   );
 
   const changeDate = (date: Date | undefined) => {
@@ -132,7 +132,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     [time]
   );
 
-  const timezoneCombobox = (
+  const timeZoneCombobox = (
     <Combobox
       values={timeZones}
       className="mx-2"
@@ -150,9 +150,9 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     />
   );
 
-  const timezoneLabel = formatJsx(
+  const timeZoneLabel = formatJsx(
     props.i18n("select_timezone_label_format"),
-    timezoneCombobox
+    timeZoneCombobox
   );
 
   let locale = fallbackLanguage;
@@ -206,7 +206,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
         </div>
         <div className="text-sm text-muted-foreground leading-10">
           <Globe2Icon className="inline-block mr-1" />
-          {timezoneLabel}
+          {timeZoneLabel}
         </div>
       </div>
     </div>

@@ -34,12 +34,12 @@ import { AppointmentActionButton } from "./action-button";
 
 export type AppointmentCardProps = {
   appointment: Appointment;
-  timezone?: string;
+  timeZone?: string;
 };
 
 export const AppointmentCard: React.FC<AppointmentCardProps> = ({
   appointment,
-  timezone = "local",
+  timeZone = "local",
 }) => {
   const duration = durationToTime(appointment.totalDuration);
 
@@ -81,7 +81,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </dt>
             <dd className="col-span-2">
               {DateTime.fromJSDate(appointment.dateTime, {
-                zone: timezone,
+                zone: timeZone,
               }).toLocaleString(DateTime.DATETIME_SHORT)}
             </dd>
           </div>
@@ -101,7 +101,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </dt>
             <dd className="col-span-2">
               {DateTime.fromJSDate(appointment.dateTime, {
-                zone: timezone,
+                zone: timeZone,
               })
                 .plus({ minutes: appointment.totalDuration })
                 .toLocaleString(DateTime.DATETIME_SHORT)}

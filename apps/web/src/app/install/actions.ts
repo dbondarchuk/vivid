@@ -37,7 +37,7 @@ export async function install(data: InstallFormData) {
 
   await ServicesContainer.ConfigurationService().setConfiguration("booking", {
     options: [],
-    timezone: DateTime.now().zoneName,
+    timeZone: DateTime.now().zoneName,
   });
 
   await ServicesContainer.ConfigurationService().setConfiguration("schedule", {

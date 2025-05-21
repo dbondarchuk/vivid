@@ -12,7 +12,7 @@ export const PendingAppointmentsTab: React.FC = async () => {
       beforeNow
     );
 
-  const { timezone } =
+  const { timeZone } =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
   return (
@@ -31,7 +31,7 @@ export const PendingAppointmentsTab: React.FC = async () => {
           {pendingAppointments.items.map((appointment) => (
             <AppointmentCard
               key={appointment._id}
-              timezone={timezone}
+              timeZone={timeZone}
               appointment={appointment}
             />
           ))}

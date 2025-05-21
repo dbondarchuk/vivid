@@ -19,16 +19,18 @@ import { CalendarWriterConfiguration } from "./models";
 
 import { template } from "@vivid/utils";
 import { AvailableApps } from "../../apps";
+import autoConfirmedTemplate from "./templates/appointment-auto-confirmed.html";
 import confirmedTemplate from "./templates/appointment-confirmed.html";
 import pendingTemplate from "./templates/appointment-created.html";
 import declinedTemplate from "./templates/appointment-declined.html";
 import rescheduledTemplate from "./templates/appointment-rescheduled.html";
 
 const bodyTemplates: Record<
-  keyof typeof AppointmentStatusToICalMethodMap,
+  keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
   string
 > = {
   confirmed: confirmedTemplate,
+  "auto-confirmed": autoConfirmedTemplate,
   declined: declinedTemplate,
   pending: pendingTemplate,
   rescheduled: rescheduledTemplate,
@@ -74,9 +76,15 @@ export class CalendarWriterConnectedApp
 
   public async onAppointmentCreated(
     appData: ConnectedAppData,
-    appointment: Appointment
+    appointment: Appointment,
+    confirmed: boolean
   ): Promise<void> {
-    await this.makeEvent(appData, appointment, "pending", "New Request");
+    await this.makeEvent(
+      appData,
+      appointment,
+      confirmed ? "auto-confirmed" : "pending",
+      "New Request"
+    );
   }
 
   public async onAppointmentStatusChanged(
@@ -105,7 +113,7 @@ export class CalendarWriterConnectedApp
   private async makeEvent(
     appData: ConnectedAppData,
     appointment: Appointment,
-    status: keyof typeof AppointmentStatusToICalMethodMap,
+    status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
     initiator: string
   ) {
     const config = await this.props.services
@@ -130,6 +138,13 @@ export class CalendarWriterConnectedApp
       .getAppService<ICalendarWriter>(data.appId);
 
     const uid = getIcsEventUid(appointment._id, config.general.url);
+    const newStatus =
+      status === "rescheduled"
+        ? appointment.status
+        : status === "auto-confirmed"
+          ? "confirmed"
+          : status;
+
     const event: CalendarEvent = {
       id: appointment._id,
       title: eventSummary,
@@ -146,9 +161,9 @@ export class CalendarWriterConnectedApp
       },
       startTime: appointment.dateTime,
       duration: appointment.totalDuration,
-      timezone: config.booking.timezone,
+      timeZone: config.booking.timeZone,
       uid,
-      status: "pending",
+      status: newStatus,
       attendees: [
         // {
         //   name: config.general.name,
@@ -159,7 +174,7 @@ export class CalendarWriterConnectedApp
         {
           name: config.general.name,
           email: config.general.email,
-          status: "tentative",
+          status: newStatus === "confirmed" ? "confirmed" : "tentative",
           type: "required",
         },
         {
@@ -171,7 +186,7 @@ export class CalendarWriterConnectedApp
       ],
     };
 
-    if (status === "pending") {
+    if (status === "pending" || status === "auto-confirmed") {
       await service.createEvent(app, event);
     } else if (status === "declined") {
       await service.deleteEvent(app, uid, event.id);

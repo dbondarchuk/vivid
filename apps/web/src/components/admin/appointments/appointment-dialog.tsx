@@ -17,12 +17,12 @@ import { AppointmentView } from "./appoitment-view";
 
 export type AppointmentDialogProps = DialogProps & {
   appointment: Appointment;
-  timezone?: string;
+  timeZone?: string;
 };
 
 export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
   appointment,
-  timezone,
+  timeZone,
   ...rest
 }) => {
   return (
@@ -42,7 +42,7 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
           <DialogDescription>By {appointment.fields.name}</DialogDescription>
         </DialogHeader>
         <div className="flex-1 w-full overflow-auto">
-          <AppointmentView appointment={appointment} timezone={timezone} />
+          <AppointmentView appointment={appointment} timeZone={timeZone} />
         </div>
         <DialogFooter className="flex-row gap-2">
           <DialogClose asChild>

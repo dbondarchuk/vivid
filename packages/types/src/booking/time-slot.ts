@@ -57,7 +57,7 @@ export interface TimeSlotsFinderConfiguration {
   minTimeBeforeFirstSlot?: number;
   /** The maximum days in the future before appointments cannot be taken anymore. */
   maxDaysBeforeLastSlot?: number;
-  /** The timezone used through all the configuration. */
+  /** The time zone used through all the configuration. */
   timeZone: string;
 }
 

@@ -1,6 +1,6 @@
 import { Footer } from "@/components/web/footer";
 import { Header } from "@/components/web/header";
-import { Toaster } from "@vivid/ui";
+import { SonnerToaster, Toaster } from "@vivid/ui";
 
 import { Resource } from "@vivid/types";
 
@@ -139,6 +139,7 @@ export default async function RootLayout({
             <ScriptRenderer resource={resource} id={index} key={index} />
           ))}
           <Toaster />
+          <SonnerToaster />
         </body>
       </html>
     </CookiesProvider>

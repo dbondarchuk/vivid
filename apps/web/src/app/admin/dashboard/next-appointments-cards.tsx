@@ -11,7 +11,7 @@ export const NextAppointmentsCards: React.FC = async () => {
       3
     );
 
-  const { timezone } =
+  const { timeZone } =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
   return (
@@ -26,7 +26,7 @@ export const NextAppointmentsCards: React.FC = async () => {
       {nextAppointments.map((appointment) => (
         <AppointmentCard
           appointment={appointment}
-          timezone={timezone}
+          timeZone={timeZone}
           key={appointment._id}
         />
       ))}

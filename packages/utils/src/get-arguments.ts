@@ -24,7 +24,7 @@ export const getArguments = (
           .setZone(
             useAppointmentTimezone
               ? appointment.timeZone
-              : bookingConfiguration.timezone
+              : bookingConfiguration.timeZone
           )
           .toLocaleString(DateTime.DATETIME_FULL)
       : undefined,

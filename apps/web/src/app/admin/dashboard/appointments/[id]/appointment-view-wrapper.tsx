@@ -16,7 +16,7 @@ export const AppointmentViewWrapper: React.FC<{
     return notFound();
   }
 
-  const { timezone } =
+  const { timeZone } =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
   const breadcrumbItems = [
@@ -35,7 +35,7 @@ export const AppointmentViewWrapper: React.FC<{
         />
         <Separator />
       </div>
-      <AppointmentView appointment={appointment} timezone={timezone} />
+      <AppointmentView appointment={appointment} timeZone={timeZone} />
       {shouldShowDeclineModal && (
         <AppointmentDeclineDialog appointment={appointment} />
       )}

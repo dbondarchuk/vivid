@@ -54,9 +54,16 @@ export default class CustomerEmailNotificationConnectedApp
 
   public async onAppointmentCreated(
     appData: ConnectedAppData,
-    appointment: Appointment
+    appointment: Appointment,
+    confirmed: boolean
   ): Promise<void> {
-    await this.sendNotification(appData, appointment, "pending", "New Request");
+    await this.sendNotification(
+      appData,
+      appointment,
+      confirmed ? "confirmed" : "pending",
+      "New Request",
+      confirmed
+    );
   }
 
   public async onAppointmentStatusChanged(
@@ -91,7 +98,8 @@ export default class CustomerEmailNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     status: keyof CustomerEmailNotificationConfiguration["templates"],
-    initiator: string
+    initiator: string,
+    forceRequest?: boolean
   ) {
     const { general, booking, social } = await this.props.services
       .ConfigurationService()
@@ -123,7 +131,7 @@ export default class CustomerEmailNotificationConnectedApp
       appointment,
       templateSafeWithError(data.event.summary, arg),
       renderedEventTemplate,
-      AppointmentStatusToICalMethodMap[status]
+      forceRequest ? "REQUEST" : AppointmentStatusToICalMethodMap[status]
     );
 
     const { subject, templateId } = data.templates[status];
@@ -150,7 +158,9 @@ export default class CustomerEmailNotificationConnectedApp
         subject: templateSafeWithError(subject, arg),
         body: renderedTemplate,
         icalEvent: {
-          method: AppointmentStatusToICalMethodMap[status],
+          method: forceRequest
+            ? "REQUEST"
+            : AppointmentStatusToICalMethodMap[status],
           content: eventContent,
         },
       },

@@ -16,7 +16,7 @@ export interface IEventsService {
   getBusyEvents(): Promise<Period[]>;
   createEvent(args: {
     event: AppointmentEvent;
-    status?: AppointmentStatus;
+    confirmed?: boolean;
     force?: boolean;
     files?: Record<string, File>;
   }): Promise<Appointment>;

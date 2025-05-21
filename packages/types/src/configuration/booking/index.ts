@@ -1,13 +1,10 @@
-import { getTimeZones } from "@vvo/tzdb";
 import { z } from "zod";
 import { asOptionalField } from "../../utils";
+import { zTimeZone } from "../../utils/zTimeZone";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
 
 export * from "../../booking/field";
 export * from "./calendar-source";
-
-export const timezones = getTimeZones();
-const [firstTimezone, ...restTimezones] = timezones.map((tz) => tz.name);
 
 export const customTimeSlotSchema = z
   .string({ message: "Time is required" })
@@ -65,16 +62,11 @@ export const generalBookingConfigurationSchema = z.object({
       ],
       { message: "Unknow option" }
     )
-    // .coerce
-    // .number
-    // .min(0, "The minimum time slot step must be 1")
-    // .max(30, "The maximum time slot step must be 30")
     .optional(),
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
-  timezone: z.enum([firstTimezone, ...restTimezones], {
-    required_error: "Unknown time zone",
-  }),
+  timeZone: zTimeZone,
   scheduleAppId: z.string().optional(),
+  autoConfirm: z.coerce.boolean().optional(),
 });
 
 export const appointOptionsSchema = z.array(

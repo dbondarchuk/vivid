@@ -27,7 +27,7 @@ export function SimpleTimePicker({
   modal,
   showSeconds = false,
   minutesDivisibleBy,
-  timezone,
+  timeZone,
 }: {
   use12HourFormat?: boolean;
   value: Date;
@@ -39,7 +39,7 @@ export function SimpleTimePicker({
   modal?: boolean;
   showSeconds?: boolean;
   minutesDivisibleBy?: number;
-  timezone?: string;
+  timeZone?: string;
 }) {
   // hours24h = HH
   // hours12h = hh
@@ -52,8 +52,8 @@ export function SimpleTimePicker({
   );
 
   const value = useMemo(
-    () => DateTime.fromJSDate(valueDateJs).setZone(timezone),
-    [valueDateJs, timezone]
+    () => DateTime.fromJSDate(valueDateJs).setZone(timeZone),
+    [valueDateJs, timeZone]
   );
 
   const [ampm, setAmpm] = useState(
@@ -61,12 +61,12 @@ export function SimpleTimePicker({
   );
 
   const minDate = useMemo(
-    () => (min ? DateTime.fromJSDate(min).setZone(timezone) : undefined),
-    [min, timezone]
+    () => (min ? DateTime.fromJSDate(min).setZone(timeZone) : undefined),
+    [min, timeZone]
   );
   const maxDate = useMemo(
-    () => (max ? DateTime.fromJSDate(max).setZone(timezone) : undefined),
-    [max, timezone]
+    () => (max ? DateTime.fromJSDate(max).setZone(timeZone) : undefined),
+    [max, timeZone]
   );
 
   const [hour, setHour] = useState(

@@ -28,7 +28,7 @@ export type CalendarEvent = {
   };
   startTime: Date;
   duration: number;
-  timezone: string;
+  timeZone: string;
   attendees: CalendarEventAttendee[];
 };
 

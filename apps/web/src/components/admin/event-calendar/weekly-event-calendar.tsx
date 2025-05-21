@@ -67,7 +67,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   date,
   variant = "week-of",
   events: propsEvents,
-  timezone,
+  timeZone,
   className,
   scrollToHour = 8,
   disableTimeChange = false,
@@ -164,8 +164,8 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   }, [dates, getDates]);
 
   const events = (propsEvents || []).map((event) => {
-    const start = DateTime.fromJSDate(event.start).setZone(timezone);
-    const end = DateTime.fromJSDate(event.end).setZone(timezone);
+    const start = DateTime.fromJSDate(event.start).setZone(timeZone);
+    const end = DateTime.fromJSDate(event.end).setZone(timeZone);
     return {
       ...event,
       start,

@@ -13,18 +13,18 @@ import {
 export const AppointmentCalendar: React.FC<
   Pick<WeeklyEventCalendarProps, "className"> & {
     appointment: Appointment;
-    timezone?: string;
+    timeZone?: string;
     onEventsLoad?: (events: Event[]) => void;
   }
-> = ({ appointment, timezone: propTimezone, onEventsLoad, ...props }) => {
+> = ({ appointment, timeZone: propTimeZone, onEventsLoad, ...props }) => {
   const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
   const [events, setEvents] = React.useState<Event[]>([]);
   const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
     {}
   );
   const [loading, setLoading] = React.useState(false);
-  const [timezone, setTimezone] = React.useState<string | undefined>(
-    propTimezone
+  const [timeZone, setTimeZone] = React.useState<string | undefined>(
+    propTimeZone
   );
 
   const appointmentDateTime = appointment.dateTime;
@@ -42,20 +42,20 @@ export const AppointmentCalendar: React.FC<
     const body = (await response.json()) as {
       events: Event[];
       schedule: Record<string, DaySchedule>;
-      timezone: string;
+      timeZone: string;
     };
 
     const apiEvents = (body.events || []).map((a) => ({
       ...a,
       dateTime: DateTime.fromISO(a.dateTime as unknown as string)
-        .setZone(body.timezone)
+        .setZone(body.timeZone)
         .toJSDate(),
     }));
 
     setLoading(false);
     setApiEvents(apiEvents);
     setSchedule(body.schedule);
-    setTimezone(body.timezone);
+    setTimeZone(body.timeZone);
   };
 
   React.useEffect(() => {
@@ -141,7 +141,7 @@ export const AppointmentCalendar: React.FC<
         schedule={schedule}
         variant="days-around"
         daysAround={1}
-        timezone={timezone}
+        timeZone={timeZone}
         scrollToHour={
           Math.max(appointment.dateTime.getHours() - 2, 0) as HourNumbers
         }

@@ -283,7 +283,7 @@ export default class RemindersConnectedApp
       })
     ).items;
 
-    const timezone = bookingConfig.timezone;
+    const timeZone = bookingConfig.timeZone;
     const db = await this.props.getDbConnection();
 
     const reminders = await db
@@ -294,7 +294,7 @@ export default class RemindersConnectedApp
       .toArray();
 
     const promises = (reminders || []).map(async (reminder) => {
-      const appointments = await this.getAppointments(date, reminder, timezone);
+      const appointments = await this.getAppointments(date, reminder, timeZone);
       const appointmentPromises = appointments.map((appointment) =>
         this.sendReminder(
           appData,
@@ -316,13 +316,13 @@ export default class RemindersConnectedApp
   private async getAppointments(
     date: Date,
     reminder: Reminder,
-    timezone: string
+    timeZone: string
   ): Promise<Appointment[]> {
     const type = reminder.type;
     switch (type) {
       case "timeBefore": {
         const startDate = DateTime.fromJSDate(date)
-          .setZone(timezone)
+          .setZone(timeZone)
           .startOf("minute")
           .plus({
             days: reminder.days,
@@ -355,7 +355,7 @@ export default class RemindersConnectedApp
       }
 
       case "atTime": {
-        const dt = DateTime.fromJSDate(date).setZone(timezone);
+        const dt = DateTime.fromJSDate(date).setZone(timeZone);
         if (
           dt.hour !== reminder.time.hour ||
           dt.minute !== reminder.time.minute

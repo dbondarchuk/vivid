@@ -9,9 +9,8 @@ export const appointmentStatuses = [
 
 export type AppointmentStatus = (typeof appointmentStatuses)[number];
 
-export type Appointment = Omit<AppointmentEvent, "dateTime"> & {
+export type Appointment = AppointmentEvent & {
   _id: string;
-  dateTime: Date;
   status: AppointmentStatus;
   createdAt: Date;
   files?: Asset[];

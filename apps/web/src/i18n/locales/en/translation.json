@@ -28,7 +28,7 @@
   "timezone_format": "GMT{{timezone}}",
   "select_timezone_label_format": "All times are in {0} time zone",
   "search_country_code_label": "Search for country...",
-  "search_timezone_label": "Search to change the timezone",
+  "search_timezone_label": "Search to change the time zone",
   "confirmation_success_title": "Your request has been received!",
   "confirmation_success_message": "Thanks, {{name}}! Your request has been received and you will get confirmation email shortly.",
   "availability_fetch_failed_title": "Uh oh! Something went wrong.",

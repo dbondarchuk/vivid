@@ -43,7 +43,7 @@ import { AppointmentCalendar } from "./appointment-calendar";
 
 export type AppointmentRescheduleDialogProps = DialogProps & {
   appointment: Appointment;
-  timezone?: string;
+  timeZone?: string;
   trigger?: React.ReactNode;
   onRescheduled?: (props: { dateTime: Date; duration: number }) => void;
 };
@@ -63,7 +63,7 @@ export const AppointmentRescheduleDialog: React.FC<
   AppointmentRescheduleDialogProps
 > = ({
   appointment: propAppointment,
-  timezone,
+  timeZone,
   trigger,
   onRescheduled,
   ...rest
@@ -190,7 +190,7 @@ export const AppointmentRescheduleDialog: React.FC<
                               use12HourFormat={is12hourUserTimeFormat()}
                               disabled={loading}
                               min={new Date()}
-                              timezone={timezone}
+                              timeZone={timeZone}
                               {...field}
                               className="flex w-full"
                               minutesDivisibleBy={5}
@@ -239,7 +239,7 @@ export const AppointmentRescheduleDialog: React.FC<
                   </div>
                   <div className="flex flex-col gap-2">
                     <AppointmentCalendar
-                      timezone={timezone}
+                      timeZone={timeZone}
                       appointment={appointment}
                       onEventsLoad={setCalendarEvents}
                     />

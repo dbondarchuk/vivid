@@ -8,7 +8,7 @@ export const createAppointment = async (
   files: Record<string, File> | undefined,
   confirmed: boolean = false
 ) => {
-  const { timezone } =
+  const { timeZone } =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
   const appointmentEvent: AppointmentEvent = {
@@ -19,12 +19,12 @@ export const createAppointment = async (
         (map, [key, value]) => ({ ...map, [key]: value }),
         {} as Appointment["fields"]
       ),
-    timeZone: timezone,
+    timeZone,
   };
 
   const result = await ServicesContainer.EventsService().createEvent({
     event: appointmentEvent,
-    status: confirmed ? "confirmed" : "pending",
+    confirmed,
     force: true,
     files,
   });

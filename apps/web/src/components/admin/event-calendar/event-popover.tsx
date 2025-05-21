@@ -8,17 +8,17 @@ import { CalendarEvent } from "./types";
 
 export type EventPopoverProps = {
   event: CalendarEvent;
-  timezone?: string;
+  timeZone?: string;
   children: React.ReactNode;
 };
 
 export const EventPopover: React.FC<EventPopoverProps> = ({
   event,
-  timezone,
+  timeZone,
   children,
 }) => {
-  const eventDate = DateTime.fromJSDate(event.start).setZone(timezone);
-  const endDate = DateTime.fromJSDate(event.end).setZone(timezone);
+  const eventDate = DateTime.fromJSDate(event.start).setZone(timeZone);
+  const endDate = DateTime.fromJSDate(event.end).setZone(timeZone);
   const duration = durationToTime(
     endDate.diff(eventDate, "minutes").toObject().minutes ?? 0
   );

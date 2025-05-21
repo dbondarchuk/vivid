@@ -68,7 +68,7 @@ export const GeneralSettingsForm: React.FC<{
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-8 relative"
+        className="w-full space-y-8 relative pb-4"
       >
         <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormField

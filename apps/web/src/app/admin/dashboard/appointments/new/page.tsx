@@ -52,7 +52,7 @@ export default async function NewAssetsPage(props: Props) {
           <Separator />
         </div>
         <AppointmentScheduleForm
-          timeZone={config.timezone}
+          timeZone={config.timeZone}
           options={choices}
           knownFields={fields.items || []}
           from={from}

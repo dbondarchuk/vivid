@@ -236,7 +236,7 @@ export default class CaldavConnectedApp
   }
 
   protected getEventIcs(event: CalendarEvent) {
-    const start = DateTime.fromJSDate(event.startTime).setZone(event.timezone);
+    const start = DateTime.fromJSDate(event.startTime).setZone(event.timeZone);
     const end = start.plus({ minutes: event.duration });
 
     return generateIcsCalendar({
@@ -248,7 +248,7 @@ export default class CaldavConnectedApp
             date: start.toUTC().toJSDate(),
             local: {
               date: start.toJSDate(),
-              timezone: event.timezone,
+              timezone: event.timeZone,
               tzoffset: start.toFormat("ZZ"),
             },
           },
@@ -256,7 +256,7 @@ export default class CaldavConnectedApp
             date: end.toUTC().toJSDate(),
             local: {
               date: end.toJSDate(),
-              timezone: event.timezone,
+              timezone: event.timeZone,
               tzoffset: end.toFormat("ZZ"),
             },
           },

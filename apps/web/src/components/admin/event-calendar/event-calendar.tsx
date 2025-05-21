@@ -26,7 +26,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
   );
 
   const [loading, setLoading] = React.useState(false);
-  const [timezone, setTimezone] = React.useState<string>();
+  const [timeZone, setTimeZone] = React.useState<string>();
 
   const getEvents = async (start: Date, end: Date) => {
     setLoading(true);
@@ -39,23 +39,23 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     const body = (await response.json()) as {
       events: Event[];
       schedule: Record<string, DaySchedule>;
-      timezone: string;
+      timeZone: string;
     };
 
     setLoading(false);
 
     setSchedule(body.schedule);
-    setTimezone(body.timezone);
+    setTimeZone(body.timeZone);
     setEvents(
       (body.events || []).map((a) => {
         if ("createdAt" in a) {
           a.createdAt = DateTime.fromISO(a.createdAt as unknown as string)
-            .setZone(body.timezone)
+            .setZone(body.timeZone)
             .toJSDate();
         }
 
         const dateTime = DateTime.fromISO(a.dateTime as unknown as string)
-          .setZone(body.timezone)
+          .setZone(body.timeZone)
           .toJSDate();
 
         return {
@@ -189,7 +189,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           onEventClick={onEventClick}
           variant="week-of"
           schedule={schedule}
-          timezone={timezone}
+          timeZone={timeZone}
           {...props}
         />
       ) : props.type === "daily" ? (
@@ -200,7 +200,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           events={calendarEvents}
           onEventClick={onEventClick}
           schedule={schedule}
-          timezone={timezone}
+          timeZone={timeZone}
           {...props}
         />
       ) : props.type === "days-around" ? (
@@ -210,7 +210,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           variant="days-around"
           onEventClick={onEventClick}
           schedule={schedule}
-          timezone={timezone}
+          timeZone={timeZone}
           {...props}
         />
       ) : props.type === "agenda" ? (
@@ -220,7 +220,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           onEventClick={onEventClick}
           renderEvent={renderEventAgenda}
           schedule={schedule}
-          timezone={timezone}
+          timeZone={timeZone}
           {...props}
         />
       ) : (
@@ -229,7 +229,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           events={calendarEvents}
           onEventClick={onEventClick}
           schedule={schedule}
-          timezone={timezone}
+          timeZone={timeZone}
           {...props}
         />
       )}
@@ -239,7 +239,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           appointment={appointment}
           open={true}
           onOpenChange={onDialogOpenChange}
-          timezone={timezone}
+          timeZone={timeZone}
         />
       )}
     </div>

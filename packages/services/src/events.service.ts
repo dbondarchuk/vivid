@@ -2,27 +2,28 @@ import { getDbConnection } from "./database";
 
 import { AvailableAppServices } from "@vivid/app-store/services";
 
-import type {
-  Appointment,
-  AppointmentEvent,
-  AppointmentStatus,
-  Asset,
-  Availability,
-  BookingConfiguration,
-  DateRange,
-  DaySchedule,
-  Event,
-  GeneralConfiguration,
-  IAppointmentHook,
-  IAssetsService,
-  ICalendarBusyTimeProvider,
-  IConfigurationService,
-  IConnectedAppsService,
-  IEventsService,
-  IScheduleService,
-  Period,
-  Query,
-  WithTotal,
+import {
+  AppointmentTimeNotAvaialbleError,
+  type Appointment,
+  type AppointmentEvent,
+  type AppointmentStatus,
+  type Asset,
+  type Availability,
+  type BookingConfiguration,
+  type DateRange,
+  type DaySchedule,
+  type Event,
+  type GeneralConfiguration,
+  type IAppointmentHook,
+  type IAssetsService,
+  type ICalendarBusyTimeProvider,
+  type IConfigurationService,
+  type IConnectedAppsService,
+  type IEventsService,
+  type IScheduleService,
+  type Period,
+  type Query,
+  type WithTotal,
 } from "@vivid/types";
 import { buildSearchQuery, escapeRegex, parseTime } from "@vivid/utils";
 import { getIcsEventUid } from "@vivid/utils/src/ics-uid";
@@ -95,12 +96,12 @@ export class EventsService implements IEventsService {
 
   public async createEvent({
     event,
-    status = "pending",
+    confirmed: propsConfirmed,
     force = false,
     files,
   }: {
     event: AppointmentEvent;
-    status?: AppointmentStatus;
+    confirmed?: boolean;
     force?: boolean;
     files?: Record<string, File>;
   }): Promise<Appointment> {
@@ -108,12 +109,12 @@ export class EventsService implements IEventsService {
       await this.configurationService.getConfigurations("booking", "general");
 
     if (!force) {
-      const eventTime = DateTime.fromISO(event.dateTime, {
+      const eventTime = DateTime.fromJSDate(event.dateTime, {
         zone: "utc",
-      }).setZone(config.timezone);
+      }).setZone(config.timeZone);
 
       if (eventTime < DateTime.now()) {
-        throw new Error("Time is not available");
+        throw new AppointmentTimeNotAvaialbleError("Time is not available");
       }
 
       const start = eventTime.startOf("day");
@@ -165,11 +166,13 @@ export class EventsService implements IEventsService {
       }
     }
 
+    const confirmed = propsConfirmed ?? config.autoConfirm ?? false;
+
     const appointment = await this.saveEvent(
-      event,
       appointmentId,
+      event,
       assets.length ? assets : undefined,
-      status
+      confirmed ? "confirmed" : "pending"
     );
 
     const hooks =
@@ -181,15 +184,15 @@ export class EventsService implements IEventsService {
       ) as any as IAppointmentHook;
 
       try {
-        await service.onAppointmentCreated(hook, appointment);
+        await service.onAppointmentCreated(hook, appointment, confirmed);
 
-        if (status === "confirmed") {
-          await service.onAppointmentStatusChanged(
-            hook,
-            appointment,
-            "confirmed"
-          );
-        }
+        // if (confirmed) {
+        //   await service.onAppointmentStatusChanged(
+        //     hook,
+        //     appointment,
+        //     "confirmed"
+        //   );
+        // }
       } catch (error: any) {
         console.error(
           `Hook ${hook.name}.onAppointmentCreatedonAppointmentStatusChanged has failed`,
@@ -730,7 +733,7 @@ export class EventsService implements IEventsService {
       configuration: {
         timeSlotDuration: duration,
         schedule,
-        timeZone: config.timezone || DateTime.now().zoneName!,
+        timeZone: config.timeZone || DateTime.now().zoneName!,
         minAvailableTimeAfterSlot: config.minAvailableTimeAfterSlot ?? 0,
         minAvailableTimeBeforeSlot: config.minAvailableTimeBeforeSlot ?? 0,
         slotStart: config.slotStart ?? 15,
@@ -843,8 +846,8 @@ export class EventsService implements IEventsService {
   }
 
   private async saveEvent(
-    event: AppointmentEvent,
     id: string,
+    event: AppointmentEvent,
     files?: Asset[],
     status: AppointmentStatus = "pending"
   ) {
@@ -854,9 +857,8 @@ export class EventsService implements IEventsService {
     );
 
     const dbEvent: Appointment = {
-      ...event,
       _id: id,
-      dateTime: DateTime.fromISO(event.dateTime, { zone: "utc" }).toJSDate(),
+      ...event,
       status,
       createdAt: DateTime.now().toJSDate(),
       files: files ?? [],

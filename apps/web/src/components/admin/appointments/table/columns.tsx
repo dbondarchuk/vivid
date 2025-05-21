@@ -57,16 +57,16 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   );
 };
 
-const OptionCell: React.FC<{ appointment: Appointment; timezone?: string }> = ({
+const OptionCell: React.FC<{ appointment: Appointment; timeZone?: string }> = ({
   appointment,
-  timezone,
+  timeZone,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   return (
     <>
       {isDialogOpen && (
         <AppointmentDialog
-          timezone={timezone}
+          timeZone={timeZone}
           defaultOpen={isDialogOpen}
           onOpenChange={(open) => !open && setIsDialogOpen(false)}
           appointment={appointment}
@@ -160,7 +160,7 @@ type TimezoneCellContext<TData extends RowData, TValue = unknown> = CellContext<
   TData,
   TValue
 > & {
-  timezone?: string;
+  timeZone?: string;
 };
 
 export const columns: ColumnDef<Appointment>[] = [
@@ -194,8 +194,8 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
-    cell: ({ row, timezone }: TimezoneCellContext<Appointment>) => (
-      <OptionCell appointment={row.original} timezone={timezone} />
+    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) => (
+      <OptionCell appointment={row.original} timeZone={timeZone} />
     ),
     id: "option.name",
     header: tableSortHeader("Option", "string"),
@@ -214,18 +214,18 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row, timezone }: TimezoneCellContext<Appointment>) =>
+    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) =>
       DateTime.fromJSDate(row.original.dateTime)
-        .setZone(timezone)
+        .setZone(timeZone)
         .toLocaleString(DateTime.DATETIME_MED),
     id: "dateTime",
     header: tableSortHeader("Date & time", "date"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row, timezone }: TimezoneCellContext<Appointment>) =>
+    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) =>
       DateTime.fromJSDate(row.original.createdAt)
-        .setZone(timezone)
+        .setZone(timeZone)
         .toLocaleString(DateTime.DATETIME_MED),
     id: "createdAt",
     header: tableSortHeader("Requested at", "date"),

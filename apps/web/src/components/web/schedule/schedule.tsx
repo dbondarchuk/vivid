@@ -6,6 +6,7 @@ import type {
   AppointmentChoice,
   AppointmentEvent,
   AppointmentFields,
+  AppointmentRequest,
   DateTime,
   FieldSchema,
   WithDatabaseId,
@@ -26,7 +27,7 @@ export type ScheduleProps = {
   back?: () => void;
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
-  timezone: string;
+  timeZone: string;
 };
 
 type Step = "duration" | "addons" | "calendar" | "form" | "confirmation";
@@ -156,7 +157,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
     setFields(fields);
 
     try {
-      const eventBody: AppointmentEvent = {
+      const eventBody: AppointmentRequest = {
         dateTime: LuxonDateTime.fromObject(
           {
             year: dateTime.date.getFullYear(),
@@ -166,13 +167,14 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
             minute: dateTime.time.minute,
             second: 0,
           },
-          { zone: dateTime?.timeZone }
+          { zone: dateTime.timeZone }
         )
           .toUTC()
-          .toISO()!,
-        totalPrice: getTotalPrice() || undefined,
-        timeZone: dateTime!.timeZone,
-        totalDuration: getTotalDuration()!,
+          .toJSDate(),
+        timeZone: dateTime.timeZone,
+        duration: duration,
+        optionId: props.appointmentOption._id,
+        addonsIds: selectedAddons?.map((addon) => addon._id),
         fields: Object.entries(fields)
           .filter(([_, value]) => !((value as any) instanceof File))
           .reduce(
@@ -182,21 +184,6 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
             }),
             {} as AppointmentFields
           ),
-        fieldsLabels: formFields.reduce(
-          (acc, field) => ({
-            ...acc,
-            [field.name]: field.data?.label,
-          }),
-          {}
-        ),
-        option: {
-          ...props.appointmentOption,
-          // @ts-ignore we need to clear them
-          fields: undefined,
-          // @ts-ignore we need it here
-          addons: undefined,
-        },
-        addons: selectedAddons,
       };
 
       const formData = new FormData();
@@ -221,6 +208,10 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         if (error.error === "time_not_available") {
           toast.error(errors.submitTitle, {
             description: errors.timeNotAvailableDescription,
+          });
+        } else {
+          toast.error(errors.submitTitle, {
+            description: errors.submitDescription,
           });
         }
 
@@ -379,7 +370,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           selectedAddons={selectedAddons}
           dateTime={dateTime}
           onDateTimeSelected={(dateTime) => setDateTime(dateTime)}
-          timezone={props.timezone}
+          timeZone={props.timeZone}
         />
       )}
       {step === "form" && dateTime && (

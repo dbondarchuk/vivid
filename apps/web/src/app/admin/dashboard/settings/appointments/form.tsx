@@ -50,7 +50,7 @@ export const AppointmentsSettingsForm: React.FC<{
 
   const mainTabInvalid =
     form.getFieldState("maxWeeksInFuture").invalid ||
-    form.getFieldState("timezone").invalid ||
+    form.getFieldState("timeZone").invalid ||
     form.getFieldState("slotStart").invalid ||
     form.getFieldState("minAvailableTimeBeforeSlot").invalid ||
     form.getFieldState("minAvailableTimeAfterSlot").invalid;
@@ -67,7 +67,7 @@ export const AppointmentsSettingsForm: React.FC<{
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-8 relative flex flex-col gap-2"
+        className="w-full space-y-8 relative flex flex-col gap-2 pb-4"
       >
         <Tabs
           onValueChange={triggerValidation}

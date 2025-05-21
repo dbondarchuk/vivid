@@ -73,7 +73,8 @@ export class TextMessageNotificationConnectedApp
 
   public async onAppointmentCreated(
     appData: ConnectedAppData,
-    appointment: Appointment
+    appointment: Appointment,
+    confirmed: boolean
   ): Promise<void> {
     const data = appData.data as TextMessageNotificationConfiguration;
     const config = await this.props.services
@@ -93,7 +94,7 @@ ${arg.fields?.name} has requested a new appointment for ${arg.option?.name} (${
     }${arg.duration?.minutes ? `${arg.duration.minutes}min` : ""}) for ${
       arg.dateTime
     }.
-Respond Y to confirm, N to decline`;
+Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
 
     const phone = data?.phone || config.general.phone;
     if (!phone) {
@@ -204,7 +205,7 @@ Respond Y to confirm, N to decline`;
       .changeAppointmentStatus(appointment._id, newStatus);
 
     const dateTime = DateTime.fromJSDate(appointment.dateTime)
-      .setZone(bookingConfiguration.timezone)
+      .setZone(bookingConfiguration.timeZone)
       .toLocaleString(DateTime.DATETIME_FULL);
 
     await this.props.services.NotificationService().sendTextMessage({

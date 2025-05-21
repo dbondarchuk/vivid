@@ -15,19 +15,21 @@ import {
 import { EmailNotificationConfiguration } from "./models";
 
 import { template } from "@vivid/utils";
+import autoConfirmedTemplate from "./emails/appointment-auto-confirmed.html";
 import confirmedTemplate from "./emails/appointment-confirmed.html";
 import pendingTemplate from "./emails/appointment-created.html";
 import declinedTemplate from "./emails/appointment-declined.html";
 import rescheduledTemplate from "./emails/appointment-rescheduled.html";
 
 const emailTemplates: Record<
-  keyof typeof AppointmentStatusToICalMethodMap,
+  keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
   string
 > = {
   confirmed: confirmedTemplate,
   declined: declinedTemplate,
   pending: pendingTemplate,
   rescheduled: rescheduledTemplate,
+  "auto-confirmed": autoConfirmedTemplate,
 };
 
 export class EmailNotificationConnectedApp
@@ -69,9 +71,15 @@ export class EmailNotificationConnectedApp
 
   public async onAppointmentCreated(
     appData: ConnectedAppData,
-    appointment: Appointment
+    appointment: Appointment,
+    confirmed: boolean
   ): Promise<void> {
-    await this.sendNotification(appData, appointment, "pending", "New Request");
+    await this.sendNotification(
+      appData,
+      appointment,
+      confirmed ? "auto-confirmed" : "pending",
+      "New Request"
+    );
   }
 
   public async onAppointmentStatusChanged(
@@ -105,7 +113,7 @@ export class EmailNotificationConnectedApp
   private async sendNotification(
     appData: ConnectedAppData,
     appointment: Appointment,
-    status: keyof typeof AppointmentStatusToICalMethodMap,
+    status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
     initiator: string
   ) {
     const config = await this.props.services
@@ -123,13 +131,17 @@ export class EmailNotificationConnectedApp
 
     const description = template(emailTemplates[status], arg);
 
+    const newStatus = status === "auto-confirmed" ? "confirmed" : status;
+
     const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
     const eventContent = getEventCalendarContent(
       config.general,
       appointment,
       eventSummary,
       description,
-      AppointmentStatusToICalMethodMap[status]
+      status === "auto-confirmed"
+        ? "REQUEST"
+        : AppointmentStatusToICalMethodMap[newStatus]
     );
 
     await this.props.services.NotificationService().sendEmail({
@@ -140,7 +152,10 @@ export class EmailNotificationConnectedApp
         } at ${arg.dateTime}`,
         body: description,
         icalEvent: {
-          method: AppointmentStatusToICalMethodMap[status],
+          method:
+            status === "auto-confirmed"
+              ? "REQUEST"
+              : AppointmentStatusToICalMethodMap[status],
           content: eventContent,
         },
       },

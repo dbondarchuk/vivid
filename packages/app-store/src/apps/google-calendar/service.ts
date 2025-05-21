@@ -310,7 +310,7 @@ class GoogleCalendarConnectedApp
   }
 
   private getGoogleEvent(event: CalendarEvent): calendar_v3.Schema$Event {
-    const start = DateTime.fromJSDate(event.startTime).setZone(event.timezone);
+    const start = DateTime.fromJSDate(event.startTime).setZone(event.timeZone);
     const end = start.plus({ minutes: event.duration });
     return {
       summary: event.title,
@@ -321,13 +321,13 @@ class GoogleCalendarConnectedApp
       },
       start: {
         dateTime: start.toISO(),
-        timeZone: event.timezone,
+        timeZone: event.timeZone,
       },
       id: base32hexEncode(event.uid),
       status: evetStatusToGoogleEventStatus[event.status],
       end: {
         dateTime: end.toISO(),
-        timeZone: event.timezone,
+        timeZone: event.timeZone,
       },
       location: event.location.address ?? event.location.name,
       extendedProperties: {

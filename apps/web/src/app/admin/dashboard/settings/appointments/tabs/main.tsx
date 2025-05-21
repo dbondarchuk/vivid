@@ -2,8 +2,10 @@ import { BookingConfiguration, customTimeSlotSchema, Time } from "@vivid/types";
 import {
   AppSelector,
   Button,
+  Checkbox,
   Combobox,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
   SimpleTimePicker,
+  Switch,
   TagInput,
 } from "@vivid/ui";
 import {
@@ -34,8 +37,8 @@ import { getTimeZones } from "@vvo/tzdb";
 import React from "react";
 import { TabProps } from "./types";
 
-const timezones = getTimeZones();
-const timezoneValues: IComboboxItem[] = timezones.map((zone) => ({
+const timeZones = getTimeZones();
+const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
   label: `GMT${zone.currentTimeFormat}`,
   shortLabel: `${zone.alternativeName}`,
   value: zone.name,
@@ -88,21 +91,21 @@ const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
 
 export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
   return (
-    <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
+    <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full">
       <FormField
         control={form.control}
-        name="timezone"
+        name="timeZone"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Time zone</FormLabel>
             <FormControl>
               <Combobox
                 className="flex w-full font-normal text-base"
-                values={timezoneValues}
-                searchLabel="Select timezone"
+                values={timeZoneValues}
+                searchLabel="Select time zone"
                 disabled={disabled}
                 customSearch={(search) =>
-                  timezoneValues.filter(
+                  timeZoneValues.filter(
                     (zone) =>
                       (zone.label as string)
                         .toLocaleLowerCase()
@@ -122,7 +125,13 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         name="scheduleAppId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Schedule provider app</FormLabel>
+            <FormLabel>
+              Schedule provider app
+              <InfoTooltip>
+                <p>Select optional app to provide your work schedule.</p>
+                <p>If no app is selected, base schedule will be applied.</p>
+              </InfoTooltip>
+            </FormLabel>
             <FormControl>
               <AppSelector
                 scope="schedule"
@@ -136,6 +145,100 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
           </FormItem>
         )}
       />
+      <FormField
+        control={form.control}
+        name="autoConfirm"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              Auto confirm appointments{" "}
+              <InfoTooltip>
+                <p>
+                  Select this option if you want to auto confirm all
+                  appointments created by customers.
+                </p>
+                <p>
+                  By default, you will need to manually confirm each
+                  appointment.
+                </p>
+              </InfoTooltip>
+            </FormLabel>
+            <FormControl>
+              <Select
+                value={(field.value ?? false).toString()}
+                onValueChange={(value) => field.onChange(value === "true")}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="false">No</SelectItem>
+                  <SelectItem value="true">Yes</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      {/* <FormField
+        control={form.control}
+        name="autoConfirm"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-center justify-between">
+            <div className="space-y-0.5">
+              <FormLabel>
+                Auto confirm appointments{" "}
+                <InfoTooltip>
+                  <p>
+                    Select this option if you want to auto confirm all
+                    appointments created by customers.
+                  </p>
+                  <p>
+                    By default, you will need to manually confirm each
+                    appointment.
+                  </p>
+                </InfoTooltip>
+              </FormLabel>
+            </div>
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      /> */}
+      {/* <FormField
+        control={form.control}
+        name="autoConfirm"
+        render={({ field }) => (
+          <FormItem>
+            <div className="flex flex-row items-center gap-2">
+              <Checkbox
+                id="confirmed"
+                disabled={disabled}
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel htmlFor="confirmed" className="cursor-pointer">
+                Auto confirm appointments
+              </FormLabel>
+            </div>
+            <FormDescription>
+              <p>
+                Select this option if you want to auto confirm all appointments
+                created by customers.
+              </p>
+              <p>
+                By default, you will need to manually confirm each appointment.
+              </p>
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      /> */}
       <FormField
         control={form.control}
         name="maxWeeksInFuture"
@@ -358,7 +461,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
           control={form.control}
           name="customSlotTimes"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="col-span-2">
               <FormLabel>
                 Custom time slots
                 <InfoTooltip>

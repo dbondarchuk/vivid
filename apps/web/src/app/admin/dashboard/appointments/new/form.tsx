@@ -263,7 +263,7 @@ export const AppointmentScheduleForm: React.FC<
         );
 
       const appointmentEvent: Omit<AppointmentEvent, "timeZone"> = {
-        dateTime: data.dateTime.toISOString(),
+        dateTime: data.dateTime,
         option: {
           ...eventOption,
           // @ts-ignore we just clear this
@@ -447,7 +447,7 @@ export const AppointmentScheduleForm: React.FC<
                         disabled={loading}
                         commitOnChange
                         min={new Date()}
-                        timezone={timeZone}
+                        timeZone={timeZone}
                         {...field}
                         // value={DateTime.fromJSDate(field.value)
                         //   .setZone("local")
@@ -613,7 +613,7 @@ export const AppointmentScheduleForm: React.FC<
             <div className="flex flex-col gap-2">
               {appointment && (
                 <AppointmentCalendar
-                  timezone={timeZone}
+                  timeZone={timeZone}
                   appointment={appointment}
                   onEventsLoad={setCalendarEvents}
                 />
