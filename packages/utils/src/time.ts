@@ -5,10 +5,7 @@ import {
 } from "@vivid/types";
 import { DateTime, DateTimeUnit, Duration, Interval } from "luxon";
 
-const REFERENCE_DATE = DateTime.fromObject(
-  { year: 1970, month: 1, day: 5 },
-  { zone: "utc" }
-); // January 5, 1970 (Monday)
+const REFERENCE_DATE = DateTime.fromObject({ year: 1970, month: 1, day: 5 }); // January 5, 1970 (Monday)
 
 export function getWeekIdentifier(date: Date | DateTime): WeekIdentifier {
   const epoch = date instanceof Date ? date.getTime() : date.toMillis();
