@@ -5,12 +5,15 @@ import {
 } from "@vivid/types";
 import { DateTime, DateTimeUnit, Duration, Interval } from "luxon";
 
-const REFERENCE_DATE = new Date(1970, 0, 5); // January 5, 1970 (Monday)
+const REFERENCE_DATE = DateTime.fromObject(
+  { year: 1970, month: 1, day: 5 },
+  { zone: "utc" }
+); // January 5, 1970 (Monday)
 
 export function getWeekIdentifier(date: Date | DateTime): WeekIdentifier {
   const epoch = date instanceof Date ? date.getTime() : date.toMillis();
 
-  const timeDiff = epoch - REFERENCE_DATE.getTime();
+  const timeDiff = epoch - REFERENCE_DATE.toMillis();
 
   // Compute the number of weeks since the reference date
   return Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000)) + 1;
@@ -19,7 +22,7 @@ export function getWeekIdentifier(date: Date | DateTime): WeekIdentifier {
 export function getDateFromWeekIdentifier(identifier: WeekIdentifier): Date {
   // Calculate the date corresponding to the given week identifier
   return new Date(
-    REFERENCE_DATE.getTime() + (identifier - 1) * 7 * 24 * 60 * 60 * 1000
+    REFERENCE_DATE.toMillis() + (identifier - 1) * 7 * 24 * 60 * 60 * 1000
   );
 }
 
