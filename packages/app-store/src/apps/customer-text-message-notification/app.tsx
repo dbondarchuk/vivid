@@ -12,7 +12,6 @@ export const CustomerTextMessageNotificationApp: App = {
   Logo: ({ className }) => <Send className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
-  isHidden: true,
   description: {
     text: "Send a text message with the appointment details to customers.",
   },

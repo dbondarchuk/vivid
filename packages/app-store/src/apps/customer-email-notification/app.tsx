@@ -12,7 +12,6 @@ export const CustomerEmailNotificationApp: App = {
   Logo: ({ className }) => <Mails className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
-  isHidden: true,
   description: {
     text: "Send an email with the appointment details to customers.",
   },
