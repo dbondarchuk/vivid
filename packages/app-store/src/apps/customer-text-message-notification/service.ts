@@ -144,7 +144,12 @@ export default class CustomerTextMessageNotificationConnectedApp
     const { autoReply } =
       appData.data as CustomerTextMessageNotificationConfiguration;
     if (autoReply) {
-      const replyBody = template(autoReply, arg);
+      const autoReplyTemplate = await this.props.services
+        .TemplatesService()
+        .getTemplate(autoReply);
+      if (!autoReplyTemplate?.value) return;
+
+      const replyBody = template(autoReplyTemplate.value, arg);
       await this.props.services.NotificationService().sendTextMessage({
         phone: reply.from,
         sender: args.generalConfiguration.name,
