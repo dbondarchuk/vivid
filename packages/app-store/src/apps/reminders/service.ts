@@ -27,6 +27,8 @@ import ownerTextMessageReplyTemplate from "./emails/owner-text-message-reply.htm
 import {
   GetRemindersAction,
   Reminder,
+  RemindersAppData,
+  remindersAppDataSchema,
   ReminderUpdateModel,
   RequestAction,
 } from "./models";
@@ -60,6 +62,28 @@ export default class RemindersConnectedApp
 
       case "check-unique-name":
         return await this.checkUniqueName(appData._id, data.name, data.id);
+
+      case "get-app-data":
+        return appData.data;
+
+      case "set-app-data": {
+        const {
+          success,
+          data: parsed,
+          error,
+        } = remindersAppDataSchema.safeParse(data.data);
+        if (!success) {
+          throw new Error(error.message);
+        }
+
+        console.log(parsed);
+
+        await this.props.update({
+          data: parsed,
+        });
+
+        return;
+      }
 
       default: {
         const defaultApps = await this.props.services
@@ -515,5 +539,26 @@ export default class RemindersConnectedApp
       initiator: "Reminders Text Message Reply - notify owner",
       appointmentId: appointment?._id,
     });
+
+    const { textMessageAutoReplyTemplateId } = (appData.data ||
+      {}) as RemindersAppData;
+
+    if (textMessageAutoReplyTemplateId) {
+      const autoReplyTemplate = await this.props.services
+        .TemplatesService()
+        .getTemplate(textMessageAutoReplyTemplateId);
+
+      if (!autoReplyTemplate?.value) return;
+
+      const replyBody = template(autoReplyTemplate.value, arg);
+      await this.props.services.NotificationService().sendTextMessage({
+        phone: reply.from,
+        sender: args.generalConfiguration.name,
+        body: replyBody,
+        webhookData: reply.data,
+        initiator: "Reminders Text Message Reply - auto reply",
+        appointmentId: appointment?._id,
+      });
+    }
   }
 }

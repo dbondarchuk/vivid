@@ -214,6 +214,22 @@ export type CheckUniqueReminderNameAction = {
 
 export const CheckUniqueReminderNameActionType = "check-unique-name" as const;
 
+export const remindersAppDataSchema = z.object({
+  textMessageAutoReplyTemplateId: z.string().optional(),
+});
+
+export type RemindersAppData = z.infer<typeof remindersAppDataSchema>;
+
+export type GetAppDataAction = {};
+
+export const GetAppDataActionType = "get-app-data" as const;
+
+export type SetAppDataAction = {
+  data: RemindersAppData;
+};
+
+export const SetAppDataActionType = "set-app-data" as const;
+
 export type RequestAction =
   | ({
       type: typeof GetRemindersActionType;
@@ -232,7 +248,13 @@ export type RequestAction =
     } & UpdateReminderAction)
   | ({
       type: typeof CheckUniqueReminderNameActionType;
-    } & CheckUniqueReminderNameAction);
+    } & CheckUniqueReminderNameAction)
+  | ({
+      type: typeof GetAppDataActionType;
+    } & GetAppDataAction)
+  | ({
+      type: typeof SetAppDataActionType;
+    } & SetAppDataAction);
 
 // export type Reminders = z.infer<typeof remindersSchema>;
 
