@@ -66,7 +66,20 @@ export const CalendarDateRangePicker: React.FC<
               to: date?.end,
             }}
             onSelect={(range) =>
-              onSelect(range ? { start: range.from, end: range.to } : undefined)
+              onSelect(
+                range
+                  ? {
+                      start: range.from
+                        ? DateTime.fromJSDate(range.from)
+                            .startOf("day")
+                            .toJSDate()
+                        : undefined,
+                      end: range.to
+                        ? DateTime.fromJSDate(range.to).endOf("day").toJSDate()
+                        : undefined,
+                    }
+                  : undefined
+              )
             }
             numberOfMonths={2}
           />

@@ -22,11 +22,15 @@ export const PhoneField: <T extends FieldValues>(
       render={({ field }) => (
         <FormItem>
           <FormFieldLabel
-            label={props.data.label || "form_phone_label"}
+            label={props.data?.label || "form_phone_label"}
             required={props.required}
           />
           <FormControl>
-            <PhoneInput {...field} label={i18n("form_phone_label")} />
+            <PhoneInput
+              {...field}
+              label={i18n("form_phone_label")}
+              disabled={field.disabled || props.disabled}
+            />
           </FormControl>
           <FormFieldDescription description={props.data?.description} />
           <FormFieldErrorMessage />

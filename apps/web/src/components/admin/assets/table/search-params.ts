@@ -1,9 +1,16 @@
-import { createSearchParamsCache, createSerializer } from "nuqs/server";
+import {
+  createSearchParamsCache,
+  createSerializer,
+  parseAsArrayOf,
+  parseAsString,
+} from "nuqs/server";
 
 import { baseSearchParams } from "@vivid/ui";
 
 export const searchParams = {
   ...baseSearchParams,
+  customer: parseAsArrayOf(parseAsString),
+  appointment: parseAsArrayOf(parseAsString),
   sort: baseSearchParams.sort.withDefault([
     {
       id: "uploadedAt",

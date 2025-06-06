@@ -55,7 +55,7 @@ export default async function Page(props: Props) {
 
   return (
     <PageContainer scrollable={!menuItem.notScrollable}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
@@ -64,7 +64,7 @@ export default async function Page(props: Props) {
               menuItem.pageDescription || `Update ${app.displayName} settings`
             }
           />
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <menuItem.Page appId={appId} />
       </div>

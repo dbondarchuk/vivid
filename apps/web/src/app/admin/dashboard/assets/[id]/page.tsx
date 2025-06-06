@@ -22,11 +22,11 @@ export default async function EditAssetsPage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title="Edit asset" description={asset.filename} />
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <AssetEditForm asset={asset} />
       </div>

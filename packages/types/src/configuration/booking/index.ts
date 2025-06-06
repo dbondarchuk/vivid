@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { asOptionalField } from "../../utils";
+import { asOptinalNumberField, asOptionalField } from "../../utils";
 import { zTimeZone } from "../../utils/zTimeZone";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
 
@@ -21,33 +21,26 @@ export const customTimeSlotSchema = z
   }, "Invalid time");
 
 export const generalBookingConfigurationSchema = z.object({
-  maxWeeksInFuture: asOptionalField(
+  maxWeeksInFuture: asOptinalNumberField(
     z.coerce
       .number()
       .int("Should be the integer value")
       .min(2, "The minimum amount of weeks must be 2")
       .max(20, "The maximum amount of weeks must be 20")
   ),
-  minHoursBeforeBooking: asOptionalField(
+  minHoursBeforeBooking: asOptinalNumberField(
     z.coerce
       .number()
       .int("Should be the integer value")
       .min(0, "The minimum amount of hours must be 0")
       .max(72, "The maximum amount of hours must be 72")
   ),
-  minAvailableTimeBeforeSlot: asOptionalField(
+  breakDuration: asOptinalNumberField(
     z.coerce
       .number()
       .int("Should be the integer value")
-      .min(0, "The minimum available time before time slot must be 0")
-      .max(60, "The maximum available time before time slot must be 60")
-  ),
-  minAvailableTimeAfterSlot: asOptionalField(
-    z.coerce
-      .number()
-      .int("Should be the integer value")
-      .min(0, "The minimum available time after time slot must be 0")
-      .max(60, "The maximum available time after time slot must be 60")
+      .min(0, "The minimum break time should be 0")
+      .max(120, "The maximum break time be 120")
   ),
   slotStart: z
     .union(
@@ -67,6 +60,15 @@ export const generalBookingConfigurationSchema = z.object({
   timeZone: zTimeZone,
   scheduleAppId: z.string().optional(),
   autoConfirm: z.coerce.boolean().optional(),
+  allowSmartSchedule: z.coerce.boolean().optional(),
+  smartSchedule: z
+    .object({
+      allowSkipBreak: z.coerce.boolean().optional(),
+      preferBackToBack: z.coerce.boolean().optional(),
+      allowSmartSlotStarts: z.coerce.boolean().optional(),
+      maximizeForOption: asOptionalField(z.string()),
+    })
+    .optional(),
 });
 
 export const appointOptionsSchema = z.array(

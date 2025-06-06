@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 import { env } from "process";
 
-
 let client: MongoClient;
 
 const getClient = () => {
@@ -26,12 +25,12 @@ const getClient = () => {
     // In production mode, it's best to not use a global variable.
     client = new MongoClient(uri, options);
   }
-}
+};
 
 export const getDbConnection = async () => {
   if (!client) getClient();
-  
+
   await client.connect();
 
-  return client.db();
+  return client.db(undefined, { ignoreUndefined: true });
 };

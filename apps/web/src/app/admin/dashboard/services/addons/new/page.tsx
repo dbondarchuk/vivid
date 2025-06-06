@@ -31,11 +31,11 @@ export default async function NewAddonPage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title="New addon" description="Add new addon" />
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <AddonForm initialData={initialData} />
       </div>

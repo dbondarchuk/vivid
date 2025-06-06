@@ -3,7 +3,9 @@ import { searchParams, searchParamsCache } from "./search-params";
 import { DataTable } from "@vivid/ui";
 import { columns } from "./columns";
 
-export const AppointmentsTable: React.FC = async () => {
+export const AppointmentsTable: React.FC<{ customerId?: string }> = async ({
+  customerId,
+}) => {
   const page = searchParamsCache.get("page");
   const search = searchParamsCache.get("search") || undefined;
   const limit = searchParamsCache.get("limit");
@@ -11,6 +13,8 @@ export const AppointmentsTable: React.FC = async () => {
   const start = searchParamsCache.get("start") || undefined;
   const end = searchParamsCache.get("end") || undefined;
   const sort = searchParamsCache.get("sort");
+
+  const customerIds = searchParamsCache.get("customer");
 
   const offset = (page - 1) * limit;
 
@@ -21,6 +25,7 @@ export const AppointmentsTable: React.FC = async () => {
     limit,
     search,
     sort,
+    customerId: customerId ?? customerIds ?? undefined,
   });
 
   const { timeZone } =

@@ -3,8 +3,13 @@ import { getDbConnection } from "./database";
 import { AvailableAppServices } from "@vivid/app-store/services";
 
 import {
+  Appointment,
+  AppointmentEntity,
   AppointmentTimeNotAvaialbleError,
-  type Appointment,
+  Customer,
+  CustomerUpdateModel,
+  IServicesService,
+  TimeSlot,
   type AppointmentEvent,
   type AppointmentStatus,
   type Asset,
@@ -25,22 +30,33 @@ import {
   type Query,
   type WithTotal,
 } from "@vivid/types";
-import { buildSearchQuery, escapeRegex, parseTime } from "@vivid/utils";
+import { ICustomersService } from "@vivid/types/src/services/customers.service";
+import {
+  buildSearchQuery,
+  escapeRegex,
+  getAppointmentBucket,
+  getAvailableTimeSlotsInCalendar,
+  getAvailableTimeSlotsWithPriority,
+  parseTime,
+} from "@vivid/utils";
 import { getIcsEventUid } from "@vivid/utils/src/ics-uid";
-import { getAvailableTimeSlotsInCalendar } from "@vivid/utils/src/time-slot";
 import { DateTime } from "luxon";
 import mimeType from "mime-type/with-db";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { v4 } from "uuid";
+import { ASSETS_COLLECTION_NAME } from "./assets.service";
+import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
 
-const APPOINTMENTS_COLLECTION_NAME = "appointments";
+export const APPOINTMENTS_COLLECTION_NAME = "appointments";
 
 export class EventsService implements IEventsService {
   constructor(
     private readonly configurationService: IConfigurationService,
     private readonly appsService: IConnectedAppsService,
     private readonly assetsService: IAssetsService,
-    private readonly scheduleService: IScheduleService
+    private readonly customersService: ICustomersService,
+    private readonly scheduleService: IScheduleService,
+    private readonly servicesService: IServicesService
   ) {}
 
   public async getAvailability(duration: number): Promise<Availability> {
@@ -154,7 +170,7 @@ export class EventsService implements IEventsService {
 
         const asset = await this.assetsService.createAsset(
           {
-            filename: `appointments/${appointmentId}/${fieldId}-${file.name}`,
+            filename: `${getAppointmentBucket(appointmentId)}/${fieldId}-${file.name}`,
             mimeType: fileType,
             appointmentId,
             description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
@@ -172,7 +188,8 @@ export class EventsService implements IEventsService {
       appointmentId,
       event,
       assets.length ? assets : undefined,
-      confirmed ? "confirmed" : "pending"
+      confirmed ? "confirmed" : "pending",
+      force
     );
 
     const hooks =
@@ -208,7 +225,7 @@ export class EventsService implements IEventsService {
 
   public async getPendingAppointmentsCount(after?: Date): Promise<number> {
     const db = await getDbConnection();
-    const filter: Filter<Appointment> = {
+    const filter: Filter<AppointmentEntity> = {
       status: "pending",
       dateTime: after
         ? {
@@ -217,7 +234,9 @@ export class EventsService implements IEventsService {
         : undefined,
     };
 
-    const collection = db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME);
+    const collection = db.collection<AppointmentEntity>(
+      APPOINTMENTS_COLLECTION_NAME
+    );
 
     return await collection.countDocuments(filter);
   }
@@ -236,27 +255,38 @@ export class EventsService implements IEventsService {
         : undefined,
     };
 
-    const collection = db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME);
-
-    const total = await collection.countDocuments(filter);
-    if (limit === 0) {
-      return {
-        items: [],
-        total,
-      };
-    }
-
-    const appointments = await collection.find(filter).limit(limit).toArray();
+    const [result] = await db
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
+      .aggregate([
+        {
+          $match: filter,
+        },
+        {
+          $sort: { dateTime: 1 },
+        },
+        ...this.aggregateJoin,
+        {
+          $facet: {
+            paginatedResults: [],
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
 
     return {
-      items: appointments,
-      total,
+      total: result.totalCount?.[0]?.count || 0,
+      items: result.paginatedResults || [],
     };
   }
 
   // public async getNextAppointments(date: Date, limit = 5) {
   //   const db = await getDbConnection();
-  //   const appointments = db.collection<Appointment>(
+  //   const appointments = db.collection<AppointmentEntity>(
   //     APPOINTMENTS_COLLECTION_NAME
   //   );
 
@@ -279,7 +309,7 @@ export class EventsService implements IEventsService {
   // This requires upgrade of MongoDB to at least 5.0
   public async getNextAppointments(date: Date, limit = 5) {
     const db = await getDbConnection();
-    const appointments = db.collection<Appointment>(
+    const appointments = db.collection<AppointmentEntity>(
       APPOINTMENTS_COLLECTION_NAME
     );
 
@@ -311,6 +341,7 @@ export class EventsService implements IEventsService {
             },
           },
         },
+        ...this.aggregateJoin,
         { $limit: limit },
       ])
       .toArray();
@@ -322,6 +353,7 @@ export class EventsService implements IEventsService {
     query: Query & {
       range?: DateRange;
       status?: AppointmentStatus[];
+      customerId?: string | string[];
     }
   ): Promise<WithTotal<Appointment>> {
     const db = await getDbConnection();
@@ -353,6 +385,14 @@ export class EventsService implements IEventsService {
       };
     }
 
+    if (query.customerId) {
+      filter.customerId = {
+        $in: Array.isArray(query.customerId)
+          ? query.customerId
+          : [query.customerId],
+      };
+    }
+
     if (query.search) {
       const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<Appointment>(
@@ -362,6 +402,7 @@ export class EventsService implements IEventsService {
         "note",
         "addons.name",
         "addons.description",
+        // @ts-ignore value
         "fields.v"
       );
 
@@ -369,7 +410,7 @@ export class EventsService implements IEventsService {
     }
 
     const [result] = await db
-      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .aggregate([
         {
           $addFields: {
@@ -379,10 +420,10 @@ export class EventsService implements IEventsService {
           },
         },
         {
-          $sort: sort,
+          $match: filter,
         },
         {
-          $match: filter,
+          $sort: sort,
         },
         {
           $addFields: {
@@ -391,6 +432,7 @@ export class EventsService implements IEventsService {
             },
           },
         },
+        ...this.aggregateJoin,
         {
           $facet: {
             paginatedResults: [
@@ -468,46 +510,50 @@ export class EventsService implements IEventsService {
     return [...appointments.items, ...appsEvents];
   }
 
-  public async getAppointment(id: string) {
+  public async getAppointment(id: string): Promise<Appointment | null> {
     const db = await getDbConnection();
-    const appointments = db.collection<Appointment>(
+    const appointments = db.collection<AppointmentEntity>(
       APPOINTMENTS_COLLECTION_NAME
     );
 
-    const result = await appointments.findOne({
-      _id: id,
-    });
+    const result = await appointments
+      .aggregate([
+        {
+          $match: {
+            _id: id,
+          },
+        },
+        ...this.aggregateJoin,
+      ])
+      .next();
 
-    return result;
+    return result as Appointment | null;
   }
 
   public async changeAppointmentStatus(
     id: string,
     newStatus: AppointmentStatus
   ) {
-    const db = await getDbConnection();
-
-    const appointment = await db
-      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
-      .findOne({
-        _id: id,
-      });
+    const appointment = await this.getAppointment(id);
 
     if (!appointment) return;
     const oldStatus = appointment.status;
 
     if (oldStatus === newStatus) return;
 
-    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          status: newStatus,
+    const db = await getDbConnection();
+    await db
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
+      .updateOne(
+        {
+          _id: id,
         },
-      }
-    );
+        {
+          $set: {
+            status: newStatus,
+          },
+        }
+      );
 
     const hooks =
       await this.appsService.getAppsByScopeWithData("appointment-hook");
@@ -538,16 +584,18 @@ export class EventsService implements IEventsService {
   public async updateAppointmentNote(id: string, note?: string) {
     const db = await getDbConnection();
 
-    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          note: note,
+    await db
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
+      .updateOne(
+        {
+          _id: id,
         },
-      }
-    );
+        {
+          $set: {
+            note: note,
+          },
+        }
+      );
   }
 
   public async addAppointmentFiles(
@@ -556,7 +604,7 @@ export class EventsService implements IEventsService {
   ): Promise<Asset[]> {
     const db = await getDbConnection();
     const event = await db
-      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .findOne({
         _id: appointmentId,
       });
@@ -578,7 +626,7 @@ export class EventsService implements IEventsService {
         const id = v4();
         const asset = await this.assetsService.createAsset(
           {
-            filename: `appointments/${appointmentId}/${id}-${file.name}`,
+            filename: `${getAppointmentBucket(appointmentId)}/${id}-${file.name}`,
             mimeType: fileType,
             appointmentId,
             description: `${event.fields.name} - ${event.option.name}`,
@@ -586,76 +634,11 @@ export class EventsService implements IEventsService {
           file
         );
 
-        assets.push(asset);
+        assets.push({ ...asset, appointment: event });
       }
     }
-
-    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
-      {
-        _id: appointmentId,
-      },
-      {
-        $set: {
-          files: {
-            // @ts-expect-error $cond is needed here
-            $cond: {
-              if: {
-                $eq: ["$files", null],
-              },
-              then: assets,
-              else: {
-                $concatArrays: ["$files", assets],
-              },
-            },
-          },
-        },
-      }
-    );
 
     return assets;
-  }
-
-  public async addAppointmentAsset(id: string, assetId: string): Promise<void> {
-    const asset = await this.assetsService.getAsset(assetId);
-    if (!asset) {
-      throw new Error("Asset not found");
-    }
-
-    const db = await getDbConnection();
-    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
-      {
-        _id: id,
-      },
-      {
-        $addToSet: {
-          files: asset,
-        },
-      }
-    );
-  }
-
-  public async removeAppointmentFiles(
-    id: string,
-    filesIds: string[]
-  ): Promise<void> {
-    const db = await getDbConnection();
-
-    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
-      {
-        _id: id,
-      },
-      {
-        $pull: {
-          files: {
-            _id: {
-              $in: filesIds,
-            },
-          },
-        },
-      }
-    );
-
-    await this.assetsService.deleteAssets(filesIds);
   }
 
   public async rescheduleAppointment(
@@ -663,29 +646,26 @@ export class EventsService implements IEventsService {
     newTime: Date,
     newDuration: number
   ) {
-    const db = await getDbConnection();
-
-    const appointment = await db
-      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
-      .findOne({
-        _id: id,
-      });
+    const appointment = await this.getAppointment(id);
 
     if (!appointment) return;
     const oldTime = appointment.dateTime;
     const oldDuration = appointment.totalDuration;
 
-    await db.collection<Appointment>(APPOINTMENTS_COLLECTION_NAME).updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          dateTime: newTime,
-          totalDuration: newDuration,
+    const db = await getDbConnection();
+    await db
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
+      .updateOne(
+        {
+          _id: id,
         },
-      }
-    );
+        {
+          $set: {
+            dateTime: newTime,
+            totalDuration: newDuration,
+          },
+        }
+      );
 
     const hooks =
       await this.appsService.getAppsByScopeWithData("appointment-hook");
@@ -724,24 +704,64 @@ export class EventsService implements IEventsService {
     schedule: Record<string, DaySchedule>
   ) {
     const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
-    const results = getAvailableTimeSlotsInCalendar({
-      calendarEvents: events.map((event) => ({
-        ...event,
-        startAt: DateTime.fromJSDate(event.startAt),
-        endAt: DateTime.fromJSDate(event.endAt),
-      })),
-      configuration: {
-        timeSlotDuration: duration,
+
+    let results: TimeSlot[];
+    if (!config.allowSmartSchedule) {
+      results = getAvailableTimeSlotsInCalendar({
+        calendarEvents: events.map((event) => ({
+          ...event,
+          startAt: DateTime.fromJSDate(event.startAt),
+          endAt: DateTime.fromJSDate(event.endAt),
+        })),
+        configuration: {
+          timeSlotDuration: duration,
+          schedule,
+          timeZone: config.timeZone || DateTime.now().zoneName!,
+          minAvailableTimeAfterSlot: config.breakDuration ?? 0,
+          minAvailableTimeBeforeSlot: config.breakDuration ?? 0,
+          slotStart: config.slotStart ?? 15,
+          customSlots,
+        },
+        from: start.toJSDate(),
+        to: end.toJSDate(),
+      });
+    } else {
+      // Smart schedule
+      let servicesDurations: number[] | undefined = undefined;
+      if (config.smartSchedule?.maximizeForOption) {
+        const service = await this.servicesService.getOption(
+          config.smartSchedule.maximizeForOption
+        );
+        if (service?.duration) {
+          servicesDurations = [service.duration];
+        }
+      }
+
+      results = getAvailableTimeSlotsWithPriority({
+        events: events.map((event) => ({
+          ...event,
+          startAt: DateTime.fromJSDate(event.startAt),
+          endAt: DateTime.fromJSDate(event.endAt),
+        })),
+        duration,
         schedule,
-        timeZone: config.timeZone || DateTime.now().zoneName!,
-        minAvailableTimeAfterSlot: config.minAvailableTimeAfterSlot ?? 0,
-        minAvailableTimeBeforeSlot: config.minAvailableTimeBeforeSlot ?? 0,
-        slotStart: config.slotStart ?? 15,
-        customSlots,
-      },
-      from: start.toJSDate(),
-      to: end.toJSDate(),
-    });
+        configuration: {
+          timeZone: config.timeZone || DateTime.now().zoneName!,
+          breakDuration: config.breakDuration ?? 0,
+          slotStart: config.slotStart ?? 15,
+          allowSkipBreak: config.smartSchedule?.allowSkipBreak,
+          filterLowPrioritySlots: true,
+          lowerPriorityIfNoFollowingBooking: true,
+          discourageLargeGaps: true,
+          allowSmartSlotStarts: config.smartSchedule?.allowSmartSlotStarts,
+          preferBackToBack: config.smartSchedule?.preferBackToBack,
+          customSlots,
+        },
+        start,
+        end,
+        allServiceDurations: servicesDurations, //  servicesDurations
+      });
+    }
 
     return results.map((x) => x.startAt);
   }
@@ -795,7 +815,7 @@ export class EventsService implements IEventsService {
   ): Promise<Period[]> {
     const db = await getDbConnection();
     const events = await db
-      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .find({
         dateTime: {
           $gte: start.minus({ days: 1 }).toJSDate(),
@@ -829,7 +849,7 @@ export class EventsService implements IEventsService {
   ): Promise<string[]> {
     const db = await getDbConnection();
     const ids = await db
-      .collection<Appointment>(APPOINTMENTS_COLLECTION_NAME)
+      .collection<AppointmentEntity>(APPOINTMENTS_COLLECTION_NAME)
       .find({
         dateTime: {
           $gte: start.minus({ days: 1 }).toJSDate(),
@@ -849,23 +869,125 @@ export class EventsService implements IEventsService {
     id: string,
     event: AppointmentEvent,
     files?: Asset[],
-    status: AppointmentStatus = "pending"
-  ) {
+    status: AppointmentStatus = "pending",
+    force?: boolean
+  ): Promise<Appointment> {
     const db = await getDbConnection();
-    const appointments = db.collection<Appointment>(
+    const appointments = db.collection<AppointmentEntity>(
       APPOINTMENTS_COLLECTION_NAME
     );
 
-    const dbEvent: Appointment = {
+    const customer = await this.getCustomer(event);
+    await this.updateCustomerIfNeeded(customer, event);
+
+    if (customer.dontAllowBookings && !force) {
+      console.error(
+        `Customer ${customer.name} is not allowed to make appointments`
+      );
+      throw new Error(
+        `Customer ${customer.name} is not allowed to make appointments`
+      );
+    }
+
+    const dbEvent: AppointmentEntity = {
       _id: id,
       ...event,
       status,
       createdAt: DateTime.now().toJSDate(),
-      files: files ?? [],
+      customerId: customer._id,
     };
 
     await appointments.insertOne(dbEvent);
 
-    return dbEvent;
+    return {
+      ...dbEvent,
+      customer,
+      files,
+    };
+  }
+
+  private async getCustomer(event: AppointmentEvent): Promise<Customer> {
+    const customerByEmail = await this.customersService.findCustomer(
+      "email",
+      event.fields.email.trim()
+    );
+    if (customerByEmail) return customerByEmail;
+
+    const customerByPhone = await this.customersService.findCustomer(
+      "phone",
+      event.fields.phone?.trim()
+    );
+    if (customerByPhone) return customerByPhone;
+
+    const customer: CustomerUpdateModel = {
+      email: event.fields.email.trim(),
+      name: event.fields.name.trim(),
+      phone: event.fields.phone.trim(),
+      knownEmails: [],
+      knownNames: [],
+      knownPhones: [],
+    };
+
+    const customerId = await this.customersService.createCustomer(customer);
+    return {
+      _id: customerId,
+      ...customer,
+    };
+  }
+
+  private async updateCustomerIfNeeded(
+    customer: Customer,
+    event: AppointmentEvent
+  ): Promise<void> {
+    let needsUpdate = false;
+    const name = event.fields.name.trim();
+    if (customer.name !== name && !customer.knownNames.includes(name)) {
+      customer.knownNames.push(name);
+      needsUpdate = true;
+    }
+
+    const email = event.fields.email.trim();
+    if (customer.email !== email && !customer.knownEmails.includes(email)) {
+      customer.knownEmails.push(email);
+      needsUpdate = true;
+    }
+
+    const phone = event.fields.phone.trim();
+    if (customer.phone !== phone && !customer.knownPhones.includes(phone)) {
+      customer.knownPhones.push(phone);
+      needsUpdate = true;
+    }
+
+    if (needsUpdate) {
+      await this.customersService.updateCustomer(customer._id, customer);
+    }
+  }
+
+  private get aggregateJoin() {
+    return [
+      {
+        $lookup: {
+          from: CUSTOMERS_COLLECTION_NAME,
+          localField: "customerId",
+          foreignField: "_id",
+          as: "customer",
+        },
+      },
+      {
+        $lookup: {
+          from: ASSETS_COLLECTION_NAME,
+          localField: "_id",
+          foreignField: "appointmentId",
+          as: "files",
+        },
+      },
+      {
+        $set: {
+          customer: {
+            $first: "$customer",
+          },
+        },
+      },
+    ];
   }
 }

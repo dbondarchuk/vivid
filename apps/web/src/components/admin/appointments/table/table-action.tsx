@@ -1,7 +1,12 @@
 "use client";
 
+import { CustomerListModel, WithTotal } from "@vivid/types";
 import {
+  AsyncFilterBoxOption,
   Button,
+  cn,
+  CustomersDataTableAsyncFilterBox,
+  DataTableAsyncFilterBox,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
@@ -9,14 +14,19 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  toast,
 } from "@vivid/ui";
 import { Settings2 } from "lucide-react";
 import {
   STATUS_OPTIONS,
   useAppointmentsTableFilters,
 } from "./use-table-filters";
+import React from "react";
 
-export function AppointmentsTableAction() {
+export const AppointmentsTableAction: React.FC<{
+  showCustomerFilter?: boolean;
+  className?: string;
+}> = ({ showCustomerFilter, className }) => {
   const {
     statusFilter,
     setStatusFilter,
@@ -29,7 +39,10 @@ export function AppointmentsTableAction() {
     end,
     setStartValue,
     setEndValue,
+    customerFilter,
+    setCustomerFilter,
   } = useAppointmentsTableFilters();
+
   const additionalFilters = (
     <>
       <DataTableFilterBox
@@ -39,6 +52,12 @@ export function AppointmentsTableAction() {
         setFilterValue={setStatusFilter as any}
         filterValue={statusFilter}
       />
+      {showCustomerFilter && (
+        <CustomersDataTableAsyncFilterBox
+          filterValue={customerFilter}
+          setFilterValue={setCustomerFilter}
+        />
+      )}
       <DataTableRangeBox
         startValue={start}
         endValue={end}
@@ -49,7 +68,12 @@ export function AppointmentsTableAction() {
   );
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div
+      className={cn(
+        "flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row",
+        className
+      )}
+    >
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -75,4 +99,4 @@ export function AppointmentsTableAction() {
       </div>
     </div>
   );
-}
+};

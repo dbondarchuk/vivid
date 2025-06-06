@@ -33,10 +33,10 @@ export default async function FieldsPage(props: Params) {
 
   return (
     <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <Heading
               title="Option fields"
               description="Manage option custom fields"
@@ -50,7 +50,7 @@ export default async function FieldsPage(props: Params) {
               <Plus className="mr-2 h-4 w-4" /> Add New
             </Link>
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <FieldsTableAction />
         <Suspense

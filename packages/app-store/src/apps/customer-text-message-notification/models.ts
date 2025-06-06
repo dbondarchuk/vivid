@@ -24,7 +24,6 @@ export const textMessagesTemplatesSchema = zStrictRecord(
 export const customerTextMessageNotificationConfigurationSchema = z.object({
   sendNewRequestNotifications: z.coerce.boolean().optional(),
   templates: textMessagesTemplatesSchema,
-  autoReply: z.string().optional(),
 });
 
 export type CustomerTextMessageNotificationConfiguration = z.infer<

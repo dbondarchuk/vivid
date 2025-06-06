@@ -11,7 +11,7 @@ const breadcrumbItems = [
 ];
 
 type Props = {
-  searchParams: Promise<{ from?: string }>;
+  searchParams: Promise<{ from?: string; customer?: string }>;
 };
 
 export default async function NewAssetsPage(props: Props) {
@@ -40,22 +40,30 @@ export default async function NewAssetsPage(props: Props) {
     ? await ServicesContainer.EventsService().getAppointment(searchParams.from)
     : undefined;
 
+  const customer =
+    !from && searchParams.customer
+      ? await ServicesContainer.CustomersService().getCustomer(
+          searchParams.customer
+        )
+      : undefined;
+
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
             title="New appointments"
             description="Schedule a new appointment on behalf of the customer"
           />
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <AppointmentScheduleForm
           timeZone={config.timeZone}
           options={choices}
           knownFields={fields.items || []}
           from={from}
+          customer={customer}
         />
       </div>
     </PageContainer>

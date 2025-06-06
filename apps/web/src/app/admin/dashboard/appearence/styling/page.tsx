@@ -15,11 +15,11 @@ export default async function Page() {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title="Styling" description="Adjust general styling" />
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <StylingsConfigurationForm values={settings} />
       </div>

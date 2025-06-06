@@ -2,6 +2,7 @@ import { IAssetsService } from "./assets.service";
 import { ICommunicationLogsService } from "./communication-logs.service";
 import { IConfigurationService } from "./configuration.service";
 import { IConnectedAppsService } from "./connected-apps.service";
+import { ICustomersService } from "./customers.service";
 import { IEventsService } from "./events.service";
 import { INotificationService } from "./notification.service";
 import { IPagesService } from "./pages.service";
@@ -25,6 +26,7 @@ export type IServicesContainer = {
   AssetsService: () => IAssetsService;
   EventsService: () => IEventsService;
   PagesService: () => IPagesService;
+  CustomersService: () => ICustomersService;
   ServicesService: () => IServicesService;
   ScheduleService: () => IScheduleService;
   TemplatesService: () => ITemplatesService;

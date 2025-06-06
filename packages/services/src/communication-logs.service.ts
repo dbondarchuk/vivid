@@ -2,21 +2,26 @@ import {
   CommunicationChannel,
   CommunicationDirection,
   CommunicationLog,
+  CommunicationLogEntity,
+  CommunicationParticipantType,
   DateRange,
   ICommunicationLogsService,
   Query,
   WithTotal,
 } from "@vivid/types";
-import { buildSearchQuery } from "@vivid/utils";
+import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
+import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
 import { getDbConnection } from "./database";
+import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
 
 export const LOG_COLLECTION_NAME = "communication-logs";
 
 export class CommunicationLogsService implements ICommunicationLogsService {
-  public async log(log: Omit<CommunicationLog, "dateTime" | "_id">) {
+  public async log(log: Omit<CommunicationLogEntity, "dateTime" | "_id">) {
     const db = await getDbConnection();
-    const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
+    const collection =
+      db.collection<CommunicationLogEntity>(LOG_COLLECTION_NAME);
 
     await collection.insertOne({
       ...log,
@@ -27,9 +32,12 @@ export class CommunicationLogsService implements ICommunicationLogsService {
 
   public async getCommunicationLogs(
     query: Query & {
-      direction: CommunicationDirection[];
-      channel: CommunicationChannel[];
+      direction?: CommunicationDirection[];
+      channel?: CommunicationChannel[];
+      participantType?: CommunicationParticipantType[];
       range?: DateRange;
+      customerId?: string | string[];
+      appointmentId?: string;
     }
   ): Promise<WithTotal<CommunicationLog>> {
     const db = await getDbConnection();
@@ -68,15 +76,32 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       };
     }
 
+    if (query.participantType && query.participantType.length) {
+      filter.participantType = {
+        $in: query.participantType,
+      };
+    }
+
+    if (query.appointmentId) {
+      filter.appointmentId = query.appointmentId;
+    } else if (query.customerId) {
+      filter["customer._id"] = {
+        $in: Array.isArray(query.customerId)
+          ? query.customerId
+          : [query.customerId],
+      };
+    }
+
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<CommunicationLog>(
         { $regex },
         "channel",
-        "initiator",
-        "receiver",
+        "participant",
+        "handledBy",
         "text",
-        "appointmentId",
+        "appointment.option.name",
+        "customer.name",
         "subject"
       );
 
@@ -84,13 +109,57 @@ export class CommunicationLogsService implements ICommunicationLogsService {
     }
 
     const [result] = await db
-      .collection<CommunicationLog>(LOG_COLLECTION_NAME)
+      .collection<CommunicationLogEntity>(LOG_COLLECTION_NAME)
       .aggregate([
         {
-          $sort: sort,
+          $lookup: {
+            from: APPOINTMENTS_COLLECTION_NAME,
+            localField: "appointmentId",
+            foreignField: "_id",
+            as: "appointment",
+          },
+        },
+        {
+          $lookup: {
+            from: CUSTOMERS_COLLECTION_NAME,
+            localField: "customerId",
+            foreignField: "_id",
+            as: "customer",
+          },
+        },
+        {
+          $set: {
+            appointment: {
+              $first: "$appointment",
+            },
+            customer: {
+              $first: "$customer",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "customers",
+            localField: "appointment.customerId",
+            foreignField: "_id",
+            as: "appointmentCustomer",
+          },
+        },
+        {
+          $set: {
+            customer: {
+              $ifNull: ["$customer", { $first: "$appointmentCustomer" }],
+            },
+          },
+        },
+        {
+          $unset: "appointmentCustomer",
         },
         {
           $match: filter,
+        },
+        {
+          $sort: sort,
         },
         {
           $facet: {

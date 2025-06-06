@@ -1,10 +1,11 @@
 "use client";
 
-import { UploadedFile } from "@vivid/types";
+import { useInView } from "react-intersection-observer";
+import { UploadedFile, WithTotal } from "@vivid/types";
 import React from "react";
 import { Accept } from "react-dropzone";
-import { DndFileInput, ScrollArea, toast } from ".";
-import { useUploadFile } from "../hooks";
+import { DndFileInput, ScrollArea, Skeleton, toast } from ".";
+import { useDebounce, useUploadFile } from "../hooks";
 import { cn } from "../utils";
 import { AssetPreview } from "./asset-preview";
 import { Button } from "./button";
@@ -18,44 +19,130 @@ export type AssetSelectorProps = {
   onSelected: (asset: UploadedFile) => void;
   isOpen: boolean;
   close: () => void;
+  addTo?: {
+    appointmentId?: string;
+    customerId?: string;
+    description?: string;
+  };
 };
+
+const Loader: React.FC<{ className?: string }> = ({ className }) => (
+  <div
+    className={cn(
+      "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3",
+      className
+    )}
+  >
+    <Skeleton className="w-16 h-16" />
+    <div className="flex flex-col gap-1 items-center text-center">
+      <Skeleton className="max-w-72 min-w-52 w-full h-6" />
+      <Skeleton className="max-w-72 min-w-52 w-full h-5" />
+    </div>
+  </div>
+);
+
+const Loaders = () => (
+  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <Loader />
+    <Loader />
+    <Loader className="max-lg:hidden" />
+    <Loader className="max-xl:hidden" />
+  </div>
+);
+
+const toLoad = 24; // divisible by 1, 2, 3
 
 export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
   accept,
   onSelected,
   close,
   isOpen,
+  addTo,
 }) => {
   const [selected, setSelected] = React.useState<UploadedFile | undefined>(
     undefined
   );
+
   const [search, setSearch] = React.useState("");
+  const debouncedSearch = useDebounce(search, 300);
 
-  const [loading, setIsLoading] = React.useState(false);
   const [assets, setAssets] = React.useState<UploadedFile[]>([]);
-  const loadAssets = async () => {
-    if (assets?.length) return;
+  const [page, setPage] = React.useState(1);
+  const [loading, setLoading] = React.useState(false);
+  const [hasMore, setHasMore] = React.useState(true);
+  const [initialLoad, setInitialLoad] = React.useState(true);
+  const { ref, inView } = useInView({
+    threshold: 0.5,
+  });
 
-    setIsLoading(true);
-    try {
-      let url = "/admin/api/assets";
+  // Reset when search changes
+  React.useEffect(() => {
+    setAssets([]);
+    setPage(1);
+    setHasMore(true);
+  }, [debouncedSearch]);
+
+  const loadAssets = React.useCallback(
+    async (page: number, search?: string) => {
+      let url = `/admin/api/assets?page=${page}&limit=${toLoad}`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
       if (accept?.length) {
         const acceptQuery = accept.map(
           (type) => `accept=${encodeURIComponent(type)}`
         );
-        url += `?${acceptQuery.join("&")}`;
+        url += `&${acceptQuery.join("&")}`;
       }
 
-      const res = await fetch(url);
-      const assets = (await res.json()) as UploadedFile[];
+      const response = await fetch(url, {
+        method: "GET",
+        cache: "default",
+      });
 
-      setAssets(assets || []);
-    } catch (e) {
-      toast.error("There was a problem with your request.");
+      const res = (await response.json()) as WithTotal<UploadedFile>;
+
+      return {
+        items: res.items,
+        hasMore: page * toLoad < res.total,
+      };
+    },
+    [accept]
+  );
+
+  React.useEffect(() => {
+    const loadItems = async () => {
+      if (!hasMore && !initialLoad) return;
+
+      setLoading(true);
+      try {
+        const result = await loadAssets(page, debouncedSearch);
+
+        if (page === 1) {
+          setAssets(result.items);
+        } else {
+          setAssets((prev) => [...prev, ...result.items]);
+        }
+
+        setHasMore(result.hasMore);
+        setInitialLoad(false);
+      } catch (error) {
+        console.error("Failed to fetch items:", error);
+        toast.error("There was a problem with your request.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      loadItems();
     }
+  }, [debouncedSearch, page, loadAssets, initialLoad, hasMore, isOpen]);
 
-    setIsLoading(false);
-  };
+  // Load more when scrolled to bottom
+  React.useEffect(() => {
+    if (isOpen && inView && !loading && hasMore) {
+      setPage((prev) => prev + 1);
+    }
+  }, [inView, loading, hasMore, isOpen]);
 
   const select = (asset: UploadedFile) => {
     setSelected(selected?._id === asset._id ? undefined : asset);
@@ -68,30 +155,16 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
     close();
   };
 
-  const toLoad = 24; // divisible by 1, 2, 3
-
-  const [loaded, setLoaded] = React.useState(toLoad);
-
   React.useEffect(() => {
-    if (isOpen) {
-      loadAssets();
-      setLoaded(toLoad);
-    }
-
     setSelected(undefined);
-  }, [isOpen]);
-
-  const scrollTarget = React.useRef<HTMLDivElement>(null);
-
-  const [listId, setListId] = React.useState<string | undefined>(undefined);
-
-  React.useEffect(() => {
-    if (scrollTarget.current) {
-      setTimeout(() => {
-        setListId(scrollTarget.current?.id);
-      }, 0);
+    if (!isOpen) {
+      setInitialLoad(false);
+      setPage(1);
+      setHasMore(true);
+      setAssets([]);
+      setSearch("");
     }
-  }, [scrollTarget.current]);
+  }, [isOpen]);
 
   const [fileToUpload, setFileToUpload] = React.useState<File | undefined>();
   const { isUploading, progress, uploadFile } = useUploadFile({
@@ -99,6 +172,9 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
       setAssets((old) => [file, ...old]);
       setSelected(file);
     },
+    appointmentId: addTo?.appointmentId,
+    customerId: addTo?.customerId,
+    description: addTo?.description,
   });
 
   const onSubmit = async () => {
@@ -162,64 +238,39 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
               </>
             )}
           </div>
-          {loading && (
-            <div className="w-full h-full flex items-center justify-center">
-              <Spinner className="w-10 h-10" />
-            </div>
-          )}
-          <div
-            className="h-[60vh] w-full"
-            id="asset-scroll-area"
-            ref={scrollTarget}
-          >
-            {/* <InfiniteScroll
-              dataLength={values.length}
-              next={fetchMore}
-              hasMore={hasMore}
-              loader={<h4>Loading...</h4>}
-              scrollableTarget={listId}
-            > */}
+          {loading && page === 1 && <Loaders />}
+          <div className="w-full" id="asset-scroll-area">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {assets
-                ?.filter(
-                  (asset) =>
-                    !search ||
-                    asset.filename
-                      .toLocaleLowerCase()
-                      .indexOf(search.toLocaleLowerCase()) >= 0 ||
-                    (asset.description || "")
-                      .toLocaleLowerCase()
-                      .indexOf(search.toLocaleLowerCase()) >= 0
-                )
-                .map((asset) => (
-                  <div
-                    tabIndex={0}
-                    onClick={() => setSelected(asset)}
-                    onKeyDown={(e) =>
-                      (e.key === "Enter" || e.key === " ") && select(asset)
-                    }
-                    className={cn(
-                      "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3",
-                      selected?._id === asset._id ? "bg-accent" : ""
-                    )}
-                    key={asset._id}
-                  >
-                    <AssetPreview asset={asset} />
-                    <div className="flex flex-col gap-1 items-center text-center">
-                      <span className="text-muted-foreground">
-                        {asset.description}
-                      </span>
-                      <span>
-                        {asset.filename?.substring(
-                          asset.filename?.lastIndexOf("/") + 1
-                        )}
-                      </span>
-                    </div>
+              {assets?.map((asset) => (
+                <div
+                  tabIndex={0}
+                  onClick={() => setSelected(asset)}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") && select(asset)
+                  }
+                  className={cn(
+                    "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3",
+                    selected?._id === asset._id ? "bg-accent" : ""
+                  )}
+                  key={asset._id}
+                >
+                  <AssetPreview asset={asset} />
+                  <div className="flex flex-col gap-1 items-center text-center">
+                    <span className="text-muted-foreground">
+                      {asset.description}
+                    </span>
+                    <span>
+                      {asset.filename?.substring(
+                        asset.filename?.lastIndexOf("/") + 1
+                      )}
+                    </span>
                   </div>
-                ))}
+                </div>
+              ))}
             </div>
-            {/* </InfiniteScroll> */}
           </div>
+          {hasMore && !loading && <div ref={ref} className="h-1" />}
+          {loading && page > 1 && <Loaders />}
         </div>
       </ScrollArea>
       <div className="flex w-full items-center justify-end space-x-2 pt-6">

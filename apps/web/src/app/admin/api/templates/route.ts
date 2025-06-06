@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const type = params.get("type") as CommunicationChannel;
   if (!type) {
-    return NextResponse.json({ error: "type is required" }, { status: 400 });
+    return NextResponse.json({ error: "type_is_required" }, { status: 400 });
   }
 
   const result = await ServicesContainer.TemplatesService().getTemplates({

@@ -5,6 +5,7 @@ export type AppScope =
   | "calendar-write"
   | "mail-send"
   | "text-message-send"
+  | "text-message-respond"
   | "appointment-hook"
   | "assets-storage"
   | "scheduled"

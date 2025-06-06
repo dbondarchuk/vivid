@@ -8,22 +8,19 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   IScheduled,
-  ITextMessageResponder,
   ServiceField,
   SocialConfiguration,
-  TextMessageReply,
   WithTotal,
 } from "@vivid/types";
 import {
   buildSearchQuery,
+  escapeRegex,
   getArguments,
   getPhoneField,
-  template,
   templateSafeWithError,
 } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { ObjectId, type Filter, type Sort } from "mongodb";
-import ownerTextMessageReplyTemplate from "./emails/owner-text-message-reply.html";
 import {
   GetRemindersAction,
   Reminder,
@@ -34,7 +31,7 @@ import {
 const REMINDERS_COLLECTION_NAME = "reminders";
 
 export default class RemindersConnectedApp
-  implements IConnectedApp, IScheduled, ITextMessageResponder
+  implements IConnectedApp, IScheduled
 {
   public constructor(protected readonly props: IConnectedAppProps) {}
 
@@ -138,7 +135,7 @@ export default class RemindersConnectedApp
     }
 
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<Reminder>({ $regex }, "name");
 
       filter.$or = queries;
@@ -269,11 +266,7 @@ export default class RemindersConnectedApp
   }
 
   public async onTime(appData: ConnectedAppData, date: Date): Promise<void> {
-    const {
-      booking: bookingConfig,
-      general: generalConfig,
-      social: socialConfig,
-    } = await this.props.services
+    const config = await this.props.services
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
 
@@ -283,7 +276,7 @@ export default class RemindersConnectedApp
       })
     ).items;
 
-    const timeZone = bookingConfig.timeZone;
+    const timeZone = config.booking.timeZone;
     const db = await this.props.getDbConnection();
 
     const reminders = await db
@@ -296,15 +289,7 @@ export default class RemindersConnectedApp
     const promises = (reminders || []).map(async (reminder) => {
       const appointments = await this.getAppointments(date, reminder, timeZone);
       const appointmentPromises = appointments.map((appointment) =>
-        this.sendReminder(
-          appData,
-          appointment,
-          reminder,
-          bookingConfig,
-          generalConfig,
-          socialConfig,
-          phoneFields
-        )
+        this.sendReminder(appData, appointment, reminder, config, phoneFields)
       );
 
       return Promise.all(appointmentPromises);
@@ -405,18 +390,19 @@ export default class RemindersConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     reminder: Reminder,
-    config: BookingConfiguration,
-    generalConfig: GeneralConfiguration,
-    socialConfig: SocialConfiguration,
+    config: {
+      general: GeneralConfiguration;
+      booking: BookingConfiguration;
+      social: SocialConfiguration;
+    },
     phoneFields: ServiceField[]
   ): Promise<void> {
-    const { arg } = getArguments(
+    const args = getArguments({
       appointment,
       config,
-      generalConfig,
-      socialConfig,
-      true
-    );
+      customer: appointment.customer,
+      useAppointmentTimezone: true,
+    });
 
     const channel = reminder.channel;
     const template = await this.props.services
@@ -432,18 +418,20 @@ export default class RemindersConnectedApp
         return this.props.services.NotificationService().sendEmail({
           email: {
             body: await renderToStaticMarkup({
-              args: arg,
+              args: args,
               document: template.value,
             }),
-            subject: templateSafeWithError(reminder.subject, arg),
+            subject: templateSafeWithError(reminder.subject, args),
             to: appointment.fields.email,
           },
-          initiator: `Reminder Service - ${reminder.name}`,
+          participantType: "customer",
+          handledBy: `Reminder Service - ${reminder.name}`,
           appointmentId: appointment._id,
         });
 
       case "text-message":
-        const phone = getPhoneField(appointment, phoneFields);
+        const phone =
+          appointment.fields?.phone ?? getPhoneField(appointment, phoneFields);
         if (!phone) {
           console.warn(
             `Can't find the phone field for appointment ${appointment._id}`
@@ -454,13 +442,14 @@ export default class RemindersConnectedApp
 
         await this.props.services.NotificationService().sendTextMessage({
           phone,
-          sender: generalConfig.name,
-          body: templateSafeWithError(template.value, arg),
+          sender: config.general.name,
+          body: templateSafeWithError(template.value, args),
           webhookData: {
-            data: appointment._id,
+            appointmentId: appointment._id,
             appId: appData._id,
           },
-          initiator: `Reminder service - ${reminder.name}`,
+          participantType: "customer",
+          handledBy: `Reminder service - ${reminder.name}`,
           appointmentId: appointment._id,
         });
 
@@ -470,50 +459,5 @@ export default class RemindersConnectedApp
         console.error(`Unknow reminder channel type: ${channel}`);
         return;
     }
-  }
-
-  public async respond(
-    appData: ConnectedAppData,
-    data: string,
-    reply: TextMessageReply
-  ): Promise<void> {
-    const bodyTemplate = ownerTextMessageReplyTemplate;
-
-    const appointment = await this.props.services
-      .EventsService()
-      .getAppointment(data);
-
-    if (!appointment) {
-      // todo
-    }
-
-    const config = await this.props.services
-      .ConfigurationService()
-      .getConfigurations("booking", "general", "social");
-
-    const args = getArguments(
-      appointment as Appointment,
-      config.booking,
-      config.general,
-      config.social,
-      true
-    );
-
-    const arg = {
-      ...args.arg,
-      reply,
-    };
-
-    const description = template(bodyTemplate, arg);
-
-    await this.props.services.NotificationService().sendEmail({
-      email: {
-        to: args.generalConfiguration.email,
-        subject: "SMS reply",
-        body: description,
-      },
-      initiator: "Reminders Text Message Reply - notify owner",
-      appointmentId: appointment?._id,
-    });
   }
 }

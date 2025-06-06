@@ -1,4 +1,6 @@
+export * from "./customers-data-table-async-filter-box";
 export * from "./data-table";
+export * from "./data-table-async-filter-box";
 export * from "./data-table-filter-box";
 export * from "./data-table-range-box";
 export * from "./data-table-reset-filter";

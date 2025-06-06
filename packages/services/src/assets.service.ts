@@ -2,6 +2,7 @@ import { getDbConnection } from "./database";
 
 import {
   Asset,
+  AssetEntity,
   AssetUpdate,
   IAssetsService,
   IAssetsStorage,
@@ -10,11 +11,13 @@ import {
   Query,
   WithTotal,
 } from "@vivid/types";
-import { buildSearchQuery } from "@vivid/utils";
+import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { Readable } from "stream";
+import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
+import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
 
 export const ASSETS_COLLECTION_NAME = "assets";
 
@@ -26,18 +29,27 @@ export class AssetsService implements IAssetsService {
 
   public async getAsset(_id: string): Promise<Asset | null> {
     const db = await getDbConnection();
-    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
-    const asset = await assets.findOne({
-      _id,
-    });
+    const asset = await assets
+      .aggregate([
+        {
+          $match: {
+            _id,
+          },
+        },
+        ...this.aggregateJoin,
+      ])
+      .next();
 
-    return asset;
+    return asset as Asset | null;
   }
 
   public async getAssets(
     query: Query & {
       accept?: string[];
+      customerId?: string | string[];
+      appointmentId?: string | string[];
     }
   ): Promise<WithTotal<Asset>> {
     const db = await getDbConnection();
@@ -53,7 +65,7 @@ export class AssetsService implements IAssetsService {
     const filter: Filter<Asset> = {};
 
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<Asset>(
         { $regex },
         "filename",
@@ -78,14 +90,31 @@ export class AssetsService implements IAssetsService {
       ];
     }
 
+    if (query.customerId) {
+      filter["customer._id"] = {
+        $in: Array.isArray(query.customerId)
+          ? query.customerId
+          : [query.customerId],
+      };
+    }
+
+    if (query.customerId) {
+      filter.appointmentId = {
+        $in: Array.isArray(query.appointmentId)
+          ? query.appointmentId
+          : [query.appointmentId],
+      };
+    }
+
     const [result] = await db
-      .collection<Asset>(ASSETS_COLLECTION_NAME)
+      .collection<AssetEntity>(ASSETS_COLLECTION_NAME)
       .aggregate([
-        {
-          $sort: sort,
-        },
+        ...this.aggregateJoin,
         {
           $match: filter,
+        },
+        {
+          $sort: sort,
         },
         {
           $facet: {
@@ -116,11 +145,11 @@ export class AssetsService implements IAssetsService {
   public async createAsset(
     asset: Omit<Asset, "_id" | "uploadedAt">,
     file: File
-  ): Promise<Asset> {
+  ): Promise<AssetEntity> {
     const storage = await this.getAssetsStorage();
 
     const db = await getDbConnection();
-    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
     const existing = await assets.findOne({
       filename: asset.filename,
@@ -151,7 +180,7 @@ export class AssetsService implements IAssetsService {
 
   public async updateAsset(id: string, update: AssetUpdate): Promise<void> {
     const db = await getDbConnection();
-    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
     const { _id, filename, uploadedAt, mimeType, ...updateObj } =
       update as Asset; // Remove fields in case it slips here
@@ -188,7 +217,7 @@ export class AssetsService implements IAssetsService {
     const storage = await this.getAssetsStorage();
 
     const db = await getDbConnection();
-    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
     const toRemove = await assets
       .find({
@@ -217,9 +246,9 @@ export class AssetsService implements IAssetsService {
     _id?: string
   ): Promise<boolean> {
     const db = await getDbConnection();
-    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
-    const filter: Filter<Asset> = {
+    const filter: Filter<AssetEntity> = {
       filename,
     };
 
@@ -229,17 +258,24 @@ export class AssetsService implements IAssetsService {
       };
     }
 
-    const result = await assets.countDocuments(filter);
-    return result === 0;
+    const hasNext = await assets
+      .aggregate([
+        {
+          $match: filter,
+        },
+      ])
+      .hasNext();
+
+    return !hasNext;
   }
 
   public async streamAsset(
     filename: string
-  ): Promise<{ stream: Readable; asset: Asset } | null> {
+  ): Promise<{ stream: Readable; asset: AssetEntity } | null> {
     const storage = await this.getAssetsStorage();
 
     const db = await getDbConnection();
-    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
     const asset = await assets.findOne({
       filename,
@@ -260,5 +296,54 @@ export class AssetsService implements IAssetsService {
     return await this.connectedAppService.getAppService<IAssetsStorage>(
       assetsStorageAppId
     );
+  }
+
+  private get aggregateJoin() {
+    return [
+      {
+        $lookup: {
+          from: APPOINTMENTS_COLLECTION_NAME,
+          localField: "appointmentId",
+          foreignField: "_id",
+          as: "appointment",
+        },
+      },
+      {
+        $lookup: {
+          from: CUSTOMERS_COLLECTION_NAME,
+          localField: "customerId",
+          foreignField: "_id",
+          as: "customer",
+        },
+      },
+      {
+        $set: {
+          appointment: {
+            $first: "$appointment",
+          },
+          customer: {
+            $first: "$customer",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "customers",
+          localField: "appointment.customerId",
+          foreignField: "_id",
+          as: "appointmentCustomer",
+        },
+      },
+      {
+        $set: {
+          customer: {
+            $ifNull: ["$customer", { $first: "$appointmentCustomer" }],
+          },
+        },
+      },
+      {
+        $unset: "appointmentCustomer",
+      },
+    ];
   }
 }

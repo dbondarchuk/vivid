@@ -3,9 +3,13 @@ import { zUniqueArray } from "../utils";
 import { zTimeZone } from "../utils/zTimeZone";
 import { AppointmentAddon, AppointmentOption } from "./appointment-option";
 
-export type AppointmentFields = Record<string, string> & {
+export type AppointmentFields = Record<
+  string,
+  string | boolean | Date | number
+> & {
   name: string;
   email: string;
+  phone: string;
 };
 
 export type AppointmentEvent = {
@@ -34,13 +38,18 @@ export const appointmentRequestSchema = z.object({
     .int("Only positive integer numbers allowed")
     .positive("Only positive integer numbers allowed")
     .optional(),
-  fields: z.intersection(
-    z.object({
-      email: z.string().email("Valid email is required"),
-      name: z.string().min(1, "Name is required"),
-    }),
-    z.record(z.string(), z.coerce.string())
-  ),
+  fields: z
+    .object({
+      email: z.string().email("Valid email is required").trim(),
+      name: z.string().min(1, "Name is required").trim(),
+      phone: z.string().min(1, "Name is required").trim(),
+    })
+    .and(
+      z.record(
+        z.string(),
+        z.union([z.number(), z.date(), z.boolean(), z.string()])
+      )
+    ),
 });
 
 export type AppointmentRequest = z.infer<typeof appointmentRequestSchema>;

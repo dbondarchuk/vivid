@@ -1,11 +1,10 @@
 import { BookingConfiguration, customTimeSlotSchema, Time } from "@vivid/types";
 import {
   AppSelector,
+  BooleanSelect,
   Button,
-  Checkbox,
   Combobox,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
   SimpleTimePicker,
-  Switch,
   TagInput,
 } from "@vivid/ui";
 import {
@@ -164,18 +162,11 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
               </InfoTooltip>
             </FormLabel>
             <FormControl>
-              <Select
-                value={(field.value ?? false).toString()}
-                onValueChange={(value) => field.onChange(value === "true")}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="false">No</SelectItem>
-                  <SelectItem value="true">Yes</SelectItem>
-                </SelectContent>
-              </Select>
+              <BooleanSelect
+                value={field.value}
+                onValueChange={field.onChange}
+                className="w-full"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -283,72 +274,25 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
       />
       <FormField
         control={form.control}
-        name="minAvailableTimeBeforeSlot"
+        name="breakDuration"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Minimum time before a scheduled time slot
+              Minimum break time
               <InfoTooltip>
                 <p>
                   Defines the minimum required time interval that must be left
-                  available before a scheduled time slot.
+                  available before and after a scheduled time slot.
                 </p>
                 <p>
-                  This field ensures there is a buffer period before each slot
-                  to accommodate breaks, preparation time, or to prevent
-                  scheduling conflicts.
-                </p>
-                <p>
-                  <span className="font-semibold">Example:</span> If set to 30,
-                  there must be at least 30 minutes of free time before each
-                  scheduled slot before the next slot can begin.
-                </p>
-                <p>
-                  <span className="font-semibold">Default:</span> 0 minutes
-                </p>
-              </InfoTooltip>
-            </FormLabel>
-            <FormControl>
-              <InputGroup>
-                <InputGroupInput>
-                  <Input
-                    disabled={disabled}
-                    placeholder="0"
-                    type="number"
-                    className={InputGroupInputClasses()}
-                    {...field}
-                  />
-                </InputGroupInput>
-                <InputSuffix className={InputGroupSuffixClasses()}>
-                  minutes
-                </InputSuffix>
-              </InputGroup>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="minAvailableTimeAfterSlot"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              Minimum time after a scheduled time slot
-              <InfoTooltip>
-                <p>
-                  Defines the minimum required time interval that must be left
-                  available after a scheduled time slot.
-                </p>
-                <p>
-                  This field ensures there is a buffer period following each
-                  slot to accommodate breaks, preparation time, or to prevent
-                  scheduling conflicts.
+                  This field ensures there is a buffer period before and after
+                  each slot to accommodate breaks, preparation time, or to
+                  prevent scheduling conflicts.
                 </p>
                 <p>
                   <span className="font-semibold">Example:</span> If set to 30,
-                  there must be at least 30 minutes of free time after each
-                  scheduled slot before the next slot can begin.
+                  there must be at least 30 minutes of free time before and
+                  after each scheduled slot before the next slot can begin.
                 </p>
                 <p>
                   <span className="font-semibold">Default:</span> 0 minutes

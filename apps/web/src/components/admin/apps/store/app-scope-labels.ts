@@ -5,6 +5,7 @@ export const AppScopeLabels: Record<AppScope, string> = {
   "calendar-write": "Calendar store",
   "mail-send": "Email",
   "text-message-send": "Text message",
+  "text-message-respond": "Text message responder",
   "appointment-hook": "Appointment hooks",
   scheduled: "Scheduled",
   schedule: "Schedule provider",

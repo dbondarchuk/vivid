@@ -30,14 +30,14 @@ export default async function NewOptionPage(props: Props) {
   }
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
             title="New service option"
             description="Add new option that you provide"
           />
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <OptionForm initialData={initialData} />
       </div>

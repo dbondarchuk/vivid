@@ -36,6 +36,7 @@ export const TextMessageBuilder: React.FC<{
   args?: any;
 }> = ({ field, args }) => {
   const { resolvedTheme } = useTheme();
+  const preview = templateSafeWithError(field.value || "", args || {});
 
   return (
     <div className="flex flex-col md:flex-row gap-4">
@@ -120,7 +121,7 @@ export const TextMessageBuilder: React.FC<{
             onChange={field.onChange}
           />
         </FormControl>
-        <FormDescription>{field.value?.length || 0} characters</FormDescription>
+        <FormDescription>{preview.length || 0} characters</FormDescription>
         <FormMessage />
       </FormItem>
       <FormItem className="flex-1">
@@ -128,10 +129,7 @@ export const TextMessageBuilder: React.FC<{
         <div
           className="w-full text-sm"
           dangerouslySetInnerHTML={{
-            __html: templateSafeWithError(
-              field.value || "",
-              args || {}
-            ).replaceAll("\n", "<br/>"),
+            __html: preview.replaceAll("\n", "<br/>"),
           }}
         />
       </FormItem>

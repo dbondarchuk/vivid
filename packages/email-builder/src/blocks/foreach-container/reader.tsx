@@ -10,7 +10,14 @@ export const ForeachContainerReader = ({
   const children = props?.children ?? [];
   if (!props?.value) return null;
 
-  const array: [] = evaluate(props?.value, args);
+  let array: [] | null;
+  try {
+    array = evaluate(props?.value, args);
+  } catch (e) {
+    console.error(e);
+    array = null;
+  }
+
   if (!Array.isArray(array)) {
     return <div className="w-full">NOT ARRAY</div>;
   }

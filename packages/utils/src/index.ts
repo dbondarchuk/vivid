@@ -16,4 +16,5 @@ export * from "./string";
 export * from "./strip-object";
 export * from "./time";
 export * from "./time-slot";
+export * from "./time-slot-with-priority";
 export * from "./types";

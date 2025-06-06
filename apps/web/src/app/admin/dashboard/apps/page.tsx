@@ -16,10 +16,10 @@ const breadcrumbItems = [
 export default async function AppsPage(props: Params) {
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <Heading
               title="Connected apps"
               description="Manage your connected apps"
@@ -38,7 +38,7 @@ export default async function AppsPage(props: Params) {
               </Link>
             </div>
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <div className="grid  gap-4">
           <Suspense

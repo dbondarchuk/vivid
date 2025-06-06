@@ -19,7 +19,11 @@ export const EmailField: <T extends FieldValues>(
           required={props.required}
         />
         <FormControl>
-          <Input type="email" {...field} />
+          <Input
+            type="email"
+            {...field}
+            disabled={field.disabled || props.disabled}
+          />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />
         <FormFieldErrorMessage />

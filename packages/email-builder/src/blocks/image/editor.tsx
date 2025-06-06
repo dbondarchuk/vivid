@@ -7,16 +7,18 @@ import {
   useEditorArgs,
   useSelectedBlockId,
 } from "@vivid/builder";
-import { template } from "@vivid/utils";
-import { ImageProps, ImagePropsDefaults } from "./schema";
+import { templateSafeWithError } from "@vivid/utils";
+import { useCallback } from "react";
 import { Image } from "./reader";
 import { ResizableImage } from "./resizable-image";
+import { ImageProps, ImagePropsDefaults } from "./schema";
 import { getWrapperStyles } from "./styles";
-import { useCallback } from "react";
 
 export const ImageEditor = ({ props, style }: ImageProps) => {
   const args = useEditorArgs();
-  const url = props?.url ? template(props.url, args, true) : undefined;
+  const url = props?.url
+    ? templateSafeWithError(props.url, args, true)
+    : undefined;
 
   const currentBlock = useCurrentBlock<ImageProps>();
   const currentBlockId = useCurrentBlockId();

@@ -4,6 +4,8 @@ import {
   CALENDAR_WRITER_APP_NAME,
   GOOGLE_CALENDAR_APP_NAME,
   S3_ASSETS_STORAGE_APP_NAME,
+  TEXT_MESSAGE_AUTO_REPLY_APP_NAME,
+  TEXT_MESSAGE_RESENDER_APP_NAME,
   WEEKLY_SCHEDULE_APP_NAME,
 } from "../apps";
 import BusyEventsConnectedApp from "../apps/busy-events/service";
@@ -32,8 +34,10 @@ import { SMTP_APP_NAME } from "../apps/smtp/const";
 import SmtpConnectedApp from "../apps/smtp/service";
 import { TEXTBELT_APP_NAME } from "../apps/text-belt/const";
 import TextBeltConnectedApp from "../apps/text-belt/service";
+import TextMessageAutoReplyConnectedApp from "../apps/text-message-auto-reply/service";
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "../apps/text-message-notification/const";
 import { TextMessageNotificationConnectedApp } from "../apps/text-message-notification/service";
+import TextMessageResenderConnectedApp from "../apps/text-message-resender/service";
 import WeeklyScheduleConnectedApp from "../apps/weekly-schedule/service";
 
 export const AvailableAppServices: Record<
@@ -57,6 +61,10 @@ export const AvailableAppServices: Record<
     new CustomerTextMessageNotificationConnectedApp(props),
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: (props) =>
     new TextMessageNotificationConnectedApp(props),
+  [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: (props) =>
+    new TextMessageAutoReplyConnectedApp(props),
+  [TEXT_MESSAGE_RESENDER_APP_NAME]: (props) =>
+    new TextMessageResenderConnectedApp(props),
   [REMINDERS_APP_NAME]: (props) => new RemindersConnectedApp(props),
   [LOG_CLEANUP_APP_NAME]: (props) => new LogCleanupConnectedApp(props),
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: (props) =>

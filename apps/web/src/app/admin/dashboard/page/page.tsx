@@ -15,13 +15,13 @@ export default async function Page() {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-start justify-between">
             <Heading title="Pages" description="Manage pages" />
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
         {/* <Editor styling={styling} globalCss={globalCssColors} /> */}
       </div>

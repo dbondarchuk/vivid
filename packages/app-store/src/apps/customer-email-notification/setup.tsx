@@ -24,9 +24,8 @@ import {
   EmailTemplateKeys,
 } from "./models";
 
-import { SaveButton } from "@vivid/ui";
+import { SaveButton, useDemoArguments } from "@vivid/ui";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
-import { useDemoArguments } from "../../hooks/use-demo-arguments";
 
 const templateKeyText: Record<EmailTemplateKeys, string> = {
   ...StatusText,

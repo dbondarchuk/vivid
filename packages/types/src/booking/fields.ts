@@ -84,6 +84,16 @@ export const getFields = (
           }
         : undefined,
     },
+    {
+      name: "phone",
+      required: true,
+      type: "phone",
+      data: defaultFieldLabels
+        ? {
+            label: "Phone",
+          }
+        : undefined,
+    },
     ...fields,
   ];
 };

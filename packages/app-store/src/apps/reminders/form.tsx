@@ -18,6 +18,7 @@ import {
   SimpleTimePicker,
   TemplateSelector,
   toastPromise,
+  useDemoArguments,
 } from "@vivid/ui";
 import { is12hourUserTimeFormat } from "@vivid/utils";
 import { DateTime } from "luxon";
@@ -25,7 +26,6 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useDemoArguments } from "../../hooks";
 import { checkUniqueName, create, update } from "./actions";
 import { reminderChannelLabels, reminderTypeLabels } from "./const";
 import {

@@ -1,3 +1,4 @@
+import { AssetsTableColumnsCount } from "@/components/admin/assets/table/columns";
 import {
   searchParamsCache,
   serialize,
@@ -32,22 +33,27 @@ export default async function AssetsPage(props: Params) {
 
   return (
     <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <Heading title="Assets" />
 
             <Link button href={"/admin/dashboard/assets/new"} variant="default">
               <Upload className="mr-2 h-4 w-4" /> Add New
             </Link>
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
-        <AssetsTableAction />
+        <AssetsTableAction showCustomerFilter />
         <Suspense
           key={key}
-          fallback={<DataTableSkeleton columnCount={8} rowCount={10} />}
+          fallback={
+            <DataTableSkeleton
+              columnCount={AssetsTableColumnsCount}
+              rowCount={10}
+            />
+          }
         >
           <AssetsTable />
         </Suspense>

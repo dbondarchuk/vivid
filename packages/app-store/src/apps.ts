@@ -29,8 +29,12 @@ import { SmtpApp } from "./apps/smtp/app";
 import { SMTP_APP_NAME } from "./apps/smtp/const";
 import { TextBeltApp } from "./apps/text-belt/app";
 import { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
+import { TextMessageAutoReplyApp } from "./apps/text-message-auto-reply/app";
+import { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply/const";
 import { TextMessageNotificationApp } from "./apps/text-message-notification/app";
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
+import { TextMessageResenderApp } from "./apps/text-message-resender/app";
+import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
 import { WeeklyScheduleApp } from "./apps/weekly-schedule/app";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";
 
@@ -53,6 +57,8 @@ export const AvailableApps: Record<string, App> = {
   [LOG_CLEANUP_APP_NAME]: LogCleanupApp,
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
   [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageApp,
+  [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,
+  [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
 };
 
 export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -70,5 +76,7 @@ export { REMINDERS_APP_NAME } from "./apps/reminders/const";
 export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 export { SMTP_APP_NAME } from "./apps/smtp/const";
 export { TEXTBELT_APP_NAME } from "./apps/text-belt/const";
+export { TEXT_MESSAGE_AUTO_REPLY_APP_NAME } from "./apps/text-message-auto-reply/const";
 export { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/text-message-notification/const";
+export { TEXT_MESSAGE_RESENDER_APP_NAME } from "./apps/text-message-resender/const";
 export { WEEKLY_SCHEDULE_APP_NAME } from "./apps/weekly-schedule/const";

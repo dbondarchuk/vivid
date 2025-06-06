@@ -5,7 +5,7 @@ import {
   Query,
   WithTotal,
 } from "@vivid/types";
-import { buildSearchQuery } from "@vivid/utils";
+import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { getDbConnection } from "./database";
@@ -73,7 +73,7 @@ export class PagesService implements IPagesService {
     }
 
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<Page>(
         { $regex },
         "slug",

@@ -3,6 +3,7 @@
 import { MenuItemCard } from "@/components/admin/menu-item/menu-item-card";
 import { MdxContent } from "@/components/web/mdx/mdx-content-client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Editor } from "@monaco-editor/react";
 import {
   FooterConfiguration,
@@ -30,7 +31,6 @@ import {
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
 import { updateFooterConfiguration } from "./actions";
 
 export const FooterSettingsForm: React.FC<{

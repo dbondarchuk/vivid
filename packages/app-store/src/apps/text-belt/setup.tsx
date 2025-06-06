@@ -2,6 +2,7 @@
 
 import { AppSetupProps } from "@vivid/types";
 import {
+  AppSelector,
   Button,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
@@ -51,6 +52,34 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="API key" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="textMessageResponderAppId"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>
+                    Fallback text message responder
+                    <InfoTooltip>
+                      <p>
+                        If not handled by sender, it will be used as default app
+                        to respond to text messages (i.e. auto reply)
+                      </p>
+                      <p>Optional</p>
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <AppSelector
+                      scope="text-message-respond"
+                      disabled={isLoading}
+                      value={field.value}
+                      onItemSelect={(value) => field.onChange(value)}
+                      allowClear
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

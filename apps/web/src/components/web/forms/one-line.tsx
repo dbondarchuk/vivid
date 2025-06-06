@@ -17,7 +17,11 @@ export const OneLineField: <T extends FieldValues>(
       <FormItem>
         <FormFieldLabel label={props.data.label} required={props.required} />
         <FormControl>
-          <Input {...field} placeholder="Type your response here" />
+          <Input
+            {...field}
+            placeholder="Type your response here"
+            disabled={field.disabled || props.disabled}
+          />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />
         <FormFieldErrorMessage />

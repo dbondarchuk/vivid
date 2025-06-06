@@ -31,3 +31,6 @@ export const humanFileSize = (bytes: number, si = false, dp = 1) => {
 
   return bytes.toFixed(dp) + " " + units[u];
 };
+
+export const getAppointmentBucket = (id: string) => `appointments/${id}`;
+export const getCustomerBucket = (id: string) => `customers/${id}`;

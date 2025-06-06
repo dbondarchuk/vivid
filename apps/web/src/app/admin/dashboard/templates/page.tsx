@@ -28,7 +28,7 @@ export default async function EmailTemplatesPage(props: Params) {
 
   return (
     <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-start justify-between">
@@ -36,7 +36,7 @@ export default async function EmailTemplatesPage(props: Params) {
 
             <AddNewTemplateButton />
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <TemplatesTableAction />
         <Suspense

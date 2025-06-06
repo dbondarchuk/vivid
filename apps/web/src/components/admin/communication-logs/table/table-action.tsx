@@ -2,6 +2,8 @@
 
 import {
   Button,
+  cn,
+  CustomersDataTableAsyncFilterBox,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
@@ -16,17 +18,33 @@ import {
   DIRECTION_OPTIONS,
   CHANNEL_OPTIONS,
   useCommunicationLogsTableFilters,
+  PARTICIPANT_TYPE_OPTIONS,
 } from "./use-table-filters";
 import { ClearSelectedCommunicationLogsButton } from "./clear-selected";
 import { ClearAllCommunicationLogsButton } from "./clear-all";
 import { Settings2 } from "lucide-react";
+import React from "react";
 
-export function CommunicationLogsTableAction() {
+export const CommunicationLogsTableAction: React.FC<{
+  allowClearAll?: boolean;
+  hideActions?: boolean;
+  showCustomerFilter?: boolean;
+  showParticipantTypeFilter?: boolean;
+  className?: string;
+}> = ({
+  allowClearAll,
+  showCustomerFilter,
+  showParticipantTypeFilter,
+  hideActions,
+  className,
+}) => {
   const {
     directionFilter,
     channelFilter,
+    participantTypeFilter,
     setDirectionFilter,
     setChannelFilter,
+    setParticipantTypeFilter,
     isAnyFilterActive,
     resetFilters,
     searchQuery,
@@ -36,6 +54,8 @@ export function CommunicationLogsTableAction() {
     end,
     setStartValue,
     setEndValue,
+    customerFilter,
+    setCustomerFilter,
   } = useCommunicationLogsTableFilters();
 
   const { rowSelection } = useSelectedRowsStore();
@@ -56,6 +76,21 @@ export function CommunicationLogsTableAction() {
         setFilterValue={setChannelFilter as any}
         filterValue={channelFilter}
       />
+      {showParticipantTypeFilter && (
+        <DataTableFilterBox
+          filterKey="participantType"
+          title="Participant"
+          options={PARTICIPANT_TYPE_OPTIONS}
+          setFilterValue={setParticipantTypeFilter as any}
+          filterValue={participantTypeFilter}
+        />
+      )}
+      {showCustomerFilter && (
+        <CustomersDataTableAsyncFilterBox
+          filterValue={customerFilter}
+          setFilterValue={setCustomerFilter}
+        />
+      )}
       <DataTableRangeBox
         startValue={start}
         endValue={end}
@@ -66,7 +101,12 @@ export function CommunicationLogsTableAction() {
   );
 
   return (
-    <div className="flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row">
+    <div
+      className={cn(
+        "flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row",
+        className
+      )}
+    >
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
         <DataTableSearch
           searchKey="name"
@@ -90,10 +130,12 @@ export function CommunicationLogsTableAction() {
           onReset={resetFilters}
         />
       </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <ClearSelectedCommunicationLogsButton selected={rowSelection} />
-        <ClearAllCommunicationLogsButton />
-      </div>
+      {!hideActions && (
+        <div className="flex flex-wrap items-center gap-4">
+          <ClearSelectedCommunicationLogsButton selected={rowSelection} />
+          {allowClearAll && <ClearAllCommunicationLogsButton />}
+        </div>
+      )}
     </div>
   );
-}
+};

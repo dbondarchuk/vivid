@@ -84,56 +84,73 @@ export const fieldSchemaMapper = (field: Field) => {
 
 export type FieldComponentMapFn = (
   field: Field<any>,
-  control: Control
+  control: Control,
+  disabled?: boolean
 ) => React.ReactNode;
 
 export const fieldsComponentMap: (
   namespace?: string
 ) => Record<FieldType, FieldComponentMapFn> = (namespace) => ({
-  name: (field, control) => (
-    <NameField control={control} {...field} namespace={namespace} />
+  name: (field, control, disabled) => (
+    <NameField
+      control={control}
+      {...field}
+      disabled={disabled}
+      namespace={namespace}
+    />
   ),
-  email: (field, control) => (
-    <EmailField control={control} {...field} namespace={namespace} />
+  email: (field, control, disabled) => (
+    <EmailField
+      control={control}
+      {...field}
+      disabled={disabled}
+      namespace={namespace}
+    />
   ),
-  phone: (field, control) => (
+  phone: (field, control, disabled) => (
     <PhoneField
       control={control}
+      disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  oneLine: (field, control) => (
+  oneLine: (field, control, disabled) => (
     <OneLineField
       control={control}
+      disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  multiLine: (field, control) => (
+  multiLine: (field, control, disabled) => (
     <MultiLineField
       control={control}
+      disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  checkbox: (field, control) => (
+  checkbox: (field, control, disabled) => (
     <CheckboxField
       control={control}
+      disabled={disabled}
       {...(field as Field<WithLabelFieldData>)}
       namespace={namespace}
     />
   ),
-  select: (field, control) => (
+  select: (field, control, disabled) => (
     <SelectField
       control={control}
+      disabled={disabled}
       {...(field as Field<WithLabelFieldData & FieldOptionsData>)}
       namespace={namespace}
     />
   ),
-  file: (field, control) => (
+  file: (field, control, disabled) => (
     <FileField
       control={control}
+      disabled={disabled}
       {...(field as Field<WithLabelFieldData & FieldFileData>)}
       namespace={namespace}
     />

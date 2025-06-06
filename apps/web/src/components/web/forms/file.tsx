@@ -29,6 +29,7 @@ export const FileField: <T extends FieldValues>(
                 field.onChange(event.target?.files?.[0]);
                 field.onBlur();
               }}
+              disabled={field.disabled || props.disabled}
             />
           </FormControl>
           <FormFieldDescription description={props.data?.description} />

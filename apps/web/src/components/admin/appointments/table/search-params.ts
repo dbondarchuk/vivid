@@ -3,6 +3,7 @@ import {
   createSerializer,
   parseAsArrayOf,
   parseAsIsoDateTime,
+  parseAsString,
   parseAsStringLiteral,
 } from "nuqs/server";
 
@@ -16,6 +17,7 @@ export const searchParams = {
   status: parseAsArrayOf(parseAsStringLiteral(appointmentStatuses)).withDefault(
     ["confirmed", "pending"]
   ),
+  customer: parseAsArrayOf(parseAsString),
   sort: baseSearchParams.sort.withDefault([
     {
       id: "createdAt",

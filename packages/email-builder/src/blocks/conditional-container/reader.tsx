@@ -9,7 +9,13 @@ export const ConditionalContainerReader = ({
   const otherwiseChildren = props?.otherwise?.children ?? [];
   if (!props?.condition) return <></>;
 
-  const result = !!evaluate(props?.condition, rest.args);
+  let result: boolean;
+  try {
+    result = !!evaluate(props?.condition, rest.args);
+  } catch (e) {
+    console.error(e);
+    result = false;
+  }
 
   return (
     <>

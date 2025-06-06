@@ -54,6 +54,7 @@ export type OptionSelectorProps = {
   excludeIds?: string[];
   className?: string;
   onItemSelect?: (value: string) => void;
+  allowClear?: boolean;
 };
 
 export const OptionSelector: React.FC<OptionSelectorProps> = ({
@@ -62,6 +63,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
   excludeIds,
   value,
   onItemSelect,
+  allowClear,
 }) => {
   const [options, setOptions] = React.useState<AppointmentOption[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -97,6 +99,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
 
   return (
     <Combobox
+      allowClear={allowClear}
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
       values={OptionValues(options)}
@@ -105,7 +108,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
       customSearch={(search) =>
         OptionValues(options.filter((app) => checkOptionSearch(app, search)))
       }
-      onItemSelect={onItemSelect}
+      onItemSelect={onItemSelect as any}
     />
   );
 };

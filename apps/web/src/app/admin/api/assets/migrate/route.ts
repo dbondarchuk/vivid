@@ -1,5 +1,5 @@
 import { ServicesContainer } from "@vivid/services";
-import { IAssetsStorage } from "@vivid/types";
+import { assetsMigrateRequestSchema, IAssetsStorage } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
 import pLimit from "p-limit";
 
@@ -12,10 +12,14 @@ const getAtomic = () => {
 export async function POST(request: NextRequest) {
   const limit = pLimit(10);
 
-  const body = (await request.json()) as {
-    fromAppId: string;
-    toAppId: string;
-  };
+  const {
+    error,
+    success,
+    data: body,
+  } = assetsMigrateRequestSchema.safeParse(await request.json());
+  if (!success || !body || error) {
+    return NextResponse.json(error, { status: 400 });
+  }
 
   const fromApp =
     await ServicesContainer.ConnectedAppService().getAppService<IAssetsStorage>(

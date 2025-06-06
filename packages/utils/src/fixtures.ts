@@ -85,8 +85,19 @@ export const demoAppointment: Appointment = {
     {
       name: "John Smith",
       email: "john.smith@example.com",
+      phone: "+1 (555)555-5555",
     },
     proxyHandler
   ) as AppointmentFields,
   fieldsLabels: new Proxy({}, proxyHandler),
+  customerId: "customer-1234",
+  customer: {
+    _id: "customer-1234",
+    name: "John Smith",
+    email: "john.smith@example.com",
+    phone: "+1 (555)555-5555",
+    knownEmails: [],
+    knownNames: [],
+    knownPhones: [],
+  },
 };
