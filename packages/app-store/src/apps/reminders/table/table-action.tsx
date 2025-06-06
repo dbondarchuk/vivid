@@ -15,6 +15,7 @@ import { Plus, Settings2 } from "lucide-react";
 import { DeleteSelectedRemindersButton } from "./delete-selected";
 import { CHANNEL_OPTIONS, useRemindersTableFilters } from "./use-table-filters";
 import React from "react";
+import { AppDataModal } from "./app-data-modal";
 
 export const RemindersTableAction: React.FC<{ appId: string }> = ({
   appId,
@@ -69,12 +70,13 @@ export const RemindersTableAction: React.FC<{ appId: string }> = ({
       </div>
       <div className="flex flex-wrap items-center gap-4 max-md:justify-between">
         <DeleteSelectedRemindersButton selected={rowSelection} appId={appId} />
+        <AppDataModal appId={appId} />
         <Link
           button
           variant="primary"
           href="/admin/dashboard/communications/reminders/new"
         >
-          <Plus size={16} /> Add new
+          <Plus size={16} /> <span className="max-md:hidden">Add new</span>
         </Link>
       </div>
     </div>

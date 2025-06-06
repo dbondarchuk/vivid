@@ -3,6 +3,7 @@ import { processRequest } from "../..";
 import {
   GetRemindersAction,
   Reminder,
+  RemindersAppData,
   ReminderUpdateModel,
   RequestAction,
 } from "./models";
@@ -36,6 +37,19 @@ export const getReminder = async (appId: string, id: string) => {
     type: "get-reminder",
     id,
   } as RequestAction)) as Reminder;
+};
+
+export const getAppData = async (appId: string) => {
+  return (await processRequest(appId, {
+    type: "get-app-data",
+  } as RequestAction)) as RemindersAppData;
+};
+
+export const setAppData = async (appId: string, data: RemindersAppData) => {
+  return await processRequest(appId, {
+    type: "set-app-data",
+    data,
+  } as RequestAction);
 };
 
 export const checkUniqueName = async (
