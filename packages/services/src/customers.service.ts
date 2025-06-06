@@ -6,8 +6,8 @@ import {
   CustomerUpdateModel,
   Query,
   WithTotal,
+  type ICustomersService,
 } from "@vivid/types";
-import { ICustomersService } from "@vivid/types/src/services/customers.service";
 import { buildSearchQuery, escapeRegex, Leaves } from "@vivid/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { getDbConnection } from "./database";

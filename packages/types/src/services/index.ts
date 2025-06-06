@@ -14,6 +14,7 @@ export * from "./assets.service";
 export * from "./communication-logs.service";
 export * from "./configuration.service";
 export * from "./connected-apps.service";
+export * from "./customers.service";
 export * from "./events.service";
 export * from "./notification.service";
 export * from "./pages.service";

@@ -24,22 +24,22 @@ import {
   type ICalendarBusyTimeProvider,
   type IConfigurationService,
   type IConnectedAppsService,
+  type ICustomersService,
   type IEventsService,
   type IScheduleService,
   type Period,
   type Query,
   type WithTotal,
 } from "@vivid/types";
-import { ICustomersService } from "@vivid/types/src/services/customers.service";
 import {
   buildSearchQuery,
   escapeRegex,
   getAppointmentBucket,
   getAvailableTimeSlotsInCalendar,
   getAvailableTimeSlotsWithPriority,
+  getIcsEventUid,
   parseTime,
 } from "@vivid/utils";
-import { getIcsEventUid } from "@vivid/utils/src/ics-uid";
 import { DateTime } from "luxon";
 import mimeType from "mime-type/with-db";
 import { Filter, ObjectId, Sort } from "mongodb";
