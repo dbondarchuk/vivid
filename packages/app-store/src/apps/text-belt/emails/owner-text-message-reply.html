@@ -128,13 +128,19 @@
                 <td class="wrapper" style="font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; box-sizing: border-box; padding: 24px;" valign="top">
                   <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Hi {{config.name}}</p>
                   <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">There was a reply to text message message from {{reply.from}}.</p>
+
                   <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Reply text:</p>
                   <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px; font-style: italic;">{{reply.message}}</p>
                   
+                  {{#customer}}
+                    <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Customer: <a href="{{ config.url }}/admin/dashboard/customers/{{_id}}">{{ name }}</a></p>
+                  {{/customer}}
+
                   {{#_id}}
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Appointment status: {{ statusText }}</p>
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Name: {{ fields.name }}</p>
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Email: {{ fields.email }}</p>
+                    <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Phone: {{ fields.phone }}</p>
                     
                     {{#restFields}}
                       <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">{{label}} <small>({{name}})</small>: {{ value }}</p>

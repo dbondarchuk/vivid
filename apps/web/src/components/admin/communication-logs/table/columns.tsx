@@ -3,6 +3,7 @@ import { Markdown } from "@/components/web/markdown";
 import {
   CommunicationChannelTexts,
   CommunicationDirectionTexts,
+  CommunicationParticipantTypeTexts,
 } from "@/constants/labels";
 import { ColumnDef } from "@tanstack/react-table";
 import JsonView from "@uiw/react-json-view";
@@ -57,15 +58,23 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (log) => log.initiator,
-    id: "initiator",
-    header: tableSortHeader("Initiator", "default"),
+    accessorFn: (log) =>
+      CommunicationParticipantTypeTexts[log.participantType] ||
+      log.participantType,
+    id: "participantType",
+    header: tableSortHeader("Participant", "default"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (log) => log.receiver,
-    id: "receiver",
-    header: tableSortHeader("Receiver", "default"),
+    accessorFn: (log) => log.participant,
+    id: "participant",
+    header: tableSortHeader("Participant", "default"),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    accessorFn: (log) => log.handledBy,
+    id: "handledBy",
+    header: tableSortHeader("Handler", "default"),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -85,7 +94,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
         <div className="flex flex-col gap-1">
           <span>{row.original.text.substring(0, 50)}...</span>
           <Dialog>
-            <DialogTrigger>
+            <DialogTrigger asChild>
               <Button variant="default">View more</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
@@ -127,7 +136,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
       return (
         <div className="flex flex-col gap-1">
           <Dialog>
-            <DialogTrigger>
+            <DialogTrigger asChild>
               <Button variant="default">View</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
@@ -158,7 +167,9 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    header: "Appointment",
+    id: "appointment.option.name",
+    sortingFn: tableSortNoopFunction,
+    header: tableSortHeader("Appointment", "string"),
     cell: ({ row }) => {
       if (!row.original.appointmentId) return null;
 
@@ -167,9 +178,28 @@ export const columns: ColumnDef<CommunicationLog>[] = [
           variant="default"
           href={`/admin/dashboard/appointments/${row.original.appointmentId}`}
         >
-          View
+          {row.original.appointment?.option.name}
+        </Link>
+      );
+    },
+  },
+  {
+    id: "customer.name",
+    sortingFn: tableSortNoopFunction,
+    header: tableSortHeader("Customer", "string"),
+    cell: ({ row }) => {
+      if (!row.original.customer) return null;
+
+      return (
+        <Link
+          variant="default"
+          href={`/admin/dashboard/customers/${row.original.customer._id}`}
+        >
+          {row.original.customer.name}
         </Link>
       );
     },
   },
 ];
+
+export const CommunicationLogsTableColumnsCount = columns.length;

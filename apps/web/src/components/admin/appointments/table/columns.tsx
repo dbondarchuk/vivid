@@ -3,6 +3,7 @@ import { CellContext, ColumnDef, RowData } from "@tanstack/react-table";
 import { Appointment, StatusText } from "@vivid/types";
 import {
   Button,
+  Link,
   tableSortHeader,
   tableSortNoopFunction,
   Tooltip,
@@ -57,10 +58,10 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   );
 };
 
-const OptionCell: React.FC<{ appointment: Appointment; timeZone?: string }> = ({
-  appointment,
-  timeZone,
-}) => {
+const OptionCell: React.FC<{
+  appointment: Appointment;
+  timeZone?: string;
+}> = ({ appointment, timeZone }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   return (
     <>
@@ -156,6 +157,36 @@ const OptionCell: React.FC<{ appointment: Appointment; timeZone?: string }> = ({
   );
 };
 
+const CustomerCell: React.FC<{
+  appointment: Appointment;
+}> = ({ appointment }) => {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            variant="link"
+            className="font-normal"
+            href={`/admin/dashboard/customers/${appointment.customerId}`}
+          >
+            {appointment.customer.name}
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent className="flex flex-col gap-2 w-full py-2 px-4">
+          <div className="grid grid-cols-2 gap-1">
+            <div>Name:</div>
+            <div>{appointment.customer.name}</div>
+            <div>Email:</div>
+            <div>{appointment.customer.email}</div>
+            <div>Phone:</div>
+            <div>{appointment.customer.phone}</div>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
+
 type TimezoneCellContext<TData extends RowData, TValue = unknown> = CellContext<
   TData,
   TValue
@@ -202,15 +233,9 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (app) => app.fields.name,
-    id: "fields.name",
+    cell: ({ row }) => <CustomerCell appointment={row.original} />,
+    id: "customer.name",
     header: tableSortHeader("Customer", "string"),
-    sortingFn: tableSortNoopFunction,
-  },
-  {
-    accessorFn: (app) => app.fields.email,
-    id: "fields.email",
-    header: tableSortHeader("Email", "string"),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -254,3 +279,5 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
 ];
+
+export const AppointmentsTableColumnsCount = columns.length;

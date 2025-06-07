@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { Check, ChevronsUpDown, X } from "lucide-react";
+import * as React from "react";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -145,7 +145,7 @@ const Items = React.memo(
 );
 Items.displayName = "Items";
 
-const ComboboxTrigger = React.forwardRef<
+export const ComboboxTrigger = React.forwardRef<
   HTMLButtonElement,
   ButtonProps & { allowClear?: boolean; onClear?: () => void; open?: boolean }
 >(({ onClear, allowClear, open, className, children, ...props }, ref) => (
@@ -157,7 +157,7 @@ const ComboboxTrigger = React.forwardRef<
       {...props}
       ref={ref}
       className={cn(
-        "justify-between flex-grow",
+        "justify-between flex-grow min-w-0",
         allowClear ? "rounded-r-none" : ""
       )}
     >
@@ -236,7 +236,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
           allowClear={"allowClear" in props && props.allowClear}
           onClear={() => onSelect(undefined)}
           open={open}
-          className={cn("[&>button]:max-w-full", className)}
+          className={className}
           {...rest}
         >
           {buttonLabel}

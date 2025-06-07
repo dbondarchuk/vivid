@@ -26,6 +26,7 @@ export type BuilderProps<T extends BaseZodDictionary> = {
   editorBlocks: EditorDocumentBlocksDictionary<T>;
   readerBlocks: ReaderDocumentBlocksDictionary<T>;
   rootBlock: TEditorBlock;
+  key?: string;
 };
 
 const BuilderInternal = ({
@@ -34,6 +35,7 @@ const BuilderInternal = ({
   onIsValidChange,
   readerBlocks,
   args,
+  key,
 }: Omit<BuilderProps<any>, "editorBlocks" | "rootBlock" | "schemas">) => {
   const resetDocument = useResetDocument();
   const errors = useEditorStateStore((s) => s.errors) || {};
@@ -43,7 +45,7 @@ const BuilderInternal = ({
     onIsValidChange?.(isValid);
   }, [isValid, onIsValidChange]);
 
-  useEffect(() => resetDocument(defaultValue, onChange), []);
+  useEffect(() => resetDocument(defaultValue, onChange), [key]);
 
   return (
     <SidebarProvider className="!bg-transparent h-full min-h-full">

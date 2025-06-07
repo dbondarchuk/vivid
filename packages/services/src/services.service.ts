@@ -13,7 +13,7 @@ import {
   ServiceFieldUpdateModel,
   WithTotal,
 } from "@vivid/types";
-import { buildSearchQuery } from "@vivid/utils";
+import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { CONFIGURATION_COLLECTION_NAME } from "./configuration.service";
@@ -62,7 +62,7 @@ export class ServicesService implements IServicesService {
     }
 
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<ServiceField>(
         { $regex },
         "name",
@@ -87,7 +87,7 @@ export class ServicesService implements IServicesService {
           ? [
               {
                 $lookup: {
-                  from: "addons",
+                  from: ADDONS_COLLECTION_NAME,
                   localField: "_id",
                   foreignField: "fields.id",
                   pipeline: [
@@ -103,7 +103,7 @@ export class ServicesService implements IServicesService {
               },
               {
                 $lookup: {
-                  from: "options",
+                  from: OPTIONS_COLLECTION_NAME,
                   localField: "_id",
                   foreignField: "fields.id",
                   pipeline: [
@@ -345,7 +345,7 @@ export class ServicesService implements IServicesService {
     const filter: Filter<AppointmentAddon> = {};
 
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<AppointmentAddon>(
         { $regex },
         "name",
@@ -370,7 +370,7 @@ export class ServicesService implements IServicesService {
           ? [
               {
                 $lookup: {
-                  from: "options",
+                  from: OPTIONS_COLLECTION_NAME,
                   localField: "_id",
                   foreignField: "addons.id",
                   pipeline: [
@@ -557,7 +557,7 @@ export class ServicesService implements IServicesService {
     const filter: Filter<AppointmentOption> = {};
 
     if (query.search) {
-      const $regex = new RegExp(query.search, "i");
+      const $regex = new RegExp(escapeRegex(query.search), "i");
       const queries = buildSearchQuery<AppointmentOption>(
         { $regex },
         "name",

@@ -32,6 +32,7 @@ export const SelectField: <T extends FieldValues>(
               field.onBlur();
             }}
             defaultValue={field.value}
+            disabled={field.disabled || props.disabled}
           >
             <FormControl>
               <SelectTrigger>

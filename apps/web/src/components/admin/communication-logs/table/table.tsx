@@ -3,15 +3,19 @@ import { searchParams, searchParamsCache } from "./search-params";
 import { DataTable } from "@vivid/ui";
 import { columns } from "./columns";
 
-export const CommunicationLogsTable: React.FC = async () => {
+export const CommunicationLogsTable: React.FC<{
+  customerId?: string;
+}> = async ({ customerId }) => {
   const page = searchParamsCache.get("page");
   const search = searchParamsCache.get("search") || undefined;
   const limit = searchParamsCache.get("limit");
   const direction = searchParamsCache.get("direction");
+  const participantType = searchParamsCache.get("participantType");
   const channel = searchParamsCache.get("channel");
   const start = searchParamsCache.get("start") || undefined;
   const end = searchParamsCache.get("end") || undefined;
   const sort = searchParamsCache.get("sort");
+  const customerIds = searchParamsCache.get("customer") || undefined;
 
   const offset = (page - 1) * limit;
 
@@ -20,10 +24,12 @@ export const CommunicationLogsTable: React.FC = async () => {
       range: { start, end },
       channel,
       direction,
+      participantType,
       offset,
       limit,
       search,
       sort,
+      customerId: customerId ?? customerIds,
     });
 
   return (

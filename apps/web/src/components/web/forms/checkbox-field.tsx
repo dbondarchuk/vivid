@@ -21,6 +21,7 @@ export const CheckboxField: <T extends FieldValues>(
             <Checkbox
               id={`field-${getFieldName(props)}`}
               checked={field.value}
+              disabled={field.disabled || props.disabled}
               onCheckedChange={(e) => {
                 field.onChange(e);
                 field.onBlur();

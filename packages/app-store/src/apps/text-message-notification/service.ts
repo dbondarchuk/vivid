@@ -9,6 +9,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
   ITextMessageResponder,
+  RespondResult,
   TextMessageReply,
 } from "@vivid/types";
 import { getArguments } from "@vivid/utils";
@@ -81,18 +82,17 @@ export class TextMessageNotificationConnectedApp
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
 
-    const { arg } = getArguments(
+    const args = getArguments({
       appointment,
-      config.booking,
-      config.general,
-      config.social,
-      true
-    );
+      config,
+      customer: appointment.customer,
+    });
+
     const body = `Hi ${config.general.name},
-${arg.fields?.name} has requested a new appointment for ${arg.option?.name} (${
-      arg.duration?.hours ? `${arg.duration.hours}hr ` : ""
-    }${arg.duration?.minutes ? `${arg.duration.minutes}min` : ""}) for ${
-      arg.dateTime
+${appointment.customer} has requested a new appointment for ${appointment.option.name} (${
+      args.duration?.hours ? `${args.duration.hours}hr ` : ""
+    }${args.duration?.minutes ? `${args.duration.minutes}min` : ""}) for ${
+      args.dateTime
     }.
 Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
 
@@ -107,11 +107,12 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
       phone,
       body,
       webhookData: {
-        data: appointment._id,
+        appointmentId: appointment._id,
         appId: appData._id,
       },
       appointmentId: appointment._id,
-      initiator: `Text Message Notification Service - New Appointment`,
+      participantType: "user",
+      handledBy: `Text Message Notification Service - New Appointment`,
     });
   }
 
@@ -134,12 +135,15 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
 
   public async respond(
     appData: ConnectedAppData,
-    data: string,
     reply: TextMessageReply
-  ): Promise<void> {
+  ): Promise<RespondResult> {
+    if (!reply?.data?.appointmentId) {
+      throw new Error(`Appointment Id is missing`);
+    }
+
     const appointment = await this.props.services
       .EventsService()
-      .getAppointment(data);
+      .getAppointment(reply.data.appointmentId);
 
     const { general: generalConfiguration, booking: bookingConfiguration } =
       await this.props.services
@@ -152,10 +156,14 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
         sender: generalConfiguration.name,
         body: `Unknown reply`,
         webhookData: reply.data,
-        initiator: "Text Message Reply - Auto reply",
+        participantType: "user",
+        handledBy: "Text Message Reply - Auto reply",
       });
 
-      return;
+      return {
+        participantType: "user",
+        handledBy: "Text Message Reply - Auto reply",
+      };
     }
 
     const replyMessage = reply.message.toLocaleLowerCase();
@@ -164,7 +172,7 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
       (replyMessage === "y" || replyMessage === "yes") &&
       appointment.status === "pending"
     ) {
-      await this.processReply(
+      return await this.processReply(
         appointment,
         "confirmed",
         reply,
@@ -175,7 +183,7 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
       (replyMessage === "n" || replyMessage === "no") &&
       appointment.status !== "declined"
     ) {
-      await this.processReply(
+      return await this.processReply(
         appointment,
         "declined",
         reply,
@@ -188,8 +196,14 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
         sender: generalConfiguration.name,
         body: `Unknown reply. Respond Y to confirm, N to decline`,
         webhookData: reply.data,
-        initiator: "Text Message Reply - Auto reply",
+        participantType: "user",
+        handledBy: "Text Message Reply - Auto reply",
       });
+
+      return {
+        participantType: "user",
+        handledBy: "Text Message Reply - Auto reply",
+      };
     }
   }
 
@@ -199,7 +213,7 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
     reply: TextMessageReply,
     generalConfiguration: GeneralConfiguration,
     bookingConfiguration: BookingConfiguration
-  ) {
+  ): Promise<RespondResult> {
     await this.props.services
       .EventsService()
       .changeAppointmentStatus(appointment._id, newStatus);
@@ -215,7 +229,13 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
 Appointment by ${appointment.fields.name} for ${appointment.option.name} on ${dateTime} was ${newStatus}.
 Thank you`,
       webhookData: reply.data,
-      initiator: "Text Message Reply - Auto reply",
+      participantType: "user",
+      handledBy: "Text Message Reply - Auto reply",
     });
+
+    return {
+      participantType: "user",
+      handledBy: "Text Message Reply - Auto reply",
+    };
   }
 }

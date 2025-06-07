@@ -51,8 +51,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { url } =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
+  // const { url } =
+  //   await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   const uploadedFile: UploadedFile = {
     ...assets[0],

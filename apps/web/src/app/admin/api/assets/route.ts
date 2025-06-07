@@ -1,17 +1,35 @@
+import { searchParams } from "@/components/admin/assets/table/search-params";
 import { ServicesContainer } from "@vivid/services";
 import { UploadedFile } from "@vivid/types";
+import { getAppointmentBucket, getCustomerBucket } from "@vivid/utils";
 import mimeType from "mime-type/with-db";
 import { NextRequest, NextResponse } from "next/server";
+import { createLoader } from "nuqs/server";
 import { v4 } from "uuid";
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const accept = searchParams.getAll("accept");
-  const search = searchParams.get("search");
+  const loader = createLoader(searchParams);
+  const params = loader(request.nextUrl.searchParams);
+
+  const page = params.page;
+  const search = params.search || undefined;
+  const limit = params.limit;
+  const sort = params.sort;
+
+  const customerIds = params.customer || undefined;
+  const appointmentIds = params.appointment || undefined;
+
+  const offset = (page - 1) * limit;
+  const accept = request.nextUrl.searchParams.getAll("accept");
 
   const response = await ServicesContainer.AssetsService().getAssets({
-    search: search || undefined,
+    search,
     accept,
+    limit,
+    sort,
+    offset,
+    customerId: customerIds,
+    appointmentId: appointmentIds,
   });
 
   const items = response.items.map(
@@ -22,14 +40,14 @@ export async function GET(request: NextRequest) {
       }) satisfies UploadedFile
   );
 
-  return NextResponse.json(items);
+  return NextResponse.json({ ...response, items });
 }
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
 
   const file = formData.get("file");
-  const bucket = formData.get("bucket") as string;
+  let bucket = formData.get("bucket") as string;
   if (!file || !(file instanceof File)) {
     return NextResponse.json(
       {
@@ -46,17 +64,28 @@ export async function POST(request: NextRequest) {
     fileType = fileType[0];
   }
 
+  const appointmentId = (formData.get("appointmentId") as string) ?? undefined;
+  const customerId = (formData.get("customerId") as string) ?? undefined;
+
+  if (appointmentId) {
+    bucket = getAppointmentBucket(appointmentId);
+  } else if (customerId) {
+    bucket = getCustomerBucket(customerId);
+  }
+
   const asset = await ServicesContainer.AssetsService().createAsset(
     {
       filename: `${bucket ? `${bucket}/` : ""}${v4()}-${file.name}`,
       mimeType: fileType,
-      description: formData.get("description") as string,
+      description: (formData.get("description") as string) ?? undefined,
+      appointmentId,
+      customerId,
     },
     file
   );
 
-  const { url } =
-    await ServicesContainer.ConfigurationService().getConfiguration("general");
+  // const { url } =
+  //   await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   const uploadedFile: UploadedFile = {
     ...asset,

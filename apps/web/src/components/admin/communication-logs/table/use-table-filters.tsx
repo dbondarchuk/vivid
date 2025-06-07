@@ -3,6 +3,7 @@
 import {
   CommunicationChannelTexts,
   CommunicationDirectionTexts,
+  CommunicationParticipantTypeTexts,
 } from "@/constants/labels";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
@@ -21,6 +22,13 @@ export const CHANNEL_OPTIONS = Object.entries(CommunicationChannelTexts).map(
     label: value,
   })
 );
+
+export const PARTICIPANT_TYPE_OPTIONS = Object.entries(
+  CommunicationParticipantTypeTexts
+).map(([name, value]) => ({
+  value: name,
+  label: value,
+}));
 
 export function useCommunicationLogsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
@@ -44,6 +52,18 @@ export function useCommunicationLogsTableFilters() {
       .withDefault(searchParams.channel.defaultValue)
   );
 
+  const [participantTypeFilter, setParticipantTypeFilter] = useQueryState(
+    "participantType",
+    searchParams.participantType
+      .withOptions({ shallow: false })
+      .withDefault(searchParams.participantType.defaultValue)
+  );
+
+  const [customerFilter, setCustomerFilter] = useQueryState(
+    "customer",
+    searchParams.customer.withOptions({ shallow: false })
+  );
+
   const [page, setPage] = useQueryState("page", searchParams.page);
 
   const [start, setStartValue] = useQueryState(
@@ -60,17 +80,21 @@ export function useCommunicationLogsTableFilters() {
     setSearchQuery(null);
     setDirectionFilter(null);
     setChannelFilter(null);
+    setParticipantTypeFilter(null);
     setStartValue(null);
     setEndValue(null);
+    setCustomerFilter(null);
 
     setPage(1);
   }, [
     setSearchQuery,
     setDirectionFilter,
     setChannelFilter,
+    setParticipantTypeFilter,
     setPage,
     setStartValue,
     setEndValue,
+    setCustomerFilter,
   ]);
 
   const isAnyFilterActive = useMemo(() => {
@@ -78,6 +102,7 @@ export function useCommunicationLogsTableFilters() {
       !!searchQuery ||
       directionFilter !== searchParams.direction.defaultValue ||
       channelFilter !== searchParams.channel.defaultValue ||
+      participantTypeFilter !== searchParams.participantType.defaultValue ||
       !!start ||
       !!end
     );
@@ -94,9 +119,13 @@ export function useCommunicationLogsTableFilters() {
     setDirectionFilter,
     channelFilter,
     setChannelFilter,
+    participantTypeFilter,
+    setParticipantTypeFilter,
     start,
     setStartValue,
     end,
     setEndValue,
+    customerFilter,
+    setCustomerFilter,
   };
 }

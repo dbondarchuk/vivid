@@ -1,12 +1,12 @@
-import { Asset } from "@vivid/types";
+import { AssetEntity } from "@vivid/types";
 import { mimeTypeToExtension } from "@vivid/utils";
-import { CirclePlay, FileIcon, Play } from "lucide-react";
+import { FileIcon, Play } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { DefaultExtensionType, defaultStyles } from "react-file-icon";
-import { Dialog, DialogContent, DialogTrigger } from "./dialog";
 import { cn } from "../utils";
-import { cva } from "class-variance-authority";
+import { Dialog, DialogContent, DialogTrigger } from "./dialog";
+import { Link } from "./link";
 
 export const AssetPreviewSizes = {
   sm: {
@@ -45,7 +45,7 @@ export const AssetPreviewSizes = {
 };
 
 export type AssetPreviewProps = {
-  asset: Asset;
+  asset: AssetEntity;
   size?: keyof typeof AssetPreviewSizes;
   className?: string;
 };
@@ -114,7 +114,12 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
         </Dialog>
       ) : (
         <div className="rounded-sm border-dashed border p-2 flex flex-col gap-1 items-center">
-          <div className={cn("flex self-center", className)}>
+          <Link
+            className={cn("flex self-center", className)}
+            variant="ghost"
+            target="_blank"
+            href={`/assets/${asset.filename}`}
+          >
             <FileIcon
               size={AssetPreviewSizes[size].file}
               extension={asset.filename.substring(
@@ -124,7 +129,7 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
                 mimeTypeToExtension(asset.mimeType) as DefaultExtensionType
               ]}
             />
-          </div>
+          </Link>
           <span className="text-muted-foreground">{asset.mimeType}</span>
         </div>
       )}

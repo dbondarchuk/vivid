@@ -14,6 +14,7 @@ import {
 } from "@vivid/ui";
 import { CalendarClock } from "lucide-react";
 import { Suspense } from "react";
+import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -32,11 +33,11 @@ export default async function AppointmentsPage(props: Params) {
 
   return (
     <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <div className="flex flex-col gap-2 justify-between">
             <Breadcrumbs items={breadcrumbItems} />
-            <div className="flex items-start justify-between">
+            <div className="flex items-center justify-between">
               <Heading title="Appointments" />
 
               <Link
@@ -50,12 +51,17 @@ export default async function AppointmentsPage(props: Params) {
               </Link>
             </div>
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
-        <AppointmentsTableAction />
+        <AppointmentsTableAction showCustomerFilter />
         <Suspense
           key={key}
-          fallback={<DataTableSkeleton columnCount={8} rowCount={10} />}
+          fallback={
+            <DataTableSkeleton
+              columnCount={AppointmentsTableColumnsCount}
+              rowCount={10}
+            />
+          }
         >
           <AppointmentsTable />
         </Suspense>

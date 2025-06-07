@@ -1,7 +1,9 @@
 export { useTheme } from "next-themes";
+export * from "./use-arguments";
 export * from "./use-attribute-observer";
 export * from "./use-auto-resize-textarea";
 export * from "./use-debounce";
+export * from "./use-demo-arguments";
 export * from "./use-did-update-effect";
 export * from "./use-effect-debugger";
 export * from "./use-is-touch-device";

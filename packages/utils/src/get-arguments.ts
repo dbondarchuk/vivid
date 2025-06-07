@@ -1,6 +1,7 @@
 import {
   Appointment,
   BookingConfiguration,
+  Customer,
   GeneralConfiguration,
   SocialConfiguration,
   socialType,
@@ -9,22 +10,34 @@ import {
 import { DateTime } from "luxon";
 import { durationToTime } from "./time";
 
-export const getArguments = (
-  appointment: Appointment | undefined | null,
-  bookingConfiguration: BookingConfiguration,
-  generalConfiguration: GeneralConfiguration,
-  socialConfiguration: SocialConfiguration,
-  useAppointmentTimezone = false
-) => {
-  const { name, email, ...restFields } = appointment?.fields || {};
-  const arg = {
+type Props = {
+  appointment?: Appointment | null;
+  customer?: Customer | null;
+  config: {
+    booking: BookingConfiguration;
+    general: GeneralConfiguration;
+    social: SocialConfiguration;
+  };
+  useAppointmentTimezone?: boolean;
+  additionalProperties?: Record<string | number, any>;
+};
+
+export const getArguments = ({
+  appointment,
+  customer,
+  config,
+  useAppointmentTimezone = false,
+  additionalProperties = {},
+}: Props) => {
+  const { name, email, phone, ...restFields } = appointment?.fields || {};
+  const args = {
     ...(appointment || {}),
     dateTime: appointment
       ? DateTime.fromJSDate(appointment.dateTime)
           .setZone(
             useAppointmentTimezone
               ? appointment.timeZone
-              : bookingConfiguration.timeZone
+              : config.booking?.timeZone
           )
           .toLocaleString(DateTime.DATETIME_FULL)
       : undefined,
@@ -48,10 +61,11 @@ export const getArguments = (
       ? durationToTime(appointment.totalDuration)
       : undefined,
     config: {
-      ...generalConfiguration,
+      ...config.general,
     },
+    customer,
     socials:
-      socialConfiguration?.links?.map((link) =>
+      config.social?.links?.map((link) =>
         Object.keys(socialType.Values).reduce(
           (acc, cur) => ({
             ...acc,
@@ -60,12 +74,8 @@ export const getArguments = (
           { ...link }
         )
       ) || [],
+    ...(additionalProperties || {}),
   };
 
-  return {
-    bookingConfiguration,
-    generalConfiguration,
-    socialConfiguration,
-    arg,
-  };
+  return args;
 };

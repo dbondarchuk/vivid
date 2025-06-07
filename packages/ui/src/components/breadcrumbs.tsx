@@ -2,10 +2,17 @@
 
 import React from "react";
 
-export type BreadcrumbItemProps = {
+export type BreadcrumbItemProp = {
   title: string;
   link: string;
 };
+
+export type BreadcrumbItemProps =
+  | BreadcrumbItemProp
+  | {
+      subItems: BreadcrumbItemProp[];
+      title: string;
+    };
 
 export type BreadcrumbsContextProps = {
   breadcrumbs?: BreadcrumbItemProps[];

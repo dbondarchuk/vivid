@@ -1,8 +1,7 @@
 "use client";
 
 import { UploadedFile } from "@vivid/types";
-import React, { InputHTMLAttributes } from "react";
-import { ControllerRenderProps } from "react-hook-form";
+import React from "react";
 import { AssetSelectorDialog } from "./assets-selector-dialog";
 import { Button } from "./button";
 import { Input } from "./input";

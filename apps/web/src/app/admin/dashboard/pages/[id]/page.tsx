@@ -25,10 +25,10 @@ export default async function EditPagesPage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <Heading title="Edit page" description={`/${page.slug}`} />
 
             <Link
@@ -40,7 +40,7 @@ export default async function EditPagesPage(props: Props) {
               <Globe className="mr-2 h-4 w-4" /> View page
             </Link>
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <PageForm initialData={page} />
       </div>

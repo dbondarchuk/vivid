@@ -27,12 +27,12 @@ export default async function EditFieldPage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title={field.data.label} description="Edit custom field" />
 
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <ServiceFieldForm initialData={field} />
       </div>

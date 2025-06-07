@@ -17,19 +17,18 @@ export const TemplateFormPage: React.FC<
       id: string;
     }
 > = async (props) => {
-  const { booking, general, social } =
+  const config =
     await ServicesContainer.ConfigurationService().getConfigurations(
       "booking",
       "general",
       "social"
     );
 
-  const { arg: demoArguments } = getArguments(
-    demoAppointment,
-    booking,
-    general,
-    social
-  );
+  const demoArguments = getArguments({
+    appointment: demoAppointment,
+    config,
+    customer: demoAppointment.customer,
+  });
 
   let initialData: Template | undefined;
   let type: CommunicationChannel;

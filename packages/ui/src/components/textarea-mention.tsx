@@ -456,7 +456,7 @@ export const TextareaMentions = React.forwardRef<
         <Command
           ref={dropdownRef}
           className={cn(
-            "absolute hidden h-auto max-w-min border border-popover shadow z-[1]"
+            "absolute hidden h-auto max-w-min border border-popover shadow z-[46]"
           )}
         >
           <div className="hidden">

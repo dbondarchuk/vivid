@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Asset } from "@vivid/types";
+import { AssetEntity } from "@vivid/types";
 import { Button, DndFileInput, Form, Spinner, toastPromise } from "@vivid/ui";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import { addAppointmentFiles } from "./actions";
 
 export type AppointmentAddFileProps = {
   appointmentId: string;
-  onSuccess: (assets: Asset[]) => void;
+  onSuccess: (assets: AssetEntity[]) => void;
 };
 
 const formSchema = z.object({

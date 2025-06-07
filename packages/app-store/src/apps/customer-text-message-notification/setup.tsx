@@ -115,38 +115,6 @@ export const CustomerTextMessageNotificationAppSetup: React.FC<
               type={"rescheduled"}
               whenText="the appointment was rescheduled"
             />
-            <FormField
-              control={form.control}
-              name="autoReply"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Auto reply
-                    <InfoTooltip>
-                      <p>
-                        Can be used for notifying the user that they should not
-                        reply to text message
-                      </p>
-                      <p>Optional</p>
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    {isDataLoading ? (
-                      <Skeleton className="w-full h-10" />
-                    ) : (
-                      <TemplateSelector
-                        type="text-message"
-                        disabled={isLoading}
-                        value={field.value}
-                        onItemSelect={(value) => field.onChange(value)}
-                        allowClear
-                      />
-                    )}
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <SaveButton
               form={form}
               disabled={isLoading}

@@ -2,6 +2,7 @@ import { NavItemGroup, NavItemWithOptionalChildren } from "@vivid/types";
 import {
   ArrowDownToLine,
   Blocks,
+  BookUser,
   Boxes,
   Brush,
   Calendar,
@@ -91,6 +92,18 @@ export const navItems: NavItemGroup[] = [
             icon: <HandPlatter />,
           },
         ],
+      },
+    ],
+  },
+  {
+    title: "Customers",
+    children: [
+      {
+        id: "customers",
+        title: "Customers",
+        href: "/admin/dashboard/customers",
+        icon: <BookUser />,
+        label: "Customers",
       },
     ],
   },

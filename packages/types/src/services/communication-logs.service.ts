@@ -2,17 +2,22 @@ import {
   CommunicationChannel,
   CommunicationDirection,
   CommunicationLog,
+  CommunicationLogEntity,
+  CommunicationParticipantType,
 } from "../communication";
 import { Query, WithTotal } from "../database";
 import { DateRange } from "../general";
 
 export interface ICommunicationLogsService {
-  log(log: Omit<CommunicationLog, "dateTime" | "_id">): Promise<void>;
+  log(log: Omit<CommunicationLogEntity, "dateTime" | "_id">): Promise<void>;
   getCommunicationLogs(
     query: Query & {
-      direction: CommunicationDirection[];
-      channel: CommunicationChannel[];
+      direction?: CommunicationDirection[];
+      channel?: CommunicationChannel[];
+      participantType?: CommunicationParticipantType[];
       range?: DateRange;
+      customerId?: string | string[];
+      appointmentId?: string;
     }
   ): Promise<WithTotal<CommunicationLog>>;
   clearAllLogs(): Promise<void>;

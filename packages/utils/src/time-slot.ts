@@ -9,7 +9,7 @@ import {
   TimeSlotsFinderError,
 } from "@vivid/types";
 
-type DateTimePeriod = {
+export type DateTimePeriod = {
   startAt: Luxon;
   endAt: Luxon;
 };

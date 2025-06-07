@@ -8,11 +8,14 @@ import {
   IConnectedAppWithWebhook,
   ITextMessageResponder,
   ITextMessageSender,
+  RespondResult,
   TextMessage,
+  TextMessageReply,
   TextMessageResponse,
 } from "@vivid/types";
-import { maskify } from "@vivid/utils";
+import { getArguments, maskify, template } from "@vivid/utils";
 import crypto from "crypto";
+import ownerTextMessageReplyTemplate from "./emails/owner-text-message-reply.html";
 import { TextBeltConfiguration } from "./models";
 
 const scrambleKey = (key: string) => {
@@ -93,7 +96,7 @@ export default class TextBeltConnectedApp
       sender: message.sender,
       replyWebhookUrl: `${url}/api/apps/${app._id}/webhook`,
       webhookData: message.data
-        ? `${message.data.appId}|${message.data.data}`
+        ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
         : undefined,
     };
 
@@ -169,36 +172,36 @@ export default class TextBeltConnectedApp
       )} with data ${reply.data}`
     );
 
-    const [appId, data] = (reply?.data || "").split("|", 2);
+    const parts = (reply?.data || "").split("|", 4);
 
-    const appointment = data
-      ? await this.props.services.EventsService().getAppointment(data)
-      : undefined;
+    const appId = parts[0] || undefined;
+    const appointmentId = parts[1] || undefined;
+    const customerId = parts[2] || undefined;
+    const data = parts[3] || undefined;
 
-    await this.props.services.CommunicationLogService().log({
-      channel: "text-message",
-      direction: "inbound",
-      initiator: reply.fromNumber,
-      receiver: "TextBelt Webhook",
-      text: reply.text,
-      data: reply.textId,
-      appointmentId: appointment?._id,
-    });
+    const appointment = appointmentId
+      ? await this.props.services.EventsService().getAppointment(appointmentId)
+      : null;
 
-    if (appId && appId.length) {
-      const { app, service } = await this.props.services
-        .ConnectedAppService()
-        .getAppService<ITextMessageResponder>(appId);
+    const customer = customerId
+      ? await this.props.services.CustomersService().getCustomer(customerId)
+      : (appointment?.customer ?? null);
 
-      service?.respond?.(app, data, {
-        from: reply.fromNumber,
-        message: reply.text,
-        data: {
-          appId,
-          data,
-        },
-      });
-    }
+    const replyData: TextMessageReply = {
+      from: reply.fromNumber,
+      message: reply.text,
+      data: {
+        appId,
+        data,
+        appointmentId,
+        customerId,
+      },
+      appointment,
+      customer,
+      messageId: reply.textId,
+    };
+
+    await this.respond(appData, replyData);
 
     return Response.json({ success: true }, { status: 201 });
   }
@@ -207,10 +210,19 @@ export default class TextBeltConnectedApp
     appData: ConnectedAppData,
     data: TextBeltConfiguration
   ): Promise<ConnectedAppStatusWithText> {
-    let success = false;
-    let error: string | undefined = undefined;
-
     try {
+      if (data.textMessageResponderAppId) {
+        const { app, service } = await this.props.services
+          .ConnectedAppService()
+          .getAppService<ITextMessageResponder>(data.textMessageResponderAppId);
+
+        if (!app || !service || !service.respond) {
+          throw new Error(
+            `Provided app does not exist or does not support responding to text messages`
+          );
+        }
+      }
+
       const response = await fetch(`https://textbelt.com/quota/${data.apiKey}`);
       if (response.status >= 400) {
         throw new Error(`Failed to fetch url. Status code: ${response.status}`);
@@ -246,6 +258,99 @@ export default class TextBeltConnectedApp
       });
 
       return status;
+    }
+  }
+
+  private async respond(
+    appData: ConnectedAppData<TextBeltConfiguration>,
+    textMessageReply: TextMessageReply
+  ): Promise<void> {
+    const bodyTemplate = ownerTextMessageReplyTemplate;
+
+    const config = await this.props.services
+      .ConfigurationService()
+      .getConfigurations("booking", "general", "social");
+
+    const { appointment, customer, ...reply } = textMessageReply;
+
+    const args = getArguments({
+      appointment,
+      config,
+      customer,
+      useAppointmentTimezone: true,
+      additionalProperties: {
+        reply,
+      },
+    });
+
+    const description = template(bodyTemplate, args);
+
+    console.log(`Sending email to owner about incoming message.`);
+    await this.props.services.NotificationService().sendEmail({
+      email: {
+        to: config.general.email,
+        subject: "SMS reply",
+        body: description,
+      },
+      handledBy: "TextBelt Webkook - notify owner",
+      participantType: "user",
+      appointmentId: appointment?._id,
+      customerId: customer?._id,
+    });
+
+    let result: RespondResult | null | undefined;
+    try {
+      try {
+        if (reply.data.appId && reply.data.appId.length) {
+          const { app, service } = await this.props.services
+            .ConnectedAppService()
+            .getAppService<ITextMessageResponder>(reply.data.appId);
+
+          if (!!service?.respond) {
+            console.log(`Incoming message will be processed by ${app?.name}`);
+          }
+
+          result = await service?.respond?.(app, textMessageReply);
+        }
+      } finally {
+        if (!result) {
+          console.log(
+            `No service has processed the incoming text message. Will try to use responder app`
+          );
+          if (appData.data?.textMessageResponderAppId) {
+            const { app, service } = await this.props.services
+              .ConnectedAppService()
+              .getAppService<ITextMessageResponder>(
+                appData.data.textMessageResponderAppId
+              );
+
+            result = await service.respond(app, textMessageReply);
+          }
+        }
+      }
+    } finally {
+      if (!result) {
+        console.log(
+          `No responder app was registered with TextBelt Webhook app or it was not processed.`
+        );
+
+        result = {
+          handledBy: "TextBelt Webkook",
+          participantType: "customer",
+        };
+      }
+
+      await this.props.services.CommunicationLogService().log({
+        channel: "text-message",
+        direction: "inbound",
+        participant: reply.from,
+        participantType: result?.participantType,
+        handledBy: result.handledBy,
+        text: reply.message,
+        data: reply.data,
+        appointmentId: appointment?._id,
+        customerId: customer?._id,
+      });
     }
   }
 }

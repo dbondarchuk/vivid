@@ -17,13 +17,13 @@ export default async function AppointmentPage(props: Props) {
     <PageContainer scrollable={true}>
       <Suspense
         fallback={
-          <div className="flex flex-1 flex-col gap-8">
+          <div className="flex flex-1 flex-col gap-4">
             <div className="flex flex-col gap-4 justify-between">
               <div className="flex flex-col gap-2">
                 <Skeleton className="w-full max-w-80 h-9" />
                 <Skeleton className="w-full max-w-80 h-5" />
               </div>
-              <Separator />
+              {/* <Separator /> */}
             </div>
             <Skeleton className="w-full max-h-svh h-full min-h-96" />
           </div>

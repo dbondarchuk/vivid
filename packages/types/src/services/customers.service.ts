@@ -1,0 +1,33 @@
+import {
+  Customer,
+  CustomerListModel,
+  CustomerSearchField,
+  CustomerUpdateModel,
+} from "../customers";
+import { Query, WithTotal } from "../database";
+
+export interface ICustomersService {
+  getCustomer(id: string): Promise<Customer | null>;
+  getCustomers(
+    query: Query & { priorityIds?: string[] }
+  ): Promise<WithTotal<CustomerListModel>>;
+
+  findCustomer(
+    field: CustomerSearchField,
+    search: string
+  ): Promise<Customer | null>;
+
+  createCustomer(customer: CustomerUpdateModel): Promise<string>;
+  updateCustomer(id: string, update: CustomerUpdateModel): Promise<void>;
+
+  deleteCustomer(id: string): Promise<Customer | null>;
+  deleteCustomers(ids: string[]): Promise<void>;
+
+  mergeCustomers(targetId: string, ids: string[]): Promise<void>;
+
+  checkUniqueEmailAndPhone(
+    emails: string[],
+    phones: string[],
+    id?: string
+  ): Promise<{ email: boolean; phone: boolean }>;
+}

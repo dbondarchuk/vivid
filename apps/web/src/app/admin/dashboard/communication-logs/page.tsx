@@ -1,4 +1,5 @@
 import { ClearAllCommunicationLogsButton } from "@/components/admin/communication-logs/table/clear-all";
+import { CommunicationLogsTableColumnsCount } from "@/components/admin/communication-logs/table/columns";
 import {
   searchParamsCache,
   serialize,
@@ -26,11 +27,11 @@ export default async function CommunicationLogsPage(props: Params) {
 
   return (
     <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <div className="flex flex-col gap-2 justify-between">
             <Breadcrumbs items={breadcrumbItems} />
-            <div className="flex items-start justify-between">
+            <div className="flex items-center justify-between">
               <Heading
                 title="Communication Logs"
                 description="Monitor all sent and received messages"
@@ -39,12 +40,21 @@ export default async function CommunicationLogsPage(props: Params) {
               <ClearAllCommunicationLogsButton />
             </div>
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
-        <CommunicationLogsTableAction />
+        <CommunicationLogsTableAction
+          allowClearAll
+          showCustomerFilter
+          showParticipantTypeFilter
+        />
         <Suspense
           key={key}
-          fallback={<DataTableSkeleton columnCount={10} rowCount={10} />}
+          fallback={
+            <DataTableSkeleton
+              columnCount={CommunicationLogsTableColumnsCount}
+              rowCount={10}
+            />
+          }
         >
           <CommunicationLogsTable />
         </Suspense>

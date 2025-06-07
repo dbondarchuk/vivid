@@ -1,3 +1,4 @@
+import { AssetsMigrateRequest } from "@vivid/types";
 import {
   AppSelector,
   Button,
@@ -30,7 +31,7 @@ export const MigrateAssetsDialog: React.FC<{
   }>();
 
   const onClick = async () => {
-    if (appId === newAppId) return;
+    if (appId === newAppId || !newAppId) return;
 
     setIsLoading(true);
     setProgress(undefined);
@@ -41,7 +42,7 @@ export const MigrateAssetsDialog: React.FC<{
         body: JSON.stringify({
           fromAppId: newAppId,
           toAppId: appId,
-        }),
+        } satisfies AssetsMigrateRequest),
       });
 
       const reader = response.body?.getReader();

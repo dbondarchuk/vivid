@@ -1,4 +1,4 @@
-import { Asset } from "../assets";
+import { AssetEntity } from "../assets";
 import {
   Appointment,
   AppointmentEvent,
@@ -30,6 +30,7 @@ export interface IEventsService {
     query: Query & {
       range?: DateRange;
       status?: AppointmentStatus[];
+      customerId?: string | string[];
     }
   ): Promise<WithTotal<Appointment>>;
   getEvents(
@@ -43,9 +44,7 @@ export interface IEventsService {
     newStatus: AppointmentStatus
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
-  addAppointmentFiles(id: string, files: File[]): Promise<Asset[]>;
-  addAppointmentAsset(id: string, assetId: string): Promise<void>;
-  removeAppointmentFiles(id: string, filesIds: string[]): Promise<void>;
+  addAppointmentFiles(id: string, files: File[]): Promise<AssetEntity[]>;
   rescheduleAppointment(
     id: string,
     newTime: Date,

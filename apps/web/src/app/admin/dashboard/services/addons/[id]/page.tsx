@@ -27,12 +27,12 @@ export default async function EditAddonPage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading title={addon.name} description="Edit addon" />
 
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <AddonForm initialData={addon} />
       </div>

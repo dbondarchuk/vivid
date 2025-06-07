@@ -19,7 +19,7 @@ export const NameField: <T extends FieldValues>(
           required={props.required}
         />
         <FormControl>
-          <Input {...field} />
+          <Input {...field} disabled={field.disabled || props.disabled} />
         </FormControl>
         <FormFieldDescription description={props.data?.description} />
         <FormFieldErrorMessage />

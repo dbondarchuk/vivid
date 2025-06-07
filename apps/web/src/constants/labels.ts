@@ -1,6 +1,7 @@
 import {
   CommunicationChannel,
   CommunicationDirection,
+  CommunicationParticipantType,
   FieldType,
 } from "@vivid/types";
 
@@ -15,6 +16,14 @@ export const CommunicationDirectionTexts: Record<
 > = {
   inbound: "Inbound",
   outbound: "Outbound",
+};
+
+export const CommunicationParticipantTypeTexts: Record<
+  CommunicationParticipantType,
+  string
+> = {
+  user: "User",
+  customer: "Customer",
 };
 
 export const FieldTypeLabels: Record<FieldType, string> = {

@@ -12,6 +12,8 @@ import {
   AppointmentChoice,
   AppointmentEvent,
   asOptionalField,
+  Customer,
+  CustomerListModel,
   Event,
   Field,
   getFields,
@@ -21,6 +23,7 @@ import {
   Button,
   Checkbox,
   Combobox,
+  CustomerSelector,
   DateTimePicker,
   DurationInput,
   Form,
@@ -46,7 +49,7 @@ import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm, useFormState } from "react-hook-form";
+import { useForm, useFormState, Field as UseFormField } from "react-hook-form";
 import { z } from "zod";
 import { createAppointment } from "./actions";
 
@@ -55,6 +58,7 @@ export type AppointmentScheduleFormProps = {
   knownFields: (Field<WithLabelFieldData> & { _id: string })[];
   timeZone: string;
   from?: Appointment | null;
+  customer?: Customer | null;
 };
 
 const getSelectedFields = (
@@ -90,7 +94,7 @@ const getSelectedFields = (
 
 export const AppointmentScheduleForm: React.FC<
   AppointmentScheduleFormProps
-> = ({ options, timeZone, knownFields, from }) => {
+> = ({ options, timeZone, knownFields, from, customer: propsCustomer }) => {
   const now = React.useMemo(
     () => DateTime.now().set({ second: 0 }).toJSDate(),
     []
@@ -119,13 +123,15 @@ export const AppointmentScheduleForm: React.FC<
         .optional(),
       fields: z
         .object({
-          name: z.string().min(1, "Name is required"),
-          email: z.string().email("Must be a valid email"),
+          name: z.string().min(1, "Name is required").trim(),
+          email: z.string().email("Must be a valid email").trim(),
+          phone: z.string().email("Must be a valid email").trim(),
         })
         .and(z.record(z.string(), z.any().optional())),
 
       note: z.string().optional(),
       confirmed: z.coerce.boolean().optional(),
+      customerId: z.string().optional(),
     })
     .superRefine((args, ctx) => {
       const option = options.find((x) => x._id === args.option);
@@ -170,9 +176,11 @@ export const AppointmentScheduleForm: React.FC<
       totalPrice: from?.totalPrice || undefined,
       addons: from?.addons?.map(({ _id }) => ({ id: _id })) || [],
       fields: from?.fields || {
-        name: "",
-        email: "",
+        name: propsCustomer?.name ?? "",
+        email: propsCustomer?.email ?? "",
+        phone: propsCustomer?.phone ?? "",
       },
+      customerId: from?.customerId ?? propsCustomer?._id,
       option: from?.option?._id || options[0]._id,
       confirmed: true,
     },
@@ -181,6 +189,13 @@ export const AppointmentScheduleForm: React.FC<
   const [loading, setLoading] = React.useState(false);
   const [confirmOverlap, setConfirmOverlap] = React.useState(false);
   const [calendarEvents, setCalendarEvents] = React.useState<Event[]>([]);
+  const customerId = form.watch("customerId");
+  const [customer, setCustomer] = React.useState<
+    CustomerListModel | undefined
+  >();
+  const [disabledFields, setDisabledFields] = React.useState<Set<String>>(
+    new Set()
+  );
 
   const router = useRouter();
 
@@ -249,6 +264,7 @@ export const AppointmentScheduleForm: React.FC<
           {
             name: data.fields.name,
             email: data.fields.email,
+            phone: data.fields.phone,
           }
         );
 
@@ -305,7 +321,7 @@ export const AppointmentScheduleForm: React.FC<
     setConfirmOverlap(false);
   }, [dateTime, duration, setConfirmOverlap]);
 
-  const { name, email } = fields;
+  const { name, email, phone } = fields;
 
   const selectedFields = React.useMemo(
     () => getSelectedFields(selectedOption, selectedAddons, knownFields),
@@ -327,7 +343,7 @@ export const AppointmentScheduleForm: React.FC<
       dateTime,
       totalDuration: duration,
       totalPrice: price,
-      fields: { name, email },
+      fields: { name, email, phone },
       option: {
         ...selectedOption,
         fields: undefined,
@@ -344,6 +360,17 @@ export const AppointmentScheduleForm: React.FC<
       timeZone,
       addons: selectedAddonIds,
       createdAt: now,
+      customerId: from?.customerId ?? "unknown",
+      customer: customer ??
+        from?.customer ?? {
+          _id: "unknown",
+          name,
+          email,
+          phone,
+          knownEmails: [],
+          knownNames: [],
+          knownPhones: [],
+        },
     } as Appointment;
   }, [
     dateTime,
@@ -385,6 +412,24 @@ export const AppointmentScheduleForm: React.FC<
 
     form.trigger("totalDuration");
   }, [selectedOption, selectedAddons]);
+
+  React.useEffect(() => {
+    setDisabledFields((prev) => {
+      ["name", "email", "phone"].forEach((field) =>
+        customerId ? prev.add(field) : prev.delete(field)
+      );
+      return prev;
+    });
+  }, [customerId, setDisabledFields]);
+
+  const onCustomerChange = (c?: CustomerListModel) => {
+    setCustomer(c);
+    if (!!c) {
+      form.setValue("fields.name", c.name);
+      form.setValue("fields.email", c.email);
+      form.setValue("fields.phone", c.phone);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -497,12 +542,32 @@ export const AppointmentScheduleForm: React.FC<
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="customerId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Customer</FormLabel>
+                    <FormControl>
+                      <CustomerSelector
+                        onItemSelect={field.onChange}
+                        value={field.value}
+                        disabled={loading || !!from?.customerId}
+                        onValueChange={onCustomerChange}
+                        allowClear
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {selectedFields.map((field) => (
                 <React.Fragment key={field.name}>
                   {fieldsComponentMap("fields")[field.type](
                     field,
                     // @ts-expect-error ignore typecheck for form.control
-                    form.control
+                    form.control,
+                    loading || disabledFields.has(field.name)
                   )}
                 </React.Fragment>
               ))}

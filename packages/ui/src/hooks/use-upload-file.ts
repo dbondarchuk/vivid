@@ -7,19 +7,22 @@ import { z } from "zod";
 export type UseUploadFileProps = {
   onUploadComplete?: (file: UploadedFile) => void;
   onUploadError?: (error: unknown) => void;
-} & ({ description?: string; bucket?: string } | { appointmentId: string });
+  description?: string;
+} & ({ bucket?: string } | { appointmentId: string } | { customerId: string });
 
 const uploadFilesWithProgress = ({
   file,
   description,
   bucket,
   appointmentId,
+  customerId,
   onProgress,
 }: {
   file: File;
   description?: string;
   bucket?: string;
   appointmentId?: string;
+  customerId?: string;
   onProgress: (progress: number) => void;
 }): Promise<{
   status: number;
@@ -46,12 +49,10 @@ const uploadFilesWithProgress = ({
 
     const formData = new FormData();
     formData.append("file", file);
-    if (!appointmentId) {
-      if (bucket) formData.append("bucket", "bucket");
-      if (description) formData.append("description", description);
-    } else {
-      formData.append("appointmentId", appointmentId);
-    }
+    if (bucket) formData.append("bucket", bucket);
+    if (description) formData.append("description", description);
+    if (appointmentId) formData.append("appointmentId", appointmentId);
+    if (customerId) formData.append("customerId", customerId);
 
     xhr.send(formData);
   });

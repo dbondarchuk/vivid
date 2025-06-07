@@ -2,7 +2,6 @@
 
 import { ServicesContainer } from "@vivid/services";
 import { AppScope, ConnectedAppStatusWithText } from "@vivid/types";
-import { demoAppointment, getArguments } from "@vivid/utils";
 
 export const addNewApp = async (type: string) => {
   return await ServicesContainer.ConnectedAppService().createNewApp(type);
@@ -47,22 +46,4 @@ export const getAppData = async (appId: string) => {
 
 export const getApps = async (...scope: AppScope[]) => {
   return await ServicesContainer.ConnectedAppService().getAppsByScope(...scope);
-};
-
-export const getDemoArguments = async () => {
-  const { booking, general, social } =
-    await ServicesContainer.ConfigurationService().getConfigurations(
-      "booking",
-      "general",
-      "social"
-    );
-
-  const { arg: demoArguments } = getArguments(
-    demoAppointment,
-    booking,
-    general,
-    social
-  );
-
-  return demoArguments;
 };

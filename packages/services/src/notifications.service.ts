@@ -1,12 +1,12 @@
 import {
-  Email,
+  EmailNotificationRequest,
   ICommunicationLogsService,
   IConfigurationService,
   IConnectedAppsService,
   IMailSender,
   INotificationService,
   ITextMessageSender,
-  TextMessageData,
+  TextMessageNotificationRequest,
   TextMessageResponse,
 } from "@vivid/types";
 import { maskify } from "@vivid/utils";
@@ -21,13 +21,11 @@ export class NotificationService implements INotificationService {
 
   public async sendEmail({
     email,
-    initiator,
+    handledBy,
+    participantType,
     appointmentId,
-  }: {
-    email: Email;
-    initiator: string;
-    appointmentId?: string;
-  }): Promise<void> {
+    customerId,
+  }: EmailNotificationRequest): Promise<void> {
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
 
@@ -36,36 +34,46 @@ export class NotificationService implements INotificationService {
     const { app, service } =
       await this.connectedAppService.getAppService<IMailSender>(emailAppId);
 
-    const response = await service.sendMail(app, email);
+    console.log(
+      `Sending email using app ${app.name} (ID: ${emailAppId}) to ${(Array.isArray(email.to) ? email.to : [email.to]).map((to) => maskify(to)).join("; ")} with subject ${maskify(email.subject)}.${appointmentId ? ` Appointment ID: ${appointmentId}` : ""}.${customerId ? ` Customer ID: ${customerId}` : ""}`
+    );
 
-    this.communicationLogService.log({
-      direction: "outbound",
-      channel: "email",
-      initiator,
-      receiver: Array.isArray(email.to) ? email.to.join("; ") : email.to,
-      text: convert(email.body, { wordwrap: 130 }),
-      html: email.body,
-      subject: email.subject,
-      appointmentId,
-      data: response,
-    });
+    try {
+      const response = await service.sendMail(app, email);
+
+      console.log(
+        `Successfully sent email. Response: ${JSON.stringify(response)}`
+      );
+
+      this.communicationLogService.log({
+        direction: "outbound",
+        channel: "email",
+        handledBy,
+        participantType,
+        participant: Array.isArray(email.to) ? email.to.join("; ") : email.to,
+        text: convert(email.body, { wordwrap: 130 }),
+        html: email.body,
+        subject: email.subject,
+        appointmentId,
+        customerId,
+        data: response,
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }
 
   public async sendTextMessage({
     phone,
     body,
     sender,
-    initiator,
+    handledBy,
+    participantType,
     webhookData,
     appointmentId,
-  }: {
-    phone: string;
-    body: string;
-    sender?: string;
-    initiator: string;
-    webhookData?: TextMessageData;
-    appointmentId?: string;
-  }): Promise<TextMessageResponse> {
+    customerId,
+  }: TextMessageNotificationRequest): Promise<TextMessageResponse> {
     const trimmedPhone = phone.replaceAll(/[^+0-9]/gi, "");
 
     const defaultAppsConfiguration =
@@ -82,9 +90,9 @@ export class NotificationService implements INotificationService {
       );
 
     console.log(
-      `Sending Text Message message from ${initiator} to ${maskify(
+      `Sending Text Message message from ${handledBy} to ${maskify(
         trimmedPhone
-      )}.${appointmentId ? ` Appointment ID: ${appointmentId}` : ""}`
+      )}.${appointmentId ? ` Appointment ID: ${appointmentId}` : ""}.${customerId ? ` Customer ID: ${customerId}` : ""}`
     );
 
     let response: TextMessageResponse | undefined = undefined;
@@ -97,30 +105,32 @@ export class NotificationService implements INotificationService {
         sender,
       });
 
+      if (response.error) {
+        throw Error(response.error);
+      }
+
       console.log(
-        `Text Message sent from ${initiator} to ${maskify(trimmedPhone)}.${
+        `Text Message sent from ${handledBy} to ${maskify(trimmedPhone)}.${
           appointmentId ? ` Appointment ID: ${appointmentId}` : ""
         }. Result: ${JSON.stringify(response)}`
       );
 
-      if (response.error) {
-        throw Error(response.error);
-      }
+      this.communicationLogService.log({
+        direction: "outbound",
+        channel: "text-message",
+        handledBy,
+        participantType,
+        participant: phone,
+        text: body,
+        appointmentId,
+
+        data: response,
+      });
 
       return response;
     } catch (e) {
       console.error(e);
       throw e;
-    } finally {
-      this.communicationLogService.log({
-        direction: "outbound",
-        channel: "text-message",
-        initiator,
-        receiver: phone,
-        text: body,
-        appointmentId,
-        data: response,
-      });
     }
   }
 }

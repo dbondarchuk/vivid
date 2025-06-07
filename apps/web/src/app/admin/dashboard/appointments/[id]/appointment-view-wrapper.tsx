@@ -26,14 +26,14 @@ export const AppointmentViewWrapper: React.FC<{
   ];
 
   return (
-    <div className="flex flex-1 flex-col gap-8">
+    <div className="flex flex-1 flex-col gap-4">
       <div className="flex flex-col gap-4 justify-between">
         <Breadcrumbs items={breadcrumbItems} />
         <Heading
           title={appointment.option.name}
           description={`By ${appointment.fields.name}`}
         />
-        <Separator />
+        {/* <Separator /> */}
       </div>
       <AppointmentView appointment={appointment} timeZone={timeZone} />
       {shouldShowDeclineModal && (

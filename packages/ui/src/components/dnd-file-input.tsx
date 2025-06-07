@@ -45,7 +45,7 @@ py-2 px-3 leading-tight text-background shadow focus:outline-none"
       />
       <div
         className={cn(
-          "w-full border border-dashed border-primary rounded-md p-2 text-muted-foreground",
+          "w-full border border-dashed border-primary rounded-md p-2 text-muted-foreground cursor-pointer",
           isDragActive && "bg-primary/20"
         )}
       >

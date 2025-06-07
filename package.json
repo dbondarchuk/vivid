@@ -10,9 +10,12 @@
     "start": "turbo run start",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "migration": "migrate-mongo",
+    "migration:up": "yarn migration up"
   },
   "devDependencies": {
+    "migrate-mongo": "^12.1.3",
     "prettier": "^3.2.5",
     "turbo": "^2.3.3"
   },

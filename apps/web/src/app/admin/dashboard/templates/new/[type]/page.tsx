@@ -25,12 +25,12 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8 h-full">
+      <div className="flex flex-1 flex-col gap-4 h-full">
         <div className="flex flex-col gap-4 justify-between">
           <Heading
             title={`New ${CommunicationChannelTexts[type].toLowerCase()} template`}
           />
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <Suspense fallback={<Skeleton className="w-full h-full" />}>
           <TemplateFormPage type={type} template={template} />

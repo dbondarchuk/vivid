@@ -1,8 +1,10 @@
 import { ConnectedAppData } from "../connected-app.data";
 
 export type TextMessageData = {
-  appId: string;
-  data: string;
+  appId?: string;
+  appointmentId?: string;
+  customerId?: string;
+  data?: string;
 };
 
 export type TextMessage = {

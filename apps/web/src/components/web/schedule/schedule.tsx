@@ -195,7 +195,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
       for (const [fileField, file] of files) {
         formData.append("fileField", fileField);
-        formData.append(`file_${fileField}`, file);
+        formData.append(`file_${fileField}`, file as any as File);
       }
 
       const response = await fetch("/api/event", {

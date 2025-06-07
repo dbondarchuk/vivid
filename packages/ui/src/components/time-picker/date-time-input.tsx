@@ -31,8 +31,10 @@ type DateTimeInputProps = {
   disabled?: boolean;
   clearable?: boolean;
   timeZone?: string;
+  hideTime?: boolean;
   hideCalendarIcon?: boolean;
   use12HourFormat?: boolean;
+  showValidation?: boolean;
 };
 
 // https://date-fns.org/v4.1.0/docs/format
@@ -95,6 +97,8 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
       value: _value,
       timeZone,
       use12HourFormat,
+      hideTime,
+      showValidation,
       ...rest
     } = options;
     const value = useMemo(
@@ -104,7 +108,9 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
     );
     const form = useFormContext();
     const formatStr = React.useMemo(
-      () => formatProp || `dd/MM/yyyy hh:mm${use12HourFormat ? " a" : ""}`,
+      () =>
+        formatProp ||
+        `dd/MM/yyyy${hideTime ? "" : ` hh:mm${use12HourFormat ? " a" : ""}`}`,
       [formatProp]
     );
 
@@ -354,7 +360,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
       <div
         ref={ref}
         className={cn(
-          "flex h-10 items-center justify-start rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground  disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 items-center justify-start rounded-md border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground  disabled:cursor-not-allowed disabled:opacity-50",
           isFocused ? "outline-none ring-2 ring-ring ring-offset-2" : "",
           options.hideCalendarIcon && "ps-2",
           options.className
@@ -362,6 +368,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
       >
         {!options.hideCalendarIcon && (
           <DateTimePicker
+            hideTime={hideTime}
             value={inputValue?.toJSDate()}
             use12HourFormat={use12HourFormat}
             onChange={(d) => {
@@ -377,6 +384,7 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
               <Button
                 variant="ghost"
                 size="icon"
+                className="w-8 h-8"
                 onClick={() => props.setOpen(true)}
               >
                 <CalendarIcon className="size-4 text-muted-foreground" />
@@ -397,30 +405,32 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
           disabled={options.disabled}
           spellCheck={false}
         />
-        <TooltipProvider>
-          <div className="me-3">
-            {inputValue ? (
-              <CircleCheck className="size-4 text-green-500" />
-            ) : (
-              <Tooltip>
-                <TooltipTrigger className="flex items-center justify-center">
-                  <CircleAlert
-                    className={cn(
-                      "size-4",
-                      !areAllSegmentsEmpty && "text-red-500"
-                    )}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>
-                    Please enter a valid value. The input cannot be empty and
-                    must be within the range of years 1900 to 2100.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </div>
-        </TooltipProvider>
+        {showValidation && (
+          <TooltipProvider>
+            <div className="me-3">
+              {inputValue ? (
+                <CircleCheck className="size-4 text-green-500" />
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger className="flex items-center justify-center">
+                    <CircleAlert
+                      className={cn(
+                        "size-4",
+                        !areAllSegmentsEmpty && "text-red-500"
+                      )}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      Please enter a valid value. The input cannot be empty and
+                      must be within the range of years 1900 to 2100.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          </TooltipProvider>
+        )}
       </div>
     );
   }

@@ -3,11 +3,14 @@ import { searchParams, searchParamsCache } from "./search-params";
 import { DataTable } from "@vivid/ui";
 import { columns } from "./columns";
 
-export const AssetsTable: React.FC = async () => {
+export const AssetsTable: React.FC<{ customerId?: string }> = async ({
+  customerId,
+}) => {
   const page = searchParamsCache.get("page");
   const search = searchParamsCache.get("search") || undefined;
   const limit = searchParamsCache.get("limit");
   const sort = searchParamsCache.get("sort");
+  const customerIds = searchParamsCache.get("customer") || undefined;
 
   const offset = (page - 1) * limit;
 
@@ -16,6 +19,7 @@ export const AssetsTable: React.FC = async () => {
     limit,
     search,
     sort,
+    customerId: customerId ?? customerIds,
   });
 
   return (

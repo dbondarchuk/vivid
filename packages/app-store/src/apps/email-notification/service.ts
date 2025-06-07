@@ -119,17 +119,16 @@ export class EmailNotificationConnectedApp
     const config = await this.props.services
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
-    const { arg, generalConfiguration } = getArguments(
+    const args = getArguments({
       appointment,
-      config.booking,
-      config.general,
-      config.social,
-      true
-    );
+      config,
+      customer: appointment.customer,
+      useAppointmentTimezone: true,
+    });
 
     const data = appData.data as EmailNotificationConfiguration;
 
-    const description = template(emailTemplates[status], arg);
+    const description = template(emailTemplates[status], args);
 
     const newStatus = status === "auto-confirmed" ? "confirmed" : status;
 
@@ -146,10 +145,10 @@ export class EmailNotificationConnectedApp
 
     await this.props.services.NotificationService().sendEmail({
       email: {
-        to: data?.email || generalConfiguration.email,
-        subject: `Appointment for ${arg.option!.name} by ${
-          arg.fields!.name
-        } at ${arg.dateTime}`,
+        to: data?.email || config.general.email,
+        subject: `Appointment for ${args.option!.name} by ${
+          args.fields!.name
+        } at ${args.dateTime}`,
         body: description,
         icalEvent: {
           method:
@@ -159,7 +158,8 @@ export class EmailNotificationConnectedApp
           content: eventContent,
         },
       },
-      initiator: `Email Notification Service - ${initiator}`,
+      participantType: "user",
+      handledBy: `Email Notification Service - ${initiator}`,
       appointmentId: appointment._id,
     });
   }

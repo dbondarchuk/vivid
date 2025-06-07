@@ -1,5 +1,6 @@
 import { AppointmentEvent } from ".";
-import { Asset } from "../assets";
+import { AssetEntity } from "../assets";
+import { Customer } from "../customers";
 
 export const appointmentStatuses = [
   "pending",
@@ -9,11 +10,16 @@ export const appointmentStatuses = [
 
 export type AppointmentStatus = (typeof appointmentStatuses)[number];
 
-export type Appointment = AppointmentEvent & {
+export type AppointmentEntity = AppointmentEvent & {
   _id: string;
   status: AppointmentStatus;
   createdAt: Date;
-  files?: Asset[];
+  customerId: string;
+};
+
+export type Appointment = AppointmentEntity & {
+  customer: Customer;
+  files?: AssetEntity[];
 };
 
 export const StatusText: Record<AppointmentStatus, string> = {

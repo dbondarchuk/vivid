@@ -1,13 +1,13 @@
 "use server";
 
 import { ServicesContainer } from "@vivid/services";
-import { Asset, AssetUpdate, okStatus } from "@vivid/types";
+import { AssetEntity, AssetUpdate, okStatus } from "@vivid/types";
 import { notFound } from "next/navigation";
 
 export async function createAsset(formData: FormData) {
   const file = formData.get("file") as File;
 
-  const asset: Omit<Asset, "_id" | "uploadedAt" | "size"> = {
+  const asset: Omit<AssetEntity, "_id" | "uploadedAt" | "size"> = {
     filename: formData.get("filename")?.toString() || "",
     mimeType:
       formData.get("mimeType")?.toString() || "application/octet-stream",

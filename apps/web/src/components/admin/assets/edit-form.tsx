@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Asset } from "@vivid/types";
+import { AssetEntity } from "@vivid/types";
 import {
   AssetPreview,
   Form,
@@ -15,8 +15,6 @@ import {
   Textarea,
   toastPromise,
 } from "@vivid/ui";
-import mimeType from "mime-type/with-db";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -29,7 +27,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AssetEditForm: React.FC<{ asset: Asset }> = ({ asset }) => {
+export const AssetEditForm: React.FC<{ asset: AssetEntity }> = ({ asset }) => {
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const form = useForm<FormValues>({

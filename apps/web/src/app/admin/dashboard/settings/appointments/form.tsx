@@ -19,6 +19,7 @@ import { updateBookingConfiguration } from "./actions";
 import { CalendarSourcesTab } from "./tabs/calendar-sources";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
+import { SmartScheduleTab } from "./tabs/smart-schedule";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
@@ -52,13 +53,13 @@ export const AppointmentsSettingsForm: React.FC<{
     form.getFieldState("maxWeeksInFuture").invalid ||
     form.getFieldState("timeZone").invalid ||
     form.getFieldState("slotStart").invalid ||
-    form.getFieldState("minAvailableTimeBeforeSlot").invalid ||
-    form.getFieldState("minAvailableTimeAfterSlot").invalid;
+    form.getFieldState("breakDuration").invalid;
 
   const triggerValidation = () => {
     form.trigger();
     form.trigger("calendarSources");
     form.trigger("options");
+    form.trigger("smartSchedule");
   };
 
   React.useEffect(triggerValidation, []);
@@ -100,6 +101,16 @@ export const AppointmentsSettingsForm: React.FC<{
             >
               Options
             </TabsTrigger>
+            <TabsTrigger
+              value="smartSchedule"
+              className={cn(
+                form.getFieldState("smartSchedule").invalid
+                  ? "text-destructive"
+                  : ""
+              )}
+            >
+              SmartSchedule
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="main">
             <MainTab form={form} />
@@ -109,6 +120,9 @@ export const AppointmentsSettingsForm: React.FC<{
           </TabsContent>
           <TabsContent value="options">
             <OptionsTab form={form} />
+          </TabsContent>
+          <TabsContent value="smartSchedule">
+            <SmartScheduleTab form={form} />
           </TabsContent>
         </Tabs>
         <SaveButton form={form} disabled={loading} />

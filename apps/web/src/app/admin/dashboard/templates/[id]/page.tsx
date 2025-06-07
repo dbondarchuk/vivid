@@ -15,9 +15,9 @@ export default async function UpdateTemplatePage(props: Props) {
 
   return (
     <PageContainer scrollable={true}>
-      <div className="flex flex-1 flex-col gap-8 h-full">
+      <div className="flex flex-1 flex-col gap-4 h-full">
         <div className="flex flex-col gap-4 justify-between">
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <Heading title={`Update template`} />
             <Link
               button
@@ -27,7 +27,7 @@ export default async function UpdateTemplatePage(props: Props) {
               <Copy className="mr-2 h-4 w-4" /> Clone
             </Link>
           </div>
-          <Separator />
+          {/* <Separator /> */}
         </div>
         <Suspense fallback={<Skeleton className="w-full h-full" />}>
           <TemplateFormPage id={id} />

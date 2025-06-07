@@ -22,11 +22,17 @@ export function useAssetsTableFilters() {
 
   const [page, setPage] = useQueryState("page", searchParams.page);
 
+  const [customerFilter, setCustomerFilter] = useQueryState(
+    "customer",
+    searchParams.customer.withOptions({ shallow: false })
+  );
+
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
+    setCustomerFilter(null);
 
     setPage(1);
-  }, [setSearchQuery, setPage]);
+  }, [setSearchQuery, setPage, setCustomerFilter]);
 
   const isAnyFilterActive = useMemo(() => {
     return !!searchQuery;
@@ -39,5 +45,7 @@ export function useAssetsTableFilters() {
     setPage,
     resetFilters,
     isAnyFilterActive,
+    customerFilter,
+    setCustomerFilter,
   };
 }

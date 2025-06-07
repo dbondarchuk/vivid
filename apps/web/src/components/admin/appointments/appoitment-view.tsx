@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Appointment,
   AppointmentStatus,
-  Asset,
+  AssetEntity,
   StatusText,
 } from "@vivid/types";
 import {
@@ -46,6 +46,7 @@ import {
   FormField,
   FormItem,
   FormMessage,
+  Label,
   Link,
   Spinner,
   Textarea,
@@ -59,6 +60,7 @@ import {
   CalendarSearch,
   CalendarSync,
   CalendarX2,
+  Send,
   Trash,
 } from "lucide-react";
 import { DateTime } from "luxon";
@@ -67,6 +69,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { AppointmentRescheduleDialog } from "./appointment-reschedule-dialog";
+import { SendCommunicationDialog } from "../communications/send-message-dialog";
+import { RecentCommunications } from "../communications/communications";
 
 const timeZones = getTimeZones();
 
@@ -81,6 +85,8 @@ export const AppointmentView: React.FC<{
   timeZone?: string;
 }> = ({ appointment: propAppointment, timeZone }) => {
   const router = useRouter();
+
+  const [communicationsKey, setCommunicationsKey] = React.useState<string>();
 
   const [appointment, setAppointment] = React.useState(propAppointment);
 
@@ -113,7 +119,7 @@ export const AppointmentView: React.FC<{
   const onRemoveAppointmentFile = async (fileId: string) => {
     try {
       setLoading(true);
-      await toastPromise(removeAppointmentFile(appointment._id, fileId), {
+      await toastPromise(removeAppointmentFile(fileId), {
         success: "Your changes were saved.",
         error: "There was a problem with your request.",
       });
@@ -132,7 +138,7 @@ export const AppointmentView: React.FC<{
     }
   };
 
-  const { name, email, ...restFields } = appointment.fields;
+  const { name, email, phone, ...restFields } = appointment.fields;
 
   const reschedule = ({
     dateTime,
@@ -183,7 +189,7 @@ export const AppointmentView: React.FC<{
     setGalleryOpen(open);
   };
 
-  const onAssetAdded = (asset: Asset) => {
+  const onAssetAdded = (asset: AssetEntity) => {
     if (!appointment.files) {
       appointment.files = [];
     }
@@ -211,6 +217,16 @@ export const AppointmentView: React.FC<{
   return (
     <div className="flex flex-col gap-4 w-full @container [contain:layout]">
       <div className="flex flex-row justify-end gap-2 flex-wrap [&>form]:hidden">
+        <SendCommunicationDialog
+          appointmentId={appointment._id}
+          onSuccess={() =>
+            setCommunicationsKey(new Date().getTime().toString())
+          }
+        >
+          <Button variant="outline">
+            <Send /> Send message
+          </Button>
+        </SendCommunicationDialog>
         <Link
           className="inline-flex flex-row gap-2 items-center"
           variant="primary"
@@ -365,10 +381,55 @@ export const AppointmentView: React.FC<{
               <dt className="flex self-center">Status</dt>
               <dd className="col-span-2">{StatusText[appointment.status]}</dd>
             </div>
+
+            {appointment.totalPrice && (
+              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt>Price:</dt>
+                <dd className="col-span-2">${appointment.totalPrice}</dd>
+              </div>
+            )}
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="flex self-center">Customer</dt>
               <dd className="col-span-2">
                 <Accordion type="single" collapsible>
+                  <AccordionItem value="option" className="border-none">
+                    <AccordionTrigger className="text-left">
+                      <span>
+                        {appointment.customer.name}{" "}
+                        <span className="text-sm text-muted-foreground">
+                          ({appointment.customer.email})
+                        </span>
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid grid-cols-3 gap-1">
+                        <div>Name:</div>
+                        <div className="col-span-2">
+                          <Link
+                            variant="default"
+                            href={`/admin/dashboard/customers/${appointment.customerId}`}
+                          >
+                            {appointment.customer.name}
+                          </Link>
+                        </div>
+                        <div>Email:</div>
+                        <div className="col-span-2">
+                          {appointment.customer.email}
+                        </div>
+                        <div>Phone:</div>
+                        <div className="col-span-2">
+                          {appointment.customer.phone}
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </dd>
+            </div>
+            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="flex self-center">Fields</dt>
+              <dd className="col-span-2">
+                {/* <Accordion type="single" collapsible>
                   <AccordionItem value="option" className="border-none">
                     <AccordionTrigger className="text-left">
                       <span>
@@ -402,6 +463,17 @@ export const AppointmentView: React.FC<{
                             {email}
                           </Link>
                         </div>
+                        <div>Phone:</div>
+                        <div className="col-span-2">
+                          <Link
+                            variant="default"
+                            href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                              phone
+                            )}`}
+                          >
+                            {phone}
+                          </Link>
+                        </div>
                         {Object.entries(restFields).map(([key, value]) => (
                           <React.Fragment key={key}>
                             <div>
@@ -428,7 +500,7 @@ export const AppointmentView: React.FC<{
                                 <Link
                                   variant="default"
                                   href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                                    value
+                                    value.toString()
                                   )}`}
                                 >
                                   {value.toString()}
@@ -440,7 +512,77 @@ export const AppointmentView: React.FC<{
                       </div>
                     </AccordionContent>
                   </AccordionItem>
-                </Accordion>
+                </Accordion> */}
+                <div className="grid grid-cols-3 gap-1 text-sm">
+                  <div>Name:</div>
+                  <div className="col-span-2">
+                    <Link
+                      variant="default"
+                      href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                        name
+                      )}`}
+                    >
+                      {name}
+                    </Link>
+                  </div>
+                  <div>Email:</div>
+                  <div className="col-span-2">
+                    <Link
+                      variant="default"
+                      href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                        email
+                      )}`}
+                    >
+                      {email}
+                    </Link>
+                  </div>
+                  <div>Phone:</div>
+                  <div className="col-span-2">
+                    <Link
+                      variant="default"
+                      href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                        phone
+                      )}`}
+                    >
+                      {phone}
+                    </Link>
+                  </div>
+                  {Object.entries(restFields).map(([key, value]) => (
+                    <React.Fragment key={key}>
+                      <div>
+                        {appointment.fieldsLabels?.[key] ? (
+                          <>
+                            <span>{appointment.fieldsLabels?.[key]}</span>{" "}
+                            <span className="text-sm text-muted-foreground">
+                              ({key})
+                            </span>
+                          </>
+                        ) : (
+                          key
+                        )}
+                        :
+                      </div>
+                      <div className="col-span-2">
+                        {typeof value === "boolean" ? (
+                          value ? (
+                            "Yes"
+                          ) : (
+                            "No"
+                          )
+                        ) : (
+                          <Link
+                            variant="default"
+                            href={`/admin/dashboard/appointments?search=${encodeURIComponent(
+                              value.toString()
+                            )}`}
+                          >
+                            {value.toString()}
+                          </Link>
+                        )}
+                      </div>
+                    </React.Fragment>
+                  ))}
+                </div>
               </dd>
             </div>
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -457,7 +599,7 @@ export const AppointmentView: React.FC<{
                         <div className="col-span-2">
                           <Link
                             href={`/admin/dashboard/services/options/${appointment.option._id}`}
-                            variant="dashed"
+                            variant="default"
                           >
                             {appointment.option.name}
                           </Link>
@@ -508,7 +650,7 @@ export const AppointmentView: React.FC<{
                             <li key={index}>
                               <Link
                                 href={`/admin/dashboard/services/addons/${addon._id}`}
-                                variant="dashed"
+                                variant="default"
                               >
                                 {addon.name}
                               </Link>
@@ -597,7 +739,7 @@ export const AppointmentView: React.FC<{
                             <Button
                               disabled={loading}
                               variant="ghost"
-                              className="absolute -right-1 -top-1 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                              className="absolute -right-1 -top-1 text-destructive hover:bg-destructive hover:text-destructive-foreground z-[3]"
                               size="icon"
                               type="button"
                               title="Remove appointment file"
@@ -707,13 +849,6 @@ export const AppointmentView: React.FC<{
                 </div>
               </dd>
             </div>
-
-            {appointment.totalPrice && (
-              <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt>Price:</dt>
-                <dd className="col-span-2">${appointment.totalPrice}</dd>
-              </div>
-            )}
           </dl>
 
           <Form {...noteForm}>
@@ -747,6 +882,15 @@ export const AppointmentView: React.FC<{
         <div className="flex flex-col gap-2">
           <AppointmentCalendar appointment={appointment} timeZone={timeZone} />
         </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="font-semibold flex flex-row gap-1 items-center">
+          Appointment communications
+        </div>
+        <RecentCommunications
+          appointmentId={appointment._id}
+          key={communicationsKey}
+        />
       </div>
     </div>
   );

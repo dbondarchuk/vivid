@@ -101,11 +101,16 @@ export default class CustomerEmailNotificationConnectedApp
     initiator: string,
     forceRequest?: boolean
   ) {
-    const { general, booking, social } = await this.props.services
+    const config = await this.props.services
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
 
-    const { arg } = getArguments(appointment, booking, general, social, true);
+    const args = getArguments({
+      appointment,
+      config,
+      customer: appointment.customer,
+      useAppointmentTimezone: true,
+    });
 
     const data = appData.data as CustomerEmailNotificationConfiguration;
 
@@ -123,13 +128,13 @@ export default class CustomerEmailNotificationConnectedApp
 
     const renderedEventTemplate = await renderToStaticMarkup({
       document: eventTemplate.value,
-      args: arg,
+      args: args,
     });
 
     const eventContent = getEventCalendarContent(
-      general,
+      config.general,
       appointment,
-      templateSafeWithError(data.event.summary, arg),
+      templateSafeWithError(data.event.summary, args),
       renderedEventTemplate,
       forceRequest ? "REQUEST" : AppointmentStatusToICalMethodMap[status]
     );
@@ -148,14 +153,14 @@ export default class CustomerEmailNotificationConnectedApp
     }
 
     const renderedTemplate = await renderToStaticMarkup({
-      args: arg,
+      args: args,
       document: template.value,
     });
 
     await this.props.services.NotificationService().sendEmail({
       email: {
         to: appointment.fields.email,
-        subject: templateSafeWithError(subject, arg),
+        subject: templateSafeWithError(subject, args),
         body: renderedTemplate,
         icalEvent: {
           method: forceRequest
@@ -164,7 +169,8 @@ export default class CustomerEmailNotificationConnectedApp
           content: eventContent,
         },
       },
-      initiator: `Customer Email Notification Service - ${initiator}`,
+      handledBy: `Customer Email Notification Service - ${initiator}`,
+      participantType: "customer",
       appointmentId: appointment._id,
     });
   }

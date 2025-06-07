@@ -119,17 +119,17 @@ export class CalendarWriterConnectedApp
     const config = await this.props.services
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
-    const { arg, generalConfiguration } = getArguments(
+
+    const args = getArguments({
       appointment,
-      config.booking,
-      config.general,
-      config.social,
-      true
-    );
+      config,
+      customer: appointment.customer,
+      useAppointmentTimezone: true,
+    });
 
     const data = appData.data as CalendarWriterConfiguration;
 
-    const description = template(bodyTemplates[status], arg);
+    const description = template(bodyTemplates[status], args);
 
     const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
 
@@ -153,11 +153,11 @@ export class CalendarWriterConnectedApp
         plainText: convert(description, { wordwrap: 130 })
           .trim()
           .replace(/(\r\n|\r|\n)+/g, "\n"),
-        url: `${generalConfiguration.url}/admin/dashboard/appointments/${appointment._id}`,
+        url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}`,
       },
       location: {
-        name: generalConfiguration.name,
-        address: generalConfiguration.address,
+        name: config.general.name,
+        address: config.general.address,
       },
       startTime: appointment.dateTime,
       duration: appointment.totalDuration,
