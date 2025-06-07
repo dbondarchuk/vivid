@@ -98,7 +98,7 @@ export class AssetsService implements IAssetsService {
       };
     }
 
-    if (query.customerId) {
+    if (query.appointmentId) {
       filter.appointmentId = {
         $in: Array.isArray(query.appointmentId)
           ? query.appointmentId
