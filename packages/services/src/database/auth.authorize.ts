@@ -1,11 +1,11 @@
-import { Services } from "@/lib/services";
+import { ServicesContainer } from "..";
 
 export const authorize = async (credentials: {
   email: string;
   password: string;
 }) => {
   const { name, email } =
-    await Services.ConfigurationService().getConfiguration("general");
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   if (
     credentials?.email === email &&

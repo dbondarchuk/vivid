@@ -1,16 +1,13 @@
-import { MigrationInterface } from "mongo-migrate-ts";
-import { Db, ObjectId } from "mongodb";
+const { ObjectId } = require("mongodb");
 
-import type { Appointment, Customer } from "../packages/types";
-
-function groupAppointments(appointments: Appointment[]): Appointment[][] {
-  const parent: Record<string, string> = {};
-  const find = (x: string): string => {
+function groupAppointments(appointments) {
+  const parent = {};
+  const find = (x) => {
     if (parent[x] !== x) parent[x] = find(parent[x]);
     return parent[x];
   };
 
-  const union = (a: string, b: string) => {
+  const union = (a, b) => {
     const rootA = find(a);
     const rootB = find(b);
     if (rootA !== rootB) parent[rootB] = rootA;
@@ -32,7 +29,7 @@ function groupAppointments(appointments: Appointment[]): Appointment[][] {
   }
 
   // 3. Group appointments by root identifier
-  const groups: Record<string, Appointment[]> = {};
+  const groups = {};
   for (const appointment of appointments) {
     const key =
       appointment.fields.email && parent[appointment.fields.email]
@@ -50,12 +47,12 @@ function groupAppointments(appointments: Appointment[]): Appointment[][] {
   return Object.values(groups);
 }
 
-export class Migration1747863236704 implements MigrationInterface {
-  public async up(db: Db): Promise<void | never> {
-    const appointmentsCollection = db.collection<Appointment>("appointments");
-    const collection = db.collection<Customer>("customers");
+module.exports = {
+  async up(db) {
+    const appointmentsCollection = db.collection("appointments");
+    const collection = db.collection("customers");
 
-    const customers: Customer[] = [];
+    const customers = [];
     const appointments = await appointmentsCollection.find().toArray();
 
     const groups = groupAppointments(appointments);
@@ -71,9 +68,9 @@ export class Migration1747863236704 implements MigrationInterface {
           return map;
         },
         {
-          names: new Set<string>(),
-          emails: new Set<string>(),
-          phones: new Set<string>(),
+          names: new Set(),
+          emails: new Set(),
+          phones: new Set(),
         }
       );
 
@@ -81,7 +78,7 @@ export class Migration1747863236704 implements MigrationInterface {
       const [email, ...knownEmails] = known.emails;
       const [phone, ...knownPhones] = known.phones;
 
-      const customer: Customer = {
+      const customer = {
         _id: new ObjectId().toString(),
         name,
         email,
@@ -108,12 +105,12 @@ export class Migration1747863236704 implements MigrationInterface {
     }
 
     await collection.insertMany(customers);
-  }
+  },
 
-  public async down(db: Db): Promise<void | never> {
+  async down(db) {
     await db.dropCollection("customers");
 
-    await db.collection<Appointment>("appointments").updateMany(
+    await db.collection("appointments").updateMany(
       {},
       {
         $unset: {
@@ -121,5 +118,5 @@ export class Migration1747863236704 implements MigrationInterface {
         },
       }
     );
-  }
-}
+  },
+};

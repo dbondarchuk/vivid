@@ -121,6 +121,13 @@ export class CustomersService implements ICustomersService {
             localField: "_id",
             foreignField: "customerId",
             as: "appointments",
+            pipeline: [
+              {
+                $match: {
+                  status: { $ne: "declined" },
+                },
+              },
+            ],
           },
         },
         {

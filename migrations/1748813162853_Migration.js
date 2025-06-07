@@ -1,8 +1,5 @@
-import { MigrationInterface } from "mongo-migrate-ts";
-import { Db } from "mongodb";
-
-export class Migration1748813162853 implements MigrationInterface {
-  public async up(db: Db): Promise<void | never> {
+module.exports = {
+  async up(db) {
     const logs = db.collection("communication-logs");
 
     await logs.updateMany({}, [
@@ -54,9 +51,9 @@ export class Migration1748813162853 implements MigrationInterface {
         $unset: ["initiator", "receiver"],
       },
     ]);
-  }
+  },
 
-  public async down(db: Db): Promise<void | never> {
+  async down(db) {
     const logs = db.collection("communication-logs");
     await logs.updateMany({}, [
       {
@@ -85,5 +82,5 @@ export class Migration1748813162853 implements MigrationInterface {
         $unset: ["participantType", "participant", "handledBy"],
       },
     ]);
-  }
-}
+  },
+};

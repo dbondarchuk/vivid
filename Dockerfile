@@ -69,17 +69,24 @@ RUN chown nextjs:nodejs .next
 
 # Copy of i18n jsons
 COPY --from=builder /app/apps/web/src/i18n/locales ./apps/web/src/i18n/locales
+COPY --from=builder /app/packages/types ./packages/types
 
 # Copy node modules for scheduler
 COPY --from=builder /app/node_modules/uuid ./node_modules/uuid
 COPY --from=builder /app/node_modules/node-cron ./node_modules/node-cron 
 COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
+COPY --from=builder /app/node_modules/commander ./node_modules/commander
+
+# Install migrate-mongo
+RUN npm install -g migrate-mongo 
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/migrations ./migrations
+COPY --from=builder --chown=nextjs:nodejs /app/migrate-mongo-config.js ./migrate-mongo-config.js
 
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/scheduler.js ./scheduler.js
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/entrypoint.sh ./entrypoint.sh

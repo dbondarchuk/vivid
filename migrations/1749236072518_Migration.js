@@ -1,7 +1,4 @@
-import { MigrationInterface } from "mongo-migrate-ts";
-import { Db, IndexDirection, MongoClient } from "mongodb";
-
-const indexes: Record<string, Record<string, IndexDirection>> = {
+const indexes = {
   appointments: {
     customerId: -1,
     status: 1,
@@ -29,8 +26,8 @@ const indexes: Record<string, Record<string, IndexDirection>> = {
   },
 };
 
-export class Migration1749236072518 implements MigrationInterface {
-  public async up(db: Db, client: MongoClient): Promise<void | never> {
+module.exports = {
+  async up(db, client) {
     const session = client.startSession();
     try {
       await session.withTransaction(async () => {
@@ -49,9 +46,9 @@ export class Migration1749236072518 implements MigrationInterface {
     } finally {
       await session.endSession();
     }
-  }
+  },
 
-  public async down(db: Db, client: MongoClient): Promise<void | never> {
+  async down(db, client) {
     const session = client.startSession();
 
     try {
@@ -66,5 +63,5 @@ export class Migration1749236072518 implements MigrationInterface {
     } finally {
       await session.endSession();
     }
-  }
-}
+  },
+};

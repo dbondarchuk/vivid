@@ -1,3 +1,6 @@
+# Run migrations
+npm run migration up
+
 # Start the first process
 node apps/web/server.js &
 
