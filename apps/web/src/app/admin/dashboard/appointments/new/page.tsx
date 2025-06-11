@@ -53,7 +53,7 @@ export default async function NewAssetsPage(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="New appointments"
+            title="New appointment"
             description="Schedule a new appointment on behalf of the customer"
           />
           {/* <Separator /> */}
