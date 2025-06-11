@@ -63,6 +63,14 @@ export const Booking: React.FC<BookingProps> = async ({
     };
   });
 
+  let showPromoCode = false;
+  if (config.allowPromoCode === "always") showPromoCode = true;
+  else if (config.allowPromoCode === "allow-if-has-active") {
+    const hasActiveDiscounts =
+      await ServicesContainer.ServicesService().hasActiveDiscounts(new Date());
+    if (hasActiveDiscounts) showPromoCode = true;
+  }
+
   return (
     <Appointments
       options={choices}
@@ -70,6 +78,7 @@ export const Booking: React.FC<BookingProps> = async ({
       successPage={successPage}
       fieldsSchema={configFields}
       timeZone={config.timeZone}
+      showPromoCode={showPromoCode}
     />
   );
 };

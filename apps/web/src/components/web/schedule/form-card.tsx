@@ -1,5 +1,7 @@
 "use client";
 import {
+  ApplyDiscountRequest,
+  ApplyDiscountResponse,
   AppointmentFields,
   DateTime,
   Fields,
@@ -14,11 +16,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Form } from "@vivid/ui";
+import { Button, Form, FormItem, Input, Label, Spinner, cn } from "@vivid/ui";
 import { Calendar, Clock, DollarSign, Globe2, Timer } from "lucide-react";
 
-import { fallbackLanguage, useI18n } from "@/i18n/i18n";
-import { durationToTime, formatTimeLocale } from "@vivid/utils";
+import { I18nKeys, fallbackLanguage, useI18n } from "@/i18n/i18n";
+import {
+  durationToTime,
+  formatAmount,
+  formatAmountString,
+  formatTimeLocale,
+} from "@vivid/utils";
 import { TimeZone, getTimeZones } from "@vvo/tzdb";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 import { fieldSchemaMapper, fieldsComponentMap } from "../forms/fields";
@@ -43,15 +50,89 @@ type _FormCardProps = FormCardProps & {
   >;
 
   onSubmit: (values: AppointmentFields) => void;
+  showPromoCode?: boolean;
 };
 
-class _FormCard extends BaseCard<_FormCardProps> {
+type _FormCardState = {
+  promoCode: string;
+  applyPromoCodeLoading: boolean;
+  promoCodeError?: I18nKeys;
+};
+
+class _FormCard extends BaseCard<_FormCardProps, _FormCardState> {
+  public constructor(props: _FormCardProps) {
+    super(props);
+    this.state = {
+      promoCode: props.promoCode?.code ?? "",
+      applyPromoCodeLoading: false,
+    };
+  }
+
   public get isPrevDisabled(): boolean {
     return false;
   }
 
   public get isNextDisabled(): boolean {
     return !this.props.form.formState.isValid;
+  }
+
+  public async applyPromoCode() {
+    if (!this.state.promoCode) {
+      this.setState((prev) => ({ ...prev, promoCodeError: undefined }));
+    }
+
+    this.setState((prev) => ({ ...prev, applyPromoCodeLoading: true }));
+
+    try {
+      const response = await fetch("/api/discounts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: this.state.promoCode,
+          optionId: this.props.appointmentOption._id,
+          addons: this.props.selectedAddons?.map((addon) => addon._id),
+          dateTime: Luxon.fromObject(
+            {
+              year: this.props.dateTime.date.getFullYear(),
+              month: this.props.dateTime.date.getMonth() + 1,
+              day: this.props.dateTime.date.getDate(),
+              hour: this.props.dateTime.time.hour,
+              minute: this.props.dateTime.time.minute,
+              second: 0,
+            },
+            { zone: this.props.dateTime.timeZone }
+          )
+            .toUTC()
+            .toJSDate(),
+          name: this.props.form.getValues("name") || "",
+          email: this.props.form.getValues("email") || "",
+          phone: this.props.form.getValues("phone") || "",
+        } satisfies ApplyDiscountRequest),
+      });
+
+      if (response.status >= 400) {
+        throw new Error(
+          `Failed to apply promo code: ${response.status}: ${await response.text()}`
+        );
+      }
+
+      const result = (await response.json()) as ApplyDiscountResponse;
+      this.props.setPromoCode(result);
+      this.setState((prev) => ({
+        ...prev,
+        promoCodeError: undefined,
+      }));
+    } catch (e) {
+      console.error(e);
+      this.setState((prev) => ({
+        ...prev,
+        promoCodeError: "promo_code_error",
+      }));
+
+      this.props.setPromoCode(undefined);
+    } finally {
+      this.setState((prev) => ({ ...prev, applyPromoCodeLoading: false }));
+    }
   }
 
   public get cardContent(): React.ReactNode {
@@ -121,7 +202,7 @@ class _FormCard extends BaseCard<_FormCardProps> {
                   <div className="flex items-center">
                     <DollarSign className="mr-1" />
                     {this.props.i18n("form_price_label_format", {
-                      price: this.price.toFixed(2).replace(/\.00$/, ""),
+                      price: formatAmountString(this.price),
                     })}
                   </div>
                 )}
@@ -147,6 +228,52 @@ class _FormCard extends BaseCard<_FormCardProps> {
                     )}
                   </React.Fragment>
                 ))}
+
+                {this.props.showPromoCode && (
+                  <FormItem>
+                    <Label htmlFor="promo-code">
+                      {this.props.i18n("form_promo_code")}
+                    </Label>
+                    <div className="flex flex-row gap-2">
+                      <Input
+                        className="w-full flex-1"
+                        value={this.state.promoCode}
+                        onChange={(e) => {
+                          this.setState((prev) => ({
+                            ...prev,
+                            promoCode: e.target.value,
+                            promoCodeError: undefined,
+                          }));
+
+                          this.props.setPromoCode(undefined);
+                        }}
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => this.applyPromoCode()}
+                      >
+                        {this.state.applyPromoCodeLoading && <Spinner />}{" "}
+                        {this.props.i18n("apply")}
+                      </Button>
+                    </div>
+                    <p
+                      className={cn(
+                        "text-sm font-medium",
+                        this.state.promoCodeError
+                          ? "text-destructive"
+                          : "text-green-700"
+                      )}
+                    >
+                      {!!this.state.promoCodeError &&
+                        this.props.i18n(this.state.promoCodeError)}
+                      {this.props.promoCode &&
+                        this.props.i18n("promo_code_success", {
+                          code: this.props.promoCode.code,
+                          discount: formatAmountString(this.discount),
+                        })}
+                    </p>
+                  </FormItem>
+                )}
               </div>
             </div>
           </div>
@@ -160,8 +287,9 @@ export const FormCard: React.FC<
   Omit<FormCardProps, "i18n"> & {
     values?: Record<string, any>;
     onFormChange?: (formValue: Record<string, any>) => void;
+    showPromoCode?: boolean;
   }
-> = ({ values, onFormChange, ...props }) => {
+> = ({ values, onFormChange, showPromoCode, ...props }) => {
   const formSchema = z.object(
     getFields(props.fields).reduce(
       (prev, field) => {
@@ -186,6 +314,7 @@ export const FormCard: React.FC<
       {...props}
       i18n={i18n}
       form={form}
+      showPromoCode={showPromoCode}
       // @ts-expect-error The form will have needed fields
       next={form.handleSubmit(props.onSubmit)}
       prev={() => {

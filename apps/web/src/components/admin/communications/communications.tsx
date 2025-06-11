@@ -64,7 +64,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
                     {dateTime.toRelative()}
                   </span>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="left">
                   {dateTime.toLocaleString(DateTime.DATETIME_MED)}
                 </TooltipContent>
               </Tooltip>

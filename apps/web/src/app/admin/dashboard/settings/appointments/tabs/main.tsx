@@ -1,4 +1,9 @@
-import { BookingConfiguration, customTimeSlotSchema, Time } from "@vivid/types";
+import {
+  allowPromoCodeType,
+  BookingConfiguration,
+  customTimeSlotSchema,
+  Time,
+} from "@vivid/types";
 import {
   AppSelector,
   BooleanSelect,
@@ -34,6 +39,7 @@ import {
 import { getTimeZones } from "@vvo/tzdb";
 import React from "react";
 import { TabProps } from "./types";
+import { AllowPromoCodeTypeLabels } from "@/constants/labels";
 
 const timeZones = getTimeZones();
 const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
@@ -166,6 +172,33 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                 value={field.value}
                 onValueChange={field.onChange}
                 className="w-full"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="allowPromoCode"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              Show promo code field{" "}
+              <InfoTooltip>
+                Configure should the promo code field be shown during the
+                booking
+              </InfoTooltip>
+            </FormLabel>
+            <FormControl>
+              <Combobox
+                value={field.value}
+                onItemSelect={field.onChange}
+                className="w-full"
+                values={allowPromoCodeType.map((type) => ({
+                  value: type,
+                  label: AllowPromoCodeTypeLabels[type],
+                }))}
               />
             </FormControl>
             <FormMessage />

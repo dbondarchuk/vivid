@@ -4,14 +4,13 @@ import { useI18n } from "@/i18n/i18n";
 import type {
   AppointmentAddon,
   AppointmentChoice,
-  AppointmentEvent,
   AppointmentFields,
   AppointmentRequest,
   DateTime,
   FieldSchema,
   WithDatabaseId,
 } from "@vivid/types";
-import { Availability } from "@vivid/types";
+import { ApplyDiscountResponse, Availability } from "@vivid/types";
 import { Spinner, toast } from "@vivid/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
@@ -28,6 +27,7 @@ export type ScheduleProps = {
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
   timeZone: string;
+  showPromoCode?: boolean;
 };
 
 type Step = "duration" | "addons" | "calendar" | "form" | "confirmation";
@@ -54,6 +54,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   const [duration, setDuration] = React.useState<number | undefined>(
     appointmentOptionDuration
   );
+
+  const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
 
   React.useEffect(() => {
     setDuration(appointmentOptionDuration);
@@ -175,6 +177,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         duration: duration,
         optionId: props.appointmentOption._id,
         addonsIds: selectedAddons?.map((addon) => addon._id),
+        promoCode: promoCode?.code,
         fields: Object.entries(fields)
           .filter(([_, value]) => !((value as any) instanceof File))
           .reduce(
@@ -337,6 +340,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           optionDuration={duration}
           duration={duration}
           next={nextStep}
+          promoCode={promoCode}
+          setPromoCode={setPromoCode}
         />
       )}
       {step === "addons" && props.appointmentOption.addons && (
@@ -351,6 +356,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           optionDuration={duration}
           onAddonSelectionChange={setSelectedAddons}
           selectedAddons={selectedAddons}
+          promoCode={promoCode}
+          setPromoCode={setPromoCode}
         />
       )}
       {step === "calendar" && (
@@ -371,6 +378,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           dateTime={dateTime}
           onDateTimeSelected={(dateTime) => setDateTime(dateTime)}
           timeZone={props.timeZone}
+          promoCode={promoCode}
+          setPromoCode={setPromoCode}
         />
       )}
       {step === "form" && dateTime && (
@@ -385,6 +394,9 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           values={fields}
           fields={formFields}
           onFormChange={setFields}
+          promoCode={promoCode}
+          setPromoCode={setPromoCode}
+          showPromoCode={props.showPromoCode}
         />
       )}
       {step === "confirmation" && (
@@ -393,6 +405,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           duration={duration!}
           selectedAddons={selectedAddons}
           appointmentOption={props.appointmentOption}
+          promoCode={promoCode}
+          setPromoCode={setPromoCode}
           optionDuration={duration}
         />
       )}

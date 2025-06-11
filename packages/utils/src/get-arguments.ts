@@ -8,6 +8,7 @@ import {
   StatusText,
 } from "@vivid/types";
 import { DateTime } from "luxon";
+import { formatAmountString } from "./currency";
 import { durationToTime } from "./time";
 
 type Props = {
@@ -32,6 +33,17 @@ export const getArguments = ({
   const { name, email, phone, ...restFields } = appointment?.fields || {};
   const args = {
     ...(appointment || {}),
+    totalPriceFormatted: appointment?.totalPrice
+      ? formatAmountString(appointment?.totalPrice)
+      : undefined,
+    discount: appointment?.discount
+      ? {
+          ...appointment.discount,
+          discountAmountFormatted: formatAmountString(
+            appointment.discount.discountAmount
+          ),
+        }
+      : undefined,
     dateTime: appointment
       ? DateTime.fromJSDate(appointment.dateTime)
           .setZone(

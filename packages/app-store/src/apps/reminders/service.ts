@@ -69,7 +69,7 @@ export default class RemindersConnectedApp
         } catch {
           return {
             status: "failed",
-            statusText: "Text message sender default app is not configured",
+            statusText: "Email sender default app is not configured",
           };
         }
 

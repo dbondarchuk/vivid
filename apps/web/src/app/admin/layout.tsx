@@ -35,7 +35,7 @@ export default async function RootLayout({
         className={`${montserrat.variable} ${playfair.variable} ${inter.className} overflow-hidden `}
         suppressHydrationWarning={true}
       >
-        <NextTopLoader showSpinner={false} />
+        <NextTopLoader showSpinner={false} color="hsl(var(--primary))" />
         <Providers session={undefined}>
           <Toaster />
           <SonnerToaster />

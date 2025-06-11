@@ -9,11 +9,12 @@ import { Button } from "./button";
 import { ChevronsUpDown, Plus } from "lucide-react";
 
 export type NonSortableProps = {
-  title: string;
+  title: React.ReactNode;
   ids: string[];
   onAdd: () => void;
   children: React.ReactNode | React.ReactNode[];
   disabled?: boolean;
+  disabledAdd?: boolean;
   allCollapsed?: boolean;
   collapse?: () => void;
   className?: string;
@@ -24,6 +25,7 @@ export function NonSortable({
   title,
   ids,
   disabled,
+  disabledAdd,
   allCollapsed,
   collapse,
   onAdd,
@@ -52,7 +54,7 @@ export function NonSortable({
           )}
           <Button
             type="button"
-            disabled={disabled}
+            disabled={disabled || disabledAdd}
             variant="outline"
             onClick={onAdd}
             aria-label="Add a new item"

@@ -158,9 +158,14 @@
 
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Time: {{ dateTime }}</p>
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}</p>
-                    {{#totalPrice}}
+
+                    {{#discount}}
+                      <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Promo code: {{code}} (-${{discountAmountFormatted}}) (<a href="{{ config.url }}/admin/dashboard/services/discounts/{{id}}">{{name}}</a>)</p>
+                    {{/discount}}
+
+                    {{#totalPriceFormatted}}
                     <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Price: ${{.}}</p>
-                    {{/totalPrice}}
+                    {{/totalPriceFormatted}}
 
                   {{/_id}}  
                   </td>

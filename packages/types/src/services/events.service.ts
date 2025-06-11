@@ -31,6 +31,7 @@ export interface IEventsService {
       range?: DateRange;
       status?: AppointmentStatus[];
       customerId?: string | string[];
+      discountId?: string | string[];
     }
   ): Promise<WithTotal<Appointment>>;
   getEvents(

@@ -13,7 +13,6 @@ import { DollarSign, Timer } from "lucide-react";
 import { ReactNode } from "react";
 import { MdxContent } from "../mdx/mdx-content-client";
 import { BaseCard, BaseCardProps } from "./base-card";
-import { PlateStaticEditor } from "@vivid/rte";
 
 export type AddonsCardProps = BaseCardProps & {
   onAddonSelectionChange: (addons: AppointmentAddon[]) => void;
@@ -44,6 +43,8 @@ class _AddonsCard extends BaseCard<AddonsCardProps> {
         ...(this.props.selectedAddons || []).slice(index + 1),
       ]);
     }
+
+    this.props.setPromoCode(undefined);
   }
 
   public get cardContent(): ReactNode {

@@ -1,5 +1,5 @@
 import { AvailableApps } from "@vivid/app-store";
-import { CalendarSourceConfiguration, ConnectedApp } from "@vivid/types";
+import { CalendarSourceConfiguration } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,10 +12,6 @@ import {
   AlertDialogTrigger,
   AppSelector,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  cn,
   FormControl,
   FormField,
   FormItem,
@@ -23,7 +19,7 @@ import {
   FormMessage,
   InfoTooltip,
 } from "@vivid/ui";
-import { Copy, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -62,7 +58,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   const appDisplayName = appName ? AvailableApps[appName].displayName : null;
 
   return (
-    <div className="flex flex-row gap-2 px-2 py-4 bg-background rounded w-full">
+    <div className="flex flex-row gap-2 px-2 py-4 bg-card rounded w-full">
       <div className="grid grid-cols-1 gap-2 w-full relative">
         <FormField
           control={form.control}

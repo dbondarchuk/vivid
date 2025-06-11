@@ -354,6 +354,7 @@ export class EventsService implements IEventsService {
       range?: DateRange;
       status?: AppointmentStatus[];
       customerId?: string | string[];
+      discountId?: string | string[];
     }
   ): Promise<WithTotal<Appointment>> {
     const db = await getDbConnection();
@@ -390,6 +391,14 @@ export class EventsService implements IEventsService {
         $in: Array.isArray(query.customerId)
           ? query.customerId
           : [query.customerId],
+      };
+    }
+
+    if (query.discountId) {
+      filter["discount.id"] = {
+        $in: Array.isArray(query.discountId)
+          ? query.discountId
+          : [query.discountId],
       };
     }
 
@@ -907,17 +916,12 @@ export class EventsService implements IEventsService {
   }
 
   private async getCustomer(event: AppointmentEvent): Promise<Customer> {
-    const customerByEmail = await this.customersService.findCustomer(
-      "email",
-      event.fields.email.trim()
+    const existingCustomer = await this.customersService.findCustomer(
+      event.fields.email.trim(),
+      event.fields.phone.trim()
     );
-    if (customerByEmail) return customerByEmail;
 
-    const customerByPhone = await this.customersService.findCustomer(
-      "phone",
-      event.fields.phone?.trim()
-    );
-    if (customerByPhone) return customerByPhone;
+    if (existingCustomer) return existingCustomer;
 
     const customer: CustomerUpdateModel = {
       email: event.fields.email.trim(),

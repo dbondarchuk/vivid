@@ -3,6 +3,7 @@ export * from "./appointment-event";
 export * from "./appointment-option";
 export * from "./availability";
 export * from "./date-time";
+export * from "./discount";
 export * from "./event";
 export * from "./field";
 export * from "./fields";

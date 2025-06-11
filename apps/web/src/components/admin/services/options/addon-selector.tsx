@@ -1,5 +1,12 @@
 import { AppointmentAddon } from "@vivid/types";
-import { cn, Combobox, IComboboxItem, toast } from "@vivid/ui";
+import {
+  cn,
+  Combobox,
+  IComboboxItem,
+  MultiSelect,
+  OptionType,
+  toast,
+} from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import { Clock, DollarSign } from "lucide-react";
 import React from "react";
@@ -49,12 +56,21 @@ const checkAddonSearch = (addon: AppointmentAddon, query: string) => {
 };
 
 export type AddonSelectorProps = {
-  value?: string;
   disabled?: boolean;
   excludeIds?: string[];
   className?: string;
-  onItemSelect?: (value: string) => void;
-};
+} & (
+  | {
+      onItemSelect?: (value: string) => void;
+      value?: string;
+      multi?: false;
+    }
+  | {
+      multi: true;
+      onItemSelect?: (value: string[]) => void;
+      value?: string[];
+    }
+);
 
 export const AddonSelector: React.FC<AddonSelectorProps> = ({
   disabled,
@@ -62,6 +78,7 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
   excludeIds,
   value,
   onItemSelect,
+  multi,
 }) => {
   const [addons, setAddons] = React.useState<AppointmentAddon[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -80,7 +97,7 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
     fn();
   }, []);
 
-  const AddonValues = (addons: AppointmentAddon[]): IComboboxItem[] =>
+  const addonValues = (addons: AppointmentAddon[]): IComboboxItem[] =>
     addons
       .filter(({ _id }) => !excludeIds?.find((id) => id === _id))
       .map((field) => {
@@ -95,15 +112,34 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
         };
       });
 
-  return (
+  const addonMultiOptions = (addons: AppointmentAddon[]): OptionType[] =>
+    addons
+      .filter(({ _id }) => !excludeIds?.find((id) => id === _id))
+      .map((addon) => {
+        return {
+          value: addon._id,
+          label: addon.name,
+        };
+      });
+
+  return multi ? (
+    <MultiSelect
+      disabled={disabled || isLoading}
+      className={cn("flex font-normal text-base", className)}
+      options={addonMultiOptions(addons)}
+      placeholder={isLoading ? "Loading addons..." : "Select addon"}
+      selected={value || []}
+      onChange={(value) => onItemSelect?.(value as string[])}
+    />
+  ) : (
     <Combobox
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
-      values={AddonValues(addons)}
+      values={addonValues(addons)}
       searchLabel={isLoading ? "Loading addons..." : "Select addon"}
       value={value}
       customSearch={(search) =>
-        AddonValues(addons.filter((app) => checkAddonSearch(app, search)))
+        addonValues(addons.filter((app) => checkAddonSearch(app, search)))
       }
       onItemSelect={onItemSelect}
     />

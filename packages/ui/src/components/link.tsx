@@ -7,6 +7,7 @@ import { textVariants, TextVariants } from "./text";
 
 const linkVariants = {
   default: "underline",
+  underline: "underline",
   standalone: "no-underline",
   dashed: "underline decoration-dashed",
 };
@@ -24,6 +25,7 @@ export const linkClasses = cva(
       variant: linkVariants,
       size: linkSizes,
     },
+    defaultVariants: {},
   }
 );
 

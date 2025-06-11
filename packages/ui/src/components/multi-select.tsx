@@ -24,9 +24,10 @@ export type OptionType = {
 interface MultiSelectProps {
   options: OptionType[];
   selected: string[];
-  onChange: React.Dispatch<React.SetStateAction<string[]>>;
+  onChange?: React.Dispatch<React.SetStateAction<string[]>>;
   className?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 function MultiSelect({
@@ -34,13 +35,14 @@ function MultiSelect({
   selected,
   onChange,
   className,
-  placeholder,
+  placeholder = "Select option",
+  disabled,
   ...props
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleUnselect = (item: string) => {
-    onChange(selected.filter((i) => i !== item));
+    onChange?.(selected.filter((i) => i !== item));
   };
 
   return (
@@ -54,6 +56,7 @@ function MultiSelect({
             selected.length > 1 ? "h-full" : "h-9"
           }`}
           onClick={() => setOpen(!open)}
+          disabled={disabled}
         >
           <div className="flex gap-1 flex-wrap">
             {selected.map((item) => (
@@ -103,7 +106,7 @@ function MultiSelect({
                 <CommandItem
                   key={option.value}
                   onSelect={() => {
-                    onChange(
+                    onChange?.(
                       selected.includes(option.value)
                         ? selected.filter((item) => item !== option.value)
                         : [...selected, option.value]

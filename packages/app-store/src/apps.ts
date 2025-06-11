@@ -17,8 +17,6 @@ import { GoogleCalendarApp } from "./apps/google-calendar/app";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { IcsApp } from "./apps/ics/app";
 import { ICS_APP_NAME } from "./apps/ics/const";
-import { LogCleanupApp } from "./apps/log-cleanup/app";
-import { LOG_CLEANUP_APP_NAME } from "./apps/log-cleanup/const";
 import { OutlookApp } from "./apps/outlook/app";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { RemindersApp } from "./apps/reminders/app";
@@ -54,7 +52,7 @@ export const AvailableApps: Record<string, App> = {
     CustomerTextMessageNotificationApp,
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: TextMessageNotificationApp,
   [REMINDERS_APP_NAME]: RemindersApp,
-  [LOG_CLEANUP_APP_NAME]: LogCleanupApp,
+  // [LOG_CLEANUP_APP_NAME]: LogCleanupApp,
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
   [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageApp,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,

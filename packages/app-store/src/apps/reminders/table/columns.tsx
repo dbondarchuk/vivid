@@ -35,6 +35,7 @@ export const columns: ColumnDef<Reminder>[] = [
     cell: ({ row }) => (
       <Link
         href={`/admin/dashboard/communications/reminders/edit?id=${row.original._id}`}
+        variant="underline"
       >
         {row.original.name}
       </Link>

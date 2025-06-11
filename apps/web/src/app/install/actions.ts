@@ -4,7 +4,6 @@ import {
   CUSTOMER_EMAIL_NOTIFICATION_APP_NAME,
   CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
   FILE_SYSTEM_ASSETS_STORAGE_APP_NAME,
-  LOG_CLEANUP_APP_NAME,
   REMINDERS_APP_NAME,
 } from "@vivid/app-store";
 import { ServicesContainer } from "@vivid/services";
@@ -38,6 +37,7 @@ export async function install(data: InstallFormData) {
   await ServicesContainer.ConfigurationService().setConfiguration("booking", {
     options: [],
     timeZone: DateTime.now().zoneName,
+    allowPromoCode: "allow-if-has-active",
   });
 
   await ServicesContainer.ConfigurationService().setConfiguration("schedule", {
@@ -71,19 +71,19 @@ export async function install(data: InstallFormData) {
     CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME
   );
 
-  const logCleanerAppId =
-    await ServicesContainer.ConnectedAppService().createNewApp(
-      LOG_CLEANUP_APP_NAME
-    );
+  // const logCleanerAppId =
+  //   await ServicesContainer.ConnectedAppService().createNewApp(
+  //     LOG_CLEANUP_APP_NAME
+  //   );
 
-  await ServicesContainer.ConnectedAppService().updateApp(logCleanerAppId, {
-    status: "connected",
-    statusText: "Installed",
-    data: {
-      amount: 1,
-      type: "weeks",
-    },
-  });
+  // await ServicesContainer.ConnectedAppService().updateApp(logCleanerAppId, {
+  //   status: "connected",
+  //   statusText: "Installed",
+  //   data: {
+  //     amount: 1,
+  //     type: "weeks",
+  //   },
+  // });
 
   const assetsStorageAppId =
     await ServicesContainer.ConnectedAppService().createNewApp(

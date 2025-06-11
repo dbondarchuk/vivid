@@ -32,7 +32,10 @@ export const columns: ColumnDef<AppointmentOption>[] = [
   },
   {
     cell: ({ row }) => (
-      <Link href={`/admin/dashboard/services/options/${row.original._id}`}>
+      <Link
+        href={`/admin/dashboard/services/options/${row.original._id}`}
+        variant="underline"
+      >
         {row.original.name}
       </Link>
     ),

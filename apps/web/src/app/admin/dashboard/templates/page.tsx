@@ -18,7 +18,7 @@ export default async function EmailTemplatesPage(props: Params) {
 
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Communication", link: "/admin/dashboard/templates" },
+    { title: "Communications", link: "/admin/dashboard/communication-logs" },
     { title: "Templates", link: "/admin/dashboard/templates" },
   ];
 

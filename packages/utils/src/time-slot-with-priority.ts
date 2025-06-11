@@ -139,22 +139,45 @@ export function getAvailableTimeSlotsWithPriority({
   const durationWeights = new Map<number, number>();
   sortedDurations.forEach((d, i) => durationWeights.set(d, i + 1)); // weight 1 = highest priority
 
-  function calculateFittingAppointments(gap: number): {
+  function calculateFittingAppointments(availableTime: number): {
     count: number;
     totalWeight: number;
   } {
     let count = 0;
     let weightSum = 0;
-    let remaining = gap;
+    let remaining = availableTime;
+
     while (true) {
-      const next = sortedDurations.find((d) => d <= remaining);
+      const next = sortedDurations.find((d) =>
+        allowSkipBreak ? d <= remaining : d + breakDuration <= remaining
+      );
+
       if (!next) break;
+
       count++;
+      remaining -= allowSkipBreak ? next : next + breakDuration;
       weightSum += durationWeights.get(next)!;
-      remaining -= next;
     }
+
     return { count, totalWeight: weightSum };
   }
+
+  // function calculateFittingAppointments(gap: number): {
+  //   count: number;
+  //   totalWeight: number;
+  // } {
+  //   let count = 0;
+  //   let weightSum = 0;
+  //   let remaining = gap;
+  //   while (true) {
+  //     const next = sortedDurations.find((d) => d <= remaining);
+  //     if (!next) break;
+  //     count++;
+  //     weightSum += durationWeights.get(next)!;
+  //     remaining -= next;
+  //   }
+  //   return { count, totalWeight: weightSum };
+  // }
 
   for (
     let day = start.startOf("day");
@@ -180,6 +203,16 @@ export function getAvailableTimeSlotsWithPriority({
         { startAt: workEnd, endAt: workEnd },
       ];
 
+      const allSlotStarts = getSlotStartTimes(workStart, workEnd, {
+        ...configuration,
+        allowSmartSlotStarts: false,
+      })
+        .filter((s) => s.plus({ minutes: duration }) <= workEnd)
+        .sort((a, b) => a.toMillis() - b.toMillis());
+
+      const firstValidSlotStart = allSlotStarts[0];
+      const lastValidSlotStart = allSlotStarts[allSlotStarts.length - 1];
+
       for (let i = 0; i < timeline.length - 1; i++) {
         const gapStart = timeline[i].endAt;
         const gapEnd = timeline[i + 1].startAt;
@@ -204,17 +237,29 @@ export function getAvailableTimeSlotsWithPriority({
           const gapBeforeSlot = slotStart.diff(gapStart, "minutes").minutes;
           const gapAfterSlot = gapEnd.diff(slotEnd, "minutes").minutes;
 
+          const isToShiftStart =
+            slotStart.diff(firstValidSlotStart, "minutes").minutes <= 5;
+
+          const isToShiftEnd =
+            Math.abs(
+              slotStart
+                .plus({ minutes: duration })
+                .diff(lastValidSlotStart.plus({ minutes: duration }), "minutes")
+                .minutes
+            ) <= 5;
+
           const anyOtherServiceCanFit =
             allServiceDurations &&
             allServiceDurations.some(
               (s) => s <= gapBeforeSlot || s <= gapAfterSlot
             );
 
-          const hasBreakBefore = isFirstGap || gapBeforeSlot >= breakDuration;
+          const hasBreakBefore =
+            isToShiftStart || gapBeforeSlot >= breakDuration;
           // || allowSkipBreak;
 
           const hasBreakAfter =
-            isLastGap ||
+            isToShiftEnd ||
             gapAfterSlot >= breakDuration ||
             // allowSkipBreak ||
             !anyOtherServiceCanFit;
@@ -222,7 +267,9 @@ export function getAvailableTimeSlotsWithPriority({
           if ((!hasBreakAfter || !hasBreakBefore) && !allowSkipBreak) continue;
 
           const before = calculateFittingAppointments(gapBeforeSlot);
+
           const after = calculateFittingAppointments(gapAfterSlot);
+
           const possibleAppointments = before.count + after.count;
           const possibleAppointmentsWeight =
             before.totalWeight + after.totalWeight;
@@ -247,12 +294,17 @@ export function getAvailableTimeSlotsWithPriority({
 
           let priority = 0;
 
-          if (slotMatchesCustom) priority += 2;
+          if (slotMatchesCustom) priority += 3;
           if (hasBreakBefore) priority += 1;
           if (hasBreakAfter) priority += 1;
-          if (preferBackToBack && adjacentToEvent && !isFirstGap && !isLastGap)
+          if (
+            preferBackToBack &&
+            adjacentToEvent &&
+            !isToShiftStart &&
+            !isToShiftEnd
+          )
             priority += 1;
-          if (lowerPriorityIfNoFollowingBooking && anyOtherServiceCanFit)
+          if (lowerPriorityIfNoFollowingBooking && !anyOtherServiceCanFit)
             priority -= 1;
 
           if (allowSkipBreak && (!hasBreakBefore || !hasBreakAfter)) {
@@ -260,9 +312,31 @@ export function getAvailableTimeSlotsWithPriority({
           }
 
           if (discourageLargeGaps && !anyOtherServiceCanFit) {
-            if (gapAfterSlot > 120) priority -= 3;
-            else if (gapAfterSlot > 60) priority -= 2;
-            else if (gapAfterSlot > 30) priority -= 1;
+            const isBackToBack = adjacentToEvent && preferBackToBack;
+
+            const penalizeGap = (
+              gapMinutes: number,
+              isAtShiftEdge: boolean,
+              isBackToBack: boolean
+            ): number => {
+              if (isBackToBack) {
+                if (gapMinutes > 120) return isAtShiftEdge ? 1 : 2;
+                if (gapMinutes > 60) return 1;
+                if (gapMinutes > 30) return 0;
+              } else {
+                if (gapMinutes > 120) return isAtShiftEdge ? 1 : 3;
+                if (gapMinutes > 60) return isAtShiftEdge ? 1 : 2;
+                if (gapMinutes > 30) return isAtShiftEdge ? 0 : 1;
+              }
+              return 0;
+            };
+
+            priority -= penalizeGap(
+              gapBeforeSlot,
+              isToShiftStart,
+              isBackToBack
+            );
+            priority -= penalizeGap(gapAfterSlot, isToShiftEnd, isBackToBack);
           }
 
           gapSlots.push({

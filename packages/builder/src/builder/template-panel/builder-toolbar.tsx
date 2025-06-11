@@ -235,7 +235,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
           )}
         </ToolbarGroup>
       </Toolbar>
-      <div className="grow" />
+      {/* <div className="grow" /> */}
       <Toolbar className="has-[button]:flex-wrap">
         <ToolbarGroup>
           <ToolbarButton

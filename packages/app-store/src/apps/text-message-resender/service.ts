@@ -72,7 +72,7 @@ export default class TextMessageResenderConnectedApp
 
       return {
         handledBy: "Text Message Responder - process user's reply",
-        participantType: "customer",
+        participantType: "user",
       };
     }
 

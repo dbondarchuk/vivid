@@ -10,10 +10,12 @@ import {
   Appointment,
   AppointmentAddon,
   AppointmentChoice,
+  AppointmentDiscount,
   AppointmentEvent,
   asOptionalField,
   Customer,
   CustomerListModel,
+  Discount,
   Event,
   Field,
   getFields,
@@ -40,11 +42,16 @@ import {
   InputGroupSuffixClasses,
   InputSuffix,
   MultiSelect,
+  PromoCodeSelector,
   Spinner,
   Textarea,
   toastPromise,
 } from "@vivid/ui";
-import { is12hourUserTimeFormat } from "@vivid/utils";
+import {
+  formatAmount,
+  getDiscountAmount,
+  is12hourUserTimeFormat,
+} from "@vivid/utils";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
@@ -132,6 +139,7 @@ export const AppointmentScheduleForm: React.FC<
       note: z.string().optional(),
       confirmed: z.coerce.boolean().optional(),
       customerId: z.string().optional(),
+      promoCode: z.string().optional(),
     })
     .superRefine((args, ctx) => {
       const option = options.find((x) => x._id === args.option);
@@ -193,6 +201,13 @@ export const AppointmentScheduleForm: React.FC<
   const [customer, setCustomer] = React.useState<
     CustomerListModel | undefined
   >();
+
+  const [discount, setDiscount] = React.useState<
+    (Discount & { code: string }) | undefined
+  >();
+
+  const [discountAmount, setDiscountAmount] = React.useState(0);
+
   const [disabledFields, setDisabledFields] = React.useState<Set<String>>(
     new Set()
   );
@@ -278,6 +293,17 @@ export const AppointmentScheduleForm: React.FC<
           {} as Record<string, File>
         );
 
+      let appointmentDiscount: AppointmentDiscount | undefined = undefined;
+      if (data.promoCode && !discount) return;
+      if (data.promoCode && discount) {
+        appointmentDiscount = {
+          code: data.promoCode,
+          discountAmount,
+          id: discount._id,
+          name: discount.name,
+        };
+      }
+
       const appointmentEvent: Omit<AppointmentEvent, "timeZone"> = {
         dateTime: data.dateTime,
         option: {
@@ -299,6 +325,7 @@ export const AppointmentScheduleForm: React.FC<
         totalPrice: data.totalPrice,
         addons,
         note: data.note,
+        discount: appointmentDiscount,
       };
 
       const id = await toastPromise(
@@ -407,11 +434,18 @@ export const AppointmentScheduleForm: React.FC<
         0
       );
 
+    let priceDiscount = 0;
+    if (discount) {
+      priceDiscount = getDiscountAmount(price, discount);
+    }
+
+    price -= priceDiscount;
+
     form.setValue("totalDuration", duration);
-    form.setValue("totalPrice", price || 0);
+    form.setValue("totalPrice", Math.max(formatAmount(price || 0), 0));
 
     form.trigger("totalDuration");
-  }, [selectedOption, selectedAddons]);
+  }, [selectedOption, selectedAddons, discount]);
 
   React.useEffect(() => {
     setDisabledFields((prev) => {
@@ -571,6 +605,27 @@ export const AppointmentScheduleForm: React.FC<
                   )}
                 </React.Fragment>
               ))}
+              <FormField
+                control={form.control}
+                name="promoCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Discount</FormLabel>
+                    <FormControl>
+                      <PromoCodeSelector
+                        onItemSelect={field.onChange}
+                        value={field.value}
+                        disabled={loading}
+                        onValueChange={(val) => {
+                          setDiscount(val);
+                        }}
+                        allowClear
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="totalDuration"

@@ -12,9 +12,11 @@ export interface ICustomersService {
     query: Query & { priorityIds?: string[] }
   ): Promise<WithTotal<CustomerListModel>>;
 
-  findCustomer(
-    field: CustomerSearchField,
-    search: string
+  findCustomer(email: string, phone: string): Promise<Customer | null>;
+
+  findCustomerBySearchField(
+    search: string,
+    field: CustomerSearchField
   ): Promise<Customer | null>;
 
   createCustomer(customer: CustomerUpdateModel): Promise<string>;

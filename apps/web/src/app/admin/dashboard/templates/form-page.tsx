@@ -50,6 +50,7 @@ export const TemplateFormPage: React.FC<
 
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },
+    { title: "Communications", link: "/admin/dashboard/communication-logs" },
     { title: "Templates", link: "/admin/dashboard/templates" },
     {
       title: `${CommunicationChannelTexts[type]} templates`,

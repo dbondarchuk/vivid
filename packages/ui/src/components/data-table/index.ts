@@ -6,5 +6,6 @@ export * from "./data-table-range-box";
 export * from "./data-table-reset-filter";
 export * from "./data-table-search";
 export * from "./data-table-skeleton";
+export * from "./discounts-data-table-async-filter-box";
 export * from "./search-params";
 export * from "./use-data-table-context";

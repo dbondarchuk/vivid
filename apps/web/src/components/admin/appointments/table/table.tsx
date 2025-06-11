@@ -15,6 +15,7 @@ export const AppointmentsTable: React.FC<{ customerId?: string }> = async ({
   const sort = searchParamsCache.get("sort");
 
   const customerIds = searchParamsCache.get("customer");
+  const discountIds = searchParamsCache.get("discount");
 
   const offset = (page - 1) * limit;
 
@@ -26,6 +27,7 @@ export const AppointmentsTable: React.FC<{ customerId?: string }> = async ({
     search,
     sort,
     customerId: customerId ?? customerIds ?? undefined,
+    discountId: discountIds ?? undefined,
   });
 
   const { timeZone } =

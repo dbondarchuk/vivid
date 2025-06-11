@@ -18,6 +18,7 @@ export const searchParams = {
     ["confirmed", "pending"]
   ),
   customer: parseAsArrayOf(parseAsString),
+  discount: parseAsArrayOf(parseAsString),
   sort: baseSearchParams.sort.withDefault([
     {
       id: "createdAt",

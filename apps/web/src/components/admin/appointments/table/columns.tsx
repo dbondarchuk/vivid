@@ -11,7 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
-import { durationToTime } from "@vivid/utils";
+import { durationToTime, formatAmountString } from "@vivid/utils";
 import {
   CalendarCheck,
   CalendarClock,
@@ -73,7 +73,14 @@ const OptionCell: React.FC<{
           appointment={appointment}
         />
       )}
-      <TooltipProvider>
+      <Button
+        variant="link-dashed"
+        // href={`/admin/dashboard/appointments/${appointment._id}`}
+        onClick={() => setIsDialogOpen(true)}
+      >
+        {appointment.option.name}
+      </Button>
+      {/* <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -152,7 +159,7 @@ const OptionCell: React.FC<{
             </div>
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
+      </TooltipProvider> */}
     </>
   );
 };
@@ -165,9 +172,8 @@ const CustomerCell: React.FC<{
       <Tooltip>
         <TooltipTrigger asChild>
           <Link
-            variant="link"
-            className="font-normal"
             href={`/admin/dashboard/customers/${appointment.customerId}`}
+            variant="underline"
           >
             {appointment.customer.name}
           </Link>
@@ -273,7 +279,34 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (app) => (app.totalPrice ? `$${app.totalPrice}` : null),
+    cell: ({ row }) =>
+      row.original.discount ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                variant="underline"
+                href={`/admin/dashboard/services/discounts/${row.original.discount.id}`}
+              >
+                {row.original.discount.code}{" "}
+                <span className="text-sm">
+                  -${formatAmountString(row.original.discount.discountAmount)}
+                </span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>{row.original.discount.name}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : null,
+    id: "discount.name",
+    header: tableSortHeader("Discount", "time"),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    accessorFn: (appointment) =>
+      appointment.totalPrice
+        ? `$${formatAmountString(appointment.totalPrice)}`
+        : null,
     id: "totalPrice",
     header: tableSortHeader("Price", "number"),
     sortingFn: tableSortNoopFunction,
