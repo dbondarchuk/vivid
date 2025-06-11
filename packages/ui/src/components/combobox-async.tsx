@@ -136,6 +136,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
           onClear={() => onChange(undefined as any as string)}
           open={open}
           className={className}
+          disabled={disabled}
           {...rest}
         >
           {selectedItem

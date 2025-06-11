@@ -50,7 +50,11 @@ export const appointmentRequestSchema = z.object({
     .object({
       email: z.string().email("Valid email is required").trim(),
       name: z.string().min(1, "Name is required").trim(),
-      phone: z.string().min(1, "Name is required").trim(),
+      phone: z
+        .string()
+        .min(1, "Phone is required")
+        .trim()
+        .refine((s) => !s?.includes("_"), "Valid phone number is required"),
     })
     .and(
       z.record(

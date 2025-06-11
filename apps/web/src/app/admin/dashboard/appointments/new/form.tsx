@@ -132,7 +132,11 @@ export const AppointmentScheduleForm: React.FC<
         .object({
           name: z.string().min(1, "Name is required").trim(),
           email: z.string().email("Must be a valid email").trim(),
-          phone: z.string().email("Must be a valid email").trim(),
+          phone: z
+            .string()
+            .min(1, "Phone is required")
+            .trim()
+            .refine((s) => !s?.includes("_"), "Valid phone number is required"),
         })
         .and(z.record(z.string(), z.any().optional())),
 
@@ -205,8 +209,6 @@ export const AppointmentScheduleForm: React.FC<
   const [discount, setDiscount] = React.useState<
     (Discount & { code: string }) | undefined
   >();
-
-  const [discountAmount, setDiscountAmount] = React.useState(0);
 
   const [disabledFields, setDisabledFields] = React.useState<Set<String>>(
     new Set()
@@ -295,10 +297,10 @@ export const AppointmentScheduleForm: React.FC<
 
       let appointmentDiscount: AppointmentDiscount | undefined = undefined;
       if (data.promoCode && !discount) return;
-      if (data.promoCode && discount) {
+      if (data.promoCode && discount && data.totalPrice) {
         appointmentDiscount = {
           code: data.promoCode,
-          discountAmount,
+          discountAmount: getDiscountAmount(data.totalPrice, discount),
           id: discount._id,
           name: discount.name,
         };
@@ -586,9 +588,11 @@ export const AppointmentScheduleForm: React.FC<
                       <CustomerSelector
                         onItemSelect={field.onChange}
                         value={field.value}
-                        disabled={loading || !!from?.customerId}
+                        disabled={
+                          loading || !!from?.customerId || !!propsCustomer
+                        }
                         onValueChange={onCustomerChange}
-                        allowClear
+                        allowClear={!from && !propsCustomer}
                       />
                     </FormControl>
                     <FormMessage />
