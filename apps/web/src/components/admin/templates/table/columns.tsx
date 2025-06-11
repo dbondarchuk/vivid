@@ -40,7 +40,7 @@ export const columns: ColumnDef<TemplateListModel>[] = [
   {
     cell: ({ row }) => (
       <Link
-        variant="ghost"
+        variant="underline"
         href={`/admin/dashboard/templates/${row.original._id}`}
       >
         {row.original.name}

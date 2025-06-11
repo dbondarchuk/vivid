@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { zUniqueArray } from "../utils";
+import { zOptionalOrMinLengthString, zUniqueArray } from "../utils";
 import { zTimeZone } from "../utils/zTimeZone";
 import { AppointmentAddon, AppointmentOption } from "./appointment-option";
 
@@ -12,6 +12,13 @@ export type AppointmentFields = Record<
   phone: string;
 };
 
+export type AppointmentDiscount = {
+  id: string;
+  name: string;
+  code: string;
+  discountAmount: number;
+};
+
 export type AppointmentEvent = {
   totalDuration: number;
   totalPrice?: number;
@@ -22,6 +29,7 @@ export type AppointmentEvent = {
   fieldsLabels?: Record<string, string>;
   addons?: Omit<AppointmentAddon, "updatedAt">[];
   note?: string;
+  discount?: AppointmentDiscount;
 };
 
 export const appointmentRequestSchema = z.object({
@@ -50,6 +58,10 @@ export const appointmentRequestSchema = z.object({
         z.union([z.number(), z.date(), z.boolean(), z.string()])
       )
     ),
+  promoCode: zOptionalOrMinLengthString(
+    1,
+    "Promo code should be undefined or at least 1 character long"
+  ),
 });
 
 export type AppointmentRequest = z.infer<typeof appointmentRequestSchema>;

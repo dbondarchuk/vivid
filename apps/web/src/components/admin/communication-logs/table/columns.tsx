@@ -95,7 +95,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
           <span>{row.original.text.substring(0, 50)}...</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="default">View more</Button>
+              <Button variant="link-dashed">View more</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>
@@ -137,7 +137,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
         <div className="flex flex-col gap-1">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="default">View</Button>
+              <Button variant="link-dashed">View</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>

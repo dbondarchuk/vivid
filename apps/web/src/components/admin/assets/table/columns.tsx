@@ -107,6 +107,7 @@ export const columns: ColumnDef<Asset>[] = [
       row.original.appointment ? (
         <Link
           href={`/admin/dashboard/appointments/${row.original.appointmentId}`}
+          variant="underline"
         >
           {row.original.appointment.option.name}
         </Link>
@@ -118,7 +119,10 @@ export const columns: ColumnDef<Asset>[] = [
   {
     cell: ({ row }) =>
       row.original.customer ? (
-        <Link href={`/admin/dashboard/customers/${row.original.customer?._id}`}>
+        <Link
+          href={`/admin/dashboard/customers/${row.original.customer?._id}`}
+          variant="underline"
+        >
           {row.original.customer.name}
         </Link>
       ) : null,

@@ -215,7 +215,7 @@ export const appointmentCreatedEmailTemplate = {
                   align: "start",
                   children: [
                     {
-                      text: "Price: ${{totalPrice}}",
+                      text: "Price: ${{totalPriceFormatted}}",
                       fontSize: "14px",
                     },
                   ],

@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
   Heading,
+  Link,
 } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import {
@@ -49,7 +50,17 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <CardTitle className="w-full flex flex-row justify-between items-center">
           <Heading
             title={appointment.option.name}
-            description={`By ${appointment.fields.name}`}
+            description={
+              <>
+                By{" "}
+                <Link
+                  href={`/admin/dashboard/customers/${appointment.customerId}`}
+                  variant="underline"
+                >
+                  {appointment.customer?.name ?? appointment.fields.name}
+                </Link>
+              </>
+            }
             href={`/admin/dashboard/appointments/${appointment._id}`}
           />
           {/* <Link

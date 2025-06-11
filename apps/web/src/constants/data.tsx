@@ -1,6 +1,7 @@
 import { NavItemGroup, NavItemWithOptionalChildren } from "@vivid/types";
 import {
   ArrowDownToLine,
+  BadgeDollarSign,
   Blocks,
   BookUser,
   Boxes,
@@ -90,6 +91,13 @@ export const navItems: NavItemGroup[] = [
             href: "/admin/dashboard/services/options",
             label: "Options",
             icon: <HandPlatter />,
+          },
+          {
+            id: "discounts",
+            title: "Discounts",
+            href: "/admin/dashboard/services/discounts",
+            label: "Discounts",
+            icon: <BadgeDollarSign />,
           },
         ],
       },

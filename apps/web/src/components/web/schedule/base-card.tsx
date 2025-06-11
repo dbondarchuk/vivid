@@ -1,4 +1,9 @@
-import type { AppointmentAddon, AppointmentChoice } from "@vivid/types";
+import type {
+  ApplyDiscountResponse,
+  AppointmentAddon,
+  AppointmentChoice,
+  DiscountType,
+} from "@vivid/types";
 
 import { IWithI18nProps } from "@/i18n/with-i18n";
 import {
@@ -21,6 +26,9 @@ export type BaseCardProps = IWithI18nProps & {
   appointmentOption: AppointmentChoice;
   selectedAddons?: AppointmentAddon[];
   optionDuration?: number;
+  promoCode?: ApplyDiscountResponse;
+
+  setPromoCode: (promoCode?: ApplyDiscountResponse) => void;
 };
 
 export type BaseCardState = {};
@@ -48,7 +56,7 @@ export abstract class BaseCard<
     );
   }
 
-  protected get price() {
+  protected get basePrice() {
     return (
       (this.props.appointmentOption.price || 0) +
       (this.props.selectedAddons || []).reduce(
@@ -56,6 +64,23 @@ export abstract class BaseCard<
         0
       )
     );
+  }
+
+  protected get discount() {
+    if (!this.props.promoCode) return 0;
+
+    switch (this.props.promoCode.type) {
+      case "amount":
+        return this.props.promoCode.value;
+      case "percentage":
+        return parseFloat(
+          ((this.basePrice * this.props.promoCode.value) / 100).toFixed(2)
+        );
+    }
+  }
+
+  protected get price() {
+    return Math.max(0, this.basePrice - this.discount);
   }
 
   public render(): React.ReactNode {

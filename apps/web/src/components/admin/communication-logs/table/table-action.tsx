@@ -35,7 +35,7 @@ export const CommunicationLogsTableAction: React.FC<{
   allowClearAll,
   showCustomerFilter,
   showParticipantTypeFilter,
-  hideActions,
+  hideActions = true,
   className,
 }) => {
   const {

@@ -11,7 +11,7 @@ import {
   useLayoutEffect,
   useCallback,
 } from "react";
-import { CalendarIcon, CircleAlert, CircleCheck } from "lucide-react";
+import { CalendarIcon, CircleAlert, CircleCheck, X } from "lucide-react";
 import { Button } from "../button";
 import { useFormContext } from "react-hook-form";
 import {
@@ -430,6 +430,16 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
               )}
             </div>
           </TooltipProvider>
+        )}
+        {rest.clearable && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn("w-8 h-8", showValidation ? "me-6" : "me-3")}
+            onClick={() => setSegments(parseFormat(formatStr, undefined))}
+          >
+            <X className="size-4 text-muted-foreground" />
+          </Button>
         )}
       </div>
     );

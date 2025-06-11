@@ -214,9 +214,7 @@ export type CheckUniqueReminderNameAction = {
 
 export const CheckUniqueReminderNameActionType = "check-unique-name" as const;
 
-export const remindersAppDataSchema = z.object({
-  textMessageAutoReplyTemplateId: z.string().optional(),
-});
+export const remindersAppDataSchema = z.object({});
 
 export type RemindersAppData = z.infer<typeof remindersAppDataSchema>;
 

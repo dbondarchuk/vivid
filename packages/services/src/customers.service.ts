@@ -218,8 +218,19 @@ export class CustomersService implements ICustomersService {
   }
 
   public async findCustomer(
-    field: CustomerSearchField,
-    search: string
+    email: string,
+    phone: string
+  ): Promise<Customer | null> {
+    const byEmail = await this.findCustomerBySearchField(email, "email");
+    if (byEmail) return byEmail;
+
+    const byPhone = await this.findCustomerBySearchField(phone, "phone");
+    return byPhone;
+  }
+
+  public async findCustomerBySearchField(
+    search: string,
+    field: CustomerSearchField
   ): Promise<Customer | null> {
     const db = await getDbConnection();
 

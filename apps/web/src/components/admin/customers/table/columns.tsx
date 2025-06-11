@@ -20,7 +20,10 @@ const AppointmentCell: React.FC<{ appointment?: AppointmentEntity }> = ({
   appointment,
 }) =>
   appointment && appointment.option ? (
-    <Link href={`/admin/dashboard/appointments/${appointment._id}`}>
+    <Link
+      href={`/admin/dashboard/appointments/${appointment._id}`}
+      variant="underline"
+    >
       {appointment.option.name} at{" "}
       {DateTime.fromJSDate(appointment.dateTime).toLocaleString(
         DateTime.DATETIME_MED
@@ -65,7 +68,10 @@ export const columns: ColumnDef<CustomerListModel>[] = [
   },
   {
     cell: ({ row }) => (
-      <Link href={`/admin/dashboard/customers/${row.original._id}`}>
+      <Link
+        href={`/admin/dashboard/customers/${row.original._id}`}
+        variant="underline"
+      >
         {row.original.name}
       </Link>
     ),
@@ -75,7 +81,10 @@ export const columns: ColumnDef<CustomerListModel>[] = [
   },
   {
     cell: ({ row }) => (
-      <Link href={`/admin/dashboard/customers/${row.original._id}`}>
+      <Link
+        href={`/admin/dashboard/customers/${row.original._id}`}
+        variant="underline"
+      >
         {row.original.email}
       </Link>
     ),
@@ -85,7 +94,10 @@ export const columns: ColumnDef<CustomerListModel>[] = [
   },
   {
     cell: ({ row }) => (
-      <Link href={`/admin/dashboard/customers/${row.original._id}`}>
+      <Link
+        href={`/admin/dashboard/customers/${row.original._id}`}
+        variant="underline"
+      >
         {row.original.phone}
       </Link>
     ),
@@ -110,9 +122,16 @@ export const columns: ColumnDef<CustomerListModel>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (customer) => customer.appointmentsCount,
+    cell: ({ row }) => (
+      <Link
+        href={`/admin/dashboard/customers/${row.original._id}/appointments`}
+        variant="underline"
+      >
+        {row.original.appointmentsCount}
+      </Link>
+    ),
     id: "appointmentsCount",
-    header: tableSortHeader("Total appointments", "number"),
+    header: tableSortHeader("Appointments", "number"),
     sortingFn: tableSortNoopFunction,
   },
   {

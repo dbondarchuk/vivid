@@ -3,7 +3,7 @@ import { Link } from "./link";
 
 type HeadingProps = {
   title: string;
-  description?: string;
+  description?: React.ReactNode;
   href?: string;
 };
 
@@ -15,7 +15,13 @@ export const Heading: React.FC<HeadingProps> = ({
   return (
     <div>
       <h2 className="text-2xl font-bold tracking-tight">
-        {href ? <Link href={href}>{title}</Link> : title}
+        {href ? (
+          <Link href={href} variant="underline">
+            {title}
+          </Link>
+        ) : (
+          title
+        )}
       </h2>
       {description && (
         <p className="text-sm text-muted-foreground">{description}</p>

@@ -65,9 +65,12 @@ export const DurationCardFC: React.FC<DurationCardProps> = (
             <Button
               className="w-36"
               variant={props.duration === dur ? "default" : "outline"}
-              onClick={() =>
-                props.onDurationChange(props.duration === dur ? undefined : dur)
-              }
+              onClick={() => {
+                props.onDurationChange(
+                  props.duration === dur ? undefined : dur
+                );
+                props.setPromoCode(undefined);
+              }}
             >
               {dur} minutes
             </Button>

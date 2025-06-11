@@ -1,7 +1,9 @@
 import {
+  AllowPromoCodeType,
   CommunicationChannel,
   CommunicationDirection,
   CommunicationParticipantType,
+  DiscountType,
   FieldType,
 } from "@vivid/types";
 
@@ -35,4 +37,15 @@ export const FieldTypeLabels: Record<FieldType, string> = {
   checkbox: "Checkbox",
   select: "Select",
   file: "File",
+};
+
+export const DiscountTypeLabels: Record<DiscountType, string> = {
+  amount: "Fixed amount",
+  percentage: "Percentage",
+};
+
+export const AllowPromoCodeTypeLabels: Record<AllowPromoCodeType, string> = {
+  never: "Never",
+  "allow-if-has-active": "When there are active discounts",
+  always: "Always",
 };

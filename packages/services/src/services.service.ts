@@ -1,12 +1,19 @@
 import {
   AddonsType,
+  ApplyCustomerDiscountRequest,
   AppointmentAddon,
   AppointmentAddonUpdateModel,
+  AppointmentEntity,
   AppointmentOption,
   AppointmentOptionUpdateModel,
   ConfigurationOption,
+  DateRange,
+  Discount,
+  DiscountType,
+  DiscountUpdateModel,
   FieldsType,
   FieldType,
+  IConfigurationService,
   IServicesService,
   Query,
   ServiceField,
@@ -18,12 +25,18 @@ import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { CONFIGURATION_COLLECTION_NAME } from "./configuration.service";
 import { getDbConnection } from "./database";
+import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
 
 export const FIELDS_COLLECTION_NAME = "fields";
 export const ADDONS_COLLECTION_NAME = "addons";
 export const OPTIONS_COLLECTION_NAME = "options";
+export const DISCOUNTS_COLLECTION_NAME = "discounts";
 
 export class ServicesService implements IServicesService {
+  public constructor(
+    protected readonly configurationService: IConfigurationService
+  ) {}
+
   /** Fields */
 
   public async getField(id: string): Promise<ServiceField | null> {
@@ -729,5 +742,478 @@ export class ServicesService implements IServicesService {
 
     const result = await options.countDocuments(filter);
     return result === 0;
+  }
+
+  /** Discounts */
+
+  public async getDiscount(id: string): Promise<Discount | null> {
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    return await discounts.findOne({
+      _id: id,
+    });
+  }
+
+  public async getDiscountByCode(code: string): Promise<Discount | null> {
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    return await discounts.findOne({
+      codes: code,
+    });
+  }
+
+  public async getDiscounts(
+    query: Query & {
+      enabled?: boolean[];
+      type?: DiscountType[];
+      range?: DateRange;
+      priorityIds?: string[];
+    }
+  ): Promise<
+    WithTotal<
+      Discount & {
+        usedCount: number;
+      }
+    >
+  > {
+    const db = await getDbConnection();
+
+    const sort: Sort = query.sort?.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.id]: curr.desc ? -1 : 1,
+      }),
+      {}
+    ) || { updatedAt: -1 };
+
+    const $and: Filter<Discount>[] = [];
+
+    if (query.type) {
+      $and.push({
+        type: {
+          $in: query.type,
+        },
+      });
+    }
+
+    if (query.range?.start || query.range?.end) {
+      if (query.range.start) {
+        $and.push({
+          $or: [
+            {
+              endDate: { $gte: query.range.start },
+            },
+            {
+              endDate: { $exists: false },
+            },
+          ],
+        });
+      }
+
+      if (query.range.end) {
+        $and.push({
+          $or: [
+            {
+              startDate: { $lte: query.range.end },
+            },
+            {
+              startDate: { $exists: false },
+            },
+          ],
+        });
+      }
+    }
+
+    if (query.enabled?.length === 1) {
+      $and.push({
+        enabled: query.enabled[0],
+      });
+    }
+
+    if (query.search) {
+      const $regex = new RegExp(escapeRegex(query.search), "i");
+      const queries = buildSearchQuery<Discount>({ $regex }, "name", "codes");
+
+      $and.push({
+        $or: queries,
+      });
+    }
+
+    const filter: Filter<Discount> = {
+      $and,
+    };
+
+    const priorityStages = query.priorityIds
+      ? [
+          {
+            $facet: {
+              priority: [
+                {
+                  $match: {
+                    _id: {
+                      $in: query.priorityIds,
+                    },
+                  },
+                },
+              ],
+              other: [
+                {
+                  $match: {
+                    ...filter,
+                    _id: {
+                      $nin: query.priorityIds,
+                    },
+                  },
+                },
+                {
+                  $sort: sort,
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              values: {
+                $concatArrays: ["$priority", "$other"],
+              },
+            },
+          },
+          {
+            $unwind: {
+              path: "$values",
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: "$values",
+            },
+          },
+        ]
+      : [
+          {
+            $match: filter,
+          },
+          {
+            $sort: sort,
+          },
+        ];
+
+    const [result] = await db
+      .collection<Discount>(DISCOUNTS_COLLECTION_NAME)
+      .aggregate([
+        {
+          $lookup: {
+            from: APPOINTMENTS_COLLECTION_NAME,
+            localField: "_id",
+            foreignField: "discount.id",
+            as: "usedCount",
+          },
+        },
+        {
+          $set: {
+            usedCount: {
+              $size: "$usedCount",
+            },
+          },
+        },
+        ...priorityStages,
+        {
+          $facet: {
+            paginatedResults: [
+              ...(typeof query.offset !== "undefined"
+                ? [{ $skip: query.offset }]
+                : []),
+              ...(typeof query.limit !== "undefined"
+                ? [{ $limit: query.limit }]
+                : []),
+            ],
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
+
+    return {
+      total: result.totalCount?.[0]?.count || 0,
+      items: result.paginatedResults || [],
+    };
+  }
+
+  public async createDiscount(
+    discount: DiscountUpdateModel
+  ): Promise<Discount> {
+    const dbDiscount: Discount = {
+      ...discount,
+      _id: new ObjectId().toString(),
+      updatedAt: DateTime.utc().toJSDate(),
+    };
+
+    if (!this.checkDiscountUniqueNameAndCode(discount.name, discount.codes)) {
+      throw new Error("Name or code already exists");
+    }
+
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    await discounts.insertOne(dbDiscount);
+
+    return dbDiscount;
+  }
+
+  public async updateDiscount(
+    id: string,
+    update: DiscountUpdateModel
+  ): Promise<void> {
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    const { _id, ...updateObj } = update as Discount; // Remove fields in case it slips here
+
+    if (!this.checkDiscountUniqueNameAndCode(update.name, update.codes, id)) {
+      throw new Error("Name or code already exists");
+    }
+
+    updateObj.updatedAt = DateTime.utc().toJSDate();
+
+    await discounts.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: updateObj,
+      }
+    );
+  }
+
+  public async deleteDiscount(id: string): Promise<Discount | null> {
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    const discount = await discounts.findOne({ _id: id });
+    if (!discount) return null;
+
+    await discounts.deleteOne({
+      _id: id,
+    });
+
+    return discount;
+  }
+
+  public async deleteDiscounts(ids: string[]): Promise<void> {
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    await discounts.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+  }
+
+  public async checkDiscountUniqueNameAndCode(
+    name: string,
+    codes: string[],
+    id?: string
+  ): Promise<{ name: boolean; code: Record<string, boolean> }> {
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    const nameFilter: Filter<Discount> = {
+      name,
+    };
+
+    const codeFilter: Filter<Discount> = {};
+
+    if (id) {
+      nameFilter._id = {
+        $ne: id,
+      };
+      codeFilter._id = {
+        $ne: id,
+      };
+    }
+
+    const codesAgg = codes?.length
+      ? discounts.aggregate([
+          {
+            $facet: codes.reduce(
+              (map, code) => ({
+                ...map,
+                [code]: [
+                  {
+                    $match: {
+                      ...codeFilter,
+                      code,
+                    },
+                  },
+                  {
+                    $count: "count",
+                  },
+                ],
+              }),
+              {}
+            ),
+          },
+        ])
+      : { toArray: () => Promise.resolve([]) };
+
+    const [nameResult, codeResult] = await Promise.all([
+      discounts.find(nameFilter).hasNext(),
+      codesAgg.toArray(),
+    ]);
+
+    return {
+      name: !nameResult,
+      code: codeResult?.length
+        ? Object.entries(codeResult[0]).reduce(
+            (map, [code, val]) => ({
+              ...map,
+              [code]: !val[0]?.count,
+            }),
+            {}
+          )
+        : {},
+    };
+  }
+
+  public async applyDiscount(
+    request: ApplyCustomerDiscountRequest
+  ): Promise<Discount | null> {
+    const discount = await this.getDiscountByCode(request.code);
+    if (!discount) return null;
+
+    const { timeZone } =
+      await this.configurationService.getConfiguration("booking");
+    const now = DateTime.now().setZone(timeZone);
+
+    if (
+      discount.startDate &&
+      DateTime.fromJSDate(discount.startDate).setZone(timeZone) > now
+    ) {
+      return null;
+    }
+
+    if (
+      discount.endDate &&
+      DateTime.fromJSDate(discount.endDate).setZone(timeZone) < now
+    ) {
+      return null;
+    }
+
+    if (
+      discount.appointmentStartDate &&
+      DateTime.fromJSDate(discount.appointmentStartDate).setZone(timeZone) >
+        DateTime.fromJSDate(request.dateTime).setZone(timeZone)
+    ) {
+      return null;
+    }
+
+    if (
+      discount.appointmentEndDate &&
+      DateTime.fromJSDate(discount.appointmentEndDate).setZone(timeZone) <
+        DateTime.fromJSDate(request.dateTime).setZone(timeZone)
+    ) {
+      return null;
+    }
+
+    if (discount.limitTo?.length) {
+      const hasAny = discount.limitTo.some((limit) => {
+        if (
+          limit.options?.length &&
+          !limit.options.some((o) => o.id === request.optionId)
+        )
+          return false;
+
+        if (limit.addons?.length) {
+          const hasAddonIntersection = limit.addons.some((bundle) =>
+            bundle.ids.every(({ id: bId }) =>
+              request.addons?.some((aId) => aId === bId)
+            )
+          );
+
+          if (!hasAddonIntersection) return false;
+        }
+
+        return true;
+      });
+
+      if (!hasAny) return null;
+    }
+
+    const db = await getDbConnection();
+    const appointments = db.collection<AppointmentEntity>(
+      APPOINTMENTS_COLLECTION_NAME
+    );
+
+    if (discount.maxUsage) {
+      const usage = await appointments.countDocuments({
+        "discount.id": discount._id,
+      });
+
+      if (usage >= discount.maxUsage) return null;
+    }
+
+    if (discount.maxUsagePerCustomer && request.customerId) {
+      const usage = await appointments.countDocuments({
+        "discount.id": discount._id,
+        customerId: request.customerId,
+      });
+
+      if (usage >= discount.maxUsagePerCustomer) return null;
+    }
+
+    return discount;
+  }
+
+  public async hasActiveDiscounts(date: Date): Promise<boolean> {
+    const db = await getDbConnection();
+    const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
+
+    const { timeZone } =
+      await this.configurationService.getConfiguration("booking");
+
+    const dt = DateTime.fromJSDate(date).setZone(timeZone).toJSDate();
+
+    const hasNext = await discounts
+      .aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                enabled: true,
+              },
+              {
+                $or: [
+                  {
+                    startDate: { $lt: dt },
+                  },
+                  {
+                    startDate: { $exists: false },
+                  },
+                ],
+              },
+              {
+                $or: [
+                  {
+                    endDate: { $gt: dt },
+                  },
+                  {
+                    endDate: { $exists: false },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ])
+      .hasNext();
+
+    return hasNext;
   }
 }

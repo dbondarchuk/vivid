@@ -1,12 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlateMarkdownEditor } from "@vivid/rte";
 import {
   CustomerUpdateModel,
   DatabaseId,
   getCustomerSchemaWithUniqueCheck,
-  WithDatabaseId,
 } from "@vivid/types";
 import {
   AssetSelectorDialog,
@@ -18,7 +16,6 @@ import {
   Checkbox,
   cn,
   DateTimeInput,
-  DurationInput,
   Form,
   FormControl,
   FormField,
@@ -28,24 +25,22 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
-  InputGroupInput,
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   InputSuffix,
   Label,
   PhoneInput,
   SaveButton,
-  Sortable,
   Textarea,
   toastPromise,
 } from "@vivid/ui";
+import { PlusCircle, Trash } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueEmailAndPhone, create, update } from "./actions";
-import { Plus, PlusCircle, Trash } from "lucide-react";
-import Image from "next/image";
 
 export const CustomerForm: React.FC<{
   initialData?: CustomerUpdateModel & Partial<DatabaseId>;

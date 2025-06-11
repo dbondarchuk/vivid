@@ -1,27 +1,24 @@
 "use client";
 
-import { CustomerListModel, WithTotal } from "@vivid/types";
 import {
-  AsyncFilterBoxOption,
   Button,
   cn,
   CustomersDataTableAsyncFilterBox,
-  DataTableAsyncFilterBox,
   DataTableFilterBox,
   DataTableRangeBox,
   DataTableResetFilter,
   DataTableSearch,
+  DiscountsDataTableAsyncFilterBox,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  toast,
 } from "@vivid/ui";
 import { Settings2 } from "lucide-react";
+import React from "react";
 import {
   STATUS_OPTIONS,
   useAppointmentsTableFilters,
 } from "./use-table-filters";
-import React from "react";
 
 export const AppointmentsTableAction: React.FC<{
   showCustomerFilter?: boolean;
@@ -41,6 +38,8 @@ export const AppointmentsTableAction: React.FC<{
     setEndValue,
     customerFilter,
     setCustomerFilter,
+    discountFilter,
+    setDiscountFilter,
   } = useAppointmentsTableFilters();
 
   const additionalFilters = (
@@ -58,6 +57,10 @@ export const AppointmentsTableAction: React.FC<{
           setFilterValue={setCustomerFilter}
         />
       )}
+      <DiscountsDataTableAsyncFilterBox
+        filterValue={discountFilter}
+        setFilterValue={setDiscountFilter}
+      />
       <DataTableRangeBox
         startValue={start}
         endValue={end}

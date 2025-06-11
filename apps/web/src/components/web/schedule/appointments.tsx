@@ -12,6 +12,7 @@ export type AppointmentsProps = {
   successPage?: string;
   fieldsSchema: Record<string, FieldSchema>;
   timeZone: string;
+  showPromoCode?: boolean;
 };
 
 export const Appointments: React.FC<AppointmentsProps> = ({
@@ -20,6 +21,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
   successPage,
   fieldsSchema,
   timeZone,
+  showPromoCode,
 }) => {
   const fromQuery = useSearchParams().get("option");
   const [option, setOption] = React.useState<string | null>(fromQuery);
@@ -40,6 +42,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
           back={() => setOption(null)}
           fieldsSchema={fieldsSchema}
           timeZone={timeZone}
+          showPromoCode={showPromoCode}
         />
       )}
     </>

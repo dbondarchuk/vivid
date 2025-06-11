@@ -32,6 +32,11 @@ export function useAppointmentsTableFilters() {
     searchParams.customer.withOptions({ shallow: false })
   );
 
+  const [discountFilter, setDiscountFilter] = useQueryState(
+    "discount",
+    searchParams.discount.withOptions({ shallow: false })
+  );
+
   const [page, setPage] = useQueryState("page", searchParams.page);
 
   const [start, setStartValue] = useQueryState(
@@ -50,6 +55,7 @@ export function useAppointmentsTableFilters() {
     setStartValue(null);
     setEndValue(null);
     setCustomerFilter(null);
+    setDiscountFilter(null);
 
     setPage(1);
   }, [
@@ -59,6 +65,7 @@ export function useAppointmentsTableFilters() {
     setStartValue,
     setEndValue,
     setCustomerFilter,
+    discountFilter,
   ]);
 
   const isAnyFilterActive = useMemo(() => {
@@ -66,9 +73,11 @@ export function useAppointmentsTableFilters() {
       !!searchQuery ||
       statusFilter !== searchParams.status.defaultValue ||
       !!start ||
-      !!end
+      !!end ||
+      !!customerFilter ||
+      !!discountFilter
     );
-  }, [searchQuery, statusFilter, start, end]);
+  }, [searchQuery, statusFilter, start, end, customerFilter, discountFilter]);
 
   return {
     searchQuery,
@@ -85,5 +94,7 @@ export function useAppointmentsTableFilters() {
     setEndValue,
     customerFilter,
     setCustomerFilter,
+    discountFilter,
+    setDiscountFilter,
   };
 }

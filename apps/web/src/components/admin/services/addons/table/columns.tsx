@@ -44,7 +44,10 @@ export const columns: ColumnDef<
   },
   {
     cell: ({ row }) => (
-      <Link href={`/admin/dashboard/services/addons/${row.original._id}`}>
+      <Link
+        href={`/admin/dashboard/services/addons/${row.original._id}`}
+        variant="underline"
+      >
         {row.original.name}
       </Link>
     ),
@@ -66,7 +69,7 @@ export const columns: ColumnDef<
       row.original.options?.length ? (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="link">{row.original.options.length}</Button>
+            <Button variant="link-dashed">{row.original.options.length}</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogTitle>{row.original.name} in options</DialogTitle>
@@ -76,6 +79,7 @@ export const columns: ColumnDef<
                   <li key={option._id}>
                     <Link
                       href={`/admin/dashboard/services/options/${option._id}`}
+                      variant="underline"
                     >
                       {option.name}
                     </Link>

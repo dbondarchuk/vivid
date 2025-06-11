@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge, toast } from "@vivid/ui";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { create } from "zustand";
 
@@ -31,6 +32,8 @@ export const PendingAppointmentsBadge: React.FC = () => {
 export const PendingAppointmentsToastStream: React.FC = () => {
   const { count, setCount } = usePendingAppointmentsStore();
 
+  const router = useRouter();
+
   React.useEffect(() => {
     // Create an EventSource to listen to SSE events
     const eventSource = new EventSource("/admin/api/events/pending");
@@ -58,7 +61,9 @@ export const PendingAppointmentsToastStream: React.FC = () => {
         action: {
           label: "View",
           onClick: () => {
-            location.href = "/admin/dashboard?activeTab=appointments";
+            router.push(
+              `/admin/dashboard?activeTab=appointments&key=${Date.now()}`
+            );
           },
         },
       });

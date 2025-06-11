@@ -44,7 +44,9 @@ export const ServicesContainer: IServicesContainer = {
   ),
   PagesService: cache(() => new PagesService()),
   CustomersService: cache(() => new CustomersService()),
-  ServicesService: cache(() => new ServicesService()),
+  ServicesService: cache(
+    () => new ServicesService(ServicesContainer.ConfigurationService())
+  ),
   ScheduleService: cache(
     () =>
       new ScheduleService(

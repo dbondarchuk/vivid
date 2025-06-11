@@ -1,9 +1,11 @@
 import { ServicesContainer } from "@vivid/services";
 import {
+  AppointmentDiscount,
   AppointmentEvent,
   appointmentRequestSchema,
   AppointmentTimeNotAvaialbleError,
 } from "@vivid/types";
+import { formatAmount, getDiscountAmount } from "@vivid/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -130,7 +132,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "field_required",
-          message: `field`,
+          message: `Field ${field} is required`,
         },
         { status: 400 }
       );
@@ -145,6 +147,42 @@ export async function POST(request: NextRequest) {
     (selectedOption.price ?? 0) +
     (selectedAddons?.reduce((sum, cur) => sum + (cur.price ?? 0), 0) ?? 0);
 
+  let appointmentDiscount: AppointmentDiscount | undefined = undefined;
+  if (appointmentRequest.promoCode) {
+    const customer = await ServicesContainer.CustomersService().findCustomer(
+      appointmentRequest.fields.email,
+      appointmentRequest.fields.phone
+    );
+    const discount = await ServicesContainer.ServicesService().applyDiscount({
+      code: appointmentRequest.promoCode,
+      dateTime: appointmentRequest.dateTime,
+      optionId: appointmentRequest.optionId,
+      addons: appointmentRequest.addonsIds,
+      customerId: customer?._id,
+    });
+
+    if (!discount) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "promo_code_not_valid",
+          message: `Promo code is not valid`,
+        },
+        { status: 400 }
+      );
+    }
+
+    const discountAmount = getDiscountAmount(totalPrice, discount);
+    appointmentDiscount = {
+      code: appointmentRequest.promoCode,
+      discountAmount,
+      id: discount._id,
+      name: discount.name,
+    };
+
+    totalPrice = Math.max(0, formatAmount(totalPrice - discountAmount));
+  }
+
   if (totalPrice === 0) totalPrice = undefined;
 
   try {
@@ -157,6 +195,7 @@ export async function POST(request: NextRequest) {
         totalPrice,
         addons: selectedAddons,
         fields: appointmentRequest.fields,
+        discount: appointmentDiscount,
         fieldsLabels: serviceFields.reduce(
           (map, field) => ({ ...map, [field.name]: field.data.label }),
           {} as Record<string, string>

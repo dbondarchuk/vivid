@@ -17,13 +17,13 @@ import { PendingAppointmentsBadge } from "./pending-appointments-toast-stream";
 const breadcrumbItems = [{ title: "Dashboard", link: "/admin/dashboard" }];
 
 type Params = {
-  searchParams: Promise<{ activeTab?: string }>;
+  searchParams: Promise<{ activeTab?: string; key?: string }>;
 };
 
 const defaultTab = "overview";
 
 export default async function Page({ searchParams }: Params) {
-  const { activeTab = defaultTab } = await searchParams;
+  const { activeTab = defaultTab, key } = await searchParams;
 
   return (
     <PageContainer scrollable={true}>
@@ -64,6 +64,7 @@ export default async function Page({ searchParams }: Params) {
                       Next appointments
                     </h2>
                     <Suspense
+                      key={key}
                       fallback={
                         <>
                           {Array.from({ length: 3 }).map((_, index) => (
@@ -81,6 +82,7 @@ export default async function Page({ searchParams }: Params) {
             {activeTab === "appointments" && (
               <TabsContent value="appointments" className="space-y-4 flex-1">
                 <Suspense
+                  key={key}
                   fallback={
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                       {Array.from({ length: 6 }).map((_, index) => (

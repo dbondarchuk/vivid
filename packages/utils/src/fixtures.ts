@@ -100,4 +100,10 @@ export const demoAppointment: Appointment = {
     knownNames: [],
     knownPhones: [],
   },
+  discount: {
+    id: "12345",
+    code: "DEMOPROMO",
+    discountAmount: 5.5,
+    name: "Demo Discount",
+  },
 };

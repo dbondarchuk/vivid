@@ -16,7 +16,7 @@ type Params = {
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Communication Logs", link: "/admin/dashboard/communication-logs" },
+  { title: "Communications", link: "/admin/dashboard/communication-logs" },
 ];
 
 export default async function CommunicationLogsPage(props: Params) {
@@ -33,11 +33,11 @@ export default async function CommunicationLogsPage(props: Params) {
             <Breadcrumbs items={breadcrumbItems} />
             <div className="flex items-center justify-between">
               <Heading
-                title="Communication Logs"
+                title="Communications"
                 description="Monitor all sent and received messages"
               />
 
-              <ClearAllCommunicationLogsButton />
+              {/* <ClearAllCommunicationLogsButton /> */}
             </div>
           </div>
           {/* <Separator /> */}

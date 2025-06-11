@@ -20,6 +20,14 @@ export const customTimeSlotSchema = z
     );
   }, "Invalid time");
 
+export const allowPromoCodeType = [
+  "never",
+  "allow-if-has-active",
+  "always",
+] as const;
+
+export type AllowPromoCodeType = (typeof allowPromoCodeType)[number];
+
 export const generalBookingConfigurationSchema = z.object({
   maxWeeksInFuture: asOptinalNumberField(
     z.coerce
@@ -60,6 +68,7 @@ export const generalBookingConfigurationSchema = z.object({
   timeZone: zTimeZone,
   scheduleAppId: z.string().optional(),
   autoConfirm: z.coerce.boolean().optional(),
+  allowPromoCode: z.enum(allowPromoCodeType).default("allow-if-has-active"),
   allowSmartSchedule: z.coerce.boolean().optional(),
   smartSchedule: z
     .object({

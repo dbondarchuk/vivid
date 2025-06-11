@@ -104,6 +104,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
   );
 
   const onDateTimeSelected = props.onDateTimeSelected;
+  const setPromoCode = props.setPromoCode;
 
   React.useEffect(() => {
     onDateTimeSelected(
@@ -115,7 +116,9 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
             timeZone,
           }
     );
-  }, [date, time, timeZone, onDateTimeSelected]);
+
+    setPromoCode(undefined);
+  }, [date, time, timeZone, onDateTimeSelected, setPromoCode]);
 
   const minDate = React.useMemo(() => dates[0], [dates]);
   const maxDate = React.useMemo(() => dates[dates.length - 1], [dates]);
