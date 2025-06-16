@@ -7,9 +7,11 @@ import {
   AppointmentOptionUpdateModel,
   DatabaseId,
   getAppointmentOptionSchemaWithUniqueCheck,
+  isPaymentRequiredForOptionTypes,
   WithDatabaseId,
 } from "@vivid/types";
 import {
+  Combobox,
   DurationInput,
   Form,
   FormControl,
@@ -36,6 +38,15 @@ import { FieldSelectCard } from "../field-select-card";
 import { checkUniqueName, create, update } from "./actions";
 import { AddonSelectCard } from "./addon-select-card";
 
+const IsPaymentRequiredForOptionTypesLabels: Record<
+  (typeof isPaymentRequiredForOptionTypes)[number],
+  string
+> = {
+  always: "Always, unless not required for customer",
+  never: "Never, unless required for customer",
+  inherit: "Same as general configuration, or configured for customer",
+};
+
 export const OptionForm: React.FC<{
   initialData?: AppointmentOptionUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
@@ -54,6 +65,8 @@ export const OptionForm: React.FC<{
     reValidateMode: "onChange",
     defaultValues: initialData || {},
   });
+
+  const requireDeposit = form.watch("requireDeposit");
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -235,6 +248,80 @@ export const OptionForm: React.FC<{
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="requireDeposit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Require deposit{" "}
+                    <InfoTooltip>
+                      <p>Should this option require deposit</p>
+                      <p className="font-semibold">
+                        Requires configured payments app
+                      </p>
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <Combobox
+                      disabled={loading}
+                      className="flex w-full font-normal text-base"
+                      values={isPaymentRequiredForOptionTypes.map((value) => ({
+                        value,
+                        label: IsPaymentRequiredForOptionTypesLabels[value],
+                      }))}
+                      searchLabel="Select option"
+                      value={field.value}
+                      onItemSelect={(item) => {
+                        field.onChange(item);
+                        field.onBlur();
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {requireDeposit === "always" && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="depositPercentage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Deposit amount{" "}
+                        <InfoTooltip>
+                          <p>Deposit amount in percents</p>
+                          <p>
+                            If set to 100, full price will be required to be
+                            paid upfront
+                          </p>
+                          <p>Can be overriden per each customer</p>
+                        </InfoTooltip>
+                      </FormLabel>
+                      <FormControl>
+                        <InputGroup>
+                          <InputGroupInput>
+                            <Input
+                              disabled={loading}
+                              placeholder="20"
+                              type="number"
+                              className={InputGroupInputClasses()}
+                              {...field}
+                            />
+                          </InputGroupInput>
+                          <InputSuffix className={InputGroupSuffixClasses()}>
+                            %
+                          </InputSuffix>
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
           </div>
           <div className="w-full  grid md:grid-cols-2 gap-4">
             <Sortable

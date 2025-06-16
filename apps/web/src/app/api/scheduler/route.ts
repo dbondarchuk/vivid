@@ -20,12 +20,12 @@ export async function GET(request: NextRequest) {
     );
 
   const apps =
-    await ServicesContainer.ConnectedAppService().getAppsByScopeWithData(
+    await ServicesContainer.ConnectedAppsService().getAppsByScopeWithData(
       "scheduled"
     );
   const promises = apps.map(async (app) => {
     const service = AvailableAppServices[app.name](
-      ServicesContainer.ConnectedAppService().getAppServiceProps(app._id)
+      ServicesContainer.ConnectedAppsService().getAppServiceProps(app._id)
     );
 
     return (service as any as IScheduled).onTime(app, date.toUTC().toJSDate());

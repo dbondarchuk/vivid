@@ -1,4 +1,4 @@
-import { AppointmentEvent } from ".";
+import { AppointmentEvent, Payment } from ".";
 import { AssetEntity } from "../assets";
 import { Customer } from "../customers";
 
@@ -20,6 +20,7 @@ export type AppointmentEntity = AppointmentEvent & {
 export type Appointment = AppointmentEntity & {
   customer: Customer;
   files?: AssetEntity[];
+  payments?: Payment[];
 };
 
 export const StatusText: Record<AppointmentStatus, string> = {

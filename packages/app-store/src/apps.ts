@@ -19,6 +19,8 @@ import { IcsApp } from "./apps/ics/app";
 import { ICS_APP_NAME } from "./apps/ics/const";
 import { OutlookApp } from "./apps/outlook/app";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
+import { PaypalApp } from "./apps/paypal/app";
+import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { RemindersApp } from "./apps/reminders/app";
 import { REMINDERS_APP_NAME } from "./apps/reminders/const";
 import { S3AssetsStorageApp } from "./apps/s3-assets-storage/app";
@@ -57,6 +59,7 @@ export const AvailableApps: Record<string, App> = {
   [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageApp,
   [TEXT_MESSAGE_AUTO_REPLY_APP_NAME]: TextMessageAutoReplyApp,
   [TEXT_MESSAGE_RESENDER_APP_NAME]: TextMessageResenderApp,
+  [PAYPAL_APP_NAME]: PaypalApp,
 };
 
 export { BUSY_EVENTS_APP_NAME } from "./apps/busy-events/const";
@@ -70,6 +73,7 @@ export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
 export { LOG_CLEANUP_APP_NAME } from "./apps/log-cleanup/const";
 export { OUTLOOK_APP_NAME } from "./apps/outlook/const";
+export { PAYPAL_APP_NAME } from "./apps/paypal/const";
 export { REMINDERS_APP_NAME } from "./apps/reminders/const";
 export { S3_ASSETS_STORAGE_APP_NAME } from "./apps/s3-assets-storage/const";
 export { SMTP_APP_NAME } from "./apps/smtp/const";

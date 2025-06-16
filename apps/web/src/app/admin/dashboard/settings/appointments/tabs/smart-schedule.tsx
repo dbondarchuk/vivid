@@ -12,13 +12,13 @@ import { TabProps } from "./types";
 import { OptionSelector } from "./cards/option-selector";
 
 export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
-  const allowSmartSchedule = form.watch("allowSmartSchedule");
+  const allowSmartSchedule = form.watch("smartSchedule.allowSmartSchedule");
   return (
     <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full">
       {/* <div className="flex flex-col gap-2"> */}
       <FormField
         control={form.control}
-        name="allowSmartSchedule"
+        name="smartSchedule.allowSmartSchedule"
         render={({ field }) => (
           <FormItem>
             <FormLabel>

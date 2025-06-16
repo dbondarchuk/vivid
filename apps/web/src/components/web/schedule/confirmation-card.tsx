@@ -1,35 +1,20 @@
-import { withI18n } from "@/i18n/with-i18n";
-import { ReactNode } from "react";
-import { BaseCard, BaseCardProps } from "./base-card";
+import { useI18n } from "@/i18n/i18n";
+import { useScheduleContext } from "./context";
 
-export type ConfirmationCardProps = BaseCardProps & {
-  duration: number;
-  fields: Record<string, any>;
-};
+export const ConfirmationCard: React.FC = () => {
+  const i18n = useI18n();
+  const { fields } = useScheduleContext();
 
-class _ConfirmationCard extends BaseCard<ConfirmationCardProps> {
-  public get isPrevDisabled(): boolean {
-    return true;
-  }
-
-  public get isNextDisabled(): boolean {
-    return true;
-  }
-
-  public get cardContent(): ReactNode {
-    return (
-      <div className="relative text-center">
-        <div className="mb-3">
-          <h2>{this.props.i18n("confirmation_success_title")}</h2>
-        </div>
-        <div className="flex flex-row gap-2 justify-around flex-wrap">
-          {this.props.i18n("confirmation_success_message", {
-            name: this.props.fields.name,
-          })}
-        </div>
+  return (
+    <div className="relative text-center">
+      <div className="mb-3">
+        <h2>{i18n("confirmation_success_title")}</h2>
       </div>
-    );
-  }
-}
-
-export const ConfirmationCard = withI18n(_ConfirmationCard);
+      <div className="flex flex-row gap-2 justify-around flex-wrap">
+        {i18n("confirmation_success_message", {
+          name: fields.name,
+        })}
+      </div>
+    </div>
+  );
+};

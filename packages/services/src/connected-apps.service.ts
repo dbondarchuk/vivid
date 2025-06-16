@@ -183,6 +183,28 @@ export class ConnectedAppsService implements IConnectedAppsService {
     return await appService.processWebhook(app, request);
   }
 
+  public async processAppCall(
+    appId: string,
+    slug: string[],
+    request: ApiRequest
+  ) {
+    const app = await this.getApp(appId);
+    const appService = AvailableAppServices[app.name](
+      this.getAppServiceProps(appId)
+    ) as IConnectedAppWithWebhook;
+
+    if (!("processAppCall" in appService) || !appService.processAppCall) {
+      return Response.json(
+        {
+          error: `App ${app.name} does not process app calls`,
+        },
+        { status: 405 }
+      );
+    }
+
+    return await appService.processAppCall(app, slug, request);
+  }
+
   public async processRequest(appId: string, data: any): Promise<any> {
     const app = await this.getApp(appId);
 

@@ -75,7 +75,9 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           <span className="break-all">{entry.text.substring(0, 200)}...</span>
           <Dialog>
             <DialogTrigger asChild>
-              <button className="text-primary cursor-pointer">View more</button>
+              <Button variant="link-dashed" className="px-0">
+                View more
+              </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>

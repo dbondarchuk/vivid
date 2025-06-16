@@ -10,4 +10,5 @@ export const AppScopeLabels: Record<AppScope, string> = {
   scheduled: "Scheduled",
   schedule: "Schedule provider",
   "assets-storage": "Assets storage",
+  payment: "Payments",
 };

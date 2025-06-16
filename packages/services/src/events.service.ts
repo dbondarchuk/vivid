@@ -8,7 +8,9 @@ import {
   AppointmentTimeNotAvaialbleError,
   Customer,
   CustomerUpdateModel,
+  IPaymentsService,
   IServicesService,
+  Payment,
   TimeSlot,
   type AppointmentEvent,
   type AppointmentStatus,
@@ -46,6 +48,7 @@ import { Filter, ObjectId, Sort } from "mongodb";
 import { v4 } from "uuid";
 import { ASSETS_COLLECTION_NAME } from "./assets.service";
 import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
+import { PAYMENTS_COLLECTION_NAME } from "./payments.service";
 
 export const APPOINTMENTS_COLLECTION_NAME = "appointments";
 
@@ -56,7 +59,8 @@ export class EventsService implements IEventsService {
     private readonly assetsService: IAssetsService,
     private readonly customersService: ICustomersService,
     private readonly scheduleService: IScheduleService,
-    private readonly servicesService: IServicesService
+    private readonly servicesService: IServicesService,
+    private readonly paymentsService: IPaymentsService
   ) {}
 
   public async getAvailability(duration: number): Promise<Availability> {
@@ -115,11 +119,13 @@ export class EventsService implements IEventsService {
     confirmed: propsConfirmed,
     force = false,
     files,
+    paymentIntentId,
   }: {
     event: AppointmentEvent;
     confirmed?: boolean;
     force?: boolean;
     files?: Record<string, File>;
+    paymentIntentId?: string;
   }): Promise<Appointment> {
     const { booking: config, general: generalConfig } =
       await this.configurationService.getConfigurations("booking", "general");
@@ -188,6 +194,7 @@ export class EventsService implements IEventsService {
       appointmentId,
       event,
       assets.length ? assets : undefined,
+      paymentIntentId,
       confirmed ? "confirmed" : "pending",
       force
     );
@@ -715,7 +722,7 @@ export class EventsService implements IEventsService {
     const customSlots = config.customSlotTimes?.map((x) => parseTime(x));
 
     let results: TimeSlot[];
-    if (!config.allowSmartSchedule) {
+    if (!config.smartSchedule?.allowSmartSchedule) {
       results = getAvailableTimeSlotsInCalendar({
         calendarEvents: events.map((event) => ({
           ...event,
@@ -878,6 +885,7 @@ export class EventsService implements IEventsService {
     id: string,
     event: AppointmentEvent,
     files?: Asset[],
+    paymentIntentId?: string,
     status: AppointmentStatus = "pending",
     force?: boolean
   ): Promise<Appointment> {
@@ -908,10 +916,42 @@ export class EventsService implements IEventsService {
 
     await appointments.insertOne(dbEvent);
 
+    let payments: Payment[] = [];
+    if (paymentIntentId) {
+      const {
+        amount,
+        appId,
+        appName,
+        _id: intentId,
+        paidAt,
+        externalId,
+      } = await this.paymentsService.updateIntent(paymentIntentId, {
+        appointmentId: id,
+        customerId: customer._id,
+      });
+
+      const payment = await this.paymentsService.createPayment({
+        appId,
+        appName,
+        amount,
+        intentId,
+        paidAt: paidAt ?? new Date(),
+        appointmentId: id,
+        customerId: customer._id,
+        description: amount === event.totalPrice ? "full_payment" : "deposit",
+        status: "paid",
+        type: "online",
+        externalId: externalId,
+      });
+
+      payments.push(payment);
+    }
+
     return {
       ...dbEvent,
       customer,
       files,
+      payments,
     };
   }
 
@@ -930,6 +970,7 @@ export class EventsService implements IEventsService {
       knownEmails: [],
       knownNames: [],
       knownPhones: [],
+      requireDeposit: "inherit",
     };
 
     const customerId = await this.customersService.createCustomer(customer);
@@ -983,6 +1024,14 @@ export class EventsService implements IEventsService {
           localField: "_id",
           foreignField: "appointmentId",
           as: "files",
+        },
+      },
+      {
+        $lookup: {
+          from: PAYMENTS_COLLECTION_NAME,
+          localField: "_id",
+          foreignField: "appointmentId",
+          as: "payments",
         },
       },
       {

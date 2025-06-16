@@ -12,7 +12,7 @@ import {
   RespondResult,
   TextMessageReply,
 } from "@vivid/types";
-import { getArguments } from "@vivid/utils";
+import { formatAmountString, getArguments } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { TextMessageNotificationConfiguration } from "./models";
 
@@ -51,7 +51,9 @@ export class TextMessageNotificationConnectedApp
 
     try {
       const textMessageAppId = defaultApps.textMessage?.appId;
-      await this.props.services.ConnectedAppService().getApp(textMessageAppId!);
+      await this.props.services
+        .ConnectedAppsService()
+        .getApp(textMessageAppId!);
     } catch {
       return {
         status: "failed",
@@ -88,12 +90,16 @@ export class TextMessageNotificationConnectedApp
       customer: appointment.customer,
     });
 
+    const totalAmountPaid = appointment.payments
+      ?.filter((payment) => payment.status === "paid")
+      .reduce((sum, payment) => sum + payment.amount, 0);
+
     const body = `Hi ${config.general.name},
-${appointment.customer} has requested a new appointment for ${appointment.option.name} (${
+${appointment.customer.name} has requested a new appointment for ${appointment.option.name} (${
       args.duration?.hours ? `${args.duration.hours}hr ` : ""
     }${args.duration?.minutes ? `${args.duration.minutes}min` : ""}) for ${
       args.dateTime
-    }.
+    }.${args.totalPrice ? ` Total price $${args.totalPriceFormatted}.` : ""}${totalAmountPaid ? ` Amount paid $${formatAmountString(totalAmountPaid)}.` : ""}
 Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
 
     const phone = data?.phone || config.general.phone;

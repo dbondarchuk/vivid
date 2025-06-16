@@ -13,9 +13,10 @@ import { Globe2Icon } from "lucide-react";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 import { BaseCard, BaseCardProps, BaseCardState } from "./base-card";
 
-import { fallbackLanguage } from "@/i18n/i18n";
+import { fallbackLanguage, useI18n } from "@/i18n/i18n";
 import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
 import * as Locales from "date-fns/locale";
+import { useScheduleContext } from "./context";
 
 const asJsDate = (dateTime: Luxon) =>
   new Date(dateTime.year, dateTime.month - 1, dateTime.day);
@@ -29,24 +30,21 @@ const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
 const formatDate = (date: Date): string =>
   `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
 
-export type CalendarCardProps = BaseCardProps & {
-  availability: Availability;
-  dateTime?: DateTime;
-  timeZone: string;
-  onDateTimeSelected: (dateTime: DateTime | undefined) => void;
-};
+export const CalendarCard: React.FC = () => {
+  const i18n = useI18n();
+  const {
+    dateTime,
+    setDateTime,
+    setDiscount: setPromoCode,
+    timeZone: propsTimeZone,
+    availability,
+  } = useScheduleContext();
 
-const CalendarCardFC: React.FC<CalendarCardProps> = (
-  props: CalendarCardProps
-) => {
-  const [date, setDate] = React.useState<Date | undefined>(
-    props.dateTime?.date
-  );
-  const [time, setTime] = React.useState<Time | undefined>(
-    props.dateTime?.time
-  );
+  const [date, setDate] = React.useState<Date | undefined>(dateTime?.date);
+  const [time, setTime] = React.useState<Time | undefined>(dateTime?.time);
+
   const [timeZone, setTimeZone] = React.useState<string>(
-    props.dateTime?.timeZone || props.timeZone
+    dateTime?.timeZone || propsTimeZone
   );
 
   const changeDate = (date: Date | undefined) => {
@@ -56,10 +54,10 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
 
   const adjustedAvailability = React.useMemo(
     () =>
-      props.availability.map((time) =>
+      availability.map((time) =>
         Luxon.fromMillis(time, { zone: "utc" }).setZone(timeZone)
       ),
-    [props.availability, timeZone]
+    [availability, timeZone]
   );
 
   const dates = React.useMemo(
@@ -103,11 +101,8 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     [adjustedAvailability]
   );
 
-  const onDateTimeSelected = props.onDateTimeSelected;
-  const setPromoCode = props.setPromoCode;
-
   React.useEffect(() => {
-    onDateTimeSelected(
+    setDateTime(
       !date || !time
         ? undefined
         : {
@@ -118,17 +113,15 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     );
 
     setPromoCode(undefined);
-  }, [date, time, timeZone, onDateTimeSelected, setPromoCode]);
+  }, [date, time, timeZone, setDateTime, setPromoCode]);
 
   const minDate = React.useMemo(() => dates[0], [dates]);
   const maxDate = React.useMemo(() => dates[dates.length - 1], [dates]);
 
-  const propsDateTime = props.dateTime;
-
   React.useEffect(() => {
-    if ((!propsDateTime?.date && !date) || (date && isDisabledDay(date)))
+    if ((!dateTime?.date && !date) || (date && isDisabledDay(date)))
       setDate(minDate);
-  }, [minDate, propsDateTime, date, isDisabledDay]);
+  }, [minDate, dateTime, date, isDisabledDay]);
 
   const isTimeSelected = React.useCallback(
     (t: Time) => areTimesEqual(t, time),
@@ -139,7 +132,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     <Combobox
       values={timeZones}
       className="mx-2"
-      searchLabel={props.i18n("search_timezone_label")}
+      searchLabel={i18n("search_timezone_label")}
       customSearch={(search) =>
         timeZones.filter(
           (zone) =>
@@ -154,7 +147,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
   );
 
   const timeZoneLabel = formatJsx(
-    props.i18n("select_timezone_label_format"),
+    i18n("select_timezone_label_format"),
     timeZoneCombobox
   );
 
@@ -167,7 +160,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
   return (
     <div className="relative text-center">
       <div className="mb-3">
-        <h2>{props.i18n("select_date_time_label")}</h2>
+        <h2>{i18n("select_date_time_label")}</h2>
       </div>
       <div className="mb-3 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4 md:gap-10 not-prose">
@@ -189,7 +182,7 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
           </div>
           <div className="md:col-span-1">
             {!date ? (
-              <h4>{props.i18n("select_date_first_label")}</h4>
+              <h4>{i18n("select_date_first_label")}</h4>
             ) : (
               <div className="flex flex-row gap-2 justify-around flex-wrap">
                 {(times[formatDate(date)] || []).map((t) => (
@@ -215,45 +208,3 @@ const CalendarCardFC: React.FC<CalendarCardProps> = (
     </div>
   );
 };
-
-type CalendarCardState = BaseCardState & {
-  dateTime?: DateTime;
-};
-
-class _CalendarCard extends BaseCard<CalendarCardProps, CalendarCardState> {
-  public constructor(props: CalendarCardProps) {
-    super(props);
-    this.state = {
-      dateTime: props.dateTime,
-    };
-  }
-
-  public get isPrevDisabled(): boolean {
-    return false;
-  }
-
-  public get isNextDisabled(): boolean {
-    return !this.state.dateTime;
-  }
-
-  private onDateTimeChange = (dateTime?: DateTime) => {
-    this.setState(
-      {
-        ...this.state,
-        dateTime,
-      },
-      () => this.props.onDateTimeSelected(dateTime)
-    );
-  };
-
-  public get cardContent(): React.ReactNode {
-    return (
-      <CalendarCardFC
-        {...this.props}
-        onDateTimeSelected={this.onDateTimeChange}
-      />
-    );
-  }
-}
-
-export const CalendarCard = withI18n(_CalendarCard);

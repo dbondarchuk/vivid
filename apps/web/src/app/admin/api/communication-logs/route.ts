@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const offset = (page - 1) * limit;
 
   const res =
-    await ServicesContainer.CommunicationLogService().getCommunicationLogs({
+    await ServicesContainer.CommunicationLogsService().getCommunicationLogs({
       offset,
       limit,
       search,

@@ -62,7 +62,7 @@ export default class LogCleanupConnectedApp
     );
 
     await this.props.services
-      .CommunicationLogService()
+      .CommunicationLogsService()
       .clearOldLogs(maxDate.toJSDate());
   }
 }

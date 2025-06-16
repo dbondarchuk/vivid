@@ -32,6 +32,7 @@ import {
 import { DateTime } from "luxon";
 import React from "react";
 import { AppointmentActionButton } from "./action-button";
+import { AppointmentDeclineDialog } from "./appointment-decline-dialog";
 
 export type AppointmentCardProps = {
   appointment: Appointment;
@@ -138,37 +139,17 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       </CardContent>
       {appointment.status !== "declined" && (
         <CardFooter className="justify-end gap-2">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
+          <AppointmentDeclineDialog
+            appointment={appointment}
+            trigger={
               <Button
                 variant="destructive"
                 className="inline-flex flex-row gap-2 items-center"
               >
                 <CalendarX2 size={20} /> Decline
               </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently decline
-                  this appointment.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                {/* <AlertDialogAction asChild> */}
-                <AppointmentActionButton
-                  variant="destructive"
-                  _id={appointment._id}
-                  status="declined"
-                >
-                  <CalendarX2 size={20} /> Decline
-                </AppointmentActionButton>
-                {/* </AlertDialogAction> */}
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+            }
+          />
           {appointment.status === "pending" && (
             <AppointmentActionButton
               variant="default"

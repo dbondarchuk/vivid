@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { DefaultExtensionType, FileIcon, defaultStyles } from "react-file-icon";
+import { DefaultExtensionType, defaultStyles, FileIcon } from "react-file-icon";
 
 import { AppointmentActionButton } from "@/components/admin/appointments/action-button";
 import {
@@ -46,14 +46,17 @@ import {
   FormField,
   FormItem,
   FormMessage,
-  Label,
   Link,
   Spinner,
   Textarea,
   toastPromise,
   useUploadFile,
 } from "@vivid/ui";
-import { durationToTime, mimeTypeToExtension } from "@vivid/utils";
+import {
+  durationToTime,
+  formatAmountString,
+  mimeTypeToExtension,
+} from "@vivid/utils";
 import { getTimeZones } from "@vvo/tzdb";
 import {
   CalendarCheck2,
@@ -68,9 +71,11 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { AppointmentRescheduleDialog } from "./appointment-reschedule-dialog";
-import { SendCommunicationDialog } from "../communications/send-message-dialog";
 import { RecentCommunications } from "../communications/communications";
+import { SendCommunicationDialog } from "../communications/send-message-dialog";
+import { AppointmentRescheduleDialog } from "./appointment-reschedule-dialog";
+import { PaymentCard } from "@/components/payments/payment-card";
+import { AppointmentDeclineDialog } from "./appointment-decline-dialog";
 
 const timeZones = getTimeZones();
 
@@ -214,6 +219,13 @@ export const AppointmentView: React.FC<{
     setFileToUpload(undefined);
   };
 
+  const paidPayments = appointment.payments?.filter(
+    (payment) => payment.status === "paid"
+  );
+
+  const totalPaid =
+    paidPayments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
+
   return (
     <div className="flex flex-col gap-4 w-full @container [contain:layout]">
       <div className="flex flex-row justify-end gap-2 flex-wrap [&>form]:hidden">
@@ -252,39 +264,17 @@ export const AppointmentView: React.FC<{
                 </Button>
               }
             />
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
+            <AppointmentDeclineDialog
+              appointment={appointment}
+              trigger={
                 <Button
                   variant="destructive"
                   className="inline-flex flex-row gap-2 items-center"
                 >
                   <CalendarX2 size={20} /> Decline
                 </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently decline
-                    this appointment.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  {/* <AlertDialogAction asChild> */}
-                  <AppointmentActionButton
-                    variant="destructive"
-                    _id={appointment._id}
-                    status="declined"
-                    onSuccess={updateStatus}
-                  >
-                    <CalendarX2 size={20} />
-                    Decline
-                  </AppointmentActionButton>
-                  {/* </AlertDialogAction> */}
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+              }
+            />
           </>
         ) : null}
 
@@ -363,7 +353,7 @@ export const AppointmentView: React.FC<{
                             .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                         </div>
                       </div>
-                      {appointment.status !== "declined" && (
+                      {/* {appointment.status !== "declined" && (
                         <AppointmentRescheduleDialog
                           appointment={appointment}
                           onRescheduled={reschedule}
@@ -371,7 +361,7 @@ export const AppointmentView: React.FC<{
                             <Button variant={"default"}>Reschedule</Button>
                           }
                         />
-                      )}
+                      )} */}
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
@@ -382,11 +372,33 @@ export const AppointmentView: React.FC<{
               <dd className="col-span-2">{StatusText[appointment.status]}</dd>
             </div>
 
-            {appointment.totalPrice && (
+            {!!appointment.totalPrice && (
               <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt>Price:</dt>
-                <dd className="col-span-2">${appointment.totalPrice}</dd>
+                <dd className="col-span-2">
+                  ${formatAmountString(appointment.totalPrice)}
+                </dd>
               </div>
+            )}
+            {!!totalPaid && (
+              <>
+                <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt>Amount paid:</dt>
+                  <dd className="col-span-2">
+                    ${formatAmountString(totalPaid)}
+                  </dd>
+                </div>
+                {!!appointment.totalPrice &&
+                  appointment.totalPrice - totalPaid > 0 && (
+                    <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                      <dt>Amount left to pay:</dt>
+                      <dd className="col-span-2">
+                        $
+                        {formatAmountString(appointment.totalPrice - totalPaid)}
+                      </dd>
+                    </div>
+                  )}
+              </>
             )}
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="flex self-center">Customer</dt>
@@ -616,7 +628,7 @@ export const AppointmentView: React.FC<{
                           <>
                             <div>Price:</div>
                             <div className="col-span-2">
-                              ${appointment.option.price}
+                              ${formatAmountString(appointment.option.price)}
                             </div>
                           </>
                         )}
@@ -660,7 +672,9 @@ export const AppointmentView: React.FC<{
                                     <li>Duration: {addon.duration} min</li>
                                   )}
                                   {!!addon.price && (
-                                    <li>Price: ${addon.price}</li>
+                                    <li>
+                                      Price: ${formatAmountString(addon.price)}
+                                    </li>
                                   )}
                                 </ul>
                               )}
@@ -673,217 +687,219 @@ export const AppointmentView: React.FC<{
                 </dd>
               </div>
             )}
-            <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">Files</dt>
-              <dd className="col-span-2 flex flex-col gap-4">
-                <div className="flex flex-col gap-4">
-                  <div className="w-full flex flex-col gap-2">
-                    <DndFileInput
-                      name="files"
-                      disabled={loading}
-                      value={fileToUpload}
-                      onChange={setFileToUpload}
-                    />
-                    <Button
-                      variant="default"
-                      className="w-full"
-                      onClick={onClickUpload}
-                      disabled={loading || isUploading || !fileToUpload}
-                    >
-                      Upload
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    {uploadingFile && (
-                      <div className="w-full relative flex justify-center">
-                        {uploadingFile.type.startsWith("image/") ? (
-                          <div className="relative w-20 h-20">
-                            <img
-                              src={URL.createObjectURL(uploadingFile)}
-                              alt={uploadingFile.name}
-                              className="w-full object-contain h-full"
-                            />
-                          </div>
-                        ) : (
-                          <div className="flex flex-col gap-2 text-sm justify-center">
-                            <div className="max-w-10 flex self-center">
-                              <FileIcon
-                                extension={uploadingFile.name.substring(
-                                  uploadingFile.name.lastIndexOf(".") + 1
-                                )}
-                                {...defaultStyles[
-                                  mimeTypeToExtension(
-                                    uploadingFile.type
-                                  ) as DefaultExtensionType
-                                ]}
-                              />
-                            </div>
-                            <div className="text-muted-foreground text-center">
-                              {uploadingFile.name}
-                            </div>
-                          </div>
-                        )}
-                        <div className="absolute top-0 bottom-0 right-0 left-0 bg-background/50 flex items-center flex-col gap-2 justify-center">
-                          <Spinner className="w-5 h-5" />
-                          <span className="text-sm">{progress}%</span>
-                        </div>
-                      </div>
-                    )}
-                    {appointment.files?.map((file) => (
-                      <div
-                        className="w-full relative flex justify-center"
-                        key={file._id}
-                      >
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              disabled={loading}
-                              variant="ghost"
-                              className="absolute -right-1 -top-1 text-destructive hover:bg-destructive hover:text-destructive-foreground z-[3]"
-                              size="icon"
-                              type="button"
-                              title="Remove appointment file"
-                            >
-                              <Trash size={16} />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Are you absolutely sure?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure that you want to remove this file
-                                from appointment?
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction asChild>
-                                <Button
-                                  variant="destructive"
-                                  onClick={() =>
-                                    onRemoveAppointmentFile(file._id)
-                                  }
-                                >
-                                  Delete
-                                </Button>
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                        {file.mimeType?.startsWith("image/") ? (
-                          <div className="relative w-20 h-20">
-                            <Image
-                              src={`/assets/${file.filename}`}
-                              fill
-                              alt={file.description || file.filename}
-                              className="cursor-pointer object-cover"
-                              onClick={() => onFileClick(file._id)}
-                            />
-                          </div>
-                        ) : (
-                          <a
-                            className="flex flex-col gap-2 text-sm justify-center"
-                            href={`/assets/${file.filename}`}
-                            target="_blank"
-                          >
-                            <div className="max-w-10 flex self-center">
-                              <FileIcon
-                                extension={file.filename?.substring(
-                                  file.filename.lastIndexOf(".") + 1
-                                )}
-                                {...defaultStyles[
-                                  mimeTypeToExtension(
-                                    file.mimeType
-                                  ) as DefaultExtensionType
-                                ]}
-                              />
-                            </div>
-                            <div className="text-muted-foreground text-center">
-                              {file.filename.substring(
-                                file.filename.lastIndexOf("/") + 1
-                              )}
-                            </div>
-                          </a>
-                        )}
-                      </div>
-                    ))}
-                    <Dialog
-                      open={galleryOpen}
-                      onOpenChange={onGalleryOpenChange}
-                      modal
-                    >
-                      <DialogContent
-                        className="sm:max-w-[80%] flex flex-col max-h-lvh bg-transparent p-0 shadow-none border-0"
-                        overlayVariant="blur"
-                        closeClassName="bg-background"
-                      >
-                        <Carousel className="w-full" setApi={setApi}>
-                          <CarouselContent>
-                            {galleryItems.map((file, index) => (
-                              <CarouselItem key={index}>
-                                <div className="flex flex-col gap-2 justify-center h-full max-h-lvh">
-                                  <div className="w-full flex justify-center max-h-[80%]">
-                                    <Image
-                                      src={`/assets/${file.filename}`}
-                                      width={800}
-                                      height={800}
-                                      className="object-contain"
-                                      alt={file.description || file.filename}
-                                    />
-                                  </div>
-                                  <div className="text-background text-center">
-                                    {file.description || " "}
-                                  </div>
-                                </div>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          <CarouselPrevious className="left-0" />
-                          <CarouselNext className="right-0" />
-                        </Carousel>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </div>
-              </dd>
-            </div>
           </dl>
-
-          <Form {...noteForm}>
-            <form
-              onSubmit={noteForm.handleSubmit(onNoteSubmit)}
-              onBlur={noteForm.handleSubmit(onNoteSubmit)}
-              className="flex flex-col gap-1"
-            >
-              <div className="font-semibold flex flex-row gap-1 items-center">
-                Note:{" "}
-              </div>
-              <FormField
-                control={noteForm.control}
-                name="note"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Textarea
-                        disabled={loading}
-                        placeholder="Note"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
         </div>
         <div className="flex flex-col gap-2">
           <AppointmentCalendar appointment={appointment} timeZone={timeZone} />
         </div>
       </div>
-      <div className="flex flex-col gap-4">
+
+      <Form {...noteForm}>
+        <form
+          onSubmit={noteForm.handleSubmit(onNoteSubmit)}
+          onBlur={noteForm.handleSubmit(onNoteSubmit)}
+          className="flex flex-col gap-2"
+        >
+          <div className="font-semibold flex flex-row gap-1 items-center">
+            Note
+          </div>
+          <FormField
+            control={noteForm.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea disabled={loading} placeholder="Note" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+
+      <div className="flex flex-col gap-2 @container/files">
+        <div className="font-semibold flex flex-row gap-1 items-center">
+          Files
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="w-full flex flex-col gap-2">
+            <DndFileInput
+              name="files"
+              disabled={loading}
+              value={fileToUpload}
+              onChange={setFileToUpload}
+            />
+            <Button
+              variant="default"
+              className="w-full"
+              onClick={onClickUpload}
+              disabled={loading || isUploading || !fileToUpload}
+            >
+              Upload
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 @md/files:grid-cols-2 @lg/files:grid-cols-3 @xl/files:grid-cols-4 gap-2">
+            {uploadingFile && (
+              <div className="w-full relative flex justify-center">
+                {uploadingFile.type.startsWith("image/") ? (
+                  <div className="relative w-20 h-20">
+                    <img
+                      src={URL.createObjectURL(uploadingFile)}
+                      alt={uploadingFile.name}
+                      className="w-full object-contain h-full"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2 text-sm justify-center">
+                    <div className="max-w-10 flex self-center">
+                      <FileIcon
+                        extension={uploadingFile.name.substring(
+                          uploadingFile.name.lastIndexOf(".") + 1
+                        )}
+                        {...defaultStyles[
+                          mimeTypeToExtension(
+                            uploadingFile.type
+                          ) as DefaultExtensionType
+                        ]}
+                      />
+                    </div>
+                    <div className="text-muted-foreground text-center">
+                      {uploadingFile.name}
+                    </div>
+                  </div>
+                )}
+                <div className="absolute top-0 bottom-0 right-0 left-0 bg-background/50 flex items-center flex-col gap-2 justify-center">
+                  <Spinner className="w-5 h-5" />
+                  <span className="text-sm">{progress}%</span>
+                </div>
+              </div>
+            )}
+            {appointment.files?.map((file) => (
+              <div
+                className="w-full relative flex justify-center"
+                key={file._id}
+              >
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      disabled={loading}
+                      variant="ghost"
+                      className="absolute -right-1 -top-1 text-destructive hover:bg-destructive hover:text-destructive-foreground z-[3]"
+                      size="icon"
+                      type="button"
+                      title="Remove appointment file"
+                    >
+                      <Trash size={16} />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure that you want to remove this file?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction variant="destructive" asChild>
+                        <Button
+                          onClick={() => onRemoveAppointmentFile(file._id)}
+                        >
+                          Delete
+                        </Button>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                {file.mimeType?.startsWith("image/") ? (
+                  <div className="relative w-20 h-20">
+                    <Image
+                      src={`/assets/${file.filename}`}
+                      fill
+                      alt={file.description || file.filename}
+                      className="cursor-pointer object-cover"
+                      onClick={() => onFileClick(file._id)}
+                    />
+                  </div>
+                ) : (
+                  <a
+                    className="flex flex-col gap-2 text-sm justify-center"
+                    href={`/assets/${file.filename}`}
+                    target="_blank"
+                  >
+                    <div className="max-w-10 flex self-center">
+                      <FileIcon
+                        extension={file.filename?.substring(
+                          file.filename.lastIndexOf(".") + 1
+                        )}
+                        {...defaultStyles[
+                          mimeTypeToExtension(
+                            file.mimeType
+                          ) as DefaultExtensionType
+                        ]}
+                      />
+                    </div>
+                    <div className="text-muted-foreground text-center">
+                      {file.filename.substring(
+                        file.filename.lastIndexOf("/") + 1
+                      )}
+                    </div>
+                  </a>
+                )}
+              </div>
+            ))}
+            <Dialog open={galleryOpen} onOpenChange={onGalleryOpenChange} modal>
+              <DialogContent
+                className="sm:max-w-[80%] flex flex-col max-h-lvh bg-transparent p-0 shadow-none border-0"
+                overlayVariant="blur"
+                closeClassName="bg-background"
+              >
+                <Carousel className="w-full" setApi={setApi}>
+                  <CarouselContent>
+                    {galleryItems.map((file, index) => (
+                      <CarouselItem key={index}>
+                        <div className="flex flex-col gap-2 justify-center h-full max-h-lvh">
+                          <div className="w-full flex justify-center max-h-[80%]">
+                            <Image
+                              src={`/assets/${file.filename}`}
+                              width={800}
+                              height={800}
+                              className="object-contain"
+                              alt={file.description || file.filename}
+                            />
+                          </div>
+                          <div className="text-background text-center">
+                            {file.description || " "}
+                          </div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-0" />
+                  <CarouselNext className="right-0" />
+                </Carousel>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+      </div>
+
+      {!!appointment.payments?.length && (
+        <div className="flex flex-col gap-2 @container/payments">
+          <div className="font-semibold flex flex-row gap-1 items-center">
+            Payments
+          </div>
+          <div className="grid grid-cols-1 @md/payments:grid-cols-2 @lg/payments:grid-cols-3 gap-2 py-2">
+            {appointment.payments.map((payment) => (
+              <PaymentCard payment={payment} key={payment._id} />
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="flex flex-col gap-2">
         <div className="font-semibold flex flex-row gap-1 items-center">
           Appointment communications
         </div>

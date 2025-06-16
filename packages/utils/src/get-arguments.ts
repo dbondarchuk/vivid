@@ -36,6 +36,39 @@ export const getArguments = ({
     totalPriceFormatted: appointment?.totalPrice
       ? formatAmountString(appointment?.totalPrice)
       : undefined,
+    payments: appointment?.payments
+      ?.filter((payment) => payment.status === "paid")
+      .map((payment) => ({
+        ...payment,
+        amountFormatted: formatAmountString(payment.amount),
+        paidAt: payment.paidAt
+          ? DateTime.fromJSDate(payment.paidAt)
+              .setZone(
+                useAppointmentTimezone
+                  ? appointment.timeZone
+                  : config.booking?.timeZone
+              )
+              .toLocaleString(DateTime.DATETIME_FULL)
+          : undefined,
+        refundedAt: payment.refundedAt
+          ? DateTime.fromJSDate(payment.refundedAt)
+              .setZone(
+                useAppointmentTimezone
+                  ? appointment.timeZone
+                  : config.booking?.timeZone
+              )
+              .toLocaleString(DateTime.DATETIME_FULL)
+          : undefined,
+        updatedAt: payment.updatedAt
+          ? DateTime.fromJSDate(payment.updatedAt)
+              .setZone(
+                useAppointmentTimezone
+                  ? appointment.timeZone
+                  : config.booking?.timeZone
+              )
+              .toLocaleString(DateTime.DATETIME_FULL)
+          : undefined,
+      })),
     discount: appointment?.discount
       ? {
           ...appointment.discount,

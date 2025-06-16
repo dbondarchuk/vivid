@@ -413,7 +413,7 @@ export class CustomersService implements ICustomersService {
       .filter((n) => !!n)
       .join("\n\n-----\n\n");
 
-    const update: CustomerUpdateModel = {
+    const update: Partial<CustomerUpdateModel> = {
       name,
       email,
       phone,

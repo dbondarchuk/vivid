@@ -26,6 +26,7 @@ export const demoAppointment: Appointment = {
     description: "This is a demo option",
     duration: 100,
     price: 50,
+    requireDeposit: "inherit",
   },
   files: [
     {
@@ -99,6 +100,7 @@ export const demoAppointment: Appointment = {
     knownEmails: [],
     knownNames: [],
     knownPhones: [],
+    requireDeposit: "inherit",
   },
   discount: {
     id: "12345",

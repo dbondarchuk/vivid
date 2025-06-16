@@ -3,30 +3,64 @@ import { Appointment } from "../booking";
 import { WithDatabaseId } from "../database";
 import { zUniqueArray } from "../utils";
 
-export const customerSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Valid email is required"),
-  phone: z.string().min(1, "Phone is required"),
-  dateOfBirth: z.coerce.date().optional(),
-  avatar: z.string().optional(),
-  note: z.string().optional(),
-  knownNames: zUniqueArray(
-    z.array(z.string().min(1, "Name is required")),
-    (s) => s,
-    "Names should be unique"
-  ),
-  knownEmails: zUniqueArray(
-    z.array(z.string().email("Valid email is required")),
-    (s) => s,
-    "Emails should be unique"
-  ),
-  knownPhones: zUniqueArray(
-    z.array(z.string().min(1, "Phone is required")),
-    (s) => s,
-    "Phones should be unique"
-  ),
-  dontAllowBookings: z.coerce.boolean().optional(),
-});
+export const isPaymentRequiredForCustomerTypes = [
+  "inherit",
+  "always",
+  "never",
+] as const;
+
+const isPaymentRequiredForCustomerSchema = z.enum(
+  isPaymentRequiredForCustomerTypes
+);
+
+export const customerSchema = z
+  .object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Valid email is required"),
+    phone: z.string().min(1, "Phone is required"),
+    dateOfBirth: z.coerce.date().optional(),
+    avatar: z.string().optional(),
+    note: z.string().optional(),
+    knownNames: zUniqueArray(
+      z.array(z.string().min(1, "Name is required")),
+      (s) => s,
+      "Names should be unique"
+    ),
+    knownEmails: zUniqueArray(
+      z.array(z.string().email("Valid email is required")),
+      (s) => s,
+      "Emails should be unique"
+    ),
+    knownPhones: zUniqueArray(
+      z.array(z.string().min(1, "Phone is required")),
+      (s) => s,
+      "Phones should be unique"
+    ),
+    dontAllowBookings: z.coerce.boolean().optional(),
+  })
+  .and(
+    z
+      .object({
+        requireDeposit: isPaymentRequiredForCustomerSchema.exclude(["always"], {
+          message: "Unknown type",
+        }),
+      })
+      .or(
+        z.object({
+          requireDeposit: isPaymentRequiredForCustomerSchema.extract(
+            ["always"],
+            {
+              message: "Deposit amount is required",
+            }
+          ),
+          depositPercentage: z.coerce
+            .number({ message: "Must be a number between 10 and 100" })
+            .int("Must be a number between 10 and 100")
+            .min(10, "Must be a number between 10 and 100")
+            .max(100, "Must be a number between 10 and 100"),
+        })
+      )
+  );
 
 export const getCustomerSchemaWithUniqueCheck = (
   uniqueEmailOrPhoneCheckFn: (

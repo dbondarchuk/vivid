@@ -31,6 +31,11 @@ export interface IConnectedApp {
   processRequest?: (appData: ConnectedAppData, data: any) => Promise<any>;
   processStaticRequest?: (data: any) => Promise<any>;
   unInstall?: (appData: ConnectedAppData) => Promise<void>;
+  processAppCall?: (
+    appData: ConnectedAppData,
+    slug: string[],
+    request: ApiRequest
+  ) => Promise<ApiResponse | undefined>;
 }
 
 export interface IConnectedAppWithWebhook extends IConnectedApp {

@@ -22,11 +22,11 @@ export async function POST(request: NextRequest) {
   }
 
   const fromApp =
-    await ServicesContainer.ConnectedAppService().getAppService<IAssetsStorage>(
+    await ServicesContainer.ConnectedAppsService().getAppService<IAssetsStorage>(
       body.fromAppId
     );
   const toApp =
-    await ServicesContainer.ConnectedAppService().getAppService<IAssetsStorage>(
+    await ServicesContainer.ConnectedAppsService().getAppService<IAssetsStorage>(
       body.toAppId
     );
 

@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const scope = params.get("scope") as AppScope;
 
   const result =
-    await ServicesContainer.ConnectedAppService().getAppsByScope(scope);
+    await ServicesContainer.ConnectedAppsService().getAppsByScope(scope);
 
   const headers = new Headers();
   headers.append("Cache-Control", "max-age=10");

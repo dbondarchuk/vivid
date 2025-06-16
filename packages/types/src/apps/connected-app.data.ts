@@ -4,7 +4,8 @@ export type ConnectedAppResponse = {
   appId: string;
 } & (
   | {
-      data: any;
+      data?: any;
+      token?: any;
       account: ConnectedAppAccount;
     }
   | {
@@ -35,11 +36,15 @@ export type ConnectedAppStatusWithText = {
   statusText: string;
 };
 
-export type ConnectedAppData<T = any> = ConnectedAppStatusWithText & {
+export type ConnectedAppData<
+  TData = any,
+  TToken = any,
+> = ConnectedAppStatusWithText & {
   _id: string;
   name: string;
   account?: ConnectedAppAccount;
-  data?: T;
+  token?: TToken;
+  data?: TData;
 };
 
 export type ConnectedAppUpdateModel = Partial<

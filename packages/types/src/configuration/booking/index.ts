@@ -2,9 +2,11 @@ import { z } from "zod";
 import { asOptinalNumberField, asOptionalField } from "../../utils";
 import { zTimeZone } from "../../utils/zTimeZone";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
+import { paymentsConfigurationSchema } from "./payments";
 
 export * from "../../booking/field";
 export * from "./calendar-source";
+export * from "./payments";
 
 export const customTimeSlotSchema = z
   .string({ message: "Time is required" })
@@ -69,15 +71,20 @@ export const generalBookingConfigurationSchema = z.object({
   scheduleAppId: z.string().optional(),
   autoConfirm: z.coerce.boolean().optional(),
   allowPromoCode: z.enum(allowPromoCodeType).default("allow-if-has-active"),
-  allowSmartSchedule: z.coerce.boolean().optional(),
   smartSchedule: z
     .object({
+      allowSmartSchedule: z.literal(true),
       allowSkipBreak: z.coerce.boolean().optional(),
       preferBackToBack: z.coerce.boolean().optional(),
       allowSmartSlotStarts: z.coerce.boolean().optional(),
       maximizeForOption: asOptionalField(z.string()),
     })
-    .optional(),
+    .or(
+      z.object({
+        allowSmartSchedule: z.literal(false).optional(),
+      })
+    ),
+  payments: paymentsConfigurationSchema,
 });
 
 export const appointOptionsSchema = z.array(

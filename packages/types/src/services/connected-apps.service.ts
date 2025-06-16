@@ -20,6 +20,11 @@ export interface IConnectedAppsService {
     appId: string,
     request: ApiRequest
   ): Promise<ApiResponse | undefined>;
+  processAppCall(
+    appId: string,
+    slug: string[],
+    request: ApiRequest
+  ): Promise<ApiResponse | undefined>;
   processRequest(appId: string, data: any): Promise<any>;
   processStaticRequest(appName: string, data: any): Promise<any>;
   getAppStatus(appId: string): Promise<ConnectedApp>;

@@ -38,6 +38,12 @@ export async function install(data: InstallFormData) {
     options: [],
     timeZone: DateTime.now().zoneName,
     allowPromoCode: "allow-if-has-active",
+    smartSchedule: {
+      allowSmartSchedule: false,
+    },
+    payments: {
+      enable: false,
+    },
   });
 
   await ServicesContainer.ConfigurationService().setConfiguration("schedule", {
@@ -61,13 +67,13 @@ export async function install(data: InstallFormData) {
     {}
   );
 
-  await ServicesContainer.ConnectedAppService().createNewApp(
+  await ServicesContainer.ConnectedAppsService().createNewApp(
     REMINDERS_APP_NAME
   );
-  await ServicesContainer.ConnectedAppService().createNewApp(
+  await ServicesContainer.ConnectedAppsService().createNewApp(
     CUSTOMER_EMAIL_NOTIFICATION_APP_NAME
   );
-  await ServicesContainer.ConnectedAppService().createNewApp(
+  await ServicesContainer.ConnectedAppsService().createNewApp(
     CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME
   );
 
@@ -86,11 +92,11 @@ export async function install(data: InstallFormData) {
   // });
 
   const assetsStorageAppId =
-    await ServicesContainer.ConnectedAppService().createNewApp(
+    await ServicesContainer.ConnectedAppsService().createNewApp(
       FILE_SYSTEM_ASSETS_STORAGE_APP_NAME
     );
 
-  await ServicesContainer.ConnectedAppService().updateApp(assetsStorageAppId, {
+  await ServicesContainer.ConnectedAppsService().updateApp(assetsStorageAppId, {
     status: "connected",
     statusText: "Installed",
   });

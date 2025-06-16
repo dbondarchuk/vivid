@@ -2,38 +2,69 @@ import { z } from "zod";
 import { WithDatabaseId } from "../database";
 import { asOptionalField, zUniqueArray } from "../utils";
 
-export const appointmentOptionSchema = z.object({
-  name: z.string().min(2, "Option name must me at least 2 characters long"),
-  // description: z.array(z.any()),
-  description: z.string().min(2, "Option description is required"),
-  duration: asOptionalField(
-    z.coerce
-      .number()
-      .int("Should be the integer value")
-      .min(0, "Option duration must be at least 0 minutes")
-  ),
+export const isPaymentRequiredForOptionTypes = [
+  "inherit",
+  "always",
+  "never",
+] as const;
 
-  price: asOptionalField(
-    z.coerce.number().min(0, "Option price must be at least 0")
-  ),
-  addons: zUniqueArray(
-    z.array(
-      z.object({
-        id: z.string().min(1, "Addon id is required"),
-      })
+const isPaymentRequiredForOptionSchema = z.enum(
+  isPaymentRequiredForOptionTypes
+);
+
+export const appointmentOptionSchema = z
+  .object({
+    name: z.string().min(2, "Option name must me at least 2 characters long"),
+    // description: z.array(z.any()),
+    description: z.string().min(2, "Option description is required"),
+    duration: asOptionalField(
+      z.coerce
+        .number()
+        .int("Should be the integer value")
+        .min(0, "Option duration must be at least 0 minutes")
     ),
-    (addon) => addon.id
-  ).optional(),
-  fields: zUniqueArray(
-    z.array(
-      z.object({
-        id: z.string().min(1, "Field id is required"),
-        required: z.coerce.boolean().optional(),
-      })
+
+    price: asOptionalField(
+      z.coerce.number().min(0, "Option price must be at least 0")
     ),
-    (field) => field.id
-  ).optional(),
-});
+    addons: zUniqueArray(
+      z.array(
+        z.object({
+          id: z.string().min(1, "Addon id is required"),
+        })
+      ),
+      (addon) => addon.id
+    ).optional(),
+    fields: zUniqueArray(
+      z.array(
+        z.object({
+          id: z.string().min(1, "Field id is required"),
+          required: z.coerce.boolean().optional(),
+        })
+      ),
+      (field) => field.id
+    ).optional(),
+  })
+  .and(
+    z
+      .object({
+        requireDeposit: isPaymentRequiredForOptionSchema.exclude(["always"], {
+          message: "Unknown type",
+        }),
+      })
+      .or(
+        z.object({
+          requireDeposit: isPaymentRequiredForOptionSchema.extract(["always"], {
+            message: "Deposit amount is required",
+          }),
+          depositPercentage: z.coerce
+            .number({ message: "Must be a number between 10 and 100" })
+            .int("Must be a number between 10 and 100")
+            .min(10, "Must be a number between 10 and 100")
+            .max(100, "Must be a number between 10 and 100"),
+        })
+      )
+  );
 
 export type AppointmentOptionUpdateModel = z.infer<
   typeof appointmentOptionSchema

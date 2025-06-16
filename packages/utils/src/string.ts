@@ -57,3 +57,7 @@ export function maskify(str: string) {
     .map((c, index) => (index % 2 == 0 ? c : "#"))
     .join("");
 }
+
+export function capitalize<T extends string>(s: T) {
+  return (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>;
+}
