@@ -2,7 +2,6 @@ import {
   AppSelector,
   BooleanSelect,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,7 +15,6 @@ import {
   InputSuffix,
 } from "@vivid/ui";
 import { TabProps } from "./types";
-import { OptionSelector } from "./cards/option-selector";
 
 export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
   const enablePayments = form.watch("payments.enable");
@@ -38,7 +36,14 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
             <FormControl>
               <BooleanSelect
                 value={field.value}
-                onValueChange={field.onChange}
+                onValueChange={(val) => {
+                  field.onChange(val);
+                  if (val) {
+                    form.setValue("payments.paymentAppId", "" as any);
+                  }
+                  field.onBlur();
+                  form.trigger("payments.paymentAppId");
+                }}
                 className="w-full"
                 trueLabel="Enable"
                 falseLabel="Disable"
@@ -56,10 +61,9 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Require deposit{" "}
+                  Payments app{" "}
                   <InfoTooltip>
-                    If enabled, each customer will be required to pay a deposit
-                    to book an appointment
+                    What payment processor to use for payments
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -71,6 +75,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     onItemSelect={(val) => {
                       field.onChange(val);
                       field.onBlur();
+                      form.trigger("payments.enable");
                     }}
                   />
                 </FormControl>

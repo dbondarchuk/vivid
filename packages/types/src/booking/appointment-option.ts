@@ -49,7 +49,7 @@ export const appointmentOptionSchema = z
     z
       .object({
         requireDeposit: isPaymentRequiredForOptionSchema.exclude(["always"], {
-          message: "Unknown type",
+          message: "Deposit amount is required if set to always",
         }),
       })
       .or(

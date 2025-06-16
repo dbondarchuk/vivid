@@ -309,6 +309,10 @@ export const OptionForm: React.FC<{
                               type="number"
                               className={InputGroupInputClasses()}
                               {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                form.trigger("requireDeposit");
+                              }}
                             />
                           </InputGroupInput>
                           <InputSuffix className={InputGroupSuffixClasses()}>

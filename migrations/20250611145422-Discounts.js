@@ -40,7 +40,7 @@ module.exports = {
           },
           {
             $set: {
-              allowPromoCode: "allow-if-has-active",
+              "value.allowPromoCode": "allow-if-has-active",
             },
           }
         );

@@ -42,7 +42,7 @@ export const customerSchema = z
     z
       .object({
         requireDeposit: isPaymentRequiredForCustomerSchema.exclude(["always"], {
-          message: "Unknown type",
+          message: "Deposit amount is required if always",
         }),
       })
       .or(

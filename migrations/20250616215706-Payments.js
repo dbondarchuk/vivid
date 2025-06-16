@@ -65,6 +65,35 @@ module.exports = {
           },
           { name: "appId" }
         );
+
+        await db.collection("configuration").updateMany(
+          {
+            key: "booking",
+          },
+          {
+            $set: {
+              "value.payments.enable": false,
+            },
+          }
+        );
+
+        await db.collection("options").updateMany(
+          {},
+          {
+            $set: {
+              requireDeposit: "inherit",
+            },
+          }
+        );
+
+        await db.collection("customers").updateMany(
+          {},
+          {
+            $set: {
+              requireDeposit: "inherit",
+            },
+          }
+        );
       });
     } finally {
       await session.endSession();
@@ -83,6 +112,35 @@ module.exports = {
         await db.dropCollection("payment-intents");
 
         await db.dropCollection("payments");
+
+        await db.collection("configuration").updateMany(
+          {
+            key: "booking",
+          },
+          {
+            $unset: {
+              "value.payments.enable": "",
+            },
+          }
+        );
+
+        await db.collection("options").updateMany(
+          {},
+          {
+            $unset: {
+              requireDeposit: "",
+            },
+          }
+        );
+
+        await db.collection("customers").updateMany(
+          {},
+          {
+            $unset: {
+              requireDeposit: "",
+            },
+          }
+        );
       });
     } finally {
       await session.endSession();

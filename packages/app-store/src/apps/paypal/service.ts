@@ -149,7 +149,10 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
     if (!appData.data) throw new Error("Paypal app is not configured");
     const { secretKey, ...rest } = appData.data;
 
-    return rest;
+    return {
+      ...rest,
+      isSandbox: this.environment === Environment.Sandbox,
+    };
   }
 
   protected async createOrder(
@@ -296,12 +299,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   }: Pick<ConnectedAppData<PaypalConfiguration>, "data" | "token">) {
     if (!data) throw new Error("No data");
     return new Client({
-      environment:
-        process.env.PAYPAL_ENV === "production"
-          ? Environment.Production
-          : process.env.NODE_ENV === "development"
-            ? Environment.Sandbox
-            : Environment.Production,
+      environment: this.environment,
       clientCredentialsAuthCredentials: {
         oAuthClientId: data.clientId,
         oAuthClientSecret: data.secretKey,
@@ -320,6 +318,14 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         },
       },
     });
+  }
+
+  protected get environment() {
+    return process.env.PAYPAL_ENV === "production"
+      ? Environment.Production
+      : process.env.NODE_ENV === "development"
+        ? Environment.Sandbox
+        : Environment.Production;
   }
 }
 

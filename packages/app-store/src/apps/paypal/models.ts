@@ -24,7 +24,9 @@ export const paypalConfigurationSchema = z.object({
 
 export type PaypalConfiguration = z.infer<typeof paypalConfigurationSchema>;
 
-export type PaypalFormProps = Omit<PaypalConfiguration, "secretKey">;
+export type PaypalFormProps = Omit<PaypalConfiguration, "secretKey"> & {
+  isSandbox: boolean;
+};
 
 export const createOrderRequestSchema = z.object({
   paymentIntentId: z.string().min(1, "Payment intent ID is required"),

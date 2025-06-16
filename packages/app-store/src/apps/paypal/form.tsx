@@ -72,6 +72,7 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   buttonStyle,
   intent,
   onSubmit,
+  isSandbox,
 }) => {
   const [isPaying, setIsPaying] = React.useState(false);
 
@@ -79,7 +80,7 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
     clientId,
     enableFunding: "applepay",
     disableFunding: "paylater",
-    buyerCountry: "US",
+    buyerCountry: isSandbox ? "US" : undefined,
     currency: "USD",
     components: ["buttons", "applepay", "card-fields"],
   };

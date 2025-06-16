@@ -377,6 +377,10 @@ export const CustomerForm: React.FC<{
                                   type="number"
                                   className={InputGroupInputClasses()}
                                   {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    form.trigger("requireDeposit");
+                                  }}
                                 />
                               </InputGroupInput>
                               <InputSuffix
