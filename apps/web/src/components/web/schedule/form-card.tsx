@@ -12,7 +12,16 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 
-import { Button, Form, FormItem, Input, Label, Spinner, cn } from "@vivid/ui";
+import {
+  Button,
+  Form,
+  FormItem,
+  Input,
+  Label,
+  Spinner,
+  cn,
+  usePrevious,
+} from "@vivid/ui";
 
 import { I18nKeys, useI18n } from "@/i18n/i18n";
 import { formatAmountString } from "@vivid/utils";
@@ -63,12 +72,17 @@ export const FormCard: React.FC = () => {
   });
 
   const values = form.watch();
+  const previousValues = usePrevious(values, values);
   React.useEffect(() => {
-    setFields(values as AppointmentFields);
+    if (JSON.stringify(values) !== JSON.stringify(previousValues)) {
+      setFields(values as AppointmentFields);
+    }
   }, [values]);
 
   const isFormValid = form.formState.isValid;
-  React.useEffect(() => setIsFormValid(isFormValid), [isFormValid]);
+  React.useEffect(() => {
+    setIsFormValid(isFormValid);
+  }, [isFormValid]);
 
   const applyPromoCode = async () => {
     if (!promoCode || !dateTime) {

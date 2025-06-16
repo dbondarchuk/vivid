@@ -205,6 +205,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
     const intentId = paymentInformation?.intent?._id;
     try {
+      setIsLoading(true);
       const response = await fetch(
         `/api/payments${intentId ? `/${intentId}` : ""}`,
         {
@@ -227,6 +228,8 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       });
 
       throw e;
+    } finally {
+      setIsLoading(false);
     }
   };
 
