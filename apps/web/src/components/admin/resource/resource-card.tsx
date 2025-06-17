@@ -176,10 +176,8 @@ export const ResourceCard = ({
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Button variant="destructive" onClick={remove}>
-                    Delete
-                  </Button>
+                <AlertDialogAction asChild variant="destructive">
+                  <Button onClick={remove}>Delete</Button>
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

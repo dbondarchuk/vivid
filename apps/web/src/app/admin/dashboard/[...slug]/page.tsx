@@ -28,7 +28,7 @@ export default async function Page(props: Props) {
   }
 
   const appId = (
-    await ServicesContainer.ConnectedAppService().getAppsByApp(app.name)
+    await ServicesContainer.ConnectedAppsService().getAppsByApp(app.name)
   )[0]?._id;
   if (!appId) {
     redirect("/admin/dashboard");

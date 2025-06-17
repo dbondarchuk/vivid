@@ -11,20 +11,26 @@ export const changeStatus = async (
   status: AppointmentStatus,
   setIsLoading: (isLoading: boolean) => void,
   refresh: () => void,
-  onSuccess?: (newStatus: AppointmentStatus) => void
+  onSuccess?: (newStatus: AppointmentStatus) => void,
+  beforeRequest?: () => Promise<void> | void
 ) => {
   setIsLoading(true);
 
+  const fn = async () => {
+    if (beforeRequest) {
+      const result = beforeRequest();
+      if (result instanceof Promise) await result;
+    }
+
+    const res = await changeAppointmentStatus(_id, status);
+    if (res !== okStatus) throw new Error("Request failed");
+  };
+
   try {
-    await toastPromise(
-      changeAppointmentStatus(_id, status).then((res) => {
-        if (res !== okStatus) throw new Error("Request failed");
-      }),
-      {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
-      }
-    );
+    await toastPromise(fn(), {
+      success: "Your changes were saved.",
+      error: "There was a problem with your request.",
+    });
     refresh();
     onSuccess?.(status);
   } catch (error) {
@@ -40,35 +46,52 @@ export const AppointmentActionButton = React.forwardRef<
     _id: string;
     status: AppointmentStatus;
     onSuccess?: (newStatus: AppointmentStatus) => void;
+    beforeRequest?: () => Promise<void> | void;
   }
->(({ _id, status, onSuccess, onClick: originalOnClick, ...props }, ref) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const router = useRouter();
-
-  const onClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    await changeStatus(
+>(
+  (
+    {
       _id,
       status,
-      setIsLoading,
-      router.refresh,
-      (newStatus) => {
-        onSuccess?.(newStatus);
-        originalOnClick?.(e);
-      }
-    );
-  };
+      onSuccess,
+      beforeRequest,
+      onClick: originalOnClick,
+      ...props
+    },
+    ref
+  ) => {
+    const [isLoading, setIsLoading] = React.useState(false);
+    const router = useRouter();
 
-  return (
-    <Button
-      {...props}
-      disabled={isLoading || props.disabled}
-      ref={ref}
-      onClick={onClick}
-      className={cn("inline-flex flex-row gap-1 items-center", props.className)}
-    >
-      {isLoading && <Spinner />}
-      {props.children}
-    </Button>
-  );
-});
+    const onClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      await changeStatus(
+        _id,
+        status,
+        setIsLoading,
+        router.refresh,
+        (newStatus) => {
+          onSuccess?.(newStatus);
+          originalOnClick?.(e);
+        },
+        beforeRequest
+      );
+    };
+
+    return (
+      <Button
+        {...props}
+        disabled={isLoading || props.disabled}
+        ref={ref}
+        onClick={onClick}
+        className={cn(
+          "inline-flex flex-row gap-1 items-center",
+          props.className
+        )}
+      >
+        {isLoading && <Spinner />}
+        {props.children}
+      </Button>
+    );
+  }
+);
 AppointmentActionButton.displayName = "AppointmentActionButton";

@@ -1,46 +1,26 @@
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest, NextResponse } from "next/server";
 
-const processWebhook = async (appId: string, request: NextRequest) => {
+const processWebhook = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ appId: string }> }
+) => {
+  const appId = (await params).appId;
+
   if (!appId) {
     return NextResponse.json({ error: "AppId is required" }, { status: 400 });
   }
 
-  const service = ServicesContainer.ConnectedAppService();
+  const service = ServicesContainer.ConnectedAppsService();
 
   const result = await service.processWebhook(appId, request);
 
-  return NextResponse.json(result);
+  return (
+    result ?? NextResponse.json({ error: "unknown_handler" }, { status: 404 })
+  );
 };
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ appId: string }> }
-) {
-  const appId = (await params).appId;
-  return await processWebhook(appId, request);
-}
-
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ appId: string }> }
-) {
-  const appId = (await params).appId;
-  return await processWebhook(appId, request);
-}
-
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ appId: string }> }
-) {
-  const appId = (await params).appId;
-  return await processWebhook(appId, request);
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ appId: string }> }
-) {
-  const appId = (await params).appId;
-  return await processWebhook(appId, request);
-}
+export const GET = processWebhook;
+export const POST = processWebhook;
+export const PUT = processWebhook;
+export const DELETE = processWebhook;

@@ -8,6 +8,7 @@ import { CustomersService } from "./customers.service";
 import { EventsService } from "./events.service";
 import { NotificationService } from "./notifications.service";
 import { PagesService } from "./pages.service";
+import { PaymentsService } from "./payments.service";
 import { ScheduleService } from "./schedule.service";
 import { ServicesService } from "./services.service";
 import { TemplatesService } from "./templates.service";
@@ -19,6 +20,7 @@ export * from "./connected-apps.service";
 export * from "./customers.service";
 export * from "./events.service";
 export * from "./pages.service";
+export * from "./payments.service";
 export * from "./schedule.service";
 export * from "./services.service";
 
@@ -28,18 +30,19 @@ export const ServicesContainer: IServicesContainer = {
     () =>
       new AssetsService(
         ServicesContainer.ConfigurationService(),
-        ServicesContainer.ConnectedAppService()
+        ServicesContainer.ConnectedAppsService()
       )
   ),
   EventsService: cache(
     () =>
       new EventsService(
         ServicesContainer.ConfigurationService(),
-        ServicesContainer.ConnectedAppService(),
+        ServicesContainer.ConnectedAppsService(),
         ServicesContainer.AssetsService(),
         ServicesContainer.CustomersService(),
         ServicesContainer.ScheduleService(),
-        ServicesContainer.ServicesService()
+        ServicesContainer.ServicesService(),
+        ServicesContainer.PaymentsService()
       )
   ),
   PagesService: cache(() => new PagesService()),
@@ -50,19 +53,22 @@ export const ServicesContainer: IServicesContainer = {
   ScheduleService: cache(
     () =>
       new ScheduleService(
-        ServicesContainer.ConnectedAppService(),
+        ServicesContainer.ConnectedAppsService(),
         ServicesContainer.ConfigurationService()
       )
   ),
   TemplatesService: cache(() => new TemplatesService()),
-  CommunicationLogService: cache(() => new CommunicationLogsService()),
-  ConnectedAppService: cache(() => new ConnectedAppsService()),
+  CommunicationLogsService: cache(() => new CommunicationLogsService()),
+  ConnectedAppsService: cache(() => new ConnectedAppsService()),
+  PaymentsService: cache(
+    () => new PaymentsService(ServicesContainer.ConnectedAppsService())
+  ),
   NotificationService: cache(
     () =>
       new NotificationService(
         ServicesContainer.ConfigurationService(),
-        ServicesContainer.ConnectedAppService(),
-        ServicesContainer.CommunicationLogService()
+        ServicesContainer.ConnectedAppsService(),
+        ServicesContainer.CommunicationLogsService()
       )
   ),
 };

@@ -48,7 +48,7 @@ export class EmailNotificationConnectedApp
     const emailAppId = defaultApps.email.appId;
 
     try {
-      await this.props.services.ConnectedAppService().getApp(emailAppId);
+      await this.props.services.ConnectedAppsService().getApp(emailAppId);
     } catch {
       return {
         status: "failed",

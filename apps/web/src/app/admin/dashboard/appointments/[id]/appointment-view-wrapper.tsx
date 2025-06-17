@@ -1,9 +1,9 @@
 import { AppointmentView } from "@/components/admin/appointments/appoitment-view";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { notFound } from "next/navigation";
 import React from "react";
-import { AppointmentDeclineDialog } from "./appointment-decline-dialog";
+import { AppointmentDeclineDialogWrapper } from "./appointment-decline-dialog";
 
 export const AppointmentViewWrapper: React.FC<{
   appointmentId: string;
@@ -37,7 +37,7 @@ export const AppointmentViewWrapper: React.FC<{
       </div>
       <AppointmentView appointment={appointment} timeZone={timeZone} />
       {shouldShowDeclineModal && (
-        <AppointmentDeclineDialog appointment={appointment} />
+        <AppointmentDeclineDialogWrapper appointment={appointment} />
       )}
     </div>
   );

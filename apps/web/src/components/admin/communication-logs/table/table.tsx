@@ -20,7 +20,7 @@ export const CommunicationLogsTable: React.FC<{
   const offset = (page - 1) * limit;
 
   const res =
-    await ServicesContainer.CommunicationLogService().getCommunicationLogs({
+    await ServicesContainer.CommunicationLogsService().getCommunicationLogs({
       range: { start, end },
       channel,
       direction,

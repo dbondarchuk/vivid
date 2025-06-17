@@ -213,7 +213,7 @@ export default class TextBeltConnectedApp
     try {
       if (data.textMessageResponderAppId) {
         const { app, service } = await this.props.services
-          .ConnectedAppService()
+          .ConnectedAppsService()
           .getAppService<ITextMessageResponder>(data.textMessageResponderAppId);
 
         if (!app || !service || !service.respond) {
@@ -303,7 +303,7 @@ export default class TextBeltConnectedApp
       try {
         if (reply.data.appId && reply.data.appId.length) {
           const { app, service } = await this.props.services
-            .ConnectedAppService()
+            .ConnectedAppsService()
             .getAppService<ITextMessageResponder>(reply.data.appId);
 
           if (!!service?.respond) {
@@ -319,7 +319,7 @@ export default class TextBeltConnectedApp
           );
           if (appData.data?.textMessageResponderAppId) {
             const { app, service } = await this.props.services
-              .ConnectedAppService()
+              .ConnectedAppsService()
               .getAppService<ITextMessageResponder>(
                 appData.data.textMessageResponderAppId
               );
@@ -340,7 +340,7 @@ export default class TextBeltConnectedApp
         };
       }
 
-      await this.props.services.CommunicationLogService().log({
+      await this.props.services.CommunicationLogsService().log({
         channel: "text-message",
         direction: "inbound",
         participant: reply.from,

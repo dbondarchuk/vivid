@@ -21,6 +21,8 @@ import { LOG_CLEANUP_APP_NAME } from "../apps/log-cleanup/const";
 import LogCleanupConnectedApp from "../apps/log-cleanup/service";
 import { OUTLOOK_APP_NAME } from "../apps/outlook/const";
 import OutlookConnectedApp from "../apps/outlook/service";
+import { PAYPAL_APP_NAME } from "../apps/paypal/const";
+import PaypalConnectedApp from "../apps/paypal/service";
 import { REMINDERS_APP_NAME } from "../apps/reminders/const";
 import RemindersConnectedApp from "../apps/reminders/service";
 import { S3_ASSETS_STORAGE_APP_NAME } from "../apps/s3-assets-storage/const";
@@ -69,4 +71,5 @@ export const AvailableAppServices: Record<
     new FileSystemAssetsStorageConnectedApp(props),
   [S3_ASSETS_STORAGE_APP_NAME]: (props) =>
     new S3AssetsStorageConnectedApp(props),
+  [PAYPAL_APP_NAME]: (props) => new PaypalConnectedApp(props),
 };

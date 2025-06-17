@@ -30,7 +30,9 @@ export default class CustomerTextMessageNotificationConnectedApp
 
     try {
       const textMessageAppId = defaultApps.textMessage?.appId;
-      await this.props.services.ConnectedAppService().getApp(textMessageAppId!);
+      await this.props.services
+        .ConnectedAppsService()
+        .getApp(textMessageAppId!);
     } catch {
       return {
         status: "failed",

@@ -115,7 +115,7 @@ class OutlookConnectedApp
 
       return {
         appId,
-        data: tokens,
+        token: tokens,
         account: {
           username,
         },
@@ -133,7 +133,7 @@ class OutlookConnectedApp
     start: Date,
     end: Date
   ): Promise<CalendarBusyTime[]> {
-    const tokens = app.data as ConnectedOauthAppTokens;
+    const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       throw new Error("No token provided");
     }
@@ -196,7 +196,7 @@ class OutlookConnectedApp
     app: ConnectedAppData,
     email: Email
   ): Promise<EmailResponse> {
-    const tokens = app.data as ConnectedOauthAppTokens;
+    const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       throw new Error("No token provided");
     }
@@ -393,7 +393,7 @@ class OutlookConnectedApp
     app: ConnectedAppData,
     event: CalendarEvent
   ): Promise<CalendarEventResult> {
-    const tokens = app.data as ConnectedOauthAppTokens;
+    const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       throw new Error("No token provided");
     }
@@ -414,7 +414,7 @@ class OutlookConnectedApp
     uid: string,
     event: CalendarEvent
   ): Promise<CalendarEventResult> {
-    const tokens = app.data as ConnectedOauthAppTokens;
+    const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       throw new Error("No token provided");
     }
@@ -432,7 +432,7 @@ class OutlookConnectedApp
   }
 
   public async deleteEvent(app: ConnectedAppData, uid: string): Promise<void> {
-    const tokens = app.data as ConnectedOauthAppTokens;
+    const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       throw new Error("No token provided");
     }
@@ -597,7 +597,7 @@ class OutlookConnectedApp
         account: {
           username,
         },
-        data: {
+        token: {
           ...tokens,
           refreshToken: currentTokens.refreshToken,
         },

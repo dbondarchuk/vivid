@@ -42,10 +42,9 @@ export const appointmentRequestSchema = z.object({
   dateTime: z.coerce.date({ message: "DateTime is required" }),
   timeZone: zTimeZone,
   duration: z.coerce
-    .number()
+    .number({ message: "Duration is required" })
     .int("Only positive integer numbers allowed")
-    .positive("Only positive integer numbers allowed")
-    .optional(),
+    .min(1, "Only positive integer numbers allowed"),
   fields: z
     .object({
       email: z.string().email("Valid email is required").trim(),
@@ -65,6 +64,10 @@ export const appointmentRequestSchema = z.object({
   promoCode: zOptionalOrMinLengthString(
     1,
     "Promo code should be undefined or at least 1 character long"
+  ),
+  paymentIntentId: zOptionalOrMinLengthString(
+    1,
+    "Payment Intent ID should be undefined or at least one character long"
   ),
 });
 

@@ -5,6 +5,7 @@ export * from "./calendars";
 export * from "./connected-app.data";
 export * from "./connected-app.service";
 export * from "./mail";
+export * from "./payment";
 export * from "./schedule";
 export * from "./scheduled";
 export * from "./text-message";

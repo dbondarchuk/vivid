@@ -1,11 +1,9 @@
+import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/get-payment-required";
 import { ServicesContainer } from "@vivid/services";
 import {
-  AppointmentDiscount,
-  AppointmentEvent,
   appointmentRequestSchema,
   AppointmentTimeNotAvaialbleError,
 } from "@vivid/types";
-import { formatAmount, getDiscountAmount } from "@vivid/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -60,147 +58,60 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const selectedOption = await ServicesContainer.ServicesService().getOption(
-    appointmentRequest.optionId
+  const eventOrError = await getAppointmentEventAndIsPaymentRequired(
+    appointmentRequest,
+    false,
+    files
   );
 
-  if (!selectedOption) {
+  if ("error" in eventOrError) {
     return NextResponse.json(
       {
         success: false,
-        error: "unknown_option",
-        message: `Can't find option with id '${appointmentRequest.optionId}'`,
+        error: eventOrError.error.code,
+        message: eventOrError.error.message,
       },
-      { status: 400 }
+      { status: eventOrError.error.status }
     );
   }
 
-  if (
-    typeof selectedOption.duration === "undefined" &&
-    !appointmentRequest.duration
-  ) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "duration_required",
-        message: `Selected option requires the duration to be provided`,
-      },
-      { status: 400 }
-    );
-  }
-
-  let selectedAddons: AppointmentEvent["addons"] = undefined;
-  if (appointmentRequest.addonsIds) {
-    selectedAddons = await ServicesContainer.ServicesService().getAddonsById(
-      appointmentRequest.addonsIds
-    );
-
-    if (selectedAddons.length !== appointmentRequest.addonsIds.length) {
+  if (eventOrError.isPaymentRequired) {
+    const paymentIntentId = appointmentRequest.paymentIntentId;
+    if (!paymentIntentId) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "unknown_addon",
-          message: `Can't find one or more selected addons`,
-        },
-        { status: 400 }
-      );
+        { success: false, error: "payment_required" },
+        { status: 402 }
+      ); // Payment required
     }
-  }
 
-  const allFields: Map<string, boolean> = new Map();
-  for (const field of [
-    ...(selectedOption.fields || []),
-    ...(selectedAddons?.flatMap((addon) => addon.fields ?? []) || []),
-  ]) {
-    if (!allFields.has(field.id)) {
-      allFields.set(field.id, !!field.required);
-    } else {
-      allFields.set(field.id, !!field.required || !!allFields.get(field.id));
-    }
-  }
-
-  const fieldsIds = Array.from(allFields.keys());
-  const serviceFields =
-    await ServicesContainer.ServicesService().getFieldsById(fieldsIds);
-
-  for (const field of serviceFields) {
-    if (
-      (field.required || allFields.get(field._id)) &&
-      !(!!appointmentRequest.fields[field.name] || !!files?.[field.name])
-    ) {
+    const paymentIntent =
+      await ServicesContainer.PaymentsService().getIntent(paymentIntentId);
+    if (!paymentIntent) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "field_required",
-          message: `Field ${field} is required`,
-        },
-        { status: 400 }
-      );
+        { success: false, error: "payment_intent_not_found" },
+        { status: 402 }
+      ); // Payment required
     }
-  }
 
-  const totalDuration =
-    (selectedOption.duration ?? appointmentRequest.duration ?? 0) +
-    (selectedAddons?.reduce((sum, cur) => sum + (cur.duration ?? 0), 0) ?? 0);
-
-  let totalPrice: number | undefined =
-    (selectedOption.price ?? 0) +
-    (selectedAddons?.reduce((sum, cur) => sum + (cur.price ?? 0), 0) ?? 0);
-
-  let appointmentDiscount: AppointmentDiscount | undefined = undefined;
-  if (appointmentRequest.promoCode) {
-    const customer = await ServicesContainer.CustomersService().findCustomer(
-      appointmentRequest.fields.email,
-      appointmentRequest.fields.phone
-    );
-    const discount = await ServicesContainer.ServicesService().applyDiscount({
-      code: appointmentRequest.promoCode,
-      dateTime: appointmentRequest.dateTime,
-      optionId: appointmentRequest.optionId,
-      addons: appointmentRequest.addonsIds,
-      customerId: customer?._id,
-    });
-
-    if (!discount) {
+    if (paymentIntent.status !== "paid") {
       return NextResponse.json(
-        {
-          success: false,
-          error: "promo_code_not_valid",
-          message: `Promo code is not valid`,
-        },
-        { status: 400 }
-      );
+        { success: false, error: "payment_not_paid" },
+        { status: 402 }
+      ); // Payment required
     }
 
-    const discountAmount = getDiscountAmount(totalPrice, discount);
-    appointmentDiscount = {
-      code: appointmentRequest.promoCode,
-      discountAmount,
-      id: discount._id,
-      name: discount.name,
-    };
-
-    totalPrice = Math.max(0, formatAmount(totalPrice - discountAmount));
+    if (paymentIntent.amount !== eventOrError.amount) {
+      return NextResponse.json(
+        { success: false, error: "payment_amount_dont_match" },
+        { status: 402 }
+      ); // Payment required
+    }
   }
-
-  if (totalPrice === 0) totalPrice = undefined;
 
   try {
     const { _id } = await ServicesContainer.EventsService().createEvent({
-      event: {
-        dateTime: appointmentRequest.dateTime,
-        option: selectedOption,
-        timeZone: appointmentRequest.timeZone,
-        totalDuration,
-        totalPrice,
-        addons: selectedAddons,
-        fields: appointmentRequest.fields,
-        discount: appointmentDiscount,
-        fieldsLabels: serviceFields.reduce(
-          (map, field) => ({ ...map, [field.name]: field.data.label }),
-          {} as Record<string, string>
-        ),
-      },
+      event: eventOrError.event,
+      paymentIntentId: appointmentRequest.paymentIntentId,
       files,
     });
 

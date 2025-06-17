@@ -47,7 +47,7 @@ export class CalendarWriterConnectedApp
   ): Promise<ConnectedAppStatusWithText> {
     try {
       const { name: appName } = await this.props.services
-        .ConnectedAppService()
+        .ConnectedAppsService()
         .getApp(data.appId);
       const app = AvailableApps[appName];
 
@@ -134,7 +134,7 @@ export class CalendarWriterConnectedApp
     const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
 
     const { app, service } = await this.props.services
-      .ConnectedAppService()
+      .ConnectedAppsService()
       .getAppService<ICalendarWriter>(data.appId);
 
     const uid = getIcsEventUid(appointment._id, config.general.url);

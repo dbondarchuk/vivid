@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ name: string }> }
 ) {
   const name = (await params).name;
-  const service = ServicesContainer.ConnectedAppService();
+  const service = ServicesContainer.ConnectedAppsService();
 
   await service.processRedirect(name, request);
 

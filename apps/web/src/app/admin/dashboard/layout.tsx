@@ -37,7 +37,7 @@ export default async function DashboardLayout({
 
   const menuItems = groups.flatMap((group) => group.children);
 
-  const appsWithMenu = await ServicesContainer.ConnectedAppService().getApps();
+  const appsWithMenu = await ServicesContainer.ConnectedAppsService().getApps();
   const appsMenus = appsWithMenu
     .map(({ name }) => AvailableApps[name]?.menuItems || [])
     .filter((menus) => menus && menus.length > 0)

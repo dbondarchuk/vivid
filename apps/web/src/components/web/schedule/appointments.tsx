@@ -39,7 +39,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
         <Schedule
           appointmentOption={selected}
           successPage={successPage}
-          back={() => setOption(null)}
+          goBack={() => setOption(null)}
           fieldsSchema={fieldsSchema}
           timeZone={timeZone}
           showPromoCode={showPromoCode}

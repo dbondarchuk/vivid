@@ -5,6 +5,7 @@ import {
   CustomerUpdateModel,
   DatabaseId,
   getCustomerSchemaWithUniqueCheck,
+  isPaymentRequiredForCustomerTypes,
 } from "@vivid/types";
 import {
   AssetSelectorDialog,
@@ -15,6 +16,7 @@ import {
   CardTitle,
   Checkbox,
   cn,
+  Combobox,
   DateTimeInput,
   Form,
   FormControl,
@@ -25,6 +27,7 @@ import {
   InfoTooltip,
   Input,
   InputGroup,
+  InputGroupInput,
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   InputSuffix,
@@ -41,6 +44,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueEmailAndPhone, create, update } from "./actions";
+
+const IsPaymentRequiredForCustomerTypesLabels: Record<
+  (typeof isPaymentRequiredForCustomerTypes)[number],
+  string
+> = {
+  always: "Always",
+  never: "Never",
+  inherit: "Same as selected option or general configuration",
+};
 
 export const CustomerForm: React.FC<{
   initialData?: CustomerUpdateModel & Partial<DatabaseId>;
@@ -137,6 +149,8 @@ export const CustomerForm: React.FC<{
 
     form.trigger("knownNames");
   };
+
+  const requireDeposit = form.watch("requireDeposit");
 
   return (
     <Form {...form}>
@@ -300,6 +314,88 @@ export const CustomerForm: React.FC<{
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="requireDeposit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Require deposit{" "}
+                        <InfoTooltip>
+                          <p>Should this customer be required to pay deposit</p>
+                          <p className="font-semibold">
+                            Requires configured payments app
+                          </p>
+                        </InfoTooltip>
+                      </FormLabel>
+                      <FormControl>
+                        <Combobox
+                          disabled={loading}
+                          className="flex w-full font-normal text-base"
+                          values={isPaymentRequiredForCustomerTypes.map(
+                            (value) => ({
+                              value,
+                              label:
+                                IsPaymentRequiredForCustomerTypesLabels[value],
+                            })
+                          )}
+                          searchLabel="Select option"
+                          value={field.value}
+                          onItemSelect={(item) => {
+                            field.onChange(item);
+                            field.onBlur();
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {requireDeposit === "always" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="depositPercentage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Deposit amount{" "}
+                            <InfoTooltip>
+                              <p>Deposit amount in percents</p>
+                              <p>
+                                If set to 100, full price will be required to be
+                                paid upfront
+                              </p>
+                            </InfoTooltip>
+                          </FormLabel>
+                          <FormControl>
+                            <InputGroup>
+                              <InputGroupInput>
+                                <Input
+                                  disabled={loading}
+                                  placeholder="20"
+                                  type="number"
+                                  className={InputGroupInputClasses()}
+                                  {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    form.trigger("requireDeposit");
+                                  }}
+                                />
+                              </InputGroupInput>
+                              <InputSuffix
+                                className={InputGroupSuffixClasses()}
+                              >
+                                %
+                              </InputSuffix>
+                            </InputGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
               </CardContent>
             </Card>
           </div>

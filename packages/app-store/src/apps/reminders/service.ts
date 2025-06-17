@@ -65,7 +65,7 @@ export default class RemindersConnectedApp
 
         try {
           const emailAppId = defaultApps.email?.appId;
-          await this.props.services.ConnectedAppService().getApp(emailAppId!);
+          await this.props.services.ConnectedAppsService().getApp(emailAppId!);
         } catch {
           return {
             status: "failed",

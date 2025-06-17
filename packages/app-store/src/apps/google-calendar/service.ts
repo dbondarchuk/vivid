@@ -157,7 +157,7 @@ class GoogleCalendarConnectedApp
 
       return {
         appId,
-        data: tokens,
+        token: tokens,
         account: {
           username: email,
         },
@@ -411,7 +411,7 @@ class GoogleCalendarConnectedApp
 
   private async getOAuthClientWithCredentials(appData: ConnectedAppData) {
     const client = await this.getOAuthClient();
-    const credentials = appData.data as Credentials;
+    const credentials = appData.token as Credentials;
     if (!credentials) {
       throw new Error("App is not authorized");
     }
@@ -419,7 +419,7 @@ class GoogleCalendarConnectedApp
     client.setCredentials(appData.data);
     client.on("tokens", async (tokens) => {
       await this.props.update({
-        data: {
+        token: {
           ...credentials,
           access_token: tokens.access_token,
           expiry_date: tokens.expiry_date,

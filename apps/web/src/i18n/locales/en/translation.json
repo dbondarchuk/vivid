@@ -40,5 +40,14 @@
   "submit_event_failed_title": "Uh oh! Something went wrong.",
   "submit_event_failed_description": "Something went wrong while we were trying to book your appointment. Please give us a call",
   "submit_event_failed_time_not_available_description": "Seems like time is not available anymore. Please select another time slot",
-  "select_addons_label": "Select additional services"
+  "select_addons_label": "Select additional services",
+
+  "payment_information_fetch_failed_title": "Uh oh! Something went wrong.",
+  "payment_information_fetch_failed_description": "Something went wrong while we were trying to get the information to book your appointment. Please give us a call",
+
+  "payment_form_deposit_required_title": "Deposit is required",
+  "payment_form_deposit_required_description": "In order to book this appointment, {{percentage}}% (${{amount}}) deposit is required. Please pay by using the form below",
+
+  "payment_form_full_payment_required_title": "Full payment is required",
+  "payment_form_full_payment_required_description": "In order to book this appointment, full paymant of ${{amount}} is required. Please pay by using the form below"
 }

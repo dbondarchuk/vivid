@@ -4,8 +4,10 @@ import { ServicesContainer } from "@vivid/services";
 import React from "react";
 
 export const InstalledApps: React.FC = async () => {
-  const apps = (await ServicesContainer.ConnectedAppService().getApps()).filter(
-    (app) => !AvailableApps[app.name].isHidden
+  const apps = (
+    await ServicesContainer.ConnectedAppsService().getApps()
+  ).filter(
+    (app) => AvailableApps[app.name] && !AvailableApps[app.name].isHidden
   );
 
   return (

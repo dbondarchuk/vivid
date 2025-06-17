@@ -1,5 +1,5 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { Separator, Skeleton } from "@vivid/ui";
+import { Skeleton } from "@vivid/ui";
 import { Suspense } from "react";
 import { AppointmentViewWrapper } from "./appointment-view-wrapper";
 

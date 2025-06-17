@@ -5,8 +5,8 @@ import { DiscountTypeLabels } from "@/constants/labels";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   DatabaseId,
-  getDiscountSchemaWithUniqueCheck,
   DiscountUpdateModel,
+  getDiscountSchemaWithUniqueCheck,
 } from "@vivid/types";
 import {
   AlertDialog,
@@ -20,11 +20,6 @@ import {
   AlertDialogTrigger,
   BooleanSelect,
   Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
   cn,
   Combobox,
   DateTimeInput,
@@ -53,8 +48,8 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { checkUniqueNameAndCode, create, update } from "./actions";
 import { AddonSelector } from "../options/addon-selector";
+import { checkUniqueNameAndCode, create, update } from "./actions";
 
 const DiscountLimitCard: React.FC<{
   disabled?: boolean;
@@ -193,10 +188,8 @@ const DiscountLimitCard: React.FC<{
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <Button variant="destructive" onClick={remove}>
-                Delete
-              </Button>
+            <AlertDialogAction asChild variant="destructive">
+              <Button onClick={remove}>Delete</Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

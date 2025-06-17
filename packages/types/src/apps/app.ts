@@ -9,7 +9,8 @@ export type AppScope =
   | "appointment-hook"
   | "assets-storage"
   | "scheduled"
-  | "schedule";
+  | "schedule"
+  | "payment";
 
 export type AppSetupProps = {
   onSuccess: () => void;

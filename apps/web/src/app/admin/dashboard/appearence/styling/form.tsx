@@ -260,11 +260,8 @@ export const StylingsConfigurationForm: React.FC<{
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction asChild>
-                                <Button
-                                  variant="destructive"
-                                  onClick={() => removeColor(index)}
-                                >
+                              <AlertDialogAction asChild variant="destructive">
+                                <Button onClick={() => removeColor(index)}>
                                   Delete
                                 </Button>
                               </AlertDialogAction>

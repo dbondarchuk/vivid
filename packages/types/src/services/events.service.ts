@@ -19,6 +19,7 @@ export interface IEventsService {
     confirmed?: boolean;
     force?: boolean;
     files?: Record<string, File>;
+    paymentIntentId?: string;
   }): Promise<Appointment>;
   getPendingAppointmentsCount(after?: Date): Promise<number>;
   getPendingAppointments(
