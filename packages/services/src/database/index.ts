@@ -28,9 +28,11 @@ const getClient = () => {
 };
 
 export const getDbConnection = async () => {
+  return (await getDbClient()).db(undefined, { ignoreUndefined: true });
+};
+
+export const getDbClient = async () => {
   if (!client) getClient();
 
-  await client.connect();
-
-  return client.db(undefined, { ignoreUndefined: true });
+  return await client.connect();
 };

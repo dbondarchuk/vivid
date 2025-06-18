@@ -1,6 +1,7 @@
 import { AppStore } from "@/components/admin/apps/store/app-store";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import React from "react";
 
 type Params = {
@@ -14,6 +15,9 @@ const breadcrumbItems = [
 ];
 
 export default async function AppsStorePage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("store");
+
+  logger.debug("Loading store page");
   return (
     <PageContainer scrollable={true}>
       <Breadcrumbs items={breadcrumbItems} />

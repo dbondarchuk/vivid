@@ -3,6 +3,7 @@ import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 
 import { AddonForm } from "@/components/admin/services/addons/form";
 import { ServicesContainer } from "@vivid/services";
+import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -10,10 +11,31 @@ type Props = {
 };
 
 export default async function EditAddonPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("edit-service-addon");
   const params = await props.params;
+
+  logger.debug(
+    {
+      addonId: params.id,
+    },
+    "Loading service addon edit page"
+  );
+
   const addon = await ServicesContainer.ServicesService().getAddon(params.id);
 
-  if (!addon) return notFound();
+  if (!addon) {
+    logger.warn({ addonId: params.id }, "Service addon not found");
+    return notFound();
+  }
+
+  logger.debug(
+    {
+      addonId: params.id,
+      addonName: addon.name,
+      addonPrice: addon.price,
+    },
+    "Service addon edit page loaded"
+  );
 
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },

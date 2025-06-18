@@ -6,6 +6,7 @@ import {
 } from "@/components/admin/services/discounts/table/search-params";
 import { DiscountsTable } from "@/components/admin/services/discounts/table/table";
 import { DiscountsTableAction } from "@/components/admin/services/discounts/table/table-action";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
   DataTableSkeleton,
@@ -27,6 +28,9 @@ const breadcrumbItems = [
 ];
 
 export default async function DiscountsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("discounts");
+
+  logger.debug("Loading discounts page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 

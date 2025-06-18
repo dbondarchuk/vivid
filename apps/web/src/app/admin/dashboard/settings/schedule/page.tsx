@@ -1,6 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { ScheduleSettingsForm } from "./form";
 
 const breadcrumbItems = [
@@ -10,6 +11,9 @@ const breadcrumbItems = [
 ];
 
 export default async function Page() {
+  const logger = getLoggerFactory("AdminPages")("schedule");
+
+  logger.debug("Loading schedule page");
   const schedule =
     await ServicesContainer.ConfigurationService().getConfiguration("schedule");
 

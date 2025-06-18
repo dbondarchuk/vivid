@@ -1,6 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { StylingsConfigurationForm } from "./form";
 
 const breadcrumbItems = [
@@ -10,6 +11,9 @@ const breadcrumbItems = [
 ];
 
 export default async function Page() {
+  const logger = getLoggerFactory("AdminPages")("styling");
+
+  logger.debug("Loading styling page");
   const settings =
     await ServicesContainer.ConfigurationService().getConfiguration("styling");
 

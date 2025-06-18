@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -39,22 +40,58 @@ const bodyTemplates: Record<
 export class CalendarWriterConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
+  protected readonly loggerFactory = getLoggerFactory(
+    "CalendarWriterConnectedApp"
+  );
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
     data: CalendarWriterConfiguration
   ): Promise<ConnectedAppStatusWithText> {
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      { appId: appData._id, targetAppId: data.appId },
+      "Processing calendar writer configuration request"
+    );
+
     try {
       const { name: appName } = await this.props.services
         .ConnectedAppsService()
         .getApp(data.appId);
+
+      logger.debug(
+        { appId: appData._id, targetAppId: data.appId, appName },
+        "Retrieved target app information"
+      );
+
       const app = AvailableApps[appName];
 
       if (!app.scope.includes("calendar-write")) {
+        logger.error(
+          {
+            appId: appData._id,
+            targetAppId: data.appId,
+            appName,
+            scope: app.scope,
+          },
+          "Target app does not support calendar-write scope"
+        );
+
         throw new Error("Wrong app scope");
       }
-    } catch {
+
+      logger.debug(
+        { appId: appData._id, targetAppId: data.appId, appName },
+        "Target app supports calendar-write scope"
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, targetAppId: data.appId, error },
+        "Failed to validate calendar app configuration"
+      );
+
       return {
         status: "failed",
         statusText: "Calendar app is not found or does not support write",
@@ -71,6 +108,11 @@ export class CalendarWriterConnectedApp
       ...status,
     });
 
+    logger.info(
+      { appId: appData._id, targetAppId: data.appId, status: status.status },
+      "Successfully configured calendar writer"
+    );
+
     return status;
   }
 
@@ -79,12 +121,37 @@ export class CalendarWriterConnectedApp
     appointment: Appointment,
     confirmed: boolean
   ): Promise<void> {
-    await this.makeEvent(
-      appData,
-      appointment,
-      confirmed ? "auto-confirmed" : "pending",
-      "New Request"
+    const logger = this.loggerFactory("onAppointmentCreated");
+    logger.debug(
+      { appId: appData._id, appointmentId: appointment._id, confirmed },
+      "Appointment created, creating calendar event"
     );
+
+    try {
+      await this.makeEvent(
+        appData,
+        appointment,
+        confirmed ? "auto-confirmed" : "pending",
+        "New Request"
+      );
+
+      logger.info(
+        { appId: appData._id, appointmentId: appointment._id, confirmed },
+        "Successfully created calendar event for new appointment"
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, appointmentId: appointment._id, error },
+        "Error creating calendar event for new appointment"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText: "Error creating calendar event for new appointment",
+      });
+
+      throw error;
+    }
   }
 
   public async onAppointmentStatusChanged(
@@ -92,7 +159,37 @@ export class CalendarWriterConnectedApp
     appointment: Appointment,
     newStatus: AppointmentStatus
   ): Promise<void> {
-    await this.makeEvent(appData, appointment, newStatus, newStatus);
+    const logger = this.loggerFactory("onAppointmentStatusChanged");
+    logger.debug(
+      { appId: appData._id, appointmentId: appointment._id, newStatus },
+      "Appointment status changed, updating calendar event"
+    );
+
+    try {
+      await this.makeEvent(appData, appointment, newStatus, newStatus);
+
+      logger.info(
+        { appId: appData._id, appointmentId: appointment._id, newStatus },
+        "Successfully updated calendar event for status change"
+      );
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newStatus,
+          error,
+        },
+        "Error updating calendar event for status change"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText: "Error updating calendar event for status change",
+      });
+
+      throw error;
+    }
   }
 
   public async onAppointmentRescheduled(
@@ -101,13 +198,59 @@ export class CalendarWriterConnectedApp
     newTime: Date,
     newDuration: number
   ): Promise<void> {
-    const newAppointment: Appointment = {
-      ...appointment,
-      dateTime: newTime,
-      totalDuration: newDuration,
-    };
+    const logger = this.loggerFactory("onAppointmentRescheduled");
+    logger.debug(
+      {
+        appId: appData._id,
+        appointmentId: appointment._id,
+        newTime: newTime.toISOString(),
+        newDuration,
+      },
+      "Appointment rescheduled, updating calendar event"
+    );
 
-    await this.makeEvent(appData, newAppointment, "rescheduled", "Rescheduled");
+    try {
+      const newAppointment: Appointment = {
+        ...appointment,
+        dateTime: newTime,
+        totalDuration: newDuration,
+      };
+
+      await this.makeEvent(
+        appData,
+        newAppointment,
+        "rescheduled",
+        "Rescheduled"
+      );
+
+      logger.info(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newTime: newTime.toISOString(),
+          newDuration,
+        },
+        "Successfully updated calendar event for rescheduled appointment"
+      );
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newTime: newTime.toISOString(),
+          newDuration,
+          error,
+        },
+        "Error updating calendar event for rescheduled appointment"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText: "Error updating calendar event for rescheduled appointment",
+      });
+
+      throw error;
+    }
   }
 
   private async makeEvent(
@@ -116,82 +259,145 @@ export class CalendarWriterConnectedApp
     status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
     initiator: string
   ) {
-    const config = await this.props.services
-      .ConfigurationService()
-      .getConfigurations("booking", "general", "social");
+    const logger = this.loggerFactory("makeEvent");
+    logger.debug(
+      { appId: appData._id, appointmentId: appointment._id, status, initiator },
+      "Making calendar event"
+    );
 
-    const args = getArguments({
-      appointment,
-      config,
-      customer: appointment.customer,
-      useAppointmentTimezone: true,
-    });
+    try {
+      const config = await this.props.services
+        .ConfigurationService()
+        .getConfigurations("booking", "general", "social");
 
-    const data = appData.data as CalendarWriterConfiguration;
+      logger.debug(
+        { appId: appData._id, appointmentId: appointment._id },
+        "Retrieved configuration for calendar event"
+      );
 
-    const description = template(bodyTemplates[status], args);
+      const args = getArguments({
+        appointment,
+        config,
+        customer: appointment.customer,
+        useAppointmentTimezone: true,
+      });
 
-    const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
+      const data = appData.data as CalendarWriterConfiguration;
 
-    const { app, service } = await this.props.services
-      .ConnectedAppsService()
-      .getAppService<ICalendarWriter>(data.appId);
+      const description = template(bodyTemplates[status], args);
 
-    const uid = getIcsEventUid(appointment._id, config.general.url);
-    const newStatus =
-      status === "rescheduled"
-        ? appointment.status
-        : status === "auto-confirmed"
-          ? "confirmed"
-          : status;
+      const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
 
-    const event: CalendarEvent = {
-      id: appointment._id,
-      title: eventSummary,
-      description: {
-        html: description,
-        plainText: convert(description, { wordwrap: 130 })
-          .trim()
-          .replace(/(\r\n|\r|\n)+/g, "\n"),
-        url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}`,
-      },
-      location: {
-        name: config.general.name,
-        address: config.general.address,
-      },
-      startTime: appointment.dateTime,
-      duration: appointment.totalDuration,
-      timeZone: config.booking.timeZone,
-      uid,
-      status: newStatus,
-      attendees: [
-        // {
-        //   name: config.general.name,
-        //   email: config.general.email,
-        //   status: "organizer",
-        //   type: "required",
-        // },
+      logger.debug(
         {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          targetAppId: data.appId,
+        },
+        "Getting calendar writer service"
+      );
+
+      const { app, service } = await this.props.services
+        .ConnectedAppsService()
+        .getAppService<ICalendarWriter>(data.appId);
+
+      const uid = getIcsEventUid(appointment._id, config.general.url);
+      const newStatus =
+        status === "rescheduled"
+          ? appointment.status
+          : status === "auto-confirmed"
+            ? "confirmed"
+            : status;
+
+      const event: CalendarEvent = {
+        id: appointment._id,
+        title: eventSummary,
+        description: {
+          html: description,
+          plainText: convert(description, { wordwrap: 130 })
+            .trim()
+            .replace(/(\r\n|\r|\n)+/g, "\n"),
+          url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}`,
+        },
+        location: {
           name: config.general.name,
-          email: config.general.email,
-          status: newStatus === "confirmed" ? "confirmed" : "tentative",
-          type: "required",
+          address: config.general.address,
         },
-        {
-          name: appointment.fields.name,
-          email: appointment.fields.email,
-          status: "confirmed",
-          type: "required",
-        },
-      ],
-    };
+        startTime: appointment.dateTime,
+        duration: appointment.totalDuration,
+        timeZone: config.booking.timeZone,
+        uid,
+        status: newStatus,
+        attendees: [
+          // {
+          //   name: config.general.name,
+          //   email: config.general.email,
+          //   status: "organizer",
+          //   type: "required",
+          // },
+          {
+            name: config.general.name,
+            email: config.general.email,
+            status: newStatus === "confirmed" ? "confirmed" : "tentative",
+            type: "required",
+          },
+          {
+            name: appointment.fields.name,
+            email: appointment.fields.email,
+            status: "confirmed",
+            type: "required",
+          },
+        ],
+      };
 
-    if (status === "pending" || status === "auto-confirmed") {
-      await service.createEvent(app, event);
-    } else if (status === "declined") {
-      await service.deleteEvent(app, uid, event.id);
-    } else {
-      service.updateEvent(app, uid, event);
+      logger.debug(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          status,
+          eventId: event.id,
+          uid,
+        },
+        "Created calendar event object"
+      );
+
+      if (status === "pending" || status === "auto-confirmed") {
+        logger.debug(
+          { appId: appData._id, appointmentId: appointment._id, status },
+          "Creating new calendar event"
+        );
+        await service.createEvent(app, event);
+      } else if (status === "declined") {
+        logger.debug(
+          { appId: appData._id, appointmentId: appointment._id, status },
+          "Deleting calendar event"
+        );
+        await service.deleteEvent(app, uid, event.id);
+      } else {
+        logger.debug(
+          { appId: appData._id, appointmentId: appointment._id, status },
+          "Updating calendar event"
+        );
+        service.updateEvent(app, uid, event);
+      }
+
+      logger.info(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          status,
+          eventId: event.id,
+          uid,
+        },
+        "Successfully processed calendar event"
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, appointmentId: appointment._id, status, error },
+        "Error making calendar event"
+      );
+
+      throw error;
     }
   }
 }

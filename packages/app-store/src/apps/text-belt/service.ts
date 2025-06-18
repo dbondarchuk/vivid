@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   ApiResponse,
@@ -80,27 +81,51 @@ type SmsResponse = {
 export default class TextBeltConnectedApp
   implements IConnectedApp, IConnectedAppWithWebhook, ITextMessageSender
 {
+  protected readonly loggerFactory = getLoggerFactory("TextBeltConnectedApp");
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async sendTextMessage(
     app: ConnectedAppData,
     message: TextMessage
   ): Promise<TextMessageResponse> {
-    const { url } = await this.props.services
-      .ConfigurationService()
-      .getConfiguration("general");
-    const request: SmsRequest = {
-      message: message.message,
-      key: (app.data as TextBeltConfiguration).apiKey,
-      phone: message.phone,
-      sender: message.sender,
-      replyWebhookUrl: `${url}/api/apps/${app._id}/webhook`,
-      webhookData: message.data
-        ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
-        : undefined,
-    };
+    const logger = this.loggerFactory("sendTextMessage");
+    logger.debug(
+      {
+        appId: app._id,
+        phone: maskify(message.phone),
+        sender: message.sender,
+        messageLength: message.message.length,
+        hasData: !!message.data,
+      },
+      "Sending text message via TextBelt"
+    );
 
     try {
+      const { url } = await this.props.services
+        .ConfigurationService()
+        .getConfiguration("general");
+
+      const request: SmsRequest = {
+        message: message.message,
+        key: (app.data as TextBeltConfiguration).apiKey,
+        phone: message.phone,
+        sender: message.sender,
+        replyWebhookUrl: `${url}/api/apps/${app._id}/webhook`,
+        webhookData: message.data
+          ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
+          : undefined,
+      };
+
+      logger.debug(
+        {
+          appId: app._id,
+          phone: maskify(message.phone),
+          hasWebhookData: !!request.webhookData,
+        },
+        "Prepared TextBelt request, sending SMS"
+      );
+
       const result = await fetch("https://textbelt.com/text", {
         method: "post",
         headers: { "Content-Type": "application/json" },
@@ -110,10 +135,28 @@ export default class TextBeltConnectedApp
       const response = (await result.json()) as SmsResponse;
 
       if (!response.success) {
+        logger.error(
+          {
+            appId: app._id,
+            phone: maskify(message.phone),
+            error: response.error,
+          },
+          "Failed to send SMS via TextBelt"
+        );
         throw new Error(
           `Failed to send SMS: ${response.error || "unknown error"}`
         );
       }
+
+      logger.info(
+        {
+          appId: app._id,
+          phone: maskify(message.phone),
+          textId: response.textId,
+          quotaRemaining: response.quotaRemaining,
+        },
+        "Successfully sent SMS via TextBelt"
+      );
 
       this.props.update({
         status: "connected",
@@ -129,6 +172,15 @@ export default class TextBeltConnectedApp
         },
       };
     } catch (e: any) {
+      logger.error(
+        {
+          appId: app._id,
+          phone: maskify(message.phone),
+          error: e?.message || e?.toString(),
+        },
+        "Error sending text message via TextBelt"
+      );
+
       this.props.update({
         status: "failed",
         statusText: e?.message || e?.toString() || "Something went wrong",
@@ -142,97 +194,205 @@ export default class TextBeltConnectedApp
     appData: ConnectedAppData,
     request: ApiRequest
   ): Promise<ApiResponse> {
-    const config = appData.data as TextBeltConfiguration;
+    const logger = this.loggerFactory("processWebhook");
+    logger.debug({ appId: appData._id }, "Processing TextBelt webhook");
 
-    const bodyText = await request.text();
-    const timestamp = request.headers.get("X-textbelt-timestamp");
-    const signature = request.headers.get("X-textbelt-signature");
+    try {
+      const config = appData.data as TextBeltConfiguration;
 
-    if (!timestamp || !signature) {
-      console.warn(`Mailformed headers in SMS webhook: ${bodyText}`);
+      const bodyText = await request.text();
+      const timestamp = request.headers.get("X-textbelt-timestamp");
+      const signature = request.headers.get("X-textbelt-signature");
 
-      return Response.json({ success: false }, { status: 400 });
+      logger.debug(
+        {
+          appId: appData._id,
+          hasTimestamp: !!timestamp,
+          hasSignature: !!signature,
+        },
+        "Extracted webhook headers"
+      );
+
+      if (!timestamp || !signature) {
+        logger.warn(
+          { appId: appData._id, bodyText },
+          "Malformed headers in SMS webhook"
+        );
+
+        return Response.json({ success: false }, { status: 400 });
+      }
+
+      if (!verify(config?.apiKey, timestamp, signature, bodyText)) {
+        logger.warn({ appId: appData._id, bodyText }, "Unverified SMS webhook");
+
+        return Response.json({ success: false }, { status: 400 });
+      }
+
+      logger.debug(
+        { appId: appData._id },
+        "Webhook signature verified successfully"
+      );
+
+      const reply = JSON.parse(bodyText) as TextbeltWebhookData;
+      if (!reply.fromNumber) {
+        logger.warn(
+          { appId: appData._id, bodyText },
+          "Malformed body in SMS webhook"
+        );
+        return Response.json({ success: false }, { status: 400 });
+      }
+
+      logger.info(
+        {
+          appId: appData._id,
+          fromNumber: maskify(reply.fromNumber),
+          textId: reply.textId,
+          hasData: !!reply.data,
+        },
+        "Received TextBelt reply webhook"
+      );
+
+      const parts = (reply?.data || "").split("|", 4);
+
+      const appId = parts[0] || undefined;
+      const appointmentId = parts[1] || undefined;
+      const customerId = parts[2] || undefined;
+      const data = parts[3] || undefined;
+
+      logger.debug(
+        {
+          appId: appData._id,
+          parsedAppId: appId,
+          appointmentId,
+          customerId,
+          hasData: !!data,
+        },
+        "Parsed webhook data"
+      );
+
+      const appointment = appointmentId
+        ? await this.props.services
+            .EventsService()
+            .getAppointment(appointmentId)
+        : null;
+
+      const customer = customerId
+        ? await this.props.services.CustomersService().getCustomer(customerId)
+        : (appointment?.customer ?? null);
+
+      const replyData: TextMessageReply = {
+        from: reply.fromNumber,
+        message: reply.text,
+        data: {
+          appId,
+          data,
+          appointmentId,
+          customerId,
+        },
+        appointment,
+        customer,
+        messageId: reply.textId,
+      };
+
+      logger.debug(
+        { appId: appData._id, fromNumber: maskify(reply.fromNumber) },
+        "Processing text message reply"
+      );
+
+      await this.respond(appData, replyData);
+
+      logger.info(
+        { appId: appData._id, fromNumber: maskify(reply.fromNumber) },
+        "Successfully processed TextBelt webhook"
+      );
+
+      return Response.json({ success: true }, { status: 201 });
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, error: error?.message || error?.toString() },
+        "Error processing TextBelt webhook"
+      );
+      throw error;
     }
-
-    if (!verify(config?.apiKey, timestamp, signature, bodyText)) {
-      console.warn(`Unverified SMS webhook: ${bodyText}`);
-
-      return Response.json({ success: false }, { status: 400 });
-    }
-
-    const reply = JSON.parse(bodyText) as TextbeltWebhookData;
-    if (!reply.fromNumber) {
-      console.warn(`Mailformed body in SMS webhook: ${bodyText}`);
-      return Response.json({ success: false }, { status: 400 });
-    }
-
-    console.log(
-      `Received TextBelt reply webhook from ${maskify(
-        reply.fromNumber
-      )} with data ${reply.data}`
-    );
-
-    const parts = (reply?.data || "").split("|", 4);
-
-    const appId = parts[0] || undefined;
-    const appointmentId = parts[1] || undefined;
-    const customerId = parts[2] || undefined;
-    const data = parts[3] || undefined;
-
-    const appointment = appointmentId
-      ? await this.props.services.EventsService().getAppointment(appointmentId)
-      : null;
-
-    const customer = customerId
-      ? await this.props.services.CustomersService().getCustomer(customerId)
-      : (appointment?.customer ?? null);
-
-    const replyData: TextMessageReply = {
-      from: reply.fromNumber,
-      message: reply.text,
-      data: {
-        appId,
-        data,
-        appointmentId,
-        customerId,
-      },
-      appointment,
-      customer,
-      messageId: reply.textId,
-    };
-
-    await this.respond(appData, replyData);
-
-    return Response.json({ success: true }, { status: 201 });
   }
 
   public async processRequest(
     appData: ConnectedAppData,
     data: TextBeltConfiguration
   ): Promise<ConnectedAppStatusWithText> {
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      {
+        appId: appData._id,
+        apiKey: scrambleKey(data.apiKey),
+        hasResponderApp: !!data.textMessageResponderAppId,
+      },
+      "Processing TextBelt configuration request"
+    );
+
     try {
       if (data.textMessageResponderAppId) {
+        logger.debug(
+          {
+            appId: appData._id,
+            responderAppId: data.textMessageResponderAppId,
+          },
+          "Validating text message responder app"
+        );
+
         const { app, service } = await this.props.services
           .ConnectedAppsService()
           .getAppService<ITextMessageResponder>(data.textMessageResponderAppId);
 
         if (!app || !service || !service.respond) {
+          logger.error(
+            {
+              appId: appData._id,
+              responderAppId: data.textMessageResponderAppId,
+            },
+            "Provided app does not exist or does not support responding to text messages"
+          );
           throw new Error(
             `Provided app does not exist or does not support responding to text messages`
           );
         }
+
+        logger.debug(
+          { appId: appData._id, responderAppName: app.name },
+          "Text message responder app validated successfully"
+        );
       }
+
+      logger.debug({ appId: appData._id }, "Checking TextBelt quota");
 
       const response = await fetch(`https://textbelt.com/quota/${data.apiKey}`);
       if (response.status >= 400) {
+        logger.error(
+          { appId: appData._id, statusCode: response.status },
+          "Failed to fetch TextBelt quota"
+        );
         throw new Error(`Failed to fetch url. Status code: ${response.status}`);
       }
 
       const json = (await response.json()) as SmsResponse;
 
       if (!json.success || !json.quotaRemaining) {
+        logger.error(
+          {
+            appId: appData._id,
+            success: json.success,
+            quotaRemaining: json.quotaRemaining,
+          },
+          "Failed to get remaining quota or quota is zero"
+        );
         throw new Error(`Failed to get remaining quota or quota is zero`);
       }
+
+      logger.debug(
+        { appId: appData._id, quotaRemaining: json.quotaRemaining },
+        "Successfully retrieved TextBelt quota"
+      );
+
       const status: ConnectedAppStatusWithText = {
         status: "connected",
         statusText: `Remaining quota is ${json.quotaRemaining}`,
@@ -246,8 +406,18 @@ export default class TextBeltConnectedApp
         ...status,
       });
 
+      logger.info(
+        { appId: appData._id, quotaRemaining: json.quotaRemaining },
+        "Successfully connected to TextBelt"
+      );
+
       return status;
     } catch (e: any) {
+      logger.error(
+        { appId: appData._id, error: e?.message || e?.toString() },
+        "Error processing TextBelt configuration request"
+      );
+
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText: e?.message || e?.toString() || "Something went wrong",
@@ -265,6 +435,18 @@ export default class TextBeltConnectedApp
     appData: ConnectedAppData<TextBeltConfiguration>,
     textMessageReply: TextMessageReply
   ): Promise<void> {
+    const logger = this.loggerFactory("respond");
+    logger.debug(
+      {
+        appId: appData._id,
+        fromNumber: maskify(textMessageReply.from),
+        messageLength: textMessageReply.message.length,
+        hasAppointment: !!textMessageReply.appointment,
+        hasCustomer: !!textMessageReply.customer,
+      },
+      "Processing text message reply"
+    );
+
     const bodyTemplate = ownerTextMessageReplyTemplate;
 
     const config = await this.props.services
@@ -285,7 +467,11 @@ export default class TextBeltConnectedApp
 
     const description = template(bodyTemplate, args);
 
-    console.log(`Sending email to owner about incoming message.`);
+    logger.debug(
+      { appId: appData._id, ownerEmail: config.general.email },
+      "Sending email to owner about incoming message"
+    );
+
     await this.props.services.NotificationService().sendEmail({
       email: {
         to: config.general.email,
@@ -302,20 +488,29 @@ export default class TextBeltConnectedApp
     try {
       try {
         if (reply.data.appId && reply.data.appId.length) {
+          logger.debug(
+            { appId: appData._id, responderAppId: reply.data.appId },
+            "Processing message with responder app"
+          );
+
           const { app, service } = await this.props.services
             .ConnectedAppsService()
             .getAppService<ITextMessageResponder>(reply.data.appId);
 
           if (!!service?.respond) {
-            console.log(`Incoming message will be processed by ${app?.name}`);
+            logger.debug(
+              { appId: appData._id, responderAppName: app?.name },
+              "Incoming message will be processed by responder app"
+            );
           }
 
           result = await service?.respond?.(app, textMessageReply);
         }
       } finally {
         if (!result) {
-          console.log(
-            `No service has processed the incoming text message. Will try to use responder app`
+          logger.debug(
+            { appId: appData._id },
+            "No service has processed the incoming text message. Will try to use responder app"
           );
           if (appData.data?.textMessageResponderAppId) {
             const { app, service } = await this.props.services
@@ -330,8 +525,9 @@ export default class TextBeltConnectedApp
       }
     } finally {
       if (!result) {
-        console.log(
-          `No responder app was registered with TextBelt Webhook app or it was not processed.`
+        logger.warn(
+          { appId: appData._id },
+          "No responder app was registered with TextBelt Webhook app or it was not processed"
         );
 
         result = {
@@ -339,6 +535,15 @@ export default class TextBeltConnectedApp
           participantType: "customer",
         };
       }
+
+      logger.debug(
+        {
+          appId: appData._id,
+          handledBy: result.handledBy,
+          participantType: result.participantType,
+        },
+        "Logging communication"
+      );
 
       await this.props.services.CommunicationLogsService().log({
         channel: "text-message",
@@ -351,6 +556,15 @@ export default class TextBeltConnectedApp
         appointmentId: appointment?._id,
         customerId: customer?._id,
       });
+
+      logger.info(
+        {
+          appId: appData._id,
+          fromNumber: maskify(textMessageReply.from),
+          handledBy: result.handledBy,
+        },
+        "Successfully processed text message reply"
+      );
     }
   }
 }

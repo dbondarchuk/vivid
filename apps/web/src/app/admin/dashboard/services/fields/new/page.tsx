@@ -3,6 +3,7 @@ import { ServiceFieldForm } from "@/components/admin/services/fields/form";
 import { ServicesContainer } from "@vivid/services";
 import { ServiceFieldUpdateModel } from "@vivid/types";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
 
 const breadcrumbItems = [
@@ -17,17 +18,44 @@ type Props = {
 };
 
 export default async function NewServicePage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("new-service-field");
   const { from } = await props.searchParams;
+
+  logger.debug(
+    {
+      fromFieldId: from,
+    },
+    "Loading new service field page"
+  );
+
   let initialData: ServiceFieldUpdateModel | undefined = undefined;
   if (from) {
     const result = await ServicesContainer.ServicesService().getField(from);
     if (!result) {
+      logger.warn({ fromFieldId: from }, "Source field not found for copying");
       notFound();
     }
 
     const { _id, updatedAt, ...field } = result;
     initialData = field;
+
+    logger.debug(
+      {
+        fromFieldId: from,
+        fieldName: result.name,
+        fieldType: result.type,
+      },
+      "Using source field as template"
+    );
   }
+
+  logger.debug(
+    {
+      fromFieldId: from,
+      hasInitialData: !!initialData,
+    },
+    "New service field page loaded"
+  );
 
   return (
     <PageContainer scrollable={true}>

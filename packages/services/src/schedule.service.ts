@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   DaySchedule,
   IConfigurationService,
@@ -8,6 +9,8 @@ import {
 import { eachOfInterval } from "@vivid/utils";
 
 export class ScheduleService implements IScheduleService {
+  protected readonly loggerFactory = getLoggerFactory("ScheduleService");
+
   constructor(
     protected readonly connectedAppsService: IConnectedAppsService,
     protected readonly configurationService: IConfigurationService
@@ -17,6 +20,9 @@ export class ScheduleService implements IScheduleService {
     start: Date,
     end: Date
   ): Promise<Record<string, DaySchedule>> {
+    const logger = this.loggerFactory("getSchedule");
+    logger.debug({ start, end }, "Getting schedule");
+
     const days = eachOfInterval(start, end, "day");
 
     const {
@@ -29,6 +35,7 @@ export class ScheduleService implements IScheduleService {
 
     let scheduleFromApp: Record<string, DaySchedule> = {};
     if (scheduleAppId) {
+      logger.debug({ scheduleAppId }, "Using schedule from app");
       const { app: scheduleApp, service: scheduleAppService } =
         await this.connectedAppsService.getAppService<IScheduleProvider>(
           scheduleAppId
@@ -39,9 +46,11 @@ export class ScheduleService implements IScheduleService {
         start,
         end
       );
+    } else {
+      logger.debug("Using default schedule");
     }
 
-    return days.reduce(
+    const result = days.reduce(
       (map, day) => {
         const dayStr = day.toISODate()!;
         const weekDay = day.weekday;
@@ -57,5 +66,12 @@ export class ScheduleService implements IScheduleService {
       },
       {} as Record<string, DaySchedule>
     );
+
+    logger.debug(
+      { start, end, dayCount: Object.keys(result).length },
+      "Successfully retrieved schedule"
+    );
+
+    return result;
   }
 }

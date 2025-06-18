@@ -1,6 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { PageForm } from "@/components/admin/pages/form";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },
@@ -9,6 +10,10 @@ const breadcrumbItems = [
 ];
 
 export default async function NewPagesPage() {
+  const logger = getLoggerFactory("AdminPages")("new-page");
+
+  logger.debug("Loading new page creation page");
+
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-4">

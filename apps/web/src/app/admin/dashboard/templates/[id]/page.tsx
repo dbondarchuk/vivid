@@ -1,17 +1,24 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { CommunicationChannelTexts } from "@/constants/labels";
-import { CommunicationChannel } from "@vivid/types";
-import { Heading, Link, Separator, Skeleton } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
+import { Heading, Link, Skeleton } from "@vivid/ui";
+import { Copy } from "lucide-react";
 import { Suspense } from "react";
 import { TemplateFormPage } from "../form-page";
-import { Copy } from "lucide-react";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
 export default async function UpdateTemplatePage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("edit-template");
   const { id } = await props.params;
+
+  logger.debug(
+    {
+      templateId: id,
+    },
+    "Loading template edit page"
+  );
 
   return (
     <PageContainer scrollable={true}>

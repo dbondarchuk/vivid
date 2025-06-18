@@ -1,6 +1,7 @@
-import UserAuthForm from "@/components/admin/forms/user-auth-Form";
+import { UserAuthForm } from "@/components/admin/forms/user-auth-form";
 import { ServicesContainer } from "@vivid/services";
 import { buttonVariants, cn } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -11,12 +12,24 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthenticationPage() {
+  const logger = getLoggerFactory("AdminPages")("signin");
+
+  logger.debug("Loading signin page");
+
   const general =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
+
+  logger.debug(
+    {
+      businessName: general.name,
+    },
+    "Signin page loaded"
+  );
+
   return (
     <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
-        href="/examples/authentication"
+        href="/admin/auth/signin"
         className={cn(
           buttonVariants({ variant: "ghost" }),
           "absolute right-4 top-4 hidden md:right-8 md:top-8"

@@ -1,9 +1,9 @@
-import { AvailableApps } from "@vivid/app-store";
 import PageContainer from "@/components/admin/layout/page-container";
-import { Heading, Separator, Breadcrumbs } from "@vivid/ui";
+import { AvailableApps } from "@vivid/app-store";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { redirect } from "next/navigation";
-import { ComplexApp } from "@vivid/types";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -13,10 +13,19 @@ type Props = {
 };
 
 export default async function Page(props: Props) {
+  const logger = getLoggerFactory("AdminDashboardPage")("Page");
+
   const searchParams = await props.searchParams;
   const params = await props.params;
+  const path = params.slug?.join("/").toLocaleLowerCase() || "/";
+  logger.debug(
+    {
+      slug: path,
+      searchParams: searchParams,
+    },
+    "Processing dashboard page request"
+  );
 
-  const path = params.slug.join("/").toLocaleLowerCase();
   const app = Object.values(AvailableApps).find(
     (app) =>
       app.type === "complex" &&
@@ -24,6 +33,7 @@ export default async function Page(props: Props) {
   );
 
   if (!app) {
+    logger.warn({ path }, "No app found for path");
     redirect("/admin/dashboard");
   }
 
@@ -31,6 +41,7 @@ export default async function Page(props: Props) {
     await ServicesContainer.ConnectedAppsService().getAppsByApp(app.name)
   )[0]?._id;
   if (!appId) {
+    logger.warn({ appId }, "No app ID found for app");
     redirect("/admin/dashboard");
   }
 
@@ -39,6 +50,7 @@ export default async function Page(props: Props) {
   );
 
   if (!menuItem) {
+    logger.warn({ path }, "No menu item found for path");
     redirect("/admin/dashboard");
   }
 

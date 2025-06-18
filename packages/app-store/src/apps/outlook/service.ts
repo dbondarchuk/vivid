@@ -13,6 +13,7 @@ import {
   Message as OutlookMessage,
   ResponseType,
 } from "@microsoft/microsoft-graph-types";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
   CalendarBusyTime,
@@ -59,13 +60,15 @@ const attendeeStatusToResponseStatusMap: Record<
 
 const scopes = [...requiredScopes, offlineAccessScope];
 
-class OutlookConnectedApp
+export class OutlookConnectedApp
   implements
     IOAuthConnectedApp,
     ICalendarBusyTimeProvider,
     IMailSender,
     ICalendarWriter
 {
+  protected readonly loggerFactory = getLoggerFactory("OutlookConnectedApp");
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   processRequest?:
@@ -73,56 +76,108 @@ class OutlookConnectedApp
     | undefined;
 
   public async getLoginUrl(appId: string): Promise<string> {
-    const client = this.getMsalClient();
-    const authParams = await this.getAuthParams(appId);
+    const logger = this.loggerFactory("getLoginUrl");
+    logger.debug({ appId }, "Generating Outlook login URL");
 
-    const authUrl = await client.getAuthCodeUrl(authParams);
-    return authUrl;
+    try {
+      const client = this.getMsalClient();
+      const authParams = await this.getAuthParams(appId);
+
+      const authUrl = await client.getAuthCodeUrl(authParams);
+
+      logger.debug({ appId, url: authUrl }, "Generated Outlook login URL");
+
+      return authUrl;
+    } catch (error: any) {
+      logger.error(
+        { appId, error: error?.message || error?.toString() },
+        "Error generating Outlook login URL"
+      );
+      throw error;
+    }
   }
 
   public async processRedirect(
     request: ApiRequest
   ): Promise<ConnectedAppResponse> {
-    const url = new URL(request.url);
-    const appId = url.searchParams.get("state") as string;
-    const code = url.searchParams.get("code") as string;
-
-    if (!appId) {
-      throw new Error("Redirect request does not contain app ID");
-    }
-
-    if (!code) {
-      return {
-        appId,
-        error: "Redirect request does not contain authorization code",
-      };
-    }
-
-    const client = this.getMsalClient();
-    const tokenRequest = {
-      ...(await this.getAuthParams(appId)),
-      code,
-    };
-
-    const _tokenResponse = await client.acquireTokenByCode(tokenRequest);
+    const logger = this.loggerFactory("processRedirect");
+    logger.debug({ url: request.url }, "Processing Outlook OAuth redirect");
 
     try {
-      const { tokens, username } = this.parseAuthResult(
-        client,
-        _tokenResponse,
-        true
+      const url = new URL(request.url);
+      const appId = url.searchParams.get("state") as string;
+      const code = url.searchParams.get("code") as string;
+
+      logger.debug(
+        { appId, hasCode: !!code },
+        "Extracted OAuth parameters from redirect"
       );
 
-      return {
-        appId,
-        token: tokens,
-        account: {
-          username,
-        },
+      if (!appId) {
+        logger.error(
+          { url: request.url },
+          "Redirect request does not contain app ID"
+        );
+        throw new Error("Redirect request does not contain app ID");
+      }
+
+      if (!code) {
+        logger.error(
+          { appId },
+          "Redirect request does not contain authorization code"
+        );
+        return {
+          appId,
+          error: "Redirect request does not contain authorization code",
+        };
+      }
+
+      logger.debug({ appId }, "Exchanging authorization code for tokens");
+
+      const client = this.getMsalClient();
+      const tokenRequest = {
+        ...(await this.getAuthParams(appId)),
+        code,
       };
+
+      const _tokenResponse = await client.acquireTokenByCode(tokenRequest);
+
+      try {
+        const { tokens, username } = this.parseAuthResult(
+          client,
+          _tokenResponse,
+          true
+        );
+
+        logger.info(
+          { appId, username },
+          "Successfully processed Outlook OAuth redirect"
+        );
+
+        return {
+          appId,
+          token: tokens,
+          account: {
+            username,
+          },
+        };
+      } catch (e: any) {
+        logger.error(
+          { appId, error: e?.message || e?.toString() },
+          "Error parsing authorization result"
+        );
+        return {
+          appId,
+          error: e?.message || "Something went wrong",
+        };
+      }
     } catch (e: any) {
+      logger.error(
+        { url: request.url, error: e?.message || e?.toString() },
+        "Error processing Outlook OAuth redirect"
+      );
       return {
-        appId,
+        appId: new URL(request.url).searchParams.get("state") as string,
         error: e?.message || "Something went wrong",
       };
     }
@@ -133,18 +188,39 @@ class OutlookConnectedApp
     start: Date,
     end: Date
   ): Promise<CalendarBusyTime[]> {
+    const logger = this.loggerFactory("getBusyTimes");
+    logger.debug(
+      {
+        appId: app._id,
+        start: start.toISOString(),
+        end: end.toISOString(),
+      },
+      "Getting busy times from Outlook"
+    );
+
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
+      logger.error({ appId: app._id }, "No token provided");
       throw new Error("No token provided");
     }
 
-    const client = await this.getClient(app._id, tokens);
-
     try {
+      const client = await this.getClient(app._id, tokens);
+
+      logger.debug(
+        { appId: app._id, start: start.toISOString(), end: end.toISOString() },
+        "Retrieved Outlook client, fetching events"
+      );
+
       const events = await this.getEvents(
         client,
         DateTime.fromJSDate(start),
         DateTime.fromJSDate(end)
+      );
+
+      logger.debug(
+        { appId: app._id, eventCount: events.length },
+        "Retrieved events from Outlook"
       );
 
       const result = events
@@ -176,6 +252,11 @@ class OutlookConnectedApp
           } satisfies CalendarBusyTime;
         });
 
+      logger.info(
+        { appId: app._id, busyTimeCount: result.length },
+        "Successfully processed busy times from Outlook"
+      );
+
       this.props.update({
         status: "connected",
         statusText: "Successfully fetched events",
@@ -183,6 +264,11 @@ class OutlookConnectedApp
 
       return result;
     } catch (e: any) {
+      logger.error(
+        { appId: app._id, error: e?.message || e?.toString() },
+        "Error getting busy times from Outlook"
+      );
+
       this.props.update({
         status: "failed",
         statusText: e?.message || "Failed to get events",
@@ -196,149 +282,87 @@ class OutlookConnectedApp
     app: ConnectedAppData,
     email: Email
   ): Promise<EmailResponse> {
+    const logger = this.loggerFactory("sendMail");
+    logger.debug(
+      {
+        appId: app._id,
+        subject: email.subject,
+        to: Array.isArray(email.to) ? email.to : [email.to],
+        hasAttachments: !!email.attachments?.length,
+        hasIcalEvent: !!email.icalEvent,
+      },
+      "Sending email via Outlook"
+    );
+
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
+      logger.error({ appId: app._id }, "No token provided");
       throw new Error("No token provided");
     }
 
-    const client = await this.getClient(app._id, tokens);
+    try {
+      const client = await this.getClient(app._id, tokens);
 
-    const to = Array.isArray(email.to) ? email.to : [email.to];
-    const cc = email.cc
-      ? Array.isArray(email.cc)
-        ? email.cc
-        : [email.cc]
-      : [];
-
-    const attachments: Attachment[] = [];
-    if (email.icalEvent) {
-      const { value: icsContent, error: icsError } = createEvent(
-        email.icalEvent.content
+      logger.debug(
+        { appId: app._id, subject: email.subject },
+        "Retrieved Outlook client, preparing email"
       );
 
-      if (!icsContent || !!icsError) {
-        console.error(icsError || "Failed to parse event");
-      } else {
-        attachments.push({
-          // @ts-expect-error This is required
-          // "@odata.type": "#microsoft.graph.itemAttachment",
-          "@odata.type": "#microsoft.graph.fileAttachment",
-          isInline: false,
-          contentType: `text/calendar; charset=utf-8; method=${email.icalEvent.method.toUpperCase()}`,
-          name: email.icalEvent.filename || "invitation.ics",
-          contentBytes: Buffer.from(icsContent).toString("base64"),
-        } satisfies FileAttachment);
-        // attachments.push({
-        //   // @ts-expect-error This is required
-        //   "@odata.type": "#microsoft.graph.itemAttachment",
-        //   name: email.icalEvent.filename || "invitation.ics",
-        //   item: {
-        //     "@odata.type": "microsoft.graph.event",
-        //     attendees: email.icalEvent.content.attendees?.map((a) => ({
-        //       emailAddress: {
-        //         address: a.email,
-        //         name: a.name,
-        //       },
-        //       status: {
-        //         response:
-        //           a.partstat === "ACCEPTED"
-        //             ? "accepted"
-        //             : a.partstat === "DECLINED"
-        //               ? "declined"
-        //               : "tentativelyAccepted",
-        //       },
-        //     })),
-        //     allowNewTimeProposals: false,
-        //     id: email.icalEvent.content.uid,
-        //     isCancelled: email.icalEvent.content.method === "CANCEL",
-        //     subject: email.icalEvent.content.title,
-        //     location: {
-        //       address: email.icalEvent.content.location,
-        //     },
-        //     iCalUId: email.icalEvent.content.uid,
-        //     start: {
-        //       dateTime: DateTime.fromMillis(
-        //         parseInt(email.icalEvent.content.start.toString())
-        //       ).toISO({
-        //         includeOffset: false,
-        //       }),
-        //       timeZone: "UTC",
-        //     },
-        //     end: {
-        //       dateTime: DateTime.fromMillis(
-        //         // @ts-ignore exists
-        //         parseInt(email.icalEvent.content.end.toString())
-        //       ).toISO({
-        //         includeOffset: false,
-        //       }),
-        //       timeZone: "UTC",
-        //     },
-        //     originalStartTimeZone: email.icalEvent.content.startInputType,
-        //     originalEndTimeZone: email.icalEvent.content.endInputType,
-        //     body: {
-        //       content: email.icalEvent.content.description,
-        //       contentType: "html",
-        //     },
-        //     organizer: {
-        //       emailAddress: {
-        //         name: email.icalEvent.content.organizer?.name,
-        //         address: email.icalEvent.content.organizer?.email,
-        //       },
-        //     },
-        //   } as OutlookEvent,
-        // } satisfies ItemAttachment);
+      const to = Array.isArray(email.to) ? email.to : [email.to];
+      const cc = email.cc
+        ? Array.isArray(email.cc)
+          ? email.cc
+          : [email.cc]
+        : [];
+
+      const attachments: Attachment[] = [];
+      if (email.icalEvent) {
+        logger.debug(
+          { appId: app._id, subject: email.subject },
+          "Processing iCal event attachment"
+        );
+
+        const { value: icsContent, error: icsError } = createEvent(
+          email.icalEvent.content
+        );
+
+        if (!icsContent || !!icsError) {
+          logger.error(
+            { appId: app._id, icsError },
+            "Failed to parse iCal event"
+          );
+          console.error(icsError || "Failed to parse event");
+        } else {
+          attachments.push({
+            // @ts-expect-error This is required
+            // "@odata.type": "#microsoft.graph.itemAttachment",
+            "@odata.type": "#microsoft.graph.fileAttachment",
+            isInline: false,
+            contentType: `text/calendar; charset=utf-8; method=${email.icalEvent.method.toUpperCase()}`,
+            name: email.icalEvent.filename || "invitation.ics",
+            contentBytes: Buffer.from(icsContent).toString("base64"),
+          } satisfies FileAttachment);
+        }
       }
-    }
 
-    if (email.attachments) {
-      for (const attachment of email.attachments) {
-        attachments.push({
-          // @ts-expect-error This is required
-          "@odata.type": "#microsoft.graph.fileAttachment",
-          name: attachment.filename,
-          contentType: attachment.contentType,
-          contentBytes: attachment.content.toString("base64"),
-          contentId: attachment.cid,
-        } satisfies FileAttachment);
+      if (email.attachments) {
+        logger.debug(
+          { appId: app._id, attachmentCount: email.attachments.length },
+          "Processing email attachments"
+        );
+
+        for (const attachment of email.attachments) {
+          attachments.push({
+            // @ts-expect-error This is required
+            "@odata.type": "#microsoft.graph.fileAttachment",
+            name: attachment.filename,
+            contentType: attachment.contentType,
+            contentBytes: attachment.content.toString("base64"),
+            contentId: attachment.cid,
+          } satisfies FileAttachment);
+        }
       }
-    }
 
-    // let icalEvent: Mail.IcalAttachment | undefined = undefined;
-    // if (email.icalEvent) {
-    //   const { value: icsContent, error: icsError } = createEvent(
-    //     email.icalEvent.content
-    //   );
-    //   icalEvent = {
-    //     filename: email.icalEvent.filename || "invitation.ics",
-    //     method: email.icalEvent.method,
-    //     content: icsContent,
-    //   };
-    // }
-
-    // const { email: from } = await this.props.services
-    //   .ConfigurationService()
-    //   .getConfiguration("general");
-    // const mailOptions: nodemailer.SendMailOptions = {
-    //   from,
-    //   to: email.to,
-    //   cc: email.cc,
-    //   subject: email.subject,
-    //   html: email.body,
-    //   icalEvent: icalEvent,
-    //   attachments: email.attachments?.map((attachment) => ({
-    //     cid: attachment.cid,
-    //     filename: attachment.filename,
-    //     content: attachment.content,
-    //   })),
-    // };
-
-    // let transporter = nodemailer.createTransport({
-    //   streamTransport: true,
-    //   // newline: "windows",
-    //   buffer: true,
-    // });
-
-    try {
       const messageId = v4();
       const sendMail: {
         message: OutlookMessage;
@@ -366,10 +390,20 @@ class OutlookConnectedApp
         saveToSentItems: true,
       };
 
+      logger.debug(
+        { appId: app._id, messageId, subject: email.subject },
+        "Sending email via Outlook API"
+      );
+
       await client
         .api("/me/sendMail")
         // .header("Content-type", "text/plain")
         .post(sendMail);
+
+      logger.info(
+        { appId: app._id, messageId, subject: email.subject },
+        "Successfully sent email via Outlook"
+      );
 
       this.props.update({
         status: "connected",
@@ -380,6 +414,15 @@ class OutlookConnectedApp
         messageId,
       };
     } catch (e: any) {
+      logger.error(
+        {
+          appId: app._id,
+          subject: email.subject,
+          error: e?.message || e?.toString(),
+        },
+        "Error sending email via Outlook"
+      );
+
       this.props.update({
         status: "failed",
         statusText: e?.message || "Failed to send email",
@@ -393,20 +436,54 @@ class OutlookConnectedApp
     app: ConnectedAppData,
     event: CalendarEvent
   ): Promise<CalendarEventResult> {
+    const logger = this.loggerFactory("createEvent");
+    logger.debug(
+      {
+        appId: app._id,
+        eventId: event.id,
+        eventTitle: event.title,
+      },
+      "Creating event in Outlook"
+    );
+
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
+      logger.error({ appId: app._id }, "No token provided");
       throw new Error("No token provided");
     }
 
-    const client = await this.getClient(app._id, tokens);
+    try {
+      const client = await this.getClient(app._id, tokens);
 
-    const result = (await client
-      .api("/me/calendar/events")
-      .post(this.getOutlookEvent(event))) as OutlookEvent;
+      logger.debug(
+        { appId: app._id, eventId: event.id, eventTitle: event.title },
+        "Preparing Outlook event"
+      );
 
-    return {
-      uid: result.id!,
-    };
+      const result = (await client
+        .api("/me/calendar/events")
+        .post(this.getOutlookEvent(event))) as OutlookEvent;
+
+      logger.info(
+        {
+          appId: app._id,
+          eventId: event.id,
+          eventTitle: event.title,
+          outlookEventId: result.id,
+        },
+        "Successfully created event in Outlook"
+      );
+
+      return {
+        uid: result.id!,
+      };
+    } catch (error: any) {
+      logger.error(
+        { appId: app._id, eventId: event.id, error },
+        "Error creating event in Outlook"
+      );
+      throw error;
+    }
   }
 
   public async updateEvent(
@@ -414,56 +491,138 @@ class OutlookConnectedApp
     uid: string,
     event: CalendarEvent
   ): Promise<CalendarEventResult> {
+    const logger = this.loggerFactory("updateEvent");
+    logger.debug(
+      {
+        appId: app._id,
+        eventId: event.id,
+        uid,
+        eventTitle: event.title,
+      },
+      "Updating event in Outlook"
+    );
+
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
+      logger.error({ appId: app._id }, "No token provided");
       throw new Error("No token provided");
     }
 
-    const client = await this.getClient(app._id, tokens);
-    const eventId = await this.getOutlookEventId(client, uid);
+    try {
+      const client = await this.getClient(app._id, tokens);
+      const eventId = await this.getOutlookEventId(client, uid);
 
-    const result = (await client
-      .api(`/me/calendar/events/${eventId}`)
-      .patch(this.getOutlookEvent(event))) as OutlookEvent;
+      logger.debug(
+        { appId: app._id, eventId: event.id, uid, outlookEventId: eventId },
+        "Preparing to update Outlook event"
+      );
 
-    return {
-      uid: result.id!,
-    };
+      const result = (await client
+        .api(`/me/calendar/events/${eventId}`)
+        .patch(this.getOutlookEvent(event))) as OutlookEvent;
+
+      logger.info(
+        {
+          appId: app._id,
+          eventId: event.id,
+          uid,
+          eventTitle: event.title,
+          outlookEventId: result.id,
+        },
+        "Successfully updated event in Outlook"
+      );
+
+      return {
+        uid: result.id!,
+      };
+    } catch (error: any) {
+      logger.error(
+        { appId: app._id, eventId: event.id, uid, error },
+        "Error updating event in Outlook"
+      );
+      throw error;
+    }
   }
 
   public async deleteEvent(app: ConnectedAppData, uid: string): Promise<void> {
+    const logger = this.loggerFactory("deleteEvent");
+    logger.debug({ appId: app._id, uid }, "Deleting event from Outlook");
+
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
+      logger.error({ appId: app._id }, "No token provided");
       throw new Error("No token provided");
     }
 
-    const client = await this.getClient(app._id, tokens);
+    try {
+      const client = await this.getClient(app._id, tokens);
 
-    const id = await this.getOutlookEventId(client, uid);
-    await client.api(`/me/calendar/events/${id}`).delete();
+      const id = await this.getOutlookEventId(client, uid);
+
+      logger.debug(
+        { appId: app._id, uid, outlookEventId: id },
+        "Deleting Outlook event"
+      );
+
+      await client.api(`/me/calendar/events/${id}`).delete();
+
+      logger.info(
+        { appId: app._id, uid },
+        "Successfully deleted event from Outlook"
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: app._id, uid, error },
+        "Error deleting event from Outlook"
+      );
+      throw error;
+    }
   }
 
   private async getOutlookEventId(
     client: Client,
     uid: string
   ): Promise<string> {
-    const response = await client
-      .api("/me/calendar/events")
-      .filter(
-        `singleValueExtendedProperties/Any(ep: ep/id eq '${uidPropertyName}' and ep/value eq '${uid}')`
-      )
-      .select("id")
-      .get();
+    const logger = this.loggerFactory("getOutlookEventId");
+    logger.debug({ uid }, "Looking up Outlook Event ID for UID");
 
-    const id = (response.value as OutlookEvent[])?.[0]?.id;
-    if (!id) {
-      throw new Error(`Failed to find Outlook Event ID for UID ${uid}`);
+    try {
+      const response = await client
+        .api("/me/calendar/events")
+        .filter(
+          `singleValueExtendedProperties/Any(ep: ep/id eq '${uidPropertyName}' and ep/value eq '${uid}')`
+        )
+        .select("id")
+        .get();
+
+      const id = (response.value as OutlookEvent[])?.[0]?.id;
+      if (!id) {
+        logger.error({ uid }, "Failed to find Outlook Event ID for UID");
+        throw new Error(`Failed to find Outlook Event ID for UID ${uid}`);
+      }
+
+      logger.debug(
+        { uid, outlookEventId: id },
+        "Found Outlook Event ID for UID"
+      );
+      return id;
+    } catch (error: any) {
+      logger.error({ uid, error }, "Error looking up Outlook Event ID for UID");
+      throw error;
     }
-
-    return id;
   }
 
   private getOutlookEvent(event: CalendarEvent): OutlookEvent {
+    const logger = this.loggerFactory("getOutlookEvent");
+    logger.debug(
+      {
+        eventId: event.id,
+        eventTitle: event.title,
+        attendeeCount: event.attendees?.length || 0,
+      },
+      "Converting event to Outlook format"
+    );
+
     const start = DateTime.fromJSDate(event.startTime)
       .setZone(event.timeZone)
       .toUTC();
@@ -507,6 +666,16 @@ class OutlookConnectedApp
       ],
     };
 
+    logger.debug(
+      {
+        eventId: event.id,
+        eventTitle: event.title,
+        startTime: start.toISO(),
+        endTime: end.toISO(),
+      },
+      "Converted event to Outlook format"
+    );
+
     return outlookEvent;
   }
 
@@ -535,11 +704,23 @@ class OutlookConnectedApp
     start: DateTime,
     end: DateTime
   ): Promise<OutlookEvent[]> {
+    const logger = this.loggerFactory("getEvents");
+    logger.debug(
+      { start: start.toISO(), end: end.toISO() },
+      "Fetching events from Outlook"
+    );
+
     const results: OutlookEvent[] = [];
     let skip = 0;
     let count = 0;
     const top = 1000;
+
     do {
+      logger.debug(
+        { skip, top, currentCount: results.length },
+        "Fetching paginated events from Outlook"
+      );
+
       const response = await this.getEventsPaginated(
         client,
         start,
@@ -552,6 +733,11 @@ class OutlookConnectedApp
       results.push(...(response.value as OutlookEvent[]));
       skip += top;
     } while (skip < count);
+
+    logger.debug(
+      { totalCount: results.length, start: start.toISO(), end: end.toISO() },
+      "Retrieved all events from Outlook"
+    );
 
     return results;
   }
@@ -576,8 +762,17 @@ class OutlookConnectedApp
     currentTokens: ConnectedOauthAppTokens
   ): Promise<string> {
     if (!currentTokens.expiresOn || currentTokens.expiresOn >= new Date()) {
+      this.loggerFactory("getOrRefreshAuthToken").debug(
+        { appId },
+        "Using existing access token"
+      );
       return currentTokens.accessToken;
     }
+
+    this.loggerFactory("getOrRefreshAuthToken").debug(
+      { appId },
+      "Access token expired, refreshing"
+    );
 
     const client = this.getMsalClient();
 
@@ -589,6 +784,10 @@ class OutlookConnectedApp
     try {
       const result = await client.acquireTokenByRefreshToken(tokenRequest);
       if (!result) {
+        this.loggerFactory("getOrRefreshAuthToken").error(
+          { appId },
+          "Failed to refresh access token"
+        );
         throw new Error("Failed to refresh access token");
       }
 
@@ -603,8 +802,17 @@ class OutlookConnectedApp
         },
       });
 
+      this.loggerFactory("getOrRefreshAuthToken").debug(
+        { appId, username },
+        "Successfully refreshed access token"
+      );
       return tokens.accessToken!;
     } catch (e: any) {
+      this.loggerFactory("getOrRefreshAuthToken").error(
+        { appId, error: e?.message || e?.toString() },
+        "Failed to refresh access token"
+      );
+
       this.props.update({
         status: "failed",
         statusText: e?.message || "Failed to refresh access token",
@@ -622,18 +830,30 @@ class OutlookConnectedApp
     tokens: Partial<ConnectedOauthAppTokens>;
     username: string;
   } {
+    const logger = this.loggerFactory("parseAuthResult");
+    logger.debug(
+      { expectRefreshToken, hasAccessToken: !!authResult.accessToken },
+      "Parsing authorization result"
+    );
+
     const username = authResult.account?.username;
     if (!authResult.accessToken) {
+      logger.error("Authorization result does not contain access token");
       throw new Error("Authorization result does not contain access token");
     }
 
     if (!username) {
+      logger.error("Authorization result does not contain account information");
       throw new Error(
         "Authorization result does not contain account infromation"
       );
     }
 
     if (requiredScopes.some((s) => authResult.scopes.indexOf(s) < 0)) {
+      logger.error(
+        { requiredScopes, actualScopes: authResult.scopes },
+        "Authorization result does not contain enough scopes"
+      );
       throw new Error("Authorization result does not contain enough scopes");
     }
 
@@ -649,10 +869,17 @@ class OutlookConnectedApp
         refreshTokenObject[Object.keys(refreshTokenObject)[0]].secret;
 
       if (!refreshToken) {
+        logger.error("Authorization result does not contain refresh token");
         throw new Error("Authorization result does not contain refresh token");
       }
 
       tokens.refreshToken = refreshToken;
+      logger.debug(
+        { username },
+        "Successfully parsed authorization result with refresh token"
+      );
+    } else {
+      logger.debug({ username }, "Successfully parsed authorization result");
     }
 
     return { tokens, username };

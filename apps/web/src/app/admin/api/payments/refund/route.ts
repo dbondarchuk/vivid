@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Payment, zUniqueArray } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -9,12 +10,23 @@ const refundPaymentsSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/payments-refund")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing payments refund API request"
+  );
+
   const limit = pLimit(2);
 
   const json = await request.json();
   const { data, success, error } = refundPaymentsSchema.safeParse(json);
 
   if (!success) {
+    logger.warn("Invalid request format");
     return NextResponse.json({ success: false, error }, { status: 400 });
   }
 
@@ -24,7 +36,12 @@ export async function POST(request: NextRequest) {
   try {
     const promises = data.ids.map(async (paymentId) => {
       try {
-        console.log(`Refunding payment: ${paymentId}`);
+        logger.debug(
+          {
+            paymentId,
+          },
+          "Refunding payment"
+        );
 
         const result =
           await ServicesContainer.PaymentsService().refundPayment(paymentId);
@@ -35,11 +52,21 @@ export async function POST(request: NextRequest) {
           errors[paymentId] = result.error;
         }
 
-        console.log(
+        logger.debug(
+          {
+            paymentId,
+            success: result.success,
+          },
           `Refunding payment ${paymentId}: ${result.success ? "success" : "error"}`
         );
       } catch (e: any) {
-        console.log(`Refunding payment ${paymentId}: error: ${e}`);
+        logger.error(
+          {
+            paymentId,
+            error: e?.message || e?.toString(),
+          },
+          "Error refunding payment"
+        );
 
         errors[paymentId] = e?.message || e?.toString();
       } finally {
@@ -56,77 +83,15 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (e: any) {
-    console.error(e);
+    logger.error(
+      {
+        error: e?.message || e?.toString(),
+      },
+      "Error processing payments refund"
+    );
     return NextResponse.json(
       { success: false, error: e?.message ?? e?.toString() },
       { status: 500 }
     );
   }
-
-  // const encoder = new TextEncoder();
-  // const stream = new ReadableStream({
-  //   async start(controller) {
-  //     const total = data.ids.length;
-
-  //     try {
-  //       const promises = data.ids.map(async (paymentId) => {
-  //         try {
-  //           console.log(`Refunding payment: ${paymentId}`);
-
-  //           const result =
-  //             await ServicesContainer.PaymentsService().refundPayment(
-  //               paymentId
-  //             );
-
-  //           if (result.success) {
-  //             successes[paymentId] = result.updatedPayment;
-  //           } else {
-  //             errors[paymentId] = result.error;
-  //           }
-
-  //           console.log(
-  //             `Refunding payment ${paymentId}: ${success ? "success" : "error"}`
-  //           );
-  //         } catch (e: any) {
-  //           console.log(`Refunding payment ${paymentId}: error: ${e}`);
-
-  //           errors[paymentId] = e?.message || e?.toString();
-  //         } finally {
-  //         }
-
-  //         const chunk = encoder.encode(
-  //           JSON.stringify({
-  //             done: Object.keys(successes).length + Object.keys(errors).length,
-  //             success: Object.keys(successes).length,
-  //             error: Object.keys(errors).length,
-  //             total,
-  //           }) + "\n---\n"
-  //         );
-
-  //         controller.enqueue(chunk);
-  //       });
-
-  //       await Promise.all(promises.map((p) => limit(() => p)));
-
-  //       const chunk = encoder.encode(
-  //         JSON.stringify({
-  //           done: Object.keys(successes).length + Object.keys(errors).length,
-  //           success: Object.keys(successes).length,
-  //           error: Object.keys(errors).length,
-  //           total,
-  //           updatedPayments: successes,
-  //           errors,
-  //         }) + "\n---\n"
-  //       );
-
-  //       controller.enqueue(chunk);
-  //     } catch (error) {
-  //       console.error(error);
-  //     } finally {
-  //       controller.close();
-  //     }
-  //   },
-  // });
-
-  // return new NextResponse(stream);
 }

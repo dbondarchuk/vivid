@@ -9,7 +9,10 @@
     "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
     "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
   },
-  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./logger": "./src/logger/index.ts"
+  },
   "devDependencies": {
     "@vivid/eslint-config": "*",
     "@vivid/typescript-config": "*",
@@ -22,6 +25,7 @@
   },
   "dependencies": {
     "@vivid/types": "*",
+    "@vivid/logger": "*",
     "@vivid/utils": "*",
     "@vivid/app-store": "*",
     "html-to-text": "^9.0.5",

@@ -23,7 +23,7 @@ const formSchema = z.object({
 
 type UserFormValue = z.infer<typeof formSchema>;
 
-export default function UserAuthForm() {
+export const UserAuthForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const [loading, setLoading] = useState(false);
@@ -39,11 +39,16 @@ export default function UserAuthForm() {
   const error = searchParams.get("error");
 
   const onSubmit = async (data: UserFormValue) => {
-    signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      callbackUrl: callbackUrl ?? "/admin/dashboard",
-    });
+    setLoading(true);
+    try {
+      signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        callbackUrl: callbackUrl ?? "/admin/dashboard",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -104,4 +109,4 @@ export default function UserAuthForm() {
       </Form>
     </>
   );
-}
+};

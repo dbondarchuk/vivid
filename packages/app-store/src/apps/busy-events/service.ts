@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
@@ -23,20 +24,45 @@ type BusyEventsEntity = WithDatabaseId<ScheduleOverride> & {
 export default class BusyEventsConnectedApp
   implements IConnectedApp, ICalendarBusyTimeProvider
 {
+  protected readonly loggerFactory = getLoggerFactory("BusyEventsConnectedApp");
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async unInstall(appData: ConnectedAppData): Promise<void> {
-    const db = await this.props.getDbConnection();
-    const collection = db.collection<BusyEventsEntity>(
-      BUSY_EVENTS_COLLECTION_NAME
-    );
-    await collection.deleteMany({
-      appId: appData._id,
-    });
+    const logger = this.loggerFactory("unInstall");
+    logger.debug({ appId: appData._id }, "Starting uninstall");
 
-    const count = await collection.countDocuments({});
-    if (count === 0) {
-      await db.dropCollection(BUSY_EVENTS_COLLECTION_NAME);
+    try {
+      const db = await this.props.getDbConnection();
+      const collection = db.collection<BusyEventsEntity>(
+        BUSY_EVENTS_COLLECTION_NAME
+      );
+
+      logger.debug({ appId: appData._id }, "Deleting busy events");
+      const deleteResult = await collection.deleteMany({
+        appId: appData._id,
+      });
+
+      logger.info(
+        { appId: appData._id, deletedCount: deleteResult.deletedCount },
+        "Deleted busy events"
+      );
+
+      const count = await collection.countDocuments({});
+      logger.debug(
+        { appId: appData._id, remainingCount: count },
+        "Remaining documents in collection"
+      );
+
+      if (count === 0) {
+        logger.debug({ appId: appData._id }, "Dropping empty collection");
+        await db.dropCollection(BUSY_EVENTS_COLLECTION_NAME);
+      }
+
+      logger.info({ appId: appData._id }, "Successfully uninstalled");
+    } catch (error) {
+      logger.error({ appId: appData._id, error }, "Error during uninstall");
+      throw error;
     }
   }
 
@@ -44,25 +70,70 @@ export default class BusyEventsConnectedApp
     appData: ConnectedAppData,
     data: RequestAction
   ): Promise<any> {
-    switch (data.type) {
-      case "get-weekly-busy-events":
-        return await this.getWeekBusyEvents(appData._id, data.week);
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      { appId: appData._id, requestType: data.type },
+      "Processing request"
+    );
 
-      case "set-busy-events":
-        return await this.setBusyEvents(appData._id, data.week, data.events);
+    try {
+      switch (data.type) {
+        case "get-weekly-busy-events":
+          logger.debug(
+            { appId: appData._id, week: data.week },
+            "Getting weekly busy events"
+          );
 
-      default: {
-        const status: ConnectedAppStatusWithText = {
-          status: "connected",
-          statusText: `Successfully installed the app`,
-        };
+          const result = await this.getWeekBusyEvents(appData._id, data.week);
 
-        this.props.update({
-          ...status,
-        });
+          logger.debug(
+            { appId: appData._id, week: data.week, eventCount: result.length },
+            "Retrieved weekly busy events"
+          );
+          return result;
 
-        return status;
+        case "set-busy-events":
+          logger.debug(
+            {
+              appId: appData._id,
+              week: data.week,
+              eventCount: data.events.length,
+            },
+            "Setting busy events"
+          );
+
+          await this.setBusyEvents(appData._id, data.week, data.events);
+          logger.info(
+            { appId: appData._id, week: data.week },
+            "Successfully set busy events"
+          );
+
+          return;
+
+        default: {
+          logger.debug({ appId: appData._id }, "Processing default request");
+
+          const status: ConnectedAppStatusWithText = {
+            status: "connected",
+            statusText: `Successfully installed the app`,
+          };
+
+          this.props.update({
+            ...status,
+          });
+
+          logger.info(
+            { appId: appData._id, status: status.status },
+            "App status updated"
+          );
+
+          return status;
+        }
       }
+    } catch (error) {
+      logger.error({ appId: appData._id, error }, "Error processing request");
+
+      throw error;
     }
   }
 
@@ -70,19 +141,35 @@ export default class BusyEventsConnectedApp
     appId: string,
     weekIdentifier: WeekIdentifier
   ): Promise<Schedule> {
-    const db = await this.props.getDbConnection();
-    const collection = db.collection<BusyEventsEntity>(
-      BUSY_EVENTS_COLLECTION_NAME
-    );
+    const logger = this.loggerFactory("getWeekBusyEvents");
+    logger.debug({ appId, week: weekIdentifier }, "Getting week busy events");
 
-    return (
-      (
-        await collection.findOne({
-          appId,
-          week: weekIdentifier,
-        })
-      )?.schedule || []
-    );
+    try {
+      const db = await this.props.getDbConnection();
+      const collection = db.collection<BusyEventsEntity>(
+        BUSY_EVENTS_COLLECTION_NAME
+      );
+
+      const result = await collection.findOne({
+        appId,
+        week: weekIdentifier,
+      });
+
+      const schedule = result?.schedule || [];
+      logger.debug(
+        { appId, week: weekIdentifier, eventCount: schedule.length },
+        "Found week busy events"
+      );
+
+      return schedule;
+    } catch (error) {
+      logger.error(
+        { appId, week: weekIdentifier, error },
+        "Error getting week busy events"
+      );
+
+      throw error;
+    }
   }
 
   protected async setBusyEvents(
@@ -90,23 +177,47 @@ export default class BusyEventsConnectedApp
     week: WeekIdentifier,
     schedule: Schedule
   ): Promise<void> {
-    const db = await this.props.getDbConnection();
-    const events = db.collection<BusyEventsEntity>(BUSY_EVENTS_COLLECTION_NAME);
+    const logger = this.loggerFactory("setBusyEvents");
+    logger.debug(
+      { appId, week, scheduleLength: schedule.length },
+      "Setting busy events"
+    );
 
-    await events.updateOne(
-      { week, appId },
-      {
-        $set: {
-          schedule,
+    try {
+      const db = await this.props.getDbConnection();
+      const events = db.collection<BusyEventsEntity>(
+        BUSY_EVENTS_COLLECTION_NAME
+      );
+
+      const updateResult = await events.updateOne(
+        { week, appId },
+        {
+          $set: {
+            schedule,
+          },
+          $setOnInsert: {
+            appId,
+            week,
+            _id: new ObjectId().toString(),
+          },
         },
-        $setOnInsert: {
+        { upsert: true }
+      );
+
+      logger.debug(
+        {
           appId,
           week,
-          _id: new ObjectId().toString(),
+          matchedCount: updateResult.matchedCount,
+          modifiedCount: updateResult.modifiedCount,
+          upsertedCount: updateResult.upsertedCount,
         },
-      },
-      { upsert: true }
-    );
+        "Update result"
+      );
+    } catch (error) {
+      logger.error({ appId, week, error }, "Error setting busy events");
+      throw error;
+    }
   }
 
   public async getBusyTimes(
@@ -114,59 +225,92 @@ export default class BusyEventsConnectedApp
     start: Date,
     end: Date
   ): Promise<CalendarBusyTime[]> {
-    const days = eachOfInterval(start, end, "day");
-
-    const weekMap = days.reduce(
-      (map, day) => ({
-        ...map,
-        [day.toISODate()!]: getWeekIdentifier(day),
-      }),
-      {} as Record<string, WeekIdentifier>
+    const logger = this.loggerFactory("getBusyTimes");
+    logger.debug(
+      { appId, start: start.toISOString(), end: end.toISOString() },
+      "Getting busy times"
     );
 
-    const weeks = Array.from(
-      new Set(Object.values(weekMap).map((week) => week))
-    );
+    try {
+      const days = eachOfInterval(start, end, "day");
+      logger.debug({ appId, dayCount: days.length }, "Processing days");
 
-    const db = await this.props.getDbConnection();
-    const busyEvents = db.collection<BusyEventsEntity>(
-      BUSY_EVENTS_COLLECTION_NAME
-    );
+      const weekMap = days.reduce(
+        (map, day) => ({
+          ...map,
+          [day.toISODate()!]: getWeekIdentifier(day),
+        }),
+        {} as Record<string, WeekIdentifier>
+      );
 
-    const weeksOverrides = await busyEvents
-      .find({
-        appId,
-        week: {
-          $in: weeks,
+      const weeks = Array.from(
+        new Set(Object.values(weekMap).map((week) => week))
+      );
+
+      logger.debug(
+        { appId, weekCount: weeks.length, weeks },
+        "Unique weeks found"
+      );
+
+      const db = await this.props.getDbConnection();
+      const busyEvents = db.collection<BusyEventsEntity>(
+        BUSY_EVENTS_COLLECTION_NAME
+      );
+
+      logger.debug({ appId, weeks }, "Querying database for weeks");
+      const weeksOverrides = await busyEvents
+        .find({
+          appId,
+          week: {
+            $in: weeks,
+          },
+        })
+        .toArray();
+
+      logger.debug(
+        { appId, overrideCount: weeksOverrides.length },
+        "Found week overrides in database"
+      );
+
+      const weeksOverridesMap = weeksOverrides.reduce(
+        (map, weeksOverride) => ({
+          ...map,
+          [weeksOverride.week]: weeksOverride.schedule,
+        }),
+        {} as Record<WeekIdentifier, Schedule>
+      );
+
+      const events = days.flatMap((day) => {
+        const week = getWeekIdentifier(day);
+        const weekEvents = weeksOverridesMap[week];
+
+        const weekDay = day.weekday;
+        const dayEvents = weekEvents?.find(
+          (s) => s.weekDay === weekDay
+        )?.shifts;
+
+        if (!dayEvents) return [];
+
+        return dayEvents.map((event, index) => ({
+          endAt: day.set(parseTime(event.end)).toJSDate(),
+          startAt: day.set(parseTime(event.start)).toJSDate(),
+          uid: `busy-event-${day.toISODate()}-${index}`,
+          title: "Busy",
+        }));
+      });
+
+      logger.info(
+        {
+          appId,
+          eventCount: events.length,
         },
-      })
-      .toArray();
+        "Generated busy time events"
+      );
 
-    const weeksOverridesMap = weeksOverrides.reduce(
-      (map, weeksOverride) => ({
-        ...map,
-        [weeksOverride.week]: weeksOverride.schedule,
-      }),
-      {} as Record<WeekIdentifier, Schedule>
-    );
-
-    const events = days.flatMap((day) => {
-      const week = getWeekIdentifier(day);
-      const weekEvents = weeksOverridesMap[week];
-
-      const weekDay = day.weekday;
-      const dayEvents = weekEvents?.find((s) => s.weekDay === weekDay)?.shifts;
-
-      if (!dayEvents) return [];
-
-      return dayEvents.map((event, index) => ({
-        endAt: day.set(parseTime(event.end)).toJSDate(),
-        startAt: day.set(parseTime(event.start)).toJSDate(),
-        uid: `busy-event-${day.toISODate()}-${index}`,
-        title: "Busy",
-      }));
-    });
-
-    return events;
+      return events;
+    } catch (error) {
+      logger.error({ appId, error }, "Error getting busy times");
+      throw error;
+    }
   }
 }

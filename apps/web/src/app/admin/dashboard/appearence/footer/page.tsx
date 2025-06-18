@@ -1,6 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { Heading, Separator, Breadcrumbs } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { FooterSettingsForm } from "./form";
 
 const breadcrumbItems = [
@@ -10,6 +11,9 @@ const breadcrumbItems = [
 ];
 
 export default async function Page() {
+  const logger = getLoggerFactory("AdminPages")("footer");
+
+  logger.debug("Loading footer page");
   const settings =
     await ServicesContainer.ConfigurationService().getConfiguration("footer");
 

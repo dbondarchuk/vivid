@@ -7,6 +7,7 @@ import {
 import { TemplatesTable } from "@/components/admin/templates/table/table";
 import { TemplatesTableAction } from "@/components/admin/templates/table/table-action";
 import { Breadcrumbs, DataTableSkeleton, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Suspense } from "react";
 
 type Params = {
@@ -14,6 +15,9 @@ type Params = {
 };
 
 export default async function EmailTemplatesPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("templates");
+
+  logger.debug("Loading templates page");
   const searchParams = await props.searchParams;
 
   const breadcrumbItems = [

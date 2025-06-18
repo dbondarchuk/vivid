@@ -9,6 +9,7 @@ import {
   TabsLinkTrigger,
   TabsList,
 } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 import {
@@ -68,11 +69,22 @@ const tabTitle: Record<Tab, string> = {
 };
 
 export default async function CustomerPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("customer-detail");
   const params = await props.params;
   const path = `/admin/dashboard/customers/${params.id}`;
 
   const activeTab = params.tab as Tab;
-  if (!tabs.includes(activeTab)) notFound();
+  if (!tabs.includes(activeTab)) {
+    logger.warn(
+      {
+        customerId: params.id,
+        invalidTab: params.tab,
+        validTabs: tabs,
+      },
+      "Invalid tab requested"
+    );
+    notFound();
+  }
 
   const searchParams = await props.searchParams;
 
@@ -88,11 +100,33 @@ export default async function CustomerPage(props: Props) {
     key = communicationsSerialize({ ...parsed });
   }
 
+  logger.debug(
+    {
+      customerId: params.id,
+      activeTab,
+      key,
+    },
+    "Loading customer detail page"
+  );
+
   const customer = await ServicesContainer.CustomersService().getCustomer(
     params.id
   );
 
-  if (!customer) return notFound();
+  if (!customer) {
+    logger.warn({ customerId: params.id }, "Customer not found");
+    return notFound();
+  }
+
+  logger.debug(
+    {
+      customerId: params.id,
+      customerName: customer.name,
+      customerEmail: customer.email,
+      activeTab,
+    },
+    "Customer detail page loaded"
+  );
 
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },

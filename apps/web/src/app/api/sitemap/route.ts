@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { NextRequest } from "next/server";
 
@@ -26,7 +27,15 @@ function generateSiteMap(pages: Sitemap) {
 }
 
 export async function GET(req: NextRequest) {
-  console.log("sitemap.xml", req.url); // we need to use request object to disable pre-render at build time
+  const logger = getLoggerFactory("API/sitemap")("GET");
+
+  logger.debug(
+    {
+      url: req.url,
+      method: req.method,
+    },
+    "Processing sitemap.xml request"
+  );
 
   const { url } =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
@@ -47,6 +56,15 @@ export async function GET(req: NextRequest) {
       priority: 0.8,
     })),
   ];
+
+  logger.debug(
+    {
+      baseUrl: url,
+      pageCount: pages.items.length,
+      totalUrls: sitemap.length,
+    },
+    "Successfully generated sitemap"
+  );
 
   return new Response(generateSiteMap(sitemap), {
     headers: { "Content-Type": "text/xml" },

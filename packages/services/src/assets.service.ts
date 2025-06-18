@@ -1,4 +1,4 @@
-import { getDbConnection } from "./database";
+import { getDbClient, getDbConnection } from "./database";
 
 import {
   Asset,
@@ -13,6 +13,7 @@ import {
 } from "@vivid/types";
 import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 
+import { getLoggerFactory } from "@vivid/logger";
 import { DateTime } from "luxon";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { Readable } from "stream";
@@ -22,27 +23,46 @@ import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
 export const ASSETS_COLLECTION_NAME = "assets";
 
 export class AssetsService implements IAssetsService {
+  protected readonly loggerFactory = getLoggerFactory("AssetsService");
+
   constructor(
     protected readonly configurationService: IConfigurationService,
     protected readonly connectedAppService: IConnectedAppsService
   ) {}
 
-  public async getAsset(_id: string): Promise<Asset | null> {
+  public async getAsset(id: string): Promise<Asset | null> {
+    const logger = this.loggerFactory("getAsset");
+    logger.debug({ assetId: id }, "Getting asset by id");
+
     const db = await getDbConnection();
     const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
-    const asset = await assets
+    const asset = (await assets
       .aggregate([
         {
           $match: {
-            _id,
+            _id: id,
           },
         },
         ...this.aggregateJoin,
       ])
-      .next();
+      .next()) as Asset | null;
 
-    return asset as Asset | null;
+    if (!asset) {
+      logger.warn({ assetId: id }, "Asset not found");
+    } else {
+      logger.debug(
+        {
+          assetId: id,
+          fileName: asset.filename,
+          fileSize: asset.size,
+          fileType: asset.mimeType,
+        },
+        "Asset found"
+      );
+    }
+
+    return asset;
   }
 
   public async getAssets(
@@ -50,8 +70,12 @@ export class AssetsService implements IAssetsService {
       accept?: string[];
       customerId?: string | string[];
       appointmentId?: string | string[];
+      appId?: string;
     }
   ): Promise<WithTotal<Asset>> {
+    const logger = this.loggerFactory("getAssets");
+    logger.debug({ query }, "Getting assets with query");
+
     const db = await getDbConnection();
 
     const sort: Sort = query.sort?.reduce(
@@ -106,7 +130,7 @@ export class AssetsService implements IAssetsService {
       };
     }
 
-    const [result] = await db
+    const [res] = await db
       .collection<AssetEntity>(ASSETS_COLLECTION_NAME)
       .aggregate([
         ...this.aggregateJoin,
@@ -136,10 +160,21 @@ export class AssetsService implements IAssetsService {
       ])
       .toArray();
 
-    return {
-      total: result.totalCount?.[0]?.count || 0,
-      items: result.paginatedResults || [],
+    const result = {
+      total: res.totalCount?.[0]?.count || 0,
+      items: res.paginatedResults || [],
     };
+
+    logger.debug(
+      {
+        query,
+        total: result.total,
+        count: result.items.length,
+      },
+      "Successfully retrieved assets"
+    );
+
+    return result;
   }
 
   public async createAsset(
@@ -147,38 +182,64 @@ export class AssetsService implements IAssetsService {
     file: File
   ): Promise<AssetEntity> {
     const storage = await this.getAssetsStorage();
+    const args = { fileName: asset.filename, size: asset.size };
+
+    const logger = this.loggerFactory("createAsset");
+    logger.debug(args, "Creating new asset");
 
     const db = await getDbConnection();
-    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
+    const dbClient = await getDbClient();
 
-    const existing = await assets.findOne({
-      filename: asset.filename,
-    });
+    const session = dbClient.startSession();
+    try {
+      return await session.withTransaction(async () => {
+        const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
-    if (!!existing) {
-      throw new Error(`File '${asset.filename}' already exists`);
+        const existing = await assets.findOne({
+          filename: asset.filename,
+        });
+
+        if (!!existing) {
+          logger.error(args, "Asset with such file name already exists");
+          throw new Error(`File '${asset.filename}' already exists`);
+        }
+
+        logger.debug(args, "Uploading new asset");
+
+        await storage.service.saveFile(
+          storage.app,
+          asset.filename,
+          Readable.fromWeb(file.stream() as any),
+          file.size
+        );
+
+        logger.debug(args, "Saving new asset");
+
+        const dbAsset: Asset = {
+          ...asset,
+          _id: new ObjectId().toString(),
+          uploadedAt: DateTime.utc().toJSDate(),
+          size: file.size,
+        };
+
+        await assets.insertOne(dbAsset);
+
+        logger.debug(args, "Asset successfully created");
+
+        return dbAsset;
+      });
+    } finally {
+      await session.endSession();
     }
-
-    await storage.service.saveFile(
-      storage.app,
-      asset.filename,
-      Readable.fromWeb(file.stream() as any),
-      file.size
-    );
-
-    const dbAsset: Asset = {
-      ...asset,
-      _id: new ObjectId().toString(),
-      uploadedAt: DateTime.utc().toJSDate(),
-      size: file.size,
-    };
-
-    await assets.insertOne(dbAsset);
-
-    return dbAsset;
   }
 
-  public async updateAsset(id: string, update: AssetUpdate): Promise<void> {
+  public async updateAsset(
+    assetId: string,
+    update: AssetUpdate
+  ): Promise<void> {
+    const logger = this.loggerFactory("updateAsset");
+    logger.debug({ assetId }, "Updating asset");
+
     const db = await getDbConnection();
     const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
@@ -187,64 +248,104 @@ export class AssetsService implements IAssetsService {
 
     await assets.updateOne(
       {
-        _id: id,
+        _id: assetId,
       },
       {
         $set: updateObj,
       }
     );
+
+    logger.debug({ assetId }, "Asset was successfully updated");
   }
 
-  public async deleteAsset(id: string): Promise<Asset | undefined> {
-    const storage = await this.getAssetsStorage();
+  public async deleteAsset(assetId: string): Promise<Asset | null> {
+    const logger = this.loggerFactory("deleteAsset");
+    logger.debug({ assetId }, "Deleting asset");
 
     const db = await getDbConnection();
-    const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
+    const dbClient = await getDbClient();
 
-    const asset = await assets.findOne({ _id: id });
-    if (!asset) return undefined;
+    const session = dbClient.startSession();
+    try {
+      return await session.withTransaction(async () => {
+        const storage = await this.getAssetsStorage();
 
-    await assets.deleteOne({
-      _id: id,
-    });
+        const assets = db.collection<Asset>(ASSETS_COLLECTION_NAME);
 
-    await storage.service.deleteFile(storage.app, asset.filename);
+        const asset = await assets.findOneAndDelete({ _id: assetId });
+        if (!asset) {
+          logger.warn({ assetId }, "Asset not found");
+          return null;
+        }
 
-    return asset;
+        logger.debug(
+          { assetId, fileName: asset.filename },
+          "Asset deleted. Deleting file"
+        );
+
+        await storage.service.deleteFile(storage.app, asset.filename);
+        logger.debug({ assetId, fileName: asset.filename }, "File deleted");
+
+        return asset;
+      });
+    } finally {
+      await session.endSession();
+    }
   }
 
-  public async deleteAssets(ids: string[]): Promise<Asset[]> {
-    const storage = await this.getAssetsStorage();
+  public async deleteAssets(assetsIds: string[]): Promise<Asset[]> {
+    const logger = this.loggerFactory("deleteAssets");
+    logger.debug({ assetsIds }, "Deleting assets");
 
     const db = await getDbConnection();
-    const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
+    const dbClient = await getDbClient();
 
-    const toRemove = await assets
-      .find({
-        _id: {
-          $in: ids,
-        },
-      })
-      .toArray();
+    const session = dbClient.startSession();
+    try {
+      return await session.withTransaction(async () => {
+        const storage = await this.getAssetsStorage();
+        const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
-    await assets.deleteMany({
-      _id: {
-        $in: ids,
-      },
-    });
+        const toRemove = await assets
+          .find({
+            _id: {
+              $in: assetsIds,
+            },
+          })
+          .toArray();
 
-    await storage.service.deleteFiles(
-      storage.app,
-      toRemove.map((asset) => asset.filename)
-    );
+        const { deletedCount } = await assets.deleteMany({
+          _id: {
+            $in: assetsIds,
+          },
+        });
 
-    return toRemove;
+        logger.debug(
+          { assetsIds, deletedCount },
+          "Assets deleted. Deleting files"
+        );
+
+        await storage.service.deleteFiles(
+          storage.app,
+          toRemove.map((asset) => asset.filename)
+        );
+
+        logger.debug({ assetsIds, deletedCount }, "Files deleted");
+
+        return toRemove;
+      });
+    } finally {
+      await session.endSession();
+    }
   }
 
   public async checkUniqueFileName(
     filename: string,
     _id?: string
   ): Promise<boolean> {
+    const logger = this.loggerFactory("checkUniqueFileName");
+    logger.debug({ filename, _id }, "Checking if file name is unqiue");
+
     const db = await getDbConnection();
     const assets = db.collection<AssetEntity>(ASSETS_COLLECTION_NAME);
 
@@ -266,12 +367,19 @@ export class AssetsService implements IAssetsService {
       ])
       .hasNext();
 
+    logger.debug(
+      { filename, _id },
+      `File name is${hasNext ? " not" : ""} unqiue`
+    );
+
     return !hasNext;
   }
 
   public async streamAsset(
     filename: string
   ): Promise<{ stream: Readable; asset: AssetEntity } | null> {
+    const logger = this.loggerFactory("streamAsset");
+    logger.info({ filename }, "Streaming asset");
     const storage = await this.getAssetsStorage();
 
     const db = await getDbConnection();
@@ -281,7 +389,15 @@ export class AssetsService implements IAssetsService {
       filename,
     });
 
-    if (!asset) return null;
+    if (!asset) {
+      logger.warn({ filename }, "Asset not found");
+      return null;
+    }
+
+    logger.debug(
+      { filename, assetId: asset._id, size: asset.size },
+      "Found asset, streaming it."
+    );
 
     const stream = await storage.service.getFile(storage.app, filename);
     return { stream, asset };

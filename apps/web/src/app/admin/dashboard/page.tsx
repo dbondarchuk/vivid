@@ -8,6 +8,7 @@ import {
   TabsList,
   TabsViaUrl,
 } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Suspense } from "react";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
@@ -23,7 +24,16 @@ type Params = {
 const defaultTab = "overview";
 
 export default async function Page({ searchParams }: Params) {
+  const logger = getLoggerFactory("AdminPages")("dashboard");
   const { activeTab = defaultTab, key } = await searchParams;
+
+  logger.debug(
+    {
+      activeTab,
+      key,
+    },
+    "Loading dashboard page"
+  );
 
   return (
     <PageContainer scrollable={true}>

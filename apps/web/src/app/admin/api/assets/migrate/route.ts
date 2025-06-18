@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { assetsMigrateRequestSchema, IAssetsStorage } from "@vivid/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,6 +11,16 @@ const getAtomic = () => {
 };
 
 export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/assets-migrate")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing assets migrate API request"
+  );
+
   const limit = pLimit(10);
 
   const {
@@ -18,6 +29,7 @@ export async function POST(request: NextRequest) {
     data: body,
   } = assetsMigrateRequestSchema.safeParse(await request.json());
   if (!success || !body || error) {
+    logger.warn({ error }, "Invalid request format");
     return NextResponse.json(error, { status: 400 });
   }
 
@@ -91,6 +103,14 @@ export async function POST(request: NextRequest) {
       }
     },
   });
+
+  logger.debug(
+    {
+      sourceBucket: body.fromAppId,
+      targetBucket: body.toAppId,
+    },
+    "Assets migration completed"
+  );
 
   return new NextResponse(stream);
 }

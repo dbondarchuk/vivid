@@ -1,7 +1,8 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 
 import { OptionForm } from "@/components/admin/services/options/form";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { notFound } from "next/navigation";
 
@@ -10,10 +11,32 @@ type Props = {
 };
 
 export default async function EditOptionPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("edit-service-option");
   const params = await props.params;
+
+  logger.debug(
+    {
+      optionId: params.id,
+    },
+    "Loading service option edit page"
+  );
+
   const option = await ServicesContainer.ServicesService().getOption(params.id);
 
-  if (!option) return notFound();
+  if (!option) {
+    logger.warn({ optionId: params.id }, "Service option not found");
+    return notFound();
+  }
+
+  logger.debug(
+    {
+      optionId: params.id,
+      optionName: option.name,
+      optionDuration: option.duration,
+      optionPrice: option.price,
+    },
+    "Service option edit page loaded"
+  );
 
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },

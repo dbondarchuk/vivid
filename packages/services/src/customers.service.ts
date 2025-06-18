@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   Customer,
@@ -16,19 +17,41 @@ import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
 export const CUSTOMERS_COLLECTION_NAME = "customers";
 
 export class CustomersService implements ICustomersService {
+  protected readonly loggerFactory = getLoggerFactory("CustomersService");
+
   public async getCustomer(id: string): Promise<Customer | null> {
+    const logger = this.loggerFactory("getCustomer");
+    logger.debug({ customerId: id }, "Getting customer by id");
+
     const db = await getDbConnection();
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
-    return await collection.findOne({
+    const customer = await collection.findOne({
       _id: id,
     });
+
+    if (!customer) {
+      logger.warn({ customerId: id }, "Customer not found");
+    } else {
+      logger.debug(
+        {
+          customerId: id,
+          name: customer.name,
+        },
+        "Customer found"
+      );
+    }
+
+    return customer;
   }
 
   public async getCustomers(
     query: Query & { priorityIds?: string[] }
   ): Promise<WithTotal<CustomerListModel>> {
+    const logger = this.loggerFactory("getCustomers");
+    logger.debug({ query }, "Getting customers");
+
     const db = await getDbConnection();
 
     const sort: Sort = query.sort?.reduce(
@@ -211,20 +234,47 @@ export class CustomersService implements ICustomersService {
       ])
       .toArray();
 
-    return {
+    const response = {
       total: result.totalCount?.[0]?.count || 0,
       items: result.paginatedResults || [],
     };
+
+    logger.debug(
+      {
+        query,
+        result: { total: response.total, count: response.items.length },
+      },
+      "Fetched customers"
+    );
+
+    return response;
   }
 
   public async findCustomer(
     email: string,
     phone: string
   ): Promise<Customer | null> {
+    const logger = this.loggerFactory("findCustomer");
+    logger.debug({ email, phone }, "Finding customer by email and phone");
+
     const byEmail = await this.findCustomerBySearchField(email, "email");
-    if (byEmail) return byEmail;
+    if (byEmail) {
+      logger.debug(
+        { email, customerId: byEmail._id },
+        "Customer found by email"
+      );
+      return byEmail;
+    }
 
     const byPhone = await this.findCustomerBySearchField(phone, "phone");
+    if (byPhone) {
+      logger.debug(
+        { phone, customerId: byPhone._id },
+        "Customer found by phone"
+      );
+    } else {
+      logger.debug({ email, phone }, "Customer not found by email or phone");
+    }
     return byPhone;
   }
 
@@ -232,6 +282,9 @@ export class CustomersService implements ICustomersService {
     search: string,
     field: CustomerSearchField
   ): Promise<Customer | null> {
+    const logger = this.loggerFactory("findCustomerBySearchField");
+    logger.debug({ search, field }, "Finding customer by search field");
+
     const db = await getDbConnection();
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
@@ -242,12 +295,35 @@ export class CustomersService implements ICustomersService {
       `known${field[0].toUpperCase()}${field.substring(1)}s` as Leaves<Customer>
     );
 
-    return await collection.findOne({
+    const customer = await collection.findOne({
       $or: queries,
     });
+
+    if (customer) {
+      logger.debug(
+        { search, field, customerId: customer._id },
+        "Customer found by search field"
+      );
+    } else {
+      logger.debug({ search, field }, "Customer not found by search field");
+    }
+
+    return customer;
   }
 
   public async createCustomer(customer: CustomerUpdateModel): Promise<string> {
+    const logger = this.loggerFactory("createCustomer");
+    logger.debug(
+      {
+        customer: {
+          name: customer.name,
+          email: customer.email,
+          phone: customer.phone,
+        },
+      },
+      "Creating new customer"
+    );
+
     const id = new ObjectId().toString();
     const db = await getDbConnection();
 
@@ -258,6 +334,11 @@ export class CustomersService implements ICustomersService {
       _id: id,
     });
 
+    logger.debug(
+      { customerId: id, name: customer.name },
+      "Successfully created customer"
+    );
+
     return id;
   }
 
@@ -265,6 +346,15 @@ export class CustomersService implements ICustomersService {
     id: string,
     update: CustomerUpdateModel
   ): Promise<void> {
+    const logger = this.loggerFactory("updateCustomer");
+    logger.debug(
+      {
+        customerId: id,
+        update: { name: update.name, email: update.email, phone: update.phone },
+      },
+      "Updating customer"
+    );
+
     const db = await getDbConnection();
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
@@ -279,15 +369,23 @@ export class CustomersService implements ICustomersService {
         $set: updateObj,
       }
     );
+
+    logger.debug({ customerId: id }, "Successfully updated customer");
   }
 
   public async deleteCustomer(id: string): Promise<Customer | null> {
+    const logger = this.loggerFactory("deleteCustomer");
+    logger.debug({ customerId: id }, "Deleting customer");
+
     const db = await getDbConnection();
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
-    const customer = collection.findOne({ _id: id });
-    if (!customer) return null;
+    const customer = await collection.findOne({ _id: id });
+    if (!customer) {
+      logger.warn({ customerId: id }, "Customer not found for deletion");
+      return null;
+    }
 
     const appointmentsCollection = db.collection<Appointment>(
       APPOINTMENTS_COLLECTION_NAME
@@ -297,6 +395,10 @@ export class CustomersService implements ICustomersService {
     });
 
     if (count > 0) {
+      logger.error(
+        { customerId: id, appointmentCount: count },
+        "Cannot delete customer with existing appointments"
+      );
       throw new Error("Customer has existing appointments");
     }
 
@@ -304,10 +406,18 @@ export class CustomersService implements ICustomersService {
       _id: id,
     });
 
+    logger.debug(
+      { customerId: id, name: customer.name },
+      "Successfully deleted customer"
+    );
+
     return customer;
   }
 
   public async deleteCustomers(ids: string[]): Promise<void> {
+    const logger = this.loggerFactory("deleteCustomers");
+    logger.debug({ customerIds: ids }, "Deleting multiple customers");
+
     const db = await getDbConnection();
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
@@ -337,6 +447,13 @@ export class CustomersService implements ICustomersService {
 
     const nonEmptyCustomers = appointmentMap.filter(({ count }) => count > 0);
     if (nonEmptyCustomers.length > 0) {
+      logger.error(
+        {
+          customerIds: nonEmptyCustomers.map(({ _id }) => _id),
+          appointmentCounts: nonEmptyCustomers,
+        },
+        "Cannot delete customers with existing appointments"
+      );
       throw new Error(
         `Some customers already have appointments: ${nonEmptyCustomers.map(({ _id }) => _id).join(", ")}`
       );
@@ -347,12 +464,20 @@ export class CustomersService implements ICustomersService {
         $in: ids,
       },
     });
+
+    logger.debug(
+      { customerIds: ids, count: ids.length },
+      "Successfully deleted multiple customers"
+    );
   }
 
   public async mergeCustomers(
     targetId: string,
     valueIds: string[]
   ): Promise<void> {
+    const logger = this.loggerFactory("mergeCustomers");
+    logger.debug({ targetId, valueIds }, "Merging customers");
+
     const db = await getDbConnection();
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
@@ -361,10 +486,12 @@ export class CustomersService implements ICustomersService {
     });
 
     if (!target) {
+      logger.error({ targetId }, "Target customer not found for merge");
       throw new Error(`Can't find target customer with id ${targetId}`);
     }
 
     if (!valueIds?.length) {
+      logger.error({ targetId, valueIds }, "Value IDs list is empty for merge");
       throw new Error("IDs list should not be empty");
     }
 
@@ -379,6 +506,15 @@ export class CustomersService implements ICustomersService {
       .toArray();
 
     if (customers.length !== ids.length) {
+      logger.error(
+        {
+          targetId,
+          valueIds,
+          foundCount: customers.length,
+          expectedCount: ids.length,
+        },
+        "Could not find all customers for merge"
+      );
       throw new Error(`Could not find all customers for merge`);
     }
 
@@ -455,6 +591,11 @@ export class CustomersService implements ICustomersService {
         $in: ids,
       },
     });
+
+    logger.debug(
+      { targetId, valueIds, mergedCount: ids.length },
+      "Successfully merged customers"
+    );
   }
 
   public async checkUniqueEmailAndPhone(
@@ -462,6 +603,12 @@ export class CustomersService implements ICustomersService {
     phones: string[],
     id?: string
   ): Promise<{ email: boolean; phone: boolean }> {
+    const logger = this.loggerFactory("checkUniqueEmailAndPhone");
+    logger.debug(
+      { emails, phones, customerId: id },
+      "Checking unique email and phone"
+    );
+
     const db = await getDbConnection();
     const customers = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
 
@@ -507,6 +654,12 @@ export class CustomersService implements ICustomersService {
       customers.find(phoneFilter).hasNext(),
     ]);
 
-    return { email: !emailResult, phone: !phoneResult };
+    const result = { email: !emailResult, phone: !phoneResult };
+    logger.debug(
+      { emails, phones, customerId: id, result },
+      "Email and phone uniqueness check completed"
+    );
+
+    return result;
   }
 }

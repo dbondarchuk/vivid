@@ -2,6 +2,7 @@ import { AssetEditForm } from "@/components/admin/assets/edit-form";
 import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -15,10 +16,31 @@ const breadcrumbItems = [
 ];
 
 export default async function EditAssetsPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("edit-asset");
   const params = await props.params;
+
+  logger.debug(
+    {
+      assetId: params.id,
+    },
+    "Loading asset edit page"
+  );
+
   const asset = await ServicesContainer.AssetsService().getAsset(params.id);
 
-  if (!asset) return notFound();
+  if (!asset) {
+    logger.warn({ assetId: params.id }, "Asset not found");
+    return notFound();
+  }
+
+  logger.debug(
+    {
+      assetId: params.id,
+      filename: asset.filename,
+      mimeType: asset.mimeType,
+    },
+    "Asset edit page loaded"
+  );
 
   return (
     <PageContainer scrollable={true}>

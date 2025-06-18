@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentStatus,
@@ -18,39 +19,88 @@ import {
 export default class CustomerTextMessageNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
+  protected readonly loggerFactory = getLoggerFactory(
+    "CustomerTextMessageNotificationConnectedApp"
+  );
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
     data: CustomerTextMessageNotificationConfiguration
   ): Promise<ConnectedAppStatusWithText> {
-    const defaultApps = await this.props.services
-      .ConfigurationService()
-      .getConfiguration("defaultApps");
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      { appId: appData._id },
+      "Processing customer text message notification configuration request"
+    );
 
     try {
-      const textMessageAppId = defaultApps.textMessage?.appId;
-      await this.props.services
-        .ConnectedAppsService()
-        .getApp(textMessageAppId!);
-    } catch {
-      return {
-        status: "failed",
-        statusText: "Text message sender default app is not configured",
+      const defaultApps = await this.props.services
+        .ConfigurationService()
+        .getConfiguration("defaultApps");
+
+      logger.debug(
+        { appId: appData._id },
+        "Retrieved default apps configuration"
+      );
+
+      try {
+        const textMessageAppId = defaultApps.textMessage?.appId;
+        logger.debug(
+          { appId: appData._id, textMessageAppId },
+          "Retrieved text message app ID"
+        );
+
+        await this.props.services
+          .ConnectedAppsService()
+          .getApp(textMessageAppId!);
+
+        logger.debug(
+          { appId: appData._id, textMessageAppId },
+          "Text message app is properly configured"
+        );
+      } catch (error: any) {
+        logger.error(
+          { appId: appData._id, error },
+          "Text message sender default app is not configured"
+        );
+        return {
+          status: "failed",
+          statusText: "Text message sender default app is not configured",
+        };
+      }
+
+      const status: ConnectedAppStatusWithText = {
+        status: "connected",
+        statusText: `Successfully set up`,
       };
+
+      this.props.update({
+        data,
+        ...status,
+      });
+
+      logger.info(
+        { appId: appData._id, status: status.status },
+        "Successfully configured customer text message notification"
+      );
+
+      return status;
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, error },
+        "Error processing customer text message notification configuration"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          "Error processing customer text message notification configuration",
+      });
+
+      throw error;
     }
-
-    const status: ConnectedAppStatusWithText = {
-      status: "connected",
-      statusText: `Successfully set up`,
-    };
-
-    this.props.update({
-      data,
-      ...status,
-    });
-
-    return status;
   }
 
   public async onAppointmentCreated(
@@ -58,12 +108,38 @@ export default class CustomerTextMessageNotificationConnectedApp
     appointment: Appointment,
     confirmed: boolean
   ): Promise<void> {
-    await this.sendNotification(
-      appData,
-      appointment,
-      confirmed ? "confirmed" : "pending",
-      "New Request"
+    const logger = this.loggerFactory("onAppointmentCreated");
+    logger.debug(
+      { appId: appData._id, appointmentId: appointment._id, confirmed },
+      "Appointment created, sending customer text message notification"
     );
+
+    try {
+      await this.sendNotification(
+        appData,
+        appointment,
+        confirmed ? "confirmed" : "pending",
+        "New Request"
+      );
+
+      logger.info(
+        { appId: appData._id, appointmentId: appointment._id, confirmed },
+        "Successfully sent customer text message notification for new appointment"
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, appointmentId: appointment._id, error },
+        "Error sending customer text message notification for new appointment"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          "Error sending customer text message notification for new appointment",
+      });
+
+      throw error;
+    }
   }
 
   public async onAppointmentStatusChanged(
@@ -71,7 +147,38 @@ export default class CustomerTextMessageNotificationConnectedApp
     appointment: Appointment,
     newStatus: AppointmentStatus
   ): Promise<void> {
-    await this.sendNotification(appData, appointment, newStatus, newStatus);
+    const logger = this.loggerFactory("onAppointmentStatusChanged");
+    logger.debug(
+      { appId: appData._id, appointmentId: appointment._id, newStatus },
+      "Appointment status changed, sending customer text message notification"
+    );
+
+    try {
+      await this.sendNotification(appData, appointment, newStatus, newStatus);
+
+      logger.info(
+        { appId: appData._id, appointmentId: appointment._id, newStatus },
+        "Successfully sent customer text message notification for status change"
+      );
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newStatus,
+          error,
+        },
+        "Error sending customer text message notification for status change"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          "Error sending customer text message notification for status change",
+      });
+
+      throw error;
+    }
   }
 
   public async onAppointmentRescheduled(
@@ -80,18 +187,60 @@ export default class CustomerTextMessageNotificationConnectedApp
     newTime: Date,
     newDuration: number
   ): Promise<void> {
-    const newAppointment: Appointment = {
-      ...appointment,
-      dateTime: newTime,
-      totalDuration: newDuration,
-    };
-
-    await this.sendNotification(
-      appData,
-      newAppointment,
-      "rescheduled",
-      "Rescheduled"
+    const logger = this.loggerFactory("onAppointmentRescheduled");
+    logger.debug(
+      {
+        appId: appData._id,
+        appointmentId: appointment._id,
+        newTime: newTime.toISOString(),
+        newDuration,
+      },
+      "Appointment rescheduled, sending customer text message notification"
     );
+
+    try {
+      const newAppointment: Appointment = {
+        ...appointment,
+        dateTime: newTime,
+        totalDuration: newDuration,
+      };
+
+      await this.sendNotification(
+        appData,
+        newAppointment,
+        "rescheduled",
+        "Rescheduled"
+      );
+
+      logger.info(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newTime: newTime.toISOString(),
+          newDuration,
+        },
+        "Successfully sent customer text message notification for rescheduled appointment"
+      );
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newTime: newTime.toISOString(),
+          newDuration,
+          error,
+        },
+        "Error sending customer text message notification for rescheduled appointment"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          "Error sending customer text message notification for rescheduled appointment",
+      });
+
+      throw error;
+    }
   }
 
   private async sendNotification(
@@ -100,63 +249,142 @@ export default class CustomerTextMessageNotificationConnectedApp
     status: keyof CustomerTextMessageNotificationConfiguration["templates"],
     initiator: string
   ) {
-    const data = appData.data as CustomerTextMessageNotificationConfiguration;
-    const templateId = data.templates[status].templateId;
-    if (!templateId) {
-      return;
-    }
-
-    const template = await this.props.services
-      .TemplatesService()
-      .getTemplate(templateId);
-    if (!template) {
-      console.error(`Can't find template with id ${templateId}`);
-      return;
-    }
-
-    const config = await this.props.services
-      .ConfigurationService()
-      .getConfigurations("booking", "general", "social");
-
-    const phoneFields = (
-      await this.props.services.ServicesService().getFields({
-        type: ["phone"],
-      })
-    ).items;
-
-    const phone =
-      appointment.fields?.phone ?? getPhoneField(appointment, phoneFields);
-    if (!phone) {
-      console.warn(
-        `Can't find the phone field for appointment ${appointment._id}`
-      );
-
-      return;
-    }
-
-    const args = getArguments({
-      appointment,
-      config,
-      customer: appointment.customer,
-      useAppointmentTimezone: true,
-    });
-
-    const templatedBody = templateSafeWithError(
-      template.value as string,
-      args,
-      true
+    const logger = this.loggerFactory("sendNotification");
+    logger.debug(
+      { appId: appData._id, appointmentId: appointment._id, status, initiator },
+      "Sending customer text message notification"
     );
 
-    await this.props.services.NotificationService().sendTextMessage({
-      phone,
-      body: templatedBody,
-      webhookData: {
+    try {
+      const data = appData.data as CustomerTextMessageNotificationConfiguration;
+      const templateId = data.templates[status].templateId;
+
+      if (!templateId) {
+        logger.warn(
+          { appId: appData._id, appointmentId: appointment._id, status },
+          "No template ID configured for status, skipping text message notification"
+        );
+        return;
+      }
+
+      logger.debug(
+        { appId: appData._id, appointmentId: appointment._id, templateId },
+        "Getting text message template"
+      );
+
+      const template = await this.props.services
+        .TemplatesService()
+        .getTemplate(templateId);
+      if (!template) {
+        logger.error(
+          { appId: appData._id, appointmentId: appointment._id, templateId },
+          "Text message template not found"
+        );
+        console.error(`Can't find template with id ${templateId}`);
+        return;
+      }
+
+      logger.debug(
+        { appId: appData._id, appointmentId: appointment._id },
+        "Retrieved text message template"
+      );
+
+      const config = await this.props.services
+        .ConfigurationService()
+        .getConfigurations("booking", "general", "social");
+
+      logger.debug(
+        { appId: appData._id, appointmentId: appointment._id },
+        "Retrieved configuration for text message notification"
+      );
+
+      const phoneFields = (
+        await this.props.services.ServicesService().getFields({
+          type: ["phone"],
+        })
+      ).items;
+
+      logger.debug(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          phoneFieldCount: phoneFields.length,
+        },
+        "Retrieved phone fields"
+      );
+
+      const phone =
+        appointment.fields?.phone ?? getPhoneField(appointment, phoneFields);
+      if (!phone) {
+        logger.warn(
+          { appId: appData._id, appointmentId: appointment._id },
+          "Can't find the phone field for appointment"
+        );
+        console.warn(
+          `Can't find the phone field for appointment ${appointment._id}`
+        );
+        return;
+      }
+
+      logger.debug(
+        { appId: appData._id, appointmentId: appointment._id, phone },
+        "Found phone number for customer"
+      );
+
+      const args = getArguments({
+        appointment,
+        config,
+        customer: appointment.customer,
+        useAppointmentTimezone: true,
+      });
+
+      logger.debug(
+        { appId: appData._id, appointmentId: appointment._id },
+        "Generated template arguments"
+      );
+
+      const templatedBody = templateSafeWithError(
+        template.value as string,
+        args,
+        true
+      );
+
+      logger.debug(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          bodyLength: templatedBody.length,
+        },
+        "Generated templated message body"
+      );
+
+      logger.debug(
+        { appId: appData._id, appointmentId: appointment._id, phone },
+        "Sending text message notification"
+      );
+
+      await this.props.services.NotificationService().sendTextMessage({
+        phone,
+        body: templatedBody,
+        webhookData: {
+          appointmentId: appointment._id,
+          appId: appData._id,
+        },
         appointmentId: appointment._id,
-        appId: appData._id,
-      },
-      appointmentId: appointment._id,
-      participantType: "customer",
-      handledBy: `Customer Text Message Notification Service - ${initiator}`,
-    });
+        participantType: "customer",
+        handledBy: `Customer Text Message Notification Service - ${initiator}`,
+      });
+
+      logger.info(
+        { appId: appData._id, appointmentId: appointment._id, status, phone },
+        "Successfully sent customer text message notification"
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, appointmentId: appointment._id, status, error },
+        "Error sending customer text message notification"
+      );
+      throw error;
+    }
   }
 }

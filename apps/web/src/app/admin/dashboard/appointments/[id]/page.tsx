@@ -1,5 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { Skeleton } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Suspense } from "react";
 import { AppointmentViewWrapper } from "./appointment-view-wrapper";
 
@@ -9,9 +10,18 @@ type Props = {
 };
 
 export default async function AppointmentPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("appointment-detail");
   const { id } = await props.params;
   const searchParams = await props.searchParams;
   const shouldShowDeclineModal = "decline" in searchParams;
+
+  logger.debug(
+    {
+      appointmentId: id,
+      shouldShowDeclineModal,
+    },
+    "Loading appointment detail page"
+  );
 
   return (
     <PageContainer scrollable={true}>

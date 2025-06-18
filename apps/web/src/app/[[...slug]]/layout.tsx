@@ -11,6 +11,7 @@ import { ServicesContainer } from "@vivid/services";
 import "../globals.css";
 import { getColorsCss } from "@vivid/utils";
 import { CookiesProvider } from "@/components/cookies-provider";
+import { getLoggerFactory } from "@vivid/logger";
 
 const ScriptRenderer = ({
   resource,
@@ -48,6 +49,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const logger = getLoggerFactory("RootLayout")("RootLayout");
+  logger.debug("Starting root layout render");
+
   // const scripts = await Services.ConfigurationService().getConfiguration(
   //   "scripts"
   // );
@@ -67,18 +71,30 @@ export default async function RootLayout({
       "styling"
     );
 
-  if (!general)
+  logger.debug(
+    { hasGeneral: !!general, hasScripts: !!scripts, hasStyling: !!styling },
+    "Retrieved configurations"
+  );
+
+  if (!general) {
+    logger.debug("No general configuration found, returning minimal layout");
     return (
       <html>
         <body>{children}</body>
       </html>
     );
+  }
 
   const weights = `:wght@100..900`;
 
   const primaryFont = styling?.fonts?.primary || "Montserrat";
   const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
   const tertiaryFont = styling?.fonts?.tertiary;
+
+  logger.debug(
+    { primaryFont, secondaryFont, tertiaryFont },
+    "Font configuration"
+  );
 
   const tertiaryFontQueryArg = tertiaryFont
     ? `&family=${encodeURIComponent(tertiaryFont)}${weights}`
@@ -97,6 +113,11 @@ export default async function RootLayout({
 
   const fonts = await fontsRes.text();
   const colors = getColorsCss(styling?.colors);
+
+  logger.debug(
+    { fontsLength: fonts.length, hasColors: !!colors },
+    "Generated styles"
+  );
 
   return (
     <CookiesProvider>
