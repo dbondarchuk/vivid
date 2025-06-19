@@ -23,7 +23,7 @@ import {
   usePrevious,
 } from "@vivid/ui";
 
-import { I18nKeys, useI18n } from "@/i18n/i18n";
+import { I18nKeys, useI18n } from "@vivid/i18n";
 import { formatAmountString } from "@vivid/utils";
 import { DateTime as Luxon } from "luxon";
 import { fieldSchemaMapper, fieldsComponentMap } from "../forms/fields";

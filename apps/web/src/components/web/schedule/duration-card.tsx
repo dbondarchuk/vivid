@@ -1,4 +1,4 @@
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 import { Button } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import React from "react";

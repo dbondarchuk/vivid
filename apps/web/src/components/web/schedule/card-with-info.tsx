@@ -1,4 +1,4 @@
-import { fallbackLanguage, I18nKeys, useI18n } from "@/i18n/i18n";
+import { fallbackLanguage, I18nKeys, useI18n } from "@vivid/i18n";
 import { Time } from "@vivid/types";
 import { timeZones } from "@vivid/types/src/utils/zTimeZone";
 import {

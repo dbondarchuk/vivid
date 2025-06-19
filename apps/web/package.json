@@ -18,6 +18,7 @@
     "@vivid/email-builder": "*",
     "@vivid/rte": "*",
     "@vivid/logger": "*",
+    "@vivid/i18n": "*",
     "@vivid/services": "*",
     "@vivid/types": "*",
     "@vivid/ui": "*",

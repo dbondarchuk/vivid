@@ -3,7 +3,7 @@ import { DateTime } from "@vivid/types";
 
 import React from "react";
 
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 import { PaymentAppForms } from "@vivid/app-store";
 import { BaseCardProps } from "./base-card";
 import { CardWithAppointmentInformation } from "./card-with-info";

@@ -4,6 +4,8 @@ import { initReactI18next } from "react-i18next/initReactI18next";
 import type { I18nFn } from "./i18n";
 import { fallbackLanguage, getOptions } from "./settings";
 
+export type { I18nFn, I18nKeys } from "./i18n";
+
 const initI18next = async (language: string, namespace?: string) => {
   const i18nInstance = createInstance();
   await i18nInstance
@@ -18,7 +20,7 @@ const initI18next = async (language: string, namespace?: string) => {
   return i18nInstance;
 };
 
-export const useTranslation = async (
+export const getI18n = async (
   language?: string,
   namespace?: string,
   options?: { keyPrefix?: string }

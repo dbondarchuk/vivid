@@ -13,7 +13,7 @@ import { Globe2Icon } from "lucide-react";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 import { BaseCard, BaseCardProps, BaseCardState } from "./base-card";
 
-import { fallbackLanguage, useI18n } from "@/i18n/i18n";
+import { fallbackLanguage, useI18n } from "@vivid/i18n";
 import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
 import * as Locales from "date-fns/locale";
 import { useScheduleContext } from "./context";

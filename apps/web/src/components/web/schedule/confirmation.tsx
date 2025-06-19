@@ -1,4 +1,4 @@
-import { getI18nAsync } from "@/i18n/i18n";
+import { getI18nAsync } from "@vivid/i18n";
 import {
   Card,
   CardHeader,

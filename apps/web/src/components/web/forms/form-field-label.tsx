@@ -1,4 +1,4 @@
-import { I18nKeys, useI18n } from "@/i18n/i18n";
+import { I18nKeys, useI18n } from "@vivid/i18n";
 import { cn, FormLabel } from "@vivid/ui";
 
 export const FormFieldLabel: React.FC<{

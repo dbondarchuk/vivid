@@ -1,0 +1,21 @@
+{
+  "name": "@vivid/i18n",
+  "version": "0.0.1",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "type-check": "tsc --pretty --noEmit",
+    "type-check:ci": "tsc-absolute --pretty --noEmit",
+    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
+    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "pino-pretty": "^13.0.0"
+  },
+  "dependencies": {
+    "pino": "^9.7.0"
+  }
+}

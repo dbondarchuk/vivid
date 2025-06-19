@@ -11,7 +11,7 @@ import { durationToTime } from "@vivid/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
 import { MdxContent } from "../mdx/mdx-content-client";
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 
 export type AppointmentsCardProps = {
   options: AppointmentChoice[];
