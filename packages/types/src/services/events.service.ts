@@ -30,6 +30,7 @@ export interface IEventsService {
   getAppointments(
     query: Query & {
       range?: DateRange;
+      endRange?: DateRange;
       status?: AppointmentStatus[];
       customerId?: string | string[];
       discountId?: string | string[];

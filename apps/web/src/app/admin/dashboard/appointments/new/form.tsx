@@ -370,6 +370,9 @@ export const AppointmentScheduleForm: React.FC<
         minute: dt.minute,
       },
       dateTime,
+      endAt: DateTime.fromJSDate(dateTime)
+        .plus({ minutes: duration })
+        .toJSDate(),
       totalDuration: duration,
       totalPrice: price,
       fields: { name, email, phone },

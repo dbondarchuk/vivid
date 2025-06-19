@@ -20,6 +20,7 @@ export const demoAppointment: Appointment = {
   note: "Demo note",
   totalPrice: 90,
   totalDuration: 150,
+  endAt: new Date(2024, 10, 20, 11, 30, 0),
   option: {
     _id: "dfjkdlfj",
     name: "Demo option",

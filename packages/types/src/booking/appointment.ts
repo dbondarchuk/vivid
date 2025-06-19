@@ -21,6 +21,7 @@ export type Appointment = AppointmentEntity & {
   customer: Customer;
   files?: AssetEntity[];
   payments?: Payment[];
+  endAt: Date;
 };
 
 export const StatusText: Record<AppointmentStatus, string> = {

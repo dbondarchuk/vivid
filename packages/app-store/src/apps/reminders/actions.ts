@@ -10,7 +10,10 @@ import {
 
 const logger = (action: string) => ({
   debug: (data: any, message: string) => {
-    console.log(`[${action}] DEBUG:`, message, data);
+    console.debug(`[${action}] DEBUG:`, message, data);
+  },
+  info: (data: any, message: string) => {
+    console.log(`[${action}] INFO:`, message, data);
   },
   error: (data: any, message: string) => {
     console.error(`[${action}] ERROR:`, message, data);

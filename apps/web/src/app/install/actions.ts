@@ -4,6 +4,7 @@ import {
   CUSTOMER_EMAIL_NOTIFICATION_APP_NAME,
   CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
   FILE_SYSTEM_ASSETS_STORAGE_APP_NAME,
+  FOLLOW_UPS_APP_NAME,
   REMINDERS_APP_NAME,
 } from "@vivid/app-store";
 import { getLoggerFactory } from "@vivid/logger";
@@ -92,6 +93,9 @@ export async function install(data: InstallFormData) {
     logger.info("Creating default connected apps");
     await ServicesContainer.ConnectedAppsService().createNewApp(
       REMINDERS_APP_NAME
+    );
+    await ServicesContainer.ConnectedAppsService().createNewApp(
+      FOLLOW_UPS_APP_NAME
     );
     await ServicesContainer.ConnectedAppsService().createNewApp(
       CUSTOMER_EMAIL_NOTIFICATION_APP_NAME

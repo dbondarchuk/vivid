@@ -455,22 +455,7 @@ export class EventsService implements IEventsService {
 
     const result = await appointments
       .aggregate([
-        {
-          $addFields: {
-            endAt: {
-              $dateAdd: {
-                startDate: "$dateTime",
-                unit: "minute",
-                amount: "$totalDuration",
-              },
-            },
-          },
-        },
-        {
-          $sort: {
-            dateTime: 1,
-          },
-        },
+        ...this.aggregateJoin,
         {
           $match: {
             endAt: {
@@ -481,7 +466,11 @@ export class EventsService implements IEventsService {
             },
           },
         },
-        ...this.aggregateJoin,
+        {
+          $sort: {
+            dateTime: 1,
+          },
+        },
         { $limit: limit },
       ])
       .toArray();
@@ -497,6 +486,7 @@ export class EventsService implements IEventsService {
   public async getAppointments(
     query: Query & {
       range?: DateRange;
+      endRange?: DateRange;
       status?: AppointmentStatus[];
       customerId?: string | string[];
       discountId?: string | string[];
@@ -525,6 +515,17 @@ export class EventsService implements IEventsService {
 
       if (query.range.end) {
         filter.dateTime.$lte = query.range.end;
+      }
+    }
+
+    if (query.endRange?.start || query.endRange?.end) {
+      filter.endAt = {};
+      if (query.endRange.start) {
+        filter.endAt.$gte = query.endRange.start;
+      }
+
+      if (query.endRange.end) {
+        filter.endAt.$lte = query.endRange.end;
       }
     }
 
@@ -576,6 +577,7 @@ export class EventsService implements IEventsService {
             },
           },
         },
+        ...this.aggregateJoin,
         {
           $match: filter,
         },
@@ -589,7 +591,6 @@ export class EventsService implements IEventsService {
             },
           },
         },
-        ...this.aggregateJoin,
         {
           $facet: {
             paginatedResults: [
@@ -1384,6 +1385,11 @@ export class EventsService implements IEventsService {
           customer,
           files,
           payments,
+          endAt: DateTime.fromJSDate(event.dateTime)
+            .plus({
+              minutes: dbEvent.totalDuration,
+            })
+            .toJSDate(),
         };
 
         logger.debug(
@@ -1493,6 +1499,17 @@ export class EventsService implements IEventsService {
 
   private get aggregateJoin() {
     return [
+      {
+        $addFields: {
+          endAt: {
+            $dateAdd: {
+              startDate: "$dateTime",
+              unit: "minute",
+              amount: "$totalDuration",
+            },
+          },
+        },
+      },
       {
         $lookup: {
           from: CUSTOMERS_COLLECTION_NAME,
