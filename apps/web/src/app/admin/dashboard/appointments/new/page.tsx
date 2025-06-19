@@ -2,6 +2,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentChoice } from "@vivid/types";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { AppointmentScheduleForm } from "./form";
 
 const breadcrumbItems = [
@@ -15,7 +16,17 @@ type Props = {
 };
 
 export default async function NewAssetsPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("new-appointment");
   const searchParams = await props.searchParams;
+
+  logger.debug(
+    {
+      from: searchParams.from,
+      customer: searchParams.customer,
+    },
+    "Loading new appointment page"
+  );
+
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
   const [fields, addons, options] = await Promise.all([
@@ -46,6 +57,19 @@ export default async function NewAssetsPage(props: Props) {
           searchParams.customer
         )
       : undefined;
+
+  logger.debug(
+    {
+      from: searchParams.from,
+      customer: searchParams.customer,
+      hasFromAppointment: !!from,
+      hasCustomer: !!customer,
+      optionsCount: choices.length,
+      fieldsCount: fields.items?.length || 0,
+      addonsCount: addons.items?.length || 0,
+    },
+    "New appointment page loaded"
+  );
 
   return (
     <PageContainer scrollable={true}>

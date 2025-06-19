@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   EmailNotificationRequest,
   ICommunicationLogsService,
@@ -13,6 +14,8 @@ import { maskify } from "@vivid/utils";
 import { convert } from "html-to-text";
 
 export class NotificationService implements INotificationService {
+  protected readonly loggerFactory = getLoggerFactory("NotificationService");
+
   constructor(
     private readonly configurationService: IConfigurationService,
     private readonly connectedAppService: IConnectedAppsService,
@@ -26,6 +29,7 @@ export class NotificationService implements INotificationService {
     appointmentId,
     customerId,
   }: EmailNotificationRequest): Promise<void> {
+    const logger = this.loggerFactory("sendEmail");
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
 
@@ -34,16 +38,24 @@ export class NotificationService implements INotificationService {
     const { app, service } =
       await this.connectedAppService.getAppService<IMailSender>(emailAppId);
 
-    console.log(
-      `Sending email using app ${app.name} (ID: ${emailAppId}) to ${(Array.isArray(email.to) ? email.to : [email.to]).map((to) => maskify(to)).join("; ")} with subject ${maskify(email.subject)}.${appointmentId ? ` Appointment ID: ${appointmentId}` : ""}.${customerId ? ` Customer ID: ${customerId}` : ""}`
+    logger.info(
+      {
+        emailAppName: app.name,
+        emailAppId,
+        emailTo: (Array.isArray(email.to) ? email.to : [email.to])
+          .map((to) => maskify(to))
+          .join("; "),
+        emailSubject: email.subject,
+        appointmentId,
+        customerId,
+      },
+      "Sending email"
     );
 
     try {
       const response = await service.sendMail(app, email);
 
-      console.log(
-        `Successfully sent email. Response: ${JSON.stringify(response)}`
-      );
+      logger.info({ response }, "Successfully sent email");
 
       this.communicationLogService.log({
         direction: "outbound",
@@ -58,9 +70,9 @@ export class NotificationService implements INotificationService {
         customerId,
         data: response,
       });
-    } catch (e) {
-      console.error(e);
-      throw e;
+    } catch (error) {
+      logger.error({ error }, "Error sending email");
+      throw error;
     }
   }
 
@@ -79,8 +91,10 @@ export class NotificationService implements INotificationService {
     const defaultAppsConfiguration =
       await this.configurationService.getConfiguration("defaultApps");
     const textMessageSenderAppId = defaultAppsConfiguration?.textMessage?.appId;
+
     if (!textMessageSenderAppId) {
-      console.error("No text message sender app is configured");
+      const logger = this.loggerFactory("sendTextMessage");
+      logger.error("No text message sender app is configured");
       throw new Error("No text message sender app is configured");
     }
 
@@ -89,10 +103,17 @@ export class NotificationService implements INotificationService {
         textMessageSenderAppId
       );
 
-    console.log(
-      `Sending Text Message message from ${handledBy} to ${maskify(
-        trimmedPhone
-      )}.${appointmentId ? ` Appointment ID: ${appointmentId}` : ""}.${customerId ? ` Customer ID: ${customerId}` : ""}`
+    const logger = this.loggerFactory("sendTextMessage");
+    logger.info(
+      {
+        textMessageSenderAppName: app.name,
+        textMessageSenderAppId,
+        textMessageSenderParticipant: handledBy,
+        textMessageSenderPhone: maskify(trimmedPhone),
+        appointmentId,
+        customerId,
+      },
+      "Sending Text Message message"
     );
 
     let response: TextMessageResponse | undefined = undefined;
@@ -109,10 +130,16 @@ export class NotificationService implements INotificationService {
         throw Error(response.error);
       }
 
-      console.log(
-        `Text Message sent from ${handledBy} to ${maskify(trimmedPhone)}.${
-          appointmentId ? ` Appointment ID: ${appointmentId}` : ""
-        }. Result: ${JSON.stringify(response)}`
+      logger.info(
+        {
+          textMessageSenderAppName: app.name,
+          textMessageSenderAppId,
+          textMessageSenderParticipant: handledBy,
+          textMessageSenderPhone: maskify(trimmedPhone),
+          appointmentId,
+          customerId,
+        },
+        "Text Message sent"
       );
 
       this.communicationLogService.log({
@@ -128,9 +155,9 @@ export class NotificationService implements INotificationService {
       });
 
       return response;
-    } catch (e) {
-      console.error(e);
-      throw e;
+    } catch (error) {
+      logger.error({ error }, "Error sending Text Message");
+      throw error;
     }
   }
 }

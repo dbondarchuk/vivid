@@ -3,6 +3,7 @@ import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 
 import { ServiceFieldForm } from "@/components/admin/services/fields/form";
 import { ServicesContainer } from "@vivid/services";
+import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -10,10 +11,32 @@ type Props = {
 };
 
 export default async function EditFieldPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("edit-service-field");
   const params = await props.params;
+
+  logger.debug(
+    {
+      fieldId: params.id,
+    },
+    "Loading service field edit page"
+  );
+
   const field = await ServicesContainer.ServicesService().getField(params.id);
 
-  if (!field) return notFound();
+  if (!field) {
+    logger.warn({ fieldId: params.id }, "Service field not found");
+    return notFound();
+  }
+
+  logger.debug(
+    {
+      fieldId: params.id,
+      fieldName: field.name,
+      fieldType: field.type,
+      fieldLabel: field.data.label,
+    },
+    "Service field edit page loaded"
+  );
 
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },

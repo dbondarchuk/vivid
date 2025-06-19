@@ -12,6 +12,7 @@ import {
   Link,
   Separator,
 } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { CalendarClock } from "lucide-react";
 import { Suspense } from "react";
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
@@ -26,10 +27,19 @@ const breadcrumbItems = [
 ];
 
 export default async function AppointmentsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("appointments");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 
   const key = serialize({ ...parsed });
+
+  logger.debug(
+    {
+      searchParams: parsed,
+      key,
+    },
+    "Loading appointments page"
+  );
 
   return (
     <PageContainer scrollable={false}>

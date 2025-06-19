@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/pages/table/search-params";
 import { PagesTable } from "@/components/admin/pages/table/table";
 import { PagesTableAction } from "@/components/admin/pages/table/table-action";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
   DataTableSkeleton,
@@ -25,6 +26,9 @@ const breadcrumbItems = [
 ];
 
 export default async function PagesPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("pages");
+
+  logger.debug("Loading pages page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 

@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/services/addons/table/search-params";
 import { AddonsTable } from "@/components/admin/services/addons/table/table";
 import { AddonsTableAction } from "@/components/admin/services/addons/table/table-action";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
   DataTableSkeleton,
@@ -26,6 +27,9 @@ const breadcrumbItems = [
 ];
 
 export default async function AddonsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("addons");
+
+  logger.debug("Loading addons page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 

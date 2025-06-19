@@ -34,6 +34,7 @@
     "@ts-ics/schema-zod": "2.0.4",
     "@vivid/email-builder": "*",
     "@vivid/types": "*",
+    "@vivid/logger": "*",
     "@vivid/ui": "*",
     "@vivid/utils": "*",
     "html-to-text": "^9.0.5",

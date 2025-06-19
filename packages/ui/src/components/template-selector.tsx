@@ -5,7 +5,7 @@ import { Combobox, IComboboxItem } from "./combobox";
 import { toast } from "sonner";
 
 const getTemplates = async (type: string) => {
-  const url = `/admin/api/templates?type=${encodeURIComponent(type)}`;
+  const url = `/admin/api/templates?type=${encodeURIComponent(type)}&limit=10000000`;
   const response = await fetch(url, {
     method: "GET",
     cache: "default",
@@ -75,7 +75,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   }, [type]);
 
   const templateValues = (templates: TemplateListModel[]): IComboboxItem[] =>
-    templates.map((template) => {
+    (templates || []).map((template) => {
       return {
         value: template._id,
         shortLabel: template.name,

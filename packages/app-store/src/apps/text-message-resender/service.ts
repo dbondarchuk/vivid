@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
@@ -12,12 +13,22 @@ import { TextMessageResenderConfiguration } from "./models";
 export default class TextMessageResenderConnectedApp
   implements IConnectedApp, ITextMessageResponder
 {
+  protected readonly loggerFactory = getLoggerFactory(
+    "TextMessageResenderConnectedApp"
+  );
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
     data: TextMessageResenderConfiguration
   ): Promise<ConnectedAppStatusWithText> {
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      { appId: appData._id, phone: data?.phone },
+      "Processing text message resender configuration request"
+    );
+
     try {
       const status: ConnectedAppStatusWithText = {
         status: "connected",
@@ -29,11 +40,22 @@ export default class TextMessageResenderConnectedApp
         ...status,
       });
 
+      logger.info(
+        { appId: appData._id, status: status.status },
+        "Successfully configured text message resender"
+      );
+
       return status;
-    } catch (e: any) {
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, error },
+        "Error processing text message resender configuration"
+      );
+
       const status: ConnectedAppStatusWithText = {
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          error?.message || error?.toString() || "Something went wrong",
       };
 
       this.props.update({
@@ -48,64 +70,136 @@ export default class TextMessageResenderConnectedApp
     appData: ConnectedAppData<TextMessageResenderConfiguration>,
     textMessageReply: TextMessageReply
   ): Promise<RespondResult | null> {
-    const config = await this.props.services
-      .ConfigurationService()
-      .getConfigurations("booking", "general", "social");
+    const logger = this.loggerFactory("respond");
+    logger.debug(
+      {
+        appId: appData._id,
+        appointmentId: textMessageReply.data?.appointmentId,
+        from: textMessageReply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
+        message: textMessageReply.message,
+        hasData: !!textMessageReply.data.data?.length,
+      },
+      "Processing text message resender reply"
+    );
 
-    const { appointment, customer, ...reply } = textMessageReply;
+    try {
+      const config = await this.props.services
+        .ConfigurationService()
+        .getConfigurations("booking", "general", "social");
 
-    if (textMessageReply.data.data?.length) {
-      console.log(`Processing reply from user`);
+      const { appointment, customer, ...reply } = textMessageReply;
 
-      this.props.services.NotificationService().sendTextMessage({
-        phone: textMessageReply.data.data,
-        body: reply.message,
-        webhookData: {
-          ...reply.data,
-          data: undefined,
+      if (textMessageReply.data.data?.length) {
+        logger.info(
+          {
+            appId: appData._id,
+            appointmentId: reply.data.appointmentId,
+            from: reply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
+            targetPhone: textMessageReply.data.data.replace(
+              /(\d{3})\d{3}(\d{4})/,
+              "$1***$2"
+            ),
+          },
+          "Processing reply from user - resending to customer"
+        );
+
+        this.props.services.NotificationService().sendTextMessage({
+          phone: textMessageReply.data.data,
+          body: reply.message,
+          webhookData: {
+            ...reply.data,
+            data: undefined,
+          },
+          appointmentId: reply.data.appointmentId,
+          customerId: reply.data.customerId,
+          participantType: "customer",
+          handledBy: `Text Message Responder - resend to customer`,
+        });
+
+        logger.info(
+          { appId: appData._id, appointmentId: reply.data.appointmentId },
+          "Successfully resent user reply to customer"
+        );
+
+        return {
+          handledBy: "Text Message Responder - process user's reply",
+          participantType: "user",
+        };
+      }
+
+      logger.info(
+        {
+          appId: appData._id,
+          appointmentId: reply.data.appointmentId,
+          from: reply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
+          customerName: customer?.name,
         },
-        appointmentId: reply.data.appointmentId,
-        customerId: reply.data.customerId,
-        participantType: "customer",
-        handledBy: `Text Message Responder - resend to customer`,
-      });
+        "Processing reply from customer - resending to user"
+      );
 
-      return {
-        handledBy: "Text Message Responder - process user's reply",
-        participantType: "user",
-      };
-    }
-
-    console.log(`Processing reply from customer`);
-
-    const body = `Hi ${config.general.name},
+      const body = `Hi ${config.general.name},
 ${customer?.name ? `${customer.name} has replied from ${reply.from}` : `You have text message from ${reply.from}`}:
 ${reply.message}
 You can reply to this message directly`;
 
-    const phone = appData?.data?.phone || config.general.phone;
-    if (!phone) {
-      console.warn(`Can't find the phone field for owner notification`);
+      const phone = appData?.data?.phone || config.general.phone;
+      if (!phone) {
+        logger.warn(
+          { appId: appData._id, appointmentId: reply.data.appointmentId },
+          "Phone field not found for owner notification"
+        );
 
-      return null;
+        return null;
+      }
+
+      logger.debug(
+        {
+          appId: appData._id,
+          appointmentId: reply.data.appointmentId,
+          phone: phone.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
+          messageLength: body.length,
+        },
+        "Sending customer reply to user"
+      );
+
+      this.props.services.NotificationService().sendTextMessage({
+        phone,
+        body,
+        webhookData: {
+          ...reply.data,
+          data: reply.from,
+        },
+        appointmentId: reply.data.appointmentId,
+        customerId: reply.data.customerId,
+        participantType: "user",
+        handledBy: `Text Message Responder - resend to user`,
+      });
+
+      logger.info(
+        { appId: appData._id, appointmentId: reply.data.appointmentId },
+        "Successfully resent customer reply to user"
+      );
+
+      return {
+        handledBy: "Text Message Responder - process customer's reply",
+        participantType: "customer",
+      };
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          appointmentId: textMessageReply.data?.appointmentId,
+          error,
+        },
+        "Error processing text message resender reply"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText: "Error processing text message resender reply",
+      });
+
+      throw error;
     }
-
-    this.props.services.NotificationService().sendTextMessage({
-      phone,
-      body,
-      webhookData: {
-        ...reply.data,
-        data: reply.from,
-      },
-      appointmentId: reply.data.appointmentId,
-      customerId: reply.data.customerId,
-      participantType: "user",
-      handledBy: `Text Message Responder - resend to user`,
-    });
-
-    return {
-      handledBy: "Text Message Responder - process customer's reply",
-      participantType: "customer",
-    };
   }
 }

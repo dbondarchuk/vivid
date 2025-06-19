@@ -6,108 +6,142 @@ import {
   FILE_SYSTEM_ASSETS_STORAGE_APP_NAME,
   REMINDERS_APP_NAME,
 } from "@vivid/app-store";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { DateTime } from "luxon";
 import { InstallFormData } from "./types";
 
 export async function install(data: InstallFormData) {
-  await ServicesContainer.ConfigurationService().setConfiguration("general", {
-    ...data,
-    description: "",
-    keywords: "",
+  const logger = getLoggerFactory("InstallActions")("install");
+
+  logger.info("Starting installation process", {
+    name: data.name,
+    email: data.email,
   });
 
-  await ServicesContainer.PagesService().createPage({
-    content: "<PageTitle/>",
-    description: "Home",
-    keywords: "home",
-    publishDate: new Date(),
-    slug: "home",
-    title: "Home",
-    published: true,
-  });
+  try {
+    logger.info("Setting general configuration");
+    await ServicesContainer.ConfigurationService().setConfiguration("general", {
+      ...data,
+      description: "",
+      keywords: "",
+    });
 
-  const shifts = [
-    {
-      start: "09:00",
-      end: "17:00",
-    },
-  ];
+    logger.info("Creating home page");
+    await ServicesContainer.PagesService().createPage({
+      content: "<PageTitle/>",
+      description: "Home",
+      keywords: "home",
+      publishDate: new Date(),
+      slug: "home",
+      title: "Home",
+      published: true,
+    });
 
-  await ServicesContainer.ConfigurationService().setConfiguration("booking", {
-    options: [],
-    timeZone: DateTime.now().zoneName,
-    allowPromoCode: "allow-if-has-active",
-    smartSchedule: {
-      allowSmartSchedule: false,
-    },
-    payments: {
-      enable: false,
-    },
-  });
+    const shifts = [
+      {
+        start: "09:00",
+        end: "17:00",
+      },
+    ];
 
-  await ServicesContainer.ConfigurationService().setConfiguration("schedule", {
-    schedule: Array.from({ length: 5 }).map((_, index) => ({
-      weekDay: index + 1,
-      shifts,
-    })),
-  });
+    logger.info("Setting booking configuration");
+    await ServicesContainer.ConfigurationService().setConfiguration("booking", {
+      options: [],
+      timeZone: DateTime.now().zoneName,
+      allowPromoCode: "allow-if-has-active",
+      smartSchedule: {
+        allowSmartSchedule: false,
+      },
+      payments: {
+        enable: false,
+      },
+    });
 
-  await ServicesContainer.ConfigurationService().setConfiguration("footer", {
-    isCustom: false,
-  });
-
-  await ServicesContainer.ConfigurationService().setConfiguration("header", {
-    menu: [],
-  });
-
-  await ServicesContainer.ConfigurationService().setConfiguration("social", {});
-  await ServicesContainer.ConfigurationService().setConfiguration(
-    "styling",
-    {}
-  );
-
-  await ServicesContainer.ConnectedAppsService().createNewApp(
-    REMINDERS_APP_NAME
-  );
-  await ServicesContainer.ConnectedAppsService().createNewApp(
-    CUSTOMER_EMAIL_NOTIFICATION_APP_NAME
-  );
-  await ServicesContainer.ConnectedAppsService().createNewApp(
-    CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME
-  );
-
-  // const logCleanerAppId =
-  //   await ServicesContainer.ConnectedAppService().createNewApp(
-  //     LOG_CLEANUP_APP_NAME
-  //   );
-
-  // await ServicesContainer.ConnectedAppService().updateApp(logCleanerAppId, {
-  //   status: "connected",
-  //   statusText: "Installed",
-  //   data: {
-  //     amount: 1,
-  //     type: "weeks",
-  //   },
-  // });
-
-  const assetsStorageAppId =
-    await ServicesContainer.ConnectedAppsService().createNewApp(
-      FILE_SYSTEM_ASSETS_STORAGE_APP_NAME
+    logger.info("Setting schedule configuration");
+    await ServicesContainer.ConfigurationService().setConfiguration(
+      "schedule",
+      {
+        schedule: Array.from({ length: 5 }).map((_, index) => ({
+          weekDay: index + 1,
+          shifts,
+        })),
+      }
     );
 
-  await ServicesContainer.ConnectedAppsService().updateApp(assetsStorageAppId, {
-    status: "connected",
-    statusText: "Installed",
-  });
+    logger.info("Setting footer configuration");
+    await ServicesContainer.ConfigurationService().setConfiguration("footer", {
+      isCustom: false,
+    });
 
-  await ServicesContainer.ConfigurationService().setConfiguration(
-    "defaultApps",
-    {
-      email: {} as any,
-      assetsStorage: {
-        appId: assetsStorageAppId,
-      },
-    }
-  );
+    logger.info("Setting header configuration");
+    await ServicesContainer.ConfigurationService().setConfiguration("header", {
+      menu: [],
+    });
+
+    logger.info("Setting social and styling configurations");
+    await ServicesContainer.ConfigurationService().setConfiguration(
+      "social",
+      {}
+    );
+    await ServicesContainer.ConfigurationService().setConfiguration(
+      "styling",
+      {}
+    );
+
+    logger.info("Creating default connected apps");
+    await ServicesContainer.ConnectedAppsService().createNewApp(
+      REMINDERS_APP_NAME
+    );
+    await ServicesContainer.ConnectedAppsService().createNewApp(
+      CUSTOMER_EMAIL_NOTIFICATION_APP_NAME
+    );
+    await ServicesContainer.ConnectedAppsService().createNewApp(
+      CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME
+    );
+
+    // const logCleanerAppId =
+    //   await ServicesContainer.ConnectedAppService().createNewApp(
+    //     LOG_CLEANUP_APP_NAME
+    //   );
+
+    // await ServicesContainer.ConnectedAppService().updateApp(logCleanerAppId, {
+    //   status: "connected",
+    //   statusText: "Installed",
+    //   data: {
+    //     amount: 1,
+    //     type: "weeks",
+    //   },
+    // });
+
+    logger.info("Creating assets storage app");
+    const assetsStorageAppId =
+      await ServicesContainer.ConnectedAppsService().createNewApp(
+        FILE_SYSTEM_ASSETS_STORAGE_APP_NAME
+      );
+
+    await ServicesContainer.ConnectedAppsService().updateApp(
+      assetsStorageAppId,
+      {
+        status: "connected",
+        statusText: "Installed",
+      }
+    );
+
+    logger.info("Setting default apps configuration");
+    await ServicesContainer.ConfigurationService().setConfiguration(
+      "defaultApps",
+      {
+        email: {} as any,
+        assetsStorage: {
+          appId: assetsStorageAppId,
+        },
+      }
+    );
+
+    logger.info("Installation completed successfully");
+  } catch (error) {
+    logger.error("Installation failed", { error });
+    throw error;
+  }
 }

@@ -1,22 +1,5 @@
-import { NextRequest } from "next/server";
-import { AuthResult } from "./app/admin/auth";
+import { chainMiddleware } from "./middleware/chainMiddleware";
+import { withAuth } from "./middleware/withAuth";
+import { withLogger } from "./middleware/withLogger";
 
-const func: (
-  req: NextRequest,
-  ctx: {
-    params?: Record<string, string | string[]>;
-  }
-) => void | Response | Promise<void | Response> = AuthResult.auth(
-  (req: NextRequest & { auth: any }) => {
-    if (!req.auth) {
-      const url = req.url.replace(req.nextUrl.pathname, "/admin");
-      return Response.redirect(url);
-    }
-  }
-);
-
-export default func;
-
-export const config = {
-  matcher: ["/admin/dashboard/:path*"],
-};
+export default chainMiddleware([withLogger, withAuth]);

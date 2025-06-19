@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
@@ -11,58 +12,170 @@ import { LogCleanupConfiguration } from "./models";
 export default class LogCleanupConnectedApp
   implements IConnectedApp, IScheduled
 {
+  protected readonly loggerFactory = getLoggerFactory("LogCleanupConnectedApp");
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
     data: LogCleanupConfiguration
   ): Promise<ConnectedAppStatusWithText> {
-    const status: ConnectedAppStatusWithText = {
-      status: "connected",
-      statusText: `Successfully set up`,
-    };
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      { appId: appData._id, amount: data.amount, type: data.type },
+      "Processing log cleanup configuration request"
+    );
 
-    this.props.update({
-      data,
-      ...status,
-    });
+    try {
+      const status: ConnectedAppStatusWithText = {
+        status: "connected",
+        statusText: `Successfully set up`,
+      };
 
-    return status;
+      this.props.update({
+        data,
+        ...status,
+      });
+
+      logger.info(
+        {
+          appId: appData._id,
+          amount: data.amount,
+          type: data.type,
+          status: status.status,
+        },
+        "Successfully configured log cleanup"
+      );
+
+      return status;
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, error },
+        "Error processing log cleanup configuration"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText: "Error processing log cleanup configuration",
+      });
+
+      throw error;
+    }
   }
 
   public async onTime(appData: ConnectedAppData, date: Date): Promise<void> {
-    let data = appData.data as LogCleanupConfiguration;
-    if (!data) {
-      data = {} as LogCleanupConfiguration;
-    }
-
-    if (!data.amount) {
-      data.amount = 1;
-    }
-
-    if (!data.type) {
-      data.type = "months";
-    }
-
-    const { timeZone } = await this.props.services
-      .ConfigurationService()
-      .getConfiguration("booking");
-
-    const dateTime = DateTime.fromJSDate(date).setZone(timeZone);
-    if (dateTime.hour !== 3 || dateTime.minute !== 0) return;
-
-    const maxDate = dateTime.minus({
-      [data.type]: data.amount,
-    });
-
-    console.log(
-      `Cleaning up logs older than ${maxDate.toLocaleString(
-        DateTime.DATETIME_FULL_WITH_SECONDS
-      )}`
+    const logger = this.loggerFactory("onTime");
+    logger.debug(
+      { appId: appData._id, date: date.toISOString() },
+      "Log cleanup scheduled task triggered"
     );
 
-    await this.props.services
-      .CommunicationLogsService()
-      .clearOldLogs(maxDate.toJSDate());
+    try {
+      let data = appData.data as LogCleanupConfiguration;
+      if (!data) {
+        logger.debug(
+          { appId: appData._id },
+          "No configuration found, using defaults"
+        );
+        data = {} as LogCleanupConfiguration;
+      }
+
+      if (!data.amount) {
+        logger.debug(
+          { appId: appData._id, defaultAmount: 1 },
+          "No amount configured, using default"
+        );
+        data.amount = 1;
+      }
+
+      if (!data.type) {
+        logger.debug(
+          { appId: appData._id, defaultType: "months" },
+          "No type configured, using default"
+        );
+        data.type = "months";
+      }
+
+      logger.debug(
+        { appId: appData._id, amount: data.amount, type: data.type },
+        "Log cleanup configuration resolved"
+      );
+
+      const { timeZone } = await this.props.services
+        .ConfigurationService()
+        .getConfiguration("booking");
+
+      logger.debug(
+        { appId: appData._id, timeZone },
+        "Retrieved timezone configuration"
+      );
+
+      const dateTime = DateTime.fromJSDate(date).setZone(timeZone);
+
+      logger.debug(
+        {
+          appId: appData._id,
+          dateTime: dateTime.toISO(),
+          hour: dateTime.hour,
+          minute: dateTime.minute,
+        },
+        "Checking if cleanup should run at this time"
+      );
+
+      if (dateTime.hour !== 3 || dateTime.minute !== 0) {
+        logger.debug(
+          { appId: appData._id, hour: dateTime.hour, minute: dateTime.minute },
+          "Not cleanup time (3:00 AM), skipping"
+        );
+        return;
+      }
+
+      logger.debug(
+        { appId: appData._id, amount: data.amount, type: data.type },
+        "Calculating cleanup threshold date"
+      );
+
+      const maxDate = dateTime.minus({
+        [data.type]: data.amount,
+      });
+
+      logger.info(
+        {
+          appId: appData._id,
+          maxDate: maxDate.toISO(),
+          amount: data.amount,
+          type: data.type,
+        },
+        `Cleaning up logs older than ${maxDate.toLocaleString(
+          DateTime.DATETIME_FULL_WITH_SECONDS
+        )}`
+      );
+
+      logger.debug(
+        { appId: appData._id, maxDate: maxDate.toISO() },
+        "Calling communication logs service to clear old logs"
+      );
+
+      await this.props.services
+        .CommunicationLogsService()
+        .clearOldLogs(maxDate.toJSDate());
+
+      logger.info(
+        { appId: appData._id, maxDate: maxDate.toISO() },
+        "Successfully completed log cleanup"
+      );
+    } catch (error: any) {
+      logger.error(
+        { appId: appData._id, date: date.toISOString(), error },
+        "Error during log cleanup scheduled task"
+      );
+
+      this.props.update({
+        status: "failed",
+        statusText: "Error during log cleanup scheduled task",
+      });
+
+      throw error;
+    }
   }
 }

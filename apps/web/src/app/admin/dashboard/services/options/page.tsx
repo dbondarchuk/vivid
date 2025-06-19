@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/services/options/table/search-params";
 import { OptionsTable } from "@/components/admin/services/options/table/table";
 import { OptionsTableAction } from "@/components/admin/services/options/table/table-action";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
   DataTableSkeleton,
@@ -26,6 +27,9 @@ const breadcrumbItems = [
 ];
 
 export default async function OptionsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("options");
+
+  logger.debug("Loading options page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 

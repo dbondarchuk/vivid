@@ -11,6 +11,7 @@ const nextConfig = {
   experimental: {
     useCache: true,
     serverActions: {
+      serverComponentsExternalPackages: ["pino", "pino-pretty"],
       bodySizeLimit: "150mb",
     },
     turbo: {

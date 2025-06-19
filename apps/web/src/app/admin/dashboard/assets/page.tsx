@@ -6,6 +6,7 @@ import {
 import { AssetsTable } from "@/components/admin/assets/table/table";
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
   DataTableSkeleton,
@@ -26,6 +27,9 @@ const breadcrumbItems = [
 ];
 
 export default async function AssetsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("assets");
+
+  logger.debug("Loading assets page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 

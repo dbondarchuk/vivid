@@ -1,6 +1,11 @@
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 
 export async function GET() {
+  const logger = getLoggerFactory("AdminAPI/events-pending")("GET");
+
+  logger.debug("Starting pending events SSE stream");
+
   const encoder = new TextEncoder();
   let id: any = null;
 
@@ -10,17 +15,20 @@ export async function GET() {
         new Date()
       );
 
+    logger.debug({ count }, "Retrieved pending appointments count");
     callback(count);
     id = setTimeout(() => fn(callback), 5000);
   };
 
   const customReadable = new ReadableStream({
     start: async (controller) => {
+      logger.debug("Initializing SSE stream");
       fn((count) =>
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(count)}\n\n`))
       );
     },
     cancel: () => {
+      logger.debug("SSE stream cancelled");
       if (!!id) clearTimeout(id);
     },
   });

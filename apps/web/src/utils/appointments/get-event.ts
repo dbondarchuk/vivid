@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import {
   AppointmentDiscount,
@@ -27,11 +28,27 @@ export const getAppointmentEventFromRequest = async (
       };
     }
 > => {
+  const logger = getLoggerFactory("AppointmentsUtils")("getEvent");
+
+  logger.debug(
+    {
+      optionId: request.optionId,
+      dateTime: request.dateTime,
+      addonsCount: request.addonsIds?.length || 0,
+      ignoreFieldValidation,
+      hasFiles: !!files,
+      fieldCount: Object.keys(request.fields).length,
+    },
+    "Processing appointment event from request"
+  );
+
   const selectedOption = await ServicesContainer.ServicesService().getOption(
     request.optionId
   );
 
   if (!selectedOption) {
+    logger.warn({ optionId: request.optionId }, "Selected option not found");
+
     return {
       error: {
         code: "unknown_option",
@@ -41,7 +58,22 @@ export const getAppointmentEventFromRequest = async (
     };
   }
 
+  logger.debug(
+    {
+      optionId: request.optionId,
+      optionName: selectedOption.name,
+      optionDuration: selectedOption.duration,
+      optionPrice: selectedOption.price,
+    },
+    "Retrieved selected option"
+  );
+
   if (typeof selectedOption.duration === "undefined" && !request.duration) {
+    logger.warn(
+      { optionId: request.optionId, optionName: selectedOption.name },
+      "Duration required but not provided"
+    );
+
     return {
       error: {
         code: "duration_required",
@@ -53,11 +85,25 @@ export const getAppointmentEventFromRequest = async (
 
   let selectedAddons: AppointmentEvent["addons"] = undefined;
   if (request.addonsIds) {
+    logger.debug(
+      { addonsIds: request.addonsIds },
+      "Retrieving selected addons"
+    );
+
     selectedAddons = await ServicesContainer.ServicesService().getAddonsById(
       request.addonsIds
     );
 
     if (selectedAddons.length !== request.addonsIds.length) {
+      logger.warn(
+        {
+          requestedAddonsCount: request.addonsIds.length,
+          foundAddonsCount: selectedAddons.length,
+          addonsIds: request.addonsIds,
+        },
+        "Some selected addons not found"
+      );
+
       return {
         error: {
           code: "unknown_addon",
@@ -66,6 +112,14 @@ export const getAppointmentEventFromRequest = async (
         },
       };
     }
+
+    logger.debug(
+      {
+        addonsCount: selectedAddons.length,
+        addonNames: selectedAddons.map((a) => a.name),
+      },
+      "Successfully retrieved all selected addons"
+    );
   }
 
   const allFields: Map<string, boolean> = new Map();
@@ -81,15 +135,41 @@ export const getAppointmentEventFromRequest = async (
   }
 
   const fieldsIds = Array.from(allFields.keys());
+
+  logger.debug(
+    {
+      fieldsCount: fieldsIds.length,
+      requiredFieldsCount: Array.from(allFields.values()).filter(Boolean)
+        .length,
+    },
+    "Calculated required fields from option and addons"
+  );
+
   const serviceFields =
     await ServicesContainer.ServicesService().getFieldsById(fieldsIds);
 
   if (!ignoreFieldValidation) {
+    logger.debug(
+      { fieldValidationEnabled: true },
+      "Validating required fields"
+    );
+
     for (const field of serviceFields) {
       if (
         (field.required || allFields.get(field._id)) &&
         (!files?.[field.name] || !request.fields[field.name])
       ) {
+        logger.warn(
+          {
+            fieldName: field.name,
+            fieldId: field._id,
+            fieldRequired: field.required,
+            hasFile: !!files?.[field.name],
+            hasFieldValue: !!request.fields[field.name],
+          },
+          "Required field validation failed"
+        );
+
         return {
           error: {
             code: "field_required",
@@ -99,6 +179,13 @@ export const getAppointmentEventFromRequest = async (
         };
       }
     }
+
+    logger.debug(
+      { validatedFieldsCount: serviceFields.length },
+      "Field validation completed successfully"
+    );
+  } else {
+    logger.debug({ fieldValidationEnabled: false }, "Field validation skipped");
   }
 
   const totalDuration =
@@ -109,13 +196,61 @@ export const getAppointmentEventFromRequest = async (
     (selectedOption.price ?? 0) +
     (selectedAddons?.reduce((sum, cur) => sum + (cur.price ?? 0), 0) ?? 0);
 
+  logger.debug(
+    {
+      optionDuration: selectedOption.duration,
+      requestDuration: request.duration,
+      addonsDuration:
+        selectedAddons?.reduce((sum, cur) => sum + (cur.duration ?? 0), 0) ?? 0,
+      totalDuration,
+      optionPrice: selectedOption.price,
+      addonsPrice:
+        selectedAddons?.reduce((sum, cur) => sum + (cur.price ?? 0), 0) ?? 0,
+      totalPrice,
+    },
+    "Calculated duration and price"
+  );
+
   let appointmentDiscount: AppointmentDiscount | undefined = undefined;
+
+  logger.debug(
+    {
+      customerEmail: request.fields.email,
+      customerPhone: request.fields.phone?.replace(
+        /(\d{3})\d{3}(\d{4})/,
+        "$1***$2"
+      ),
+    },
+    "Looking up customer"
+  );
+
   const customer = await ServicesContainer.CustomersService().findCustomer(
     request.fields.email,
     request.fields.phone
   );
 
+  if (customer) {
+    logger.debug(
+      { customerId: customer._id, customerName: customer.name },
+      "Found existing customer"
+    );
+  } else {
+    logger.debug(
+      { customerEmail: request.fields.email },
+      "No existing customer found"
+    );
+  }
+
   if (request.promoCode) {
+    logger.debug(
+      {
+        promoCode: request.promoCode,
+        customerId: customer?._id,
+        dateTime: request.dateTime,
+      },
+      "Applying promo code discount"
+    );
+
     const discount = await ServicesContainer.ServicesService().applyDiscount({
       code: request.promoCode,
       dateTime: request.dateTime,
@@ -125,6 +260,8 @@ export const getAppointmentEventFromRequest = async (
     });
 
     if (!discount) {
+      logger.warn({ promoCode: request.promoCode }, "Promo code not valid");
+
       return {
         error: {
           code: "promo_code_not_valid",
@@ -143,25 +280,51 @@ export const getAppointmentEventFromRequest = async (
     };
 
     totalPrice = Math.max(0, formatAmount(totalPrice - discountAmount));
+
+    logger.debug(
+      {
+        promoCode: request.promoCode,
+        discountName: discount.name,
+        discountAmount,
+        originalPrice: totalPrice + discountAmount,
+        finalPrice: totalPrice,
+      },
+      "Successfully applied promo code discount"
+    );
   }
 
   if (totalPrice === 0) totalPrice = undefined;
 
-  return {
-    event: {
-      dateTime: request.dateTime,
-      option: selectedOption,
-      timeZone: request.timeZone,
+  const event: AppointmentEvent = {
+    dateTime: request.dateTime,
+    option: selectedOption,
+    timeZone: request.timeZone,
+    totalDuration,
+    totalPrice,
+    addons: selectedAddons,
+    fields: request.fields,
+    discount: appointmentDiscount,
+    fieldsLabels: serviceFields.reduce(
+      (map, field) => ({ ...map, [field.name]: field.data.label }),
+      {} as Record<string, string>
+    ),
+  };
+
+  logger.info(
+    {
+      optionId: request.optionId,
+      optionName: selectedOption.name,
       totalDuration,
       totalPrice,
-      addons: selectedAddons,
-      fields: request.fields,
-      discount: appointmentDiscount,
-      fieldsLabels: serviceFields.reduce(
-        (map, field) => ({ ...map, [field.name]: field.data.label }),
-        {} as Record<string, string>
-      ),
+      addonsCount: selectedAddons?.length || 0,
+      hasDiscount: !!appointmentDiscount,
+      customerId: customer?._id,
     },
+    "Successfully created appointment event from request"
+  );
+
+  return {
+    event,
     customer,
     option: selectedOption,
     addons: selectedAddons,

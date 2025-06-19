@@ -8,6 +8,7 @@ import { CommunicationLogsTable } from "@/components/admin/communication-logs/ta
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, DataTableSkeleton, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Suspense } from "react";
 
 type Params = {
@@ -20,6 +21,9 @@ const breadcrumbItems = [
 ];
 
 export default async function CommunicationLogsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("communication-logs");
+
+  logger.debug("Loading communication-logs page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 

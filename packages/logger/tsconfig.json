@@ -1,0 +1,15 @@
+{
+  // "extends": "@vivid/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "module": "commonjs",
+    "declaration": true
+  },
+  "paths": {
+    "@/*": ["./src/*"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -4,6 +4,7 @@ import { PageForm } from "../../../../../components/admin/pages/form";
 
 import { ServicesContainer } from "@vivid/services";
 import { Link } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Globe } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -12,10 +13,32 @@ type Props = {
 };
 
 export default async function EditPagesPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("edit-page");
   const params = await props.params;
+
+  logger.debug(
+    {
+      pageId: params.id,
+    },
+    "Loading page edit page"
+  );
+
   const page = await ServicesContainer.PagesService().getPage(params.id);
 
-  if (!page) return notFound();
+  if (!page) {
+    logger.warn({ pageId: params.id }, "Page not found");
+    return notFound();
+  }
+
+  logger.debug(
+    {
+      pageId: params.id,
+      pageSlug: page.slug,
+      pageTitle: page.title,
+      isPublished: page.published,
+    },
+    "Page edit page loaded"
+  );
 
   const breadcrumbItems = [
     { title: "Dashboard", link: "/admin/dashboard" },

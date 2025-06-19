@@ -1,5 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, Heading, Link, Separator, Skeleton } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Boxes, Store } from "lucide-react";
 import { Suspense } from "react";
 import { InstalledApps } from "./installed-apps";
@@ -14,6 +15,9 @@ const breadcrumbItems = [
 ];
 
 export default async function AppsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("apps");
+
+  logger.debug("Loading apps page");
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-4">

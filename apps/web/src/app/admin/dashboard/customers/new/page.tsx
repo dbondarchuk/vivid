@@ -1,6 +1,7 @@
 import { CustomerForm } from "@/components/admin/customers/form";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },
@@ -13,6 +14,16 @@ type Props = {
 };
 
 export default async function NewCustomerPage(props: Props) {
+  const logger = getLoggerFactory("AdminPages")("new-customer");
+  const searchParams = await props.searchParams;
+
+  logger.debug(
+    {
+      from: searchParams.from,
+    },
+    "Loading new customer page"
+  );
+
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-4">

@@ -75,8 +75,10 @@ export const CustomerForm: React.FC<{
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {
+      knownNames: [],
       knownEmails: [],
       knownPhones: [],
+      requireDeposit: "inherit",
     },
   });
 

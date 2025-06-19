@@ -6,14 +6,19 @@ import {
 } from "@vivid/types";
 import { getDbConnection } from "./database";
 
+import { getLoggerFactory } from "@vivid/logger";
 import { cache } from "react";
 
 export const CONFIGURATION_COLLECTION_NAME = "configuration";
 
 export class ConfigurationService implements IConfigurationService {
+  protected readonly loggerFactory = getLoggerFactory("ConfigurationService");
+
   public async getConfiguration<T extends ConfigurationKey>(
     key: T
   ): Promise<ConfigurationOption<T>["value"]> {
+    const logger = this.loggerFactory("getConfiguration");
+    logger.debug({ key }, "Getting configuration");
     const db = await getDbConnection();
     const configurations = db.collection<ConfigurationOption<T>>(
       CONFIGURATION_COLLECTION_NAME
@@ -25,9 +30,11 @@ export class ConfigurationService implements IConfigurationService {
     });
 
     if (!value?.value) {
-      console.error(`Can't find configuration for '${key}'`);
+      logger.error({ key }, "Can't find configuration");
       return {} as ConfigurationOption<T>["value"];
     }
+
+    logger.debug({ key }, "Found configuration");
 
     return value.value;
   }
@@ -35,6 +42,9 @@ export class ConfigurationService implements IConfigurationService {
   public async getConfigurations<T extends ConfigurationKey>(
     ...keys: T[]
   ): Promise<Pick<Configuration, T>> {
+    const logger = this.loggerFactory("getConfigurations");
+    logger.debug({ keys }, "Getting configurations");
+
     const db = await getDbConnection();
     const configurations = db.collection(CONFIGURATION_COLLECTION_NAME);
 
@@ -47,30 +57,37 @@ export class ConfigurationService implements IConfigurationService {
       .toArray();
 
     if (values.length !== keys.length) {
-      console.error(
-        `Can't find configuration for all keys: '${keys.join(", ")}'`
+      logger.error(
+        { keys, foundKeys: values?.map((v) => v.key) },
+        "Can't find configuration for all keys"
       );
     }
 
-    return values.reduce(
+    const result = values.reduce(
       (acc, cur) => ({
         ...acc,
         [cur.key]: cur.value,
       }),
       {} as Pick<Configuration, T>
     );
+
+    logger.debug({ keys }, "Fetched configurations");
+    return result;
   }
 
   public async setConfiguration<T extends ConfigurationKey>(
     key: T,
     configuration: ConfigurationOption<T>["value"]
   ): Promise<void> {
+    const logger = this.loggerFactory("setConfiguration");
+    logger.debug({ key }, "Setting configuration");
+
     const db = await getDbConnection();
     const configurations = db.collection<ConfigurationOption<T>>(
       CONFIGURATION_COLLECTION_NAME
     );
 
-    await configurations.updateOne(
+    const updateResult = await configurations.updateOne(
       {
         // @ts-ignore Correct key
         key,
@@ -85,6 +102,8 @@ export class ConfigurationService implements IConfigurationService {
         upsert: true,
       }
     );
+
+    logger.debug({ key, updateResult }, "Set configuration");
   }
 }
 

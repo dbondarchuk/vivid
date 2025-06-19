@@ -19,6 +19,7 @@ export const AuthResult = NextAuth({
           body: JSON.stringify(credentials),
           headers: { "Content-Type": "application/json" },
         });
+
         const user = await res.json();
 
         // If no error and we have user data, return it

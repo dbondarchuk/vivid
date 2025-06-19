@@ -11,7 +11,7 @@ export interface ITemplatesService {
       type?: CommunicationChannel[];
     }
   ): Promise<WithTotal<TemplateListModel>>;
-  deleteTemplate(id: string): Promise<Template | undefined>;
+  deleteTemplate(id: string): Promise<Template | null>;
   deleteTemplates(ids: string[]): Promise<void>;
   checkUniqueName(name: string, id?: string): Promise<boolean>;
 }

@@ -1,6 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { DefaultAppsConfigurationForm } from "./form";
 
 const breadcrumbItems = [
@@ -10,6 +11,9 @@ const breadcrumbItems = [
 ];
 
 export default async function Page() {
+  const logger = getLoggerFactory("AdminPages")("default");
+
+  logger.debug("Loading default page");
   const settings =
     await ServicesContainer.ConfigurationService().getConfiguration(
       "defaultApps"

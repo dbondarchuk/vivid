@@ -12,7 +12,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migration": "migrate-mongo",
-    "migration:up": "yarn migration up"
+    "migration:up": "migrate-mongo up",
+    "migration:down": "migrate-mongo down"
   },
   "devDependencies": {
     "migrate-mongo": "^12.1.3",

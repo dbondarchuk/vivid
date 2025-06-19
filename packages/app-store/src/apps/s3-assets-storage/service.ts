@@ -7,6 +7,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
   ConnectedAppStatusWithText,
@@ -23,27 +24,67 @@ const DEFAULT_BUCKET_NAME = "assets";
 export default class S3AssetsStorageConnectedApp
   implements IConnectedApp, IAssetsStorage
 {
+  protected readonly loggerFactory = getLoggerFactory(
+    "S3AssetsStorageConnectedApp"
+  );
+
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
     data: S3Configuration
   ): Promise<ConnectedAppStatusWithText> {
-    let success = false;
-    let error: string | undefined = undefined;
+    const logger = this.loggerFactory("processRequest");
+    logger.debug(
+      {
+        appId: appData._id,
+        region: data.region,
+        endpoint: data.endpoint,
+        bucket: data.bucket || DEFAULT_BUCKET_NAME,
+        accessKeyId: maskify(data.accessKeyId),
+      },
+      "Processing S3 configuration request"
+    );
 
     try {
       const client = this.getClient(data);
       const bucket = this.getBucketName(data);
 
+      logger.debug(
+        { appId: appData._id, bucket },
+        "Checking if S3 bucket exists"
+      );
+
       try {
         const response = await client.send(
           new HeadBucketCommand({ Bucket: bucket })
         );
+
+        logger.debug(
+          { appId: appData._id, bucket },
+          "S3 bucket already exists"
+        );
       } catch (error: any) {
         if (error?.name === "NotFound") {
+          logger.debug(
+            { appId: appData._id, bucket },
+            "S3 bucket not found, creating new bucket"
+          );
           await client.send(new CreateBucketCommand({ Bucket: bucket }));
+
+          logger.debug(
+            { appId: appData._id, bucket },
+            "Successfully created S3 bucket"
+          );
         } else {
+          logger.error(
+            {
+              appId: appData._id,
+              bucket,
+              error: error?.message || error?.toString(),
+            },
+            "Error checking S3 bucket"
+          );
           throw error;
         }
       }
@@ -62,8 +103,18 @@ export default class S3AssetsStorageConnectedApp
         ...status,
       });
 
+      logger.info(
+        { appId: appData._id, bucket, region: data.region },
+        "Successfully connected to S3 storage"
+      );
+
       return status;
     } catch (e: any) {
+      logger.error(
+        { appId: appData._id, error: e?.message || e?.toString() },
+        "Error processing S3 configuration request"
+      );
+
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText: e?.message || e?.toString() || "Something went wrong",
@@ -81,9 +132,19 @@ export default class S3AssetsStorageConnectedApp
     appData: ConnectedAppData,
     filename: string
   ): Promise<Readable> {
-    const client = this.getClient(appData.data);
+    const logger = this.loggerFactory("getFile");
+    logger.debug(
+      {
+        appId: appData._id,
+        filename,
+        bucket: this.getBucketName(appData.data),
+      },
+      "Getting file from S3"
+    );
 
     try {
+      const client = this.getClient(appData.data);
+
       const response = await client.send(
         new GetObjectCommand({
           Bucket: this.getBucketName(appData.data),
@@ -91,13 +152,34 @@ export default class S3AssetsStorageConnectedApp
         })
       );
 
-      if (!response.Body) throw new Error("No body present");
+      if (!response.Body) {
+        logger.error(
+          { appId: appData._id, filename },
+          "S3 response has no body"
+        );
+        throw new Error("No body present");
+      }
+
+      logger.debug(
+        { appId: appData._id, filename, contentLength: response.ContentLength },
+        "Successfully retrieved file from S3"
+      );
+
       return response.Body as Readable;
     } catch (error: any) {
       if (error?.name === "NotFound") {
+        logger.warn({ appId: appData._id, filename }, "File not found in S3");
         throw new Error(`File ${filename} was not found`);
       }
 
+      logger.error(
+        {
+          appId: appData._id,
+          filename,
+          error: error?.message || error?.toString(),
+        },
+        "Error getting file from S3"
+      );
       throw error;
     }
   }
@@ -108,50 +190,146 @@ export default class S3AssetsStorageConnectedApp
     file: Readable,
     fileLength: number
   ): Promise<void> {
-    const client = this.getClient(appData.data);
-    await client.send(
-      new PutObjectCommand({
-        Bucket: this.getBucketName(appData.data),
-        Key: filename,
-        Body: file,
-        ContentLength: fileLength,
-      })
+    const logger = this.loggerFactory("saveFile");
+    logger.debug(
+      {
+        appId: appData._id,
+        filename,
+        fileLength,
+        bucket: this.getBucketName(appData.data),
+      },
+      "Saving file to S3"
     );
+
+    try {
+      const client = this.getClient(appData.data);
+
+      await client.send(
+        new PutObjectCommand({
+          Bucket: this.getBucketName(appData.data),
+          Key: filename,
+          Body: file,
+          ContentLength: fileLength,
+        })
+      );
+
+      logger.info(
+        { appId: appData._id, filename, fileLength },
+        "Successfully saved file to S3"
+      );
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          filename,
+          fileLength,
+          error: error?.message || error?.toString(),
+        },
+        "Error saving file to S3"
+      );
+      throw error;
+    }
   }
 
   public async deleteFile(
     appData: ConnectedAppData,
     filename: string
   ): Promise<void> {
-    const client = this.getClient(appData.data);
-
-    const exists = await this.checkExists(appData.data, filename);
-    if (!exists) return;
-
-    await client.send(
-      new DeleteObjectCommand({
-        Bucket: this.getBucketName(appData.data),
-        Key: filename,
-      })
+    const logger = this.loggerFactory("deleteFile");
+    logger.debug(
+      {
+        appId: appData._id,
+        filename,
+        bucket: this.getBucketName(appData.data),
+      },
+      "Deleting file from S3"
     );
+
+    try {
+      const client = this.getClient(appData.data);
+
+      const exists = await this.checkExists(appData.data, filename);
+      if (!exists) {
+        logger.debug(
+          { appId: appData._id, filename },
+          "File does not exist, skipping deletion"
+        );
+        return;
+      }
+
+      await client.send(
+        new DeleteObjectCommand({
+          Bucket: this.getBucketName(appData.data),
+          Key: filename,
+        })
+      );
+
+      logger.info(
+        { appId: appData._id, filename },
+        "Successfully deleted file from S3"
+      );
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          filename,
+          error: error?.message || error?.toString(),
+        },
+        "Error deleting file from S3"
+      );
+      throw error;
+    }
   }
 
   public async deleteFiles(
     appData: ConnectedAppData,
     filenames: string[]
   ): Promise<void> {
-    await Promise.all(
-      filenames.map((filename) => this.deleteFile(appData, filename))
+    const logger = this.loggerFactory("deleteFiles");
+    logger.debug(
+      { appId: appData._id, filenames, fileCount: filenames.length },
+      "Deleting multiple files from S3"
     );
+
+    try {
+      await Promise.all(
+        filenames.map((filename) => this.deleteFile(appData, filename))
+      );
+
+      logger.info(
+        { appId: appData._id, fileCount: filenames.length },
+        "Successfully deleted all files from S3"
+      );
+    } catch (error: any) {
+      logger.error(
+        {
+          appId: appData._id,
+          filenames,
+          error: error?.message || error?.toString(),
+        },
+        "Error deleting files from S3"
+      );
+      throw error;
+    }
   }
 
   public async checkExists(
     appData: ConnectedAppData,
     filename: string
   ): Promise<boolean> {
-    const client = this.getClient(appData.data);
+    const logger = this.loggerFactory("checkExists");
+    logger.debug(
+      {
+        appId: appData._id,
+        filename,
+        bucket: this.getBucketName(appData.data),
+      },
+      "Checking if file exists in S3"
+    );
 
     try {
+      const client = this.getClient(appData.data);
+
       await client.send(
         new HeadObjectCommand({
           Bucket: this.getBucketName(appData.data),
@@ -159,17 +337,58 @@ export default class S3AssetsStorageConnectedApp
         })
       );
 
+      logger.debug({ appId: appData._id, filename }, "File exists in S3");
+
       return true;
     } catch (error: any) {
-      if (error?.name === "NotFound") return false;
+      if (error?.name === "NotFound") {
+        logger.debug(
+          { appId: appData._id, filename },
+          "File does not exist in S3"
+        );
+        return false;
+      }
+
+      logger.error(
+        {
+          appId: appData._id,
+          filename,
+          error: error?.message || error?.toString(),
+        },
+        "Error checking if file exists in S3"
+      );
       throw error;
     }
   }
 
   private getClient(data: S3Configuration) {
+    const logger = this.loggerFactory("getClient");
+    logger.debug(
+      {
+        region: data?.region,
+        endpoint: data?.endpoint,
+        accessKeyId: data?.accessKeyId ? maskify(data.accessKeyId) : undefined,
+        forcePathStyle: data?.forcePathStyle,
+      },
+      "Creating S3 client"
+    );
+
     if (!data || !data.region || !data.accessKeyId || !data.secretAccessKey) {
+      logger.error(
+        {
+          hasRegion: !!data?.region,
+          hasAccessKeyId: !!data?.accessKeyId,
+          hasSecretAccessKey: !!data?.secretAccessKey,
+        },
+        "Invalid S3 configuration"
+      );
       throw new Error("Invalid configuration");
     }
+
+    logger.debug(
+      { region: data.region, endpoint: data.endpoint },
+      "S3 client created successfully"
+    );
 
     return new S3Client({
       region: data.region,
@@ -183,6 +402,14 @@ export default class S3AssetsStorageConnectedApp
   }
 
   private getBucketName(data: S3Configuration) {
-    return data?.bucket ?? DEFAULT_BUCKET_NAME;
+    const bucketName = data?.bucket ?? DEFAULT_BUCKET_NAME;
+
+    const logger = this.loggerFactory("getBucketName");
+    logger.debug(
+      { bucketName, defaultBucket: data?.bucket ? false : true },
+      "Getting S3 bucket name"
+    );
+
+    return bucketName;
   }
 }

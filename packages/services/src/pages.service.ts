@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   IPagesService,
   Page,
@@ -13,7 +14,12 @@ import { getDbConnection } from "./database";
 export const PAGES_COLLECTION_NAME = "pages";
 
 export class PagesService implements IPagesService {
+  protected readonly loggerFactory = getLoggerFactory("PagesService");
+
   public async getPage(id: string): Promise<Page | null> {
+    const logger = this.loggerFactory("getPage");
+    logger.debug({ pageId: id }, "Getting page by id");
+
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
@@ -21,16 +27,47 @@ export class PagesService implements IPagesService {
       _id: id,
     });
 
+    if (!page) {
+      logger.warn({ pageId: id }, "Page not found");
+    } else {
+      logger.debug(
+        {
+          pageId: id,
+          title: page.title,
+          slug: page.slug,
+          published: page.published,
+        },
+        "Page found"
+      );
+    }
+
     return page;
   }
 
   public async getPageBySlug(slug: string): Promise<Page | null> {
+    const logger = this.loggerFactory("getPageBySlug");
+    logger.debug({ slug }, "Getting page by slug");
+
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
     const page = await pages.findOne({
       slug,
     });
+
+    if (!page) {
+      logger.warn({ slug }, "Page not found by slug");
+    } else {
+      logger.debug(
+        {
+          slug,
+          pageId: page._id,
+          title: page.title,
+          published: page.published,
+        },
+        "Page found by slug"
+      );
+    }
 
     return page;
   }
@@ -42,6 +79,9 @@ export class PagesService implements IPagesService {
       tags?: string[];
     }
   ): Promise<WithTotal<Page>> {
+    const logger = this.loggerFactory("getPages");
+    logger.debug({ query }, "Getting pages");
+
     const db = await getDbConnection();
 
     const sort: Sort = query.sort?.reduce(
@@ -115,13 +155,29 @@ export class PagesService implements IPagesService {
       ])
       .toArray();
 
-    return {
+    const response = {
       total: result.totalCount?.[0]?.count || 0,
       items: result.paginatedResults || [],
     };
+
+    logger.debug(
+      {
+        query,
+        result: { total: response.total, count: response.items.length },
+      },
+      "Fetched pages"
+    );
+
+    return response;
   }
 
   public async createPage(page: PageUpdateModel): Promise<Page> {
+    const logger = this.loggerFactory("createPage");
+    logger.debug(
+      { page: { slug: page.slug, title: page.title } },
+      "Creating new page"
+    );
+
     const dbPage: Page = {
       ...page,
       _id: new ObjectId().toString(),
@@ -130,6 +186,7 @@ export class PagesService implements IPagesService {
     };
 
     if (!this.checkUniqueSlug(page.slug)) {
+      logger.error({ slug: page.slug }, "Slug already exists");
       throw new Error("Slug already exists");
     }
 
@@ -138,16 +195,28 @@ export class PagesService implements IPagesService {
 
     await pages.insertOne(dbPage);
 
+    logger.debug(
+      { pageId: dbPage._id, slug: dbPage.slug },
+      "Successfully created page"
+    );
+
     return dbPage;
   }
 
   public async updatePage(id: string, update: PageUpdateModel): Promise<void> {
+    const logger = this.loggerFactory("updatePage");
+    logger.debug(
+      { pageId: id, update: { slug: update.slug, title: update.title } },
+      "Updating page"
+    );
+
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
     const { _id, ...updateObj } = update as Page; // Remove fields in case it slips here
 
     if (!this.checkUniqueSlug(update.slug, id)) {
+      logger.error({ pageId: id, slug: update.slug }, "Slug already exists");
       throw new Error("Slug already exists");
     }
 
@@ -161,15 +230,24 @@ export class PagesService implements IPagesService {
         $set: updateObj,
       }
     );
+
+    logger.debug({ pageId: id }, "Successfully updated page");
   }
 
   public async deletePage(id: string): Promise<Page | null> {
+    const logger = this.loggerFactory("deletePage");
+    logger.debug({ pageId: id }, "Deleting page");
+
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
     const page = await pages.findOne({ _id: id });
-    if (!page) return null;
+    if (!page) {
+      logger.warn({ pageId: id }, "Page not found for deletion");
+      return null;
+    }
     if (page.slug === "home") {
+      logger.error({ pageId: id, slug: page.slug }, "Cannot delete home page");
       throw new Error("Can not delete home page");
     }
 
@@ -177,10 +255,15 @@ export class PagesService implements IPagesService {
       _id: id,
     });
 
+    logger.debug({ pageId: id, slug: page.slug }, "Successfully deleted page");
+
     return page;
   }
 
   public async deletePages(ids: string[]): Promise<void> {
+    const logger = this.loggerFactory("deletePages");
+    logger.debug({ pageIds: ids }, "Deleting multiple pages");
+
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
@@ -192,17 +275,25 @@ export class PagesService implements IPagesService {
     });
 
     if (homePage) {
+      logger.error({ pageIds: ids }, "Cannot delete home page");
       throw new Error("Can not delete home page");
     }
 
-    await pages.deleteMany({
+    const { deletedCount } = await pages.deleteMany({
       _id: {
         $in: ids,
       },
     });
+
+    logger.debug(
+      { pageIds: ids, count: deletedCount },
+      "Successfully deleted multiple pages"
+    );
   }
 
   public async checkUniqueSlug(slug: string, id?: string): Promise<boolean> {
+    const logger = this.loggerFactory("checkUniqueSlug");
+    logger.debug({ slug, id }, "Checking unique slug");
     const db = await getDbConnection();
     const pages = db.collection<Page>(PAGES_COLLECTION_NAME);
 
@@ -216,7 +307,9 @@ export class PagesService implements IPagesService {
       };
     }
 
-    const result = await pages.countDocuments(filter);
-    return result === 0;
+    const hasNext = await pages.aggregate([{ $match: filter }]).hasNext();
+
+    logger.debug({ slug, id, hasNext }, "Slug check result");
+    return !hasNext;
   }
 }

@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   CommunicationChannel,
   CommunicationDirection,
@@ -18,16 +19,42 @@ import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";
 export const LOG_COLLECTION_NAME = "communication-logs";
 
 export class CommunicationLogsService implements ICommunicationLogsService {
+  protected readonly loggerFactory = getLoggerFactory(
+    "CommunicationLogsService"
+  );
+
   public async log(log: Omit<CommunicationLogEntity, "dateTime" | "_id">) {
+    const {
+      channel,
+      direction,
+      appointmentId,
+      customerId,
+      participantType,
+      participant,
+    } = log;
+    const logArgs = {
+      channel,
+      direction,
+      appointmentId,
+      customerId,
+      participantType,
+      participant,
+    };
+
+    const logger = this.loggerFactory("log");
+    logger.debug({ logArgs }, "Logging new communication");
     const db = await getDbConnection();
     const collection =
       db.collection<CommunicationLogEntity>(LOG_COLLECTION_NAME);
 
+    const _id = new ObjectId().toString();
     await collection.insertOne({
       ...log,
       dateTime: new Date(),
-      _id: new ObjectId().toString(),
+      _id,
     });
+
+    logger.debug({ logArgs, _id }, "Successfully logged new communication");
   }
 
   public async getCommunicationLogs(
@@ -40,6 +67,9 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       appointmentId?: string;
     }
   ): Promise<WithTotal<CommunicationLog>> {
+    const logger = this.loggerFactory("getCommunicationLogs");
+    logger.debug({ query }, "Getting communication logs");
+
     const db = await getDbConnection();
 
     const sort: Sort = query.sort?.reduce(
@@ -181,38 +211,60 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       ])
       .toArray();
 
-    return {
+    const response = {
       total: result.totalCount?.[0]?.count || 0,
       items: result.paginatedResults || [],
     };
+
+    logger.debug(
+      {
+        query,
+        result: { total: response.total, count: response.items.length },
+      },
+      "Fetched communication logs"
+    );
+
+    return response;
   }
 
   public async clearAllLogs() {
+    const logger = this.loggerFactory("clearAllLogs");
+    logger.debug("Clearing all logs");
+
     const db = await getDbConnection();
     const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
 
-    await collection.deleteMany();
+    const { deletedCount } = await collection.deleteMany();
+    logger.debug({ deletedCount }, "Cleared all logs");
   }
 
   public async clearSelectedLogs(ids: string[]) {
+    const logger = this.loggerFactory("clearSelectedLogs");
+    logger.debug({ ids }, "Clearing selected logs");
     const db = await getDbConnection();
     const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
 
-    await collection.deleteMany({
+    const { deletedCount } = await collection.deleteMany({
       _id: {
         $in: ids,
       },
     });
+
+    logger.debug({ ids, deletedCount }, "Cleared selected logs");
   }
 
   public async clearOldLogs(maxDate: Date) {
+    const logger = this.loggerFactory("clearOldLogs");
+    logger.debug({ maxDate }, "Clearing old logs");
     const db = await getDbConnection();
     const collection = db.collection<CommunicationLog>(LOG_COLLECTION_NAME);
 
-    await collection.deleteMany({
+    const { deletedCount } = await collection.deleteMany({
       dateTime: {
         $lt: maxDate,
       },
     });
+
+    logger.debug({ maxDate, deletedCount }, "Cleared old logs");
   }
 }

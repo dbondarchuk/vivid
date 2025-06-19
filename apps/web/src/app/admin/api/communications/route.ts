@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from "@vivid/email-builder/static";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import {
   Appointment,
@@ -10,10 +11,26 @@ import { getArguments, template } from "@vivid/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
+  const logger = getLoggerFactory("AdminAPI/communications")("POST");
+
+  logger.debug(
+    {
+      url: request.url,
+      method: request.method,
+    },
+    "Processing communications API request"
+  );
+
   const { error, success, data } = sendCommunicationRequestSchema.safeParse(
     await request.json()
   );
   if (!success || !data || error) {
+    logger.error(
+      {
+        error: error?.message || error?.toString(),
+      },
+      "Error parsing communication request"
+    );
     return NextResponse.json(
       {
         error: "bad_data",
@@ -32,6 +49,13 @@ export async function POST(request: NextRequest) {
     );
 
     if (!appointment) {
+      logger.error(
+        {
+          error: "appointment_not_found",
+          message: `Appointment ${data.appointmentId} was not found`,
+        },
+        "Appointment not found"
+      );
       return NextResponse.json(
         {
           error: "appointment_not_found",
@@ -48,6 +72,13 @@ export async function POST(request: NextRequest) {
     );
 
     if (!_customer) {
+      logger.error(
+        {
+          error: "customer_not_found",
+          message: `Customer ${data.customerId} was not found`,
+        },
+        "Customer not found"
+      );
       return NextResponse.json(
         {
           error: "customer_not_found",
@@ -117,6 +148,14 @@ export async function POST(request: NextRequest) {
       break;
     }
   }
+
+  logger.debug(
+    {
+      success: true,
+      messageId: "Communication sent successfully",
+    },
+    "Communication sent successfully"
+  );
 
   return NextResponse.json(okStatus);
 }

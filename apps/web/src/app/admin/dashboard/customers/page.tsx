@@ -12,6 +12,7 @@ import {
   Link,
   Separator,
 } from "@vivid/ui";
+import { getLoggerFactory } from "@vivid/logger";
 import { Plus } from "lucide-react";
 import { Suspense } from "react";
 import { CustomersTableColumnLength } from "@/components/admin/customers/table/columns";
@@ -26,10 +27,19 @@ const breadcrumbItems = [
 ];
 
 export default async function CustomersPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("customers");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 
   const key = serialize({ ...parsed });
+
+  logger.debug(
+    {
+      searchParams: parsed,
+      key,
+    },
+    "Loading customers page"
+  );
 
   return (
     <PageContainer scrollable={false}>

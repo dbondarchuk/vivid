@@ -1,3 +1,4 @@
+import { getLoggerFactory } from "@vivid/logger";
 import {
   CommunicationChannel,
   ITemplatesService,
@@ -15,13 +16,19 @@ import { getDbConnection } from "./database";
 export const TEMPLATES_COLLECTION_NAME = "templates";
 
 export class TemplatesService implements ITemplatesService {
+  protected readonly loggerFactory = getLoggerFactory("TemplatesService");
+
   public async getTemplate(_id: string): Promise<Template | null> {
+    const logger = this.loggerFactory("getTemplate");
+    logger.debug({ _id }, "Getting template");
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
 
     const template = await templates.findOne({
       _id,
     });
+
+    logger.debug({ _id, template }, "Template found");
 
     return template;
   }
@@ -31,6 +38,8 @@ export class TemplatesService implements ITemplatesService {
       type?: CommunicationChannel[];
     }
   ): Promise<WithTotal<TemplateListModel>> {
+    const logger = this.loggerFactory("getTemplates");
+    logger.debug({ query }, "Getting templates");
     const db = await getDbConnection();
 
     const sort: Sort = query.sort?.reduce(
@@ -90,15 +99,27 @@ export class TemplatesService implements ITemplatesService {
       ])
       .toArray();
 
-    return {
+    const response = {
       total: result.totalCount?.[0]?.count || 0,
       items: result.paginatedResults || [],
     };
+
+    logger.debug(
+      {
+        query,
+        result: { total: response.total, count: response.items.length },
+      },
+      "Templates fetched"
+    );
+
+    return response;
   }
 
   public async createTemplate(
     template: TemplateUpdateModel
   ): Promise<Template> {
+    const logger = this.loggerFactory("createTemplate");
+    logger.debug({ template }, "Creating template");
     const dbTemplate: Template = {
       ...template,
       _id: new ObjectId().toString(),
@@ -114,6 +135,11 @@ export class TemplatesService implements ITemplatesService {
 
     await templates.insertOne(dbTemplate);
 
+    logger.debug(
+      { templateId: dbTemplate._id, name: dbTemplate.name },
+      "Template created"
+    );
+
     return dbTemplate;
   }
 
@@ -121,12 +147,21 @@ export class TemplatesService implements ITemplatesService {
     id: string,
     update: TemplateUpdateModel
   ): Promise<void> {
+    const logger = this.loggerFactory("updateTemplate");
+    logger.debug(
+      { id, update: { type: update.type, name: update.name } },
+      "Updating template"
+    );
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
 
     const { _id, ...updateObj } = update as Template; // Remove fields in case it slips here
 
     if (!this.checkUniqueName(update.name, id)) {
+      logger.error(
+        { id, update: { type: update.type, name: update.name } },
+        "Template name already exists"
+      );
       throw new Error("Name already exists");
     }
 
@@ -140,9 +175,13 @@ export class TemplatesService implements ITemplatesService {
         $set: updateObj,
       }
     );
+
+    logger.debug({ id, update }, "Template updated");
   }
 
-  public async deleteTemplate(id: string): Promise<Template | undefined> {
+  public async deleteTemplate(id: string): Promise<Template | null> {
+    const logger = this.loggerFactory("deleteTemplate");
+    logger.debug({ id }, "Deleting template");
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
 
@@ -150,21 +189,29 @@ export class TemplatesService implements ITemplatesService {
       _id: id,
     });
 
-    return template || undefined;
+    logger.debug({ id, templateDeleted: !!template }, "Template delete result");
+
+    return template;
   }
 
   public async deleteTemplates(ids: string[]): Promise<void> {
+    const logger = this.loggerFactory("deleteTemplates");
+    logger.debug({ ids }, "Deleting templates");
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
 
-    await templates.deleteMany({
+    const { deletedCount } = await templates.deleteMany({
       _id: {
         $in: ids,
       },
     });
+
+    logger.debug({ ids, deletedCount }, "Templates deleted");
   }
 
   public async checkUniqueName(name: string, id?: string): Promise<boolean> {
+    const logger = this.loggerFactory("checkUniqueName");
+    logger.debug({ name, id }, "Checking template name uniqueness");
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
 
@@ -178,7 +225,13 @@ export class TemplatesService implements ITemplatesService {
       };
     }
 
-    const result = await templates.countDocuments(filter);
-    return result === 0;
+    const hasNext = await templates.aggregate([{ $match: filter }]).hasNext();
+
+    logger.debug(
+      { name, id, hasNext },
+      "Template name uniqueness check result"
+    );
+
+    return !hasNext;
   }
 }

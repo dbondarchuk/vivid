@@ -1,11 +1,12 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { TemplateTemplates } from "@/components/admin/templates/templates";
+import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
 import { CommunicationChannelTexts } from "@/constants/labels";
+import { getLoggerFactory } from "@vivid/logger";
 import { CommunicationChannel } from "@vivid/types";
-import { Heading, Separator, Skeleton } from "@vivid/ui";
+import { Heading, Skeleton } from "@vivid/ui";
 import { Suspense } from "react";
 import { TemplateFormPage } from "../../form-page";
-import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
-import { TemplateTemplates } from "@/components/admin/templates/templates";
 
 type Props = {
   params: Promise<{ type: CommunicationChannel }>;
@@ -15,13 +16,31 @@ type Props = {
 };
 
 export default async function NewTemplatePage({ params, searchParams }: Props) {
+  const logger = getLoggerFactory("AdminPages")("new-template");
   const { type } = await params;
   const query = await searchParams;
+
+  logger.debug(
+    {
+      type,
+      template: query?.template,
+    },
+    "Loading new template page"
+  );
 
   let template: TemplatesTemplate | undefined = undefined;
   if (query?.template) {
     template = TemplateTemplates[type][query.template];
   }
+
+  logger.debug(
+    {
+      type,
+      template: query?.template,
+      hasTemplate: !!template,
+    },
+    "New template page loaded"
+  );
 
   return (
     <PageContainer scrollable={true}>

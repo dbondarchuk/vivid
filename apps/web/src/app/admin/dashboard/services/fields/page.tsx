@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/services/fields/table/search-params";
 import { FieldsTable } from "@/components/admin/services/fields/table/table";
 import { FieldsTableAction } from "@/components/admin/services/fields/table/table-action";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
   DataTableSkeleton,
@@ -26,6 +27,9 @@ const breadcrumbItems = [
 ];
 
 export default async function FieldsPage(props: Params) {
+  const logger = getLoggerFactory("AdminPages")("fields");
+
+  logger.debug("Loading fields page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 

@@ -17,7 +17,7 @@ const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
 };
 
 const getApps = async (scope: string) => {
-  const url = `/admin/api/apps?scope=${encodeURIComponent(scope)}`;
+  const url = `/admin/api/apps?scope=${encodeURIComponent(scope)}&limit=10000000`;
   const response = await fetch(url, {
     method: "GET",
     cache: "default",
