@@ -13,6 +13,8 @@ import { EmailNotificationApp } from "./apps/email-notification/app";
 import { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 import { FileSystemAssetsStorageApp } from "./apps/file-system-assets-storage/app";
 import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
+import { FollowUpsApp } from "./apps/followups/app";
+import { FOLLOW_UPS_APP_NAME } from "./apps/followups/const";
 import { GoogleCalendarApp } from "./apps/google-calendar/app";
 import { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 import { IcsApp } from "./apps/ics/app";
@@ -54,6 +56,7 @@ export const AvailableApps: Record<string, App> = {
     CustomerTextMessageNotificationApp,
   [TEXT_MESSAGE_NOTIFICATION_APP_NAME]: TextMessageNotificationApp,
   [REMINDERS_APP_NAME]: RemindersApp,
+  [FOLLOW_UPS_APP_NAME]: FollowUpsApp,
   // [LOG_CLEANUP_APP_NAME]: LogCleanupApp,
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: FileSystemAssetsStorageApp,
   [S3_ASSETS_STORAGE_APP_NAME]: S3AssetsStorageApp,
@@ -69,6 +72,7 @@ export { CUSTOMER_EMAIL_NOTIFICATION_APP_NAME } from "./apps/customer-email-noti
 export { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./apps/customer-text-message-notification/const";
 export { EMAIL_NOTIFICATION_APP_NAME } from "./apps/email-notification/const";
 export { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./apps/file-system-assets-storage/const";
+export { FOLLOW_UPS_APP_NAME } from "./apps/followups/const";
 export { GOOGLE_CALENDAR_APP_NAME } from "./apps/google-calendar/const";
 export { ICS_APP_NAME } from "./apps/ics/const";
 export { LOG_CLEANUP_APP_NAME } from "./apps/log-cleanup/const";

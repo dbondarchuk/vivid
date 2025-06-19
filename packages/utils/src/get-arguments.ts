@@ -86,6 +86,15 @@ export const getArguments = ({
           )
           .toLocaleString(DateTime.DATETIME_FULL)
       : undefined,
+    endAt: appointment
+      ? DateTime.fromJSDate(appointment.endAt)
+          .setZone(
+            useAppointmentTimezone
+              ? appointment.timeZone
+              : config.booking?.timeZone
+          )
+          .toLocaleString(DateTime.DATETIME_FULL)
+      : undefined,
     restFields: Object.entries(restFields).map(([name, value]) => ({
       name,
       value,

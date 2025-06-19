@@ -13,6 +13,8 @@ import { EMAIL_NOTIFICATION_APP_NAME } from "../apps/email-notification/const";
 import { EmailNotificationConnectedApp } from "../apps/email-notification/service";
 import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "../apps/file-system-assets-storage/const";
 import FileSystemAssetsStorageConnectedApp from "../apps/file-system-assets-storage/service";
+import { FOLLOW_UPS_APP_NAME } from "../apps/followups/const";
+import FollowUpsConnectedApp from "../apps/followups/service";
 import { GOOGLE_CALENDAR_APP_NAME } from "../apps/google-calendar/const";
 import GoogleCalendarConnectedApp from "../apps/google-calendar/service";
 import { ICS_APP_NAME } from "../apps/ics/const";
@@ -66,6 +68,7 @@ export const AvailableAppServices: Record<
   [TEXT_MESSAGE_RESENDER_APP_NAME]: (props) =>
     new TextMessageResenderConnectedApp(props),
   [REMINDERS_APP_NAME]: (props) => new RemindersConnectedApp(props),
+  [FOLLOW_UPS_APP_NAME]: (props) => new FollowUpsConnectedApp(props),
   [LOG_CLEANUP_APP_NAME]: (props) => new LogCleanupConnectedApp(props),
   [FILE_SYSTEM_ASSETS_STORAGE_APP_NAME]: (props) =>
     new FileSystemAssetsStorageConnectedApp(props),

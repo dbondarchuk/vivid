@@ -168,6 +168,7 @@ The installer will automatically:
 - ✅ Configure header and footer settings
 - ✅ Install essential connected apps:
   - **Reminders** - Automated appointment reminders
+  - **Follow-ups** - Automated appointment follow-ups
   - **Customer Email Notifications** - Email communication system
   - **Customer Text Message Notifications** - SMS communication system
   - **File System Assets Storage** - Local file storage system
@@ -318,8 +319,10 @@ Vivid supports various integrations through its app store:
 ### Utilities
 
 - **Reminders** - Automated reminder system
-- **Log Cleanup** - Automated log management
+- **Follow-ups** - Automated follow-up system
+- **Log Cleanup** - Automated communication log clean-up management
 - **Weekly Schedule** - Custom per week schedule
+- **Busy events** - Custom schedule blocking blocks
 
 ## 🎨 Customization
 
