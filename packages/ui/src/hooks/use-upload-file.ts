@@ -28,7 +28,7 @@ const uploadFilesWithProgress = ({
   status: number;
   body: string;
 }> => {
-  const url = `/admin/api/assets${appointmentId ? "/appointments" : ""}`;
+  const url = `/admin/api/assets`;
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
