@@ -157,7 +157,8 @@ export const getAppointmentEventFromRequest = async (
     for (const field of serviceFields) {
       if (
         (field.required || allFields.get(field._id)) &&
-        (!files?.[field.name] || !request.fields[field.name])
+        !files?.[field.name] &&
+        !request.fields[field.name]
       ) {
         logger.warn(
           {
@@ -173,7 +174,7 @@ export const getAppointmentEventFromRequest = async (
         return {
           error: {
             code: "field_required",
-            message: `Field ${field} is required`,
+            message: `Field ${field.name} is required`,
             status: 400,
           },
         };
