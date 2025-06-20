@@ -593,14 +593,17 @@ export class EventsService implements IEventsService {
         },
         {
           $facet: {
-            paginatedResults: [
-              ...(typeof query.offset !== "undefined"
-                ? [{ $skip: query.offset }]
-                : []),
-              ...(typeof query.limit !== "undefined"
-                ? [{ $limit: query.limit }]
-                : []),
-            ],
+            paginatedResults:
+              (query.limit ?? 0) > 1
+                ? [
+                    ...(typeof query.offset !== "undefined"
+                      ? [{ $skip: query.offset }]
+                      : []),
+                    ...(typeof query.limit !== "undefined"
+                      ? [{ $limit: query.limit }]
+                      : []),
+                  ]
+                : undefined,
             totalCount: [
               {
                 $count: "count",

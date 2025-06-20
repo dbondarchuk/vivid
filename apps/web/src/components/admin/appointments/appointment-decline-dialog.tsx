@@ -46,6 +46,8 @@ export const AppointmentDeclineDialog: React.FC<{
   open?: boolean;
   onClose?: () => void;
 }> = ({ appointment, open, trigger, onClose }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const onOpenChange = (open: boolean) => {
     if (!open) onClose?.();
   };
@@ -117,7 +119,12 @@ export const AppointmentDeclineDialog: React.FC<{
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog
+      open={open}
+      onOpenChange={(open) => {
+        if (!isLoading) onOpenChange(open);
+      }}
+    >
       {!!trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -266,15 +273,16 @@ export const AppointmentDeclineDialog: React.FC<{
           </div>
         </ScrollArea>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           {!!paymentsAvailableToRefund.length && (
             <AlertDialogAction asChild variant="destructive">
               <AppointmentActionButton
                 _id={appointment._id}
                 status="declined"
-                disabled={!selectedPaymentsIds.length}
+                disabled={!selectedPaymentsIds.length || isLoading}
                 className="mt-2 sm:mt-0"
                 beforeRequest={() => refundSelected()}
+                setIsLoading={setIsLoading}
               >
                 <CalendarX2 size={20} />
                 Decline and refund
@@ -286,7 +294,12 @@ export const AppointmentDeclineDialog: React.FC<{
             </AlertDialogAction>
           )}
           <AlertDialogAction asChild variant="destructive">
-            <AppointmentActionButton _id={appointment._id} status="declined">
+            <AppointmentActionButton
+              _id={appointment._id}
+              status="declined"
+              disabled={isLoading}
+              setIsLoading={setIsLoading}
+            >
               <CalendarX2 size={20} />
               Decline
             </AppointmentActionButton>

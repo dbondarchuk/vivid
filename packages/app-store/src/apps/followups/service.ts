@@ -668,7 +668,7 @@ export default class FollowUpsConnectedApp
               .getAppointments({
                 customerId: appointment.customer._id,
                 status: ["confirmed"],
-                limit: 1,
+                limit: 0,
                 range: {
                   end: appointmentCompletionTime.toJSDate(),
                 },
