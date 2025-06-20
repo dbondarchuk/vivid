@@ -1,8 +1,12 @@
 import { searchParams } from "@/components/admin/assets/table/search-params";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
+import { UploadedFile } from "@vivid/types";
+import { getAppointmentBucket, getCustomerBucket } from "@vivid/utils";
+import mimeType from "mime-type/with-db";
 import { NextRequest, NextResponse } from "next/server";
 import { createLoader } from "nuqs/server";
+import { v4 } from "uuid";
 
 export async function GET(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI/assets")("GET");
@@ -20,11 +24,15 @@ export async function GET(request: NextRequest) {
   const params = loader(request.nextUrl.searchParams);
 
   const page = params.page;
-  const search = params.search ?? undefined;
+  const search = params.search || undefined;
   const limit = params.limit;
   const sort = params.sort;
 
+  const customerIds = params.customer || undefined;
+  const appointmentIds = params.appointment || undefined;
+
   const offset = (page - 1) * limit;
+  const accept = request.nextUrl.searchParams.getAll("accept");
 
   logger.debug(
     {
@@ -37,27 +45,37 @@ export async function GET(request: NextRequest) {
     "Fetching assets with parameters"
   );
 
-  const res = await ServicesContainer.AssetsService().getAssets({
-    offset,
-    limit,
+  const response = await ServicesContainer.AssetsService().getAssets({
     search,
+    accept,
+    limit,
     sort,
+    offset,
+    customerId: customerIds,
+    appointmentId: appointmentIds,
   });
 
   logger.debug(
     {
-      total: res.total,
-      count: res.items.length,
+      total: response.total,
+      count: response.items.length,
     },
     "Successfully retrieved assets"
   );
 
-  return NextResponse.json(res);
+  const items = response.items.map(
+    (asset) =>
+      ({
+        ...asset,
+        url: `${request.nextUrl.origin}/assets/${asset.filename}`,
+      }) satisfies UploadedFile
+  );
+
+  return NextResponse.json({ ...response, items });
 }
 
 export async function POST(request: NextRequest) {
   const logger = getLoggerFactory("AdminAPI")("assets");
-
   logger.debug(
     {
       url: request.url,
@@ -66,49 +84,61 @@ export async function POST(request: NextRequest) {
     "Processing assets upload request"
   );
 
-  try {
-    const formData = await request.formData();
-    const files = formData.getAll("files") as File[];
+  const formData = await request.formData();
 
-    logger.debug(
-      {
-        fileCount: files.length,
-        fileNames: files.map((f) => f.name),
-      },
-      "Processing uploaded files"
-    );
-
-    const assets = [];
-    for (const file of files) {
-      const asset = await ServicesContainer.AssetsService().createAsset(
-        {
-          filename: file.name,
-          mimeType: file.type,
-        },
-        file
-      );
-      assets.push(asset);
-    }
-
-    logger.debug(
-      {
-        fileCount: files.length,
-        assetCount: assets.length,
-      },
-      "Successfully uploaded assets"
-    );
-
-    return NextResponse.json(assets);
-  } catch (error: any) {
-    logger.error(
-      {
-        error: error?.message || error?.toString(),
-      },
-      "Error uploading assets"
-    );
+  const file = formData.get("file");
+  let bucket = formData.get("bucket") as string;
+  if (!file || !(file instanceof File)) {
     return NextResponse.json(
-      { error: "Failed to upload assets" },
-      { status: 500 }
+      {
+        success: false,
+      },
+      { status: 400 }
     );
   }
+
+  let fileType = mimeType.lookup(file.name);
+  if (!fileType) {
+    fileType = "application/octet-stream";
+  } else if (Array.isArray(fileType)) {
+    fileType = fileType[0];
+  }
+
+  const appointmentId = (formData.get("appointmentId") as string) ?? undefined;
+  const customerId = (formData.get("customerId") as string) ?? undefined;
+
+  if (appointmentId) {
+    bucket = getAppointmentBucket(appointmentId);
+  } else if (customerId) {
+    bucket = getCustomerBucket(customerId);
+  }
+
+  const asset = await ServicesContainer.AssetsService().createAsset(
+    {
+      filename: `${bucket ? `${bucket}/` : ""}${v4()}-${file.name}`,
+      mimeType: fileType,
+      description: (formData.get("description") as string) ?? undefined,
+      appointmentId,
+      customerId,
+    },
+    file
+  );
+
+  logger.debug(
+    {
+      filename: asset.filename,
+      size: asset.size,
+    },
+    "Successfully uploaded asset"
+  );
+
+  // const { url } =
+  //   await ServicesContainer.ConfigurationService().getConfiguration("general");
+
+  const uploadedFile: UploadedFile = {
+    ...asset,
+    url: `${request.nextUrl.origin}/assets/${asset.filename}`,
+  };
+
+  return NextResponse.json(uploadedFile);
 }

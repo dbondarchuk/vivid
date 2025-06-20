@@ -45,5 +45,12 @@ export async function GET(request: NextRequest) {
     "Template name uniqueness check completed"
   );
 
-  return NextResponse.json({ isUnique });
+  return NextResponse.json(
+    { isUnique },
+    {
+      headers: new Headers({
+        "Cache-Control": "max-age=10",
+      }),
+    }
+  );
 }

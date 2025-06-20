@@ -668,7 +668,7 @@ export default class FollowUpsConnectedApp
               .getAppointments({
                 customerId: appointment.customer._id,
                 status: ["confirmed"],
-                limit: 0,
+                limit: 1,
                 range: {
                   end: appointmentCompletionTime.toJSDate(),
                 },
@@ -689,8 +689,8 @@ export default class FollowUpsConnectedApp
               "Checking customer appointment count up to appointment completion"
             );
 
-            // Only send follow-up if customer has the required number of appointments completed up to this point
-            if (appointmentCount >= followUp.afterAppointmentCount) {
+            // Only send follow-up if customer has the exact required number of appointments completed up to this point
+            if (appointmentCount == followUp.afterAppointmentCount) {
               filteredAppointments.push(appointment);
             }
           } catch (error: any) {
