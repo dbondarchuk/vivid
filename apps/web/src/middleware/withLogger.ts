@@ -16,7 +16,7 @@ export const withLogger: MiddlewareFactory = (next) => {
 
     const logger = getBaseLoggerFactory(correlationId);
 
-    logger.info(
+    logger.debug(
       { url: request.url, method: request.method, correlationId },
       "Incoming request"
     );
