@@ -198,14 +198,17 @@ export default class FollowUpsConnectedApp
           },
           {
             $facet: {
-              paginatedResults: [
-                ...(typeof query.offset !== "undefined"
-                  ? [{ $skip: query.offset }]
-                  : []),
-                ...(typeof query.limit !== "undefined"
-                  ? [{ $limit: query.limit }]
-                  : []),
-              ],
+              paginatedResults:
+                query.limit === 0
+                  ? undefined
+                  : [
+                      ...(typeof query.offset !== "undefined"
+                        ? [{ $skip: query.offset }]
+                        : []),
+                      ...(typeof query.limit !== "undefined"
+                        ? [{ $limit: query.limit }]
+                        : []),
+                    ],
               totalCount: [
                 {
                   $count: "count",

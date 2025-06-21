@@ -109,6 +109,7 @@ export const getAppointmentEventAndIsPaymentRequired = async (
 
   logger.debug(
     {
+      customersPriorAppointmentsCount,
       paymentsEnabled: config.payments?.enable,
       paymentAppId: config.payments?.enable
         ? config.payments.paymentAppId
