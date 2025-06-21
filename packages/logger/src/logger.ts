@@ -6,7 +6,10 @@ import { getBaseLoggerFactory } from "./base-factory";
 const _getLoggerFactory = cache(async () => {
   try {
     const headersList = await headers();
-    return getBaseLoggerFactory(headersList.get("x-correlation-id"));
+    return getBaseLoggerFactory(
+      headersList.get("x-correlation-id"),
+      headersList.get("x-session-id")
+    );
   } catch {
     return getBaseLoggerFactory();
   }
