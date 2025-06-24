@@ -10,7 +10,7 @@ export const footerConfigurationSchema = z.discriminatedUnion("isCustom", [
   z.object({
     contactUsLabel: zOptionalOrMinLengthString(
       2,
-      "Label must contain at least 2 symbols"
+      "configuration.styling.footer.contactUsLabel.min"
     ),
     links: menuItemsSchema.optional(),
     isCustom: z.literal(false),

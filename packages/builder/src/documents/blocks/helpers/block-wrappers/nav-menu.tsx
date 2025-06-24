@@ -132,7 +132,7 @@ export const NavMenu: React.FC<Props> = ({ blockId }) => {
                     onClick={(event) => handleBlockIdClick(event, id)}
                     key={id}
                   >
-                    {displayName}
+                    {t(displayName)}
                   </span>
                   {index < hierarchy.length - 1 && (
                     <BreadcrumbSeparator className="hidden md:block  [&>svg]:size-3">

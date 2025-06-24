@@ -8,7 +8,7 @@ export function formatJsx(
 ) {
   return reactStringReplace(
     template,
-    /{{\s+([0-9A-Za-z_-]+)\s+}}/g,
+    /{{\s*([0-9A-Za-z_-]+)\s*}}/g,
     function (match, index) {
       const resolved = resolve(args, match);
       return (

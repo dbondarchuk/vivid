@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const defaultAppsConfigurationSchema = z.object({
   email: z.object({
-    appId: z.string().min(1, "Email sender APP is required"),
+    appId: z.string().min(1, "configuration.apps.email.required"),
     data: z.any().optional(),
   }),
   textMessage: z
@@ -12,7 +12,7 @@ export const defaultAppsConfigurationSchema = z.object({
     })
     .optional(),
   assetsStorage: z.object({
-    appId: z.string().min(1, "Asset Storage APP is required"),
+    appId: z.string().min(1, "configuration.apps.assetsStorage.required"),
     data: z.any().optional(),
   }),
 });

@@ -1,24 +1,19 @@
 import { z } from "zod";
 import { WithDatabaseId } from "../database";
 
-export const pageTagSchema = z
-  .string()
-  .min(3, "Tag should be at least 3 characters long");
+export const pageTagSchema = z.string().min(3, "page.tag.min");
 
 export const pageSchema = z.object({
-  title: z.string().min(2, "Page title must be at least 2 characters"),
-  content: z.string().min(1, "Page content must be at least 1 character"),
+  title: z.string().min(2, "page.title.required"),
+  content: z.string().min(1, "page.content.required"),
   slug: z
     .string()
-    .min(1, { message: "Page slug must be at least 1 character" })
-    .regex(
-      /^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g,
-      "Page slug must contain only latin lower case letters, digits, slash, and hyphens"
-    ),
-  description: z.string().min(1, "Page description is required"),
-  keywords: z.string().min(1, "Page keywords are requried"),
+    .min(1, { message: "page.slug.required" })
+    .regex(/^[a-z0-9]+(?:[-\/][a-z0-9]+)*$/g, "page.slug.invalid"),
+  description: z.string().min(1, "page.description.required"),
+  keywords: z.string().min(1, "page.keywords.required"),
   published: z.coerce.boolean().default(false),
-  publishDate: z.date({ required_error: "Publish date is required" }),
+  publishDate: z.date({ required_error: "page.publishDate.required" }),
   tags: z.array(pageTagSchema).optional(),
   doNotCombine: z
     .object({

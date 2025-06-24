@@ -3,6 +3,7 @@ import { z } from "zod";
 export const zEmail = z.string().email("common.email.invalid");
 export const zPhone = z
   .string()
+  .min(1, "common.phone.required")
   .refine((s) => !s?.includes("_"), "common.phone.invalid");
 
 export function zUniqueArray<

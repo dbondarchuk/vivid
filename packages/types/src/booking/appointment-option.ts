@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { WithDatabaseId } from "../database";
-import { asOptionalField, zUniqueArray } from "../utils";
+import { asOptinalNumberField, zUniqueArray } from "../utils";
 
 export const isPaymentRequiredForOptionTypes = [
   "inherit",
@@ -14,54 +14,58 @@ const isPaymentRequiredForOptionSchema = z.enum(
 
 export const appointmentOptionSchema = z
   .object({
-    name: z.string().min(2, "Option name must me at least 2 characters long"),
+    name: z.string().min(2, "appointments.option.name.required"),
     // description: z.array(z.any()),
-    description: z.string().min(2, "Option description is required"),
-    duration: asOptionalField(
+    description: z.string().min(2, "appointments.option.description.required"),
+    duration: asOptinalNumberField(
       z.coerce
         .number()
-        .int("Should be the integer value")
-        .min(0, "Option duration must be at least 0 minutes")
+        .int("appointments.option.duration.positive")
+        .min(1, "appointments.option.duration.positive")
     ),
 
-    price: asOptionalField(
-      z.coerce.number().min(0, "Option price must be at least 0")
+    price: asOptinalNumberField(
+      z.coerce.number().min(1, "appointments.option.price.min")
     ),
     addons: zUniqueArray(
       z.array(
         z.object({
-          id: z.string().min(1, "Addon id is required"),
+          id: z.string().min(1, "appointments.option.addons.id.required"),
         })
       ),
-      (addon) => addon.id
+      (addon) => addon.id,
+      "appointments.option.addons.id.unique"
     ).optional(),
     fields: zUniqueArray(
       z.array(
         z.object({
-          id: z.string().min(1, "Field id is required"),
+          id: z.string().min(1, "appointments.option.fields.id.required"),
           required: z.coerce.boolean().optional(),
         })
       ),
-      (field) => field.id
+      (field) => field.id,
+      "appointments.option.fields.id.unique"
     ).optional(),
   })
   .and(
     z
       .object({
         requireDeposit: isPaymentRequiredForOptionSchema.exclude(["always"], {
-          message: "Deposit amount is required if set to always",
+          message: "appointments.option.requireDeposit.required",
         }),
       })
       .or(
         z.object({
           requireDeposit: isPaymentRequiredForOptionSchema.extract(["always"], {
-            message: "Deposit amount is required",
+            message: "appointments.option.requireDeposit.required",
           }),
           depositPercentage: z.coerce
-            .number({ message: "Must be a number between 10 and 100" })
-            .int("Must be a number between 10 and 100")
-            .min(10, "Must be a number between 10 and 100")
-            .max(100, "Must be a number between 10 and 100"),
+            .number({
+              message: "appointments.option.depositPercentage.required",
+            })
+            .int("appointments.option.depositPercentage.required")
+            .min(10, "appointments.option.depositPercentage.required")
+            .max(100, "appointments.option.depositPercentage.required"),
         })
       )
   );
@@ -91,26 +95,25 @@ export const getAppointmentOptionSchemaWithUniqueCheck = (
 };
 
 export const appointmentAddonSchema = z.object({
-  name: z.string().min(2, "Addon name must me at least 2 characters long"),
+  name: z.string().min(2, "addons.name.required"),
   // description: z.array(z.any()),
-  description: z.string().min(2, "Addon description is required"),
-  duration: asOptionalField(
+  description: z.string().min(2, "addons.description.required"),
+  duration: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Addon duration must be at least 0 minutes")
+      .int("addons.duration.positive")
+      .min(1, "addons.duration.positive")
   ),
-  price: asOptionalField(
-    z.coerce.number().min(0, "Addon price must be at least 0")
-  ),
+  price: asOptinalNumberField(z.coerce.number().min(1, "addons.price.min")),
   fields: zUniqueArray(
     z.array(
       z.object({
-        id: z.string().min(1, "Field id is required"),
+        id: z.string().min(1, "appointments.option.fields.id.required"),
         required: z.coerce.boolean().optional(),
       })
     ),
-    (field) => field.id
+    (field) => field.id,
+    "appointments.option.fields.id.unique"
   ).optional(),
 });
 

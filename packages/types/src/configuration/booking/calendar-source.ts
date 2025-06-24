@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const calendarSourceConfigurationSchema = z.object({
-  appId: z.string().min(1, "App must be selected"),
+  appId: z.string().min(1, "configuration.booking.calendarSource.required"),
 });
 
 export type CalendarSourceConfiguration = z.infer<

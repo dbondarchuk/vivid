@@ -34,23 +34,23 @@ export const generalBookingConfigurationSchema = z.object({
   maxWeeksInFuture: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(2, "The minimum amount of weeks must be 2")
-      .max(20, "The maximum amount of weeks must be 20")
+      .int("configuration.booking.maxWeeksInFuture.integer")
+      .min(2, "configuration.booking.maxWeeksInFuture.min")
+      .max(20, "configuration.booking.maxWeeksInFuture.max")
   ),
   minHoursBeforeBooking: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "The minimum amount of hours must be 0")
-      .max(72, "The maximum amount of hours must be 72")
+      .int("configuration.booking.minHoursBeforeBooking.integer")
+      .min(0, "configuration.booking.minHoursBeforeBooking.min")
+      .max(72, "configuration.booking.minHoursBeforeBooking.max")
   ),
   breakDuration: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "The minimum break time should be 0")
-      .max(120, "The maximum break time be 120")
+      .int("configuration.booking.breakDuration.integer")
+      .min(0, "configuration.booking.breakDuration.min")
+      .max(120, "configuration.booking.breakDuration.max")
   ),
   slotStart: z
     .union(
@@ -63,7 +63,7 @@ export const generalBookingConfigurationSchema = z.object({
         z.literal("every-hour"), // every hour at start
         z.literal("custom"), // custom
       ],
-      { message: "Unknow option" }
+      { message: "configuration.booking.slotStart.unknown" }
     )
     .optional(),
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
@@ -89,7 +89,7 @@ export const generalBookingConfigurationSchema = z.object({
 
 export const appointOptionsSchema = z.array(
   z.object({
-    id: z.string().min(1, "Option is required"),
+    id: z.string().min(1, "configuration.booking.options.id.required"),
   })
 );
 
@@ -105,7 +105,7 @@ export const bookingConfigurationSchema = generalBookingConfigurationSchema
       ctx.addIssue({
         path: ["specifiedSlotTimes"],
         code: z.ZodIssueCode.custom,
-        message: "Custom time slots are required",
+        message: "configuration.booking.customSlotTimes.required",
       });
     }
   });

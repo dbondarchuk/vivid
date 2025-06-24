@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Appointment } from "../booking";
 import { WithDatabaseId } from "../database";
-import { zUniqueArray } from "../utils";
+import { zPhone, zUniqueArray } from "../utils";
 
 export const isPaymentRequiredForCustomerTypes = [
   "inherit",
@@ -15,26 +15,26 @@ const isPaymentRequiredForCustomerSchema = z.enum(
 
 export const customerSchema = z
   .object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Valid email is required"),
-    phone: z.string().min(1, "Phone is required"),
+    name: z.string().min(1, "customer.name.required"),
+    email: z.string().email("customer.email.required"),
+    phone: zPhone,
     dateOfBirth: z.coerce.date().optional(),
     avatar: z.string().optional(),
     note: z.string().optional(),
     knownNames: zUniqueArray(
-      z.array(z.string().min(1, "Name is required")),
+      z.array(z.string().min(1, "customer.name.required")),
       (s) => s,
-      "Names should be unique"
+      "customer.knownNames.unique"
     ),
     knownEmails: zUniqueArray(
-      z.array(z.string().email("Valid email is required")),
+      z.array(z.string().email("customer.email.required")),
       (s) => s,
-      "Emails should be unique"
+      "customer.knownEmails.unique"
     ),
     knownPhones: zUniqueArray(
-      z.array(z.string().min(1, "Phone is required")),
+      z.array(zPhone),
       (s) => s,
-      "Phones should be unique"
+      "customer.knownPhones.unique"
     ),
     dontAllowBookings: z.coerce.boolean().optional(),
   })
@@ -42,7 +42,7 @@ export const customerSchema = z
     z
       .object({
         requireDeposit: isPaymentRequiredForCustomerSchema.exclude(["always"], {
-          message: "Deposit amount is required if always",
+          message: "customer.requireDeposit.required",
         }),
       })
       .or(
@@ -50,14 +50,14 @@ export const customerSchema = z
           requireDeposit: isPaymentRequiredForCustomerSchema.extract(
             ["always"],
             {
-              message: "Deposit amount is required",
+              message: "customer.requireDeposit.required",
             }
           ),
           depositPercentage: z.coerce
-            .number({ message: "Must be a number between 10 and 100" })
-            .int("Must be a number between 10 and 100")
-            .min(10, "Must be a number between 10 and 100")
-            .max(100, "Must be a number between 10 and 100"),
+            .number({ message: "customer.depositPercentage.required" })
+            .int("customer.depositPercentage.integer")
+            .min(10, "customer.depositPercentage.min")
+            .max(100, "customer.depositPercentage.max"),
         })
       )
   );

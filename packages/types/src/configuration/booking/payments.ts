@@ -2,32 +2,43 @@ import { z } from "zod";
 
 export const paymentsConfigurationSchema = z
   .object({
-    paymentAppId: z.string().min(1, "Payment app is required"),
-    enable: z.literal(true, { message: "Payment app is required" }),
+    paymentAppId: z
+      .string()
+      .min(1, "configuration.booking.payments.paymentAppId.required"),
+    enable: z.literal(true, {
+      message: "configuration.booking.payments.paymentAppId.required",
+    }),
   })
   .and(
     z.discriminatedUnion("requireDeposit", [
       z.object({
         requireDeposit: z
-          .literal(false, { message: "Deposit amount is required if enabled" })
+          .literal(false, {
+            message: "configuration.booking.payments.requireDeposit.required",
+          })
           .optional(),
       }),
       z.object({
         requireDeposit: z.literal(true, {
-          message: "Deposit amount is required",
+          message: "configuration.booking.payments.requireDeposit.required",
         }),
         depositPercentage: z.coerce
-          .number({ message: "Must be a number between 10 and 100" })
-          .int("Must be a number between 10 and 100")
-          .min(10, "Must be a number between 10 and 100")
-          .max(100, "Must be a number between 10 and 100"),
+          .number({
+            message:
+              "configuration.booking.payments.depositPercentage.required",
+          })
+          .int("configuration.booking.payments.depositPercentage.integer")
+          .min(10, "configuration.booking.payments.depositPercentage.min")
+          .max(100, "configuration.booking.payments.depositPercentage.max"),
       }),
     ])
   )
   .or(
     z.object({
       enable: z
-        .literal(false, { message: "Payment app is required if enabled" })
+        .literal(false, {
+          message: "configuration.booking.payments.paymentAppId.required",
+        })
         .optional(),
     })
   );

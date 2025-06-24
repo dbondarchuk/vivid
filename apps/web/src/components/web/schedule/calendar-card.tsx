@@ -144,7 +144,7 @@ export const CalendarCard: React.FC = () => {
     />
   );
 
-  const timeZoneLabel = formatJsx(i18n("select_timezone_label_format"), {
+  const timeZoneLabel = formatJsx(i18n("select_timezone_label_format", false), {
     timeZoneCombobox,
   });
 

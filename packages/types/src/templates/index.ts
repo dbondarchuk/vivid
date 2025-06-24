@@ -3,9 +3,9 @@ import { communicationChannels } from "../communication";
 import { WithDatabaseId } from "../database";
 
 export const templateSchema = z.object({
-  name: z.string().min(3, "Template name is required"),
-  type: z.enum(communicationChannels, { message: "Unknown type" }),
-  value: z.any({ message: "Template value is required" }),
+  name: z.string().min(3, "template.name.required"),
+  type: z.enum(communicationChannels, { message: "template.type.invalid" }),
+  value: z.any({ message: "template.value.required" }),
 });
 
 export const getTemplateSchemaWithUniqueCheck = (

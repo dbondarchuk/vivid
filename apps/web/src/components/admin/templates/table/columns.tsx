@@ -38,15 +38,6 @@ export const columns: ColumnDef<TemplateListModel>[] = [
     enableHiding: false,
   },
   {
-    cell: ({ row }) => {
-      const t = useI18n("admin");
-      return t(`common.labels.channel.${row.original.type}`);
-    },
-    id: "type",
-    header: tableSortHeader("templates.table.columns.type", "string", "admin"),
-    sortingFn: tableSortNoopFunction,
-  },
-  {
     cell: ({ row }) => (
       <Link
         variant="underline"
@@ -57,6 +48,15 @@ export const columns: ColumnDef<TemplateListModel>[] = [
     ),
     id: "name",
     header: tableSortHeader("templates.table.columns.name", "string", "admin"),
+    sortingFn: tableSortNoopFunction,
+  },
+  {
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return t(`common.labels.channel.${row.original.type}`);
+    },
+    id: "type",
+    header: tableSortHeader("templates.table.columns.type", "string", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {

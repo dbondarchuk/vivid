@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { zOptionalOrMinLengthString, zUniqueArray } from "../utils";
+import { zOptionalOrMinLengthString, zPhone, zUniqueArray } from "../utils";
 import { zTimeZone } from "../utils/zTimeZone";
 import { AppointmentAddon, AppointmentOption } from "./appointment-option";
 
@@ -33,27 +33,31 @@ export type AppointmentEvent = {
 };
 
 export const appointmentRequestSchema = z.object({
-  optionId: z.string().min(1, "OptionID is required"),
+  optionId: z.string().min(1, "appointments.request.optionId.required"),
   addonsIds: zUniqueArray(
-    z.array(z.string().min(1, "AddonID is required")),
+    z.array(z.string().min(1, "appointments.request.addonsIds.required")),
     (x) => x,
-    "Addon IDs should be unique"
+    "appointments.request.addonsIds.unique"
   ).optional(),
-  dateTime: z.coerce.date({ message: "DateTime is required" }),
+  dateTime: z.coerce.date({
+    message: "appointments.request.dateTime.required",
+  }),
   timeZone: zTimeZone,
   duration: z.coerce
-    .number({ message: "Duration is required" })
-    .int("Only positive integer numbers allowed")
-    .min(1, "Only positive integer numbers allowed"),
+    .number({ message: "appointments.request.duration.required" })
+    .int("appointments.request.duration.positive")
+    .min(1, "appointments.request.duration.positive"),
   fields: z
     .object({
-      email: z.string().email("Valid email is required").trim(),
-      name: z.string().min(1, "Name is required").trim(),
-      phone: z
+      email: z
         .string()
-        .min(1, "Phone is required")
-        .trim()
-        .refine((s) => !s?.includes("_"), "Valid phone number is required"),
+        .email("appointments.request.fields.email.required")
+        .trim(),
+      name: z
+        .string()
+        .min(1, "appointments.request.fields.name.required")
+        .trim(),
+      phone: zPhone,
     })
     .and(
       z.record(
@@ -63,11 +67,11 @@ export const appointmentRequestSchema = z.object({
     ),
   promoCode: zOptionalOrMinLengthString(
     1,
-    "Promo code should be undefined or at least 1 character long"
+    "appointments.request.promoCode.min"
   ),
   paymentIntentId: zOptionalOrMinLengthString(
     1,
-    "Payment Intent ID should be undefined or at least one character long"
+    "appointments.request.paymentIntentId.min"
   ),
 });
 
