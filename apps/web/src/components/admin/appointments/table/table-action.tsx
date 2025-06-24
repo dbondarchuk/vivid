@@ -1,5 +1,7 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
+import { appointmentStatuses } from "@vivid/types";
 import {
   Button,
   cn,
@@ -15,15 +17,13 @@ import {
 } from "@vivid/ui";
 import { Settings2 } from "lucide-react";
 import React from "react";
-import {
-  STATUS_OPTIONS,
-  useAppointmentsTableFilters,
-} from "./use-table-filters";
+import { useAppointmentsTableFilters } from "./use-table-filters";
 
 export const AppointmentsTableAction: React.FC<{
   showCustomerFilter?: boolean;
   className?: string;
 }> = ({ showCustomerFilter, className }) => {
+  const t = useI18n("admin");
   const {
     statusFilter,
     setStatusFilter,
@@ -46,8 +46,11 @@ export const AppointmentsTableAction: React.FC<{
     <>
       <DataTableFilterBox
         filterKey="status"
-        title="Status"
-        options={STATUS_OPTIONS}
+        title={t("appointments.table.filters.status")}
+        options={appointmentStatuses.map((value) => ({
+          value,
+          label: t(`appointments.status.${value}`),
+        }))}
         setFilterValue={setStatusFilter as any}
         filterValue={statusFilter}
       />
@@ -85,7 +88,11 @@ export const AppointmentsTableAction: React.FC<{
           setPage={setPage}
         />
         <Popover>
-          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+          <PopoverTrigger
+            tooltip={t("common.labels.filters")}
+            asChild
+            className="md:hidden"
+          >
             <Button variant="outline">
               <Settings2 size={16} />
             </Button>

@@ -1,7 +1,8 @@
 import { HeaderContext, Row, SortDirection } from "@tanstack/react-table";
-import { Button } from "./button";
+import { Button } from "../button";
 import { icons } from "lucide-react";
-import { Icon } from "./icon";
+import { Icon } from "../icon";
+import { I18nKey, I18nNamespaces, useI18n } from "@vivid/i18n";
 
 export type SortingFieldType =
   | "number"
@@ -42,18 +43,20 @@ const buttons: Record<
   },
 };
 
-export const tableSortHeader = (
-  title: string,
-  type: SortingFieldType = "default"
+export const tableSortHeader = <T extends I18nNamespaces>(
+  title: I18nKey<T>,
+  type: SortingFieldType = "default",
+  i18nNamespace: T = "ui" as T
 ) => {
   const TableHeader = ({ column }: HeaderContext<any, any>) => {
+    const t = useI18n(i18nNamespace);
     return (
       <Button
         variant="ghost"
         className={column.getIsSorted() ? "underline" : ""}
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        {title}
+        {t(title)}
         <Icon
           name={buttons[type][column.getIsSorted() || "false"]}
           className="ml-2 h-4 w-4"

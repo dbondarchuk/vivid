@@ -3,6 +3,7 @@ import {
   ToolbarColorMenu,
   ToolbarDropdownMenu,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import {
   Baseline,
   MoveDiagonal2,
@@ -19,112 +20,116 @@ import { FontWeightDropdownMenu } from "../../toolbars/font-weight";
 import { TextAlignDropdownMenu } from "../../toolbars/text-align";
 import { ButtonProps, ButtonPropsDefaults } from "./schema";
 
-const styleItems = [
-  {
-    icon: <SquareRoundCorner />,
-    value: "rounded",
-    label: "Rounded",
-  },
-  {
-    icon: <RectangleHorizontal />,
-    value: "rectangle",
-    label: "Rectangle",
-  },
-  {
-    icon: <Pill />,
-    value: "pill",
-    label: "Pill",
-  },
-];
+export const ButtonToolbar = (props: ConfigurationProps<ButtonProps>) => {
+  const t = useI18n("builder");
 
-const sizeItems = [
-  {
-    value: "x-small",
-    label: "X-Small",
-  },
-  {
-    value: "small",
-    label: "Small",
-  },
-  {
-    value: "medium",
-    label: "Medium",
-  },
-  {
-    value: "large",
-    label: "Large",
-  },
-];
+  const styleItems = [
+    {
+      icon: <SquareRoundCorner />,
+      value: "rounded",
+      label: t("emailBuilder.blocks.button.styles.rounded"),
+    },
+    {
+      icon: <RectangleHorizontal />,
+      value: "rectangle",
+      label: t("emailBuilder.blocks.button.styles.rectangle"),
+    },
+    {
+      icon: <Pill />,
+      value: "pill",
+      label: t("emailBuilder.blocks.button.styles.pill"),
+    },
+  ];
 
-const widthItems = [
-  {
-    value: "auto",
-    label: "Auto",
-  },
-  {
-    value: "full",
-    label: "Full width",
-  },
-];
+  const sizeItems = [
+    {
+      value: "x-small",
+      label: t("emailBuilder.blocks.button.sizes.x-small"),
+    },
+    {
+      value: "small",
+      label: t("emailBuilder.blocks.button.sizes.small"),
+    },
+    {
+      value: "medium",
+      label: t("emailBuilder.blocks.button.sizes.medium"),
+    },
+    {
+      value: "large",
+      label: t("emailBuilder.blocks.button.sizes.large"),
+    },
+  ];
 
-export const ButtonToolbar = (props: ConfigurationProps<ButtonProps>) => (
-  <>
-    <TextAlignDropdownMenu
-      {...props}
-      defaultValue={ButtonPropsDefaults.style.textAlign}
-    />
-    <FontWeightDropdownMenu
-      {...props}
-      defaultValue={ButtonPropsDefaults.style.fontWeight}
-    />
-    <FontFamilyDropdownMenu {...props} />
-    <FontSizeToolbarMenu
-      {...props}
-      defaultValue={ButtonPropsDefaults.style.fontSize}
-    />
-    <ToolbarDropdownMenu
-      items={styleItems}
-      defaultValue={ButtonPropsDefaults.props.buttonStyle}
-      property="props.buttonStyle"
-      tooltip="Style"
-      {...props}
-    />
-    <ToolbarDropdownMenu
-      icon={<MoveDiagonal2 />}
-      items={sizeItems}
-      defaultValue={ButtonPropsDefaults.props.size}
-      property="props.size"
-      tooltip="Size"
-      {...props}
-    />
-    <ToolbarDropdownMenu
-      icon={<MoveHorizontal />}
-      items={widthItems}
-      defaultValue={ButtonPropsDefaults.props.width}
-      property="props.width"
-      tooltip="Size"
-      {...props}
-    />
-    <ToolbarColorMenu
-      icon={<Baseline />}
-      defaultValue={ButtonPropsDefaults.props.buttonTextColor}
-      property="props.buttonTextColor"
-      tooltip="Text color"
-      {...props}
-    />
-    <ToolbarColorMenu
-      icon={<PaintbrushVertical />}
-      defaultValue={ButtonPropsDefaults.props.buttonBackgroundColor}
-      property="props.buttonBackgroundColor"
-      tooltip="Button color"
-      {...props}
-    />
-    <ToolbarColorMenu
-      icon={<PaintBucket />}
-      property="style.backgroundColor"
-      nullable
-      tooltip="Background color"
-      {...props}
-    />
-  </>
-);
+  const widthItems = [
+    {
+      value: "auto",
+      label: t("emailBuilder.blocks.button.widths.auto"),
+    },
+    {
+      value: "full",
+      label: t("emailBuilder.blocks.button.widths.full"),
+    },
+  ];
+
+  return (
+    <>
+      <TextAlignDropdownMenu
+        {...props}
+        defaultValue={ButtonPropsDefaults.style.textAlign}
+      />
+      <FontWeightDropdownMenu
+        {...props}
+        defaultValue={ButtonPropsDefaults.style.fontWeight}
+      />
+      <FontFamilyDropdownMenu {...props} />
+      <FontSizeToolbarMenu
+        {...props}
+        defaultValue={ButtonPropsDefaults.style.fontSize}
+      />
+      <ToolbarDropdownMenu
+        items={styleItems}
+        defaultValue={ButtonPropsDefaults.props.buttonStyle}
+        property="props.buttonStyle"
+        tooltip={t("emailBuilder.blocks.button.style")}
+        {...props}
+      />
+      <ToolbarDropdownMenu
+        icon={<MoveDiagonal2 />}
+        items={sizeItems}
+        defaultValue={ButtonPropsDefaults.props.size}
+        property="props.size"
+        tooltip={t("emailBuilder.blocks.button.size")}
+        {...props}
+      />
+      <ToolbarDropdownMenu
+        icon={<MoveHorizontal />}
+        items={widthItems}
+        defaultValue={ButtonPropsDefaults.props.width}
+        property="props.width"
+        tooltip={t("emailBuilder.blocks.button.width")}
+        {...props}
+      />
+      <ToolbarColorMenu
+        icon={<Baseline />}
+        defaultValue={ButtonPropsDefaults.props.buttonTextColor}
+        property="props.buttonTextColor"
+        tooltip={t("emailBuilder.blocks.button.textColor")}
+        {...props}
+      />
+      <ToolbarColorMenu
+        icon={<PaintbrushVertical />}
+        defaultValue={ButtonPropsDefaults.props.buttonBackgroundColor}
+        property="props.buttonBackgroundColor"
+        tooltip={t("emailBuilder.blocks.button.backgroundColor")}
+        {...props}
+      />
+      <ToolbarColorMenu
+        icon={<PaintBucket />}
+        property="style.backgroundColor"
+        nullable
+        tooltip={t("emailBuilder.blocks.button.backgroundColor")}
+        {...props}
+      />
+    </>
+  );
+};

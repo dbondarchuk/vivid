@@ -1,5 +1,6 @@
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
 import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
+import { useI18n } from "@vivid/i18n";
 
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { DateTime } from "luxon";
@@ -36,6 +37,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
   onRangeChange,
   onDateClick,
 }) => {
+  const t = useI18n("admin");
   const [dates, setDates] = React.useState<Dates>(
     getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone))
   );
@@ -100,14 +102,16 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                 <TooltipTrigger>
                   <span className="text-xs bg-accent text-accent-foreground px-1 md:px-2 py-0.5 rounded flex items-center">
                     <Clock className="h-3 w-3 md:mr-1" />
-                    <span className="hidden md:inline">Work</span>
+                    <span className="hidden md:inline">
+                      {t("calendar.work")}
+                    </span>
                   </span>
                 </TooltipTrigger>
                 <TooltipContent className="bg-transparent">
                   <div className="bg-accent text-accent-foreground p-3 rounded-md">
                     <div className="text-sm font-medium flex items-center text-accent-foreground">
                       <Clock className="h-4 w-4 mr-2" />
-                      <span>Working Hours</span>
+                      <span>{t("calendar.workingHours")}</span>
                     </div>
                     <div className="mt-1 flex flex-col gap-1">
                       {daySchedule.map((hours, idx) => (
@@ -185,7 +189,15 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
         )}
       </div>
       <div className="grid grid-cols-7 mb-2">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+        {[
+          t("calendar.mon"),
+          t("calendar.tue"),
+          t("calendar.wed"),
+          t("calendar.thu"),
+          t("calendar.fri"),
+          t("calendar.sat"),
+          t("calendar.sun"),
+        ].map((day) => (
           <div key={day} className="text-sm font-medium text-center py-2">
             {day}
           </div>

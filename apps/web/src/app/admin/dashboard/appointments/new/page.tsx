@@ -1,21 +1,17 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentChoice } from "@vivid/types";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { AppointmentScheduleForm } from "./form";
-
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Appointments", link: "/admin/dashboard/appointments" },
-  { title: "New", link: "/admin/dashboard/appointments/new" },
-];
 
 type Props = {
   searchParams: Promise<{ from?: string; customer?: string }>;
 };
 
 export default async function NewAssetsPage(props: Props) {
+  const t = await getI18nAsync("admin");
   const logger = getLoggerFactory("AdminPages")("new-appointment");
   const searchParams = await props.searchParams;
 
@@ -26,6 +22,18 @@ export default async function NewAssetsPage(props: Props) {
     },
     "Loading new appointment page"
   );
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.appointments"),
+      link: "/admin/dashboard/appointments",
+    },
+    {
+      title: t("appointments.new.title"),
+      link: "/admin/dashboard/appointments/new",
+    },
+  ];
 
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
@@ -77,10 +85,9 @@ export default async function NewAssetsPage(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="New appointment"
-            description="Schedule a new appointment on behalf of the customer"
+            title={t("appointments.new.title")}
+            description={t("appointments.new.description")}
           />
-          {/* <Separator /> */}
         </div>
         <AppointmentScheduleForm
           timeZone={config.timeZone}

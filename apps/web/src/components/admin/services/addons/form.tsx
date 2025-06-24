@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { PlateEditor, PlateMarkdownEditor } from "@vivid/rte";
 import {
   AppointmentAddon,
@@ -38,9 +39,10 @@ import { checkUniqueName, create, update } from "./actions";
 export const AddonForm: React.FC<{
   initialData?: AppointmentAddonUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
+  const t = useI18n("admin");
   const formSchema = getAppointmentAddonSchemaWithUniqueCheck(
     (slug) => checkUniqueName(slug, initialData?._id),
-    "Addon name must be unique"
+    "services.addons.nameUnique"
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -70,8 +72,8 @@ export const AddonForm: React.FC<{
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("services.addons.form.toasts.changesSaved"),
+        error: t("services.addons.form.toasts.requestError"),
       });
     } catch (error: any) {
       console.error(error);
@@ -119,12 +121,12 @@ export const AddonForm: React.FC<{
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("services.addons.form.name")}</FormLabel>
 
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Addon name"
+                    placeholder={t("services.addons.form.namePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -138,9 +140,9 @@ export const AddonForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Short description{" "}
+                  {t("services.addons.form.description")}{" "}
                   <InfoTooltip>
-                    Short text that will be visible during booking
+                    {t("services.addons.form.descriptionTooltip")}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -164,7 +166,7 @@ export const AddonForm: React.FC<{
               name="duration"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Duration</FormLabel>
+                  <FormLabel>{t("services.addons.form.duration")}</FormLabel>
                   <FormControl>
                     <DurationInput {...field} disabled={loading} />
                   </FormControl>
@@ -177,7 +179,7 @@ export const AddonForm: React.FC<{
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>{t("services.addons.form.price")}</FormLabel>
                   <FormControl>
                     <InputGroup>
                       <InputSuffix
@@ -190,7 +192,9 @@ export const AddonForm: React.FC<{
                       <InputGroupInput>
                         <Input
                           disabled={loading}
-                          placeholder="20"
+                          placeholder={t(
+                            "services.addons.form.pricePlaceholder"
+                          )}
                           type="number"
                           className={InputGroupInputClasses({
                             variant: "prefix",
@@ -206,7 +210,7 @@ export const AddonForm: React.FC<{
             />
           </div>
           <Sortable
-            title="Fields"
+            title={t("services.addons.form.fields")}
             ids={fieldsFieldsIds}
             onSort={sortFields}
             onAdd={addNewField}

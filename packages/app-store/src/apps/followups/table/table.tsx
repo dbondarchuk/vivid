@@ -4,11 +4,13 @@ import { searchParams } from "./search-params";
 
 import { WithTotal } from "@vivid/types";
 import { DataTable, DataTableSkeleton, toast, useDebounce } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { getFollowUps } from "../actions";
 import { FollowUp } from "../models";
 import { columns } from "./columns";
 
 export const FollowUpsTable: React.FC<{ appId: string }> = ({ appId }) => {
+  const t = useI18n("apps");
   const [query] = useQueryStates(searchParams);
 
   const delayedQuery = useDebounce(query, 100);
@@ -42,7 +44,7 @@ export const FollowUpsTable: React.FC<{ appId: string }> = ({ appId }) => {
       setResponse(res);
     } catch (e: any) {
       console.error(e);
-      toast.error("There was an error while loading the follow-ups");
+      toast.error(t("followUps.statusText.error_loading_follow_ups"));
     } finally {
       setLoading(false);
     }

@@ -29,7 +29,7 @@ export default class LogCleanupConnectedApp
     try {
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully set up`,
+        statusText: "logCleanup.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -56,7 +56,7 @@ export default class LogCleanupConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error processing log cleanup configuration",
+        statusText: "logCleanup.statusText.error_processing_configuration",
       });
 
       throw error;
@@ -172,7 +172,7 @@ export default class LogCleanupConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error during log cleanup scheduled task",
+        statusText: "logCleanup.statusText.error_during_cleanup",
       });
 
       throw error;

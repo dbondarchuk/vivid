@@ -23,11 +23,7 @@ import {
 
 import { SaveButton } from "@vivid/ui";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
-
-const templateKeyText: Record<TextMessagesTemplateKeys, string> = {
-  ...StatusText,
-  rescheduled: "Rescheduled",
-};
+import { useI18n } from "@vivid/i18n";
 
 const TextMessagesTemplateForm: React.FC<{
   form: UseFormReturn<CustomerTextMessageNotificationConfiguration>;
@@ -36,6 +32,13 @@ const TextMessagesTemplateForm: React.FC<{
   isDataLoading?: boolean;
   whenText: string;
 }> = ({ form, disabled, type, whenText, isDataLoading }) => {
+  const t = useI18n("apps");
+
+  const getTypeText = (type: TextMessagesTemplateKeys) => {
+    if (type === "rescheduled") return "Rescheduled";
+    return StatusText[type as keyof typeof StatusText];
+  };
+
   return (
     <FormField
       control={form.control}
@@ -43,13 +46,21 @@ const TextMessagesTemplateForm: React.FC<{
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {templateKeyText[type]} text message template
+            {t("customerTextMessageNotification.form.template.label", {
+              type: getTypeText(type),
+            })}
             <InfoTooltip>
               <p>
-                Body of the text message, that your customers will see when{" "}
-                {whenText}
+                {t("customerTextMessageNotification.form.template.tooltip", {
+                  whenText,
+                })}
               </p>
-              <p>Leave empty to not send text message when {whenText}</p>
+              <p>
+                {t(
+                  "customerTextMessageNotification.form.template.tooltipEmpty",
+                  { whenText }
+                )}
+              </p>
             </InfoTooltip>
           </FormLabel>
           <FormControl>
@@ -82,6 +93,8 @@ export const CustomerTextMessageNotificationAppSetup: React.FC<
       schema: customerTextMessageNotificationConfigurationSchema,
     });
 
+  const t = useI18n("apps");
+
   return (
     <>
       <Form {...form}>
@@ -92,28 +105,30 @@ export const CustomerTextMessageNotificationAppSetup: React.FC<
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"pending"}
-              whenText="they book new appointment"
+              whenText={t("customerTextMessageNotification.whenText.pending")}
             />
             <TextMessagesTemplateForm
               form={form}
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"confirmed"}
-              whenText="the appointment was confirmed"
+              whenText={t("customerTextMessageNotification.whenText.confirmed")}
             />
             <TextMessagesTemplateForm
               form={form}
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"declined"}
-              whenText="the appointment was declined"
+              whenText={t("customerTextMessageNotification.whenText.declined")}
             />
             <TextMessagesTemplateForm
               form={form}
               disabled={isLoading}
               isDataLoading={isDataLoading}
               type={"rescheduled"}
-              whenText="the appointment was rescheduled"
+              whenText={t(
+                "customerTextMessageNotification.whenText.rescheduled"
+              )}
             />
             <SaveButton
               form={form}

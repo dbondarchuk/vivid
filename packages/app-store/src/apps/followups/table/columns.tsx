@@ -7,27 +7,33 @@ import {
   tableSortNoopFunction,
 } from "@vivid/ui";
 import { DateTime } from "luxon";
-import { followUpChannelLabels, followUpTypeLabels } from "../const";
 import { FollowUp } from "../models";
 import { CellAction } from "./cell-action";
+import { useI18n } from "@vivid/i18n";
 
 export const columns: ColumnDef<FollowUp>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("ui");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("common.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("ui");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("common.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -41,25 +47,42 @@ export const columns: ColumnDef<FollowUp>[] = [
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("Name", "string"),
+    header: tableSortHeader("followUps.table.columns.name", "string", "apps"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) => followUpTypeLabels[field.type],
+    cell: ({ row }) => {
+      const t = useI18n("apps");
+      return t(`followUps.triggers.${row.original.type}`);
+    },
     id: "type",
-    header: tableSortHeader("Type", "string"),
+    header: tableSortHeader("followUps.table.columns.type", "string", "apps"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) => followUpChannelLabels[field.channel],
+    cell: ({ row }) => {
+      const t = useI18n("apps");
+      return t(`followUps.channels.${row.original.channel}`);
+    },
     id: "channel",
-    header: tableSortHeader("Channel", "string"),
+    header: tableSortHeader(
+      "followUps.table.columns.channel",
+      "string",
+      "apps"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) => field.afterAppointmentCount || "All",
+    cell: ({ row }) => {
+      const t = useI18n("apps");
+      return row.original.afterAppointmentCount || t("followUps.table.all");
+    },
     id: "afterAppointmentCount",
-    header: tableSortHeader("After appointment count", "number"),
+    header: tableSortHeader(
+      "followUps.table.columns.afterAppointmentCount",
+      "number",
+      "apps"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -68,7 +91,11 @@ export const columns: ColumnDef<FollowUp>[] = [
         DateTime.DATETIME_MED
       ),
     id: "updatedAt",
-    header: tableSortHeader("Updated at", "date"),
+    header: tableSortHeader(
+      "followUps.table.columns.updatedAt",
+      "date",
+      "apps"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {

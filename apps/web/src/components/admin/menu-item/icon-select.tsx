@@ -1,4 +1,5 @@
 import { Combobox, IComboboxItem, Icon } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { icons } from "lucide-react";
 import { ControllerRenderProps } from "react-hook-form";
 
@@ -25,11 +26,13 @@ export const IconSelect: React.FC<IconSelectProps> = ({
   disabled,
   allowClear,
 }) => {
+  const t = useI18n("admin");
+
   return (
     <Combobox
       className="flex w-full font-normal text-base"
       values={iconValues}
-      searchLabel="Select icon"
+      searchLabel={t("menuItem.iconSelect.selectIcon")}
       disabled={disabled}
       customSearch={(search) =>
         iconValues.filter(

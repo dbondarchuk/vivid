@@ -1,21 +1,26 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 import { GeneralSettingsForm } from "./form";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Settings", link: "/admin/dashboard" },
-  { title: "General", link: "/admin/dashboard/settings/general" },
-];
-
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("general");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading general page");
   const settings =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.settings"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.general"),
+      link: "/admin/dashboard/settings/general",
+    },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -23,8 +28,8 @@ export default async function Page() {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="General Settings"
-            description="Adjust general settings"
+            title={t("settings.general.title")}
+            description={t("settings.general.description")}
           />
           {/* <Separator /> */}
         </div>

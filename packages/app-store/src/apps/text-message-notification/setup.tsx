@@ -16,6 +16,7 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageNotificationApp } from "./app";
 import {
@@ -37,6 +38,8 @@ export const TextMessageNotificationAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
+  const t = useI18n("apps");
+
   return (
     <>
       <Form {...form}>
@@ -48,16 +51,18 @@ export const TextMessageNotificationAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    Phone number
+                    {t("textMessageNotification.form.phone.label")}
                     <InfoTooltip>
-                      <p>
-                        Optional phone number override to use for notifications.
-                      </p>
-                      <p>Your phone is used by default</p>
+                      {t("textMessageNotification.form.phone.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <PhoneInput {...field} label="Phone" />
+                    <PhoneInput
+                      {...field}
+                      label={t(
+                        "textMessageNotification.form.phone.placeholder"
+                      )}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -70,15 +75,20 @@ export const TextMessageNotificationAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{isLoading ? "Update" : "Add"}</span>
+              <span>
+                {isLoading
+                  ? t("textMessageNotification.form.update")
+                  : t("textMessageNotification.form.add")}
+              </span>
               <ConnectedAppNameAndLogo
                 app={{ name: TextMessageNotificationApp.name }}
+                t={t}
               />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

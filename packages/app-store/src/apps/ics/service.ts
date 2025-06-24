@@ -3,6 +3,7 @@ import { getLoggerFactory } from "@vivid/logger";
 import {
   CalendarBusyTime,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   ICalendarBusyTimeProvider,
   IConnectedApp,
@@ -46,12 +47,15 @@ export default class IcsConnectedApp
           { appId: appData._id, icsLink: data.link, status: response.status },
           "Failed to fetch ICS calendar - HTTP error"
         );
-        throw new Error(`Failed to fetch url. Status code: ${response.status}`);
+
+        throw new ConnectedAppError("ics.statusText.http_error", {
+          statusCode: response.status,
+        });
       }
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: "Successfully fetched calendar",
+        statusText: "ics.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -77,7 +81,12 @@ export default class IcsConnectedApp
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "Something went wrong",
       };
 
       this.props.update({
@@ -123,9 +132,10 @@ export default class IcsConnectedApp
           { appId: appData._id, icsLink: link, status: response.status },
           "Failed to fetch ICS calendar data"
         );
-        throw new Error(
-          `Failed to fetch ICS calendar. Status code: ${response.status}`
-        );
+
+        throw new ConnectedAppError("ics.statusText.calendar_fetch_error", {
+          statusCode: response.status,
+        });
       }
 
       const ics = await response.text();
@@ -195,7 +205,7 @@ export default class IcsConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: "Successfully fetched events",
+        statusText: "ics.statusText.successfully_fetched_events",
       });
 
       return icsEvents;
@@ -208,7 +218,12 @@ export default class IcsConnectedApp
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "Something went wrong",
       };
 
       this.props.update({

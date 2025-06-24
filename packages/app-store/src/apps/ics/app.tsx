@@ -5,14 +5,14 @@ import { IcsAppSetup } from "./setup";
 
 export const IcsApp: App = {
   name: ICS_APP_NAME,
-  displayName: "ICS Feed",
+  displayName: "ics.displayName",
   scope: ["calendar-read"],
-  category: ["Calendar"],
+  category: ["categories.calendar"],
   type: "basic",
   Logo: ({ className }) => <IcsLogo className={className} />,
   SetUp: (props) => <IcsAppSetup {...props} />,
   isFeatured: true,
   description: {
-    text: "Import events from an ICS Feed",
+    text: "ics.description",
   },
 };

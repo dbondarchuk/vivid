@@ -23,6 +23,7 @@ import {
   CalendarWriterConfiguration,
   calendarWriterConfigurationSchema,
 } from "./models";
+import { useI18n } from "@vivid/i18n";
 
 export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -38,6 +39,8 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
+  const t = useI18n("apps");
+
   return (
     <>
       <Form {...form}>
@@ -49,10 +52,9 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    Calendar storage
+                    {t("calendarWriter.form.calendarStorage.label")}
                     <InfoTooltip>
-                      Select calendar that you would like to use as target
-                      storage for your appointment events.
+                      {t("calendarWriter.form.calendarStorage.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -78,13 +80,20 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{existingAppId ? "Update" : "Add"}</span>
-              <ConnectedAppNameAndLogo app={{ name: CalendarWriterApp.name }} />
+              <span>
+                {existingAppId
+                  ? t("calendarWriter.form.update")
+                  : t("calendarWriter.form.add")}
+              </span>
+              <ConnectedAppNameAndLogo
+                app={{ name: CalendarWriterApp.name }}
+                t={t}
+              />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { AvailableApps } from "@vivid/app-store";
+import { useI18n } from "@vivid/i18n";
 import { CalendarSourceConfiguration } from "@vivid/types";
 import {
   AlertDialog,
@@ -44,6 +45,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
   update,
   clone,
 }) => {
+  const t = useI18n("admin");
   const [appName, setAppName] = React.useState<string | undefined>();
 
   const appId = item.appId;
@@ -66,7 +68,12 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>
-                App <InfoTooltip>Select supported app</InfoTooltip>
+                {t("settings.appointments.form.cards.calendarSource.app")}{" "}
+                <InfoTooltip>
+                  {t(
+                    "settings.appointments.form.cards.calendarSource.appTooltip"
+                  )}
+                </InfoTooltip>
               </FormLabel>
 
               <FormControl>
@@ -97,22 +104,36 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
               className=""
               size="sm"
               type="button"
-              title="Remove"
+              title={t(
+                "settings.appointments.form.cards.calendarSource.remove"
+              )}
             >
               <Trash size={20} />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>
+                {t(
+                  "settings.appointments.form.cards.calendarSource.deleteConfirmTitle"
+                )}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                <p>Are you sure you want to remove this calendar soure?</p>
+                <p>
+                  {t(
+                    "settings.appointments.form.cards.calendarSource.deleteConfirmDescription"
+                  )}
+                </p>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>
+                {t("settings.appointments.form.cards.calendarSource.cancel")}
+              </AlertDialogCancel>
               <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>Delete</Button>
+                <Button onClick={remove}>
+                  {t("settings.appointments.form.cards.calendarSource.delete")}
+                </Button>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

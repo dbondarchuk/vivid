@@ -24,30 +24,30 @@ export const reminderTimeBeforeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of weeks is 0")
-      .max(10, "Max amount of weeks is 10")
+      .int("common.number.integer")
+      .min(0, "reminders.form.weeks.min")
+      .max(10, "reminders.form.weeks.max")
   ),
   days: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of days is 0")
-      .max(31, "Max amount of days is 31")
+      .int("common.number.integer")
+      .min(0, "reminders.form.days.min")
+      .max(31, "reminders.form.days.max")
   ),
   hours: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of hours is 0")
-      .max(24 * 5, "Max amount of hours is 120")
+      .int("common.number.integer")
+      .min(0, "reminders.form.hours.min")
+      .max(24 * 5, "reminders.form.hours.max")
   ),
   minutes: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of minutes is 0")
-      .max(60 * 10, "Max amount of minutes is 600")
+      .int("common.number.integer")
+      .min(0, "reminders.form.minutes.min")
+      .max(60 * 10, "reminders.form.minutes.max")
   ),
 });
 
@@ -56,39 +56,39 @@ export const reminderAtTimeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of weeks is 0")
-      .max(10, "Max amount of weeks is 10")
+      .int("common.number.integer")
+      .min(0, "reminders.form.weeks.min")
+      .max(10, "reminders.form.weeks.max")
   ),
   days: z.coerce
     .number()
-    .int("Should be the integer value")
-    .min(0, "Min amount of days is 0")
-    .max(31, "Max amount of days is 31"),
+    .int("common.number.integer")
+    .min(0, "reminders.form.days.min")
+    .max(31, "reminders.form.days.max"),
   time: z.object({
     hour: z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Hour should be between 0 and 23")
-      .max(23, "Hour should be between 0 and 23"),
+      .int("common.number.integer")
+      .min(0, "reminders.form.time.hour.min")
+      .max(23, "reminders.form.time.hour.max"),
     minute: z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Minute should be between 0 and 59")
-      .max(59, "Minute should be between 0 and 59"),
+      .int("common.number.integer")
+      .min(0, "reminders.form.time.minute.min")
+      .max(59, "reminders.form.time.minute.max"),
   }),
 });
 
 export const baseReminderChannelSchema = z.object({
   templateId: z
-    .string({ message: "Template is required" })
-    .min(1, "Template is required"),
+    .string({ message: "reminders.form.templateId.required" })
+    .min(1, "reminders.form.templateId.required"),
 });
 
 export const reminderEmailSchema = z
   .object({
     channel: reminderChannelesEnum.extract(["email"]),
-    subject: z.string().min(1, "Email subject is required"),
+    subject: z.string().min(1, "reminders.form.subject.required"),
   })
   .merge(baseReminderChannelSchema);
 
@@ -109,7 +109,7 @@ export const reminderChannelSchema = z.discriminatedUnion("channel", [
 ]);
 
 export const reminderGeneralSchema = z.object({
-  name: z.string().min(2, "Reminder name must me at least 2 characters long"),
+  name: z.string().min(2, "reminders.form.name.min"),
 });
 
 export const reminderSchema = z
@@ -122,8 +122,7 @@ export const reminderSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["days"],
-        message:
-          "Reminder should be sent at least 1 day before the appointment",
+        message: "reminders.form.atTime.days.min",
       });
     } else if (
       arg.type === "timeBefore" &&
@@ -135,8 +134,7 @@ export const reminderSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["minutes"],
-        message:
-          "Reminder should be sent at least 1 minute before the appointment",
+        message: "reminders.form.atTime.minutes.min",
       });
     }
   });

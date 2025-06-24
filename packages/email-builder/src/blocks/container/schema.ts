@@ -10,7 +10,7 @@ export const ContainerPropsSchema = z.object({
         borderColor: zColorNullable,
         borderRadius: z.coerce
           .number()
-          .int("Should be the integer value")
+          .int("emailBuilder.common.container.validation.borderRadius")
           .optional()
           .nullable(),
       })

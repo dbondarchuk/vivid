@@ -6,11 +6,13 @@ import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "./connected-app-properties";
+import { I18nFn, useI18n } from "@vivid/i18n";
 
 const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
+  const t = useI18n("apps");
   return (
     <span className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
-      <ConnectedAppNameAndLogo app={app} logoClassName="w-4 h-4" />
+      <ConnectedAppNameAndLogo app={app} logoClassName="w-4 h-4" t={t} />
       <ConnectedAppAccount app={app} />
     </span>
   );
@@ -24,11 +26,11 @@ const getApps = async (scope: string) => {
   });
 
   if (response.status >= 400) {
-    toast.error("Request failed.");
     const text = await response.text();
-    console.error(`Request to fetch apps failed: ${response.status}; ${text}`);
+    const message = `Request to fetch apps failed: ${response.status}; ${text}`;
 
-    return [];
+    console.error(message);
+    throw new Error(message);
   }
 
   return (await response.json()) as ConnectedApp[];
@@ -78,6 +80,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
 }) => {
   const [apps, setApps] = React.useState<ConnectedApp[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const t = useI18n("apps");
 
   React.useEffect(() => {
     const fn = async () => {
@@ -85,6 +88,10 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
         setIsLoading(true);
         const apps = await getApps(scope);
         setApps(apps);
+      } catch (e) {
+        toast.error(t("common.requestFailed"));
+        console.error(e);
+        setApps([]);
       } finally {
         setIsLoading(false);
       }
@@ -107,7 +114,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
           label: (
             <div className="flex flex-col gap-2">
               <AppShortLabel app={app} />
-              <ConnectedAppStatusMessage app={app} />
+              <ConnectedAppStatusMessage app={app} t={t} />
             </div>
           ),
         };
@@ -120,7 +127,7 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base max-w-full", className)}
       values={appValues(apps)}
-      searchLabel={isLoading ? "Loading apps..." : "Select app"}
+      searchLabel={isLoading ? t("common.loadingApps") : t("common.selectApp")}
       value={value}
       customSearch={(search) =>
         appValues(apps.filter((app) => checkAppSearch(app, search)))

@@ -3,6 +3,7 @@ import {
   appStatusTextClasses,
   AvailableApps,
 } from "@vivid/app-store";
+import { I18nFn } from "@vivid/i18n";
 import { ConnectedApp } from "@vivid/types";
 import { cn } from "@vivid/ui";
 
@@ -30,10 +31,18 @@ export const ConnectedAppAccount: React.FC<
 };
 
 export const ConnectedAppStatusMessage: React.FC<
-  ConnectedAppPropertiesProps<"status" | "statusText">
-> = ({ app, className }) => (
+  ConnectedAppPropertiesProps<"status" | "statusText"> & {
+    t: I18nFn<"apps">;
+  }
+> = ({ app, className, t }) => (
   <div className={cn("break-all", appStatusTextClasses[app.status], className)}>
-    Status: {appStatusText[app.status]}, {app.statusText}
+    {t("common.statusMessage", {
+      status: t(`status.${app.status}`),
+      statusText:
+        typeof app.statusText === "string"
+          ? t(app.statusText)
+          : t(app.statusText.key, app.statusText.args),
+    })}
   </div>
 );
 
@@ -41,13 +50,14 @@ export const ConnectedAppNameAndLogo: React.FC<
   ConnectedAppPropertiesProps<"name"> & {
     logoClassName?: string;
     nameClassName?: string;
+    t: I18nFn<"apps">;
   }
-> = ({ app, className, logoClassName, nameClassName }) => {
+> = ({ app, className, logoClassName, nameClassName, t }) => {
   const App = AvailableApps[app.name];
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
       <App.Logo className={cn("w-6 y-6", logoClassName)} />
-      <span className={nameClassName}>{App.displayName}</span>
+      <span className={nameClassName}>{t(App.displayName)}</span>
     </div>
   );
 };

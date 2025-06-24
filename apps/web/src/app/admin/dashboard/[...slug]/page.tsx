@@ -1,5 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { AvailableApps } from "@vivid/app-store";
+import { getI18nAsync } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
@@ -14,6 +15,8 @@ type Props = {
 
 export default async function Page(props: Props) {
   const logger = getLoggerFactory("AdminDashboardPage")("Page");
+  const t = await getI18nAsync("admin");
+  const tApps = await getI18nAsync("apps");
 
   const searchParams = await props.searchParams;
   const params = await props.params;
@@ -55,11 +58,16 @@ export default async function Page(props: Props) {
   }
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Apps", link: "/admin/dashboard/apps" },
-    ...(menuItem.pageBreadcrumbs || [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.apps"), link: "/admin/dashboard/apps" },
+    ...(menuItem.pageBreadcrumbs?.map((b) => ({
+      ...b,
+      title: tApps(b.title, { appName: tApps(app.displayName) }),
+    })) || [
       {
-        title: menuItem.pageTitle || app.displayName,
+        title: tApps(menuItem.pageTitle || app.displayName, {
+          appName: tApps(app.displayName),
+        }),
         link: `/admin/dashboard/${path}`,
       },
     ]),
@@ -71,10 +79,13 @@ export default async function Page(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title={menuItem.pageTitle || app.displayName}
-            description={
-              menuItem.pageDescription || `Update ${app.displayName} settings`
-            }
+            title={tApps(menuItem.pageTitle || app.displayName)}
+            description={tApps(
+              menuItem.pageDescription || "common.defaultDescription",
+              {
+                appName: tApps(app.displayName),
+              }
+            )}
           />
           {/* <Separator /> */}
         </div>

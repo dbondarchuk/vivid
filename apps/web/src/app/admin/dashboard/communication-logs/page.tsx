@@ -1,4 +1,3 @@
-import { ClearAllCommunicationLogsButton } from "@/components/admin/communication-logs/table/clear-all";
 import { CommunicationLogsTableColumnsCount } from "@/components/admin/communication-logs/table/columns";
 import {
   searchParamsCache,
@@ -7,27 +6,32 @@ import {
 import { CommunicationLogsTable } from "@/components/admin/communication-logs/table/table";
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs, DataTableSkeleton, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
+import { getI18nAsync } from "@vivid/i18n";
+import { Breadcrumbs, DataTableSkeleton, Heading } from "@vivid/ui";
 import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Communications", link: "/admin/dashboard/communication-logs" },
-];
-
 export default async function CommunicationLogsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("communication-logs");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading communication-logs page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 
   const key = serialize({ ...parsed });
+
+  const breadcrumbItems = [
+    { title: t("assets.dashboard"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.communicationLogs"),
+      link: "/admin/dashboard/communication-logs",
+    },
+  ];
 
   return (
     <PageContainer scrollable={false}>
@@ -37,14 +41,11 @@ export default async function CommunicationLogsPage(props: Params) {
             <Breadcrumbs items={breadcrumbItems} />
             <div className="flex items-center justify-between">
               <Heading
-                title="Communications"
-                description="Monitor all sent and received messages"
+                title={t("navigation.communicationLogs")}
+                description={t("navigation.monitorMessages")}
               />
-
-              {/* <ClearAllCommunicationLogsButton /> */}
             </div>
           </div>
-          {/* <Separator /> */}
         </div>
         <CommunicationLogsTableAction
           allowClearAll

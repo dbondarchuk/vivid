@@ -39,7 +39,7 @@ import {
 import { getTimeZones } from "@vvo/tzdb";
 import React from "react";
 import { TabProps } from "./types";
-import { AllowPromoCodeTypeLabels } from "@/constants/labels";
+import { useI18n } from "@vivid/i18n";
 
 const timeZones = getTimeZones();
 const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
@@ -48,20 +48,8 @@ const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
   value: zone.name,
 }));
 
-const stepLabels: Record<
-  Exclude<BookingConfiguration["slotStart"], undefined>,
-  string
-> = {
-  "every-hour": "Every hour at XX:00",
-  custom: "Custom",
-  5: "Every hour at XX:05, XX:10, XX:15, XX:20, XX:25, XX:30, XX:35, XX:40, XX:45, XX:50, XX:55",
-  10: "Every hour at XX:00, XX:10, XX:20, XX:30, XX:40, XX:50",
-  15: "Every hour at XX:00, XX:15, XX:30, XX:45",
-  20: "Every hour at XX:00, XX:20, XX:40",
-  30: "Every hour at XX:00, XX:30",
-};
-
 const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
+  const t = useI18n("admin");
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
   return (
@@ -87,13 +75,28 @@ const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
           );
         }}
       >
-        Add
+        {t("settings.appointments.form.main.add")}
       </Button>
     </div>
   );
 };
 
 export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
+  const t = useI18n("admin");
+
+  const stepLabels: Record<
+    Exclude<BookingConfiguration["slotStart"], undefined>,
+    string
+  > = {
+    "every-hour": t("settings.appointments.form.main.stepLabels.everyHour"),
+    custom: t("settings.appointments.form.main.stepLabels.custom"),
+    5: t("settings.appointments.form.main.stepLabels.five"),
+    10: t("settings.appointments.form.main.stepLabels.ten"),
+    15: t("settings.appointments.form.main.stepLabels.fifteen"),
+    20: t("settings.appointments.form.main.stepLabels.twenty"),
+    30: t("settings.appointments.form.main.stepLabels.thirty"),
+  };
+
   return (
     <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full">
       <FormField
@@ -101,12 +104,16 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         name="timeZone"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Time zone</FormLabel>
+            <FormLabel>
+              {t("settings.appointments.form.main.timeZone")}
+            </FormLabel>
             <FormControl>
               <Combobox
                 className="flex w-full font-normal text-base"
                 values={timeZoneValues}
-                searchLabel="Select time zone"
+                searchLabel={t(
+                  "settings.appointments.form.main.selectTimeZone"
+                )}
                 disabled={disabled}
                 customSearch={(search) =>
                   timeZoneValues.filter(
@@ -130,10 +137,18 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Schedule provider app
+              {t("settings.appointments.form.main.scheduleProviderApp")}
               <InfoTooltip>
-                <p>Select optional app to provide your work schedule.</p>
-                <p>If no app is selected, base schedule will be applied.</p>
+                <p>
+                  {t(
+                    "settings.appointments.form.main.scheduleProviderAppTooltip1"
+                  )}
+                </p>
+                <p>
+                  {t(
+                    "settings.appointments.form.main.scheduleProviderAppTooltip2"
+                  )}
+                </p>
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -155,15 +170,13 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Auto confirm appointments{" "}
+              {t("settings.appointments.form.main.autoConfirmAppointments")}{" "}
               <InfoTooltip>
                 <p>
-                  Select this option if you want to auto confirm all
-                  appointments created by customers.
+                  {t("settings.appointments.form.main.autoConfirmTooltip1")}
                 </p>
                 <p>
-                  By default, you will need to manually confirm each
-                  appointment.
+                  {t("settings.appointments.form.main.autoConfirmTooltip2")}
                 </p>
               </InfoTooltip>
             </FormLabel>
@@ -184,10 +197,9 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Show promo code field{" "}
+              {t("settings.appointments.form.main.showPromoCodeField")}{" "}
               <InfoTooltip>
-                Configure should the promo code field be shown during the
-                booking
+                {t("settings.appointments.form.main.showPromoCodeTooltip")}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -197,7 +209,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                 className="w-full"
                 values={allowPromoCodeType.map((type) => ({
                   value: type,
-                  label: AllowPromoCodeTypeLabels[type],
+                  label: t(`common.labels.allowPromoCodeType.${type}`),
                 }))}
               />
             </FormControl>
@@ -205,83 +217,34 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
           </FormItem>
         )}
       />
-      {/* <FormField
-        control={form.control}
-        name="autoConfirm"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between">
-            <div className="space-y-0.5">
-              <FormLabel>
-                Auto confirm appointments{" "}
-                <InfoTooltip>
-                  <p>
-                    Select this option if you want to auto confirm all
-                    appointments created by customers.
-                  </p>
-                  <p>
-                    By default, you will need to manually confirm each
-                    appointment.
-                  </p>
-                </InfoTooltip>
-              </FormLabel>
-            </div>
-            <FormControl>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      /> */}
-      {/* <FormField
-        control={form.control}
-        name="autoConfirm"
-        render={({ field }) => (
-          <FormItem>
-            <div className="flex flex-row items-center gap-2">
-              <Checkbox
-                id="confirmed"
-                disabled={disabled}
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-              <FormLabel htmlFor="confirmed" className="cursor-pointer">
-                Auto confirm appointments
-              </FormLabel>
-            </div>
-            <FormDescription>
-              <p>
-                Select this option if you want to auto confirm all appointments
-                created by customers.
-              </p>
-              <p>
-                By default, you will need to manually confirm each appointment.
-              </p>
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      /> */}
       <FormField
         control={form.control}
         name="maxWeeksInFuture"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Maximum number of weeks into the future
+              {t("settings.appointments.form.main.maxWeeksInFuture")}
               <InfoTooltip>
                 <p>
-                  Specifies the maximum number of weeks into the future that a
-                  user can schedule appointments.
+                  {t(
+                    "settings.appointments.form.main.maxWeeksInFutureTooltip1"
+                  )}
                 </p>
                 <p>
-                  <span className="font-semibold">Example:</span> If set to 6,
-                  users can only schedule events up to 6 weeks from the current
-                  date.
+                  <span className="font-semibold">
+                    {t("settings.appointments.form.main.example")}:
+                  </span>{" "}
+                  {t(
+                    "settings.appointments.form.main.maxWeeksInFutureTooltip2"
+                  )}
                 </p>
                 <p>
-                  <span className="font-semibold">Default:</span> 8 weeks
+                  <span className="font-semibold">
+                    {t("settings.appointments.form.main.default")}:
+                  </span>{" "}
+                  {t(
+                    "settings.appointments.form.main.maxWeeksInFutureTooltip3"
+                  )}
                 </p>
               </InfoTooltip>
             </FormLabel>
@@ -297,7 +260,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   />
                 </InputGroupInput>
                 <InputSuffix className={InputGroupSuffixClasses()}>
-                  weeks
+                  {t("settings.appointments.form.main.weeks")}
                 </InputSuffix>
               </InputGroup>
             </FormControl>
@@ -311,24 +274,25 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Minimum break time
+              {t("settings.appointments.form.main.minBreakTime")}
               <InfoTooltip>
                 <p>
-                  Defines the minimum required time interval that must be left
-                  available before and after a scheduled time slot.
+                  {t("settings.appointments.form.main.minBreakTimeTooltip1")}
                 </p>
                 <p>
-                  This field ensures there is a buffer period before and after
-                  each slot to accommodate breaks, preparation time, or to
-                  prevent scheduling conflicts.
+                  {t("settings.appointments.form.main.minBreakTimeTooltip2")}
                 </p>
                 <p>
-                  <span className="font-semibold">Example:</span> If set to 30,
-                  there must be at least 30 minutes of free time before and
-                  after each scheduled slot before the next slot can begin.
+                  <span className="font-semibold">
+                    {t("settings.appointments.form.main.example")}:
+                  </span>{" "}
+                  {t("settings.appointments.form.main.minBreakTimeTooltip3")}
                 </p>
                 <p>
-                  <span className="font-semibold">Default:</span> 0 minutes
+                  <span className="font-semibold">
+                    {t("settings.appointments.form.main.default")}:
+                  </span>{" "}
+                  {t("settings.appointments.form.main.minBreakTimeTooltip4")}
                 </p>
               </InfoTooltip>
             </FormLabel>
@@ -344,7 +308,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   />
                 </InputGroupInput>
                 <InputSuffix className={InputGroupSuffixClasses()}>
-                  minutes
+                  {t("settings.appointments.form.main.minutes")}
                 </InputSuffix>
               </InputGroup>
             </FormControl>
@@ -358,18 +322,20 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Minimum number of hours before booking
+              {t("settings.appointments.form.main.minHoursBeforeBooking")}
               <InfoTooltip>
                 <p>
-                  Specifies the minimum number of hours required in advance for
-                  a booking to be made. This parameter helps ensure that users
-                  cannot book an appointment with less notice than the
-                  designated time frame, allowing you to prepare accordingly
+                  {t(
+                    "settings.appointments.form.main.minHoursBeforeBookingTooltip1"
+                  )}
                 </p>
                 <p>
-                  <span className="font-semibold">Example:</span> If set to 24,
-                  a booking can only be made if it is at least 24 hours before
-                  the desired start time.
+                  <span className="font-semibold">
+                    {t("settings.appointments.form.main.example")}:
+                  </span>{" "}
+                  {t(
+                    "settings.appointments.form.main.minHoursBeforeBookingTooltip2"
+                  )}
                 </p>
               </InfoTooltip>
             </FormLabel>
@@ -385,7 +351,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   />
                 </InputGroupInput>
                 <InputSuffix className={InputGroupSuffixClasses()}>
-                  hours
+                  {t("settings.appointments.form.main.hours")}
                 </InputSuffix>
               </InputGroup>
             </FormControl>
@@ -399,9 +365,11 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Allowed slot start times
+              {t("settings.appointments.form.main.allowedSlotStartTimes")}
               <InfoTooltip>
-                Defines at which times appointments allowed to start
+                {t(
+                  "settings.appointments.form.main.allowedSlotStartTimesTooltip"
+                )}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -418,7 +386,11 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                 }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select step" />
+                  <SelectValue
+                    placeholder={t(
+                      "settings.appointments.form.main.selectStep"
+                    )}
+                  />
                 </SelectTrigger>
                 <SelectContent side="bottom">
                   {Object.entries(stepLabels).map(([step, label]) => (
@@ -440,16 +412,18 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
           render={({ field }) => (
             <FormItem className="col-span-2">
               <FormLabel>
-                Custom time slots
+                {t("settings.appointments.form.main.customTimeSlots")}
                 <InfoTooltip>
-                  Defines at which minute appointments allowed to start
+                  {t("settings.appointments.form.main.customTimeSlotsTooltip")}
                 </InfoTooltip>
               </FormLabel>
               <FormControl>
                 <TagInput
                   {...field}
                   readOnly
-                  placeholder="Click plus button to add time slot"
+                  placeholder={t(
+                    "settings.appointments.form.main.customTimeSlotsPlaceholder"
+                  )}
                   value={field.value}
                   onChange={(e) => {
                     field.onChange(e);

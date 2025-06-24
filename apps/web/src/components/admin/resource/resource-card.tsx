@@ -33,6 +33,7 @@ import {
   Input,
   useTheme,
 } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { stripObject } from "@vivid/utils";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
@@ -78,6 +79,8 @@ export const ResourceCard = ({
   remove,
   update,
 }: ResourceCardProps) => {
+  const t = useI18n("admin");
+
   const {
     setNodeRef,
     attributes,
@@ -141,7 +144,7 @@ export const ResourceCard = ({
           {...listeners}
           className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
         >
-          <span className="sr-only">Move resource</span>
+          <span className="sr-only">{t("resource.card.moveResource")}</span>
           <GripVertical />
         </Button>
         <span
@@ -151,7 +154,7 @@ export const ResourceCard = ({
         >
           {itemSourceType
             ? resourceSourceTypeLabels[itemSourceType]
-            : "Invalid"}
+            : t("resource.card.invalid")}
         </span>
         <div className="flex flex-row gap-2">
           <AlertDialog>
@@ -162,22 +165,26 @@ export const ResourceCard = ({
                 className=""
                 size="sm"
                 type="button"
-                title="Remove"
+                title={t("resource.card.remove")}
               >
                 <Trash size={20} />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  {t("resource.card.deleteConfirmTitle")}
+                </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure that you want to remove this resource?
+                  {t("resource.card.deleteConfirmDescription")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>
+                  {t("resource.card.cancel")}
+                </AlertDialogCancel>
                 <AlertDialogAction asChild variant="destructive">
-                  <Button onClick={remove}>Delete</Button>
+                  <Button onClick={remove}>{t("resource.card.delete")}</Button>
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -190,14 +197,14 @@ export const ResourceCard = ({
           name={`${name}.source`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Source type</FormLabel>
+              <FormLabel>{t("resource.card.sourceType")}</FormLabel>
 
               <FormControl>
                 <Combobox
                   disabled={disabled}
                   className="flex w-full font-normal text-base"
                   values={resourceSourceTypeValues}
-                  searchLabel="Select source type"
+                  searchLabel={t("resource.card.selectSourceType")}
                   value={field.value}
                   onItemSelect={(value) => {
                     field.onChange(value);
@@ -216,9 +223,13 @@ export const ResourceCard = ({
               name={`${name}.url`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Url</FormLabel>
+                  <FormLabel>{t("resource.card.url")}</FormLabel>
                   <FormControl>
-                    <Input disabled={disabled} placeholder="Url" {...field} />
+                    <Input
+                      disabled={disabled}
+                      placeholder={t("resource.card.urlPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -233,7 +244,7 @@ export const ResourceCard = ({
               name={`${name}.value`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value</FormLabel>
+                  <FormLabel>{t("resource.card.value")}</FormLabel>
                   <FormControl>
                     <Editor
                       height="20vh"

@@ -1,21 +1,26 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { AppointmentsSettingsForm } from "./form";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Settings", link: "/admin/dashboard" },
-  { title: "Appointments", link: "/admin/dashboard/settings/appointments" },
-];
-
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("appointments");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading appointments page");
   const booking =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.settings"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.appointments"),
+      link: "/admin/dashboard/settings/appointments",
+    },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -23,8 +28,8 @@ export default async function Page() {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="Appointment Settings"
-            description="Adjust appointment settings"
+            title={t("settings.appointments.title")}
+            description={t("settings.appointments.description")}
           />
           {/* <Separator /> */}
         </div>

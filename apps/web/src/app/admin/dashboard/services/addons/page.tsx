@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/services/addons/table/search-params";
 import { AddonsTable } from "@/components/admin/services/addons/table/table";
 import { AddonsTableAction } from "@/components/admin/services/addons/table/table-action";
+import { getI18nAsync } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
@@ -20,20 +21,21 @@ type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Services", link: "/admin/dashboard/services" },
-  { title: "Addons", link: "/admin/dashboard/services/addons" },
-];
-
 export default async function AddonsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("addons");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading addons page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 
   const key = serialize({ ...parsed });
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    { title: t("navigation.addons"), link: "/admin/dashboard/services/addons" },
+  ];
 
   return (
     <PageContainer scrollable={false}>
@@ -42,8 +44,8 @@ export default async function AddonsPage(props: Params) {
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-center justify-between">
             <Heading
-              title="Addons"
-              description="Manage addons for your services"
+              title={t("services.addons.title")}
+              description={t("services.addons.description")}
             />
 
             <Link
@@ -51,7 +53,7 @@ export default async function AddonsPage(props: Params) {
               href={"/admin/dashboard/services/addons/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> Add New
+              <Plus className="mr-2 h-4 w-4" /> {t("services.addons.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

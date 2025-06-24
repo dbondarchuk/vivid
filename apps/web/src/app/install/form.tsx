@@ -16,6 +16,7 @@ import {
   toast,
   toastPromise,
 } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -23,6 +24,7 @@ import { install } from "./actions";
 import { InstallFormData, installSchema } from "./types";
 
 export const InstallForm: React.FC = () => {
+  const t = useI18n("admin");
   const form = useForm<InstallFormData>({
     resolver: zodResolver(installSchema),
     mode: "all",
@@ -43,8 +45,8 @@ export const InstallForm: React.FC = () => {
           ...data,
         }),
         {
-          success: "You have successfully create your website!",
-          error: "There was a problem with your request.",
+          success: t("install.form.success"),
+          error: t("install.form.error"),
         }
       );
 
@@ -57,7 +59,7 @@ export const InstallForm: React.FC = () => {
   };
 
   const onInvalid = () => {
-    toast.error("Please fix errors in installation form.");
+    toast.error(t("install.form.fixErrors"));
   };
 
   return (
@@ -74,11 +76,11 @@ export const InstallForm: React.FC = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Website Name</FormLabel>
+                    <FormLabel>{t("install.form.websiteName")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Website name"
+                        placeholder={t("install.form.websiteNamePlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -91,11 +93,11 @@ export const InstallForm: React.FC = () => {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Website Title</FormLabel>
+                    <FormLabel>{t("install.form.websiteTitle")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Website title"
+                        placeholder={t("install.form.websiteTitlePlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -108,12 +110,12 @@ export const InstallForm: React.FC = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email address</FormLabel>
+                    <FormLabel>{t("install.form.emailAddress")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
                         type="email"
-                        placeholder="Your email address"
+                        placeholder={t("install.form.emailAddressPlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -126,11 +128,11 @@ export const InstallForm: React.FC = () => {
                 name="url"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Website URL</FormLabel>
+                    <FormLabel>{t("install.form.websiteUrl")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Website url"
+                        placeholder={t("install.form.websiteUrlPlaceholder")}
                         {...field}
                       />
                     </FormControl>
@@ -150,14 +152,14 @@ export const InstallForm: React.FC = () => {
           className="w-full"
           onClick={form.handleSubmit(onSubmit, onInvalid)}
         >
-          Install
+          {t("install.form.install")}
         </Button>
       </CardFooter>
       {loading && (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-white opacity-50">
           <div role="status">
             <Spinner className="w-20 h-20" />
-            <span className="sr-only">Please wait...</span>
+            <span className="sr-only">{t("install.form.pleaseWait")}</span>
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { ColorInput, ConfigurationProps, SliderInput } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { ArrowUpDown } from "lucide-react";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { DividerProps, DividerPropsDefaults } from "./schema";
@@ -9,6 +10,7 @@ export const DividerConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<DividerProps>) => {
+  const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as DividerProps);
 
   const lineColor =
@@ -19,14 +21,14 @@ export const DividerConfiguration = ({
   return (
     <>
       <ColorInput
-        label="Color"
+        label={t("emailBuilder.blocks.divider.color")}
         defaultValue={lineColor}
         onChange={(lineColor) =>
           updateData({ ...data, props: { ...data.props, lineColor } })
         }
       />
       <SliderInput
-        label="Height"
+        label={t("emailBuilder.blocks.divider.height")}
         iconLabel={<ArrowUpDown />}
         units="px"
         step={1}

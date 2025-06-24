@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EmailBuilder } from "@vivid/email-builder";
+import { useI18n } from "@vivid/i18n";
 import {
   CommunicationChannel,
   getTemplateSchemaWithUniqueCheck,
@@ -56,13 +57,14 @@ export const TemplateForm: React.FC<
     | { initialData: Template }
   )
 > = ({ args, ...rest }) => {
+  const t = useI18n("admin");
   const initialData = "initialData" in rest ? rest.initialData : undefined;
   const type = initialData?.type || ("type" in rest ? rest.type : "email");
   const template = "template" in rest ? rest.template : undefined;
 
   const formSchema = getTemplateSchemaWithUniqueCheck(
     (name) => checkUniqueName(name, initialData?._id),
-    "Template name must be unique"
+    "templates.nameMustBeUnique"
   );
 
   type TemplateFormValues = z.infer<typeof formSchema>;
@@ -95,8 +97,8 @@ export const TemplateForm: React.FC<
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("templates.form.toasts.changesSaved"),
+        error: t("templates.form.toasts.requestError"),
       });
     } catch (error: any) {
       console.error(error);
@@ -111,9 +113,9 @@ export const TemplateForm: React.FC<
       isValid
         ? trigger()
         : setError("value", {
-            message: "Template is not valid",
+            message: t("templates.form.validation.templateNotValid"),
           }),
-    [setError, trigger]
+    [setError, trigger, t]
   );
 
   return (
@@ -129,12 +131,13 @@ export const TemplateForm: React.FC<
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Template name <InfoTooltip>Unique template name</InfoTooltip>
+                  {t("templates.form.name")}{" "}
+                  <InfoTooltip>{t("templates.form.nameTooltip")}</InfoTooltip>
                 </FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Template name"
+                    placeholder={t("templates.form.namePlaceholder")}
                     {...field}
                   />
                 </FormControl>

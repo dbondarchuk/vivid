@@ -7,6 +7,7 @@ import {
   RadioGroupInputItem,
   TextInput,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { ButtonProps, ButtonPropsDefaults } from "./schema";
 
@@ -14,6 +15,7 @@ export const ButtonConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<ButtonProps>) => {
+  const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as ButtonProps);
 
   const text = data.props?.text ?? ButtonPropsDefaults.props.text;
@@ -31,21 +33,21 @@ export const ButtonConfiguration = ({
   return (
     <>
       <TextInput
-        label="Text"
+        label={t("emailBuilder.blocks.button.text")}
         defaultValue={text}
         onChange={(text) =>
           updateData({ ...data, props: { ...data.props, text } })
         }
       />
       <TextInput
-        label="Url"
+        label={t("emailBuilder.blocks.button.url")}
         defaultValue={url}
         onChange={(url) =>
           updateData({ ...data, props: { ...data.props, url } })
         }
       />
       <RadioGroupInput
-        label="Width"
+        label={t("emailBuilder.blocks.button.width")}
         defaultValue={width}
         onChange={(width) =>
           updateData({
@@ -54,41 +56,59 @@ export const ButtonConfiguration = ({
           })
         }
       >
-        <RadioGroupInputItem value="auto">Auto</RadioGroupInputItem>
-        <RadioGroupInputItem value="full">Full</RadioGroupInputItem>
+        <RadioGroupInputItem value="auto">
+          {t("emailBuilder.blocks.button.widths.auto")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="full">
+          {t("emailBuilder.blocks.button.widths.full")}
+        </RadioGroupInputItem>
       </RadioGroupInput>
       <RadioGroupInput
-        label="Size"
+        label={t("emailBuilder.blocks.button.size")}
         defaultValue={size}
         onChange={(size) =>
           updateData({ ...data, props: { ...data.props, size } })
         }
       >
-        <RadioGroupInputItem value="x-small">Xs</RadioGroupInputItem>
-        <RadioGroupInputItem value="small">Sm</RadioGroupInputItem>
-        <RadioGroupInputItem value="medium">Md</RadioGroupInputItem>
-        <RadioGroupInputItem value="large">Lg</RadioGroupInputItem>
+        <RadioGroupInputItem value="x-small">
+          {t("emailBuilder.blocks.button.sizes.x-small")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="small">
+          {t("emailBuilder.blocks.button.sizes.small")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="medium">
+          {t("emailBuilder.blocks.button.sizes.medium")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="large">
+          {t("emailBuilder.blocks.button.sizes.large")}
+        </RadioGroupInputItem>
       </RadioGroupInput>
       <RadioGroupInput
-        label="Style"
+        label={t("emailBuilder.blocks.button.style")}
         defaultValue={buttonStyle}
         onChange={(buttonStyle) =>
           updateData({ ...data, props: { ...data.props, buttonStyle } })
         }
       >
-        <RadioGroupInputItem value="rectangle">Rectangle</RadioGroupInputItem>
-        <RadioGroupInputItem value="rounded">Rounded</RadioGroupInputItem>
-        <RadioGroupInputItem value="pill">Pill</RadioGroupInputItem>
+        <RadioGroupInputItem value="rectangle">
+          {t("emailBuilder.blocks.button.styles.rectangle")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="rounded">
+          {t("emailBuilder.blocks.button.styles.rounded")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="pill">
+          {t("emailBuilder.blocks.button.styles.pill")}
+        </RadioGroupInputItem>
       </RadioGroupInput>
       <ColorInput
-        label="Text color"
+        label={t("emailBuilder.blocks.button.textColor")}
         defaultValue={buttonTextColor}
         onChange={(buttonTextColor) =>
           updateData({ ...data, props: { ...data.props, buttonTextColor } })
         }
       />
       <ColorInput
-        label="Button color"
+        label={t("emailBuilder.blocks.button.backgroundColor")}
         defaultValue={buttonBackgroundColor}
         onChange={(buttonBackgroundColor) =>
           updateData({

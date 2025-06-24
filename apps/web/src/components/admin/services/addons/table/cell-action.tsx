@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { AppointmentAddon, ServiceField } from "@vivid/types";
 import {
   AlertModal,
@@ -23,6 +24,7 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ addon }) => {
+  const t = useI18n("admin");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -32,8 +34,10 @@ export const CellAction: React.FC<CellActionProps> = ({ addon }) => {
       setLoading(true);
 
       await toastPromise(deleteAddon(addon._id), {
-        success: `Addon '${addon.name}' was deleted.`,
-        error: "There was a problem with your request.",
+        success: t("services.addons.table.cellAction.addonDeleted", {
+          name: addon.name,
+        }),
+        error: t("services.addons.table.cellAction.deleteError"),
       });
 
       setOpen(false);
@@ -57,28 +61,32 @@ export const CellAction: React.FC<CellActionProps> = ({ addon }) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t("common.openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            {t("services.addons.table.cellAction.actions")}
+          </DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
               href={`/admin/dashboard/services/addons/new?from=${addon._id}`}
             >
-              <Copy className="h-4 w-4" /> Clone
+              <Copy className="h-4 w-4" />{" "}
+              {t("services.addons.table.cellAction.clone")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-
           <DropdownMenuItem asChild>
             <Link href={`/admin/dashboard/services/addons/${addon._id}`}>
-              <Edit className="h-4 w-4" /> Update
+              <Edit className="h-4 w-4" />{" "}
+              {t("services.addons.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> Delete
+            <Trash className="h-4 w-4" />{" "}
+            {t("services.addons.table.cellAction.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

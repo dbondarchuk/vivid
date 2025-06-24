@@ -11,6 +11,7 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
 } from "./input-group";
+import { useI18n } from "@vivid/i18n";
 
 export type AssetSelectorInputProps = {
   value?: string | null;
@@ -33,6 +34,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
   fullUrl,
   className,
 }) => {
+  const t = useI18n("ui");
   const [open, setIsOpen] = React.useState(false);
 
   const select = (asset: UploadedFile) => {
@@ -69,7 +71,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
         className={InputGroupSuffixClasses()}
         onClick={openDialog}
       >
-        Select
+        {t("form.select")}
       </Button>
     </InputGroup>
   );

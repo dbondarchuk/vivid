@@ -16,6 +16,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
 import { GripVertical } from "lucide-react";
 import { NavMenu } from "./nav-menu";
+import { useI18n } from "@vivid/i18n";
 
 type TEditorBlockWrapperProps = {
   children: React.JSX.Element;
@@ -29,6 +30,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
   const blockId = useCurrentBlockId();
   const isOverlay = useCurrentBlockIsOverlay();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const t = useI18n("ui");
 
   const {
     attributes,
@@ -68,7 +70,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
                 <GripVertical fontSize="small" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="left">Move</TooltipContent>
+            <TooltipContent side="left">{t("common.move")}</TooltipContent>
           </Tooltip>
         </div>
       </div>

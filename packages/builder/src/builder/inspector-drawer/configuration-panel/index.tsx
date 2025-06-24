@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import {
   useDispatchAction,
   useEditorStateStore,
@@ -19,9 +20,12 @@ export const ConfigurationPanel: React.FC = () => {
   const dispatchAction = useDispatchAction();
 
   const blocks = useEditorStateStore((s) => s.blocks);
+  const t = useI18n("builder");
 
   if (!selectedBlock) {
-    return renderMessage("Click on a block to inspect.");
+    return renderMessage(
+      t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect")
+    );
   }
 
   const setBlock = (data: any) => {

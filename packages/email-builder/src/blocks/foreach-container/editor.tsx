@@ -4,9 +4,12 @@ import {
   useDispatchAction,
   useSetSelectedBlockId,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { ForeachContainerProps } from "./schema";
+import { formatJsx } from "@vivid/ui";
 
 export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
+  const t = useI18n("builder");
   const value = props?.value || "";
 
   const currentBlock = useCurrentBlock<ForeachContainerProps>();
@@ -18,7 +21,13 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
   return (
     <div className="w-full">
       <div className="mb-2 text-muted-foreground text-xs w-full">
-        For each <em>_item</em> in <em>{value || "value"}</em>
+        {formatJsx(
+          t("emailBuilder.blocks.foreachContainer.forEachItemInValueFormat"),
+          {
+            item: <em>_item</em>,
+            value: value || t("emailBuilder.blocks.foreachContainer.value"),
+          }
+        )}
       </div>
       <EditorChildren
         block={currentBlock}

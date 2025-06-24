@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { Id } from "@vivid/types";
 import { Sortable } from "@vivid/ui";
 import React from "react";
@@ -6,6 +7,7 @@ import { OptionSelectCard } from "./cards/option-select-card";
 import { TabProps } from "./types";
 
 export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
+  const t = useI18n("admin");
   const {
     fields: options,
     append,
@@ -33,7 +35,12 @@ export const OptionsTab: React.FC<TabProps> = ({ form, disabled }) => {
   };
 
   return (
-    <Sortable title="Options" ids={ids} onSort={sort} onAdd={addNew}>
+    <Sortable
+      title={t("settings.appointments.form.options.title")}
+      ids={ids}
+      onSort={sort}
+      onAdd={addNew}
+    >
       <div className="flex flex-grow flex-col gap-4">
         {options.map((item, index) => {
           return (

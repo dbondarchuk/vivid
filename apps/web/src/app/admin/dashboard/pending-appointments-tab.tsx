@@ -3,8 +3,10 @@ import { ServicesContainer } from "@vivid/services";
 import { Card, CardContent, CardHeader } from "@vivid/ui";
 import { DateTime } from "luxon";
 import React from "react";
+import { getI18nAsync } from "@vivid/i18n";
 
 export const PendingAppointmentsTab: React.FC = async () => {
+  const t = await getI18nAsync("admin");
   const beforeNow = DateTime.now().minus({ hours: 1 }).toJSDate();
   const pendingAppointments =
     await ServicesContainer.EventsService().getPendingAppointments(
@@ -20,10 +22,10 @@ export const PendingAppointmentsTab: React.FC = async () => {
       {pendingAppointments.total === 0 ? (
         <Card>
           <CardHeader className="flex text-center font-medium text-lg">
-            No pending appointments
+            {t("dashboard.appointments.noPendingAppointments")}
           </CardHeader>
           <CardContent className="flex justify-center py-4">
-            You&apos;ve caught up on all requests. Good job!
+            {t("dashboard.appointments.caughtUp")}
           </CardContent>
         </Card>
       ) : (

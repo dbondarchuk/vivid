@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -24,13 +25,14 @@ export const ClearAllCommunicationLogsButton: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const router = useRouter();
+  const t = useI18n("admin");
   const action = async () => {
     try {
       setIsLoading(true);
 
       await toastPromise(clearAllCommunicationLogs(), {
-        success: "Your logs have been cleared",
-        error: "There was a problem with your request.",
+        success: t("communicationLogs.logsCleared"),
+        error: t("common.toasts.error"),
       });
 
       router.refresh();
@@ -48,22 +50,23 @@ export const ClearAllCommunicationLogsButton: React.FC = () => {
         <Button variant="default" disabled={isLoading}>
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Clear all</span>
+          <span>{t("communicationLogs.clearAll")}</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("communicationLogs.clearAllTitle")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will delete all communication
-            logs
+            {t("communicationLogs.clearAllDescription")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t("communicationLogs.cancel")}</AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Clear all</span>
+            <span>{t("communicationLogs.clearAll")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

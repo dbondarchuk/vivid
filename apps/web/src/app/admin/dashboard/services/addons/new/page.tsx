@@ -1,17 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { AddonForm } from "@/components/admin/services/addons/form";
+import { getI18nAsync } from "@vivid/i18n";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentAddonUpdateModel } from "@vivid/types";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
-
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Services", link: "/admin/dashboard/services" },
-  { title: "Addons", link: "/admin/dashboard/services/addons" },
-  { title: "New", link: "/admin/dashboard/services/addons/new" },
-];
 
 type Props = {
   searchParams: Promise<{ from?: string }>;
@@ -19,6 +13,7 @@ type Props = {
 
 export default async function NewAddonPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("new-service-addon");
+  const t = await getI18nAsync("admin");
   const { from } = await props.searchParams;
 
   logger.debug(
@@ -27,6 +22,16 @@ export default async function NewAddonPage(props: Props) {
     },
     "Loading new service addon page"
   );
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    { title: t("navigation.addons"), link: "/admin/dashboard/services/addons" },
+    {
+      title: t("services.addons.new"),
+      link: "/admin/dashboard/services/addons/new",
+    },
+  ];
 
   let initialData: AppointmentAddonUpdateModel | undefined = undefined;
   if (from) {
@@ -61,7 +66,10 @@ export default async function NewAddonPage(props: Props) {
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title="New addon" description="Add new addon" />
+          <Heading
+            title={t("services.addons.newTitle")}
+            description={t("services.addons.newDescription")}
+          />
           {/* <Separator /> */}
         </div>
         <AddonForm initialData={initialData} />

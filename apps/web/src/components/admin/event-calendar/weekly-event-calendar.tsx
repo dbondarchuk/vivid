@@ -13,6 +13,7 @@ import {
   useMouse,
 } from "@vivid/ui";
 import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
+import { useI18n } from "@vivid/i18n";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { DateTime, HourNumbers, SecondNumbers } from "luxon";
 import React, { CSSProperties, Fragment, useCallback } from "react";
@@ -31,6 +32,7 @@ const ShiftDisplay: React.FC<{
   className: string;
   style: CSSProperties;
 }> = ({ schedule, className, style }) => {
+  const t = useI18n("admin");
   const { ref, x, y } = useMouse<HTMLDivElement>();
   return (
     <Tooltip>
@@ -47,7 +49,7 @@ const ShiftDisplay: React.FC<{
         <div className="bg-accent p-3 rounded-md">
           <div className="text-sm font-medium flex items-center text-accent-foreground">
             <Clock className="h-4 w-4 mr-2" />
-            <span>Working Hours</span>
+            <span>{t("calendar.workingHours")}</span>
           </div>
           <div className="mt-1 flex flex-col gap-1">
             {schedule.map((hours, idx) => (

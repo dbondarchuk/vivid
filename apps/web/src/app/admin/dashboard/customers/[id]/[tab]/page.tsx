@@ -10,6 +10,7 @@ import {
   TabsList,
 } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
+import { getI18nAsync } from "@vivid/i18n";
 
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 import {
@@ -61,15 +62,10 @@ const tabs = [
 const scrollableTabs = [detailsTab, communicationsTab, filesTab];
 
 type Tab = (typeof tabs)[number];
-const tabTitle: Record<Tab, string> = {
-  [detailsTab]: "Details",
-  [appointmentsTab]: "Appointments",
-  [filesTab]: "Files",
-  [communicationsTab]: "Communications",
-};
 
 export default async function CustomerPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("customer-detail");
+  const t = await getI18nAsync("admin");
   const params = await props.params;
   const path = `/admin/dashboard/customers/${params.id}`;
 
@@ -128,20 +124,20 @@ export default async function CustomerPage(props: Props) {
     "Customer detail page loaded"
   );
 
+  const tabTitle: Record<Tab, string> = {
+    [detailsTab]: t("customers.details"),
+    [appointmentsTab]: t("customers.appointments"),
+    [filesTab]: t("customers.files"),
+    [communicationsTab]: t("customers.communications"),
+  };
+
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Customers", link: "/admin/dashboard/customers" },
+    { title: t("assets.dashboard"), link: "/admin/dashboard" },
+    { title: t("customers.title"), link: "/admin/dashboard/customers" },
     {
       title: customer.name,
       link: `/admin/dashboard/customers/${params.id}`,
     },
-    // {
-    //   title: tabTitle[activeTab],
-    //   subItems: tabs.map((t) => ({
-    //     title: tabTitle[t],
-    //     link: `/admin/dashboard/customers/${params.id}/${t}`,
-    //   })),
-    // },
   ];
 
   return (
@@ -149,7 +145,10 @@ export default async function CustomerPage(props: Props) {
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title={customer.name} description="Manage customer" />
+          <Heading
+            title={customer.name}
+            description={t("customers.manageCustomer")}
+          />
 
           {/* <Separator /> */}
         </div>
@@ -180,8 +179,12 @@ export default async function CustomerPage(props: Props) {
                     variant="default"
                   >
                     <CalendarClock className="mr-2 h-4 w-4" />{" "}
-                    <span className="max-md:hidden">Schedule Appointment</span>
-                    <span className="md:hidden">Add New</span>
+                    <span className="max-md:hidden">
+                      {t("customers.scheduleAppointment")}
+                    </span>
+                    <span className="md:hidden">
+                      {t("customers.addNewShort")}
+                    </span>
                   </Link>
                 </div>
                 <Suspense
@@ -200,40 +203,42 @@ export default async function CustomerPage(props: Props) {
             {activeTab === filesTab && (
               <TabsContent
                 value={filesTab}
-                className="flex-1 flex flex-col gap-4"
+                className="flex flex-1 flex-col gap-4"
               >
                 <div className="flex flex-col md:flex-row gap-2 w-full">
                   <AssetsTableAction className="flex-1" />
                   <CustomerFileUpload customerId={params.id} />
                 </div>
-                <CustomerFiles
-                  customerId={params.id}
-                  search={assetsSearchParamsCache.get("search")}
-                  key={searchParams.key as string}
-                />
+                <Suspense
+                  key={key}
+                  fallback={
+                    <DataTableSkeleton columnCount={10} rowCount={10} />
+                  }
+                >
+                  <CustomerFiles
+                    customerId={params.id}
+                    search={assetsSearchParamsCache.get("search")}
+                  />
+                </Suspense>
               </TabsContent>
             )}
             {activeTab === communicationsTab && (
               <TabsContent
                 value={communicationsTab}
-                className="flex-1 flex flex-col gap-4"
+                className="flex flex-1 flex-col gap-4"
               >
                 <div className="flex flex-col md:flex-row gap-2 w-full">
-                  <CommunicationLogsTableAction
-                    hideActions
-                    className="flex-1"
-                  />
+                  <CommunicationLogsTableAction className="flex-1" />
                   <SendCommunicationButton customerId={params.id} />
                 </div>
-                <RecentCommunications
-                  customerId={params.id}
-                  direction={communicationsSearchParamsCache.get("direction")}
-                  channel={communicationsSearchParamsCache.get("channel")}
-                  start={communicationsSearchParamsCache.get("start")}
-                  end={communicationsSearchParamsCache.get("end")}
-                  search={communicationsSearchParamsCache.get("search")}
-                  key={searchParams.key as string}
-                />
+                <Suspense
+                  key={key}
+                  fallback={
+                    <DataTableSkeleton columnCount={10} rowCount={10} />
+                  }
+                >
+                  <RecentCommunications customerId={params.id} />
+                </Suspense>
               </TabsContent>
             )}
           </Tabs>

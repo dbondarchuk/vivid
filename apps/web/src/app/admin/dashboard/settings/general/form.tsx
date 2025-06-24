@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { GeneralConfiguration, generalConfigurationSchema } from "@vivid/types";
 import {
   Form,
@@ -27,6 +28,7 @@ import { updateGeneralConfiguration } from "./actions";
 export const GeneralSettingsForm: React.FC<{
   values: GeneralConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<GeneralConfiguration>({
     resolver: zodResolver(generalConfigurationSchema),
     mode: "all",
@@ -44,8 +46,8 @@ export const GeneralSettingsForm: React.FC<{
           ...data,
         }),
         {
-          success: "Your changes were saved.",
-          error: "There was a problem with your request.",
+          success: t("settings.general.form.toasts.changesSaved"),
+          error: t("settings.general.form.toasts.requestError"),
         }
       );
 
@@ -76,11 +78,11 @@ export const GeneralSettingsForm: React.FC<{
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("settings.general.form.name")}</FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Website name"
+                    placeholder={t("settings.general.form.namePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -93,11 +95,11 @@ export const GeneralSettingsForm: React.FC<{
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>{t("settings.general.form.title")}</FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Website title"
+                    placeholder={t("settings.general.form.titlePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -110,12 +112,14 @@ export const GeneralSettingsForm: React.FC<{
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{t("settings.general.form.description")}</FormLabel>
                 <FormControl>
                   <Textarea
                     autoResize
                     disabled={loading}
-                    placeholder="Website description"
+                    placeholder={t(
+                      "settings.general.form.descriptionPlaceholder"
+                    )}
                     {...field}
                   />
                 </FormControl>
@@ -129,8 +133,10 @@ export const GeneralSettingsForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Keywords{" "}
-                  <InfoTooltip>Website keywords separated by comma</InfoTooltip>
+                  {t("settings.general.form.keywords")}{" "}
+                  <InfoTooltip>
+                    {t("settings.general.form.keywordsTooltip")}
+                  </InfoTooltip>
                 </FormLabel>
                 <FormControl>
                   <TagInput
@@ -141,7 +147,7 @@ export const GeneralSettingsForm: React.FC<{
                     }
                     tagValidator={z
                       .string()
-                      .min(2, "Keyword must be at least 2 characters")}
+                      .min(2, t("settings.general.form.keywordValidation"))}
                   />
                 </FormControl>
                 <FormMessage />
@@ -153,9 +159,13 @@ export const GeneralSettingsForm: React.FC<{
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone number</FormLabel>
+                <FormLabel>{t("settings.general.form.phone")}</FormLabel>
                 <FormControl>
-                  <PhoneInput {...field} disabled={loading} label="Phone" />
+                  <PhoneInput
+                    {...field}
+                    disabled={loading}
+                    label={t("settings.general.form.phone")}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -166,12 +176,12 @@ export const GeneralSettingsForm: React.FC<{
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email address</FormLabel>
+                <FormLabel>{t("settings.general.form.email")}</FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
                     type="email"
-                    placeholder="Your email address"
+                    placeholder={t("settings.general.form.emailPlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -184,11 +194,11 @@ export const GeneralSettingsForm: React.FC<{
             name="url"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website base URL</FormLabel>
+                <FormLabel>{t("settings.general.form.url")}</FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Website url"
+                    placeholder={t("settings.general.form.urlPlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -202,12 +212,15 @@ export const GeneralSettingsForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Address <InfoTooltip>Physical office address</InfoTooltip>
+                  {t("settings.general.form.address")}{" "}
+                  <InfoTooltip>
+                    {t("settings.general.form.addressTooltip")}
+                  </InfoTooltip>
                 </FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Physical office address"
+                    placeholder={t("settings.general.form.addressPlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -221,9 +234,9 @@ export const GeneralSettingsForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Logo{" "}
+                  {t("settings.general.form.logo")}{" "}
                   <InfoTooltip>
-                    URL to image to be used as logo (for example in header)
+                    {t("settings.general.form.logoTooltip")}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -232,7 +245,7 @@ export const GeneralSettingsForm: React.FC<{
                     onChange={field.onChange}
                     onBlur={field.onBlur}
                     disabled={loading}
-                    placeholder="Logo URL"
+                    placeholder={t("settings.general.form.logoPlaceholder")}
                     accept="image/*"
                   />
                 </FormControl>
@@ -246,10 +259,9 @@ export const GeneralSettingsForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Favicon{" "}
+                  {t("settings.general.form.favicon")}{" "}
                   <InfoTooltip>
-                    URL to image to be used as favicon (icon that is shown in
-                    browser tab)
+                    {t("settings.general.form.faviconTooltip")}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -258,7 +270,7 @@ export const GeneralSettingsForm: React.FC<{
                     onChange={field.onChange}
                     onBlur={field.onBlur}
                     disabled={loading}
-                    placeholder="Favicon URL"
+                    placeholder={t("settings.general.form.faviconPlaceholder")}
                     accept="image/*"
                   />
                 </FormControl>

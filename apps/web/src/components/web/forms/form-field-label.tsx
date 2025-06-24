@@ -1,8 +1,8 @@
-import { I18nKeys, useI18n } from "@vivid/i18n";
+import { I18nKeys, TranslationKeys, useI18n } from "@vivid/i18n";
 import { cn, FormLabel } from "@vivid/ui";
 
 export const FormFieldLabel: React.FC<{
-  label: I18nKeys | string;
+  label: TranslationKeys | string;
   required?: boolean;
   className?: string;
   htmlFor?: string;
@@ -13,7 +13,7 @@ export const FormFieldLabel: React.FC<{
       className={cn(props.htmlFor && "cursor-pointer", props.className)}
       htmlFor={props.htmlFor}
     >
-      {i18n(props.label as I18nKeys)}
+      {i18n(props.label as TranslationKeys)}
       {props.required && <span className="ml-1">*</span>}
     </FormLabel>
   );

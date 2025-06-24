@@ -1,7 +1,7 @@
 "use client";
 
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { template } from "@vivid/utils";
+import { useI18n } from "@vivid/i18n";
 import { CheckIcon } from "lucide-react";
 import { Options } from "nuqs";
 import React from "react";
@@ -62,6 +62,7 @@ export function DataTableAsyncFilterBox({
   maxAmount = 5,
   loader = <Spinner />,
 }: AsyncFilterBoxProps) {
+  const t = useI18n("ui");
   const [itemsCache, setItemsCache] = React.useState<
     Record<string, AsyncFilterBoxOption>
   >({});
@@ -129,7 +130,7 @@ export function DataTableAsyncFilterBox({
         setInitialLoad(false);
       } catch (error) {
         console.error("Failed to fetch items:", error);
-        toast.error("There was a problem with your request.");
+        toast.error(t("common.requestFailed"));
       } finally {
         setLoading(false);
       }
@@ -166,7 +167,7 @@ export function DataTableAsyncFilterBox({
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {template("{{selected}} selected", {
+                    {t("dataTable.selectedCount", {
                       selected: selectedValuesSet.size,
                     })}
                   </Badge>
@@ -250,7 +251,7 @@ export function DataTableAsyncFilterBox({
                   onSelect={resetFilter}
                   className="justify-center text-center"
                 >
-                  Reset filters
+                  {t("dataTable.resetFilters")}
                 </CommandItem>
               </CommandGroup>
             </>

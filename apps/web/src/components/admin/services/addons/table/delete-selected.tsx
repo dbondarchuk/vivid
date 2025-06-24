@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppointmentAddon } from "@vivid/types";
 import {
   AlertDialog,
@@ -22,6 +23,7 @@ import { deleteSelected } from "../actions";
 export const DeleteSelectedAddonsButton: React.FC<{
   selected: AppointmentAddon[];
 }> = ({ selected }) => {
+  const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -31,8 +33,10 @@ export const DeleteSelectedAddonsButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: "Selected addons have been deleted",
-        error: "There was a problem with your request.",
+        success: t("services.addons.deleteSelected.success", {
+          count: selected.length,
+        }),
+        error: t("services.addons.deleteSelected.error"),
       });
 
       router.refresh();
@@ -53,22 +57,29 @@ export const DeleteSelectedAddonsButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} addon(s)</span>
+          <span>
+            {t("services.addons.deleteSelected.button", {
+              count: selected.length,
+            })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("services.addons.deleteSelected.confirmTitle")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will delete selected addon and
-            remove them from all options that use them
+            {t("services.addons.deleteSelected.confirmDescription")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("services.addons.deleteSelected.cancel")}
+          </AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Delete selected</span>
+            <span>{t("services.addons.deleteSelected.deleteSelected")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

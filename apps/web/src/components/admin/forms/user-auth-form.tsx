@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   Form,
@@ -17,7 +18,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Enter a valid email address" }),
+  email: z.string().email({ message: "common.email.invalid" }),
   password: z.string(),
 });
 
@@ -27,6 +28,7 @@ export const UserAuthForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const [loading, setLoading] = useState(false);
+  const t = useI18n("admin");
   const defaultValues = {
     email: "",
     password: "",
@@ -63,11 +65,11 @@ export const UserAuthForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("auth.email")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Enter your email..."
+                    placeholder={t("auth.email")}
                     disabled={loading}
                     {...field}
                   />
@@ -82,11 +84,11 @@ export const UserAuthForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t("auth.password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter your password..."
+                    placeholder={t("auth.password")}
                     disabled={loading}
                     {...field}
                   />
@@ -98,12 +100,12 @@ export const UserAuthForm = () => {
 
           {error && (
             <p className="text-sm font-medium text-destructive">
-              Email or password is incorrect
+              {t("auth.email_or_password_incorrect")}
             </p>
           )}
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Continue With Email
+            {t("auth.signIn")}
           </Button>
         </form>
       </Form>

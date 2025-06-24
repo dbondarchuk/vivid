@@ -3,22 +3,30 @@ import { z } from "zod";
 
 export const eventConfigurationSchema = z.object({
   summary: z
-    .string({ message: "Event summary template is required" })
-    .min(1, "Event summary template is required"),
+    .string({
+      message: "customerEmailNotification.eventTemplate.summary.required",
+    })
+    .min(1, "customerEmailNotification.eventTemplate.summary.required"),
   templateId: z
-    .string({ message: "Event template is required" })
-    .min(1, "Event template is required"),
+    .string({
+      message: "customerEmailNotification.eventTemplate.templateId.required",
+    })
+    .min(1, "customerEmailNotification.eventTemplate.templateId.required"),
 });
 
 export type EventConfiguration = z.infer<typeof eventConfigurationSchema>;
 
 const emailTemplateSchema = z.object({
   subject: z
-    .string({ message: "Email subject template is required" })
-    .min(1, "Email subject template is required"),
+    .string({
+      message: "customerEmailNotification.emailTemplate.subject.required",
+    })
+    .min(1, "customerEmailNotification.emailTemplate.subject.required"),
   templateId: z
-    .string({ message: "Email template is required" })
-    .min(1, "Email template is required"),
+    .string({
+      message: "customerEmailNotification.emailTemplate.templateId.required",
+    })
+    .min(1, "customerEmailNotification.emailTemplate.templateId.required"),
 });
 
 export type EmailTemplateConfiguration = z.infer<typeof emailTemplateSchema>;

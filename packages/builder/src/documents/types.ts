@@ -1,3 +1,4 @@
+import { BuilderKeys } from "@vivid/i18n";
 import z from "zod";
 import { TReaderBlock } from "./reader/core";
 
@@ -20,13 +21,13 @@ export type BuilderSchema = BaseZodDictionary;
 
 export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
   [K in keyof T]: {
-    displayName: string;
+    displayName: BuilderKeys;
     icon: React.ReactNode;
     Editor: React.ComponentType<EditorProps<z.infer<T[K]>>>;
     Configuration: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     defaultValue: z.infer<T[K]>;
-    category: string;
+    category: BuilderKeys;
   };
 };
 

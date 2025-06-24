@@ -1,6 +1,7 @@
 "use client";
 
 import { AvailableApps } from "@vivid/app-store";
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import {
   Button,
@@ -33,6 +34,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
   ...props
 }) => {
   const router = useRouter();
+  const t = useI18n("apps");
 
   let app: ConnectedApp | undefined = undefined;
   let appType: string;
@@ -62,15 +64,15 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
 
   const setupProps: AppSetupProps = {
     onSuccess: () => {
-      toast.success("Your app was successfully connected.");
+      toast.success(t("common.connectedAppSetup.success.description"));
       closeDialog(true);
     },
-    onError: (error: string) => {
-      console.error(`Failed to set up app: ${error}`);
-
-      toast.error(
-        "The request to connect the app has failed. Please try again."
+    onError: (error: string | { key: string; args?: Record<string, any> }) => {
+      console.error(
+        `Failed to set up app: ${typeof error === "string" ? error : error.key}`
       );
+
+      toast.error(t("common.connectedAppSetup.error.description"));
     },
     appId: app?._id,
   };
@@ -89,7 +91,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     else closeDialog();
   };
 
-  const title = app ? "Update app" : "Connect new app";
+  const title = app ? t("common.updateApp") : t("common.connectNewApp");
 
   return (
     <Dialog open={isOpen} onOpenChange={onDialogOpenChange}>
@@ -105,7 +107,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
               <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-white opacity-50">
                 <div role="status">
                   <Spinner className="w-20 h-20" />
-                  <span className="sr-only">Please wait...</span>
+                  <span className="sr-only">{t("common.pleaseWait")}</span>
                 </div>
               </div>
             )}
@@ -114,7 +116,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
         <DialogFooter className="px-1">
           <DialogClose asChild>
             <Button type="button" variant="secondary">
-              Close
+              {t("common.close")}
             </Button>
           </DialogClose>
         </DialogFooter>

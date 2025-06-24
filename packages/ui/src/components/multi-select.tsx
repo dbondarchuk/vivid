@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cn } from "../utils";
+import { useI18n } from "@vivid/i18n";
 
 import { Check, X, ChevronsUpDown } from "lucide-react";
 import { Button } from "./button";
@@ -35,10 +36,11 @@ function MultiSelect({
   selected,
   onChange,
   className,
-  placeholder = "Select option",
+  placeholder,
   disabled,
   ...props
 }: MultiSelectProps) {
+  const t = useI18n("ui");
   const [open, setOpen] = React.useState(false);
 
   const handleUnselect = (item: string) => {
@@ -87,7 +89,7 @@ function MultiSelect({
             ))}
             {(!selected || !selected.length) && (
               <div className="text-sm text-muted-foreground font-normal">
-                {placeholder}
+                {placeholder || t("multiSelect.placeholder")}
               </div>
             )}
           </div>
@@ -98,8 +100,8 @@ function MultiSelect({
         className={"min-w-max p-0 w-[var(--radix-popper-anchor-width)]"}
       >
         <Command className={className}>
-          <CommandInput placeholder="Search ..." />
-          <CommandEmpty>No item found.</CommandEmpty>
+          <CommandInput placeholder={t("common.search")} />
+          <CommandEmpty>{t("common.noResults")}</CommandEmpty>
           <CommandGroup className="max-h-64 overflow-auto">
             <CommandList>
               {options.map((option) => (

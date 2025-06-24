@@ -10,8 +10,8 @@ export type FontFamily = z.infer<typeof zFontFamily>;
 
 export const zFontSize = z.coerce
   .number()
-  .min(0)
-  .int("Should be the integer value")
+  .min(0, "emailBuilder.common.validation.fontSize")
+  .int("emailBuilder.common.validation.fontSize")
   .optional()
   .nullable();
 

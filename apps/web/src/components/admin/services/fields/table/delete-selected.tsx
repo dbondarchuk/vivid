@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { ServiceField } from "@vivid/types";
 import {
   AlertDialog,
@@ -22,6 +23,7 @@ import { deleteSelected } from "../actions";
 export const DeleteSelectedFieldsButton: React.FC<{
   selected: ServiceField[];
 }> = ({ selected }) => {
+  const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -31,8 +33,10 @@ export const DeleteSelectedFieldsButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: "Selected fields have been deleted",
-        error: "There was a problem with your request.",
+        success: t("services.fields.deleteSelected.success", {
+          count: selected.length,
+        }),
+        error: t("services.fields.deleteSelected.error"),
       });
 
       router.refresh();
@@ -53,22 +57,29 @@ export const DeleteSelectedFieldsButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} field(s)</span>
+          <span>
+            {t("services.fields.deleteSelected.button", {
+              count: selected.length,
+            })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("services.fields.deleteSelected.confirmTitle")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will delete selected fields and
-            remove them from all options and addons that use them
+            {t("services.fields.deleteSelected.confirmDescription")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("services.fields.deleteSelected.cancel")}
+          </AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Delete selected</span>
+            <span>{t("services.fields.deleteSelected.deleteSelected")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

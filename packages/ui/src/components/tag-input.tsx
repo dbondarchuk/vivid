@@ -4,6 +4,7 @@ import { Array as EArray, Option, pipe, String } from "effect";
 import { Plus, XIcon } from "lucide-react";
 import { forwardRef, ReactElement, useEffect, useState } from "react";
 import { type z } from "zod";
+import { useI18n } from "@vivid/i18n";
 
 import { cn } from "../utils";
 import { Badge } from "./badge";
@@ -41,6 +42,7 @@ type TagInputProps = Omit<InputProps, "value" | "onChange"> & {
 };
 
 const TagInput = forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
+  const t = useI18n("ui");
   const {
     className,
     value = [],
@@ -165,7 +167,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
               variant="ghost"
               className="h-5 px-2"
               type="button"
-              title="Add item"
+              title={t("form.addItem")}
             >
               <Plus className="h-4" />
             </Button>

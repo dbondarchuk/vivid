@@ -5,6 +5,7 @@ import {
   hasSame,
   parseTime,
 } from "@vivid/utils";
+import { useI18n } from "@vivid/i18n";
 import {
   CalendarIcon,
   ChevronDown,
@@ -35,6 +36,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   onRangeChange,
   renderEvent,
 }) => {
+  const t = useI18n("admin");
   const [currentDate, setCurrentDate] = React.useState<DateTime>(
     DateTime.fromJSDate(date || new Date())
   );
@@ -193,45 +195,22 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                     )}
                   >
                     {date.toLocaleString(DateTime.DATE_FULL)}
-                    {hasSame(date, DateTime.now(), "day") && " (Today)"}
+                    {hasSame(date, DateTime.now(), "day") &&
+                      ` (${t("calendar.today")})`}
                   </span>
                   <div className="ml-auto flex items-center gap-3">
                     {daySchedule?.length > 0 && (
-                      //   <Popover>
-                      //     <PopoverTrigger>
-                      //       <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded flex items-center">
-                      //         <Clock className="h-3 w-3 mr-1" />
-                      //         <span>Working Day</span>
-                      //       </span>
-                      //     </PopoverTrigger>
-                      //     <PopoverContent>
-                      //       <div className="mb-3 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-md">
-                      //         <div className="text-sm font-medium flex items-center text-blue-700 dark:text-blue-300">
-                      //           <Clock className="h-4 w-4 mr-2" />
-                      //           Working Hours
-                      //         </div>
-                      //         <div className="mt-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      //           {daySchedule.map((hours, idx) => (
-                      //             <div
-                      //               key={idx}
-                      //               className="text-sm text-blue-600 dark:text-blue-400"
-                      //             >
-                      //               {hours.start} - {hours.end}
-                      //             </div>
-                      //           ))}
-                      //         </div>
-                      //       </div>
-                      //     </PopoverContent>
-                      //   </Popover>
                       <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded flex items-center">
                         <Clock className="h-3 w-3 mr-1" />
-                        <span>Working Day</span>
+                        <span>{t("calendar.workingDay")}</span>
                       </span>
                     )}
                     {hasEvents && (
                       <span className="text-xs text-muted-foreground">
                         {events.length}{" "}
-                        {events.length === 1 ? "event" : "events"}
+                        {events.length === 1
+                          ? t("calendar.event")
+                          : t("calendar.events")}
                       </span>
                     )}
                   </div>
@@ -243,7 +222,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                       <div className="mb-3 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-md">
                         <div className="text-sm font-medium flex items-center text-blue-700 dark:text-blue-300">
                           <Clock className="h-4 w-4 mr-2" />
-                          Working Hours
+                          {t("calendar.workingHours")}
                         </div>
                         <div className="mt-1 flex flex-row gap-2 flex-wrap">
                           {daySchedule.map((hours, idx) => (
@@ -260,7 +239,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                     )}
                     {events.length === 0 ? (
                       <div className="text-muted-foreground text-sm py-2">
-                        No events scheduled
+                        {t("calendar.noEventsScheduled")}
                       </div>
                     ) : (
                       events.map((event, idx) => {
@@ -323,7 +302,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
 
         {eventsByDate.length === 0 && (
           <div className="text-center py-10 text-muted-foreground">
-            No events in the selected date range
+            {t("calendar.noEventsInRange")}
           </div>
         )}
 
@@ -333,7 +312,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
             size="sm"
             onClick={() => setExpandedDates({})}
           >
-            Collapse All
+            {t("calendar.collapseAll")}
           </Button>
           <Button
             variant="outline"
@@ -348,7 +327,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
               setExpandedDates(allExpanded);
             }}
           >
-            Expand All
+            {t("calendar.expandAll")}
           </Button>
         </div>
       </ScrollArea>

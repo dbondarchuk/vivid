@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/services/options/table/search-params";
 import { OptionsTable } from "@/components/admin/services/options/table/table";
 import { OptionsTableAction } from "@/components/admin/services/options/table/table-action";
+import { getI18nAsync } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
@@ -20,20 +21,24 @@ type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Services", link: "/admin/dashboard/services" },
-  { title: "Options", link: "/admin/dashboard/services/options" },
-];
-
 export default async function OptionsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("options");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading options page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 
   const key = serialize({ ...parsed });
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    {
+      title: t("navigation.options"),
+      link: "/admin/dashboard/services/options",
+    },
+  ];
 
   return (
     <PageContainer scrollable={false}>
@@ -42,8 +47,8 @@ export default async function OptionsPage(props: Params) {
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-center justify-between">
             <Heading
-              title="Options"
-              description="Manage options that you provide"
+              title={t("services.options.title")}
+              description={t("services.options.description")}
             />
 
             <Link
@@ -51,7 +56,7 @@ export default async function OptionsPage(props: Params) {
               href={"/admin/dashboard/services/options/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> Add New
+              <Plus className="mr-2 h-4 w-4" /> {t("services.options.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

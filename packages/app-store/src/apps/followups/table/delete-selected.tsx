@@ -6,6 +6,7 @@ import { useQueryState } from "nuqs";
 import React from "react";
 import { deleteFollowUps } from "../actions";
 import { FollowUp } from "../models";
+import { useI18n } from "@vivid/i18n";
 
 export const DeleteSelectedFollowUpsButton: React.FC<{
   appId: string;
@@ -13,6 +14,8 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
 }> = ({ selected, appId }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const t = useI18n("apps");
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
   const action = async () => {
@@ -25,8 +28,10 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
           selected.map((r) => r._id)
         ),
         {
-          success: "Selected follow-ups have been deleted",
-          error: "There was a problem with your request.",
+          success: t("followUps.statusText.follow_ups_deleted", {
+            count: selected.length,
+          }),
+          error: t("followUps.statusText.error_deleting_follow_ups"),
         }
       );
 
@@ -48,15 +53,26 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
       >
         {isLoading && <Spinner />}
         <Trash className="mr-2 h-4 w-4" />
-        <span>Delete selected {selected.length} follow-up(s)</span>
+        <span>
+          {t("followUps.table.deleteSelected.label", {
+            count: selected.length,
+          })}
+        </span>
       </Button>
       <AlertModal
         isOpen={isOpen}
         loading={isLoading}
         onClose={() => setIsOpen(false)}
         onConfirm={action}
-        description="This action cannot be undone. This will delete selected follow-ups and
-            remove them from all options and addons that use them"
+        description={t("followUps.table.deleteSelected.description", {
+          count: selected.length,
+        })}
+        title={t("followUps.table.deleteSelected.label", {
+          count: selected.length,
+        })}
+        continueButton={t("followUps.table.deleteSelected.confirm", {
+          count: selected.length,
+        })}
       />
     </>
   );

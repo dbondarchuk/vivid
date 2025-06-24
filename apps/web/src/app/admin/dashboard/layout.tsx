@@ -12,7 +12,7 @@ import { CookiesProvider } from "../../../components/cookies-provider";
 import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
 
 export const metadata: Metadata = {
-  title: "CMS Dashboard",
+  title: "VIVID Dashboard",
 };
 
 export default async function DashboardLayout({

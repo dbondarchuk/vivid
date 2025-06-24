@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppointmentStatus, okStatus } from "@vivid/types";
 import { Button, ButtonProps, cn, Spinner, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ export const changeStatus = async (
   onSuccess?: (newStatus: AppointmentStatus) => void,
   beforeRequest?: () => Promise<void> | void
 ) => {
+  const t = useI18n("admin");
   setIsLoading(true);
 
   const fn = async () => {
@@ -28,8 +30,8 @@ export const changeStatus = async (
 
   try {
     await toastPromise(fn(), {
-      success: "Your changes were saved.",
-      error: "There was a problem with your request.",
+      success: t("appointments.actionButton.changesSaved"),
+      error: t("appointments.actionButton.requestError"),
     });
     refresh();
     onSuccess?.(status);

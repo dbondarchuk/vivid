@@ -2,8 +2,11 @@ import { ConnectedAppRow } from "@/components/admin/apps/connected-app";
 import { AvailableApps } from "@vivid/app-store";
 import { ServicesContainer } from "@vivid/services";
 import React from "react";
+import { getI18nAsync } from "@vivid/i18n";
 
 export const InstalledApps: React.FC = async () => {
+  const t = await getI18nAsync("admin");
+
   const apps = (
     await ServicesContainer.ConnectedAppsService().getApps()
   ).filter(
@@ -15,9 +18,7 @@ export const InstalledApps: React.FC = async () => {
       {apps.map((app) => (
         <ConnectedAppRow app={app} key={app._id} />
       ))}
-      {apps.length === 0 && (
-        <div className="">You do not have any connected apps</div>
-      )}
+      {apps.length === 0 && <div className="">{t("apps.noConnectedApps")}</div>}
     </>
   );
 };

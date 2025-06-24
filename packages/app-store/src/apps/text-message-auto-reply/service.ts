@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -48,7 +49,9 @@ export default class TextMessageAutoReplyConnectedApp
           { appId: appData._id, templateId: data.autoReplyTemplateId },
           "Auto reply template not found"
         );
-        throw new Error("Template not found");
+        throw new ConnectedAppError(
+          "textMessageAutoReply.statusText.template_not_found"
+        );
       }
 
       logger.debug(
@@ -62,7 +65,7 @@ export default class TextMessageAutoReplyConnectedApp
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `App is connected`,
+        statusText: "textMessageAutoReply.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -88,7 +91,13 @@ export default class TextMessageAutoReplyConnectedApp
 
       const status: ConnectedAppStatusWithText = {
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          e instanceof ConnectedAppError
+            ? {
+                key: e.key,
+                args: e.args,
+              }
+            : "textMessageAutoReply.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -168,7 +177,7 @@ export default class TextMessageAutoReplyConnectedApp
 
           await this.props.services.NotificationService().sendTextMessage({
             body: message,
-            handledBy: "Text Message Auto Reply",
+            handledBy: "textMessageAutoReply.handler",
             phone: reply.from,
             participantType: "customer",
             appointmentId: reply.data?.appointmentId,
@@ -187,7 +196,7 @@ export default class TextMessageAutoReplyConnectedApp
           );
 
           return {
-            handledBy: "Text Message Auto Reply",
+            handledBy: "textMessageAutoReply.handler",
             participantType: "customer",
           };
         } else {
@@ -201,7 +210,7 @@ export default class TextMessageAutoReplyConnectedApp
 
           this.props.update({
             status: "failed",
-            statusText: "Auto reply template not found",
+            statusText: "textMessageAutoReply.statusText.template_not_found",
           });
         }
       } else {
@@ -212,7 +221,7 @@ export default class TextMessageAutoReplyConnectedApp
 
         this.props.update({
           status: "failed",
-          statusText: "Auto reply template not found",
+          statusText: "textMessageAutoReply.statusText.template_not_found",
         });
       }
 

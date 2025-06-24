@@ -5,6 +5,7 @@ import React, { InputHTMLAttributes } from "react";
 import { Accept, useDropzone } from "react-dropzone";
 import { DefaultExtensionType, defaultStyles, FileIcon } from "react-file-icon";
 import { cn } from "../utils";
+import { useI18n } from "@vivid/i18n";
 
 export type DndFileInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -21,6 +22,7 @@ export const DndFileInput: React.FC<DndFileInputProps> = ({
   onChange,
   ...rest
 }) => {
+  const t = useI18n("ui");
   const onDrop = React.useCallback(
     (droppedFiles: File[]) => {
       onChange?.(droppedFiles[0]);
@@ -50,10 +52,10 @@ py-2 px-3 leading-tight text-background shadow focus:outline-none"
         )}
       >
         {isDragActive ? (
-          <p className="my-2 text-center">Drop the files here ...</p>
+          <p className="my-2 text-center">{t("dndFileInput.dropFilesHere")}</p>
         ) : (
           <p className="my-2 text-center">
-            Drag &apos;n&apos; drop some files here, or click to select files
+            {t("dndFileInput.dragAndDropOrClick")}
           </p>
         )}
         {!!value && (

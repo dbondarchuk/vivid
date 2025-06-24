@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   DataTableFilterBox,
@@ -12,9 +13,10 @@ import {
 } from "@vivid/ui";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedPagesButton } from "./delete-selected";
-import { STATUS_OPTIONS, usePagesTableFilters } from "./use-table-filters";
+import { usePagesTableFilters } from "./use-table-filters";
 
 export function PagesTableAction() {
+  const t = useI18n("admin");
   const {
     statusFilter,
     setStatusFilter,
@@ -23,6 +25,7 @@ export function PagesTableAction() {
     searchQuery,
     setPage,
     setSearchQuery,
+    STATUS_OPTIONS,
   } = usePagesTableFilters();
   const { rowSelection } = useSelectedRowsStore();
 
@@ -30,7 +33,7 @@ export function PagesTableAction() {
     <>
       <DataTableFilterBox
         filterKey="status"
-        title="Status"
+        title={t("pages.table.filters.status")}
         options={STATUS_OPTIONS}
         setFilterValue={setStatusFilter as any}
         filterValue={statusFilter}
@@ -48,7 +51,11 @@ export function PagesTableAction() {
           setPage={setPage}
         />
         <Popover>
-          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+          <PopoverTrigger
+            tooltip={t("pages.table.filters.filters")}
+            asChild
+            className="md:hidden"
+          >
             <Button variant="outline">
               <Settings2 size={16} />
             </Button>

@@ -11,6 +11,7 @@ import { ReactNode } from "react";
 import { Sketch } from "@uiw/react-color";
 import { ConfigurationProps } from "../../documents/types";
 import { X } from "lucide-react";
+import { useI18n } from "@vivid/i18n";
 
 export type ToolbarColorPropsValues<T> = ConfigurationProps<T> &
   (
@@ -41,7 +42,7 @@ export const ToolbarColorMenu = <T,>({
 }: ToolbarColorProps<T>) => {
   const openState = useOpenState();
   const propValue = resolveProperty(data, property);
-
+  const t = useI18n("ui");
   return (
     <DropdownMenu modal={false} {...openState}>
       <DropdownMenuTrigger asChild>
@@ -54,7 +55,7 @@ export const ToolbarColorMenu = <T,>({
         <Button
           variant="ghost"
           className="self-end size-6 [&>svg]:size-4 p-0"
-          aria-label="Close"
+          aria-label={t("common.close")}
           onClick={() => {
             openState.onOpenChange(false);
           }}
@@ -80,7 +81,7 @@ export const ToolbarColorMenu = <T,>({
               );
             }}
           >
-            <X size={16} /> Clear
+            <X size={16} /> {t("common.clear")}
           </Button>
         )}
       </DropdownMenuContent>

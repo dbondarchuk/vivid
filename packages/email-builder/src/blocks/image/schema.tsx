@@ -8,10 +8,28 @@ export const ImagePropsSchema = z.object({
     .nullable(),
   props: z
     .object({
-      width: z.number().positive().optional().nullable(),
-      height: z.number().positive().optional().nullable(),
-      x: z.number().min(0).max(100),
-      y: z.number().min(0).max(100),
+      width: z
+        .number()
+        .positive("emailBuilder.blocks.image.validation.width")
+        .optional()
+        .nullable(),
+      height: z
+        .number()
+        .positive("emailBuilder.blocks.image.validation.height")
+        .optional()
+        .nullable(),
+      x: z
+        .number()
+        .min(0, "emailBuilder.blocks.image.validation.x")
+        .max(100, "emailBuilder.blocks.image.validation.x")
+        .optional()
+        .nullable(),
+      y: z
+        .number()
+        .min(0, "emailBuilder.blocks.image.validation.y")
+        .max(100, "emailBuilder.blocks.image.validation.y")
+        .optional()
+        .nullable(),
       url: z.string().optional().nullable(),
       alt: z.string().optional().nullable(),
       linkHref: z.string().optional().nullable(),

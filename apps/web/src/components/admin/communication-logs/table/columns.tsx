@@ -1,11 +1,7 @@
 "use client";
 import { Markdown } from "@/components/web/markdown";
-import {
-  CommunicationChannelTexts,
-  CommunicationDirectionTexts,
-  CommunicationParticipantTypeTexts,
-} from "@/constants/labels";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n } from "@vivid/i18n";
 import JsonView from "@uiw/react-json-view";
 import { CommunicationLog } from "@vivid/types";
 import {
@@ -28,66 +24,119 @@ import { DateTime } from "luxon";
 export const columns: ColumnDef<CommunicationLog>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("communicationLogs.table.actions.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("communicationLogs.table.actions.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorFn: (log) => CommunicationDirectionTexts[log.direction],
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return t(`common.labels.direction.${row.original.direction}`);
+    },
     id: "direction",
-    header: tableSortHeader("Direction", "default"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.direction",
+      "default",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (log) => CommunicationChannelTexts[log.channel] || log.channel,
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return t(`common.labels.channel.${row.original.channel}`);
+    },
     id: "channel",
-    header: tableSortHeader("Channel", "default"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.channel",
+      "default",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (log) =>
-      CommunicationParticipantTypeTexts[log.participantType] ||
-      log.participantType,
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return t(`common.labels.participantType.${row.original.participantType}`);
+    },
     id: "participantType",
-    header: tableSortHeader("Participant", "default"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.participantType",
+      "default",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (log) => log.participant,
     id: "participant",
-    header: tableSortHeader("Participant", "default"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.participant",
+      "default",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (log) => log.handledBy,
+    cell: ({ row }) => {
+      const t = useI18n("apps");
+      return t(
+        typeof row.original.handledBy === "string"
+          ? row.original.handledBy
+          : row.original.handledBy.key,
+        typeof row.original.handledBy === "object" &&
+          row.original.handledBy.args
+          ? row.original.handledBy.args
+          : undefined
+      );
+    },
     id: "handledBy",
-    header: tableSortHeader("Handler", "default"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.handler",
+      "default",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (log) => log.subject,
     id: "subject",
-    header: tableSortHeader("Subject", "string"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.subject",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     id: "content",
-    header: tableSortHeader("Content", "string"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.content",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
     cell: ({ row }) => {
+      const t = useI18n("admin");
       if (row.original.text.length < 50) return row.original.text;
 
       return (
@@ -95,12 +144,14 @@ export const columns: ColumnDef<CommunicationLog>[] = [
           <span>{row.original.text.substring(0, 50)}...</span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="link-dashed">View more</Button>
+              <Button variant="link-dashed">
+                {t("communicationLogs.table.actions.viewMore")}
+              </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>
                 <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  Log content
+                  {t("communicationLogs.table.actions.logContent")}
                 </DialogTitle>
               </DialogHeader>
               <div className="flex-1 w-full overflow-auto">
@@ -119,7 +170,9 @@ export const columns: ColumnDef<CommunicationLog>[] = [
               </div>
               <DialogFooter className="flex-row !justify-between gap-2">
                 <DialogClose asChild>
-                  <Button variant="secondary">Close</Button>
+                  <Button variant="secondary">
+                    {t("communicationLogs.table.actions.close")}
+                  </Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
@@ -129,20 +182,27 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     },
   },
   {
-    header: "Data",
+    id: "data",
+    header: () => {
+      const t = useI18n("admin");
+      return t("communicationLogs.table.columns.data");
+    },
     enableSorting: false,
     cell: ({ row }) => {
+      const t = useI18n("admin");
       if (!row.original.data) return null;
       return (
         <div className="flex flex-col gap-1">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="link-dashed">View</Button>
+              <Button variant="link-dashed">
+                {t("communicationLogs.table.actions.view")}
+              </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>
                 <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  Log data
+                  {t("communicationLogs.table.actions.logData")}
                 </DialogTitle>
               </DialogHeader>
               <div className="flex-1 w-full overflow-auto">
@@ -150,7 +210,9 @@ export const columns: ColumnDef<CommunicationLog>[] = [
               </div>
               <DialogFooter className="flex-row !justify-between gap-2">
                 <DialogClose asChild>
-                  <Button variant="secondary">Close</Button>
+                  <Button variant="secondary">
+                    {t("communicationLogs.table.actions.close")}
+                  </Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
@@ -158,18 +220,27 @@ export const columns: ColumnDef<CommunicationLog>[] = [
         </div>
       );
     },
+    accessorFn: () => "", // Data column doesn't need sorting
   },
   {
     accessorFn: (log) =>
       DateTime.fromJSDate(log.dateTime).toLocaleString(DateTime.DATETIME_MED),
     id: "dateTime",
-    header: tableSortHeader("Date & time", "date"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.dateTime",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     id: "appointment.option.name",
     sortingFn: tableSortNoopFunction,
-    header: tableSortHeader("Appointment", "string"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.appointment",
+      "string",
+      "admin"
+    ),
     cell: ({ row }) => {
       if (!row.original.appointmentId) return null;
 
@@ -186,7 +257,11 @@ export const columns: ColumnDef<CommunicationLog>[] = [
   {
     id: "customer.name",
     sortingFn: tableSortNoopFunction,
-    header: tableSortHeader("Customer", "string"),
+    header: tableSortHeader(
+      "communicationLogs.table.columns.customer",
+      "string",
+      "admin"
+    ),
     cell: ({ row }) => {
       if (!row.original.customer) return null;
 

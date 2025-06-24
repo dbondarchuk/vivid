@@ -5,16 +5,9 @@ import React from "react";
 
 import { useI18n } from "@vivid/i18n";
 import { PaymentAppForms } from "@vivid/app-store";
-import { BaseCardProps } from "./base-card";
 import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";
 import { formatAmountString } from "@vivid/utils";
-
-export type PaymentCardProps = BaseCardProps & {
-  dateTime: DateTime;
-  duration: number;
-  fields?: Record<string, any>;
-};
 
 export const PaymentCard: React.FC = () => {
   const i18n = useI18n();

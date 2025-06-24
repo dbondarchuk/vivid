@@ -28,6 +28,7 @@
     "@uiw/react-json-view": "2.0.0-alpha.30",
     "react-dom": "19.0.0",
     "@vivid/ui": "*",
+    "@vivid/i18n": "*",
     "@vivid/rte": "*",
     "lucide-react": "^0.479.0"
   }

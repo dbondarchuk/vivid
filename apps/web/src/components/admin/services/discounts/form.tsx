@@ -1,10 +1,11 @@
 "use client";
 
 import { OptionSelector } from "@/app/admin/dashboard/settings/appointments/tabs/cards/option-selector";
-import { DiscountTypeLabels } from "@/constants/labels";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   DatabaseId,
+  discountTypes,
   DiscountUpdateModel,
   getDiscountSchemaWithUniqueCheck,
 } from "@vivid/types";
@@ -29,7 +30,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  IComboboxItem,
   InfoTooltip,
   Input,
   InputGroup,
@@ -58,6 +58,7 @@ const DiscountLimitCard: React.FC<{
   limit: NonNullable<DiscountUpdateModel["limitTo"]>[number];
   remove: () => void;
 }> = ({ limit, form, index, disabled, remove }) => {
+  const t = useI18n("admin");
   const options = useFieldArray({
     control: form.control,
     name: `limitTo.${index}.options`,
@@ -71,7 +72,7 @@ const DiscountLimitCard: React.FC<{
   return (
     <div className="flex flex-col gap-4 md:items-center md:grid md:grid-cols-[minmax(0,_1fr),50px,minmax(0,_1fr),50px] bg-card px-2 py-4 rounded">
       <div className="flex flex-col gap-4">
-        <Label>Any of following options:</Label>
+        <Label>{t("services.discounts.form.optionsLabel")}</Label>
         {(options.fields || []).map((option, optionsIndex) => (
           <FormField
             key={optionsIndex}
@@ -110,18 +111,20 @@ const DiscountLimitCard: React.FC<{
             )}
           />
         ))}
-        {!options.fields?.length && <div>Any option</div>}
+        {!options.fields?.length && (
+          <div>{t("services.discounts.form.anyOption")}</div>
+        )}
         <Button
           variant="outline"
           className="w-full"
           onClick={() => options.append({ id: null as any })}
         >
-          <PlusCircle /> Add new
+          <PlusCircle /> {t("services.discounts.form.addNew")}
         </Button>
       </div>
-      <Label>And</Label>
+      <Label>{t("services.discounts.form.andLabel")}</Label>
       <div className="flex flex-col gap-4">
-        <Label>Any of following addon bundles:</Label>
+        <Label>{t("services.discounts.form.addonsLabel")}</Label>
         {(addons.fields || []).map((addon, addonsIndex) => (
           <FormField
             key={addonsIndex}
@@ -158,13 +161,15 @@ const DiscountLimitCard: React.FC<{
             )}
           />
         ))}
-        {!addons.fields?.length && <div>Any addon</div>}
+        {!addons.fields?.length && (
+          <div>{t("services.discounts.form.anyAddon")}</div>
+        )}
         <Button
           variant="outline"
           className="w-full"
           onClick={() => addons.append({ ids: [] })}
         >
-          <PlusCircle /> Add new
+          <PlusCircle /> {t("services.discounts.form.addNew")}
         </Button>
       </div>
       <AlertDialog>
@@ -174,22 +179,28 @@ const DiscountLimitCard: React.FC<{
             variant="destructive"
             className="[&>svg]:size-6"
             type="button"
-            title="Remove"
+            title={t("services.discounts.form.removeLimit")}
           >
             <Trash size={20} />
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("services.discounts.form.removeLimitTitle")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              <p>Are you sure you want to remove this limit?</p>
+              <p>{t("services.discounts.form.removeLimitDescription")}</p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {t("services.discounts.form.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction asChild variant="destructive">
-              <Button onClick={remove}>Delete</Button>
+              <Button onClick={remove}>
+                {t("services.discounts.form.delete")}
+              </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -198,13 +209,10 @@ const DiscountLimitCard: React.FC<{
   );
 };
 
-const DiscountTypeValues = Object.entries(DiscountTypeLabels).map(
-  ([value, label]) => ({ value, label }) as IComboboxItem
-);
-
 export const DiscountForm: React.FC<{
   initialData?: DiscountUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
+  const t = useI18n("admin");
   const use12HourFormat = React.useMemo(() => is12hourUserTimeFormat(), []);
   const formSchema = getDiscountSchemaWithUniqueCheck(
     (name, codes) =>
@@ -213,8 +221,8 @@ export const DiscountForm: React.FC<{
         codes?.filter((code) => !!code) ?? [],
         initialData?._id
       ),
-    "Discount name must be unique",
-    "Promo code must be unique"
+    "services.discounts.nameUnique",
+    "services.discounts.codeUnique"
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -247,8 +255,8 @@ export const DiscountForm: React.FC<{
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("services.discounts.form.toasts.changesSaved"),
+        error: t("services.discounts.form.toasts.requestError"),
       });
     } catch (error: any) {
       console.error(error);
@@ -291,13 +299,16 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Name <InfoTooltip>Unique name of the discount.</InfoTooltip>
+                    {t("services.discounts.form.name")}{" "}
+                    <InfoTooltip>
+                      {t("services.discounts.form.nameTooltip")}
+                    </InfoTooltip>
                   </FormLabel>
 
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Discount name"
+                      placeholder={t("services.discounts.form.namePlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -310,12 +321,12 @@ export const DiscountForm: React.FC<{
               name="enabled"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>{t("services.discounts.form.status")}</FormLabel>
                   <FormControl>
                     <BooleanSelect
                       className="w-full"
-                      trueLabel="Active"
-                      falseLabel="Disabled"
+                      trueLabel={t("services.discounts.form.active")}
+                      falseLabel={t("services.discounts.form.disabled")}
                       value={field.value}
                       onValueChange={(item) => {
                         field.onChange(item);
@@ -333,14 +344,20 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Type <InfoTooltip>Monetary type of discount</InfoTooltip>
+                    {t("services.discounts.form.type")}{" "}
+                    <InfoTooltip>
+                      {t("services.discounts.form.typeTooltip")}
+                    </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Combobox
                       disabled={loading}
                       className="flex w-full font-normal text-base"
-                      values={DiscountTypeValues}
-                      searchLabel="Select discount type"
+                      values={discountTypes.map((type) => ({
+                        value: type,
+                        label: t(`common.labels.discountType.${type}`),
+                      }))}
+                      searchLabel={t("services.discounts.form.typePlaceholder")}
                       value={field.value}
                       onItemSelect={(item) => {
                         field.onChange(item);
@@ -357,7 +374,7 @@ export const DiscountForm: React.FC<{
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Discount value</FormLabel>
+                  <FormLabel>{t("services.discounts.form.value")}</FormLabel>
                   <FormControl>
                     <InputGroup>
                       <InputGroupInput>
@@ -404,13 +421,9 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Discount start date{" "}
+                    {t("services.discounts.form.startDate")}{" "}
                     <InfoTooltip>
-                      <p>
-                        The date when the discount becomes active. Only bookings
-                        made on or after this date will be eligible for the
-                        discount.
-                      </p>
+                      <p>{t("services.discounts.form.startDateTooltip")}</p>
                       <p>Optional</p>
                     </InfoTooltip>
                   </FormLabel>
@@ -433,12 +446,9 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Discount end date{" "}
+                    {t("services.discounts.form.endDate")}{" "}
                     <InfoTooltip>
-                      <p>
-                        The last date the discount is valid.Bookings made after
-                        this date will not be eligible for the discount.
-                      </p>
+                      <p>{t("services.discounts.form.endDateTooltip")}</p>
                       <p>Optional</p>
                     </InfoTooltip>
                   </FormLabel>
@@ -461,12 +471,12 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Earliest eligible appointment date
+                    {t("services.discounts.form.appointmentStartDate")}
                     <InfoTooltip>
                       <p>
-                        The earliest appointment date (inclusive) for which this
-                        discount can be applied. Appointments scheduled before
-                        this date will not be eligible for the discount.
+                        {t(
+                          "services.discounts.form.appointmentStartDateTooltip"
+                        )}
                       </p>
                       <p>Optional</p>
                     </InfoTooltip>
@@ -490,12 +500,10 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Latest eligible appointment date{" "}
+                    {t("services.discounts.form.appointmentEndDate")}{" "}
                     <InfoTooltip>
                       <p>
-                        The earliest appointment date (inclusive) for which this
-                        discount can be applied. Appointments scheduled before
-                        this date will not be eligible for the discount.
+                        {t("services.discounts.form.appointmentEndDateTooltip")}
                       </p>
                       <p>Optional</p>
                     </InfoTooltip>
@@ -519,13 +527,9 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Maximum total uses{" "}
+                    {t("services.discounts.form.maxUsage")}{" "}
                     <InfoTooltip>
-                      <p>
-                        The total number of times this discount can be used
-                        across all customers. Once this limit is reached, the
-                        discount will no longer be available.
-                      </p>
+                      <p>{t("services.discounts.form.maxUsageTooltip")}</p>
                       <p>Optional</p>
                     </InfoTooltip>
                   </FormLabel>
@@ -547,13 +551,12 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Maximum uses per customer{" "}
+                    {t("services.discounts.form.maxUsagePerCustomer")}{" "}
                     <InfoTooltip>
                       <p>
-                        The maximum number of times an individual customer can
-                        use this discount. Further attempts to use the discount
-                        by that customer will be rejected after this limit is
-                        reached.
+                        {t(
+                          "services.discounts.form.maxUsagePerCustomerTooltip"
+                        )}
                       </p>
                       <p>Optional</p>
                     </InfoTooltip>
@@ -581,7 +584,7 @@ export const DiscountForm: React.FC<{
                   <span
                     className={cn(codesState.invalid && "text-destructive")}
                   >
-                    Codes
+                    {t("services.discounts.form.codes")}
                   </span>
                 }
                 ids={codes}
@@ -635,7 +638,7 @@ export const DiscountForm: React.FC<{
           />
 
           <NonSortable
-            title="Limit to"
+            title={t("services.discounts.form.limitTo")}
             ids={limitTo.fields.map((f) => f.id)}
             onAdd={() => limitTo.append({})}
             disabled={loading}
@@ -653,12 +656,12 @@ export const DiscountForm: React.FC<{
               ))}
               {!limitTo.fields.length && (
                 <div className="flex flex-col gap-4 px-2 py-4 border rounded bg-card">
-                  Any option or addon
+                  {t("services.discounts.form.anyOptionOrAddon")}
                 </div>
               )}
 
               <div className="text-sm text-muted-foreground">
-                You can limit this discount to specific options and addons
+                {t("services.discounts.form.limitToDescription")}
               </div>
             </div>
           </NonSortable>

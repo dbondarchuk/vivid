@@ -16,6 +16,7 @@ import {
   TemplateSelector,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageAutoReplyApp } from "./app";
 import {
@@ -39,6 +40,8 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
+  const t = useI18n("apps");
+
   return (
     <>
       <Form {...form}>
@@ -50,9 +53,9 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    Auto reply template
+                    {t("textMessageAutoReply.form.autoReplyTemplate.label")}
                     <InfoTooltip>
-                      <p>The template that will be used to send reply.</p>
+                      {t("textMessageAutoReply.form.autoReplyTemplate.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -75,15 +78,16 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>Connect with</span>
+              <span>{t("textMessageAutoReply.form.connectWith")}</span>
               <ConnectedAppNameAndLogo
                 app={{ name: TextMessageAutoReplyApp.name }}
+                t={t}
               />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

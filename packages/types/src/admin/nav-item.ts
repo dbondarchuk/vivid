@@ -1,14 +1,15 @@
+import type { AdminKeys } from "@vivid/i18n";
 import type { ReactElement } from "react";
 
 export interface NavItem {
   id: string;
-  title: string;
+  title: AdminKeys;
   href?: string;
   disabled?: boolean;
   external?: boolean;
   icon?: ReactElement;
-  label?: string;
-  description?: string;
+  label?: AdminKeys;
+  description?: AdminKeys;
 }
 
 export interface NavItemWithChildren extends NavItem {
@@ -20,14 +21,14 @@ export interface NavItemWithOptionalChildren extends NavItem {
 }
 
 export interface NavItemGroup {
-  title: string;
+  title: AdminKeys;
   children: NavItemWithOptionalChildren[];
 }
 
 export interface FooterItem {
-  title: string;
+  title: AdminKeys;
   items: {
-    title: string;
+    title: AdminKeys;
     href: string;
     external?: boolean;
   }[];

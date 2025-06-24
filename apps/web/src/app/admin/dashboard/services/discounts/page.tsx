@@ -6,6 +6,7 @@ import {
 } from "@/components/admin/services/discounts/table/search-params";
 import { DiscountsTable } from "@/components/admin/services/discounts/table/table";
 import { DiscountsTableAction } from "@/components/admin/services/discounts/table/table-action";
+import { getI18nAsync } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
@@ -21,20 +22,24 @@ type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Services", link: "/admin/dashboard/services" },
-  { title: "Discounts", link: "/admin/dashboard/services/discounts" },
-];
-
 export default async function DiscountsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("discounts");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading discounts page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 
   const key = serialize({ ...parsed });
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    {
+      title: t("navigation.discounts"),
+      link: "/admin/dashboard/services/discounts",
+    },
+  ];
 
   return (
     <PageContainer scrollable={false}>
@@ -43,8 +48,8 @@ export default async function DiscountsPage(props: Params) {
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-center justify-between">
             <Heading
-              title="Discount"
-              description="Manage discounts and promo codes"
+              title={t("services.discounts.title")}
+              description={t("services.discounts.description")}
             />
 
             <Link
@@ -52,7 +57,7 @@ export default async function DiscountsPage(props: Params) {
               href={"/admin/dashboard/services/discounts/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> Add New
+              <Plus className="mr-2 h-4 w-4" /> {t("services.discounts.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

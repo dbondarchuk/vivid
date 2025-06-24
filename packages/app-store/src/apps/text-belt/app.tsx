@@ -6,14 +6,14 @@ import image from "./images/image.png";
 
 export const TextBeltApp: App = {
   name: TEXTBELT_APP_NAME,
-  displayName: "TextBelt SMS",
+  displayName: "textBelt.displayName",
   scope: ["text-message-send"],
-  category: ["Communications"],
+  category: ["categories.communications"],
   type: "basic",
   Logo: ({ className }) => <TextBeltLogo className={className} />,
   SetUp: (props) => <TextBeltAppSetup {...props} />,
   description: {
-    text: "Textbelt is a no-nonsense SMS API built for developers who just want to send SMS. Thousands of customers prefer Textbelt over other SMS providers for our ease of setup, simple, predictable pricing packages, and personal support",
+    text: "textBelt.description",
     images: [image.src],
   },
 };

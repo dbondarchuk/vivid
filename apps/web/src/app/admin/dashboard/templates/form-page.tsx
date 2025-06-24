@@ -1,6 +1,6 @@
 import { TemplateForm } from "@/components/admin/templates/form";
 import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
-import { CommunicationChannelTexts } from "@/constants/labels";
+import { getI18nAsync } from "@vivid/i18n";
 import { ServicesContainer } from "@vivid/services";
 import { CommunicationChannel, Template } from "@vivid/types";
 import { Breadcrumbs } from "@vivid/ui";
@@ -17,6 +17,7 @@ export const TemplateFormPage: React.FC<
       id: string;
     }
 > = async (props) => {
+  const t = await getI18nAsync("admin");
   const config =
     await ServicesContainer.ConfigurationService().getConfigurations(
       "booking",
@@ -49,11 +50,16 @@ export const TemplateFormPage: React.FC<
   }
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Communications", link: "/admin/dashboard/communication-logs" },
-    { title: "Templates", link: "/admin/dashboard/templates" },
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
     {
-      title: `${CommunicationChannelTexts[type]} templates`,
+      title: t("navigation.communications"),
+      link: "/admin/dashboard/communication-logs",
+    },
+    { title: t("navigation.templates"), link: "/admin/dashboard/templates" },
+    {
+      title: t("templates.formPage.typeTemplates", {
+        type: t(`common.labels.channel.${type}`),
+      }),
       link: `/admin/dashboard/templates?type=${encodeURIComponent(type)}`,
     },
   ];
@@ -65,7 +71,7 @@ export const TemplateFormPage: React.FC<
     });
   } else {
     breadcrumbItems.push({
-      title: "New",
+      title: t("templates.formPage.new"),
       link: `/admin/dashboard/templates/${type}/new`,
     });
   }

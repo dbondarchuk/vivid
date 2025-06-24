@@ -1,14 +1,7 @@
+import { getI18nAsync, useI18n } from "@vivid/i18n";
 import type { Appointment } from "@vivid/types";
 import { StatusText } from "@vivid/types";
 import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
   Button,
   Card,
   CardContent,
@@ -39,10 +32,11 @@ export type AppointmentCardProps = {
   timeZone?: string;
 };
 
-export const AppointmentCard: React.FC<AppointmentCardProps> = ({
+export const AppointmentCard: React.FC<AppointmentCardProps> = async ({
   appointment,
   timeZone = "local",
 }) => {
+  const t = await getI18nAsync("admin");
   const duration = durationToTime(appointment.totalDuration);
 
   return (
@@ -53,7 +47,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             title={appointment.option.name}
             description={
               <>
-                By{" "}
+                {t("appointments.card.by")}{" "}
                 <Link
                   href={`/admin/dashboard/customers/${appointment.customerId}`}
                   variant="underline"
@@ -77,19 +71,19 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <dl className="divide-y">
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <Presentation size={16} /> Appointment:
+              <Presentation size={16} /> {t("appointments.card.appointment")}:
             </dt>
             <dd className="col-span-2">{appointment.option.name}</dd>
           </div>
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <CheckCircle size={16} /> Status:
+              <CheckCircle size={16} /> {t("appointments.card.status")}:
             </dt>
             <dd className="col-span-2">{StatusText[appointment.status]}</dd>
           </div>
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <Calendar size={16} /> Date &amp; Time:
+              <Calendar size={16} /> {t("appointments.card.dateTime")}:
             </dt>
             <dd className="col-span-2">
               {DateTime.fromJSDate(appointment.dateTime, {
@@ -99,17 +93,25 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </div>
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <Clock size={16} /> Duration:
+              <Clock size={16} /> {t("appointments.card.duration")}:
             </dt>
             <dd className="col-span-2">
-              {duration.hours > 0 && <>{duration.hours} hours</>}
+              {duration.hours > 0 && (
+                <>
+                  {duration.hours} {t("appointments.card.hours")}
+                </>
+              )}
               {duration.hours > 0 && duration.minutes > 0 && <> </>}
-              {duration.minutes > 0 && <>{duration.minutes} minutes</>}
+              {duration.minutes > 0 && (
+                <>
+                  {duration.minutes} {t("appointments.card.minutes")}
+                </>
+              )}
             </dd>
           </div>
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <Calendar size={16} /> Ends at:
+              <Calendar size={16} /> {t("appointments.card.endsAt")}:
             </dt>
             <dd className="col-span-2">
               {DateTime.fromJSDate(appointment.dateTime, {
@@ -122,7 +124,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           {appointment.totalPrice && (
             <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
               <dt className="flex self-center items-center gap-1">
-                <DollarSign size={16} /> Price:
+                <DollarSign size={16} /> {t("appointments.card.price")}:
               </dt>
               <dd className="col-span-2">${appointment.totalPrice}</dd>
             </div>
@@ -130,7 +132,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           {appointment.note && (
             <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
               <dt className="flex self-center items-center gap-1">
-                <StickyNote size={16} /> Note:
+                <StickyNote size={16} /> {t("appointments.card.note")}:
               </dt>
               <dd className="col-span-2">{appointment.note}</dd>
             </div>
@@ -146,7 +148,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
                 variant="destructive"
                 className="inline-flex flex-row gap-2 items-center"
               >
-                <CalendarX2 size={20} /> Decline
+                <CalendarX2 size={20} /> {t("appointments.card.decline")}
               </Button>
             }
           />
@@ -157,7 +159,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               status="confirmed"
             >
               <CalendarCheck2 size={20} />
-              Confirm
+              {t("appointments.card.confirm")}
             </AppointmentActionButton>
           )}
         </CardFooter>

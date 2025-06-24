@@ -22,6 +22,7 @@ import {
 } from "../tooltip";
 import { DateTime } from "luxon";
 import { DateTimePicker } from "./date-time-picker";
+import { useI18n } from "@vivid/i18n";
 
 type DateTimeInputProps = {
   className?: string;
@@ -92,6 +93,7 @@ const mergeRefs = (...refs: any) => {
 };
 const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
   (options: DateTimeInputProps, ref) => {
+    const t = useI18n("ui");
     const {
       format: formatProp,
       value: _value,
@@ -287,10 +289,10 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, DateTimeInputProps>(
         let ok = false;
         let newValue = "";
         if (key?.toLowerCase() === "a") {
-          newValue = "AM";
+          newValue = t("timePicker.am");
           ok = true;
         } else if (key?.toLowerCase() === "p") {
-          newValue = "PM";
+          newValue = t("timePicker.pm");
           ok = true;
         }
         if (ok) {

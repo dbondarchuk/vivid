@@ -7,6 +7,7 @@ import {
   getPaymentStatusColor,
   getPaymentStatusIcon,
 } from "@/components/payments/payment-card";
+import { I18nFn, AdminKeys, useI18n, AppsKeys } from "@vivid/i18n";
 import { Appointment, Payment } from "@vivid/types";
 import {
   AlertDialog,
@@ -21,11 +22,6 @@ import {
   Badge,
   Card,
   CardContent,
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   Checkbox,
   ScrollArea,
   Separator,
@@ -46,6 +42,20 @@ export const AppointmentDeclineDialog: React.FC<{
   open?: boolean;
   onClose?: () => void;
 }> = ({ appointment, open, trigger, onClose }) => {
+  const tAdmin = useI18n("admin");
+  const tApp = useI18n("apps");
+  const t: I18nFn<"admin" | "apps"> = (key, args) => {
+    const adminTranslation = tAdmin(key as AdminKeys, args);
+    if (adminTranslation && adminTranslation !== key) {
+      return adminTranslation;
+    }
+    const appTranslation = tApp(key as AppsKeys, args);
+    if (appTranslation && appTranslation !== key) {
+      return appTranslation;
+    }
+    return key;
+  };
+
   const onOpenChange = (open: boolean) => {
     if (!open) onClose?.();
   };
@@ -112,7 +122,7 @@ export const AppointmentDeclineDialog: React.FC<{
 
     if (!result.success) {
       console.error(`Refunds failed:`, result.errors);
-      throw new Error("One or more refund requests have failed.");
+      throw new Error(tAdmin("appointments.declineDialog.refundError"));
     }
   };
 
@@ -121,31 +131,40 @@ export const AppointmentDeclineDialog: React.FC<{
       {!!trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Decline appointment</AlertDialogTitle>
+          <AlertDialogTitle>
+            {tAdmin("appointments.declineDialog.title")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently decline this
-            appointment.
+            {tAdmin("appointments.declineDialog.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <ScrollArea className="max-h-[60vh]">
           <div className="flex flex-col gap-2">
             <div className="bg-muted text-foreground font-light rounded-lg p-4 flex flex-col gap-2">
-              <h4 className="font-semibold mb-3">Appointment details</h4>
+              <h4 className="font-semibold mb-3">
+                {tAdmin("appointments.declineDialog.appointmentDetails")}
+              </h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="">Customer</span>
+                  <span className="">
+                    {tAdmin("appointments.declineDialog.customer")}
+                  </span>
                   <span className="font-semibold">
                     {appointment.fields.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="">Service</span>
+                  <span className="">
+                    {tAdmin("appointments.declineDialog.service")}
+                  </span>
                   <span className="font-semibold">
                     {appointment.option.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="">Date &amp; Time</span>
+                  <span className="">
+                    {tAdmin("appointments.declineDialog.dateTime")}
+                  </span>
                   <span className="font-semibold">
                     {DateTime.fromJSDate(appointment.dateTime).toLocaleString(
                       DateTime.DATETIME_MED_WITH_WEEKDAY
@@ -156,7 +175,9 @@ export const AppointmentDeclineDialog: React.FC<{
             </div>
             {!!paymentsAvailableToRefund.length && (
               <div className="flex flex-col gap-2">
-                <div className="font-semibold">Refund payments</div>
+                <div className="font-semibold">
+                  {tAdmin("appointments.declineDialog.refundPayments")}
+                </div>
 
                 <div className="flex flex-row flex-wrap gap-2">
                   {paymentsAvailableToRefund.map((payment) => {
@@ -192,15 +213,19 @@ export const AppointmentDeclineDialog: React.FC<{
                               )}
                               <div>
                                 <h3 className="font-semibold text-lg">
-                                  {getPaymentMethod(
-                                    payment.type,
-                                    "appName" in payment
-                                      ? payment.appName
-                                      : undefined
+                                  {t(
+                                    getPaymentMethod(
+                                      payment.type,
+                                      "appName" in payment
+                                        ? payment.appName
+                                        : undefined
+                                    )
                                   )}
                                 </h3>
                                 <p className="text-sm text-gray-600">
-                                  {getPaymentDescription(payment.description)}
+                                  {t(
+                                    getPaymentDescription(payment.description)
+                                  )}
                                 </p>
                               </div>
                             </div>
@@ -210,7 +235,9 @@ export const AppointmentDeclineDialog: React.FC<{
                               <div className="flex items-center space-x-1">
                                 {getPaymentStatusIcon(payment.status)}
                                 <span className="capitalize">
-                                  {payment.status}
+                                  {tAdmin(
+                                    `common.labels.paymentStatus.${payment.status}`
+                                  )}
                                 </span>
                               </div>
                             </Badge>
@@ -220,7 +247,9 @@ export const AppointmentDeclineDialog: React.FC<{
 
                           <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                              <span className="text-foreground/80">Amount</span>
+                              <span className="text-foreground/80">
+                                {tAdmin("appointments.declineDialog.amount")}
+                              </span>
                               <span className="font-semibold text-lg">
                                 ${formatAmountString(payment.amount)}
                               </span>
@@ -228,7 +257,9 @@ export const AppointmentDeclineDialog: React.FC<{
                             {"externalId" in payment && (
                               <div className="flex justify-between items-center text-sm">
                                 <span className="text-foreground/80">
-                                  Transaction ID
+                                  {tAdmin(
+                                    "appointments.declineDialog.transactionId"
+                                  )}
                                 </span>
                                 <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
                                   {payment.externalId}
@@ -238,7 +269,7 @@ export const AppointmentDeclineDialog: React.FC<{
 
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-foreground/80">
-                                Time paid
+                                {tAdmin("appointments.declineDialog.timePaid")}
                               </span>
                               <TooltipProvider>
                                 <Tooltip>
@@ -266,7 +297,9 @@ export const AppointmentDeclineDialog: React.FC<{
           </div>
         </ScrollArea>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {tAdmin("appointments.declineDialog.cancel")}
+          </AlertDialogCancel>
           {!!paymentsAvailableToRefund.length && (
             <AlertDialogAction asChild variant="destructive">
               <AppointmentActionButton
@@ -277,18 +310,20 @@ export const AppointmentDeclineDialog: React.FC<{
                 beforeRequest={() => refundSelected()}
               >
                 <CalendarX2 size={20} />
-                Decline and refund
-                {selectedPaymentsIds.length
-                  ? ` ${selectedPaymentsIds.length}`
-                  : ""}{" "}
-                payment{selectedPaymentsIds.length !== 1 ? "s" : ""}
+                {tAdmin("appointments.declineDialog.declineAndRefund", {
+                  count: selectedPaymentsIds.length,
+                  payment:
+                    selectedPaymentsIds.length !== 1
+                      ? tAdmin("appointments.declineDialog.payments")
+                      : tAdmin("appointments.declineDialog.payment"),
+                })}
               </AppointmentActionButton>
             </AlertDialogAction>
           )}
           <AlertDialogAction asChild variant="destructive">
             <AppointmentActionButton _id={appointment._id} status="declined">
               <CalendarX2 size={20} />
-              Decline
+              {tAdmin("appointments.declineDialog.decline")}
             </AppointmentActionButton>
           </AlertDialogAction>
         </AlertDialogFooter>

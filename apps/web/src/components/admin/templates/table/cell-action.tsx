@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { TemplateListModel } from "@vivid/types";
 import {
   AlertModal,
@@ -22,6 +23,7 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ template }) => {
+  const t = useI18n("admin");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -31,8 +33,10 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
       setLoading(true);
 
       await toastPromise(deleteTemplate(template._id), {
-        success: `Template '${template.name}' was deleted.`,
-        error: "There was a problem with your request.",
+        success: t("templates.table.cellAction.templateDeleted", {
+          name: template.name,
+        }),
+        error: t("templates.table.cellAction.deleteError"),
       });
 
       router.refresh();
@@ -55,25 +59,30 @@ export const CellAction: React.FC<CellActionProps> = ({ template }) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t("common.openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            {t("templates.table.cellAction.actions")}
+          </DropdownMenuLabel>
 
           <DropdownMenuItem asChild>
             <Link href={`/admin/dashboard/templates/${template._id}`}>
-              <Edit className="h-4 w-4" /> Update
+              <Edit className="h-4 w-4" />{" "}
+              {t("templates.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> Delete
+            <Trash className="h-4 w-4" />{" "}
+            {t("templates.table.cellAction.delete")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/admin/dashboard/templates/${template._id}/clone`}>
-              <Copy className="h-4 w-4" /> Clone
+              <Copy className="h-4 w-4" />{" "}
+              {t("templates.table.cellAction.clone")}
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>

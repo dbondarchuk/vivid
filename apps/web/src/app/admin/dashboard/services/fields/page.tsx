@@ -5,6 +5,7 @@ import {
 } from "@/components/admin/services/fields/table/search-params";
 import { FieldsTable } from "@/components/admin/services/fields/table/table";
 import { FieldsTableAction } from "@/components/admin/services/fields/table/table-action";
+import { getI18nAsync } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
@@ -20,20 +21,21 @@ type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Services", link: "/admin/dashboard/services" },
-  { title: "Fields", link: "/admin/dashboard/services/fields" },
-];
-
 export default async function FieldsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("fields");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading fields page");
   const searchParams = await props.searchParams;
   const parsed = searchParamsCache.parse(searchParams);
 
   const key = serialize({ ...parsed });
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    { title: t("navigation.fields"), link: "/admin/dashboard/services/fields" },
+  ];
 
   return (
     <PageContainer scrollable={false}>
@@ -42,8 +44,8 @@ export default async function FieldsPage(props: Params) {
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-center justify-between">
             <Heading
-              title="Option fields"
-              description="Manage option custom fields"
+              title={t("services.fields.title")}
+              description={t("services.fields.description")}
             />
 
             <Link
@@ -51,7 +53,7 @@ export default async function FieldsPage(props: Params) {
               href={"/admin/dashboard/services/fields/new"}
               variant="default"
             >
-              <Plus className="mr-2 h-4 w-4" /> Add New
+              <Plus className="mr-2 h-4 w-4" /> {t("services.fields.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

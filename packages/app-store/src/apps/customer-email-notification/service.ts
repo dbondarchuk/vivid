@@ -31,6 +31,7 @@ export default class CustomerEmailNotificationConnectedApp
     data: CustomerEmailNotificationConfiguration
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
+
     logger.debug(
       { appId: appData._id },
       "Processing customer email notification configuration request"
@@ -60,13 +61,14 @@ export default class CustomerEmailNotificationConnectedApp
         );
         return {
           status: "failed",
-          statusText: "Email sender default is not configured",
+          statusText:
+            "customerEmailNotification.statusText.email_app_not_configured",
         };
       }
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully set up`,
+        statusText: `customerEmailNotification.statusText.successfully_set_up`,
       };
 
       this.props.update({
@@ -89,7 +91,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error processing customer email notification configuration",
+          "customerEmailNotification.statusText.error_processing_configuration",
       });
 
       throw error;
@@ -112,7 +114,7 @@ export default class CustomerEmailNotificationConnectedApp
         appData,
         appointment,
         confirmed ? "confirmed" : "pending",
-        "New Request",
+        "newRequest",
         confirmed
       );
 
@@ -129,7 +131,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending customer email notification for new appointment",
+          "customerEmailNotification.statusText.error_sending_customer_email_notification_for_new_appointment",
       });
 
       throw error;
@@ -168,7 +170,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending customer email notification for status change",
+          "customerEmailNotification.statusText.error_sending_customer_email_notification_for_status_change",
       });
 
       throw error;
@@ -203,7 +205,7 @@ export default class CustomerEmailNotificationConnectedApp
         appData,
         newAppointment,
         "rescheduled",
-        "Rescheduled"
+        "rescheduled"
       );
 
       logger.info(
@@ -230,7 +232,7 @@ export default class CustomerEmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending customer email notification for rescheduled appointment",
+          "customerEmailNotification.statusText.error_sending_customer_email_notification_for_rescheduled_appointment",
       });
 
       throw error;
@@ -241,7 +243,9 @@ export default class CustomerEmailNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     status: keyof CustomerEmailNotificationConfiguration["templates"],
-    initiator: string,
+    initiator:
+      | keyof CustomerEmailNotificationConfiguration["templates"]
+      | "newRequest",
     forceRequest?: boolean
   ) {
     const logger = this.loggerFactory("sendNotification");
@@ -304,7 +308,6 @@ export default class CustomerEmailNotificationConnectedApp
           },
           "Event template not found"
         );
-        console.error(`Can't find template with id ${data.event.templateId}`);
         return;
       }
 
@@ -358,7 +361,6 @@ export default class CustomerEmailNotificationConnectedApp
           { appId: appData._id, appointmentId: appointment._id, templateId },
           "Email template not found"
         );
-        console.error(`Can't find template with id ${templateId}`);
         return;
       }
 
@@ -393,7 +395,7 @@ export default class CustomerEmailNotificationConnectedApp
             content: eventContent,
           },
         },
-        handledBy: `Customer Email Notification Service - ${initiator}`,
+        handledBy: `customerEmailNotification.handlers.${initiator}`,
         participantType: "customer",
         appointmentId: appointment._id,
       });

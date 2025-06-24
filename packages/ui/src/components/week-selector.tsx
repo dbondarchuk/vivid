@@ -21,6 +21,7 @@ import {
   hasSame,
 } from "@vivid/utils";
 import { WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
 
 export type WeekSelectorProps = {
   onWeekChange?: (week: WeekIdentifier) => void;
@@ -39,6 +40,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
   className,
   disabled,
 }) => {
+  const t = useI18n("ui");
   const [week, setWeek] = useState(
     initialWeek ?? getWeekIdentifier(new Date())
   );
@@ -272,7 +274,15 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
   // }, [onWeekChange, viewDate]);
 
   // Day names for the calendar header
-  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const dayNames = [
+    t("calendar.mon"),
+    t("calendar.tue"),
+    t("calendar.wed"),
+    t("calendar.thu"),
+    t("calendar.fri"),
+    t("calendar.sat"),
+    t("calendar.sun"),
+  ];
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -298,7 +308,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                   size="icon"
                   onClick={goToPreviousMonth}
                   disabled={!canGoToPreviousMonth}
-                  aria-label="Previous month"
+                  aria-label={t("calendar.previousMonth")}
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -309,7 +319,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                     onValueChange={handleMonthChange}
                   >
                     <SelectTrigger className="h-8 w-[120px]">
-                      <SelectValue placeholder="Month" />
+                      <SelectValue placeholder={t("calendar.month")} />
                     </SelectTrigger>
                     <SelectContent>
                       {months.map((month) => {
@@ -340,7 +350,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                     onValueChange={handleYearChange}
                   >
                     <SelectTrigger className="h-8 w-[90px]">
-                      <SelectValue placeholder="Year" />
+                      <SelectValue placeholder={t("calendar.year")} />
                     </SelectTrigger>
                     <SelectContent>
                       {years.map((year) => (
@@ -357,7 +367,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                   size="icon"
                   onClick={goToNextMonth}
                   disabled={!canGoToNextMonth}
-                  aria-label="Next month"
+                  aria-label={t("calendar.nextMonth")}
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -443,7 +453,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                 onClick={goToCurrentWeek}
                 className="self-center"
               >
-                Today
+                {t("calendar.today")}
               </Button>
             </div>
           </CardContent>

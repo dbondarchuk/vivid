@@ -13,6 +13,7 @@ import { Input } from "./input";
 import { Modal } from "./modal";
 import { Progress } from "./progress";
 import { Spinner } from "./spinner";
+import { useI18n } from "@vivid/i18n";
 
 export type AssetSelectorProps = {
   accept?: string[];
@@ -59,6 +60,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
   isOpen,
   addTo,
 }) => {
+  const t = useI18n("ui");
   const [selected, setSelected] = React.useState<UploadedFile | undefined>(
     undefined
   );
@@ -126,7 +128,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
         setInitialLoad(false);
       } catch (error) {
         console.error("Failed to fetch items:", error);
-        toast.error("There was a problem with your request.");
+        toast.error(t("common.requestFailed"));
       } finally {
         setLoading(false);
       }
@@ -135,7 +137,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
     if (isOpen) {
       loadItems();
     }
-  }, [debouncedSearch, page, loadAssets, initialLoad, hasMore, isOpen]);
+  }, [debouncedSearch, page, loadAssets, initialLoad, hasMore, isOpen, t]);
 
   // Load more when scrolled to bottom
   React.useEffect(() => {
@@ -191,7 +193,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
 
   return (
     <Modal
-      title="Select asset"
+      title={t("assetSelector.title")}
       isOpen={isOpen}
       onClose={onClose}
       className="sm:max-w-[80%]"
@@ -200,7 +202,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
         <div className="flex flex-col gap-4">
           <div className="w-full">
             <Input
-              placeholder="Search"
+              placeholder={t("common.search")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -224,14 +226,14 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
               disabled={disabled || !fileToUpload}
               onClick={onSubmit}
             >
-              Upload
+              {t("assetSelector.upload")}
             </Button>
             {isUploading && (
               <>
                 <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-white opacity-50">
                   <div role="status">
                     <Spinner className="w-10 h-10" />
-                    <span className="sr-only">Please wait...</span>
+                    <span className="sr-only">{t("loading.loading")}</span>
                   </div>
                 </div>
                 <Progress value={progress} />
@@ -280,14 +282,14 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
           disabled={isUploading}
           onClick={close}
         >
-          Close
+          {t("common.close")}
         </Button>
         <Button
           type="button"
           disabled={!selected || isUploading}
           onClick={selectAndClose}
         >
-          Select
+          {t("form.select")}
         </Button>
       </div>
     </Modal>

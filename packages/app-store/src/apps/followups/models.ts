@@ -24,30 +24,30 @@ export const followUpTimeAfterSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of weeks is 0")
-      .max(10, "Max amount of weeks is 10")
+      .int("common.number.integer")
+      .min(0, "followUps.form.weeks.min")
+      .max(10, "followUps.form.weeks.max")
   ),
   days: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of days is 0")
-      .max(31, "Max amount of days is 31")
+      .int("common.number.integer")
+      .min(0, "followUps.form.days.min")
+      .max(31, "followUps.form.days.max")
   ),
   hours: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of hours is 0")
-      .max(24 * 5, "Max amount of hours is 120")
+      .int("common.number.integer")
+      .min(0, "followUps.form.hours.min")
+      .max(24 * 5, "followUps.form.hours.max")
   ),
   minutes: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of minutes is 0")
-      .max(60 * 10, "Max amount of minutes is 600")
+      .int("common.number.integer")
+      .min(0, "followUps.form.minutes.min")
+      .max(60 * 10, "followUps.form.minutes.max")
   ),
 });
 
@@ -56,39 +56,39 @@ export const followUpAtTimeSchema = z.object({
   weeks: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Min amount of weeks is 0")
-      .max(10, "Max amount of weeks is 10")
+      .int("common.number.integer")
+      .min(0, "followUps.form.weeks.min")
+      .max(10, "followUps.form.weeks.max")
   ),
   days: z.coerce
     .number()
-    .int("Should be the integer value")
-    .min(0, "Min amount of days is 0")
-    .max(31, "Min amount of days is 31"),
+    .int("common.number.integer")
+    .min(0, "followUps.form.days.min")
+    .max(31, "followUps.form.days.max"),
   time: z.object({
     hour: z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Hour should be between 0 and 23")
-      .max(23, "Hour should be between 0 and 23"),
+      .int("common.number.integer")
+      .min(0, "followUps.form.time.hour.min")
+      .max(23, "followUps.form.time.hour.max"),
     minute: z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(0, "Minute should be between 0 and 59")
-      .max(59, "Minute should be between 0 and 59"),
+      .int("common.number.integer")
+      .min(0, "followUps.form.time.minute.min")
+      .max(59, "followUps.form.time.minute.max"),
   }),
 });
 
 export const baseFollowUpChannelSchema = z.object({
   templateId: z
-    .string({ message: "Template is required" })
-    .min(1, "Template is required"),
+    .string({ message: "followUps.form.templateId.required" })
+    .min(1, "followUps.form.templateId.required"),
 });
 
 export const followUpEmailSchema = z
   .object({
     channel: followUpChannelsEnum.extract(["email"]),
-    subject: z.string().min(1, "Email subject is required"),
+    subject: z.string().min(1, "followUps.form.subject.required"),
   })
   .merge(baseFollowUpChannelSchema);
 
@@ -109,14 +109,14 @@ export const followUpChannelSchema = z.discriminatedUnion("channel", [
 ]);
 
 export const followUpGeneralSchema = z.object({
-  name: z.string().min(2, "Follow-up name must be at least 2 characters long"),
+  name: z.string().min(2, "followUps.form.name.min"),
   // Optional setting to send follow-up after specific number of customer appointments
   afterAppointmentCount: asOptinalNumberField(
     z.coerce
       .number()
-      .int("Should be the integer value")
-      .min(1, "Min appointment count is 1")
-      .max(100, "Max appointment count is 100")
+      .int("common.number.integer")
+      .min(1, "followUps.form.afterAppointmentCount.min")
+      .max(100, "followUps.form.afterAppointmentCount.max")
   ),
 });
 
@@ -130,8 +130,7 @@ export const followUpSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["days"],
-        message:
-          "Follow-up should be sent at least 1 day after the appointment",
+        message: "followUps.form.atTime.days.min",
       });
     } else if (
       arg.type === "timeAfter" &&
@@ -143,8 +142,7 @@ export const followUpSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["minutes"],
-        message:
-          "Follow-up should be sent at least 1 minute after the appointment",
+        message: "followUps.form.atTime.minutes.min",
       });
     }
   });

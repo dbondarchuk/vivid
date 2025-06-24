@@ -4,6 +4,7 @@ import { Badge, toast } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { create } from "zustand";
+import { useI18n } from "@vivid/i18n";
 
 export type PendingAppointmentsContextProps = {
   count: number;
@@ -31,8 +32,8 @@ export const PendingAppointmentsBadge: React.FC = () => {
 
 export const PendingAppointmentsToastStream: React.FC = () => {
   const { count, setCount } = usePendingAppointmentsStore();
-
   const router = useRouter();
+  const t = useI18n("admin");
 
   React.useEffect(() => {
     // Create an EventSource to listen to SSE events
@@ -57,9 +58,9 @@ export const PendingAppointmentsToastStream: React.FC = () => {
 
   React.useEffect(() => {
     if (count > 0) {
-      toast(`You have ${count} pending appointment(s)`, {
+      toast(t("dashboard.appointments.pendingToast", { count }), {
         action: {
-          label: "View",
+          label: t("dashboard.appointments.view"),
           onClick: () => {
             router.push(
               `/admin/dashboard?activeTab=appointments&key=${Date.now()}`

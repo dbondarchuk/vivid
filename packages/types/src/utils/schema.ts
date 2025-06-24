@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const zEmail = z.string().email("common.email.invalid");
+export const zPhone = z
+  .string()
+  .refine((s) => !s?.includes("_"), "common.phone.invalid");
+
 export function zUniqueArray<
   ArrSchema extends z.ZodArray<z.ZodTypeAny, "many">,
   UniqueVal,

@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useI18n } from "@vivid/i18n";
 import {
   SocialConfiguration,
   SocialLink,
@@ -67,6 +68,7 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
   isOverlay,
   remove,
 }) => {
+  const t = useI18n("admin");
   const {
     setNodeRef,
     attributes,
@@ -81,7 +83,7 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
       item,
     } satisfies SocialLinkDragData,
     attributes: {
-      roleDescription: "Social Link",
+      roleDescription: t("settings.social.form.card.roleDescription"),
     },
   });
 
@@ -124,7 +126,9 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
           className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
         >
           <></>
-          <span className="sr-only">Move appointment option</span>
+          <span className="sr-only">
+            {t("settings.social.form.card.moveOption")}
+          </span>
           <GripVertical />
         </Button>
         <div
@@ -133,7 +137,7 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
             !type && "text-destructive"
           )}
         >
-          {socialTypeLabels[type] || "Invalid type"}
+          {socialTypeLabels[type] || t("settings.social.form.card.invalidType")}
         </div>
         <div className="flex flex-row gap-2">
           <AlertDialog>
@@ -144,22 +148,28 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
                 className=""
                 size="sm"
                 type="button"
-                title="Remove"
+                title={t("settings.social.form.card.remove")}
               >
                 <Trash size={20} />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  {t("settings.social.form.card.deleteConfirmTitle")}
+                </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure that you want to remove this link?
+                  {t("settings.social.form.card.deleteConfirmDescription")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>
+                  {t("settings.social.form.card.cancel")}
+                </AlertDialogCancel>
                 <AlertDialogAction asChild variant="destructive">
-                  <Button onClick={remove}>Delete</Button>
+                  <Button onClick={remove}>
+                    {t("settings.social.form.card.delete")}
+                  </Button>
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -172,13 +182,13 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
           name={`${name}.type` as FieldPath<SocialConfiguration>}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>{t("settings.social.form.card.type")}</FormLabel>
               <FormControl>
                 <Combobox
                   disabled={disabled}
                   className="flex w-full font-normal text-base"
                   values={socialTypeValues}
-                  searchLabel="Select social link type"
+                  searchLabel={t("settings.social.form.card.selectType")}
                   value={field.value as string}
                   onItemSelect={field.onChange}
                 />
@@ -192,8 +202,10 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Url
-                <InfoTooltip>Full link to your profile</InfoTooltip>
+                {t("settings.social.form.card.url")}
+                <InfoTooltip>
+                  {t("settings.social.form.card.urlTooltip")}
+                </InfoTooltip>
               </FormLabel>
               <FormControl>
                 <Input

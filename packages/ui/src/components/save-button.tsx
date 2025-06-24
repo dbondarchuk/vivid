@@ -6,6 +6,7 @@ import React from "react";
 import { UseFormReturn, useFormState } from "react-hook-form";
 import { cva } from "class-variance-authority";
 import { Spinner } from "./spinner";
+import { useI18n } from "@vivid/i18n";
 // import {
 //   AlertDialog,
 //   AlertDialogCancel,
@@ -32,8 +33,9 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   ignoreInvalid,
   ignoreDirty,
   isLoading: propsIsLoading,
-  text = "Save",
+  text,
 }) => {
+  const t = useI18n("ui");
   const {
     isValid,
     isDirty,
@@ -64,7 +66,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   //       </AlertDialogTrigger>
   //       <AlertDialogContent>
   //         <AlertDialogHeader>
-  //           <AlertDialogTitle>Please fix following errors</AlertDialogTitle>
+  //           <AlertDialogTitle>{t("saveButton.fixErrorsTitle")}</AlertDialogTitle>
   //           <AlertDialogDescription>
   //             {Object.entries(errors)
   //               .filter(([_, error]) => !!error?.message)
@@ -76,7 +78,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
   //           </AlertDialogDescription>
   //         </AlertDialogHeader>
   //         <AlertDialogFooter>
-  //           <AlertDialogCancel>Close</AlertDialogCancel>
+  //           <AlertDialogCancel>{t("common.close")}</AlertDialogCancel>
   //         </AlertDialogFooter>
   //       </AlertDialogContent>
   //     </AlertDialog>
@@ -99,7 +101,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
       ) : (
         <Save className="w-4 h-4" />
       )}
-      <span>{text}</span>
+      <span>{text || t("saveButton.defaultText")}</span>
     </Button>
   );
 };

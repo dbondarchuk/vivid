@@ -11,7 +11,7 @@ const EmailLayoutPropsSchema = z.object({
   borderColor: zColorNullable,
   borderRadius: z.coerce
     .number()
-    .int("Should be the integer value")
+    .int("emailBuilder.common.validation.borderRadius")
     .optional()
     .nullable(),
   canvasColor: zColor,

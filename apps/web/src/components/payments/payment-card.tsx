@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
+import { AdminKeys, AppsKeys, I18nFn, useI18n } from "@vivid/i18n";
 import { formatAmountString } from "@vivid/utils";
 import {
   AlertTriangle,
@@ -66,25 +67,28 @@ export const getPaymentStatusColor = (status: PaymentStatus) => {
   }
 };
 
-export const getPaymentDescription = (description: string) => {
+export const getPaymentDescription = (description: string): AdminKeys => {
   switch (description) {
     case "full_payment":
-      return "Full payment";
+      return "payment.descriptions.fullPayment";
 
     case "deposit":
-      return "Deposit";
+      return "payment.descriptions.deposit";
 
     default:
-      return description;
+      return description as AdminKeys;
   }
 };
 
-export const getPaymentMethod = (type: PaymentType, appName?: string) => {
+export const getPaymentMethod = (
+  type: PaymentType,
+  appName?: string
+): AdminKeys | AppsKeys => {
   return type === "online" && appName
     ? AvailableApps[appName]?.displayName
     : type === "cash"
-      ? "Cash"
-      : "Card";
+      ? "payment.methods.cash"
+      : "payment.methods.card";
 };
 
 export const getPaymentMethodIcon = (type: PaymentType, appName?: string) => {
@@ -114,6 +118,21 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
   const [isRefundDialogOpen, setIsRefundDialogOpen] = React.useState(false);
 
   const router = useRouter();
+  const tAdmin = useI18n("admin");
+  const tApp = useI18n("apps");
+
+  const t: I18nFn<"admin" | "apps"> = (key, args) => {
+    const adminTranslation = tAdmin(key as AdminKeys, args);
+    if (adminTranslation && adminTranslation !== key) {
+      return adminTranslation;
+    }
+
+    const appTranslation = tApp(key as AppsKeys, args);
+    if (appTranslation && appTranslation !== key) {
+      return appTranslation;
+    }
+    return key;
+  };
 
   const dateTime =
     typeof paidAt === "string"
@@ -154,8 +173,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
         throw new Error(`Refund has failed: ${result.error}`);
       }
 
-      toast.success("Payment was refunded", {
-        description: "Payment was successfully refunded",
+      toast.success(tAdmin("payment.toasts.refundSuccess"), {
+        description: tAdmin("payment.toasts.refundSuccessDescription"),
       });
 
       Object.assign(payment, result.payment);
@@ -164,9 +183,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
       router.refresh();
     } catch (e) {
       console.error(e);
-      toast.error("Payment refund has failed", {
-        description:
-          "Payment refund has failed. Please see details on browser console",
+      toast.error(tAdmin("payment.toasts.refundError"), {
+        description: tAdmin("payment.toasts.refundErrorDescription"),
       });
     } finally {
       setIsRefundInProgress(false);
@@ -184,9 +202,11 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
             )}
             <div>
               <h3 className="font-semibold text-lg">
-                {getPaymentMethod(
-                  type,
-                  "appName" in rest ? rest.appName : undefined
+                {t(
+                  getPaymentMethod(
+                    type,
+                    "appName" in rest ? rest.appName : undefined
+                  )
                 )}
               </h3>
               <p className="text-sm text-gray-600">
@@ -200,7 +220,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                 type,
                 "appName" in rest ? rest.appName : undefined
               )}
-              <span className="capitalize">{status}</span>
+              <span>
+                {tAdmin(`common.labels.paymentStatus.${payment.status}`)}
+              </span>
             </div>
           </Badge>
         </div>
@@ -209,7 +231,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-foreground/80">Amount</span>
+            <span className="text-foreground/80">
+              {tAdmin("payment.card.amount")}
+            </span>
             <span className="font-semibold text-lg">
               ${formatAmountString(amount)}
             </span>
@@ -224,7 +248,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
 
           {"externalId" in rest && (
             <div className="flex justify-between items-center text-sm">
-              <span className="text-foreground/80">Transaction ID</span>
+              <span className="text-foreground/80">
+                {tAdmin("payment.card.transactionId")}
+              </span>
               <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
                 {rest.externalId}
               </span>
@@ -232,7 +258,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
           )}
 
           <div className="flex justify-between items-center text-sm">
-            <span className="text-foreground/80">Time paid</span>
+            <span className="text-foreground/80">
+              {tAdmin("payment.card.timePaid")}
+            </span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -249,7 +277,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
 
           {refundedDateTime?.isValid && (
             <div className="flex justify-between items-center text-sm">
-              <span className="text-foreground/80">Time refunded</span>
+              <span className="text-foreground/80">
+                {tAdmin("payment.card.timeRefunded")}
+              </span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -277,7 +307,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                     className="w-full"
                     disabled={isRefundInProgress}
                   >
-                    {isRefundInProgress && <Spinner />} Refund
+                    {isRefundInProgress && <Spinner />}{" "}
+                    {tAdmin("payment.card.refund")}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -296,33 +327,41 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                           </p>
                         </div>
                       </div> */}
-                      Confirm Refund
+                      {tAdmin("payment.card.confirmRefund")}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone
+                      {tAdmin("payment.card.confirmRefundDescription")}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="bg-muted text-foreground font-thin rounded-lg p-4">
-                    <h4 className="font-semibold mb-3">Refund Details</h4>
+                    <h4 className="font-semibold mb-3">
+                      {tAdmin("payment.card.refundDetails")}
+                    </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="">Payment Method</span>
+                        <span className="">
+                          {tAdmin("payment.card.paymentMethod")}
+                        </span>
                         <span className="font-semibold">
-                          {getPaymentMethod(
-                            type,
-                            "appName" in rest ? rest.appName : undefined
+                          {t(
+                            getPaymentMethod(
+                              type,
+                              "appName" in rest ? rest.appName : undefined
+                            )
                           )}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="">Original Amount</span>
+                        <span className="">
+                          {tAdmin("payment.card.originalAmount")}
+                        </span>
                         <span className="font-semibold">
                           ${formatAmountString(payment.amount)}
                         </span>
                       </div>
                       <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-semibold">
-                          <span>Refund Amount</span>
+                          <span>{tAdmin("payment.card.refundAmount")}</span>
                           <span>${amount.toFixed(2)}</span>
                         </div>
                       </div>
@@ -330,14 +369,15 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                   </div>
                   <AlertDialogFooter>
                     <AlertDialogCancel disabled={isRefundInProgress}>
-                      Cancel
+                      {tAdmin("payment.card.cancel")}
                     </AlertDialogCancel>
                     <Button
                       variant="destructive"
                       onClick={() => refund()}
                       disabled={isRefundInProgress}
                     >
-                      {isRefundInProgress && <Spinner />} Confirm refund
+                      {isRefundInProgress && <Spinner />}{" "}
+                      {tAdmin("payment.card.confirmRefundButton")}
                     </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -348,7 +388,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
           {status === "refunded" && (
             <div className="mt-4">
               <Button variant="destructive" className="w-full" disabled>
-                <Check /> Refunded
+                <Check /> {tAdmin("payment.card.refunded")}
               </Button>
             </div>
           )}

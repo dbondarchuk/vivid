@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   DataTableFilterBox,
@@ -11,10 +12,12 @@ import {
   useSelectedRowsStore,
 } from "@vivid/ui";
 import { DeleteSelectedTemplatesButton } from "./delete-selected";
-import { TYPE_OPTIONS, useTemplatesTableFilters } from "./use-table-filters";
+import { useTemplatesTableFilters } from "./use-table-filters";
 import { Settings2 } from "lucide-react";
+import { communicationChannels } from "@vivid/types";
 
 export function TemplatesTableAction() {
+  const t = useI18n("admin");
   const {
     isAnyFilterActive,
     resetFilters,
@@ -30,8 +33,11 @@ export function TemplatesTableAction() {
     <>
       <DataTableFilterBox
         filterKey="type"
-        title="Type"
-        options={TYPE_OPTIONS}
+        title={t("templates.table.filters.type")}
+        options={communicationChannels.map((channel) => ({
+          value: channel,
+          label: t(`common.labels.channel.${channel}`),
+        }))}
         setFilterValue={setTypeFilter as any}
         filterValue={typeFilter}
       />
@@ -48,7 +54,11 @@ export function TemplatesTableAction() {
           setPage={setPage}
         />
         <Popover>
-          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+          <PopoverTrigger
+            tooltip={t("templates.table.filters.filters")}
+            asChild
+            className="md:hidden"
+          >
             <Button variant="outline">
               <Settings2 size={16} />
             </Button>

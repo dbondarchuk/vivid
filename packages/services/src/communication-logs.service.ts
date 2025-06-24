@@ -128,7 +128,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
         { $regex },
         "channel",
         "participant",
-        "handledBy",
+        // "handledBy",
         "text",
         "appointment.option.name",
         "customer.name",

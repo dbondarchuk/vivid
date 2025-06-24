@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,6 +57,7 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
   isOverlay,
   remove,
 }) => {
+  const t = useI18n("admin");
   const {
     setNodeRef,
     attributes,
@@ -107,7 +109,9 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
         className="h-auto cursor-grab p-1 text-secondary-foreground/50"
       >
         <></>
-        <span className="sr-only">Move option addon</span>
+        <span className="sr-only">
+          {t("services.addonSelectCard.moveAddon")}
+        </span>
         <GripVertical />
       </Button>
       <div className="grid grid-cols-1 gap-2 flex-grow w-full">
@@ -116,7 +120,7 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
           name={`${name}.id`}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Addon</FormLabel>
+              <FormLabel>{t("services.addonSelectCard.addon")}</FormLabel>
 
               <FormControl>
                 <AddonSelector
@@ -147,15 +151,21 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>
+                {t("services.addonSelectCard.deleteConfirmTitle")}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to remove this addon from this option?
+                {t("services.addonSelectCard.deleteConfirmDescription")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>
+                {t("services.addonSelectCard.cancel")}
+              </AlertDialogCancel>
               <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>Delete</Button>
+                <Button onClick={remove}>
+                  {t("services.addonSelectCard.delete")}
+                </Button>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

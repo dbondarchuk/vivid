@@ -15,6 +15,7 @@ import {
   useSetSelectedBlockId,
 } from "../../../editor/context";
 import { findBlockHierarchy } from "../../../helpers/blocks";
+import { useI18n } from "@vivid/i18n";
 
 type Props = {
   blockId: string;
@@ -24,7 +25,7 @@ export const NavMenu: React.FC<Props> = ({ blockId }) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
   const dispatchAction = useDispatchAction();
-
+  const t = useI18n("builder");
   const blocks = useBlocks();
 
   // const block = findBlock(document, blockId);
@@ -89,23 +90,29 @@ export const NavMenu: React.FC<Props> = ({ blockId }) => {
       >
         <ToolbarGroup>
           <ToolbarButton
-            tooltip="Move up"
+            tooltip={t("baseBuilder.navMenu.moveUp")}
             onClick={() => handleMoveClick("up")}
           >
             <ArrowUp fontSize="small" />
           </ToolbarButton>
           <ToolbarButton
             onClick={() => handleMoveClick("down")}
-            tooltip="Move down"
+            tooltip={t("baseBuilder.navMenu.moveDown")}
           >
             <ArrowDown fontSize="small" />
           </ToolbarButton>
         </ToolbarGroup>
         <ToolbarGroup>
-          <ToolbarButton onClick={handleCloneClick} tooltip="Clone">
+          <ToolbarButton
+            onClick={handleCloneClick}
+            tooltip={t("baseBuilder.navMenu.clone")}
+          >
             <Copy fontSize="small" />
           </ToolbarButton>
-          <ToolbarButton onClick={handleDeleteClick} tooltip="Delete">
+          <ToolbarButton
+            onClick={handleDeleteClick}
+            tooltip={t("baseBuilder.navMenu.delete")}
+          >
             <Trash fontSize="small" />
           </ToolbarButton>
         </ToolbarGroup>

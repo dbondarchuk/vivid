@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useI18n } from "@vivid/i18n";
 import { WithId } from "@vivid/types";
 import {
   AlertDialog,
@@ -12,9 +13,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
   cn,
   FormControl,
   FormField,
@@ -55,6 +53,7 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
   isOverlay,
   remove,
 }) => {
+  const t = useI18n("admin");
   const {
     setNodeRef,
     attributes,
@@ -106,7 +105,9 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
         className="h-auto cursor-grab p-1 text-secondary-foreground/50"
       >
         <></>
-        <span className="sr-only">Move option</span>
+        <span className="sr-only">
+          {t("services.fields.selectFieldOptionCard.moveOption")}
+        </span>
         <GripVertical />
       </Button>
       <div className="flex flex-col md:flex-row gap-2 flex-grow w-full">
@@ -115,7 +116,9 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
           name={`${name}.option`}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Option</FormLabel>
+              <FormLabel>
+                {t("services.fields.selectFieldOptionCard.option")}
+              </FormLabel>
 
               <FormControl>
                 <Input disabled={disabled} {...field} />
@@ -140,15 +143,21 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>
+                {t("services.fields.selectFieldOptionCard.deleteConfirmTitle")}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to remove this option?
+                {t(
+                  "services.fields.selectFieldOptionCard.deleteConfirmDescription"
+                )}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>
+                {t("common.buttons.cancel")}
+              </AlertDialogCancel>
               <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>Delete</Button>
+                <Button onClick={remove}>{t("common.buttons.delete")}</Button>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

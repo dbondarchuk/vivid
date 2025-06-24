@@ -16,6 +16,7 @@ import {
 import { DateTime } from "luxon";
 import React from "react";
 import { useCookies } from "react-cookie";
+import { useI18n } from "@vivid/i18n";
 
 type EventsCalendarView = Exclude<EventCalendarType, "days-around">;
 
@@ -28,6 +29,7 @@ export const EventsCalendar = () => {
   const [cookies, setCookies] = useCookies<typeof COOKIE_NAME, CookieValues>([
     COOKIE_NAME,
   ]);
+  const t = useI18n("admin");
 
   const [date, setDate] = React.useState(
     DateTime.now().startOf("day") as DateTime
@@ -47,19 +49,21 @@ export const EventsCalendar = () => {
   return (
     <div className="grid gap-3 w-full">
       <div className="flex flex-row gap-2 justify-between">
-        <Button onClick={() => setDate(DateTime.now())}>Today</Button>
+        <Button onClick={() => setDate(DateTime.now())}>
+          {t("calendar.today")}
+        </Button>
         <Select
           value={type}
           onValueChange={(value) => changeType(value as typeof type)}
         >
           <SelectTrigger className="w-32">
-            <SelectValue placeholder="Select view" />
+            <SelectValue placeholder={t("calendar.selectView")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="monthly">Monthly</SelectItem>
-            <SelectItem value="weekly">Weekly</SelectItem>
-            <SelectItem value="daily">Daily</SelectItem>
-            <SelectItem value="agenda">Agenda</SelectItem>
+            <SelectItem value="monthly">{t("calendar.monthly")}</SelectItem>
+            <SelectItem value="weekly">{t("calendar.weekly")}</SelectItem>
+            <SelectItem value="daily">{t("calendar.daily")}</SelectItem>
+            <SelectItem value="agenda">{t("calendar.agenda")}</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -1,7 +1,9 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { ComplexAppSetupProps } from "@vivid/types";
 import {
+  BooleanSelect,
   ConnectedAppStatusMessage,
   Form,
   FormControl,
@@ -20,6 +22,7 @@ import { SmtpApp } from "./app";
 import { SmtpConfiguration, smtpConfigurationSchema } from "./models";
 
 export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
+  const t = useI18n("apps");
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<SmtpConfiguration>({
       appId,
@@ -38,9 +41,12 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
                 name="host"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>SMTP Host</FormLabel>
+                    <FormLabel>{t("smtp.form.host.label")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="smtp.email.com" {...field} />
+                      <Input
+                        placeholder={t("smtp.form.host.placeholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -51,9 +57,12 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
                 name="port"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>SMTP port</FormLabel>
+                    <FormLabel>{t("smtp.form.port.label")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="465" {...field} />
+                      <Input
+                        placeholder={t("smtp.form.port.placeholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -64,13 +73,18 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
                 name="secure"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>SMTP SSL</FormLabel>
-                    <FormControl className="block">
-                      <Switch
+                    <FormLabel>{t("smtp.form.secure.label")}</FormLabel>
+                    <FormControl>
+                      <BooleanSelect
+                        className="w-full"
                         {...field}
-                        value={`${field.value}`}
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
+                        value={field.value}
+                        trueLabel={t("smtp.form.secure.yes")}
+                        falseLabel={t("smtp.form.secure.no")}
+                        onValueChange={(e) => {
+                          field.onChange(e);
+                          field.onBlur();
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -83,15 +97,13 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Sender email{" "}
-                      <InfoTooltip>
-                        Email address from which all emails will be sent
-                      </InfoTooltip>
+                      {t("smtp.form.email.label")}{" "}
+                      <InfoTooltip>{t("smtp.form.email.tooltip")}</InfoTooltip>
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="john@exampl.com"
+                        placeholder={t("smtp.form.email.placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -105,15 +117,15 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      SMTP authentication user
+                      {t("smtp.form.authUser.label")}
                       <InfoTooltip>
-                        Username to log in into SMTP server
+                        {t("smtp.form.authUser.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
                       <Input
                         autoComplete="new-password"
-                        placeholder="john"
+                        placeholder={t("smtp.form.authUser.placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -127,9 +139,9 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      SMTP authentication password
+                      {t("smtp.form.authPass.label")}
                       <InfoTooltip>
-                        Password to log in into SMTP server
+                        {t("smtp.form.authPass.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -152,7 +164,7 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

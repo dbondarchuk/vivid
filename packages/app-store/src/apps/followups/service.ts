@@ -72,13 +72,13 @@ export default class FollowUpsConnectedApp
         } catch {
           return {
             status: "failed",
-            statusText: "Email sender default app is not configured",
+            statusText: "followUps.statusText.email_app_not_configured",
           };
         }
 
         const status: ConnectedAppStatusWithText = {
           status: "connected",
-          statusText: `Successfully set up`,
+          statusText: "followUps.statusText.successfully_set_up",
         };
 
         this.props.update({
@@ -814,7 +814,12 @@ export default class FollowUpsConnectedApp
               to: appointment.fields.email,
             },
             participantType: "customer",
-            handledBy: `Follow-up Service - ${followUp.name}`,
+            handledBy: {
+              key: `followUps.handler`,
+              args: {
+                followUpName: followUp.name,
+              },
+            },
             appointmentId: appointment._id,
           });
 
@@ -864,7 +869,12 @@ export default class FollowUpsConnectedApp
               appId: appData._id,
             },
             participantType: "customer",
-            handledBy: `Follow-up service - ${followUp.name}`,
+            handledBy: {
+              key: `followUps.handler`,
+              args: {
+                followUpName: followUp.name,
+              },
+            },
             appointmentId: appointment._id,
           });
 

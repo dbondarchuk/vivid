@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { CellContext, ColumnDef, RowData } from "@tanstack/react-table";
 import { Appointment, StatusText } from "@vivid/types";
 import {
@@ -26,6 +27,7 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
   appointment,
   ...rest
 }) => {
+  const t = useI18n("admin");
   let child: React.ReactNode;
   switch (appointment.status) {
     case "confirmed":
@@ -48,7 +50,9 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
         <TooltipTrigger
           className="flex justify-center w-full"
           type="button"
-          aria-label={`Status: ${StatusText[appointment.status]}`}
+          aria-label={t("appointments.table.columns.statusAriaLabel", {
+            status: StatusText[appointment.status],
+          })}
         >
           {child}
         </TooltipTrigger>
@@ -62,6 +66,7 @@ const OptionCell: React.FC<{
   appointment: Appointment;
   timeZone?: string;
 }> = ({ appointment, timeZone }) => {
+  const t = useI18n("admin");
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   return (
     <>
@@ -94,18 +99,18 @@ const OptionCell: React.FC<{
           </TooltipTrigger>
           <TooltipContent className="flex flex-col gap-2 w-full py-2 px-4">
             <div className="grid grid-cols-2 gap-1 pb-2 border-b">
-              <div>Option name:</div>
+              <div>{t("appointments.table.columns.optionName")}:</div>
               <div>{appointment.option.name}</div>
               {(appointment.option.price ?? 0) > 0 && (
                 <>
-                  <div>Option price:</div>
+                  <div>{t("appointments.table.columns.optionPrice")}:</div>
                   <div>${appointment.option.price}</div>
                 </>
               )}
               {appointment.option.duration &&
                 appointment.option.duration > 0 && (
                   <>
-                    <div>Option duration:</div>
+                    <div>{t("appointments.table.columns.optionDuration")}:</div>
                     <div>
                       {durationToTime(appointment.option.duration).hours} hr{" "}
                       {durationToTime(appointment.option.duration).minutes} min
@@ -114,7 +119,7 @@ const OptionCell: React.FC<{
                 )}
               {appointment.addons && appointment.addons.length > 0 && (
                 <>
-                  <div>Selected addons:</div>
+                  <div>{t("appointments.table.columns.selectedAddons")}:</div>
                   <ul>
                     {appointment.addons.map((addon, index) => (
                       <li key={index}>
@@ -122,9 +127,9 @@ const OptionCell: React.FC<{
                         {(addon.price || addon.duration) && (
                           <ul className="pl-2">
                             {addon.duration && (
-                              <li>Duration: {addon.duration} min</li>
+                              <li>{t("appointments.table.columns.duration")}: {addon.duration} min</li>
                             )}
-                            {addon.price && <li>Price: ${addon.price}</li>}
+                            {addon.price && <li>{t("appointments.table.columns.price")}: ${addon.price}</li>}
                           </ul>
                         )}
                       </li>
@@ -134,7 +139,7 @@ const OptionCell: React.FC<{
               )}
               {appointment.note && (
                 <>
-                  <div>Note:</div>
+                  <div>{t("appointments.table.columns.note")}:</div>
                   <div>{appointment.note}</div>
                 </>
               )}
@@ -142,7 +147,7 @@ const OptionCell: React.FC<{
             <div className="grid grid-cols-2 gap-1">
               {(appointment.totalDuration ?? 0) > 0 && (
                 <>
-                  <div className="font-medium">Duration:</div>
+                  <div className="font-medium">{t("appointments.table.columns.duration")}:</div>
                   <div>
                     {durationToTime(appointment.totalDuration).hours} hr{" "}
                     {durationToTime(appointment.totalDuration).minutes} min
@@ -152,7 +157,7 @@ const OptionCell: React.FC<{
 
               {(appointment.totalPrice ?? 0) > 0 && (
                 <>
-                  <div className="font-medium">Price:</div>
+                  <div className="font-medium">{t("appointments.table.columns.price")}:</div>
                   <div>${appointment.totalPrice}</div>
                 </>
               )}
@@ -167,6 +172,7 @@ const OptionCell: React.FC<{
 const CustomerCell: React.FC<{
   appointment: Appointment;
 }> = ({ appointment }) => {
+  const t = useI18n("admin");
   return (
     <TooltipProvider>
       <Tooltip>
@@ -180,11 +186,11 @@ const CustomerCell: React.FC<{
         </TooltipTrigger>
         <TooltipContent className="flex flex-col gap-2 w-full py-2 px-4">
           <div className="grid grid-cols-2 gap-1">
-            <div>Name:</div>
+            <div>{t("appointments.table.columns.customerName")}:</div>
             <div>{appointment.customer.name}</div>
-            <div>Email:</div>
+            <div>{t("appointments.table.columns.customerEmail")}:</div>
             <div>{appointment.customer.email}</div>
-            <div>Phone:</div>
+            <div>{t("appointments.table.columns.customerPhone")}:</div>
             <div>{appointment.customer.phone}</div>
           </div>
         </TooltipContent>
@@ -223,7 +229,11 @@ export const columns: ColumnDef<Appointment>[] = [
   {
     cell: ({ row }) => <StatusCell appointment={row.original} size={20} />,
     id: "status",
-    header: tableSortHeader("Status", "default"),
+    header: tableSortHeader(
+      "appointments.table.columns.status",
+      "default",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
     enableResizing: false,
     meta: {
@@ -235,13 +245,21 @@ export const columns: ColumnDef<Appointment>[] = [
       <OptionCell appointment={row.original} timeZone={timeZone} />
     ),
     id: "option.name",
-    header: tableSortHeader("Option", "string"),
+    header: tableSortHeader(
+      "appointments.table.columns.option",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     cell: ({ row }) => <CustomerCell appointment={row.original} />,
     id: "customer.name",
-    header: tableSortHeader("Customer", "string"),
+    header: tableSortHeader(
+      "appointments.table.columns.customer",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -250,7 +268,11 @@ export const columns: ColumnDef<Appointment>[] = [
         .setZone(timeZone)
         .toLocaleString(DateTime.DATETIME_MED),
     id: "dateTime",
-    header: tableSortHeader("Date & time", "date"),
+    header: tableSortHeader(
+      "appointments.table.columns.dateTime",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -259,7 +281,11 @@ export const columns: ColumnDef<Appointment>[] = [
         .setZone(timeZone)
         .toLocaleString(DateTime.DATETIME_MED),
     id: "createdAt",
-    header: tableSortHeader("Requested at", "date"),
+    header: tableSortHeader(
+      "appointments.table.columns.requestedAt",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -275,7 +301,11 @@ export const columns: ColumnDef<Appointment>[] = [
       );
     },
     id: "totalDuration",
-    header: tableSortHeader("Duration at", "time"),
+    header: tableSortHeader(
+      "appointments.table.columns.duration",
+      "time",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -299,7 +329,11 @@ export const columns: ColumnDef<Appointment>[] = [
         </TooltipProvider>
       ) : null,
     id: "discount.name",
-    header: tableSortHeader("Discount", "time"),
+    header: tableSortHeader(
+      "appointments.table.columns.discount",
+      "time",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -308,7 +342,11 @@ export const columns: ColumnDef<Appointment>[] = [
         ? `$${formatAmountString(appointment.totalPrice)}`
         : null,
     id: "totalPrice",
-    header: tableSortHeader("Price", "number"),
+    header: tableSortHeader(
+      "appointments.table.columns.price",
+      "number",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
 ];

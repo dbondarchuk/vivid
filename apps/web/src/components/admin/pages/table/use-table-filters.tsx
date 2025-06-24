@@ -1,15 +1,20 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
 
-export const STATUS_OPTIONS = [true, false].map((value) => ({
-  value,
-  label: value ? "Published" : "Draft",
-}));
-
 export function usePagesTableFilters() {
+  const t = useI18n("admin");
+
+  const STATUS_OPTIONS = [true, false].map((value) => ({
+    value,
+    label: value
+      ? t("pages.table.filters.published")
+      : t("pages.table.filters.draft"),
+  }));
+
   const [searchQuery, setSearchQuery] = useQueryState(
     "search",
     searchParams.search
@@ -48,5 +53,6 @@ export function usePagesTableFilters() {
     isAnyFilterActive,
     statusFilter,
     setStatusFilter,
+    STATUS_OPTIONS,
   };
 }

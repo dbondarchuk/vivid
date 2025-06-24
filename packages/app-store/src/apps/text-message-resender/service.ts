@@ -32,7 +32,7 @@ export default class TextMessageResenderConnectedApp
     try {
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `App is connected`,
+        statusText: "textMessageResender.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -55,7 +55,7 @@ export default class TextMessageResenderConnectedApp
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          "textMessageResender.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -113,7 +113,7 @@ export default class TextMessageResenderConnectedApp
           appointmentId: reply.data.appointmentId,
           customerId: reply.data.customerId,
           participantType: "customer",
-          handledBy: `Text Message Responder - resend to customer`,
+          handledBy: "textMessageResender.handlers.resendToCustomer",
         });
 
         logger.info(
@@ -122,7 +122,7 @@ export default class TextMessageResenderConnectedApp
         );
 
         return {
-          handledBy: "Text Message Responder - process user's reply",
+          handledBy: "textMessageResender.handlers.processUserReply",
           participantType: "user",
         };
       }
@@ -172,7 +172,7 @@ You can reply to this message directly`;
         appointmentId: reply.data.appointmentId,
         customerId: reply.data.customerId,
         participantType: "user",
-        handledBy: `Text Message Responder - resend to user`,
+        handledBy: "textMessageResender.handlers.resendToUser",
       });
 
       logger.info(
@@ -181,7 +181,7 @@ You can reply to this message directly`;
       );
 
       return {
-        handledBy: "Text Message Responder - process customer's reply",
+        handledBy: "textMessageResender.handlers.processCustomerReply",
         participantType: "customer",
       };
     } catch (error: any) {
@@ -196,7 +196,7 @@ You can reply to this message directly`;
 
       this.props.update({
         status: "failed",
-        statusText: "Error processing text message resender reply",
+        statusText: "textMessageResender.statusText.error_processing_reply",
       });
 
       throw error;

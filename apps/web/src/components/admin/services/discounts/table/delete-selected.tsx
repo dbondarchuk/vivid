@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { Discount } from "@vivid/types";
 import {
   AlertDialog,
@@ -22,6 +23,7 @@ import { deleteSelected } from "../actions";
 export const DeleteSelectedDiscountsButton: React.FC<{
   selected: Discount[];
 }> = ({ selected }) => {
+  const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -31,8 +33,10 @@ export const DeleteSelectedDiscountsButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: "Selected discounts have been deleted",
-        error: "There was a problem with your request.",
+        success: t("services.discounts.deleteSelected.success", {
+          count: selected.length,
+        }),
+        error: t("services.discounts.deleteSelected.error"),
       });
 
       router.refresh();
@@ -53,27 +57,30 @@ export const DeleteSelectedDiscountsButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} discount(s)</span>
+          <span>
+            {t("services.discounts.deleteSelected.button", {
+              count: selected.length,
+            })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("services.discounts.deleteSelected.confirmTitle")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            <p>
-              This action cannot be undone. This will delete selected discounts.
-            </p>
-            <p>
-              This will not affect existing appointments that use these
-              discounts
-            </p>
+            <p>{t("services.discounts.deleteSelected.confirmDescription")}</p>
+            <p>{t("services.discounts.deleteSelected.confirmDescription2")}</p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("services.discounts.deleteSelected.cancel")}
+          </AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Delete selected</span>
+            <span>{t("services.discounts.deleteSelected.deleteSelected")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

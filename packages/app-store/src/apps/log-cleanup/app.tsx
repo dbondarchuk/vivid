@@ -5,15 +5,15 @@ import { MessageCircleX } from "lucide-react";
 
 export const LogCleanupApp: App = {
   name: LOG_CLEANUP_APP_NAME,
-  displayName: "Logs clean up",
+  displayName: "logCleanup.displayName",
   scope: ["scheduled"],
-  category: ["Utils"],
+  category: ["categories.utilities"],
   type: "basic",
   Logo: ({ className }) => <MessageCircleX className={className} />,
   SetUp: (props) => <LogCleanupAppSetup {...props} />,
   isFeatured: false,
   dontAllowMultiple: true,
   description: {
-    text: "Remove old logs on schedule.",
+    text: "logCleanup.description",
   },
 };

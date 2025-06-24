@@ -21,6 +21,7 @@ import {
   CalendarEventAttendee,
   CalendarEventResult,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppResponse,
   ConnectedOauthAppTokens,
   Email,
@@ -118,7 +119,9 @@ export class OutlookConnectedApp
           { url: request.url },
           "Redirect request does not contain app ID"
         );
-        throw new Error("Redirect request does not contain app ID");
+        throw new ConnectedAppError(
+          "outlook.statusText.redirect_request_does_not_contain_app_id"
+        );
       }
 
       if (!code) {
@@ -128,7 +131,8 @@ export class OutlookConnectedApp
         );
         return {
           appId,
-          error: "Redirect request does not contain authorization code",
+          error:
+            "outlook.statusText.redirect_request_does_not_contain_authorization_code",
         };
       }
 
@@ -168,7 +172,11 @@ export class OutlookConnectedApp
         );
         return {
           appId,
-          error: e?.message || "Something went wrong",
+          error:
+            e instanceof ConnectedAppError
+              ? e.key
+              : "outlook.statusText.error_processing_configuration",
+          errorArgs: e instanceof ConnectedAppError ? e.args : undefined,
         };
       }
     } catch (e: any) {
@@ -178,7 +186,11 @@ export class OutlookConnectedApp
       );
       return {
         appId: new URL(request.url).searchParams.get("state") as string,
-        error: e?.message || "Something went wrong",
+        error:
+          e instanceof ConnectedAppError
+            ? e.key
+            : "outlook.statusText.error_processing_configuration",
+        errorArgs: e instanceof ConnectedAppError ? e.args : undefined,
       };
     }
   }
@@ -201,7 +213,9 @@ export class OutlookConnectedApp
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
-      throw new Error("No token provided");
+      throw new ConnectedAppError(
+        "outlook.statusText.error_processing_configuration"
+      );
     }
 
     try {
@@ -259,7 +273,7 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: "Successfully fetched events",
+        statusText: "outlook.statusText.successfully_set_up",
       });
 
       return result;
@@ -271,7 +285,10 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: e?.message || "Failed to get events",
+        statusText:
+          e instanceof ConnectedAppError
+            ? e.key
+            : "outlook.statusText.error_getting_busy_times",
       });
 
       throw e;
@@ -297,7 +314,9 @@ export class OutlookConnectedApp
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
-      throw new Error("No token provided");
+      throw new ConnectedAppError(
+        "outlook.statusText.error_processing_configuration"
+      );
     }
 
     try {
@@ -407,7 +426,7 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: "Successfully sent email",
+        statusText: "outlook.statusText.successfully_set_up",
       });
 
       return {
@@ -425,7 +444,10 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: e?.message || "Failed to send email",
+        statusText:
+          e instanceof ConnectedAppError
+            ? e.key
+            : "outlook.statusText.error_sending_email",
       });
 
       throw e;
@@ -449,7 +471,9 @@ export class OutlookConnectedApp
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
-      throw new Error("No token provided");
+      throw new ConnectedAppError(
+        "outlook.statusText.error_processing_configuration"
+      );
     }
 
     try {
@@ -482,6 +506,15 @@ export class OutlookConnectedApp
         { appId: app._id, eventId: event.id, error },
         "Error creating event in Outlook"
       );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : "outlook.statusText.error_creating_calendar_event",
+      });
+
       throw error;
     }
   }
@@ -505,7 +538,9 @@ export class OutlookConnectedApp
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
-      throw new Error("No token provided");
+      throw new ConnectedAppError(
+        "outlook.statusText.error_processing_configuration"
+      );
     }
 
     try {
@@ -540,6 +575,15 @@ export class OutlookConnectedApp
         { appId: app._id, eventId: event.id, uid, error },
         "Error updating event in Outlook"
       );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : "outlook.statusText.error_updating_calendar_event",
+      });
+
       throw error;
     }
   }
@@ -551,7 +595,9 @@ export class OutlookConnectedApp
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
-      throw new Error("No token provided");
+      throw new ConnectedAppError(
+        "outlook.statusText.error_processing_configuration"
+      );
     }
 
     try {
@@ -575,6 +621,15 @@ export class OutlookConnectedApp
         { appId: app._id, uid, error },
         "Error deleting event from Outlook"
       );
+
+      this.props.update({
+        status: "failed",
+        statusText:
+          error instanceof ConnectedAppError
+            ? error.key
+            : "outlook.statusText.error_deleting_calendar_event",
+      });
+
       throw error;
     }
   }
@@ -598,7 +653,10 @@ export class OutlookConnectedApp
       const id = (response.value as OutlookEvent[])?.[0]?.id;
       if (!id) {
         logger.error({ uid }, "Failed to find Outlook Event ID for UID");
-        throw new Error(`Failed to find Outlook Event ID for UID ${uid}`);
+        throw new ConnectedAppError(
+          "outlook.statusText.failed_to_find_event_id_for_uid",
+          { uid }
+        );
       }
 
       logger.debug(
@@ -788,7 +846,9 @@ export class OutlookConnectedApp
           { appId },
           "Failed to refresh access token"
         );
-        throw new Error("Failed to refresh access token");
+        throw new ConnectedAppError(
+          "outlook.statusText.error_refreshing_access_token"
+        );
       }
 
       const { username, tokens } = this.parseAuthResult(client, result, false);
@@ -815,7 +875,7 @@ export class OutlookConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: e?.message || "Failed to refresh access token",
+        statusText: "outlook.statusText.error_refreshing_access_token",
       });
 
       throw e;
@@ -839,13 +899,15 @@ export class OutlookConnectedApp
     const username = authResult.account?.username;
     if (!authResult.accessToken) {
       logger.error("Authorization result does not contain access token");
-      throw new Error("Authorization result does not contain access token");
+      throw new ConnectedAppError(
+        "outlook.statusText.authorization_result_no_access_token"
+      );
     }
 
     if (!username) {
       logger.error("Authorization result does not contain account information");
-      throw new Error(
-        "Authorization result does not contain account infromation"
+      throw new ConnectedAppError(
+        "outlook.statusText.authorization_result_no_account_info"
       );
     }
 
@@ -854,7 +916,9 @@ export class OutlookConnectedApp
         { requiredScopes, actualScopes: authResult.scopes },
         "Authorization result does not contain enough scopes"
       );
-      throw new Error("Authorization result does not contain enough scopes");
+      throw new ConnectedAppError(
+        "outlook.statusText.authorization_result_not_enough_scopes"
+      );
     }
 
     const tokens: Partial<ConnectedOauthAppTokens> = {
@@ -870,7 +934,9 @@ export class OutlookConnectedApp
 
       if (!refreshToken) {
         logger.error("Authorization result does not contain refresh token");
-        throw new Error("Authorization result does not contain refresh token");
+        throw new ConnectedAppError(
+          "outlook.statusText.authorization_result_no_refresh_token"
+        );
       }
 
       tokens.refreshToken = refreshToken;

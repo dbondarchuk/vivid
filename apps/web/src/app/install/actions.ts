@@ -128,7 +128,7 @@ export async function install(data: InstallFormData) {
       assetsStorageAppId,
       {
         status: "connected",
-        statusText: "Installed",
+        statusText: "common.statusText.installed",
       }
     );
 

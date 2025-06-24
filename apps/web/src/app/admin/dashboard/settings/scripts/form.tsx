@@ -2,6 +2,7 @@
 
 import { ResourcesCard } from "@/components/admin/resource/resources-card";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { ScriptsConfiguration, scriptsConfigurationSchema } from "@vivid/types";
 import { Form, SaveButton, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
@@ -12,6 +13,7 @@ import { updateScriptsConfiguration } from "./actions";
 export const ScriptsSettingsForm: React.FC<{
   values: ScriptsConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<ScriptsConfiguration>({
     resolver: zodResolver(scriptsConfigurationSchema),
     mode: "all",
@@ -25,8 +27,8 @@ export const ScriptsSettingsForm: React.FC<{
     try {
       setLoading(true);
       await toastPromise(updateScriptsConfiguration(data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("settings.scripts.form.toasts.changesSaved"),
+        error: t("settings.scripts.form.toasts.requestError"),
       });
 
       router.refresh();
@@ -48,14 +50,14 @@ export const ScriptsSettingsForm: React.FC<{
             type="script"
             form={form}
             name="header"
-            title="Header scripts"
+            title={t("settings.scripts.form.headerScripts")}
             loading={loading}
           />
           <ResourcesCard
             type="script"
             form={form}
             name="footer"
-            title="Footer scripts"
+            title={t("settings.scripts.form.footerScripts")}
             loading={loading}
           />
         </div>

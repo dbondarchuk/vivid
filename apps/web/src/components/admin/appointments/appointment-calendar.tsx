@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { Appointment, DaySchedule, Event } from "@vivid/types";
 import { cn } from "@vivid/ui";
 import { DateTime, HourNumbers } from "luxon";
@@ -17,6 +18,7 @@ export const AppointmentCalendar: React.FC<
     onEventsLoad?: (events: Event[]) => void;
   }
 > = ({ appointment, timeZone: propTimeZone, onEventsLoad, ...props }) => {
+  const t = useI18n("admin");
   const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
   const [events, setEvents] = React.useState<Event[]>([]);
   const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
@@ -85,7 +87,10 @@ export const AppointmentCalendar: React.FC<
             start: start.toJSDate(),
             end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
             id: app._id,
-            title: `${app.fields.name} for ${app.option.name}`,
+            title: t("appointments.calendar.eventTitle", {
+              customer: app.fields.name,
+              service: app.option.name,
+            }),
             variant:
               app._id === appointment._id
                 ? "primary"
@@ -102,7 +107,7 @@ export const AppointmentCalendar: React.FC<
           };
         }
       }),
-    [events]
+    [events, t, appointment._id]
   );
 
   return (
@@ -110,7 +115,9 @@ export const AppointmentCalendar: React.FC<
       {loading && (
         <div className="absolute bg-white bg-opacity-60 z-50 h-full w-full flex items-center justify-center">
           <div className="flex items-center">
-            <span className="text-3xl mr-4">Loading</span>
+            <span className="text-3xl mr-4">
+              {t("appointments.calendar.loading")}
+            </span>
             <svg
               className="animate-spin h-8 w-8 text-gray-800"
               xmlns="http://www.w3.org/2000/svg"

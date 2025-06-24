@@ -5,8 +5,8 @@ import { CalendarWriterAppSetup } from "./setup";
 
 export const CalendarWriterApp: App = {
   name: CALENDAR_WRITER_APP_NAME,
-  displayName: "Calendar Writer",
-  category: ["Notifications"],
+  displayName: "calendarWriter.displayName",
+  category: ["categories.notifications"],
   scope: ["appointment-hook"],
   type: "basic",
   Logo: ({ className }) => <CalendarPlus className={className} />,
@@ -15,6 +15,6 @@ export const CalendarWriterApp: App = {
   isHidden: false,
   dontAllowMultiple: true,
   description: {
-    text: "Write appointment events directly into your calendar.",
+    text: "calendarWriter.description",
   },
 };

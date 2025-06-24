@@ -1,6 +1,7 @@
 "use client";
 import { Markdown } from "@/components/web/markdown";
 import { AvailableApps } from "@vivid/app-store";
+import { useI18n } from "@vivid/i18n";
 import { App } from "@vivid/types";
 import {
   Button,
@@ -20,25 +21,29 @@ import React from "react";
 
 export type AppStoreProps = {};
 
-const AppCard: React.FC<{ app: App }> = ({ app }) => (
-  <Card className="pt-4 h-full">
-    <CardContent className="flex flex-col gap-4 h-full">
-      <ConnectedAppNameAndLogo app={{ name: app.name }} />
-      <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
-        <Markdown markdown={app.description.text} notProse />
-      </div>
-      <Link
-        href={`/admin/dashboard/apps/store/${app.name}`}
-        button
-        variant="outline"
-      >
-        Details
-      </Link>
-    </CardContent>
-  </Card>
-);
+const AppCard: React.FC<{ app: App }> = ({ app }) => {
+  const t = useI18n("apps");
+  return (
+    <Card className="pt-4 h-full">
+      <CardContent className="flex flex-col gap-4 h-full">
+        <ConnectedAppNameAndLogo app={{ name: app.name }} t={t} />
+        <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
+          <Markdown markdown={t(app.description.text)} notProse />
+        </div>
+        <Link
+          href={`/admin/dashboard/apps/store/${app.name}`}
+          button
+          variant="outline"
+        >
+          {t("common.details")}
+        </Link>
+      </CardContent>
+    </Card>
+  );
+};
 
 export const AppStore: React.FC<AppStoreProps> = ({}) => {
+  const t = useI18n("apps");
   const apps = React.useMemo(
     () => Object.values(AvailableApps).filter((app) => !app.isHidden),
     []
@@ -79,9 +84,12 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
   return (
     <div className="flex flex-col w-full gap-8">
       <div className="flex flex-col md:flex-row justify-between gap-2">
-        <Heading title="App store" description="Add new apps" />
+        <Heading
+          title={t("common.appStore")}
+          description={t("common.addNewApps")}
+        />
         <Input
-          placeholder="Search"
+          placeholder={t("common.search")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="max-w-96"
@@ -98,7 +106,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
           <div className="flex flex-row justify-between items-center">
             <div>
               <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
-                Most Popular
+                {t("common.mostPopular")}
               </h2>
             </div>
             <div className="flex flex-row gap-2 justify-end">
@@ -124,7 +132,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
             <h2 className="text-emphasis mt-0 text-base font-semibold leading-none">
-              All apps
+              {t("common.allApps")}
             </h2>
           </div>
           <div className="flex flex-row flex-wrap gap-2 md:justify-end">
@@ -132,7 +140,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
               variant={!!category ? "secondary" : "default"}
               onClick={() => setCategory(undefined)}
             >
-              All
+              {t("common.all")}
             </Button>
             {categories.map((cat) => (
               <Button
@@ -141,7 +149,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
                 onClick={() => setCategory(cat)}
                 className="capitalize"
               >
-                {cat}
+                {t(`${cat}`)}
               </Button>
             ))}
           </div>

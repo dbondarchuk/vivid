@@ -4,24 +4,7 @@ import {
 } from "@vivid/builder";
 import { Leaves } from "@vivid/utils";
 import { ArrowUpToLine, FoldVertical, ArrowDownToLine } from "lucide-react";
-
-const alignItems = [
-  {
-    icon: <ArrowUpToLine />,
-    value: "top",
-    label: "Top",
-  },
-  {
-    icon: <FoldVertical />,
-    value: "middle",
-    label: "Middle",
-  },
-  {
-    icon: <ArrowDownToLine />,
-    value: "bottom",
-    label: "Bottom",
-  },
-];
+import { useI18n } from "@vivid/i18n";
 
 type PropsType = {
   props?: { contentAlignment?: "top" | "middle" | "bottom" | null } | null;
@@ -29,11 +12,32 @@ type PropsType = {
 
 export const ContentAlignmentDropdownMenu = <T extends PropsType>(
   props: ToolbarDropdownPropsValues<T>
-) => (
-  <ToolbarDropdownMenu
-    items={alignItems}
-    tooltip="Alignment"
-    property={"props.contentAlignment" as Leaves<T>}
-    {...props}
-  />
-);
+) => {
+  const t = useI18n("builder");
+  const alignItems = [
+    {
+      icon: <ArrowUpToLine />,
+      value: "top",
+      label: t("emailBuilder.common.toolbars.contentAlignment.top"),
+    },
+    {
+      icon: <FoldVertical />,
+      value: "middle",
+      label: t("emailBuilder.common.toolbars.contentAlignment.middle"),
+    },
+    {
+      icon: <ArrowDownToLine />,
+      value: "bottom",
+      label: t("emailBuilder.common.toolbars.contentAlignment.bottom"),
+    },
+  ];
+
+  return (
+    <ToolbarDropdownMenu
+      items={alignItems}
+      tooltip={t("emailBuilder.common.toolbars.contentAlignment.label")}
+      property={"props.contentAlignment" as Leaves<T>}
+      {...props}
+    />
+  );
+};

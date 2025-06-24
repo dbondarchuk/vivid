@@ -65,7 +65,7 @@ export const installComplexApp = async (name: string) => {
 
     await ServicesContainer.ConnectedAppsService().updateApp(appId, {
       status: "connected",
-      statusText: "Installed",
+      statusText: "common.statusText.installed",
     });
 
     actionLogger.debug(

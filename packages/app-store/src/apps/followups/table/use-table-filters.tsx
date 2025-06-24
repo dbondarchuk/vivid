@@ -3,14 +3,6 @@
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
-import { followUpChannelLabels } from "../const";
-
-export const CHANNEL_OPTIONS = Object.entries(followUpChannelLabels).map(
-  ([value, label]) => ({
-    value,
-    label,
-  })
-);
 
 export function useFollowUpsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(

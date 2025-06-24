@@ -5,22 +5,22 @@ import { SmtpAppSetup } from "./setup";
 
 export const SmtpApp: App = {
   name: SMTP_APP_NAME,
-  displayName: "SMTP",
+  displayName: "smtp.displayName",
   scope: ["mail-send"],
   type: "complex",
-  category: ["Communications"],
+  category: ["categories.communications"],
   Logo: ({ className }) => <SmtpLogo className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {
-    text: "SMTP (Simple Mail Transfer Protocol) is an internet standard for email supported by most email processing servers. Connect to SMTP to send email.",
+    text: "smtp.description",
   },
   menuItems: [
     {
       href: "settings/smtp",
       parent: "settings",
       id: "settings-smtp",
-      label: "SMTP",
+      label: "navigation.smtp",
       icon: <SmtpLogo />,
       Page: (props) => <SmtpAppSetup {...props} />,
     },

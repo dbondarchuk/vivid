@@ -67,13 +67,15 @@ export default class CustomerTextMessageNotificationConnectedApp
         );
         return {
           status: "failed",
-          statusText: "Text message sender default app is not configured",
+          statusText:
+            "customerTextMessageNotification.statusText.text_message_app_not_configured",
         };
       }
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully set up`,
+        statusText:
+          "customerTextMessageNotification.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -96,7 +98,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error processing customer text message notification configuration",
+          "customerTextMessageNotification.statusText.error_processing_configuration",
       });
 
       throw error;
@@ -119,7 +121,7 @@ export default class CustomerTextMessageNotificationConnectedApp
         appData,
         appointment,
         confirmed ? "confirmed" : "pending",
-        "New Request"
+        "newRequest"
       );
 
       logger.info(
@@ -135,7 +137,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending customer text message notification for new appointment",
+          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_new_appointment",
       });
 
       throw error;
@@ -174,7 +176,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending customer text message notification for status change",
+          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_status_change",
       });
 
       throw error;
@@ -199,17 +201,11 @@ export default class CustomerTextMessageNotificationConnectedApp
     );
 
     try {
-      const newAppointment: Appointment = {
-        ...appointment,
-        dateTime: newTime,
-        totalDuration: newDuration,
-      };
-
       await this.sendNotification(
         appData,
-        newAppointment,
+        appointment,
         "rescheduled",
-        "Rescheduled"
+        "rescheduled"
       );
 
       logger.info(
@@ -236,7 +232,7 @@ export default class CustomerTextMessageNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending customer text message notification for rescheduled appointment",
+          "customerTextMessageNotification.statusText.error_sending_customer_text_message_notification_for_rescheduled_appointment",
       });
 
       throw error;
@@ -247,7 +243,9 @@ export default class CustomerTextMessageNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     status: keyof CustomerTextMessageNotificationConfiguration["templates"],
-    initiator: string
+    initiator:
+      | keyof CustomerTextMessageNotificationConfiguration["templates"]
+      | "newRequest"
   ) {
     const logger = this.loggerFactory("sendNotification");
     logger.debug(
@@ -372,7 +370,7 @@ export default class CustomerTextMessageNotificationConnectedApp
         },
         appointmentId: appointment._id,
         participantType: "customer",
-        handledBy: `Customer Text Message Notification Service - ${initiator}`,
+        handledBy: `customerTextMessageNotification.handlers.${initiator}`,
       });
 
       logger.info(

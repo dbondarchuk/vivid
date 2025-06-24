@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   SocialConfiguration,
   socialConfigurationSchema,
@@ -16,6 +17,7 @@ import { SocialLinkCard } from "./socialLinkCard";
 export const SocialSettingsForm: React.FC<{
   values: SocialConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<SocialConfiguration>({
     resolver: zodResolver(socialConfigurationSchema),
     mode: "all",
@@ -29,8 +31,8 @@ export const SocialSettingsForm: React.FC<{
     try {
       setLoading(true);
       await toastPromise(updateSocialConfiguration(data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("settings.social.form.toasts.changesSaved"),
+        error: t("settings.social.form.toasts.requestError"),
       });
       router.refresh();
     } catch (error: any) {
@@ -75,7 +77,7 @@ export const SocialSettingsForm: React.FC<{
         className="w-full space-y-8 relative"
       >
         <Sortable
-          title="Social links"
+          title={t("settings.social.form.socialLinks")}
           ids={linksIds}
           onAdd={addNewLink}
           onSort={sort}

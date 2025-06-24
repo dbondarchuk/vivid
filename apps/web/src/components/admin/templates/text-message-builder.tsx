@@ -4,6 +4,7 @@ import JsonView from "@uiw/react-json-view";
 import { darkTheme } from "@uiw/react-json-view/dark";
 import { lightTheme } from "@uiw/react-json-view/light";
 
+import { useI18n } from "@vivid/i18n";
 import {
   ArgumentsAutocomplete,
   Button,
@@ -35,6 +36,7 @@ export const TextMessageBuilder: React.FC<{
   field: ControllerRenderProps<any>;
   args?: any;
 }> = ({ field, args }) => {
+  const t = useI18n("admin");
   const { resolvedTheme } = useTheme();
   const preview = templateSafeWithError(field.value || "", args || {});
 
@@ -43,8 +45,8 @@ export const TextMessageBuilder: React.FC<{
       <FormItem className="flex-1">
         <FormLabel className="flex flex-row items-center justify-between">
           <span>
-            Text message content
-            <InfoTooltip>* Uses templated values</InfoTooltip>
+            {t("templates.textMessageBuilder.content")}
+            <InfoTooltip>{t("common.usesTemplatedValues")}</InfoTooltip>
           </span>
 
           <Dialog>
@@ -56,10 +58,14 @@ export const TextMessageBuilder: React.FC<{
                   </Button>
                 </DialogTrigger>
               </TooltipTrigger>
-              <TooltipContent side="bottom">View context</TooltipContent>
+              <TooltipContent side="bottom">
+                {t("templates.textMessageBuilder.viewContext")}
+              </TooltipContent>
             </Tooltip>
             <DialogContent className="md:max-w-3/5">
-              <DialogTitle>Context values</DialogTitle>
+              <DialogTitle>
+                {t("templates.textMessageBuilder.contextValues")}
+              </DialogTitle>
               <ScrollArea className="max-h-[60vh]">
                 <JsonView
                   value={args || {}}
@@ -95,7 +101,9 @@ export const TextMessageBuilder: React.FC<{
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {copied ? "Copied" : "Copy path"}
+                            {copied
+                              ? t("templates.textMessageBuilder.copied")
+                              : t("templates.textMessageBuilder.copyPath")}
                           </TooltipContent>
                         </Tooltip>
                       );
@@ -106,7 +114,7 @@ export const TextMessageBuilder: React.FC<{
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="secondary">
-                    Close
+                    {t("templates.textMessageBuilder.close")}
                   </Button>
                 </DialogClose>
               </DialogFooter>
@@ -121,11 +129,15 @@ export const TextMessageBuilder: React.FC<{
             onChange={field.onChange}
           />
         </FormControl>
-        <FormDescription>{preview.length || 0} characters</FormDescription>
+        <FormDescription>
+          {t("templates.textMessageBuilder.characterCount", {
+            count: preview.length || 0,
+          })}
+        </FormDescription>
         <FormMessage />
       </FormItem>
       <FormItem className="flex-1">
-        <FormLabel>Preview</FormLabel>
+        <FormLabel>{t("templates.textMessageBuilder.preview")}</FormLabel>
         <div
           className="w-full text-sm"
           dangerouslySetInnerHTML={{

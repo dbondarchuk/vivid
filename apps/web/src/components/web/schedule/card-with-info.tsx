@@ -1,4 +1,9 @@
-import { fallbackLanguage, I18nKeys, useI18n } from "@vivid/i18n";
+import {
+  fallbackLanguage,
+  I18nKeys,
+  TranslationKeys,
+  useI18n,
+} from "@vivid/i18n";
 import { Time } from "@vivid/types";
 import { timeZones } from "@vivid/types/src/utils/zTimeZone";
 import {
@@ -13,7 +18,7 @@ import React from "react";
 import { useScheduleContext } from "./context";
 
 export const CardWithAppointmentInformation: React.FC<
-  React.PropsWithChildren & { title: I18nKeys }
+  React.PropsWithChildren & { title: TranslationKeys }
 > = ({ children, title }) => {
   const i18n = useI18n();
   const { dateTime, duration, price } = useScheduleContext();

@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import { AppointmentOption } from "@vivid/types";
 import {
@@ -13,20 +14,26 @@ import { CellAction } from "./cell-action";
 export const columns: ColumnDef<AppointmentOption>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("common.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("common.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -40,7 +47,11 @@ export const columns: ColumnDef<AppointmentOption>[] = [
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("Name", "string"),
+    header: tableSortHeader(
+      "services.options.table.columns.name",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -49,7 +60,11 @@ export const columns: ColumnDef<AppointmentOption>[] = [
         DateTime.DATETIME_MED
       ),
     id: "updatedAt",
-    header: tableSortHeader("Updated at", "date"),
+    header: tableSortHeader(
+      "services.options.table.columns.updatedAt",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {

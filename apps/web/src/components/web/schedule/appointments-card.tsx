@@ -1,4 +1,3 @@
-import { IWithI18nProps, withI18n } from "@/i18n/with-i18n";
 import { AppointmentChoice } from "@vivid/types";
 import {
   Card,

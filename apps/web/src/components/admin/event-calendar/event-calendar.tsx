@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import { AppointmentDialog } from "../appointments/appointment-dialog";
 import { AgendaEventCalendar } from "./agenda-event-calendar";
 import { MonthlyEventCalendar } from "./monthly-event-calendar";
@@ -16,6 +17,7 @@ import { CalendarEvent, EventCalendarProps } from "./types";
 import { WeeklyEventCalendar } from "./weekly-event-calendar";
 
 export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
+  const t = useI18n("admin");
   const [events, setEvents] = React.useState<Event[]>([]);
   const [appointment, setAppointment] = React.useState<
     Appointment | undefined
@@ -75,7 +77,10 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
             start: start.toJSDate(),
             end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
             id: app._id,
-            title: `${app.fields.name} for ${app.option.name}`,
+            title: t("calendar.eventTitle", {
+              customer: app.fields.name,
+              service: app.option.name,
+            }),
             variant: app.status !== "confirmed" ? "secondary" : "primary",
           };
         } else {
@@ -87,7 +92,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           };
         }
       }),
-    [events]
+    [events, t]
   );
 
   const onEventClick = ({ id }: CalendarEvent) => {
@@ -121,20 +126,20 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
         <dl className="divide-y">
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <Presentation size={16} /> Appointment:
+              <Presentation size={16} /> {t("calendar.appointment")}:
             </dt>
             <dd className="col-span-2">{appointment.option.name}</dd>
           </div>
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
-              <CheckCircle size={16} /> Status:
+              <CheckCircle size={16} /> {t("calendar.status")}:
             </dt>
             <dd className="col-span-2">{StatusText[appointment.status]}</dd>
           </div>
           {appointment.totalPrice && (
             <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
               <dt className="flex self-center items-center gap-1">
-                <DollarSign size={16} /> Price:
+                <DollarSign size={16} /> {t("calendar.price")}:
               </dt>
               <dd className="col-span-2">${appointment.totalPrice}</dd>
             </div>
@@ -142,7 +147,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           {appointment.note && (
             <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
               <dt className="flex self-center items-center gap-1">
-                <StickyNote size={16} /> Note:
+                <StickyNote size={16} /> {t("calendar.note")}:
               </dt>
               <dd className="col-span-2">{appointment.note}</dd>
             </div>
@@ -150,7 +155,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
         </dl>
       );
     },
-    [events]
+    [events, t]
   );
 
   return (
@@ -158,7 +163,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
       {loading && (
         <div className="absolute bg-white bg-opacity-60 z-50 h-full w-full flex items-center justify-center">
           <div className="flex items-center">
-            <span className="text-3xl mr-4">Loading</span>
+            <span className="text-3xl mr-4">{t("common.labels.loading")}</span>
             <svg
               className="animate-spin h-8 w-8 text-gray-800"
               xmlns="http://www.w3.org/2000/svg"

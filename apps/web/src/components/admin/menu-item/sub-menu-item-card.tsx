@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { SubMenuItem } from "@vivid/types";
 import { Button, Card, CardContent, CardHeader, cn } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
@@ -35,6 +36,8 @@ export function SubMenuItemCard({
   isOverlay,
   remove,
 }: SubMenuItemProps) {
+  const t = useI18n("admin");
+
   const {
     setNodeRef,
     attributes,
@@ -86,11 +89,11 @@ export function SubMenuItemCard({
           {...listeners}
           className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
         >
-          <span className="sr-only">Move menu item</span>
+          <span className="sr-only">{t("menuItem.subMenu.moveMenuItem")}</span>
           <GripVertical />
         </Button>
         <span className={cn(!label || invalid ? "text-destructive" : "")}>
-          {error?.message || label || "Invalid"}
+          {error?.message || label || t("menuItem.subMenu.invalid")}
         </span>
         <Button
           disabled={disabled}

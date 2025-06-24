@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { Appointment, Event } from "@vivid/types";
@@ -68,6 +69,7 @@ export const AppointmentRescheduleDialog: React.FC<
   onRescheduled,
   ...rest
 }) => {
+  const t = useI18n("admin");
   const [appointment, setAppointment] =
     React.useState<Appointment>(propAppointment);
 
@@ -106,8 +108,8 @@ export const AppointmentRescheduleDialog: React.FC<
       await toastPromise(
         rescheduleAppointment(appointment._id, data.dateTime, data.duration),
         {
-          success: "Appointment was succesfully rescheduled.",
-          error: "There was a problem with your request.",
+          success: t("appointments.rescheduleDialog.success"),
+          error: t("appointments.rescheduleDialog.error"),
         }
       );
 
@@ -169,10 +171,12 @@ export const AppointmentRescheduleDialog: React.FC<
           <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
             <DialogHeader>
               <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                Reschedule the appointment
+                {t("appointments.rescheduleDialog.title")}
               </DialogTitle>
               <DialogDescription>
-                {appointment.option.name} by {appointment.fields.name}
+                {appointment.option.name}{" "}
+                {t("appointments.rescheduleDialog.by")}{" "}
+                {appointment.fields.name}
               </DialogDescription>
             </DialogHeader>
             <div className="flex-1 w-full overflow-auto">
@@ -184,7 +188,9 @@ export const AppointmentRescheduleDialog: React.FC<
                       name="dateTime"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Date & Time</FormLabel>
+                          <FormLabel>
+                            {t("appointments.rescheduleDialog.dateTime")}
+                          </FormLabel>
                           <FormControl>
                             <DateTimePicker
                               use12HourFormat={is12hourUserTimeFormat()}
@@ -206,7 +212,9 @@ export const AppointmentRescheduleDialog: React.FC<
                       name="duration"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Duration</FormLabel>
+                          <FormLabel>
+                            {t("appointments.rescheduleDialog.duration")}
+                          </FormLabel>
                           <FormControl>
                             <DurationInput disabled={loading} {...field} />
                           </FormControl>
@@ -227,12 +235,13 @@ export const AppointmentRescheduleDialog: React.FC<
                             htmlFor="confirm-overlap"
                             className="cursor-pointer"
                           >
-                            Confirm overlap
+                            {t("appointments.rescheduleDialog.confirmOverlap")}
                           </FormLabel>
                         </div>
                         <FormDescription>
-                          I understand that rescheduling this appointment will
-                          create an overlap in my schedule
+                          {t(
+                            "appointments.rescheduleDialog.confirmOverlapDescription"
+                          )}
                         </FormDescription>
                       </FormItem>
                     )}
@@ -249,7 +258,9 @@ export const AppointmentRescheduleDialog: React.FC<
             </div>
             <DialogFooter className="!justify-between flex-row gap-2">
               <DialogClose asChild>
-                <Button variant="secondary">Close</Button>
+                <Button variant="secondary">
+                  {t("appointments.rescheduleDialog.close")}
+                </Button>
               </DialogClose>
               <AlertDialog
                 open={openConfirmDialog}
@@ -260,27 +271,31 @@ export const AppointmentRescheduleDialog: React.FC<
                     variant="default"
                     disabled={!isValid || (isOverlaping && !confirmOverlap)}
                   >
-                    Reschedule
+                    {t("appointments.rescheduleDialog.reschedule")}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      Are you absolutely sure?
+                      {t("appointments.rescheduleDialog.confirmTitle")}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone. This will reschedule this
-                      appointment.
+                      {t("appointments.rescheduleDialog.confirmDescription")}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel>
+                      {t("appointments.rescheduleDialog.cancel")}
+                    </AlertDialogCancel>
                     <Button
                       disabled={loading}
                       onClick={reschedule}
                       className="flex flex-row gap-1 items-center"
                     >
-                      {loading && <Spinner />} <span>Reschedule</span>
+                      {loading && <Spinner />}{" "}
+                      <span>
+                        {t("appointments.rescheduleDialog.reschedule")}
+                      </span>
                     </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>

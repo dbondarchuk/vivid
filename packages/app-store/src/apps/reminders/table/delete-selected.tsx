@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AlertModal, Button, Spinner, toastPromise } from "@vivid/ui";
 import { Trash } from "lucide-react";
 import { useQueryState } from "nuqs";
@@ -13,6 +14,8 @@ export const DeleteSelectedRemindersButton: React.FC<{
 }> = ({ selected, appId }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
+  const t = useI18n("apps");
+  const tAdmin = useI18n("admin");
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
   const action = async () => {
@@ -25,8 +28,10 @@ export const DeleteSelectedRemindersButton: React.FC<{
           selected.map((r) => r._id)
         ),
         {
-          success: "Selected reminders have been deleted",
-          error: "There was a problem with your request.",
+          success: t("reminders.statusText.reminders_deleted", {
+            count: selected.length,
+          }),
+          error: tAdmin("common.toasts.error"),
         }
       );
 
@@ -48,15 +53,20 @@ export const DeleteSelectedRemindersButton: React.FC<{
       >
         {isLoading && <Spinner />}
         <Trash className="mr-2 h-4 w-4" />
-        <span>Delete selected {selected.length} reminder(s)</span>
+        <span>
+          {t("reminders.table.deleteSelected.label", {
+            count: selected.length,
+          })}
+        </span>
       </Button>
       <AlertModal
         isOpen={isOpen}
         loading={isLoading}
         onClose={() => setIsOpen(false)}
         onConfirm={action}
-        description="This action cannot be undone. This will delete selected reminders and
-            remove them from all options and addons that use them"
+        description={t("reminders.table.deleteSelected.description", {
+          count: selected.length,
+        })}
       />
     </>
   );

@@ -10,6 +10,7 @@ import {
   AsyncFilterBoxProps,
   DataTableAsyncFilterBox,
 } from "./data-table-async-filter-box";
+import { useI18n } from "@vivid/i18n";
 
 const CustomerShortLabel: React.FC<{
   customer: CustomerListModel;
@@ -50,6 +51,7 @@ export const CustomersDataTableAsyncFilterBox: React.FC<
     filterKey?: AsyncFilterBoxProps["filterKey"];
   }
 > = ({ title = "Customer", filterKey = "customerId", ...rest }) => {
+  const t = useI18n("ui");
   const getCustomers = async (page: number, search?: string) => {
     const limit = 10;
     let url = `/admin/api/customers?page=${page}&limit=${limit}`;
@@ -65,7 +67,7 @@ export const CustomersDataTableAsyncFilterBox: React.FC<
     });
 
     if (response.status >= 400) {
-      toast.error("Request failed.");
+      toast.error(t("common.requestFailed"));
       const text = await response.text();
       console.error(
         `Request to fetch customers failed: ${response.status}; ${text}`

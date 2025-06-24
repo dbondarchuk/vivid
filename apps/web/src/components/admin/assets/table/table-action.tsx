@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   cn,
@@ -30,6 +31,7 @@ export const AssetsTableAction: React.FC<{
     setCustomerFilter,
   } = useAssetsTableFilters();
   const { rowSelection } = useSelectedRowsStore();
+  const t = useI18n("admin");
 
   const additionalFilters = showCustomerFilter ? (
     <>
@@ -59,7 +61,11 @@ export const AssetsTableAction: React.FC<{
         {additionalFilters && (
           <>
             <Popover>
-              <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+              <PopoverTrigger
+                tooltip={t("assets.table.filters.filters")}
+                asChild
+                className="md:hidden"
+              >
                 <Button variant="outline">
                   <Settings2 size={16} />
                 </Button>

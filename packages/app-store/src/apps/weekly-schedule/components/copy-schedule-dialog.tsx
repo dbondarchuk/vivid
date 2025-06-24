@@ -1,6 +1,7 @@
 "use client";
 
 import { WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
 import {
   Dialog,
   DialogTrigger,
@@ -44,6 +45,7 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
   disabled,
   className,
 }) => {
+  const t = useI18n("apps");
   const [openDialog, setOpenDialog] = React.useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -57,8 +59,8 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
     try {
       setLoading(true);
       await toastPromise(copyWeeklySchedule(appId, week, newWeek), {
-        success: `Schedule for week of ${getWeekDisplay(week)} was successfully copied to week of ${getWeekDisplay(newWeek)}`,
-        error: "There was a problem with your request.",
+        success: t("weeklySchedule.dialogs.copy.success"),
+        error: t("weeklySchedule.statusText.request_error"),
       });
 
       setOpenConfirmDialog(false);
@@ -78,16 +80,18 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
     <Dialog onOpenChange={setOpenDialog} open={openDialog}>
       <DialogTrigger asChild>
         <Button variant="primary" disabled={disabled} className={className}>
-          <Copy /> Copy schedule
+          <Copy /> {t("weeklySchedule.dialogs.copy.copySchedule")}
         </Button>
       </DialogTrigger>
       <DialogContent className="flex flex-col max-h-[100%] translate-y-[-100%]">
         <DialogHeader>
           <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-            Copy weekly schedule
+            {t("weeklySchedule.dialogs.copy.title")}
           </DialogTitle>
           <DialogDescription>
-            Copy this weekly schedule to another week
+            {t("weeklySchedule.dialogs.copy.description", {
+              week: getWeekDisplay(week),
+            })}
           </DialogDescription>
         </DialogHeader>
         <div className="flex-1 flex flex-col gap-2 w-full overflow-auto">
@@ -108,25 +112,31 @@ export const CopyScheduleDialog: React.FC<CopyScheduleDialogProps> = ({
           >
             <AlertDialogTrigger asChild>
               <Button variant="default" disabled={week === newWeek}>
-                Copy
+                {t("weeklySchedule.dialogs.copy.copy")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  {t("weeklySchedule.dialogs.copy.title")}
+                </AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will replace existing
-                  schedules for the week of {getWeekDisplay(newWeek)}.
+                  {t("weeklySchedule.dialogs.copy.description", {
+                    week: getWeekDisplay(newWeek),
+                  })}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>
+                  {t("weeklySchedule.dialogs.copy.cancel")}
+                </AlertDialogCancel>
                 <Button
                   disabled={loading}
                   className="flex flex-row gap-1 items-center"
                   onClick={onConfirm}
                 >
-                  {loading && <Spinner />} <span>Copy</span>
+                  {loading && <Spinner />}{" "}
+                  <span>{t("weeklySchedule.dialogs.copy.copy")}</span>
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>

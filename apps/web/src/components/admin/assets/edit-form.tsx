@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { AssetEntity } from "@vivid/types";
 import {
   AssetPreview,
@@ -30,6 +31,7 @@ type FormValues = z.infer<typeof formSchema>;
 export const AssetEditForm: React.FC<{ asset: AssetEntity }> = ({ asset }) => {
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
+  const t = useI18n("admin");
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: "all",
@@ -44,8 +46,8 @@ export const AssetEditForm: React.FC<{ asset: AssetEntity }> = ({ asset }) => {
       setLoading(true);
 
       await toastPromise(updateAsset(asset._id, data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("assets.toasts.changesSaved"),
+        error: t("common.toasts.error"),
       });
 
       router.refresh();
@@ -64,10 +66,10 @@ export const AssetEditForm: React.FC<{ asset: AssetEntity }> = ({ asset }) => {
         </div>
         <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4">
           <FormItem>
-            <FormLabel>File name</FormLabel>
+            <FormLabel>{t("assets.form.fileName")}</FormLabel>
             <Input
               disabled={true}
-              placeholder="Asset name"
+              placeholder={t("assets.form.assetName")}
               value={asset.filename}
             />
           </FormItem>
@@ -76,12 +78,12 @@ export const AssetEditForm: React.FC<{ asset: AssetEntity }> = ({ asset }) => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{t("assets.form.description")}</FormLabel>
                 <FormControl>
                   <Textarea
                     autoResize
                     disabled={loading}
-                    placeholder="Asset description"
+                    placeholder={t("assets.form.descriptionPlaceholder")}
                     {...field}
                   />
                 </FormControl>

@@ -1,21 +1,8 @@
 "use client";
 
-import { DiscountTypeLabels } from "@/constants/labels";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
-
-export const ENABLED_OPTIONS = [true, false].map((value) => ({
-  value,
-  label: value ? "Active" : "Disabled",
-}));
-
-export const TYPE_OPTIONS = Object.entries(DiscountTypeLabels).map(
-  ([value, label]) => ({
-    value,
-    label,
-  })
-);
 
 export function useFieldsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(

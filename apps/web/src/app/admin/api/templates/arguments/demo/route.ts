@@ -19,17 +19,8 @@ export async function GET(request: NextRequest) {
   );
 
   const searchParams = request.nextUrl.searchParams;
-  const type = searchParams.get("type");
 
-  if (!type) {
-    logger.warn("Missing required type parameter");
-    return NextResponse.json(
-      { error: "Type parameter is required" },
-      { status: 400 }
-    );
-  }
-
-  logger.debug({ type }, "Fetching demo template arguments");
+  logger.debug({}, "Fetching demo template arguments");
 
   const config =
     await ServicesContainer.ConfigurationService().getConfigurations(

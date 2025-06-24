@@ -5,22 +5,22 @@ import { Send } from "lucide-react";
 
 export const CustomerTextMessageNotificationApp: App = {
   name: CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
-  displayName: "Customer text message notifications",
+  displayName: "customerTextMessageNotification.displayName",
   scope: ["appointment-hook"],
   type: "complex",
-  category: ["Notifications"],
+  category: ["categories.notifications"],
   Logo: ({ className }) => <Send className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {
-    text: "Send a text message with the appointment details to customers.",
+    text: "customerTextMessageNotification.description",
   },
   menuItems: [
     {
       href: "communications/customer-text-message",
       parent: "communications",
       id: "communications-customer-text-message",
-      label: "Customer Text Message Notifications",
+      label: "navigation.customerTextMessageNotification",
       icon: <Send />,
       Page: (props) => <CustomerTextMessageNotificationAppSetup {...props} />,
     },

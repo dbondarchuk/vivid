@@ -1,7 +1,8 @@
-import { CommunicationChannelTexts } from "@/constants/labels";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EmailBuilder } from "@vivid/email-builder";
+import { useI18n } from "@vivid/i18n";
 import {
+  communicationChannels,
   SendCommunicationRequest,
   sendCommunicationRequestSchema,
   Template,
@@ -56,6 +57,7 @@ export type SendCommunicationDialogProps = {
 export const SendCommunicationDialog: React.FC<
   SendCommunicationDialogProps
 > = ({ children, onSuccess, ...rest }) => {
+  const t = useI18n("admin");
   const [isOpen, setIsOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -94,9 +96,9 @@ export const SendCommunicationDialog: React.FC<
       isValid
         ? trigger()
         : setError("content", {
-            message: "Content is not valid",
+            message: t("communications.contentNotValid"),
           }),
-    [setError, trigger]
+    [setError, trigger, t]
   );
 
   const close = () => {
@@ -127,8 +129,8 @@ export const SendCommunicationDialog: React.FC<
       });
 
       const result = await toastPromise(promise, {
-        success: "Your message was successfully sent.",
-        error: "There was a problem with your request.",
+        success: t("communications.messageSent"),
+        error: t("communications.requestError"),
       });
 
       if (result.status >= 400) {
@@ -156,7 +158,7 @@ export const SendCommunicationDialog: React.FC<
 
       const template = (await response.json()) as Template;
       if (template.type !== channel) {
-        throw new Error("Wrong template type");
+        throw new Error(t("communications.wrongTemplateType"));
       }
 
       form.setValue("content", template.value);
@@ -164,7 +166,7 @@ export const SendCommunicationDialog: React.FC<
       setContentKey(new Date().getTime().toString());
     } catch (error) {
       console.error("Failed to fetch items:", error);
-      toast.error("There was a problem with your request.");
+      toast.error(t("communications.requestError"));
     } finally {
       setIsTemplateLoading(false);
     }
@@ -177,16 +179,16 @@ export const SendCommunicationDialog: React.FC<
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[80%] max-h-[100%]">
         <DialogHeader>
-          <DialogTitle>Send new message</DialogTitle>
+          <DialogTitle>{t("communications.sendNewMessage")}</DialogTitle>
           <DialogDescription>
-            Send a new email or text message to the customer
+            {t("communications.sendNewMessageDescription")}
           </DialogDescription>
         </DialogHeader>
         <AlertModal
           onConfirm={close}
           isOpen={isCloseAlertModalOpen}
           onClose={() => setIsCloseAlertModalOpen(false)}
-          description="You will loose all content if you close the dialog"
+          description={t("communications.closeDialogWarning")}
         />
         <Form {...form}>
           <form
@@ -198,17 +200,15 @@ export const SendCommunicationDialog: React.FC<
               name="channel"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Channel</FormLabel>
+                  <FormLabel>{t("communications.channel")}</FormLabel>
                   <FormControl>
                     <div className="flex flex-row gap-2">
                       <Combobox
                         className="w-full"
-                        values={Object.entries(CommunicationChannelTexts).map(
-                          ([value, label]) => ({
-                            label,
-                            value,
-                          })
-                        )}
+                        values={communicationChannels.map((value) => ({
+                          label: t(`common.labels.channel.${value}`),
+                          value,
+                        }))}
                         value={field.value}
                         onItemSelect={(val) => {
                           field.onChange(val);
@@ -221,17 +221,21 @@ export const SendCommunicationDialog: React.FC<
                         onOpenChange={onOpenChangeTemplateDialog}
                       >
                         <DialogTrigger asChild>
-                          <Button variant="primary">Select template</Button>
+                          <Button variant="primary">
+                            {t("communications.selectTemplate")}
+                          </Button>
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>Select template</DialogTitle>
+                            <DialogTitle>
+                              {t("communications.selectTemplate")}
+                            </DialogTitle>
                             <DialogDescription>
-                              Select existing template
+                              {t("communications.selectExistingTemplate")}
                             </DialogDescription>
                           </DialogHeader>
                           <div className="flex flex-col gap-2">
-                            <Label>Template</Label>
+                            <Label>{t("communications.template")}</Label>
                             <TemplateSelector
                               type={channel}
                               value={templateId}
@@ -239,21 +243,25 @@ export const SendCommunicationDialog: React.FC<
                               className="w-full"
                             />
                             <FormDescription className="text-destructive">
-                              <span className="font-bold">Attention!</span>{" "}
-                              Selecting a template will replace your current
-                              content.
+                              <span className="font-bold">
+                                {t("communications.attention")}!
+                              </span>{" "}
+                              {t("communications.templateReplaceWarning")}
                             </FormDescription>
                           </div>
                           <DialogFooter>
                             <DialogClose asChild>
-                              <Button variant="secondary">Close</Button>
+                              <Button variant="secondary">
+                                {t("common.buttons.close")}
+                              </Button>
                             </DialogClose>
                             <Button
                               variant="primary"
                               disabled={isTemplateLoading || !templateId}
                               onClick={onTemplateSelect}
                             >
-                              {isTemplateLoading && <Spinner />}Select
+                              {isTemplateLoading && <Spinner />}
+                              {t("communications.select")}
                             </Button>
                           </DialogFooter>
                         </DialogContent>
@@ -271,12 +279,10 @@ export const SendCommunicationDialog: React.FC<
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Email subject
+                      {t("communications.emailSubject")}
                       <InfoTooltip>
-                        <p>
-                          Subject of the email, that your customers will see.
-                        </p>
-                        <p>* Uses templated values</p>
+                        <p>{t("communications.emailSubjectDescription")}</p>
+                        <p>{t("communications.usesTemplatedValues")}</p>
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -286,7 +292,7 @@ export const SendCommunicationDialog: React.FC<
                         value={field.value}
                         onChange={(value) => field.onChange(value)}
                         disabled={loading}
-                        placeholder="Subject"
+                        placeholder={t("communications.subject")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -307,7 +313,7 @@ export const SendCommunicationDialog: React.FC<
                       )}
                     >
                       <FormItem className="w-full flex-grow relative h-full">
-                        <FormLabel>Content</FormLabel>
+                        <FormLabel>{t("communications.content")}</FormLabel>
                         <FormControl>
                           <EmailBuilder
                             args={args}
@@ -333,10 +339,10 @@ export const SendCommunicationDialog: React.FC<
         </Form>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="secondary">Close</Button>
+            <Button variant="secondary">{t("common.buttons.close")}</Button>
           </DialogClose>
           <Button variant="primary" onClick={form.handleSubmit(onSubmit)}>
-            {loading ? <Spinner /> : <Send />} Send
+            {loading ? <Spinner /> : <Send />} {t("communications.send")}
           </Button>
         </DialogFooter>
       </DialogContent>

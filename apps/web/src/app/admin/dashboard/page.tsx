@@ -14,6 +14,7 @@ import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
 import { PendingAppointmentsBadge } from "./pending-appointments-toast-stream";
+import { getI18nAsync } from "@vivid/i18n";
 
 const breadcrumbItems = [{ title: "Dashboard", link: "/admin/dashboard" }];
 
@@ -26,6 +27,7 @@ const defaultTab = "overview";
 export default async function Page({ searchParams }: Params) {
   const logger = getLoggerFactory("AdminPages")("dashboard");
   const { activeTab = defaultTab, key } = await searchParams;
+  const t = await getI18nAsync("admin");
 
   logger.debug(
     {
@@ -55,9 +57,12 @@ export default async function Page({ searchParams }: Params) {
         <Suspense>
           <TabsViaUrl defaultValue={defaultTab} className="space-y-4">
             <TabsList className="w-full">
-              <TabsLinkTrigger value="overview">Overview</TabsLinkTrigger>
+              <TabsLinkTrigger value="overview">
+                {t("dashboard.tabs.overview")}
+              </TabsLinkTrigger>
               <TabsLinkTrigger value="appointments">
-                Pending Appointments <PendingAppointmentsBadge />
+                {t("dashboard.tabs.pendingAppointments")}{" "}
+                <PendingAppointmentsBadge />
               </TabsLinkTrigger>
             </TabsList>
             {activeTab === "overview" && (
@@ -71,7 +76,7 @@ export default async function Page({ searchParams }: Params) {
                   </div>
                   <div className="@lg:basis-1/3 flex flex-col gap-2 ">
                     <h2 className="tracking-tight text-lg font-medium">
-                      Next appointments
+                      {t("dashboard.appointments.nextAppointments")}
                     </h2>
                     <Suspense
                       key={key}

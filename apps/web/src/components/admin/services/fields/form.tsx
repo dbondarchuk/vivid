@@ -1,13 +1,13 @@
 "use client";
 
-import { FieldTypeLabels } from "@/constants/labels";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { PlateMarkdownEditor } from "@vivid/rte";
 import {
   DatabaseId,
+  fieldTypes,
   fileFieldAcceptItemSchema,
   getFieldSchemaWithUniqueCheck,
-  ServiceField,
   ServiceFieldUpdateModel,
 } from "@vivid/types";
 import {
@@ -27,7 +27,6 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
   InputSuffix,
-  Link,
   SaveButton,
   Select,
   SelectContent,
@@ -46,10 +45,6 @@ import { z } from "zod";
 import { checkUniqueName, create, update } from "./actions";
 import { SelectFieldOptionCard } from "./select-field-option-card";
 
-const fieldTypeValues = Object.entries(FieldTypeLabels).map(
-  ([value, label]) => ({ value, label }) as IComboboxItem
-);
-
 const fileTypes = {
   "image/*": "Images",
   "video/*": "Videos",
@@ -62,6 +57,7 @@ const FileTypePickerTag = ({
 }: {
   onAdd: (value: string | string[]) => void;
 }) => {
+  const t = useI18n("admin");
   const [value, setValue] = React.useState<keyof typeof fileTypes | undefined>(
     "image/*"
   );
@@ -75,7 +71,7 @@ const FileTypePickerTag = ({
         }}
       >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select file type" />
+          <SelectValue placeholder={t("services.fields.form.fileTypes")} />
         </SelectTrigger>
         <SelectContent side="bottom">
           {Object.entries(fileTypes).map(([step, label]) => (
@@ -95,7 +91,7 @@ const FileTypePickerTag = ({
           onAdd(value.split(","));
         }}
       >
-        Add
+        {t("services.fields.form.addOption")}
       </Button>
     </div>
   );
@@ -104,9 +100,10 @@ const FileTypePickerTag = ({
 export const ServiceFieldForm: React.FC<{
   initialData?: ServiceFieldUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
+  const t = useI18n("admin");
   const formSchema = getFieldSchemaWithUniqueCheck(
     (slug) => checkUniqueName(slug, initialData?._id),
-    "Field name must be unique"
+    "services.fields.nameUnique"
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -136,8 +133,8 @@ export const ServiceFieldForm: React.FC<{
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("services.fields.form.toasts.changesSaved"),
+        error: t("services.fields.form.toasts.requestError"),
       });
     } catch (error: any) {
       console.error(error);
@@ -187,17 +184,16 @@ export const ServiceFieldForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Name{" "}
+                    {t("services.fields.form.name")}{" "}
                     <InfoTooltip>
-                      Unique ID of the field. Can contain only letter, digits,
-                      and underscore
+                      {t("services.fields.form.nameTooltip")}
                     </InfoTooltip>
                   </FormLabel>
 
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Field name"
+                      placeholder={t("services.fields.form.namePlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -211,63 +207,73 @@ export const ServiceFieldForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Label{" "}
+                    {t("services.fields.form.label")}{" "}
                     <InfoTooltip>
-                      Label that will be displayed for the field
+                      {t("services.fields.form.labelTooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Label" {...field} />
+                    <Input
+                      disabled={loading}
+                      placeholder={t("services.fields.form.labelPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-          <FormField
-            control={form.control}
-            name="data.description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Help text{" "}
-                  <InfoTooltip>Helper text to show with the field</InfoTooltip>
-                </FormLabel>
-                <FormControl>
-                  <PlateMarkdownEditor
-                    className="bg-background px-4 sm:px-4 pb-24"
-                    disabled={loading}
-                    value={field.value}
-                    onChange={(v) => {
-                      field.onChange(v);
-                      field.onBlur();
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             <FormField
               control={form.control}
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Type</FormLabel>
+                  <FormLabel>
+                    {t("services.fields.form.type")}{" "}
+                    <InfoTooltip>
+                      {t("services.fields.form.typeTooltip")}
+                    </InfoTooltip>
+                  </FormLabel>
                   <FormControl>
                     <Combobox
                       disabled={loading}
                       className="flex w-full font-normal text-base"
-                      values={fieldTypeValues}
-                      searchLabel="Select field type"
+                      values={fieldTypes.map((type) => ({
+                        value: type,
+                        label: t(`common.labels.fieldType.${type}`),
+                      }))}
+                      searchLabel={t("services.fields.form.typePlaceholder")}
                       value={field.value}
-                      onItemSelect={(item) => {
-                        field.onChange(item);
+                      onItemSelect={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="data.description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {t("services.fields.form.description")}{" "}
+                    <InfoTooltip>
+                      {t("services.fields.form.descriptionTooltip")}
+                    </InfoTooltip>
+                  </FormLabel>
+                  <FormControl>
+                    <PlateMarkdownEditor
+                      className="bg-background px-4 sm:px-4 pb-24"
+                      disabled={loading}
+                      value={field.value}
+                      onChange={(v) => {
+                        field.onChange(v);
                         field.onBlur();
                       }}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -277,16 +283,16 @@ export const ServiceFieldForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Required{" "}
-                    <InfoTooltip>Marks field as to be required</InfoTooltip>
+                    {t("services.fields.form.required")}{" "}
+                    <InfoTooltip>
+                      {t("services.fields.form.requiredTooltip")}
+                    </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <div className="!mt-4">
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </div>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -294,7 +300,7 @@ export const ServiceFieldForm: React.FC<{
           </div>
           {fieldType === "select" && (
             <Sortable
-              title="Options"
+              title={t("services.fields.form.optionsTitle")}
               ids={selectOptionsIds}
               onSort={sortSelectOptions}
               onAdd={addNewSelectOption}
@@ -323,9 +329,9 @@ export const ServiceFieldForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Max file size{" "}
+                      {t("services.fields.form.maxSizeMbLabel")}{" "}
                       <InfoTooltip>
-                        Max allowed file size in megabytes
+                        {t("services.fields.form.maxSizeMbTooltip")}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -333,7 +339,9 @@ export const ServiceFieldForm: React.FC<{
                         <InputGroupInput>
                           <Input
                             disabled={loading}
-                            placeholder="5"
+                            placeholder={t(
+                              "services.fields.form.maxSizeMbPlaceholder"
+                            )}
                             type="number"
                             className={InputGroupInputClasses()}
                             {...field}
@@ -355,19 +363,18 @@ export const ServiceFieldForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Accepted files{" "}
+                      {t("services.fields.form.acceptedFilesLabel")}{" "}
                       <InfoTooltip>
-                        List of accepted file and file types based on{" "}
-                        <Link href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#unique_file_type_specifiers">
-                          https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#unique_file_type_specifiers
-                        </Link>
+                        {t("services.fields.form.acceptedFilesTooltip")}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
                       <TagInput
                         {...field}
                         readOnly
-                        placeholder="Click plus button to add new file type"
+                        placeholder={t(
+                          "services.fields.form.acceptedFilesPlaceholder"
+                        )}
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e);

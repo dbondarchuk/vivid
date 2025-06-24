@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -61,6 +62,7 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
   disabled,
   className,
 }) => {
+  const t = useI18n("apps");
   const [openDialog, setOpenDialog] = React.useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -103,8 +105,12 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
           data.replaceExisting ?? false
         ),
         {
-          success: `Schedule for week of ${getWeekDisplay(week)} was successfully copied for every ${data.interval}-nd week until ${getWeekDisplay(data.maxWeek)}`,
-          error: "There was a problem with your request.",
+          success: t("weeklySchedule.dialogs.repeat.success", {
+            week: getWeekDisplay(week),
+            interval: data.interval,
+            maxWeek: getWeekDisplay(data.maxWeek),
+          }),
+          error: t("weeklySchedule.statusText.request_error"),
         }
       );
 
@@ -127,16 +133,16 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
     <Dialog onOpenChange={setOpenDialog} open={openDialog}>
       <DialogTrigger asChild>
         <Button variant="primary" disabled={disabled} className={className}>
-          <Repeat2 /> Repeat schedule
+          <Repeat2 /> {t("weeklySchedule.dialogs.repeat.repeatSchedule")}
         </Button>
       </DialogTrigger>
       <DialogContent className="flex flex-col max-h-[100%] translate-y-[-100%]">
         <DialogHeader>
           <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-            Repeat weekly schedule
+            {t("weeklySchedule.dialogs.repeat.title")}
           </DialogTitle>
           <DialogDescription>
-            Copy this weekly schedule with interval
+            {t("weeklySchedule.dialogs.repeat.description")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex-1 flex flex-col gap-2 w-full">
@@ -150,7 +156,9 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
                 name="interval"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Repeat every</FormLabel>
+                    <FormLabel>
+                      {t("weeklySchedule.dialogs.repeat.repeatEvery")}
+                    </FormLabel>
                     <FormControl>
                       <InputGroup>
                         <InputGroupInput>
@@ -163,7 +171,7 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
                           />
                         </InputGroupInput>
                         <InputSuffix className={InputGroupSuffixClasses()}>
-                          weeks
+                          {t("weeklySchedule.dialogs.repeat.weeks")}
                         </InputSuffix>
                       </InputGroup>
                     </FormControl>
@@ -177,10 +185,9 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Repeat until{" "}
+                      {t("weeklySchedule.dialogs.repeat.repeatUntil")}{" "}
                       <InfoTooltip>
-                        The latest week (including) up to which to repeat the
-                        schedule
+                        {t("weeklySchedule.dialogs.repeat.repeatUntilTooltip")}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -215,12 +222,13 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
                         htmlFor="confirm-overlap"
                         className="cursor-pointer"
                       >
-                        Replace existing
+                        {t("weeklySchedule.dialogs.repeat.replaceExisting")}
                       </FormLabel>
                     </div>
                     <FormDescription>
-                      If checked, this will replace existing schedules for weeks
-                      that fall into the repeated weeks
+                      {t(
+                        "weeklySchedule.dialogs.repeat.replaceExistingDescription"
+                      )}
                     </FormDescription>
                   </FormItem>
                 )}
@@ -230,7 +238,9 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
         </div>
         <DialogFooter className="!justify-between flex-row gap-2">
           <DialogClose asChild>
-            <Button variant="secondary">Close</Button>
+            <Button variant="secondary">
+              {t("weeklySchedule.dialogs.repeat.close")}
+            </Button>
           </DialogClose>
           <AlertDialog
             open={openConfirmDialog}
@@ -238,27 +248,33 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
           >
             <AlertDialogTrigger asChild>
               <Button variant="default" disabled={!form.formState.isValid}>
-                Copy
+                {t("weeklySchedule.dialogs.repeat.copy")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  {t("weeklySchedule.dialogs.repeat.confirmTitle")}
+                </AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will repeat the schedule
-                  for the week {getWeekDisplay(week)} ever{" "}
-                  {form.getValues("interval")} weeks until the week of{" "}
-                  {getWeekDisplay(form.getValues("maxWeek"))}.
+                  {t("weeklySchedule.dialogs.repeat.confirmDescription", {
+                    week: getWeekDisplay(week),
+                    interval: form.getValues("interval"),
+                    maxWeek: getWeekDisplay(form.getValues("maxWeek")),
+                  })}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>
+                  {t("weeklySchedule.dialogs.repeat.cancel")}
+                </AlertDialogCancel>
                 <Button
                   disabled={loading}
                   className="flex flex-row gap-1 items-center"
                   onClick={() => onConfirm()}
                 >
-                  {loading && <Spinner />} <span>Copy</span>
+                  {loading && <Spinner />}{" "}
+                  <span>{t("weeklySchedule.dialogs.repeat.copy")}</span>
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>

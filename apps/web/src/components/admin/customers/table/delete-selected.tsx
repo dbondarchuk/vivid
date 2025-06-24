@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { CustomerListModel } from "@vivid/types";
 import {
   AlertDialog,
@@ -22,6 +23,7 @@ import { deleteSelected } from "../actions";
 export const DeleteSelectedCustomersButton: React.FC<{
   selected: CustomerListModel[];
 }> = ({ selected }) => {
+  const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -31,8 +33,8 @@ export const DeleteSelectedCustomersButton: React.FC<{
       setIsLoading(true);
 
       await toastPromise(deleteSelected(selected.map((page) => page._id)), {
-        success: "Selected customers have been deleted",
-        error: "There was a problem with your request.",
+        success: t("customers.table.delete.success"),
+        error: t("customers.table.delete.error"),
       });
 
       router.refresh();
@@ -55,8 +57,8 @@ export const DeleteSelectedCustomersButton: React.FC<{
           variant="default"
           title={
             hasCustomersWithAppointments
-              ? "Cannot delete customers who have assigned appointments"
-              : "Delete selected customers"
+              ? t("customers.table.delete.cannotDeleteWithAppointments")
+              : t("customers.table.delete.deleteSelectedCustomers")
           }
           disabled={
             isLoading ||
@@ -67,21 +69,29 @@ export const DeleteSelectedCustomersButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} customer(s)</span>
+          <span>
+            {t("customers.table.delete.selectedCount", {
+              count: selected.length,
+            })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("customers.table.delete.title")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone.
+            {t("customers.table.delete.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("customers.table.delete.cancel")}
+          </AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Delete selected</span>
+            <span>{t("customers.table.delete.confirm")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

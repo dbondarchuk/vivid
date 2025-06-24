@@ -5,27 +5,27 @@ import { CalendarDays } from "lucide-react";
 
 export const WeeklyScheduleApp: App = {
   name: WEEKLY_SCHEDULE_APP_NAME,
-  displayName: "Weekly schedule",
+  displayName: "weeklySchedule.displayName",
   scope: ["schedule"],
   type: "complex",
-  category: ["Schedule"],
+  category: ["categories.schedule"],
   Logo: ({ className }) => <CalendarDays className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {
-    text: "Weekly schedule app allows users to create their working schedule for each individual week",
+    text: "weeklySchedule.description",
   },
   menuItems: [
     {
       href: "settings/schedule/weekly",
       parent: "schedule",
       id: "schedule-weekly",
-      label: "Weekly schedule",
-      pageTitle: "Weekly schedule",
-      pageDescription: "Set custom weekly schedule",
+      label: "navigation.weeklySchedule",
+      pageTitle: "weeklySchedule.displayName",
+      pageDescription: "weeklySchedule.form.setCustomWeeklySchedule",
       pageBreadcrumbs: [
         {
-          title: "Weekly schedule",
+          title: "weeklySchedule.displayName",
           link: "/admin/dashboard/settings/schedule/weekly",
         },
       ],

@@ -5,8 +5,8 @@ import { EmailNotificationAppSetup } from "./setup";
 
 export const EmailNotificationApp: App = {
   name: EMAIL_NOTIFICATION_APP_NAME,
-  displayName: "Email notifications",
-  category: ["Notifications"],
+  displayName: "emailNotification.displayName",
+  category: ["categories.notifications"],
   scope: ["appointment-hook"],
   type: "basic",
   Logo: ({ className }) => <Mailbox className={className} />,
@@ -15,6 +15,6 @@ export const EmailNotificationApp: App = {
   isHidden: false,
   dontAllowMultiple: true,
   description: {
-    text: "Send email notifications with the appointment details to yourself.",
+    text: "emailNotification.description",
   },
 };

@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import { IdName, ServiceField } from "@vivid/types";
 import {
@@ -18,7 +19,6 @@ import {
 } from "@vivid/ui";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
-import { FieldTypeLabels } from "@/constants/labels";
 
 export const columns: ColumnDef<
   ServiceField & {
@@ -28,20 +28,26 @@ export const columns: ColumnDef<
 >[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("common.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("common.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -55,19 +61,34 @@ export const columns: ColumnDef<
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("Name", "string"),
+    header: tableSortHeader(
+      "services.fields.table.columns.name",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) => FieldTypeLabels[field.type],
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return t(`common.labels.fieldType.${row.original.type}`);
+    },
     id: "type",
-    header: tableSortHeader("Type", "string"),
+    header: tableSortHeader(
+      "services.fields.table.columns.type",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (field) => field.data.label,
     id: "label",
-    header: tableSortHeader("Label", "string"),
+    header: tableSortHeader(
+      "services.fields.table.columns.label",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -76,18 +97,27 @@ export const columns: ColumnDef<
         DateTime.DATETIME_MED
       ),
     id: "updatedAt",
-    header: tableSortHeader("Updated at", "date"),
+    header: tableSortHeader(
+      "services.fields.table.columns.updatedAt",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row }) =>
-      row.original.addons?.length ? (
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return row.original.addons?.length ? (
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="link-dashed">{row.original.addons.length}</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogTitle>{row.original.data.label} in addons</DialogTitle>
+            <DialogTitle>
+              {t("services.fields.table.columns.addonsInDialog", {
+                label: row.original.data.label,
+              })}
+            </DialogTitle>
             <ScrollArea className="max-h-64">
               <ul>
                 {row.original.addons.map((addon) => (
@@ -105,7 +135,7 @@ export const columns: ColumnDef<
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
-                  Close
+                  {t("common.buttons.close")}
                 </Button>
               </DialogClose>
             </DialogFooter>
@@ -115,19 +145,29 @@ export const columns: ColumnDef<
         <Button variant="link" disabled>
           0
         </Button>
-      ),
+      );
+    },
     id: "addons",
-    header: tableSortHeader("Addons", "number"),
+    header: tableSortHeader(
+      "services.fields.table.columns.addons",
+      "number",
+      "admin"
+    ),
   },
   {
-    cell: ({ row }) =>
-      row.original.options?.length ? (
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return row.original.options?.length ? (
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="link-dashed">{row.original.options.length}</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogTitle>{row.original.data.label} in options</DialogTitle>
+            <DialogTitle>
+              {t("services.fields.table.columns.optionsInDialog", {
+                label: row.original.data.label,
+              })}
+            </DialogTitle>
             <ScrollArea className="max-h-64">
               <ul>
                 {row.original.options.map((option) => (
@@ -145,7 +185,7 @@ export const columns: ColumnDef<
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
-                  Close
+                  {t("common.buttons.close")}
                 </Button>
               </DialogClose>
             </DialogFooter>
@@ -155,9 +195,14 @@ export const columns: ColumnDef<
         <Button variant="link" disabled>
           0
         </Button>
-      ),
+      );
+    },
     id: "options",
-    header: tableSortHeader("Options", "number"),
+    header: tableSortHeader(
+      "services.fields.table.columns.options",
+      "number",
+      "admin"
+    ),
   },
   {
     id: "actions",

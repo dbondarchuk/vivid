@@ -3,8 +3,10 @@ import { ServicesContainer } from "@vivid/services";
 import { Card, CardContent } from "@vivid/ui";
 import { DateTime } from "luxon";
 import React from "react";
+import { getI18nAsync } from "@vivid/i18n";
 
 export const NextAppointmentsCards: React.FC = async () => {
+  const t = await getI18nAsync("admin");
   const nextAppointments =
     await ServicesContainer.EventsService().getNextAppointments(
       DateTime.now().toJSDate(),
@@ -19,7 +21,7 @@ export const NextAppointmentsCards: React.FC = async () => {
       {!nextAppointments.length && (
         <Card>
           <CardContent className="flex justify-center py-4">
-            No appointments are scheduled
+            {t("dashboard.appointments.noAppointments")}
           </CardContent>
         </Card>
       )}

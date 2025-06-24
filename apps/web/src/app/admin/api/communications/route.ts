@@ -105,8 +105,8 @@ export async function POST(request: NextRequest) {
     "appointmentId" in data ? data.appointmentId : undefined;
 
   const handledBy = customerId
-    ? "Send Customer Message"
-    : "Send Appointment Message";
+    ? "communications.handledBy.customer"
+    : "communications.handledBy.appointment";
 
   switch (data.channel) {
     case "text-message": {

@@ -6,6 +6,7 @@ import { Bold } from "lucide-react";
 import { FontFamily, FontWeight } from "../style-inputs/helpers/zod";
 import { Leaves } from "@vivid/utils";
 import { FONT_FAMILIES } from "../style-inputs/helpers/font-family";
+import { useI18n } from "@vivid/i18n";
 
 export const fontFamilyItems = [
   {
@@ -24,6 +25,7 @@ type PropsType = { style?: { fontFamily?: FontFamily | null } | null };
 export const FontFamilyDropdownMenu = <T extends PropsType>(
   props: Omit<ToolbarDropdownPropsValues<T>, "defaultValue">
 ) => {
+  const t = useI18n("builder");
   const selectedFont = FONT_FAMILIES.find(
     (font) => font.key === props.data?.style?.fontFamily
   );
@@ -32,13 +34,14 @@ export const FontFamilyDropdownMenu = <T extends PropsType>(
     <ToolbarDropdownMenu
       icon={
         <span className="text-xs" style={{ fontFamily: selectedFont?.value }}>
-          {selectedFont?.label ?? "Inherit"}
+          {selectedFont?.label ??
+            t("emailBuilder.common.toolbars.fontFamily.inherit")}
         </span>
       }
       defaultValue={null as any as string}
       items={fontFamilyItems}
       property={"style.fontFamily" as Leaves<T>}
-      tooltip="Font family"
+      tooltip={t("emailBuilder.common.toolbars.fontFamily.label")}
       {...props}
     />
   );

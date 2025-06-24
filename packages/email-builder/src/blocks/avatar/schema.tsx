@@ -17,7 +17,7 @@ export const AvatarPropsSchema = z.object({
       size: z.coerce
         .number()
         .gt(0)
-        .int("Should be the integer value")
+        .int("emailBuilder.blocks.avatar.validation.size")
         .optional()
         .nullable(),
       shape: shape.optional().nullable(),

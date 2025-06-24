@@ -1,17 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { OptionForm } from "@/components/admin/services/options/form";
+import { getI18nAsync } from "@vivid/i18n";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentOptionUpdateModel } from "@vivid/types";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
-
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Services", link: "/admin/dashboard/services" },
-  { title: "Options", link: "/admin/dashboard/services/options" },
-  { title: "New", link: "/admin/dashboard/services/options/new" },
-];
 
 type Props = {
   searchParams: Promise<{ from?: string }>;
@@ -19,6 +13,7 @@ type Props = {
 
 export default async function NewOptionPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("new-service-option");
+  const t = await getI18nAsync("admin");
   const { from } = await props.searchParams;
 
   logger.debug(
@@ -27,6 +22,19 @@ export default async function NewOptionPage(props: Props) {
     },
     "Loading new service option page"
   );
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    {
+      title: t("navigation.options"),
+      link: "/admin/dashboard/services/options",
+    },
+    {
+      title: t("services.options.new"),
+      link: "/admin/dashboard/services/options/new",
+    },
+  ];
 
   let initialData: AppointmentOptionUpdateModel | undefined = undefined;
   if (from) {
@@ -65,10 +73,9 @@ export default async function NewOptionPage(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="New service option"
-            description="Add new option that you provide"
+            title={t("services.options.newTitle")}
+            description={t("services.options.newDescription")}
           />
-          {/* <Separator /> */}
         </div>
         <OptionForm initialData={initialData} />
       </div>

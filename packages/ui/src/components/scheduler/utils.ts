@@ -1,15 +1,23 @@
 // Format time based on locale preference
-export const formatTime = (time: string, uses12HourFormat = false) => {
+
+export const formatTime = (
+  time: string,
+  uses12HourFormat = false,
+  amLabel = "AM",
+  pmLabel = "PM"
+) => {
   if (!uses12HourFormat) return time; // Keep 24-hour format
 
   const [hourStr, minute] = time.split(":");
   const hour = Number.parseInt(hourStr, 10);
 
-  if (hour === 0) return `12:${minute.padStart(2, "0")} AM`;
+  // Note: This function is used in non-React contexts, so we can't use useI18n here
+  // The AM/PM values should be passed from the calling component
+  if (hour === 0) return `12:${minute.padStart(2, "0")} ${amLabel}`;
   if (hour < 12)
-    return `${hour.toString().padStart(2, "0")}:${minute.padStart(2, "0")} AM`;
-  if (hour === 12) return `12:${minute.padStart(2, "0")} PM`;
-  return `${(hour - 12).toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")} PM`;
+    return `${hour.toString().padStart(2, "0")}:${minute.padStart(2, "0")} ${amLabel}`;
+  if (hour === 12) return `12:${minute.padStart(2, "0")} ${pmLabel}`;
+  return `${(hour - 12).toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")} ${pmLabel}`;
 };
 
 export const timeToMinutes = (time: string): number => {
@@ -24,6 +32,25 @@ export const minutesToTime = (minutes: number): string => {
 };
 
 // Define week day map
+export const getWeekDayMap = (
+  monday = "Monday",
+  tuesday = "Tuesday",
+  wednesday = "Wednesday",
+  thursday = "Thursday",
+  friday = "Friday",
+  saturday = "Saturday",
+  sunday = "Sunday"
+): Record<number, string> => ({
+  1: monday,
+  2: tuesday,
+  3: wednesday,
+  4: thursday,
+  5: friday,
+  6: saturday,
+  7: sunday,
+});
+
+// Keep the old export for backward compatibility
 export const weekDayMap: Record<number, string> = {
   1: "Monday",
   2: "Tuesday",

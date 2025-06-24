@@ -11,11 +11,13 @@ import {
 import { Proportions } from "lucide-react";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { AvatarProps, AvatarPropsDefaults } from "./schema";
+import { useI18n } from "@vivid/i18n";
 
 export const AvatarConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<AvatarProps>) => {
+  const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as AvatarProps);
 
   const size = data.props?.size ?? AvatarPropsDefaults.props.size;
@@ -26,7 +28,7 @@ export const AvatarConfiguration = ({
   return (
     <>
       <SliderInput
-        label="Size"
+        label={t("emailBuilder.blocks.avatar.size")}
         iconLabel={<Proportions className="text-secondary-foreground" />}
         units="px"
         step={3}
@@ -38,18 +40,24 @@ export const AvatarConfiguration = ({
         }}
       />
       <RadioGroupInput
-        label="Shape"
+        label={t("emailBuilder.blocks.avatar.shape")}
         defaultValue={shape}
         onChange={(shape) => {
           updateData({ ...data, props: { ...data.props, shape } });
         }}
       >
-        <RadioGroupInputItem value="circle">Circle</RadioGroupInputItem>
-        <RadioGroupInputItem value="square">Square</RadioGroupInputItem>
-        <RadioGroupInputItem value="rounded">Rounded</RadioGroupInputItem>
+        <RadioGroupInputItem value="circle">
+          {t("emailBuilder.blocks.avatar.shapes.circle")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="square">
+          {t("emailBuilder.blocks.avatar.shapes.square")}
+        </RadioGroupInputItem>
+        <RadioGroupInputItem value="rounded">
+          {t("emailBuilder.blocks.avatar.shapes.rounded")}
+        </RadioGroupInputItem>
       </RadioGroupInput>
       <FileInput
-        label="Image URL"
+        label={t("emailBuilder.blocks.avatar.imageUrl")}
         accept="image/*"
         defaultValue={imageUrl ?? ""}
         onChange={(v) => {
@@ -58,7 +66,7 @@ export const AvatarConfiguration = ({
         }}
       />
       <TextInput
-        label="Alt text"
+        label={t("emailBuilder.blocks.avatar.alt")}
         defaultValue={alt}
         onChange={(alt) => {
           updateData({ ...data, props: { ...data.props, alt } });

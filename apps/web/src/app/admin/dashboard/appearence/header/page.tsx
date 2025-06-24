@@ -1,21 +1,26 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { HeaderSettingsForm } from "./form";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Appearence", link: "/admin/dashboard" },
-  { title: "Header", link: "/admin/dashboard/appearence/header" },
-];
-
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("header");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading header page");
   const settings =
     await ServicesContainer.ConfigurationService().getConfiguration("header");
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.appearance"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.header"),
+      link: "/admin/dashboard/appearence/header",
+    },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -23,10 +28,9 @@ export default async function Page() {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="Header menu"
-            description="Adjust links and style of the header"
+            title={t("appearance.header.title")}
+            description={t("appearance.header.description")}
           />
-          {/* <Separator /> */}
         </div>
         <HeaderSettingsForm values={settings} />
       </div>

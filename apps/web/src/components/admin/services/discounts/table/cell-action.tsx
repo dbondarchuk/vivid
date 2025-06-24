@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { Discount } from "@vivid/types";
 import {
   AlertModal,
@@ -23,6 +24,7 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ discount }) => {
+  const t = useI18n("admin");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -32,8 +34,10 @@ export const CellAction: React.FC<CellActionProps> = ({ discount }) => {
       setLoading(true);
 
       await toastPromise(deleteDiscount(discount._id), {
-        success: `Discount '${discount.name}' was deleted.`,
-        error: "There was a problem with your request.",
+        success: t("services.discounts.table.cellAction.discountDeleted", {
+          name: discount.name,
+        }),
+        error: t("services.discounts.table.cellAction.deleteError"),
       });
 
       setOpen(false);
@@ -57,27 +61,32 @@ export const CellAction: React.FC<CellActionProps> = ({ discount }) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t("common.openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            {t("services.discounts.table.cellAction.actions")}
+          </DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
               href={`/admin/dashboard/services/discounts/new?from=${discount._id}`}
             >
-              <Copy className="h-4 w-4" /> Clone
+              <Copy className="h-4 w-4" />{" "}
+              {t("services.discounts.table.cellAction.clone")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/admin/dashboard/services/discounts/${discount._id}`}>
-              <Edit className="h-4 w-4" /> Update
+              <Edit className="h-4 w-4" />{" "}
+              {t("services.discounts.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> Delete
+            <Trash className="h-4 w-4" />{" "}
+            {t("services.discounts.table.cellAction.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

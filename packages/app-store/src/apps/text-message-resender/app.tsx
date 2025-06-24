@@ -5,13 +5,13 @@ import { TextMessageResenderAppSetup } from "./setup";
 
 export const TextMessageResenderApp: App = {
   name: TEXT_MESSAGE_RESENDER_APP_NAME,
-  displayName: "Text message resender",
+  displayName: "textMessageResender.displayName",
   scope: ["text-message-respond"],
-  category: ["Communications"],
+  category: ["categories.communications"],
   type: "basic",
   Logo: ({ className }) => <MessageCircleReply className={className} />,
   SetUp: (props) => <TextMessageResenderAppSetup {...props} />,
   description: {
-    text: "Text message resender will route customer text messages replies to your phone number and lets you reply to them directly",
+    text: "textMessageResender.description",
   },
 };

@@ -1,3 +1,4 @@
+import type { AppsKeys } from "@vivid/i18n";
 import { App } from "@vivid/types";
 import { REMINDERS_APP_NAME } from "./const";
 import { RemindersPage } from "./page";
@@ -6,21 +7,21 @@ import { NewReminderPage } from "./new-page";
 import { EditReminderPage } from "./edit-page";
 
 const reminderBreadcrumb = {
-  title: "Reminders",
+  title: "reminders.title" as AppsKeys,
   link: "/admin/dashboard/communications/reminders",
 };
 
 export const RemindersApp: App = {
   name: REMINDERS_APP_NAME,
-  displayName: "Customer reminders",
+  displayName: "reminders.displayName",
   scope: ["scheduled"],
   type: "complex",
-  category: ["Notifications"],
+  category: ["categories.notifications"],
   Logo: ({ className }) => <BellRing className={className} />,
   dontAllowMultiple: true,
   // isHidden: true,
   description: {
-    text: "Send appointment reminders to customers.",
+    text: "reminders.description",
   },
   menuItems: [
     {
@@ -29,48 +30,48 @@ export const RemindersApp: App = {
       id: "communications-reminders",
       order: 100,
       notScrollable: true,
-      label: "Reminders",
+      label: "navigation.reminders",
       icon: <BellRing />,
       Page: (props) => <RemindersPage {...props} />,
       pageBreadcrumbs: [reminderBreadcrumb],
-      pageTitle: "Reminders",
-      pageDescription: "Add or update appointment reminders",
+      pageTitle: "reminders.title",
+      pageDescription: "reminders.editDescription",
     },
     {
       href: "communications/reminders/new",
       parent: "communications",
       id: "communications-reminders-new",
       isHidden: true,
-      label: "Reminders",
+      label: "navigation.reminders",
       icon: <BellRing />,
       Page: (props) => <NewReminderPage {...props} />,
       pageBreadcrumbs: [
         reminderBreadcrumb,
         {
-          title: "New reminder",
+          title: "reminders.new",
           link: "/admin/dashboard/communications/reminders/new",
         },
       ],
-      pageTitle: "New reminder",
-      pageDescription: "Create new appointment reminder",
+      pageTitle: "reminders.new",
+      pageDescription: "reminders.newDescription",
     },
     {
       href: "communications/reminders/edit",
       parent: "communications",
       id: "communications-reminders-new",
       isHidden: true,
-      label: "Reminders",
+      label: "navigation.reminders",
       icon: <BellRing />,
       Page: (props) => <EditReminderPage {...props} />,
       pageBreadcrumbs: [
         reminderBreadcrumb,
         {
-          title: "Edit reminder",
+          title: "reminders.edit",
           link: "/admin/dashboard/communications/reminders/edit",
         },
       ],
-      pageTitle: "Edit reminder",
-      pageDescription: "Update appointment reminder",
+      pageTitle: "reminders.edit",
+      pageDescription: "reminders.editDescription",
     },
   ],
   settingsHref: "communications/reminders",

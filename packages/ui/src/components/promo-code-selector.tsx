@@ -2,6 +2,7 @@ import { Discount, WithTotal } from "@vivid/types";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
 import { DateTime } from "luxon";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 
 type PromoCode = Discount & { code: string };
 
@@ -9,6 +10,7 @@ const PromoCodeShortLabel: React.FC<{
   promoCode: PromoCode;
   row?: boolean;
 }> = ({ promoCode, row }) => {
+  const t = useI18n("ui");
   let active = !!promoCode.enabled;
   if (
     promoCode.startDate &&
@@ -33,7 +35,11 @@ const PromoCodeShortLabel: React.FC<{
   ) : (
     <div className="flex flex-col  gap-1 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
       <span>{promoCode.code}</span>
-      {!active && <span className="font-bold uppercase">Not active</span>}
+      {!active && (
+        <span className="font-bold uppercase">
+          {t("promoCodeSelector.notActive")}
+        </span>
+      )}
       <span className="text-xs italic">{promoCode.name}</span>
       <span className="text-sm italic">
         -{promoCode.type === "amount" && "$"}
@@ -83,6 +89,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
   onValueChange,
   allowClear,
 }) => {
+  const t = useI18n("ui");
   const [itemsCache, setItemsCache] = React.useState<Record<string, PromoCode>>(
     {}
   );
@@ -100,7 +107,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
       });
 
       if (response.status >= 400) {
-        toast.error("Request failed.");
+        toast.error(t("common.requestFailed"));
         const text = await response.text();
         console.error(
           `Request to fetch discounts failed: ${response.status}; ${text}`
@@ -141,7 +148,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
         hasMore: page * limit < res.total,
       };
     },
-    [value, setItemsCache]
+    [value, setItemsCache, t]
   );
 
   React.useEffect(() => {
@@ -154,7 +161,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
       onChange={onItemSelect}
       disabled={disabled}
       className={cn("flex font-normal text-base max-w-full", className)}
-      placeholder="Select promo code"
+      placeholder={t("promoCodeSelector.placeholder")}
       value={value}
       allowClear={allowClear}
       fetchItems={getCustomers}

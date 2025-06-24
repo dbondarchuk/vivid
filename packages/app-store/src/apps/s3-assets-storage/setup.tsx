@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -26,6 +27,8 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
   onError,
   appId,
 }) => {
+  const t = useI18n("apps");
+
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<S3Configuration>({
       appId,
@@ -46,13 +49,16 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    S3 region{" "}
+                    {t("s3AssetsStorage.form.region.label")}{" "}
                     <InfoTooltip>
-                      Example: <em>us-east-1</em>
+                      {t("s3AssetsStorage.form.region.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="us-east-1" {...field} />
+                    <Input
+                      placeholder={t("s3AssetsStorage.form.region.placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -63,9 +69,16 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
               name="accessKeyId"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Access key ID</FormLabel>
+                  <FormLabel>
+                    {t("s3AssetsStorage.form.accessKeyId.label")}
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="" {...field} />
+                    <Input
+                      placeholder={t(
+                        "s3AssetsStorage.form.accessKeyId.placeholder"
+                      )}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -76,9 +89,17 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
               name="secretAccessKey"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Secret access key</FormLabel>
+                  <FormLabel>
+                    {t("s3AssetsStorage.form.secretAccessKey.label")}
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="" type="password" {...field} />
+                    <Input
+                      placeholder={t(
+                        "s3AssetsStorage.form.secretAccessKey.placeholder"
+                      )}
+                      type="password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,14 +111,18 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    S3 endpoint{" "}
+                    {t("s3AssetsStorage.form.endpoint.label")}{" "}
                     <InfoTooltip>
-                      <strong>Optional.</strong> Provide the endpoint URL if you
-                      are using non-AWS S3 compatible storage
+                      {t("s3AssetsStorage.form.endpoint.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="" {...field} />
+                    <Input
+                      placeholder={t(
+                        "s3AssetsStorage.form.endpoint.placeholder"
+                      )}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,18 +134,16 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    S3 bucket{" "}
+                    {t("s3AssetsStorage.form.bucket.label")}{" "}
                     <InfoTooltip>
-                      <p>
-                        <strong>Optional.</strong> Provide name of the S3 bucket
-                      </p>
-                      <p>
-                        <strong>Default:</strong> <em>assets</em>
-                      </p>
+                      {t("s3AssetsStorage.form.bucket.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="assets" {...field} />
+                    <Input
+                      placeholder={t("s3AssetsStorage.form.bucket.placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -145,10 +168,9 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
                       htmlFor="forcePathStyle"
                       className="cursor-pointer"
                     >
-                      Force path style{" "}
+                      {t("s3AssetsStorage.form.forcePathStyle.label")}{" "}
                       <InfoTooltip>
-                        Select this option if your S3 provider requires the path
-                        style for objects.
+                        {t("s3AssetsStorage.form.forcePathStyle.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
                   </div>
@@ -162,15 +184,16 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>Connect with</span>
+              <span>{t("s3AssetsStorage.form.connect")}</span>
               <ConnectedAppNameAndLogo
                 app={{ name: S3AssetsStorageApp.name }}
+                t={t}
               />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

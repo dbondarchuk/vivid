@@ -8,7 +8,6 @@ import {
   AlignStartVertical,
 } from "lucide-react";
 import RawSliderInput from "./raw/raw-slider-input";
-import { ResetButton } from "./reset-button";
 
 type TPaddingValue = {
   top: number;

@@ -2,6 +2,7 @@
 
 import { MenuItemCard } from "@/components/admin/menu-item/menu-item-card";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   HeaderConfiguration,
   headerConfigurationSchema,
@@ -37,6 +38,7 @@ const headerShadowValues = Object.keys(headerShadowType.Values).map(
 export const HeaderSettingsForm: React.FC<{
   values: HeaderConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<HeaderConfiguration>({
     resolver: zodResolver(headerConfigurationSchema),
     mode: "all",
@@ -50,8 +52,8 @@ export const HeaderSettingsForm: React.FC<{
     try {
       setLoading(true);
       await toastPromise(updateHeaderConfiguration(data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("appearance.header.form.toasts.changesSaved"),
+        error: t("appearance.header.form.toasts.requestError"),
       });
 
       router.refresh();
@@ -108,10 +110,10 @@ export const HeaderSettingsForm: React.FC<{
                     </FormControl>
                     <div className="flex flex-col gap-2">
                       <FormLabel htmlFor="showLogo" className="cursor-pointer">
-                        Show logo
+                        {t("appearance.header.form.showLogo")}
                       </FormLabel>
                       <FormDescription>
-                        Should be logo showed in header
+                        {t("appearance.header.form.showLogoDescription")}
                       </FormDescription>
                     </div>
                   </div>
@@ -135,10 +137,10 @@ export const HeaderSettingsForm: React.FC<{
                     </FormControl>
                     <div className="flex flex-col gap-2">
                       <FormLabel htmlFor="sticky" className="cursor-pointer">
-                        Sticky header
+                        {t("appearance.header.form.stickyHeader")}
                       </FormLabel>
                       <FormDescription>
-                        Should header move with the page scroll
+                        {t("appearance.header.form.stickyHeaderDescription")}
                       </FormDescription>
                     </div>
                   </div>
@@ -151,14 +153,16 @@ export const HeaderSettingsForm: React.FC<{
               name="shadow"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Header shadow</FormLabel>
+                  <FormLabel>
+                    {t("appearance.header.form.headerShadow")}
+                  </FormLabel>
                   <FormControl>
                     <Combobox
                       allowClear
                       values={headerShadowValues}
                       disabled={loading}
                       className="flex w-full font-normal text-base"
-                      searchLabel="Select shadow type"
+                      searchLabel={t("appearance.header.form.selectShadowType")}
                       value={field.value}
                       onItemSelect={(value) => {
                         field.onChange(value);
@@ -170,7 +174,12 @@ export const HeaderSettingsForm: React.FC<{
               )}
             />
           </div>
-          <Sortable title="Menu" ids={ids} onSort={sort} onAdd={addNew}>
+          <Sortable
+            title={t("appearance.header.form.menu")}
+            ids={ids}
+            onSort={sort}
+            onAdd={addNew}
+          >
             <div className="flex flex-grow flex-col gap-4">
               {fields.map((item, index) => {
                 return (

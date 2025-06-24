@@ -14,7 +14,9 @@ import {
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
 import { DeleteSelectedFollowUpsButton } from "./delete-selected";
-import { CHANNEL_OPTIONS, useFollowUpsTableFilters } from "./use-table-filters";
+import { useFollowUpsTableFilters } from "./use-table-filters";
+import { useI18n } from "@vivid/i18n";
+import { communicationChannels } from "@vivid/types";
 
 export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
   appId,
@@ -29,13 +31,19 @@ export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
     setSearchQuery,
   } = useFollowUpsTableFilters();
   const { rowSelection } = useSelectedRowsStore();
+  const t = useI18n("apps");
+  const tAdmin = useI18n("admin");
+  const tUi = useI18n("ui");
 
   const additionalFilters = (
     <>
       <DataTableFilterBox
         filterKey="channel"
-        title="Channel"
-        options={CHANNEL_OPTIONS}
+        title={t("followUps.table.columns.channel")}
+        options={communicationChannels.map((channel) => ({
+          value: channel,
+          label: tAdmin(`common.labels.channel.${channel}`),
+        }))}
         setFilterValue={setChannelFilter as any}
         filterValue={channelFilter}
       />
@@ -52,7 +60,11 @@ export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
           setPage={setPage}
         />
         <Popover>
-          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+          <PopoverTrigger
+            tooltip={tUi("table.filters")}
+            asChild
+            className="md:hidden"
+          >
             <Button variant="outline">
               <Settings2 size={16} />
             </Button>
@@ -74,7 +86,10 @@ export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
           variant="primary"
           href="/admin/dashboard/communications/follow-ups/new"
         >
-          <Plus size={16} /> <span className="max-md:hidden">Add new</span>
+          <Plus size={16} />{" "}
+          <span className="max-md:hidden">
+            {t("followUps.table.actions.add")}
+          </span>
         </Link>
       </div>
     </div>

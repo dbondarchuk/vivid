@@ -1,5 +1,5 @@
 "use client";
-import { DiscountTypeLabels } from "@/constants/labels";
+import { useI18n } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import { Discount } from "@vivid/types";
 import {
@@ -18,20 +18,26 @@ export const columns: ColumnDef<
 >[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("common.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("common.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -45,32 +51,51 @@ export const columns: ColumnDef<
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("Name", "string"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.name",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (discount) => discount.codes?.join(", "),
     id: "codes",
-    header: "Codes",
+    header: "services.discounts.table.columns.codes",
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (discount) => DiscountTypeLabels[discount.type],
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return t(`common.labels.discountType.${row.original.type}`);
+    },
     id: "type",
-    header: tableSortHeader("Type", "string"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.type",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (discount) =>
       discount.type === "amount" ? `$${discount.value}` : `${discount.value}%`,
     id: "value",
-    header: tableSortHeader("Value", "string"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.value",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (discount) => (discount.enabled ? "Active" : "Disabled"),
     id: "enabled",
-    header: tableSortHeader("Status", "default"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.enabled",
+      "default",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -81,7 +106,11 @@ export const columns: ColumnDef<
           )
         : "",
     id: "startDate",
-    header: tableSortHeader("From", "date"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.startDate",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -92,7 +121,11 @@ export const columns: ColumnDef<
           )
         : "",
     id: "endDate",
-    header: tableSortHeader("To", "date"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.endDate",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -105,7 +138,11 @@ export const columns: ColumnDef<
       </Link>
     ),
     id: "usedCount",
-    header: tableSortHeader("Total usage", "number"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.usedCount",
+      "number",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -114,7 +151,11 @@ export const columns: ColumnDef<
         DateTime.DATETIME_MED
       ),
     id: "updatedAt",
-    header: tableSortHeader("Updated at", "date"),
+    header: tableSortHeader(
+      "services.discounts.table.columns.updatedAt",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {

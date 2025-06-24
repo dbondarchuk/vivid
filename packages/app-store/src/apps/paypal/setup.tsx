@@ -20,6 +20,7 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { PaypalApp } from "./app";
 import {
@@ -29,7 +30,6 @@ import {
   PaypalConfiguration,
   paypalConfigurationSchema,
 } from "./models";
-import { capitalize } from "@vivid/utils";
 
 export const PaypalAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -47,6 +47,8 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
+  const t = useI18n("apps");
+
   return (
     <>
       <Form {...form}>
@@ -57,9 +59,13 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
               name="clientId"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Client ID</FormLabel>
+                  <FormLabel>{t("paypal.form.clientId.label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Client ID" {...field} type="password" />
+                    <Input
+                      placeholder={t("paypal.form.clientId.placeholder")}
+                      {...field}
+                      type="password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -70,10 +76,10 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
               name="secretKey"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Secret key</FormLabel>
+                  <FormLabel>{t("paypal.form.secretKey.label")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Secret key"
+                      placeholder={t("paypal.form.secretKey.placeholder")}
                       {...field}
                       type="password"
                     />
@@ -87,7 +93,9 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
               name="buttonStyle.color"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Paypal button color</FormLabel>
+                  <FormLabel>
+                    {t("paypal.form.buttonStyle.color.label")}
+                  </FormLabel>
                   <FormControl>
                     <Select
                       value={field.value}
@@ -97,12 +105,14 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                       }}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select view" />
+                        <SelectValue
+                          placeholder={t("paypal.form.selectPlaceholder")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {paypalButtonColor.map((color) => (
                           <SelectItem key={color} value={color}>
-                            {capitalize(color)}
+                            {t(`paypal.form.buttonStyle.color.values.${color}`)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -117,7 +127,9 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
               name="buttonStyle.shape"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Paypal button color</FormLabel>
+                  <FormLabel>
+                    {t("paypal.form.buttonStyle.shape.label")}
+                  </FormLabel>
                   <FormControl>
                     <Select
                       value={field.value}
@@ -127,12 +139,14 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                       }}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select view" />
+                        <SelectValue
+                          placeholder={t("paypal.form.selectPlaceholder")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {paypalButtonsShape.map((shape) => (
                           <SelectItem key={shape} value={shape}>
-                            {capitalize(shape)}
+                            {t(`paypal.form.buttonStyle.shape.values.${shape}`)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -147,7 +161,9 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
               name="buttonStyle.layout"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Paypal button layout</FormLabel>
+                  <FormLabel>
+                    {t("paypal.form.buttonStyle.layout.label")}
+                  </FormLabel>
                   <FormControl>
                     <Select
                       value={field.value}
@@ -157,12 +173,16 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                       }}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select view" />
+                        <SelectValue
+                          placeholder={t("paypal.form.selectPlaceholder")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {paypalButtonLayout.map((layout) => (
                           <SelectItem key={layout} value={layout}>
-                            {capitalize(layout)}
+                            {t(
+                              `paypal.form.buttonStyle.layout.values.${layout}`
+                            )}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -177,7 +197,9 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
               name="buttonStyle.label"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Paypal button label</FormLabel>
+                  <FormLabel>
+                    {t("paypal.form.buttonStyle.label.label")}
+                  </FormLabel>
                   <FormControl>
                     <Select
                       value={field.value}
@@ -187,11 +209,17 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                       }}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select view" />
+                        <SelectValue
+                          placeholder={t("paypal.form.selectPlaceholder")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="pay">Pay with PayPal</SelectItem>
-                        <SelectItem value="paypal">PayPal</SelectItem>
+                        <SelectItem value="pay">
+                          {t(`paypal.form.buttonStyle.label.values.pay`)}
+                        </SelectItem>
+                        <SelectItem value="paypal">
+                          {t(`paypal.form.buttonStyle.label.values.paypal`)}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -206,13 +234,13 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>Connect with</span>
-              <ConnectedAppNameAndLogo app={{ name: PaypalApp.name }} />
+              <span>{t("paypal.form.connectWith")}</span>
+              <ConnectedAppNameAndLogo app={{ name: PaypalApp.name }} t={t} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

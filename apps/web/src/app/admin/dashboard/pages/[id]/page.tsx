@@ -5,6 +5,7 @@ import { PageForm } from "../../../../../components/admin/pages/form";
 import { ServicesContainer } from "@vivid/services";
 import { Link } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
+import { getI18nAsync } from "@vivid/i18n";
 import { Globe } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -14,6 +15,7 @@ type Props = {
 
 export default async function EditPagesPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-page");
+  const t = await getI18nAsync("admin");
   const params = await props.params;
 
   logger.debug(
@@ -41,8 +43,8 @@ export default async function EditPagesPage(props: Props) {
   );
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Pages", link: "/admin/dashboard/pages" },
+    { title: t("assets.dashboard"), link: "/admin/dashboard" },
+    { title: t("pages.title"), link: "/admin/dashboard/pages" },
     { title: `/${page.slug}`, link: `/admin/dashboard/pages/${params.id}` },
   ];
 
@@ -52,7 +54,7 @@ export default async function EditPagesPage(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-center justify-between">
-            <Heading title="Edit page" description={`/${page.slug}`} />
+            <Heading title={t("pages.edit")} description={`/${page.slug}`} />
 
             <Link
               button
@@ -60,7 +62,7 @@ export default async function EditPagesPage(props: Props) {
               variant="default"
               target="_blank"
             >
-              <Globe className="mr-2 h-4 w-4" /> View page
+              <Globe className="mr-2 h-4 w-4" /> {t("pages.viewPage")}
             </Link>
           </div>
           {/* <Separator /> */}

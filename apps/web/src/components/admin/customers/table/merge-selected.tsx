@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { CustomerListModel } from "@vivid/types";
 import {
   Button,
@@ -24,6 +25,7 @@ import { deleteSelected, mergeSelected } from "../actions";
 export const MergeSelectedCustomersButton: React.FC<{
   selected: CustomerListModel[];
 }> = ({ selected }) => {
+  const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [targetCustomerId, setTargetCustomerId] = React.useState<string>();
@@ -41,8 +43,8 @@ export const MergeSelectedCustomersButton: React.FC<{
           selected.map((customer) => customer._id)
         ),
         {
-          success: "Selected customers have been deleted",
-          error: "There was a problem with your request.",
+          success: t("customers.table.merge.success"),
+          error: t("customers.table.merge.error"),
         }
       );
 
@@ -64,18 +66,26 @@ export const MergeSelectedCustomersButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Merge className="mr-2 h-4 w-4" />
-          <span>Merge selected {selected.length} customer(s)</span>
+          <span>
+            {t("customers.table.merge.selectedCount", {
+              count: selected.length,
+            })}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Merge selected {selected.length} customer(s)
+            {t("customers.table.merge.selectedCount", {
+              count: selected.length,
+            })}
           </DialogTitle>
-          <DialogDescription>Combine customers information</DialogDescription>
+          <DialogDescription>
+            {t("customers.table.merge.description")}
+          </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 gap-2">
-          <Label>Target customer</Label>
+          <Label>{t("customers.table.merge.targetCustomer")}</Label>
           <CustomerSelector
             onItemSelect={setTargetCustomerId}
             value={targetCustomerId}
@@ -85,7 +95,7 @@ export const MergeSelectedCustomersButton: React.FC<{
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary">
-              Cancel
+              {t("customers.table.merge.cancel")}
             </Button>
           </DialogClose>
           <Button
@@ -94,7 +104,7 @@ export const MergeSelectedCustomersButton: React.FC<{
             disabled={!targetCustomerId}
           >
             {isLoading && <Spinner />}
-            <span>Merge</span>
+            <span>{t("customers.table.merge.confirm")}</span>
           </Button>
         </DialogFooter>
       </DialogContent>

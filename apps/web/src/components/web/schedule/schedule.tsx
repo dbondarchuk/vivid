@@ -11,21 +11,13 @@ import type {
   FieldSchema,
   WithDatabaseId,
 } from "@vivid/types";
-import { ApplyDiscountResponse, Availability, getFields } from "@vivid/types";
+import { ApplyDiscountResponse, Availability } from "@vivid/types";
 import { Spinner, toast } from "@vivid/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { AddonsCard } from "./addons-card";
-import { CalendarCard } from "./calendar-card";
-import { ConfirmationCard } from "./confirmation-card";
-import { DurationCard } from "./duration-card";
-import { FormCard } from "./form-card";
-import { PaymentCard } from "./payment-card";
-import { ScheduleContext, Step, StepType } from "./context";
+import { ScheduleContext, StepType } from "./context";
 import { StepCard } from "./step-card";
-import { fieldSchemaMapper } from "../forms/fields";
-import { ScheduleSteps } from "./steps";
 
 export type ScheduleProps = {
   appointmentOption: AppointmentChoice;

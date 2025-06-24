@@ -1,6 +1,7 @@
 "use client";
 
 import { AppSetupProps } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
 import {
   AppSelector,
   Button,
@@ -28,6 +29,7 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
 
   appId,
 }) => {
+  const t = useI18n("apps");
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<TextBeltConfiguration>({
       appId,
@@ -48,10 +50,16 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    API key <InfoTooltip>TextBelt auth token</InfoTooltip>
+                    {t("textBelt.form.apiKey.label")}{" "}
+                    <InfoTooltip>
+                      {t("textBelt.form.apiKey.tooltip")}
+                    </InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="API key" {...field} />
+                    <Input
+                      placeholder={t("textBelt.form.apiKey.placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -63,13 +71,9 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    Fallback text message responder
+                    {t("textBelt.form.textMessageResponderAppId.label")}
                     <InfoTooltip>
-                      <p>
-                        If not handled by sender, it will be used as default app
-                        to respond to text messages (i.e. auto reply)
-                      </p>
-                      <p>Optional</p>
+                      {t("textBelt.form.textMessageResponderAppId.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -92,13 +96,13 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>Connect with</span>
-              <ConnectedAppNameAndLogo app={{ name: TextBeltApp.name }} />
+              <span>{t("textBelt.form.connect")}</span>
+              <ConnectedAppNameAndLogo app={{ name: TextBeltApp.name }} t={t} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

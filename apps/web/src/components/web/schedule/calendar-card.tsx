@@ -1,5 +1,5 @@
 "use client";
-import type { Availability, DateTime, Time } from "@vivid/types";
+import type { Time } from "@vivid/types";
 
 import React from "react";
 
@@ -7,11 +7,9 @@ import { getTimeZones } from "@vvo/tzdb";
 
 import { Button, Calendar } from "@vivid/ui";
 
-import { withI18n } from "@/i18n/with-i18n";
 import { Combobox, IComboboxItem, formatJsx } from "@vivid/ui";
 import { Globe2Icon } from "lucide-react";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
-import { BaseCard, BaseCardProps, BaseCardState } from "./base-card";
 
 import { fallbackLanguage, useI18n } from "@vivid/i18n";
 import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
@@ -146,10 +144,9 @@ export const CalendarCard: React.FC = () => {
     />
   );
 
-  const timeZoneLabel = formatJsx(
-    i18n("select_timezone_label_format"),
-    timeZoneCombobox
-  );
+  const timeZoneLabel = formatJsx(i18n("select_timezone_label_format"), {
+    timeZoneCombobox,
+  });
 
   let locale = fallbackLanguage;
   if (locale === "en") locale = "enUS";

@@ -1,5 +1,11 @@
 "use client";
 
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { useI18n } from "@vivid/i18n";
+import { CheckIcon } from "lucide-react";
+import { Options } from "nuqs";
+import React from "react";
+import { cn } from "../../utils";
 import { Badge } from "../badge";
 import { Button } from "../button";
 import {
@@ -13,12 +19,6 @@ import {
 } from "../command";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { Separator } from "../separator";
-import { cn } from "../../utils";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { CheckIcon } from "lucide-react";
-import { Options } from "nuqs";
-import React from "react";
-import { template } from "@vivid/utils";
 
 interface FilterOption<T extends boolean | string> {
   value: T;
@@ -44,6 +44,7 @@ export function DataTableFilterBox<T extends boolean | string>({
   setFilterValue,
   filterValue,
 }: FilterBoxProps<T>) {
+  const t = useI18n("ui");
   const selectedValuesSet = React.useMemo(() => {
     if (!filterValue) return new Set<T>();
     return new Set(filterValue.filter((value) => value !== ""));
@@ -82,7 +83,7 @@ export function DataTableFilterBox<T extends boolean | string>({
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {template("{{selected}} selected", {
+                    {t("dataTable.selectedCount", {
                       selected: selectedValuesSet.size,
                     })}
                   </Badge>
@@ -107,7 +108,7 @@ export function DataTableFilterBox<T extends boolean | string>({
         <Command>
           <CommandInput placeholder={title} />
           <CommandList>
-            <CommandEmpty>No results</CommandEmpty>
+            <CommandEmpty>{t("common.noResults")}</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem
@@ -142,7 +143,7 @@ export function DataTableFilterBox<T extends boolean | string>({
                     onSelect={resetFilter}
                     className="justify-center text-center"
                   >
-                    Reset filters
+                    {t("dataTable.resetFilters")}
                   </CommandItem>
                 </CommandGroup>
               </>

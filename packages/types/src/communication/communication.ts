@@ -1,3 +1,4 @@
+import { AppsKeys } from "@vivid/i18n";
 import { AppointmentEntity } from "../booking";
 import { Customer } from "../customers";
 
@@ -24,7 +25,12 @@ export type CommunicationLogEntity = {
   channel: CommunicationChannel;
   participant: string;
   participantType: CommunicationParticipantType;
-  handledBy: string;
+  handledBy:
+    | AppsKeys
+    | {
+        key: AppsKeys;
+        args: Record<string, string>;
+      };
   text: string;
   html?: string;
   subject?: string;

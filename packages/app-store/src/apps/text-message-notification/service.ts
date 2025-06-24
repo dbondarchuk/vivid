@@ -69,13 +69,14 @@ export class TextMessageNotificationConnectedApp
 
         return {
           status: "failed",
-          statusText: "Text message sender default app is not configured",
+          statusText:
+            "textMessageNotification.statusText.text_message_app_not_configured",
         };
       }
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully set up`,
+        statusText: "textMessageNotification.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -97,7 +98,8 @@ export class TextMessageNotificationConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error processing text message notification configuration",
+        statusText:
+          "textMessageNotification.statusText.error_processing_configuration",
       });
 
       throw error;
@@ -168,7 +170,7 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
         },
         appointmentId: appointment._id,
         participantType: "user",
-        handledBy: `Text Message Notification Service - New Appointment`,
+        handledBy: "textMessageNotification.handlers.newRequest",
       });
 
       logger.info(
@@ -184,7 +186,7 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending owner text message notification for new appointment",
+          "textMessageNotification.statusText.error_sending_owner_text_message_notification_for_new_appointment",
       });
 
       throw error;
@@ -272,12 +274,12 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
           body: `Unknown reply`,
           webhookData: reply.data,
           participantType: "user",
-          handledBy: "Text Message Reply - Auto reply",
+          handledBy: "textMessageNotification.handlers.autoReply",
         });
 
         return {
           participantType: "user",
-          handledBy: "Text Message Reply - Auto reply",
+          handledBy: "textMessageNotification.handlers.autoReply",
         };
       }
 
@@ -342,12 +344,12 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
           body: `Unknown reply. Respond Y to confirm, N to decline`,
           webhookData: reply.data,
           participantType: "user",
-          handledBy: "Text Message Reply - Auto reply",
+          handledBy: "textMessageNotification.handlers.autoReply",
         });
 
         return {
           participantType: "user",
-          handledBy: "Text Message Reply - Auto reply",
+          handledBy: "textMessageNotification.handlers.autoReply",
         };
       }
     } catch (error: any) {
@@ -362,7 +364,8 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
 
       this.props.update({
         status: "failed",
-        statusText: "Error processing text message reply",
+        statusText:
+          "textMessageNotification.statusText.error_processing_text_message_reply",
       });
 
       throw error;
@@ -417,7 +420,7 @@ Thank you`;
         body: responseBody,
         webhookData: reply.data,
         participantType: "user",
-        handledBy: "Text Message Reply - Auto reply",
+        handledBy: "textMessageNotification.handlers.autoReply",
       });
 
       logger.info(
@@ -427,7 +430,7 @@ Thank you`;
 
       return {
         participantType: "user",
-        handledBy: "Text Message Reply - Auto reply",
+        handledBy: "textMessageNotification.handlers.autoReply",
       };
     } catch (error: any) {
       logger.error(

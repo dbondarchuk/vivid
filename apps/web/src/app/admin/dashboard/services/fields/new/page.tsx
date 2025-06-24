@@ -1,17 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { ServiceFieldForm } from "@/components/admin/services/fields/form";
+import { getI18nAsync } from "@vivid/i18n";
 import { ServicesContainer } from "@vivid/services";
 import { ServiceFieldUpdateModel } from "@vivid/types";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
-
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Services", link: "/admin/dashboard/services" },
-  { title: "Fields", link: "/admin/dashboard/services/fields" },
-  { title: "New", link: "/admin/dashboard/services/fields/new" },
-];
 
 type Props = {
   searchParams: Promise<{ from?: string }>;
@@ -19,6 +13,7 @@ type Props = {
 
 export default async function NewServicePage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("new-service-field");
+  const t = await getI18nAsync("admin");
   const { from } = await props.searchParams;
 
   logger.debug(
@@ -27,6 +22,16 @@ export default async function NewServicePage(props: Props) {
     },
     "Loading new service field page"
   );
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    { title: t("navigation.fields"), link: "/admin/dashboard/services/fields" },
+    {
+      title: t("services.fields.new"),
+      link: "/admin/dashboard/services/fields/new",
+    },
+  ];
 
   let initialData: ServiceFieldUpdateModel | undefined = undefined;
   if (from) {
@@ -63,8 +68,8 @@ export default async function NewServicePage(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="New service field"
-            description="Add new custom field"
+            title={t("services.fields.newTitle")}
+            description={t("services.fields.newDescription")}
           />
           {/* <Separator /> */}
         </div>

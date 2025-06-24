@@ -2,6 +2,7 @@
 
 import { ResourcesCard } from "@/components/admin/resource/resources-card";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   colors as colorOverrides,
   ColorOverrideSchema,
@@ -72,6 +73,7 @@ const customFontSearch = (search: string) => {
 export const StylingsConfigurationForm: React.FC<{
   values: StylingConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<StylingConfiguration>({
     resolver: zodResolver(stylingConfigurationSchema),
     mode: "all",
@@ -94,8 +96,8 @@ export const StylingsConfigurationForm: React.FC<{
           ...data,
         }),
         {
-          success: "Your changes were saved.",
-          error: "There was a problem with your request.",
+          success: t("appearance.styling.form.toasts.changesSaved"),
+          error: t("appearance.styling.form.toasts.requestError"),
         }
       );
 
@@ -138,14 +140,16 @@ export const StylingsConfigurationForm: React.FC<{
               name="fonts.primary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Primary font</FormLabel>
+                  <FormLabel>
+                    {t("appearance.styling.form.primaryFont")}
+                  </FormLabel>
                   <FormControl>
                     <Combobox
                       allowClear
                       values={fonts}
                       disabled={loading}
                       className="flex w-full font-normal text-base"
-                      searchLabel="Select font"
+                      searchLabel={t("appearance.styling.form.selectFont")}
                       value={field.value}
                       onItemSelect={(value) => {
                         field.onChange(value);
@@ -162,13 +166,15 @@ export const StylingsConfigurationForm: React.FC<{
               name="fonts.secondary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Secondary font</FormLabel>
+                  <FormLabel>
+                    {t("appearance.styling.form.secondaryFont")}
+                  </FormLabel>
                   <FormControl>
                     <Combobox
                       values={fonts}
                       disabled={loading}
                       className="flex w-full font-normal text-base"
-                      searchLabel="Select font"
+                      searchLabel={t("appearance.styling.form.selectFont")}
                       value={field.value}
                       allowClear
                       onItemSelect={(value) => {
@@ -186,14 +192,16 @@ export const StylingsConfigurationForm: React.FC<{
               name="fonts.tertiary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tertiary font</FormLabel>
+                  <FormLabel>
+                    {t("appearance.styling.form.tertiaryFont")}
+                  </FormLabel>
                   <FormControl>
                     <Combobox
                       allowClear
                       values={fonts}
                       disabled={loading}
                       className="flex w-full font-normal text-base"
-                      searchLabel="Select font"
+                      searchLabel={t("appearance.styling.form.selectFont")}
                       value={field.value}
                       onItemSelect={(value) => {
                         field.onChange(value);
@@ -207,7 +215,7 @@ export const StylingsConfigurationForm: React.FC<{
             />
           </div>
           <NonSortable
-            title="Color overrides"
+            title={t("appearance.styling.form.colorOverrides")}
             ids={colorsIds}
             onAdd={addNewColor}
           >
@@ -229,9 +237,12 @@ export const StylingsConfigurationForm: React.FC<{
                           (!type || hasMultipleTypes) && "text-destructive"
                         )}
                       >
-                        {colorsLabels[type] || "Invalid field"}
+                        {colorsLabels[type] ||
+                          t("appearance.styling.form.invalidField")}
                         {hasMultipleTypes && (
-                          <span className="text-sm">Duplicate type</span>
+                          <span className="text-sm">
+                            {t("appearance.styling.form.duplicateType")}
+                          </span>
                         )}
                       </div>
                       <div className="flex flex-row gap-2">
@@ -243,7 +254,7 @@ export const StylingsConfigurationForm: React.FC<{
                               className=""
                               size="sm"
                               type="button"
-                              title="Remove"
+                              title={t("appearance.styling.form.remove")}
                             >
                               <Trash size={20} />
                             </Button>
@@ -251,18 +262,23 @@ export const StylingsConfigurationForm: React.FC<{
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>
-                                Are you absolutely sure?
+                                {t(
+                                  "appearance.styling.form.deleteConfirmTitle"
+                                )}
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure that you want to remove this color
-                                override?
+                                {t(
+                                  "appearance.styling.form.deleteConfirmDescription"
+                                )}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogCancel>
+                                {t("appearance.styling.form.cancel")}
+                              </AlertDialogCancel>
                               <AlertDialogAction asChild variant="destructive">
                                 <Button onClick={() => removeColor(index)}>
-                                  Delete
+                                  {t("appearance.styling.form.delete")}
                                 </Button>
                               </AlertDialogAction>
                             </AlertDialogFooter>
@@ -276,7 +292,9 @@ export const StylingsConfigurationForm: React.FC<{
                         name={`colors.${index}.type`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Type</FormLabel>
+                            <FormLabel>
+                              {t("appearance.styling.form.type")}
+                            </FormLabel>
                             <FormControl>
                               <Combobox
                                 disabled={loading}
@@ -285,7 +303,9 @@ export const StylingsConfigurationForm: React.FC<{
                                   value: color,
                                   label: colorsLabels[color],
                                 }))}
-                                searchLabel="Select color override type"
+                                searchLabel={t(
+                                  "appearance.styling.form.selectColorOverrideType"
+                                )}
                                 value={field.value}
                                 onItemSelect={field.onChange}
                               />
@@ -299,9 +319,9 @@ export const StylingsConfigurationForm: React.FC<{
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>
-                              Color{" "}
+                              {t("appearance.styling.form.color")}{" "}
                               <InfoTooltip>
-                                Color in CSS format (HEX, rgb, rgba, hsl)
+                                {t("appearance.styling.form.colorTooltip")}
                               </InfoTooltip>
                             </FormLabel>
                             <FormControl>
@@ -325,7 +345,7 @@ export const StylingsConfigurationForm: React.FC<{
             type="css"
             form={form}
             name="css"
-            title="Aditional CSS"
+            title={t("appearance.styling.form.additionalCss")}
             loading={loading}
           />
         </div>

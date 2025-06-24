@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,6 +59,7 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
   isOverlay,
   remove,
 }) => {
+  const t = useI18n("admin");
   const {
     setNodeRef,
     attributes,
@@ -109,7 +111,9 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
         className="h-auto cursor-grab p-1 text-secondary-foreground/50"
       >
         <></>
-        <span className="sr-only">Move {type} field</span>
+        <span className="sr-only">
+          {t("services.fieldSelectCard.moveField", { type })}
+        </span>
         <GripVertical />
       </Button>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 flex-grow w-full">
@@ -118,7 +122,7 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
           name={`${name}.id`}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Field</FormLabel>
+              <FormLabel>{t("services.fieldSelectCard.field")}</FormLabel>
 
               <FormControl>
                 <FieldSelector
@@ -139,8 +143,10 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>
-                Required{" "}
-                <InfoTooltip>Marks field as to be required</InfoTooltip>
+                {t("services.fieldSelectCard.required")}{" "}
+                <InfoTooltip>
+                  {t("services.fieldSelectCard.requiredTooltip")}
+                </InfoTooltip>
               </FormLabel>
               <FormControl>
                 <div className="!mt-4">
@@ -169,15 +175,23 @@ export const FieldSelectCard: React.FC<FieldSelectProps> = ({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>
+                {t("services.fieldSelectCard.deleteConfirmTitle")}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to remove this field from this {type}?
+                {t("services.fieldSelectCard.deleteConfirmDescription", {
+                  type,
+                })}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>
+                {t("services.fieldSelectCard.cancel")}
+              </AlertDialogCancel>
               <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>Delete</Button>
+                <Button onClick={remove}>
+                  {t("services.fieldSelectCard.delete")}
+                </Button>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

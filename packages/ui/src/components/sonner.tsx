@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
+import { useI18n } from "@vivid/i18n";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -32,8 +33,9 @@ async function toastPromise<T>(
   promise: Promise<T>,
   data: Parameters<typeof toast.promise<T>>[1]
 ): Promise<T> {
+  const t = useI18n("ui");
   toast.promise(promise, {
-    loading: "Loading...",
+    loading: t("loading.loading"),
     ...(data || {}),
   });
 

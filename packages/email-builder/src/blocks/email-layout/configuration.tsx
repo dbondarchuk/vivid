@@ -7,6 +7,7 @@ import {
   SliderInput,
   TextInput,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { SquareRoundCorner } from "lucide-react";
 import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
 import { EmailLayoutProps } from "./schema";
@@ -15,23 +16,24 @@ export const EmailLayoutConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<EmailLayoutProps>) => {
+  const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as EmailLayoutProps);
 
   return (
     <>
       <ColorInput
-        label="Backdrop color"
+        label={t("emailBuilder.blocks.emailLayout.backdropColor")}
         defaultValue={data.backdropColor ?? "#F5F5F5"}
         onChange={(backdropColor) => updateData({ ...data, backdropColor })}
       />
       <ColorInput
-        label="Canvas color"
+        label={t("emailBuilder.blocks.emailLayout.canvasColor")}
         defaultValue={data.canvasColor ?? "#FFFFFF"}
         onChange={(canvasColor) => updateData({ ...data, canvasColor })}
       />
       <ColorInput
         nullable
-        label="Canvas border color"
+        label={t("emailBuilder.blocks.emailLayout.canvasBorderColor")}
         defaultValue={data.borderColor ?? null}
         onChange={(borderColor) => updateData({ ...data, borderColor })}
       />
@@ -41,7 +43,7 @@ export const EmailLayoutConfiguration = ({
         step={4}
         min={0}
         max={48}
-        label="Canvas border radius"
+        label={t("emailBuilder.blocks.emailLayout.canvasBorderRadius")}
         defaultValue={data.borderRadius ?? 0}
         onChange={(borderRadius) => updateData({ ...data, borderRadius })}
       />
@@ -55,12 +57,12 @@ export const EmailLayoutConfiguration = ({
         }))}
       />
       <ColorInput
-        label="Text color"
+        label={t("emailBuilder.blocks.emailLayout.textColor")}
         defaultValue={data.textColor ?? "#262626"}
         onChange={(textColor) => updateData({ ...data, textColor })}
       />
       <TextInput
-        label="Preview text"
+        label={t("emailBuilder.blocks.emailLayout.previewText")}
         defaultValue={data.previewText || ""}
         rows={5}
         onChange={(previewText) => updateData({ ...data, previewText })}

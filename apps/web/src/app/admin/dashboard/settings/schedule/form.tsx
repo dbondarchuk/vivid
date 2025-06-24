@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   ScheduleConfiguration,
   scheduleConfigurationSchema,
@@ -24,6 +25,7 @@ export type ScheduleSettingsFormProps = {
 export const ScheduleSettingsForm: React.FC<ScheduleSettingsFormProps> = ({
   values,
 }) => {
+  const t = useI18n("admin");
   const form = useForm<ScheduleConfiguration>({
     resolver: zodResolver(scheduleConfigurationSchema),
     mode: "all",
@@ -38,8 +40,8 @@ export const ScheduleSettingsForm: React.FC<ScheduleSettingsFormProps> = ({
     try {
       setLoading(true);
       await toastPromise(updateScheduleConfiguration(data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("settings.schedule.form.toasts.changesSaved"),
+        error: t("settings.schedule.form.toasts.requestError"),
       });
       router.refresh();
     } catch (error: any) {

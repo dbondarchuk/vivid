@@ -3,6 +3,7 @@ import React from "react";
 import { cn } from "../utils";
 import { Combobox, IComboboxItem } from "./combobox";
 import { toast } from "sonner";
+import { useI18n } from "@vivid/i18n";
 
 const getTemplates = async (type: string) => {
   const url = `/admin/api/templates?type=${encodeURIComponent(type)}&limit=10000000`;
@@ -12,13 +13,11 @@ const getTemplates = async (type: string) => {
   });
 
   if (response.status >= 400) {
-    toast.error("Request failed.");
     const text = await response.text();
-    console.error(
-      `Request to fetch templates failed: ${response.status}; ${text}`
-    );
+    const message = `Request to fetch templates failed: ${response.status}; ${text}`;
+    console.error(message);
 
-    return [];
+    throw new Error(message);
   }
 
   return (await response.json()) as TemplateListModel[];
@@ -57,6 +56,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
   onItemSelect,
   allowClear,
 }) => {
+  const t = useI18n("ui");
   const [templates, setTemplates] = React.useState<TemplateListModel[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -66,6 +66,10 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         setIsLoading(true);
         const templates = await getTemplates(type);
         setTemplates(templates);
+      } catch (error) {
+        console.error(error);
+        toast.error(t("templateSelector.requestFailed"));
+        setTemplates([]);
       } finally {
         setIsLoading(false);
       }
@@ -90,7 +94,11 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
       values={templateValues(templates)}
-      searchLabel={isLoading ? "Loading templates..." : "Select template"}
+      searchLabel={
+        isLoading
+          ? t("templateSelector.loadingTemplates")
+          : t("templateSelector.placeholder")
+      }
       value={value}
       customSearch={(search) =>
         templateValues(
