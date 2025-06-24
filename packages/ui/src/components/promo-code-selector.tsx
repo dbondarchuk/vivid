@@ -107,7 +107,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
       });
 
       if (response.status >= 400) {
-        toast.error(t("common.requestFailed"));
+        toast.error(t("promoCodeSelector.requestFailed"));
         const text = await response.text();
         console.error(
           `Request to fetch discounts failed: ${response.status}; ${text}`

@@ -96,7 +96,7 @@ export function BasicDataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {t("table.noResults")}
+                  {t("common.noResults")}
                 </TableCell>
               </TableRow>
             )}

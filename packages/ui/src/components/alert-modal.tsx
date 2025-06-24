@@ -46,7 +46,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
     >
       <div className="flex w-full items-center justify-end space-x-2 pt-6">
         <Button disabled={loading} variant="outline" onClick={onClose}>
-          {cancelButton || t("alertModal.cancelButton")}
+          {cancelButton || t("common.cancel")}
         </Button>
         <Button
           disabled={loading}

@@ -329,10 +329,10 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                               variant="outline"
                               onClick={handleCancelEdit}
                             >
-                              {t("scheduler.cancel")}
+                              {t("common.cancel")}
                             </Button>
                             <Button size="sm" onClick={handleSaveEdit}>
-                              {t("scheduler.save")}
+                              {t("common.save")}
                             </Button>
                           </div>
                         </div>
@@ -423,7 +423,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                           variant="outline"
                           onClick={handleCancelNewShift}
                         >
-                          {t("scheduler.cancel")}
+                          {t("common.cancel")}
                         </Button>
                         <Button size="sm" onClick={handleSaveNewShift}>
                           {addShiftLabel ?? t("scheduler.addShift")}

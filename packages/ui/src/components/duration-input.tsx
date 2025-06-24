@@ -169,9 +169,9 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           value={duration?.hours}
           onChange={handleHoursChange}
           variant="ghost"
-          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0 "
-          aria-label={t("durationInput.hours")}
-          name={name ? `${name}.hours` : undefined}
+          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+          aria-label={t("common.hours")}
+          name={name ? `${name}.hours` : "hours"}
           onKeyDown={(e) => handleKeyDown(e, "hours")}
           {...rest}
           ref={hoursRef}
@@ -190,9 +190,9 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           min={0}
           max={59}
           variant="ghost"
-          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0 "
-          aria-label={t("durationInput.minutes")}
-          name={name ? `${name}.minutes` : undefined}
+          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+          aria-label={t("common.minutes")}
+          name={name ? `${name}.minutes` : "minutes"}
           {...rest}
           ref={minutesRef}
         />

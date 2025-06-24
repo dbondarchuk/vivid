@@ -8,7 +8,12 @@
     "move": "Move",
     "search": "Search",
     "noResults": "No results found",
-    "requestFailed": "Request failed."
+    "requestFailed": "Request has failed.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "placeholder": "Select option",
+    "hours": "Hours",
+    "minutes": "Minutes"
   },
   "actions": {
     "delete": "Delete",
@@ -16,25 +21,23 @@
     "label": "Actions"
   },
   "table": {
-    "noResults": "No results",
     "filters": "Filters"
   },
   "booleanSelect": {
     "yes": "Yes",
-    "no": "No",
-    "placeholder": "Select option"
+    "no": "No"
   },
   "multiSelect": {
     "placeholder": "Select options"
   },
   "templateSelector": {
     "placeholder": "Select template",
-    "requestFailed": "Request to fetch templates failed",
+    "requestFailed": "Request to fetch templates has failed",
     "loadingTemplates": "Loading templates..."
   },
   "customerSelector": {
     "placeholder": "Select customer",
-    "requestFailed": "Request to fetch customers failed"
+    "requestFailed": "Request to fetch customers has failed"
   },
   "assetSelector": {
     "title": "Select asset",
@@ -42,13 +45,13 @@
   },
   "promoCodeSelector": {
     "placeholder": "Select promo code",
-    "notActive": "Not active"
+    "notActive": "Not active",
+    "requestFailed": "Request to fetch promo codes has failed"
   },
   "alertModal": {
     "defaultTitle": "Are you sure?",
     "defaultDescription": "This action cannot be undone.",
-    "continueButton": "Continue",
-    "cancelButton": "Cancel"
+    "continueButton": "Continue"
   },
   "saveButton": {
     "defaultText": "Save",
@@ -61,8 +64,6 @@
   "form": {
     "submit": "Submit",
     "reset": "Reset",
-    "save": "Save",
-    "cancel": "Cancel",
     "confirm": "Confirm",
     "back": "Back",
     "next": "Next",
@@ -115,8 +116,6 @@
     "toggleSidebar": "Toggle Sidebar"
   },
   "durationInput": {
-    "hours": "Hours",
-    "minutes": "Minutes",
     "hr": "hr",
     "min": "min"
   },
@@ -125,7 +124,6 @@
     "selectedRows": "{{selected}} of {{total}} row(s) selected.",
     "previous": "Previous",
     "next": "Next",
-    "noResults": "No results",
     "rowsPerPage": "Rows per page",
     "showingEntries": "Showing {{start}} to {{end}} of {{total}} entries",
     "noEntriesFound": "No entries found",
@@ -159,14 +157,10 @@
     "shifts": "{{count}} shifts",
     "startTime": "Start Time",
     "endTime": "End Time",
-    "cancel": "Cancel",
-    "save": "Save",
     "edit": "Edit",
     "addShift": "Add Shift"
   },
   "timePicker": {
-    "hours": "Hours",
-    "minutes": "Minutes",
     "seconds": "Seconds",
     "am": "AM",
     "pm": "PM"

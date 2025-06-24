@@ -54,7 +54,7 @@ export function TimePicker({
     <div className="flex items-end gap-2">
       <div className="grid gap-1 text-center">
         <Label htmlFor="hours" className="text-xs">
-          {t("timePicker.hours")}
+          {t("common.hours")}
         </Label>
         <TimePickerInput
           picker="12hours"
@@ -67,7 +67,7 @@ export function TimePicker({
       </div>
       <div className="grid gap-1 text-center">
         <Label htmlFor="minutes" className="text-xs">
-          {t("timePicker.minutes")}
+          {t("common.minutes")}
         </Label>
         <TimePickerInput
           picker="minutes"

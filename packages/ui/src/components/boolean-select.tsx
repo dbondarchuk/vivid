@@ -29,7 +29,7 @@ export const BooleanSelect: React.FC<BooleanSelectProps> = ({
 
   const defaultTrueLabel = t("booleanSelect.yes");
   const defaultFalseLabel = t("booleanSelect.no");
-  const defaultPlaceholder = t("booleanSelect.placeholder");
+  const defaultPlaceholder = t("common.placeholder");
 
   return (
     <Select
