@@ -5,7 +5,7 @@ import {
 } from "@/components/admin/services/addons/table/search-params";
 import { AddonsTable } from "@/components/admin/services/addons/table/table";
 import { AddonsTableAction } from "@/components/admin/services/addons/table/table-action";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,

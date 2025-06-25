@@ -112,6 +112,7 @@
         "size": "Size",
         "style": "Style",
         "textColor": "Text color",
+        "buttonColor": "Button color",
         "backgroundColor": "Background color",
         "widths": {
           "auto": "Auto",

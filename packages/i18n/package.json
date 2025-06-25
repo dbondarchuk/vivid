@@ -10,7 +10,8 @@
     "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts"
   },
   "devDependencies": {
     "@vivid/eslint-config": "*",

@@ -29,13 +29,17 @@ const SonnerToaster = ({ ...props }: ToasterProps) => {
   );
 };
 
+const LoadingToast = () => {
+  const t = useI18n("ui");
+  return t("loading.loading");
+};
+
 async function toastPromise<T>(
   promise: Promise<T>,
   data: Parameters<typeof toast.promise<T>>[1]
 ): Promise<T> {
-  const t = useI18n("ui");
   toast.promise(promise, {
-    loading: t("loading.loading"),
+    loading: <LoadingToast />,
     ...(data || {}),
   });
 

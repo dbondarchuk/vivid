@@ -10,7 +10,7 @@ import {
   TabsList,
 } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 import {

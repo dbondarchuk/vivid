@@ -1,9 +1,5 @@
 import { InitOptions } from "i18next";
-
-export const fallbackLanguage = "en" as const;
-export const languages = [fallbackLanguage, "uk"];
-export const defaultNamespace = "translation" as const;
-export const cookieName = "i18next";
+import { defaultNamespace, fallbackLanguage, languages } from "./types";
 
 export function getOptions(
   language = fallbackLanguage,

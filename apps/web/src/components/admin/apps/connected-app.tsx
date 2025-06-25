@@ -1,5 +1,5 @@
 import { AvailableApps } from "@vivid/app-store";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ConnectedApp } from "@vivid/types";
 import {
   Button,

@@ -3,7 +3,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import React from "react";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

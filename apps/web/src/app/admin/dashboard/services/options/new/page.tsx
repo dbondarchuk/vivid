@@ -1,6 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { OptionForm } from "@/components/admin/services/options/form";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentOptionUpdateModel } from "@vivid/types";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";

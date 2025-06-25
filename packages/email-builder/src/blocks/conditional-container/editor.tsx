@@ -28,10 +28,13 @@ export const ConditionalContainerEditor = ({
       <div className="mb-2 text-muted-foreground text-xs w-full">
         {formatJsx(
           t(
-            "emailBuilder.blocks.conditionalContainer.ifConditionIsCorrectFormat"
+            "emailBuilder.blocks.conditionalContainer.ifConditionIsCorrectFormat",
+            false
           ),
           {
-            condition,
+            condition:
+              condition ||
+              t("emailBuilder.blocks.conditionalContainer.condition"),
           }
         )}
       </div>

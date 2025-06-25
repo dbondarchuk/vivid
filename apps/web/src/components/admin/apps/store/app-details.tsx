@@ -17,7 +17,7 @@ import React from "react";
 import { AddOrUpdateAppButton } from "../add-or-update-app-dialog";
 import { getInstalledApps } from "./actions";
 import { InstallComplexAppButton } from "./install-complex-app-button";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export type AppDetailsProps = {
   appName: string;

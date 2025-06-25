@@ -1,6 +1,6 @@
 import { TemplateForm } from "@/components/admin/templates/form";
 import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { CommunicationChannel, Template } from "@vivid/types";
 import { Breadcrumbs } from "@vivid/ui";

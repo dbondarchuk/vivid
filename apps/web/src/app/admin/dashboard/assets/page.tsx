@@ -6,7 +6,7 @@ import {
 import { AssetsTable } from "@/components/admin/assets/table/table";
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { Upload } from "lucide-react";

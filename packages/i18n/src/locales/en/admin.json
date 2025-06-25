@@ -98,7 +98,8 @@
     "busyEvents": "Busy events",
     "smtp": "SMTP",
     "textBelt": "TextBelt SMS",
-    "weeklySchedule": "Weekly schedule"
+    "weeklySchedule": "Weekly schedule",
+    "viewWebsite": "View website"
   },
   "appointments": {
     "title": "Appointments",
@@ -380,7 +381,7 @@
         "viewMore": "View more",
         "view": "View",
         "close": "Close",
-        "logContent": "Log content",
+        "logContent": "Message content",
         "logData": "Log data"
       },
       "filters": {
@@ -1097,6 +1098,7 @@
         "logo": "Logo",
         "logoTooltip": "URL to image to be used as logo (for example in header)",
         "logoPlaceholder": "Logo URL",
+        "language": "Language",
         "favicon": "Favicon",
         "faviconTooltip": "URL to image to be used as favicon (icon that is shown in browser tab)",
         "faviconPlaceholder": "Favicon URL",
@@ -1360,7 +1362,7 @@
   },
   "communications": {
     "viewMore": "View more",
-    "logContent": "Log content",
+    "logContent": "Message content",
     "handler": "Handler: {{handler}}",
     "data": "Data",
     "logData": "Log data",

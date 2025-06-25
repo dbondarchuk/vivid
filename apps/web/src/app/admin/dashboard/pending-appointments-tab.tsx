@@ -3,7 +3,7 @@ import { ServicesContainer } from "@vivid/services";
 import { Card, CardContent, CardHeader } from "@vivid/ui";
 import { DateTime } from "luxon";
 import React from "react";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export const PendingAppointmentsTab: React.FC = async () => {
   const t = await getI18nAsync("admin");

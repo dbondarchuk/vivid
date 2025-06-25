@@ -2,7 +2,7 @@ import { CustomerForm } from "@/components/admin/customers/form";
 import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 type Props = {
   searchParams: Promise<{ from?: string }>;

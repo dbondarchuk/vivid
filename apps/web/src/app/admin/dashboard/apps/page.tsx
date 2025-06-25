@@ -4,7 +4,7 @@ import { getLoggerFactory } from "@vivid/logger";
 import { Boxes, Store } from "lucide-react";
 import { Suspense } from "react";
 import { InstalledApps } from "./installed-apps";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

@@ -120,7 +120,7 @@ export const ButtonToolbar = (props: ConfigurationProps<ButtonProps>) => {
         icon={<PaintbrushVertical />}
         defaultValue={ButtonPropsDefaults.props.buttonBackgroundColor}
         property="props.buttonBackgroundColor"
-        tooltip={t("emailBuilder.blocks.button.backgroundColor")}
+        tooltip={t("emailBuilder.blocks.button.buttonColor")}
         {...props}
       />
       <ToolbarColorMenu

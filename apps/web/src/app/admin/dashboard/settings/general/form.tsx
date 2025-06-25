@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n } from "@vivid/i18n";
+import { Language, languages, useI18n } from "@vivid/i18n";
 import { GeneralConfiguration, generalConfigurationSchema } from "@vivid/types";
 import {
   Form,
@@ -18,12 +18,18 @@ import {
   TagInput,
   Textarea,
   toastPromise,
+  Combobox,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { updateGeneralConfiguration } from "./actions";
+
+const languageOptions: Record<Language, string> = {
+  en: "English",
+  uk: "Українська",
+};
 
 export const GeneralSettingsForm: React.FC<{
   values: GeneralConfiguration;
@@ -272,6 +278,31 @@ export const GeneralSettingsForm: React.FC<{
                     disabled={loading}
                     placeholder={t("settings.general.form.faviconPlaceholder")}
                     accept="image/*"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="language"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("settings.general.form.language")}</FormLabel>
+                <FormControl>
+                  <Combobox
+                    values={languages.map((language) => ({
+                      label: languageOptions[language],
+                      value: language,
+                    }))}
+                    className="w-full"
+                    value={field.value}
+                    onItemSelect={(val) => {
+                      field.onChange(val);
+                      field.onBlur();
+                    }}
+                    disabled={loading}
                   />
                 </FormControl>
                 <FormMessage />

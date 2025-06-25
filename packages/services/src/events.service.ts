@@ -784,6 +784,8 @@ export class EventsService implements IEventsService {
       "Appointment status changed"
     );
 
+    appointment.status = newStatus;
+
     const hooks =
       await this.appsService.getAppsByScopeWithData("appointment-hook");
 

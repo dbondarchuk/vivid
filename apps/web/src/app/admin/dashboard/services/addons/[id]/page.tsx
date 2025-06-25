@@ -2,7 +2,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 
 import { AddonForm } from "@/components/admin/services/addons/form";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";

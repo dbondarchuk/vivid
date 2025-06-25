@@ -22,7 +22,10 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
     <div className="w-full">
       <div className="mb-2 text-muted-foreground text-xs w-full">
         {formatJsx(
-          t("emailBuilder.blocks.foreachContainer.forEachItemInValueFormat"),
+          t(
+            "emailBuilder.blocks.foreachContainer.forEachItemInValueFormat",
+            false
+          ),
           {
             item: <em>_item</em>,
             value: value || t("emailBuilder.blocks.foreachContainer.value"),

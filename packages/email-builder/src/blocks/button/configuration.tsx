@@ -108,7 +108,7 @@ export const ButtonConfiguration = ({
         }
       />
       <ColorInput
-        label={t("emailBuilder.blocks.button.backgroundColor")}
+        label={t("emailBuilder.blocks.button.buttonColor")}
         defaultValue={buttonBackgroundColor}
         onChange={(buttonBackgroundColor) =>
           updateData({

@@ -101,7 +101,7 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
                         })
                       }
                     >
-                      {icon} {displayName}
+                      {icon} {t(displayName)}
                     </CommandItem>
                   ))}
                 </CommandGroup>

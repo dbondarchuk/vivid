@@ -3,13 +3,10 @@ import { Globe2 } from "lucide-react";
 import { BreadcrumbsRender } from "./breadcrumbs";
 import ThemeToggle from "./theme-toggle/theme-toggle";
 import { UserNav } from "./user-nav";
+import { getI18nAsync } from "@vivid/i18n/server";
 
-export default function Header({}: {}) {
-  const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Settings", link: "/admin/dashboard" },
-    { title: "Appointments", link: "/admin/dashboard/settings/appointments" },
-  ];
+export default async function Header({}: {}) {
+  const t = await getI18nAsync("admin");
 
   return (
     <header className="sticky inset-x-0 top-0 w-full">
@@ -33,7 +30,9 @@ export default function Header({}: {}) {
             className="inline-flex items-center gap-1"
           >
             <Globe2 size={16} />{" "}
-            <span className="hidden md:inline">View website</span>
+            <span className="hidden md:inline">
+              {t("navigation.viewWebsite")}
+            </span>
           </Link>
         </div>
       </nav>

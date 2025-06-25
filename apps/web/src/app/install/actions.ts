@@ -7,6 +7,7 @@ import {
   FOLLOW_UPS_APP_NAME,
   REMINDERS_APP_NAME,
 } from "@vivid/app-store";
+import { fallbackLanguage } from "@vivid/i18n";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { DateTime } from "luxon";
@@ -26,6 +27,7 @@ export async function install(data: InstallFormData) {
       ...data,
       description: "",
       keywords: "",
+      language: fallbackLanguage,
     });
 
     logger.info("Creating home page");

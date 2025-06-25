@@ -15,23 +15,8 @@ import {
 } from "@vivid/utils";
 import { EmailNotificationConfiguration } from "./models";
 
-import { template } from "@vivid/utils";
-import autoConfirmedTemplate from "./emails/en/appointment-auto-confirmed.html";
-import confirmedTemplate from "./emails/en/appointment-confirmed.html";
-import pendingTemplate from "./emails/en/appointment-created.html";
-import declinedTemplate from "./emails/en/appointment-declined.html";
-import rescheduledTemplate from "./emails/en/appointment-rescheduled.html";
-
-const emailTemplates: Record<
-  keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
-  string
-> = {
-  confirmed: confirmedTemplate,
-  declined: declinedTemplate,
-  pending: pendingTemplate,
-  rescheduled: rescheduledTemplate,
-  "auto-confirmed": autoConfirmedTemplate,
-};
+import { renderUserEmailTemplate } from "@vivid/email-builder/static";
+import { UserEmailTemplates } from "./emails";
 
 export class EmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -294,7 +279,35 @@ export class EmailNotificationConnectedApp
 
       const data = appData.data as EmailNotificationConfiguration;
 
-      const description = template(emailTemplates[status], args);
+      const template = UserEmailTemplates["en"][status];
+      const description = await renderUserEmailTemplate(
+        {
+          ...template,
+          topButtons: [
+            {
+              text: "View Appointment",
+              url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}`,
+            },
+          ],
+          bottomButtons: [
+            appointment.status != "declined"
+              ? {
+                  text: "Decline",
+                  url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}/decline`,
+                  backgroundColor: "#FF0000",
+                }
+              : undefined,
+            appointment.status === "pending"
+              ? {
+                  text: "Confirm",
+                  url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}/confirm`,
+                  backgroundColor: "#0008FF",
+                }
+              : undefined,
+          ],
+        },
+        args
+      );
 
       logger.debug(
         {

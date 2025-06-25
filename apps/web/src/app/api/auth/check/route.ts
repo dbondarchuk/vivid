@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     "Checking credentials"
   );
 
-  const { name, email } =
+  const { name, email, language } =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   if (
@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
       id: "1",
       name,
       email,
+      language,
     });
   }
 

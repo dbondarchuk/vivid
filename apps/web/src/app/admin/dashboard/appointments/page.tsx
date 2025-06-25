@@ -6,7 +6,7 @@ import {
 import { AppointmentsTable } from "@/components/admin/appointments/table/table";
 import { AppointmentsTableAction } from "@/components/admin/appointments/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { CalendarClock } from "lucide-react";

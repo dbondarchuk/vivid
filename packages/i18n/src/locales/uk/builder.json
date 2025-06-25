@@ -1,0 +1,234 @@
+{
+  "baseBuilder": {
+    "inspector": {
+      "configurationPanel": {
+        "title": "Конфігурація",
+        "clickOnBlockToInspect": "Клікніть на блок для інспекції."
+      },
+      "styles": "Стилі",
+      "inspect": "Інспектувати",
+      "stylesPanel": {
+        "blockNotFound": "Блок не знайдено"
+      }
+    },
+    "builderToolbar": {
+      "undo": "Скасувати (⌘+Z)",
+      "redo": "Повторити (⌘+⇧+Z)",
+      "moveUp": "Перемістити вибраний блок вгору",
+      "moveDown": "Перемістити вибраний блок вниз",
+      "clone": "Клонувати вибраний блок",
+      "delete": "Видалити вибраний блок",
+      "desktopView": "Вид для комп'ютера",
+      "mobileView": "Вид для мобільного",
+      "errors": "У документі є {{count}} проблема(и)",
+      "preview": "Попередній перегляд",
+      "context": "Переглянути контекст",
+      "contextValues": "Значення контексту",
+      "contextValuesDescription": "Значення контексту - це значення, які доступні для шаблону. Це значення, які передаються в шаблон при його відображенні.",
+      "toggleSidebar": "Перемкнути панель бічної панелі",
+      "copied": "Скопійовано",
+      "copyPath": "Скопіювати шлях"
+    },
+    "navMenu": {
+      "moveUp": "Перемістити вгору",
+      "moveDown": "Перемістити вниз",
+      "clone": "Клонувати",
+      "delete": "Видалити"
+    },
+    "searchBlocks": "Пошук блоків..."
+  },
+  "emailBuilder": {
+    "common": {
+      "validation": {
+        "borderRadius": "Радіус рамки повинен бути цілим числом і більше 0",
+        "fontSize": "Розмір шрифту повинен бути цілим числом і більше 0"
+      },
+      "styleInputs": {
+        "backgroundColor": "Колір фону",
+        "borderColor": "Колір рамки",
+        "borderRadius": "Радіус рамки",
+        "color": "Колір тексту",
+        "fontFamily": "Сімейство шрифтів",
+        "fontSize": "Розмір шрифту",
+        "fontWeight": "Товщина шрифту",
+        "padding": "Внутрішній відступ",
+        "textAlign": "Вирівнювання тексту"
+      },
+      "toolbars": {
+        "contentAlignment": {
+          "label": "Вирівнювання контенту",
+          "top": "Вгорі",
+          "middle": "По центру",
+          "bottom": "Внизу"
+        },
+        "fontFamily": {
+          "label": "Сімейство шрифтів",
+          "inherit": "Успадкувати"
+        },
+        "fontSize": {
+          "label": "Розмір шрифту"
+        },
+        "fontWeight": {
+          "label": "Товщина шрифту",
+          "normal": "Звичайний",
+          "bold": "Жирний"
+        },
+        "textAlign": {
+          "label": "Вирівнювання тексту",
+          "left": "Ліворуч",
+          "center": "По центру",
+          "right": "Праворуч"
+        }
+      }
+    },
+    "blocks": {
+      "categories": {
+        "images": "Зображення",
+        "text": "Текст",
+        "dividers": "Розділювачі",
+        "containers": "Контейнери",
+        "layout": "Макет"
+      },
+      "avatar": {
+        "displayName": "Аватар",
+        "size": "Розмір",
+        "shape": "Форма",
+        "imageUrl": "URL зображення",
+        "alt": "Альтернативний текст",
+        "shapes": {
+          "circle": "Коло",
+          "square": "Квадрат",
+          "rounded": "Закруглений"
+        },
+        "validation": {
+          "size": "Розмір повинен бути цілим числом і більше 0"
+        }
+      },
+      "button": {
+        "displayName": "Кнопка",
+        "text": "Текст",
+        "url": "URL",
+        "width": "Ширина",
+        "size": "Розмір",
+        "style": "Стиль",
+        "textColor": "Колір тексту",
+        "buttonColor": "Колір кнопки",
+        "backgroundColor": "Колір фону",
+        "widths": {
+          "auto": "Авто",
+          "full": "Повна ширина"
+        },
+        "sizes": {
+          "x-small": "Дуже малий",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий"
+        },
+        "styles": {
+          "rectangle": "Прямокутник",
+          "rounded": "Закруглений",
+          "pill": "Пілюля"
+        }
+      },
+      "columnsContainer": {
+        "displayName": "Контейнер колонок",
+        "numberOfColumns": "Кількість колонок",
+        "columnsGap": "Проміжок між колонками",
+        "alignment": "Вирівнювання",
+        "backgroundColor": "Колір фону",
+        "columns": "Колонки",
+        "column1": "Колонка 1",
+        "column2": "Колонка 2",
+        "column3": "Колонка 3",
+        "alignments": {
+          "top": "Вгорі",
+          "middle": "По центру",
+          "bottom": "Внизу"
+        },
+        "columnCounts": {
+          "2": "2 Колонки",
+          "3": "3 Колонки"
+        }
+      },
+      "conditionalContainer": {
+        "displayName": "Умовний контейнер",
+        "condition": "Умова",
+        "ifConditionIsCorrectFormat": "Якщо умова {{condition}} правильна, тоді",
+        "otherwise": "Інакше",
+        "value": "значення"
+      },
+      "container": {
+        "displayName": "Контейнер",
+        "backgroundColor": "Колір фону",
+        "borderColor": "Колір рамки"
+      },
+      "foreachContainer": {
+        "displayName": "Контейнер циклу",
+        "forEachItemInValueFormat": "Для кожного {{item}} в {{value}}",
+        "value": "Значення"
+      },
+      "divider": {
+        "displayName": "Розділювач",
+        "color": "Колір",
+        "height": "Висота",
+        "lineColor": "Колір лінії",
+        "lineHeight": "Висота лінії",
+        "backgroundColor": "Колір фону"
+      },
+      "emailLayout": {
+        "displayName": "Макет Email",
+        "backdropColor": "Колір фону",
+        "canvasColor": "Колір полотна",
+        "canvasBorderColor": "Колір рамки полотна",
+        "canvasBorderRadius": "Радіус рамки полотна",
+        "textColor": "Колір тексту",
+        "previewText": "Текст попереднього перегляду",
+        "fontFamily": "Сімейство шрифтів",
+        "borderColor": "Колір рамки",
+        "inherit": "Успадкувати"
+      },
+      "heading": {
+        "displayName": "Заголовок",
+        "content": "Контент",
+        "level": "Рівень",
+        "h1": "H1",
+        "h2": "H2",
+        "h3": "H3",
+        "textColor": "Колір тексту",
+        "backgroundColor": "Колір фону"
+      },
+      "image": {
+        "displayName": "Зображення",
+        "imageUrl": "URL зображення",
+        "altText": "Альтернативний текст",
+        "clickThroughUrl": "URL для переходу",
+        "size": "Розмір",
+        "position": "Позиція",
+        "alignment": "Вирівнювання",
+        "top": "Вгорі",
+        "middle": "По центру",
+        "bottom": "Внизу",
+        "backgroundColor": "Колір фону",
+        "validation": {
+          "width": "Ширина повинна бути цілим числом і більше 0",
+          "height": "Висота повинна бути цілим числом і більше 0",
+          "x": "Позиція X повинна бути між 0 і 100",
+          "y": "Позиція Y повинна бути між 0 і 100"
+        }
+      },
+      "spacer": {
+        "displayName": "Відступ",
+        "height": "Висота",
+        "backgroundColor": "Колір фону",
+        "validation": {
+          "height": "Висота повинна бути більше 0"
+        }
+      },
+      "text": {
+        "displayName": "Текст",
+        "textColor": "Колір тексту",
+        "backgroundColor": "Колір фону"
+      }
+    }
+  }
+}

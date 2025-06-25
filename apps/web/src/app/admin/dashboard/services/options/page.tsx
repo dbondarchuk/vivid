@@ -5,7 +5,7 @@ import {
 } from "@/components/admin/services/options/table/search-params";
 import { OptionsTable } from "@/components/admin/services/options/table/table";
 import { OptionsTableAction } from "@/components/admin/services/options/table/table-action";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,

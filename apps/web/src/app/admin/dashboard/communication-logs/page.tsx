@@ -7,7 +7,7 @@ import { CommunicationLogsTable } from "@/components/admin/communication-logs/ta
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
 import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { Breadcrumbs, DataTableSkeleton, Heading } from "@vivid/ui";
 import { Suspense } from "react";
 

@@ -210,7 +210,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                 )}
               </h3>
               <p className="text-sm text-gray-600">
-                {getPaymentDescription(description)}
+                {t(getPaymentDescription(description))}
               </p>
             </div>
           </div>

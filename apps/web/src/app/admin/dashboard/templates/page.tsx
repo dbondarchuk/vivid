@@ -6,7 +6,7 @@ import {
 } from "@/components/admin/templates/table/search-params";
 import { TemplatesTable } from "@/components/admin/templates/table/table";
 import { TemplatesTableAction } from "@/components/admin/templates/table/table-action";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading } from "@vivid/ui";
 import { Suspense } from "react";

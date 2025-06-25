@@ -14,7 +14,7 @@ import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
 import { PendingAppointmentsBadge } from "./pending-appointments-toast-stream";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 const breadcrumbItems = [{ title: "Dashboard", link: "/admin/dashboard" }];
 

@@ -1,5 +1,6 @@
 import React from "react";
-import { I18nFn, I18nNamespaces, useI18n } from "./i18n";
+import { useI18n } from "./i18n";
+import { I18nFn, I18nNamespaces } from "./types";
 
 export interface IWithI18nProps<T extends I18nNamespaces> {
   i18n: I18nFn<T>;

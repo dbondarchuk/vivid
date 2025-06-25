@@ -5,7 +5,7 @@ import { PageForm } from "../../../../../components/admin/pages/form";
 import { ServicesContainer } from "@vivid/services";
 import { Link } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { Globe } from "lucide-react";
 import { notFound } from "next/navigation";
 

@@ -121,7 +121,7 @@ export default async function RootLayout({
 
   return (
     <CookiesProvider>
-      <html lang="en" className="scroll-smooth">
+      <html lang={general.language} className="scroll-smooth">
         <head>
           <style
             dangerouslySetInnerHTML={{

@@ -1,6 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { AddonForm } from "@/components/admin/services/addons/form";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentAddonUpdateModel } from "@vivid/types";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";

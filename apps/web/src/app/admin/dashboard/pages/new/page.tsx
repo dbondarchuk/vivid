@@ -2,7 +2,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { PageForm } from "@/components/admin/pages/form";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export default async function NewPagesPage() {
   const logger = getLoggerFactory("AdminPages")("new-page");

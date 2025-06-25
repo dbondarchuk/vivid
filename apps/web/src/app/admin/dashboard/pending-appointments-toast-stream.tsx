@@ -35,6 +35,10 @@ export const PendingAppointmentsToastStream: React.FC = () => {
   const router = useRouter();
   const t = useI18n("admin");
 
+  const viewLabelKey = "dashboard.appointments.view";
+  const viewLabel = t(viewLabelKey);
+  const pendingToast = t("dashboard.appointments.pendingToast", { count });
+
   React.useEffect(() => {
     // Create an EventSource to listen to SSE events
     const eventSource = new EventSource("/admin/api/events/pending");
@@ -57,10 +61,10 @@ export const PendingAppointmentsToastStream: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-    if (count > 0) {
-      toast(t("dashboard.appointments.pendingToast", { count }), {
+    if (count > 0 && viewLabel !== viewLabelKey) {
+      toast(pendingToast, {
         action: {
-          label: t("dashboard.appointments.view"),
+          label: viewLabel,
           onClick: () => {
             router.push(
               `/admin/dashboard?activeTab=appointments&key=${Date.now()}`
@@ -69,7 +73,7 @@ export const PendingAppointmentsToastStream: React.FC = () => {
         },
       });
     }
-  }, [count]);
+  }, [count, router, pendingToast, viewLabel]);
 
   return null;
 };

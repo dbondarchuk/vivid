@@ -1,6 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { DiscountForm } from "@/components/admin/services/discounts/form";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { DiscountUpdateModel } from "@vivid/types";
 import { Breadcrumbs, Heading } from "@vivid/ui";

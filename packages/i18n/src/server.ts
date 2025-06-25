@@ -42,3 +42,21 @@
 //     i18n: i18nextInstance,
 //   };
 // };
+
+import { fallbackLanguage, I18nFn, I18nNamespaces } from "./types";
+import { i18nFunction } from "./utils";
+
+import { headers } from "next/headers";
+
+export const getI18nAsync = async <T extends I18nNamespaces>(
+  namespace: T = "translation" as T,
+  language?: string
+): Promise<I18nFn<T>> => {
+  if (!language) {
+    const headersList = await headers();
+    language = headersList.get("x-language") || fallbackLanguage;
+  }
+
+  const translations = await import(`./locales/${language}/${namespace}.json`);
+  return i18nFunction(translations);
+};

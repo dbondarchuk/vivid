@@ -6,7 +6,7 @@ import {
 } from "@/components/admin/pages/table/search-params";
 import { PagesTable } from "@/components/admin/pages/table/table";
 import { PagesTableAction } from "@/components/admin/pages/table/table-action";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { Plus } from "lucide-react";

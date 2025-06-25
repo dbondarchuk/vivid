@@ -5,7 +5,7 @@ import {
 } from "@/components/admin/services/fields/table/search-params";
 import { FieldsTable } from "@/components/admin/services/fields/table/table";
 import { FieldsTableAction } from "@/components/admin/services/fields/table/table-action";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,

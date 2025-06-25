@@ -6,7 +6,7 @@ import {
 } from "@/components/admin/services/discounts/table/search-params";
 import { DiscountsTable } from "@/components/admin/services/discounts/table/table";
 import { DiscountsTableAction } from "@/components/admin/services/discounts/table/table-action";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,

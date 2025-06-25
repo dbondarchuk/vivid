@@ -1,7 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { TemplateTemplates } from "@/components/admin/templates/templates";
 import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { CommunicationChannel } from "@vivid/types";
 import { Heading, Skeleton } from "@vivid/ui";

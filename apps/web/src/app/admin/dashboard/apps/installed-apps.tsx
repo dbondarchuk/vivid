@@ -2,7 +2,7 @@ import { ConnectedAppRow } from "@/components/admin/apps/connected-app";
 import { AvailableApps } from "@vivid/app-store";
 import { ServicesContainer } from "@vivid/services";
 import React from "react";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export const InstalledApps: React.FC = async () => {
   const t = await getI18nAsync("admin");

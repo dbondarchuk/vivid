@@ -13,7 +13,7 @@ import {
   Separator,
 } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { Plus } from "lucide-react";
 import { Suspense } from "react";
 import { CustomersTableColumnLength } from "@/components/admin/customers/table/columns";

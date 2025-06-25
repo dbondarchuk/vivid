@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { I18nFn, useI18n } from "@vivid/i18n";
 import { AppointmentStatus, okStatus } from "@vivid/types";
 import { Button, ButtonProps, cn, Spinner, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
@@ -10,12 +10,12 @@ import { changeAppointmentStatus } from "./actions";
 export const changeStatus = async (
   _id: string,
   status: AppointmentStatus,
+  t: I18nFn<"admin">,
   setIsLoading: (isLoading: boolean) => void,
   refresh: () => void,
   onSuccess?: (newStatus: AppointmentStatus) => void,
   beforeRequest?: () => Promise<void> | void
 ) => {
-  const t = useI18n("admin");
   setIsLoading(true);
 
   const fn = async () => {
@@ -65,10 +65,13 @@ export const AppointmentActionButton = React.forwardRef<
     const [isLoading, setIsLoading] = React.useState(false);
     const router = useRouter();
 
+    const t = useI18n("admin");
+
     const onClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
       await changeStatus(
         _id,
         status,
+        t,
         setIsLoading,
         router.refresh,
         (newStatus) => {

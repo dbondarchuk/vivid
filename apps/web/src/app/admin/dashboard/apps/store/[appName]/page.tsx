@@ -3,7 +3,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { AvailableApps } from "@vivid/app-store";
 import { Breadcrumbs } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 type Params = {
   params: Promise<{ appName: string }>;
