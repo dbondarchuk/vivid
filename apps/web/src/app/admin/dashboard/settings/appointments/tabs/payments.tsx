@@ -152,7 +152,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
               />
               <FormField
                 control={form.control}
-                name="payments.dontRequireIfMoreThanAppointments"
+                name="payments.dontRequireIfCompletedMinNumberOfAppointments"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>

@@ -122,6 +122,10 @@ export const getAppointmentEventAndIsPaymentRequired = async (
         config.payments?.enable && "depositPercentage" in config.payments
           ? config.payments.depositPercentage
           : undefined,
+      dontRequireIfCompletedMinNumberOfAppointments:
+        config.payments?.enable && config.payments.requireDeposit
+          ? config.payments.dontRequireIfCompletedMinNumberOfAppointments
+          : undefined,
     },
     "Retrieved booking configuration"
   );
@@ -165,9 +169,9 @@ export const getAppointmentEventAndIsPaymentRequired = async (
       config.payments.requireDeposit &&
       "depositPercentage" in config.payments &&
       config.payments.depositPercentage &&
-      config.payments.dontRequireIfMoreThanAppointments &&
-      customersPriorAppointmentsCount >
-        config.payments.dontRequireIfMoreThanAppointments
+      config.payments.dontRequireIfCompletedMinNumberOfAppointments &&
+      customersPriorAppointmentsCount >=
+        config.payments.dontRequireIfCompletedMinNumberOfAppointments
     ) {
       logger.debug(
         {

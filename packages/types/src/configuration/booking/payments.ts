@@ -22,7 +22,7 @@ export const paymentsConfigurationSchema = z
           .int("Must be a number between 10 and 100")
           .min(10, "Must be a number between 10 and 100")
           .max(100, "Must be a number between 10 and 100"),
-        dontRequireIfMoreThanAppointments: asOptinalNumberField(
+        dontRequireIfCompletedMinNumberOfAppointments: asOptinalNumberField(
           z.coerce
             .number({ message: "Must be at least 1" })
             .int("Must be at least 1")

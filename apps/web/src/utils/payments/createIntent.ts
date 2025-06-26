@@ -65,13 +65,12 @@ export const createOrUpdateIntent = async (
   }
 
   if (!isPaymentRequired.isPaymentRequired) {
-    if (!isPaymentRequired) {
-      logger.debug({ appointmentRequest }, "payment is not required");
-      return NextResponse.json(null);
-    }
+    logger.debug({ appointmentRequest }, "payment is not required");
 
     return NextResponse.json(null);
   }
+
+  logger.debug({ ...isPaymentRequired, intentId }, "Payment is required.");
 
   const { amount, percentage, appId, customer } = isPaymentRequired;
 
