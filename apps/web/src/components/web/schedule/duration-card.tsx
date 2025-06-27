@@ -7,7 +7,7 @@ import { useScheduleContext } from "./context";
 const durations = [15, 30, 45, 60, 90, 120];
 
 export const DurationCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { setDuration, duration } = useScheduleContext();
 
   return (

@@ -1,12 +1,12 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
 import { AppointmentCalendar } from "@/components/admin/appointments/appointment-calendar";
 import {
   fieldSchemaMapper,
   fieldsComponentMap,
 } from "@/components/web/forms/fields";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   Appointment,
   AppointmentAddon,
@@ -47,17 +47,14 @@ import {
   Spinner,
   Textarea,
   toastPromise,
+  use12HourFormat,
 } from "@vivid/ui";
-import {
-  formatAmount,
-  getDiscountAmount,
-  is12hourUserTimeFormat,
-} from "@vivid/utils";
+import { formatAmount, getDiscountAmount } from "@vivid/utils";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm, useFormState, Field as UseFormField } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { createAppointment } from "./actions";
 
@@ -475,6 +472,8 @@ export const AppointmentScheduleForm: React.FC<
     }
   };
 
+  const uses12HourFormat = use12HourFormat();
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -536,7 +535,7 @@ export const AppointmentScheduleForm: React.FC<
                     <FormLabel>{t("appointments.form.dateTime")}</FormLabel>
                     <FormControl>
                       <DateTimePicker
-                        use12HourFormat={is12hourUserTimeFormat()}
+                        use12HourFormat={uses12HourFormat}
                         disabled={loading}
                         commitOnChange
                         min={new Date()}

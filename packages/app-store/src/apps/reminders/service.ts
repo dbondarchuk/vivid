@@ -764,6 +764,7 @@ export default class RemindersConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       const channel = reminder.channel;

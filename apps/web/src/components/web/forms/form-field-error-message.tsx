@@ -6,7 +6,7 @@ export const FormFieldErrorMessage = React.forwardRef<
   HTMLParagraphElement,
   Exclude<React.HTMLAttributes<HTMLParagraphElement>, "children">
 >(({ className, ...props }, ref) => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { error, formMessageId } = useFormField();
   const body = error?.message;
 

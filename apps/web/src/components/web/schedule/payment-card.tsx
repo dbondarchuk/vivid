@@ -10,7 +10,7 @@ import { useScheduleContext } from "./context";
 import { formatAmountString } from "@vivid/utils";
 
 export const PaymentCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const {
     appointmentOption,
     selectedAddons,

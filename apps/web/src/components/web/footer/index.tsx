@@ -6,6 +6,7 @@ import { cn } from "@vivid/ui";
 import { MenuItem } from "@vivid/types";
 import { MdxContent } from "../mdx/mdx-content";
 import { ServicesContainer } from "@vivid/services";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 const DefaultFooter: React.FC<{
   links: MenuItem[];
@@ -17,6 +18,8 @@ const DefaultFooter: React.FC<{
 
   const { links: socialLinks } =
     await configurationService.getConfiguration("social");
+
+  const t = await getI18nAsync("translation");
 
   const getLink = () => {
     return links.map((item) => {
@@ -113,14 +116,14 @@ const DefaultFooter: React.FC<{
         <div className="flex flex-col md:flex-row justify-between gap-4">
           <div className="flex flex-col gap-10 flex-grow">
             <h3 className="font-secondary text-4xl font-normal">
-              {contactUsLabel || "Contact us"}
+              {contactUsLabel || t("footer.contactUsLabel")}
             </h3>
             <div className="flex flex-col gap-4 w-full">
               <div className="flex flex-col gap-4 w-full">
                 {phone && (
                   <div>
                     <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
-                      Phone
+                      {t("footer.phone")}
                     </h2>
                     <p className="mt-1 font-thin">
                       <Link href={`tel:${phone}`}>{phone}</Link>
@@ -129,7 +132,7 @@ const DefaultFooter: React.FC<{
                 )}
                 <div>
                   <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
-                    Email
+                    {t("footer.email")}
                   </h2>
                   <p className="mt-1 font-thin">
                     <Link href={`mailto:${email}`}>{email}</Link>
@@ -138,7 +141,7 @@ const DefaultFooter: React.FC<{
                 {address && (
                   <div>
                     <h2 className="font-secondary font-semibold tracking-widest text-sm uppercase">
-                      Address
+                      {t("footer.address")}
                     </h2>
                     <p className="mt-1 font-thin">
                       <Link

@@ -20,7 +20,8 @@
       "delete": "Delete selected block",
       "desktopView": "Desktop view",
       "mobileView": "Mobile view",
-      "errors": "There are {{count}} issue(s) in the document",
+      "errors": "There are {count, plural, =1 {1 issue} other {# issues}} in the document",
+      "noErrors": "Awesome! No issues found!",
       "preview": "Preview",
       "context": "View context",
       "contextValues": "Context values",
@@ -153,7 +154,7 @@
       "conditionalContainer": {
         "displayName": "Conditional Container",
         "condition": "Condition",
-        "ifConditionIsCorrectFormat": "If condition {{condition}} is correct, then",
+        "ifConditionIsCorrectFormat": "If condition {condition} is correct, then",
         "otherwise": "Otherwise",
         "value": "value"
       },
@@ -164,7 +165,7 @@
       },
       "foreachContainer": {
         "displayName": "Loop Container",
-        "forEachItemInValueFormat": "For each {{item}} in {{value}}",
+        "forEachItemInValueFormat": "For each <item></item> in {value}",
         "value": "Value"
       },
       "divider": {

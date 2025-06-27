@@ -1,5 +1,5 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   Checkbox,
@@ -74,10 +74,13 @@ export const columns: ColumnDef<Reminder>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) =>
-      DateTime.fromJSDate(field.updatedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
     header: tableSortHeader(
       "reminders.table.columns.updatedAt",

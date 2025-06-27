@@ -1,14 +1,16 @@
 "use client";
 
+import { LanguageOptions } from "@/constants/texts";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n } from "@vivid/i18n";
 import { Editor } from "@monaco-editor/react";
+import { Language, languages, useI18n } from "@vivid/i18n";
 import {
   getPageSchemaWithUniqueCheck,
   Page,
   pageTagSchema,
 } from "@vivid/types";
 import {
+  Combobox,
   DateTimePicker,
   Form,
   FormControl,
@@ -24,16 +26,17 @@ import {
   TagInput,
   Textarea,
   toastPromise,
+  use12HourFormat,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
-import { is12hourUserTimeFormat } from "@vivid/utils";
 
 export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const t = useI18n("admin");
+  const uses12HourFormat = use12HourFormat();
 
   const formSchema = getPageSchemaWithUniqueCheck(
     (slug) => checkUniqueSlug(slug, initialData?._id),
@@ -66,6 +69,10 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       setLoading(true);
 
       const fn = async () => {
+        if (data.language === ("default" as Language)) {
+          data.language = undefined;
+        }
+
         if (!initialData) {
           const { _id } = await createPage(data);
           router.push(`/admin/dashboard/pages/${_id}`);
@@ -184,7 +191,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                   </FormLabel>
                   <FormControl>
                     <DateTimePicker
-                      use12HourFormat={is12hourUserTimeFormat()}
+                      use12HourFormat={uses12HourFormat}
                       onChange={(e) => {
                         field.onChange(e);
                         field.onBlur();
@@ -387,6 +394,37 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="language"
+              render={({ field }) => (
+                <FormItem className="mb-2">
+                  <FormLabel>{t("pages.form.language")}</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      values={[
+                        {
+                          label: t("pages.form.defaultLanguage"),
+                          value: "default",
+                        },
+                        ...languages.map((language) => ({
+                          label: LanguageOptions[language],
+                          value: language,
+                        })),
+                      ]}
+                      className="w-full"
+                      value={field.value || "default"}
+                      onItemSelect={(val) => {
+                        field.onChange(val === "default" ? undefined : val);
+                        field.onBlur();
+                      }}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

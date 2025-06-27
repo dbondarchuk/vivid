@@ -1,6 +1,5 @@
-import { getI18nAsync, useI18n } from "@vivid/i18n";
+import { getI18nAsync, getLocale } from "@vivid/i18n/server";
 import type { Appointment } from "@vivid/types";
-import { StatusText } from "@vivid/types";
 import {
   Button,
   Card,
@@ -37,6 +36,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = async ({
   timeZone = "local",
 }) => {
   const t = await getI18nAsync("admin");
+  const locale = await getLocale();
   const duration = durationToTime(appointment.totalDuration);
 
   return (
@@ -79,7 +79,9 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = async ({
             <dt className="flex self-center items-center gap-1">
               <CheckCircle size={16} /> {t("appointments.card.status")}:
             </dt>
-            <dd className="col-span-2">{StatusText[appointment.status]}</dd>
+            <dd className="col-span-2">
+              {t(`appointments.status.${appointment.status}`)}
+            </dd>
           </div>
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
             <dt className="flex self-center items-center gap-1">
@@ -88,7 +90,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = async ({
             <dd className="col-span-2">
               {DateTime.fromJSDate(appointment.dateTime, {
                 zone: timeZone,
-              }).toLocaleString(DateTime.DATETIME_SHORT)}
+              }).toLocaleString(DateTime.DATETIME_SHORT, { locale })}
             </dd>
           </div>
           <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">
@@ -118,7 +120,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = async ({
                 zone: timeZone,
               })
                 .plus({ minutes: appointment.totalDuration })
-                .toLocaleString(DateTime.DATETIME_SHORT)}
+                .toLocaleString(DateTime.DATETIME_SHORT, { locale })}
             </dd>
           </div>
           {appointment.totalPrice && (

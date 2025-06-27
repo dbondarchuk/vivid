@@ -127,6 +127,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { ScrollArea } from "../scroll-area";
 import { SimpleTimePicker } from "./simple-time-picker";
 import { DateTime } from "luxon";
+import { Language, useLocale } from "@vivid/i18n";
 
 export type DateTimeCalendarProps = Omit<
   React.ComponentProps<typeof DayPicker>,
@@ -209,6 +210,8 @@ export type DateTimePickerProps = {
   commitOnChange?: boolean;
   /** If present, only show minutes that are divisible by this number */
   minutesDivisibleBy?: number;
+
+  locale?: string;
 };
 
 export type DateTimeRenderTriggerProps = {
@@ -238,6 +241,8 @@ export function DateTimePicker({
   minutesDivisibleBy,
   ...props
 }: DateTimePickerProps & DateTimeCalendarProps) {
+  const locale = useLocale();
+
   const [open, setOpen] = useState(false);
   const [monthYearPicker, setMonthYearPicker] = useState<
     "month" | "year" | false
@@ -331,9 +336,10 @@ export function DateTimePicker({
     const secondsFormat = showSeconds ? ":ss" : "";
 
     return displayValue.toFormat(
-      `${!hideTime ? "MMM" : "MMMM"} d, yyyy${!hideTime ? (use12HourFormat ? ` hh:mm${secondsFormat} a` : ` HH:mm${secondsFormat}`) : ""}`
+      `${!hideTime ? "MMM" : "MMMM"} d, yyyy${!hideTime ? (use12HourFormat ? ` hh:mm${secondsFormat} a` : ` HH:mm${secondsFormat}`) : ""}`,
+      { locale }
     );
-  }, [displayValue, hideTime, use12HourFormat, showSeconds]);
+  }, [displayValue, hideTime, use12HourFormat, showSeconds, locale]);
 
   const onTimeChanged = useCallback(
     (date: Date) => {
@@ -405,7 +411,7 @@ export function DateTimePicker({
                   )
                 }
               >
-                {month.toFormat("MMMM")}
+                {month.toFormat("MMMM", { locale })}
               </span>
               <span
                 className="ms-1"
@@ -415,7 +421,7 @@ export function DateTimePicker({
                   )
                 }
               >
-                {month.toFormat("yyyy")}
+                {month.toFormat("yyyy", { locale })}
               </span>
             </div>
             <Button
@@ -505,6 +511,7 @@ export function DateTimePicker({
               "absolute top-0 left-0 bottom-0 right-0",
               monthYearPicker ? "" : "hidden"
             )}
+            locale={locale}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -550,6 +557,7 @@ function MonthYearPicker({
   mode = "month",
   onChange,
   className,
+  locale,
 }: {
   value: DateTime;
   mode: "month" | "year";
@@ -557,6 +565,7 @@ function MonthYearPicker({
   maxDate?: DateTime;
   onChange: (value: DateTime, mode: "month" | "year") => void;
   className?: string;
+  locale: string;
 }) {
   const yearRef = useRef<HTMLDivElement>(null);
   const years = useMemo(() => {
@@ -584,12 +593,12 @@ function MonthYearPicker({
 
       months.push({
         value: i,
-        label: DateTime.fromObject({ month: i }).toFormat("MMM"),
+        label: DateTime.fromObject({ month: i }).toFormat("MMM", { locale }),
         disabled,
       });
     }
     return months;
-  }, [value]);
+  }, [value, locale]);
 
   const onYearChange = useCallback(
     (v: TimeOption) => {

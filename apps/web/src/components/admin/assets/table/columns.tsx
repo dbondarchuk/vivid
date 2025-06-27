@@ -1,6 +1,6 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { Asset } from "@vivid/types";
 import {
   AssetPreview,
@@ -151,10 +151,13 @@ export const columns: ColumnDef<Asset>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (asset) =>
-      DateTime.fromJSDate(asset.uploadedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.uploadedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "uploadedAt",
     header: tableSortHeader("assets.table.columns.uploadTime", "date", "admin"),
     sortingFn: tableSortNoopFunction,

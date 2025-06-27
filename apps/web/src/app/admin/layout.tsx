@@ -3,9 +3,9 @@ import { SonnerToaster, Toaster } from "@vivid/ui";
 import type { Metadata } from "next";
 import { Inter, Montserrat, Playfair_Display } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import { headers } from "next/headers";
 import "./globals.css";
-import { fallbackLanguage } from "@vivid/i18n";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -31,21 +31,22 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const language = headersList.get("x-language") || fallbackLanguage;
+  const locale = await getLocale();
 
   return (
-    <html lang={language} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${montserrat.variable} ${playfair.variable} ${inter.className} overflow-hidden `}
         suppressHydrationWarning={true}
       >
-        <NextTopLoader showSpinner={false} color="hsl(var(--primary))" />
-        <Providers session={undefined}>
-          <Toaster />
-          <SonnerToaster />
-          {children}
-        </Providers>
+        <NextIntlClientProvider>
+          <NextTopLoader showSpinner={false} color="hsl(var(--primary))" />
+          <Providers session={undefined}>
+            <Toaster />
+            <SonnerToaster />
+            {children}
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

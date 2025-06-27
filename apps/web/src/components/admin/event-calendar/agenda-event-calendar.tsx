@@ -1,11 +1,6 @@
+import { useI18n, useLocale } from "@vivid/i18n";
 import { Button, cn, ScrollArea } from "@vivid/ui";
-import {
-  durationToTime,
-  formatTimeLocale,
-  hasSame,
-  parseTime,
-} from "@vivid/utils";
-import { useI18n } from "@vivid/i18n";
+import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
 import {
   CalendarIcon,
   ChevronDown,
@@ -36,6 +31,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   onRangeChange,
   renderEvent,
 }) => {
+  const locale = useLocale();
   const t = useI18n("admin");
   const [currentDate, setCurrentDate] = React.useState<DateTime>(
     DateTime.fromJSDate(date || new Date())
@@ -150,10 +146,10 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
           </Button>
         )}
         <div>
-          {currentDate.toLocaleString(DateTime.DATE_MED)} -{" "}
+          {currentDate.toLocaleString(DateTime.DATE_MED, { locale })} -{" "}
           {currentDate
             .plus({ day: daysToShow - 1 })
-            .toLocaleString(DateTime.DATE_MED)}
+            .toLocaleString(DateTime.DATE_MED, { locale })}
         </div>
         {!disableTimeChange && (
           <Button variant="outline" onClick={next}>
@@ -194,7 +190,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                       hasSame(date, DateTime.now(), "day") && "font-bold"
                     )}
                   >
-                    {date.toLocaleString(DateTime.DATE_FULL)}
+                    {date.toLocaleString(DateTime.DATE_FULL, { locale })}
                     {hasSame(date, DateTime.now(), "day") &&
                       ` (${t("calendar.today")})`}
                   </span>
@@ -230,8 +226,8 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                               key={idx}
                               className="text-sm text-blue-600 dark:text-blue-400"
                             >
-                              {formatTimeLocale(parseTime(hours.start))} -{" "}
-                              {formatTimeLocale(parseTime(hours.end))}
+                              {formatTimeLocale(parseTime(hours.start), locale)}{" "}
+                              - {formatTimeLocale(parseTime(hours.end), locale)}
                             </div>
                           ))}
                         </div>
@@ -278,11 +274,13 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                                   </div>
                                   <div className="text-sm text-muted-foreground">
                                     {eventDate.toLocaleString(
-                                      DateTime.TIME_SIMPLE
+                                      DateTime.TIME_SIMPLE,
+                                      { locale }
                                     )}{" "}
                                     -{" "}
                                     {endDate.toLocaleString(
-                                      DateTime.TIME_SIMPLE
+                                      DateTime.TIME_SIMPLE,
+                                      { locale }
                                     )}
                                   </div>
                                 </div>

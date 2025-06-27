@@ -7,11 +7,11 @@ import { getTimeZones } from "@vvo/tzdb";
 
 import { Button, Calendar } from "@vivid/ui";
 
-import { Combobox, IComboboxItem, formatJsx } from "@vivid/ui";
+import { Combobox, IComboboxItem } from "@vivid/ui";
 import { Globe2Icon } from "lucide-react";
 import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 
-import { fallbackLanguage, useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
 import * as Locales from "date-fns/locale";
 import { useScheduleContext } from "./context";
@@ -29,7 +29,8 @@ const formatDate = (date: Date): string =>
   `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
 
 export const CalendarCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
+  const locale = useLocale();
   const {
     dateTime,
     setDateTime,
@@ -126,33 +127,29 @@ export const CalendarCard: React.FC = () => {
     [time]
   );
 
-  const timeZoneCombobox = (
-    <Combobox
-      values={timeZones}
-      className="mx-2"
-      searchLabel={i18n("search_timezone_label")}
-      customSearch={(search) =>
-        timeZones.filter(
-          (zone) =>
-            (zone.label as string)
-              .toLocaleLowerCase()
-              .indexOf(search.toLocaleLowerCase()) >= 0
-        )
-      }
-      value={timeZone}
-      onItemSelect={(value) => setTimeZone(value)}
-    />
-  );
-
-  const timeZoneLabel = formatJsx(i18n("select_timezone_label_format", false), {
-    timeZoneCombobox,
+  const timeZoneLabel = i18n.rich("select_timezone_label_format", {
+    timeZoneCombobox: () => (
+      <Combobox
+        values={timeZones}
+        className="mx-2"
+        searchLabel={i18n("search_timezone_label")}
+        customSearch={(search) =>
+          timeZones.filter(
+            (zone) =>
+              (zone.label as string)
+                .toLocaleLowerCase()
+                .indexOf(search.toLocaleLowerCase()) >= 0
+          )
+        }
+        value={timeZone}
+        onItemSelect={(value) => setTimeZone(value)}
+      />
+    ),
   });
 
-  let locale = fallbackLanguage;
-  if (locale === "en") locale = "enUS";
-
+  const language = locale === "en" ? "enUS" : locale;
   // @ts-ignore not correct english locale
-  const calendarLocale = Locales[fallbackLanguage];
+  const calendarLocale = Locales[language];
 
   return (
     <div className="relative text-center">
@@ -183,13 +180,13 @@ export const CalendarCard: React.FC = () => {
             ) : (
               <div className="flex flex-row gap-2 justify-around flex-wrap">
                 {(times[formatDate(date)] || []).map((t) => (
-                  <div className="" key={formatTimeLocale(t)}>
+                  <div className="" key={formatTimeLocale(t, locale)}>
                     <Button
                       className="w-24"
                       variant={isTimeSelected(t) ? "default" : "outline"}
                       onClick={() => setTime(isTimeSelected(t) ? undefined : t)}
                     >
-                      {formatTimeLocale(t)}
+                      {formatTimeLocale(t, locale)}
                     </Button>
                   </div>
                 ))}

@@ -275,6 +275,7 @@ export default class CustomerEmailNotificationConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       const data = appData.data as CustomerEmailNotificationConfiguration;

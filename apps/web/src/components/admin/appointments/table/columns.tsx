@@ -1,7 +1,7 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
 import { CellContext, ColumnDef, RowData } from "@tanstack/react-table";
-import { Appointment, StatusText } from "@vivid/types";
+import { useI18n, useLocale } from "@vivid/i18n";
+import { Appointment } from "@vivid/types";
 import {
   Button,
   Link,
@@ -51,12 +51,14 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
           className="flex justify-center w-full"
           type="button"
           aria-label={t("appointments.table.columns.statusAriaLabel", {
-            status: StatusText[appointment.status],
+            status: t(`appointments.status.${appointment.status}`),
           })}
         >
           {child}
         </TooltipTrigger>
-        <TooltipContent>{StatusText[appointment.status]}</TooltipContent>
+        <TooltipContent>
+          {t(`appointments.status.${appointment.status}`)}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
@@ -263,10 +265,12 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) =>
-      DateTime.fromJSDate(row.original.dateTime)
+    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.dateTime)
         .setZone(timeZone)
-        .toLocaleString(DateTime.DATETIME_MED),
+        .toLocaleString(DateTime.DATETIME_MED, { locale });
+    },
     id: "dateTime",
     header: tableSortHeader(
       "appointments.table.columns.dateTime",
@@ -276,10 +280,12 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) =>
-      DateTime.fromJSDate(row.original.createdAt)
+    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.createdAt)
         .setZone(timeZone)
-        .toLocaleString(DateTime.DATETIME_MED),
+        .toLocaleString(DateTime.DATETIME_MED, { locale });
+    },
     id: "createdAt",
     header: tableSortHeader(
       "appointments.table.columns.requestedAt",
@@ -290,15 +296,10 @@ export const columns: ColumnDef<Appointment>[] = [
   },
   {
     cell: ({ row }) => {
-      const { hours, minutes } = durationToTime(row.original.totalDuration);
+      const time = durationToTime(row.original.totalDuration);
+      const t = useI18n("admin");
 
-      return (
-        <span>
-          {hours > 0 && <>{hours} hr</>}
-          {hours > 0 && minutes > 0 && <> </>}
-          {minutes > 0 && <>{minutes} min</>}
-        </span>
-      );
+      return <span>{t("common.timeDuration", time)}</span>;
     },
     id: "totalDuration",
     header: tableSortHeader(

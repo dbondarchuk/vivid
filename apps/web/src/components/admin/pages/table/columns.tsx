@@ -1,6 +1,6 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { Page } from "@vivid/types";
 import { Checkbox, tableSortHeader, tableSortNoopFunction } from "@vivid/ui";
 import { DateTime } from "luxon";
@@ -46,7 +46,12 @@ export const columns: ColumnDef<Page>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (page) => (page.published ? "Published" : "Draft"),
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return row.original.published
+        ? t("pages.table.filters.published")
+        : t("pages.table.filters.draft");
+    },
     id: "published",
     header: tableSortHeader(
       "pages.table.columns.published",
@@ -56,24 +61,37 @@ export const columns: ColumnDef<Page>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (page) =>
-      DateTime.fromJSDate(page.publishDate).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.publishDate).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "publishDate",
     header: tableSortHeader("pages.table.columns.publishDate", "date", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (page) =>
-      DateTime.fromJSDate(page.createdAt).toLocaleString(DateTime.DATETIME_MED),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.createdAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "createdAt",
     header: tableSortHeader("pages.table.columns.createdAt", "date", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (page) =>
-      DateTime.fromJSDate(page.updatedAt).toLocaleString(DateTime.DATETIME_MED),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
     header: tableSortHeader("pages.table.columns.updatedAt", "date", "admin"),
     sortingFn: tableSortNoopFunction,

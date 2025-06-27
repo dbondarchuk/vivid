@@ -6,7 +6,11 @@ export type EmailTemplate = {
   previewText?: string;
 };
 
-export type EmailTemplates = Record<
-  keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
-  EmailTemplate
->;
+export type EmailTemplates = {
+  [key in
+    | keyof typeof AppointmentStatusToICalMethodMap
+    | "auto-confirmed"]: EmailTemplate;
+} & {
+  subject: string;
+  buttonTexts: Record<"viewAppointment" | "decline" | "confirm", string>;
+};

@@ -1,8 +1,4 @@
-import {
-  appStatusText,
-  appStatusTextClasses,
-  AvailableApps,
-} from "@vivid/app-store";
+import { appStatusTextClasses, AvailableApps } from "@vivid/app-store";
 import { I18nFn } from "@vivid/i18n";
 import { ConnectedApp } from "@vivid/types";
 import { cn } from "@vivid/ui";

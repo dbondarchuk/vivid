@@ -11,12 +11,16 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./server": "./src/server.ts"
+    "./server": "./src/server.ts",
+    "./request": "./src/request.ts"
   },
   "devDependencies": {
     "@vivid/eslint-config": "*",
     "@vivid/typescript-config": "*",
     "eslint": "^8.57.0",
     "typescript": "5.5.4"
+  },
+  "dependencies": {
+    "next-intl": "^4.3.1"
   }
 }

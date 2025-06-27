@@ -1,12 +1,13 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { AllKeys, useI18n } from "@vivid/i18n";
 import { AvailablePeriod } from "@vivid/types";
-import { is12hourUserTimeFormat, parseTime, template } from "@vivid/utils";
+import { parseTime, template } from "@vivid/utils";
 import { Clock, Plus, X } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { use12HourFormat } from "../../hooks";
 import {
   Accordion,
   AccordionContent,
@@ -23,7 +24,7 @@ export interface SimpleSchedulerProps {
   value: AvailablePeriod[];
   onChange: (value: AvailablePeriod[]) => void;
   addShiftLabel?: string;
-  shiftsLabel?: string;
+  shiftsLabel?: AllKeys;
 }
 
 export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
@@ -34,6 +35,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
   shiftsLabel,
 }) => {
   const t = useI18n("ui");
+  const tAll = useI18n();
   const [expandedDays, setExpandedDays] = useState<string[]>([]);
   const [editingShift, setEditingShift] = useState<{
     day: number;
@@ -47,7 +49,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
     endTime: string;
   } | null>(null);
 
-  const uses12HourFormat = useMemo(() => is12hourUserTimeFormat(), []);
+  const uses12HourFormat = use12HourFormat();
 
   // Format time with the utility function
   const formatTimeWithLocale = (time: string) => {
@@ -270,9 +272,13 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
               <div className="flex justify-between items-center w-full pr-4">
                 <span>{weekDayMap[day]}</span>
                 <span className="text-xs text-muted-foreground">
-                  {template(shiftsLabel ?? t("scheduler.shifts", false), {
-                    count: getShiftsForDay(day).length,
-                  })}
+                  {shiftsLabel
+                    ? tAll(shiftsLabel, {
+                        count: getShiftsForDay(day).length,
+                      })
+                    : t("scheduler.shifts", {
+                        count: getShiftsForDay(day).length,
+                      })}
                 </span>
               </div>
             </AccordionTrigger>

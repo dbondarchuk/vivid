@@ -31,7 +31,7 @@ import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";
 
 export const FormCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const {
     appointmentOption,
     selectedAddons,

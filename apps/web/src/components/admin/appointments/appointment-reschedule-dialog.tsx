@@ -1,6 +1,6 @@
-import { useI18n } from "@vivid/i18n";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogProps } from "@radix-ui/react-dialog";
+import { useI18n } from "@vivid/i18n";
 import { Appointment, Event } from "@vivid/types";
 import {
   AlertDialog,
@@ -32,8 +32,8 @@ import {
   FormMessage,
   Spinner,
   toastPromise,
+  use12HourFormat,
 } from "@vivid/ui";
-import { is12hourUserTimeFormat } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -72,6 +72,7 @@ export const AppointmentRescheduleDialog: React.FC<
   const t = useI18n("admin");
   const [appointment, setAppointment] =
     React.useState<Appointment>(propAppointment);
+  const uses12HourFormat = use12HourFormat();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -193,7 +194,7 @@ export const AppointmentRescheduleDialog: React.FC<
                           </FormLabel>
                           <FormControl>
                             <DateTimePicker
-                              use12HourFormat={is12hourUserTimeFormat()}
+                              use12HourFormat={uses12HourFormat}
                               disabled={loading}
                               min={new Date()}
                               timeZone={timeZone}

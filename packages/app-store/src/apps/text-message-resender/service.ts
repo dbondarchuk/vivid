@@ -8,6 +8,8 @@ import {
   RespondResult,
   TextMessageReply,
 } from "@vivid/types";
+import { getArguments, template } from "@vivid/utils";
+import { TextMessageResenderMessages } from "./messages";
 import { TextMessageResenderConfiguration } from "./models";
 
 export default class TextMessageResenderConnectedApp
@@ -137,10 +139,22 @@ export default class TextMessageResenderConnectedApp
         "Processing reply from customer - resending to user"
       );
 
-      const body = `Hi ${config.general.name},
-${customer?.name ? `${customer.name} has replied from ${reply.from}` : `You have text message from ${reply.from}`}:
-${reply.message}
-You can reply to this message directly`;
+      const args = getArguments({
+        appointment,
+        config,
+        customer,
+        locale: config.general.language,
+        additionalProperties: {
+          reply,
+        },
+      });
+
+      const body = template(
+        TextMessageResenderMessages[config.general.language]
+          .resendToUserFromCustomer ??
+          TextMessageResenderMessages["en"].resendToUserFromCustomer,
+        args
+      );
 
       const phone = appData?.data?.phone || config.general.phone;
       if (!phone) {

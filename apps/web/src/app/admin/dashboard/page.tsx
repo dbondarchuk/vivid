@@ -16,8 +16,6 @@ import { PendingAppointmentsTab } from "./pending-appointments-tab";
 import { PendingAppointmentsBadge } from "./pending-appointments-toast-stream";
 import { getI18nAsync } from "@vivid/i18n/server";
 
-const breadcrumbItems = [{ title: "Dashboard", link: "/admin/dashboard" }];
-
 type Params = {
   searchParams: Promise<{ activeTab?: string; key?: string }>;
 };
@@ -28,6 +26,9 @@ export default async function Page({ searchParams }: Params) {
   const logger = getLoggerFactory("AdminPages")("dashboard");
   const { activeTab = defaultTab, key } = await searchParams;
   const t = await getI18nAsync("admin");
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+  ];
 
   logger.debug(
     {

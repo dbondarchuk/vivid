@@ -1,6 +1,6 @@
 "use client";
 
-import { ComplexAppSetupProps, StatusText } from "@vivid/types";
+import { ComplexAppSetupProps } from "@vivid/types";
 import {
   Form,
   FormControl,
@@ -21,9 +21,9 @@ import {
   TextMessagesTemplateKeys,
 } from "./models";
 
+import { useI18n } from "@vivid/i18n";
 import { SaveButton } from "@vivid/ui";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
-import { useI18n } from "@vivid/i18n";
 
 const TextMessagesTemplateForm: React.FC<{
   form: UseFormReturn<CustomerTextMessageNotificationConfiguration>;
@@ -33,11 +33,7 @@ const TextMessagesTemplateForm: React.FC<{
   whenText: string;
 }> = ({ form, disabled, type, whenText, isDataLoading }) => {
   const t = useI18n("apps");
-
-  const getTypeText = (type: TextMessagesTemplateKeys) => {
-    if (type === "rescheduled") return "Rescheduled";
-    return StatusText[type as keyof typeof StatusText];
-  };
+  const tAdmin = useI18n("admin");
 
   return (
     <FormField
@@ -47,7 +43,7 @@ const TextMessagesTemplateForm: React.FC<{
         <FormItem>
           <FormLabel>
             {t("customerTextMessageNotification.form.template.label", {
-              type: getTypeText(type),
+              type: tAdmin(`appointments.status.${type}`),
             })}
             <InfoTooltip>
               <p>

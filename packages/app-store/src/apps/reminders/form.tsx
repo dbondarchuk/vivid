@@ -19,9 +19,9 @@ import {
   SimpleTimePicker,
   TemplateSelector,
   toastPromise,
+  use12HourFormat,
   useDemoArguments,
 } from "@vivid/ui";
-import { is12hourUserTimeFormat } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -40,6 +40,7 @@ export const ReminderForm: React.FC<{
 }> = ({ initialData, appId }) => {
   const t = useI18n("apps");
   const tAdmin = useI18n("admin");
+  const uses12HourFormat = use12HourFormat();
 
   const reminderTypeValues = Object.entries(reminderTypeLabels).map(
     ([value, label]) => ({ value, label: t(label) }) as IComboboxItem
@@ -334,7 +335,7 @@ export const ReminderForm: React.FC<{
 
                     <FormControl>
                       <SimpleTimePicker
-                        use12HourFormat={is12hourUserTimeFormat()}
+                        use12HourFormat={uses12HourFormat}
                         value={DateTime.fromObject({
                           hour: field.value?.hour,
                           minute: field.value?.minute,

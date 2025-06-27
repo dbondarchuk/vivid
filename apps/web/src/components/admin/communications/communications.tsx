@@ -1,7 +1,7 @@
 "use client";
 
 import JsonView from "@uiw/react-json-view";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   CommunicationChannel,
   CommunicationDirection,
@@ -41,6 +41,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
   const t = useI18n("admin");
   const tApps = useI18n("apps");
   const dateTime = DateTime.fromISO(entry.dateTime as any as string);
+  const locale = useLocale();
   return (
     <div className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg">
       <div className="flex-shrink-0 mt-1">
@@ -70,11 +71,11 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="text-sm text-gray-500 underline decoration-dashed cursor-help">
-                    {dateTime.toRelative()}
+                    {dateTime.setLocale(locale).toRelative()}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent side="left">
-                  {dateTime.toLocaleString(DateTime.DATETIME_MED)}
+                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

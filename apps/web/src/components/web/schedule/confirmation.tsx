@@ -18,7 +18,7 @@ export const BookingConfirmation: React.FC = async () => {
     redirect("/");
   }
 
-  const i18n = await getI18nAsync();
+  const i18n = await getI18nAsync("translation");
 
   const appointment = await ServicesContainer.EventsService().getAppointment(
     appointmentIdCookie.value

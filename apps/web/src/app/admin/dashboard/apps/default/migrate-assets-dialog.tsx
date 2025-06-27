@@ -91,7 +91,7 @@ export const MigrateAssetsDialog: React.FC<{
             {t("apps.migrateAssetsDialog.description")}
           </DialogDescription>
         </DialogHeader>
-        <div className="w-full flex flex-col gap-2">
+        <div className="w-full grid grid-cols-1 gap-2">
           <Label>{t("apps.migrateAssetsDialog.sourceApp")}</Label>
           <AppSelector
             scope="assets-storage"

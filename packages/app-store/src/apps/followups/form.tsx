@@ -19,9 +19,9 @@ import {
   SimpleTimePicker,
   TemplateSelector,
   toastPromise,
+  use12HourFormat,
   useDemoArguments,
 } from "@vivid/ui";
-import { is12hourUserTimeFormat } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -43,6 +43,7 @@ export const FollowUpForm: React.FC<{
   appId: string;
 }> = ({ initialData, appId }) => {
   const t = useI18n("apps");
+  const uses12HourFormat = use12HourFormat();
 
   const followUpTypeValues = followUpTypes.map(
     (value) =>
@@ -350,7 +351,7 @@ export const FollowUpForm: React.FC<{
 
                     <FormControl>
                       <SimpleTimePicker
-                        use12HourFormat={is12hourUserTimeFormat()}
+                        use12HourFormat={uses12HourFormat}
                         value={DateTime.fromObject({
                           hour: field.value?.hour,
                           minute: field.value?.minute,

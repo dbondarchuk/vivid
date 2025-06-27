@@ -15,9 +15,9 @@ import {
   TextMessageReply,
   TextMessageResponse,
 } from "@vivid/types";
-import { getArguments, maskify, template } from "@vivid/utils";
+import { getArguments, maskify } from "@vivid/utils";
 import crypto from "crypto";
-import ownerTextMessageReplyTemplate from "./emails/en/owner-text-message-reply.html";
+import { getEmailTemplate } from "./emails/utils";
 import { TextBeltConfiguration } from "./models";
 
 const scrambleKey = (key: string) => {
@@ -103,7 +103,7 @@ export default class TextBeltConnectedApp
     );
 
     try {
-      const { url } = await this.props.services
+      const config = await this.props.services
         .ConfigurationService()
         .getConfiguration("general");
 
@@ -112,7 +112,7 @@ export default class TextBeltConnectedApp
         key: (app.data as TextBeltConfiguration).apiKey,
         phone: message.phone,
         sender: message.sender,
-        replyWebhookUrl: `${url}/api/apps/${app._id}/webhook`,
+        replyWebhookUrl: `${config.url}/api/apps/${app._id}/webhook`,
         webhookData: message.data
           ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
           : undefined,
@@ -166,6 +166,28 @@ export default class TextBeltConnectedApp
           args: { quota: response.quotaRemaining },
         },
       });
+
+      if (response.quotaRemaining < 100) {
+        const { template: description, subject } = await getEmailTemplate(
+          "user-notify-low-quota",
+          config.language,
+          config.url,
+          {
+            quotaRemaining: response.quotaRemaining,
+            config,
+          }
+        );
+
+        await this.props.services.NotificationService().sendEmail({
+          email: {
+            to: config.email,
+            subject,
+            body: description,
+          },
+          handledBy: "textBelt.lowQuotaHandler",
+          participantType: "user",
+        });
+      }
 
       return {
         success: response.success,
@@ -471,8 +493,6 @@ export default class TextBeltConnectedApp
       "Processing text message reply"
     );
 
-    const bodyTemplate = ownerTextMessageReplyTemplate;
-
     const config = await this.props.services
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
@@ -487,9 +507,17 @@ export default class TextBeltConnectedApp
       additionalProperties: {
         reply,
       },
+      locale: config.general.language,
     });
 
-    const description = template(bodyTemplate, args);
+    const { template: description, subject } = await getEmailTemplate(
+      "user-notify-reply",
+      config.general.language,
+      config.general.url,
+      args,
+      appointment?._id,
+      customer?._id
+    );
 
     logger.debug(
       { appId: appData._id, ownerEmail: config.general.email },
@@ -499,10 +527,10 @@ export default class TextBeltConnectedApp
     await this.props.services.NotificationService().sendEmail({
       email: {
         to: config.general.email,
-        subject: "SMS reply",
+        subject,
         body: description,
       },
-      handledBy: "textBelt.webhookHandlerOwner",
+      handledBy: "textBelt.webhookHandlerUser",
       participantType: "user",
       appointmentId: appointment?._id,
       customerId: customer?._id,

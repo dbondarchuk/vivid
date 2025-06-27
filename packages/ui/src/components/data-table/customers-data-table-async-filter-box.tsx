@@ -50,8 +50,10 @@ export const CustomersDataTableAsyncFilterBox: React.FC<
     title?: AsyncFilterBoxProps["title"];
     filterKey?: AsyncFilterBoxProps["filterKey"];
   }
-> = ({ title = "Customer", filterKey = "customerId", ...rest }) => {
-  const t = useI18n("ui");
+> = ({ title: propsTitle, filterKey = "customerId", ...rest }) => {
+  const t = useI18n("admin");
+  const title = propsTitle ?? t("appointments.table.columns.customer");
+
   const getCustomers = async (page: number, search?: string) => {
     const limit = 10;
     let url = `/admin/api/customers?page=${page}&limit=${limit}`;
@@ -67,7 +69,7 @@ export const CustomersDataTableAsyncFilterBox: React.FC<
     });
 
     if (response.status >= 400) {
-      toast.error(t("common.requestFailed"));
+      toast.error(t("common.toasts.error"));
       const text = await response.text();
       console.error(
         `Request to fetch customers failed: ${response.status}; ${text}`

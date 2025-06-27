@@ -15,8 +15,7 @@ import {
 } from "@vivid/utils";
 import { EmailNotificationConfiguration } from "./models";
 
-import { renderUserEmailTemplate } from "@vivid/email-builder/static";
-import { UserEmailTemplates } from "./emails";
+import { getEmailTemplate } from "./emails/utils";
 
 export class EmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -270,6 +269,7 @@ export class EmailNotificationConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       logger.debug(
@@ -279,33 +279,11 @@ export class EmailNotificationConnectedApp
 
       const data = appData.data as EmailNotificationConfiguration;
 
-      const template = UserEmailTemplates["en"][status];
-      const description = await renderUserEmailTemplate(
-        {
-          ...template,
-          topButtons: [
-            {
-              text: "View Appointment",
-              url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}`,
-            },
-          ],
-          bottomButtons: [
-            appointment.status != "declined"
-              ? {
-                  text: "Decline",
-                  url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}/decline`,
-                  backgroundColor: "#FF0000",
-                }
-              : undefined,
-            appointment.status === "pending"
-              ? {
-                  text: "Confirm",
-                  url: `${config.general.url}/admin/dashboard/appointments/${appointment._id}/confirm`,
-                  backgroundColor: "#0008FF",
-                }
-              : undefined,
-          ],
-        },
+      const { template: description, subject } = await getEmailTemplate(
+        status,
+        config.general.language,
+        config.general.url,
+        appointment,
         args
       );
 
@@ -321,11 +299,10 @@ export class EmailNotificationConnectedApp
 
       const newStatus = status === "auto-confirmed" ? "confirmed" : status;
 
-      const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
       const eventContent = getEventCalendarContent(
         config.general,
         appointment,
-        eventSummary,
+        subject,
         description,
         status === "auto-confirmed"
           ? "REQUEST"
@@ -338,9 +315,6 @@ export class EmailNotificationConnectedApp
       );
 
       const recipientEmail = data?.email || config.general.email;
-      const subject = `Appointment for ${args.option!.name} by ${
-        args.fields!.name
-      } at ${args.dateTime}`;
 
       logger.debug(
         {

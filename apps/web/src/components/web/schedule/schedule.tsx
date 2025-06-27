@@ -29,7 +29,7 @@ export type ScheduleProps = {
 };
 
 export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
 
   const errors = React.useMemo(
     () => ({

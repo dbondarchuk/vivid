@@ -152,6 +152,7 @@ const FormMessage = React.forwardRef<
   const body = error && error?.message ? String(error?.message) : children;
 
   const t = useI18n("validation");
+  const hasKey = t.has(body as ValidationKeys);
 
   if (!body) {
     return null;
@@ -164,7 +165,7 @@ const FormMessage = React.forwardRef<
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
-      {t(body as ValidationKeys)}
+      {hasKey ? t(body as ValidationKeys) : body}
     </p>
   );
 });

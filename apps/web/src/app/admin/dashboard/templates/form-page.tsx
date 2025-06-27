@@ -29,6 +29,7 @@ export const TemplateFormPage: React.FC<
     appointment: demoAppointment,
     config,
     customer: demoAppointment.customer,
+    locale: config.general.language,
   });
 
   let initialData: Template | undefined;

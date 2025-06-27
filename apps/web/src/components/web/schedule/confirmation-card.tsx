@@ -2,7 +2,7 @@ import { useI18n } from "@vivid/i18n";
 import { useScheduleContext } from "./context";
 
 export const ConfirmationCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { fields } = useScheduleContext();
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   AppointmentEntity,
   AppointmentOption,
@@ -20,7 +20,7 @@ import React from "react";
 const AppointmentCell: React.FC<{ appointment?: AppointmentEntity }> = ({
   appointment,
 }) => {
-  const t = useI18n("admin");
+  const locale = useLocale();
 
   return appointment && appointment.option ? (
     <Link
@@ -29,7 +29,8 @@ const AppointmentCell: React.FC<{ appointment?: AppointmentEntity }> = ({
     >
       {appointment.option.name} at{" "}
       {DateTime.fromJSDate(appointment.dateTime).toLocaleString(
-        DateTime.DATETIME_MED
+        DateTime.DATETIME_MED,
+        { locale }
       )}
     </Link>
   ) : (

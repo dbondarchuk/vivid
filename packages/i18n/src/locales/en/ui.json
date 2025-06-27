@@ -86,8 +86,8 @@
   "validation": {
     "required": "This field is required",
     "invalid": "Invalid value",
-    "minLength": "Minimum length is {{min}} characters",
-    "maxLength": "Maximum length is {{max}} characters",
+    "minLength": "Minimum length is {min} characters",
+    "maxLength": "Maximum length is {max} characters",
     "email": "Please enter a valid email address",
     "url": "Please enter a valid URL"
   },
@@ -120,21 +120,21 @@
     "min": "min"
   },
   "dataTable": {
-    "searchPlaceholder": "Search {{searchKey}}...",
-    "selectedRows": "{{selected}} of {{total}} row(s) selected.",
+    "searchPlaceholder": "Search {searchKey}...",
+    "selectedRows": "{selected} of {total} row(s) selected.",
     "previous": "Previous",
     "next": "Next",
     "rowsPerPage": "Rows per page",
-    "showingEntries": "Showing {{start}} to {{end}} of {{total}} entries",
+    "showingEntries": "Showing {start} to {end} of {total} entries",
     "noEntriesFound": "No entries found",
-    "pageOf": "Page {{page}} of {{totalPages}}",
+    "pageOf": "Page {page} of {totalPages}",
     "noPages": "No pages",
     "goToFirstPage": "Go to first page",
     "goToPreviousPage": "Go to previous page",
     "goToNextPage": "Go to next page",
     "goToLastPage": "Go to last page",
     "resetFilters": "Reset filters",
-    "selectedCount": "{{selected}} selected"
+    "selectedCount": "{selected} selected"
   },
   "breadcrumb": {
     "more": "More"
@@ -148,13 +148,13 @@
     "dragAndDropOrClick": "Drag 'n' drop some files here, or click to select files"
   },
   "markdownTooltip": {
-    "supports": "This field supports {{type}}",
+    "supports": "This field supports {type}",
     "learnMore": "Learn more"
   },
   "scheduler": {
     "invalidTimeRange": "Invalid time range",
     "startTimeBeforeEndTime": "Start time must be before end time",
-    "shifts": "{{count}} shifts",
+    "shifts": "{count, plural, =1 {1 shift} other {# shifts}}",
     "startTime": "Start Time",
     "endTime": "End Time",
     "edit": "Edit",
@@ -163,6 +163,7 @@
   "timePicker": {
     "seconds": "Seconds",
     "am": "AM",
-    "pm": "PM"
+    "pm": "PM",
+    "format": "MM/dd/yyyy hh:mm a"
   }
 }

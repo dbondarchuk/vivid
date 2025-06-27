@@ -86,8 +86,8 @@
   "validation": {
     "required": "Це поле обов'язкове",
     "invalid": "Недійсне значення",
-    "minLength": "Мінімальна довжина {{min}} символів",
-    "maxLength": "Максимальна довжина {{max}} символів",
+    "minLength": "Мінімальна довжина {min} символів",
+    "maxLength": "Максимальна довжина {max} символів",
     "email": "Будь ласка, введіть дійсну email адресу",
     "url": "Будь ласка, введіть дійсний URL"
   },
@@ -120,21 +120,21 @@
     "min": "хв"
   },
   "dataTable": {
-    "searchPlaceholder": "Пошук {{searchKey}}...",
-    "selectedRows": "Вибрано {{selected}} з {{total}} рядка(ів).",
+    "searchPlaceholder": "Пошук {searchKey}...",
+    "selectedRows": "Вибрано {selected} з {total} рядка(ів).",
     "previous": "Попередній",
     "next": "Наступний",
     "rowsPerPage": "Рядків на сторінку",
-    "showingEntries": "Показано {{start}} до {{end}} з {{total}} записів",
+    "showingEntries": "Показано {start} до {end} з {total} записів",
     "noEntriesFound": "Записів не знайдено",
-    "pageOf": "Сторінка {{page}} з {{totalPages}}",
+    "pageOf": "Сторінка {page} з {totalPages}",
     "noPages": "Немає сторінок",
     "goToFirstPage": "Перейти на першу сторінку",
     "goToPreviousPage": "Перейти на попередню сторінку",
     "goToNextPage": "Перейти на наступну сторінку",
     "goToLastPage": "Перейти на останню сторінку",
     "resetFilters": "Скинути фільтри",
-    "selectedCount": "{{selected}} вибрано"
+    "selectedCount": "{selected} вибрано"
   },
   "breadcrumb": {
     "more": "Більше"
@@ -148,13 +148,13 @@
     "dragAndDropOrClick": "Перетягніть файли сюди або клікніть для вибору файлів"
   },
   "markdownTooltip": {
-    "supports": "Це поле підтримує {{type}}",
+    "supports": "Це поле підтримує {type}",
     "learnMore": "Дізнатися більше"
   },
   "scheduler": {
     "invalidTimeRange": "Недійсний часовий діапазон",
     "startTimeBeforeEndTime": "Час початку повинен бути раніше часу закінчення",
-    "shifts": "{{count}} змін",
+    "shifts": "{count, plural, =1 {1 зміна} other {# змін}}",
     "startTime": "Час початку",
     "endTime": "Час закінчення",
     "edit": "Редагувати",
@@ -163,6 +163,7 @@
   "timePicker": {
     "seconds": "Секунди",
     "am": "ДП",
-    "pm": "ПП"
+    "pm": "ПП",
+    "format": "dd/MM/yyyy HH:mm"
   }
 }

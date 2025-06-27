@@ -334,6 +334,7 @@ export default class CustomerTextMessageNotificationConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       logger.debug(

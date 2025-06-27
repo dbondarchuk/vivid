@@ -1,6 +1,3 @@
-import React from "react";
-
-import { ConditionalContainerProps } from "./schema";
 import {
   EditorChildren,
   useCurrentBlock,
@@ -8,7 +5,7 @@ import {
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
-import { formatJsx } from "@vivid/ui";
+import { ConditionalContainerProps } from "./schema";
 
 export const ConditionalContainerEditor = ({
   props,
@@ -26,11 +23,9 @@ export const ConditionalContainerEditor = ({
   return (
     <div className="w-full">
       <div className="mb-2 text-muted-foreground text-xs w-full">
-        {formatJsx(
-          t(
-            "emailBuilder.blocks.conditionalContainer.ifConditionIsCorrectFormat",
-            false
-          ),
+        {t.rich(
+          "emailBuilder.blocks.conditionalContainer.ifConditionIsCorrectFormat",
+
           {
             condition:
               condition ||

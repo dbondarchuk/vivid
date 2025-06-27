@@ -27,7 +27,6 @@ const OptionLabel: React.FC<{ option: AppointmentOption }> = ({ option }) => {
 };
 
 const getOptions = async () => {
-  const t = useI18n("admin");
   const url = `/admin/api/services/options`;
   const response = await fetch(url, {
     method: "GET",

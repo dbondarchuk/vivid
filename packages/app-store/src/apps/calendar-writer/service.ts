@@ -19,24 +19,8 @@ import {
 import { convert } from "html-to-text";
 import { CalendarWriterConfiguration } from "./models";
 
-import { template } from "@vivid/utils";
 import { AvailableApps } from "../../apps";
-import autoConfirmedTemplate from "./templates/en/appointment-auto-confirmed.html";
-import confirmedTemplate from "./templates/en/appointment-confirmed.html";
-import pendingTemplate from "./templates/en/appointment-created.html";
-import declinedTemplate from "./templates/en/appointment-declined.html";
-import rescheduledTemplate from "./templates/en/appointment-rescheduled.html";
-
-const bodyTemplates: Record<
-  keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
-  string
-> = {
-  confirmed: confirmedTemplate,
-  "auto-confirmed": autoConfirmedTemplate,
-  declined: declinedTemplate,
-  pending: pendingTemplate,
-  rescheduled: rescheduledTemplate,
-};
+import { getEmailTemplate } from "../email-notification/emails/utils";
 
 export class CalendarWriterConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -275,13 +259,18 @@ export class CalendarWriterConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       const data = appData.data as CalendarWriterConfiguration;
 
-      const description = template(bodyTemplates[status], args);
-
-      const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
+      const { template: description, subject } = await getEmailTemplate(
+        status,
+        config.general.language,
+        config.general.url,
+        appointment,
+        args
+      );
 
       logger.debug(
         {
@@ -306,7 +295,7 @@ export class CalendarWriterConnectedApp
 
       const event: CalendarEvent = {
         id: appointment._id,
-        title: eventSummary,
+        title: subject,
         description: {
           html: description,
           plainText: convert(description, { wordwrap: 130 })

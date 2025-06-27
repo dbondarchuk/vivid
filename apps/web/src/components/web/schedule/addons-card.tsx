@@ -15,7 +15,7 @@ import { MdxContent } from "../mdx/mdx-content-client";
 import { useScheduleContext } from "./context";
 
 export const AddonsCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { appointmentOption, setSelectedAddons, selectedAddons, setDiscount } =
     useScheduleContext();
 

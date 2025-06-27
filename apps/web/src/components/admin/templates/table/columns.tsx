@@ -1,6 +1,6 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { TemplateListModel } from "@vivid/types";
 import {
   Checkbox,
@@ -60,10 +60,13 @@ export const columns: ColumnDef<TemplateListModel>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (template) =>
-      DateTime.fromJSDate(template.updatedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
     header: tableSortHeader(
       "templates.table.columns.updatedAt",

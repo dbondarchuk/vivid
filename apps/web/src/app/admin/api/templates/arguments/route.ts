@@ -73,7 +73,12 @@ export async function GET(request: NextRequest) {
     customer = _customer;
   }
 
-  const args = getArguments({ appointment, config, customer });
+  const args = getArguments({
+    appointment,
+    config,
+    customer,
+    locale: config.general.language,
+  });
 
   logger.debug(
     {

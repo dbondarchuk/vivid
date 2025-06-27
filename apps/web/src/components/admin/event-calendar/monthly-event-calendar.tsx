@@ -1,6 +1,6 @@
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
 import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { DateTime } from "luxon";
@@ -37,6 +37,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
   onRangeChange,
   onDateClick,
 }) => {
+  const locale = useLocale();
   const t = useI18n("admin");
   const [dates, setDates] = React.useState<Dates>(
     getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone))
@@ -119,8 +120,8 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                           key={idx}
                           className="text-sm text-accent-foreground/80"
                         >
-                          {formatTimeLocale(parseTime(hours.start))} -{" "}
-                          {formatTimeLocale(parseTime(hours.end))}
+                          {formatTimeLocale(parseTime(hours.start), locale)} -{" "}
+                          {formatTimeLocale(parseTime(hours.end), locale)}
                         </div>
                       ))}
                     </div>
@@ -180,7 +181,10 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
           </Button>
         )}
         <div>
-          {dates.currentDate.toLocaleString({ month: "long", year: "numeric" })}
+          {dates.currentDate.toLocaleString(
+            { month: "long", year: "numeric" },
+            { locale }
+          )}
         </div>
         {!disableTimeChange && (
           <Button variant="outline" onClick={next}>

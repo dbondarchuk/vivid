@@ -763,6 +763,7 @@ export default class FollowUpsConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       const channel = followUp.channel;

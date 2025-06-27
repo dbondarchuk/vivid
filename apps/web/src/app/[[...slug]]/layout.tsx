@@ -13,6 +13,9 @@ import { getColorsCss } from "@vivid/utils";
 import { CookiesProvider } from "@/components/cookies-provider";
 import { getLoggerFactory } from "@vivid/logger";
 
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
+
 const ScriptRenderer = ({
   resource,
   id,
@@ -71,6 +74,8 @@ export default async function RootLayout({
       "styling"
     );
 
+  const locale = await getLocale();
+
   logger.debug(
     { hasGeneral: !!general, hasScripts: !!scripts, hasStyling: !!styling },
     "Retrieved configurations"
@@ -121,7 +126,7 @@ export default async function RootLayout({
 
   return (
     <CookiesProvider>
-      <html lang={general.language} className="scroll-smooth">
+      <html lang={locale} className="scroll-smooth">
         <head>
           <style
             dangerouslySetInnerHTML={{
@@ -151,16 +156,18 @@ export default async function RootLayout({
         </head>
         <TwLoad />
         <body className="font-primary">
-          <Header />
-          <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
-            {children}
-          </main>
-          <Footer />
-          {scripts?.footer?.map((resource, index) => (
-            <ScriptRenderer resource={resource} id={index} key={index} />
-          ))}
-          <Toaster />
-          <SonnerToaster />
+          <NextIntlClientProvider>
+            <Header />
+            <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
+              {children}
+            </main>
+            <Footer />
+            {scripts?.footer?.map((resource, index) => (
+              <ScriptRenderer resource={resource} id={index} key={index} />
+            ))}
+            <Toaster />
+            <SonnerToaster />
+          </NextIntlClientProvider>
         </body>
       </html>
     </CookiesProvider>

@@ -25,11 +25,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { updateGeneralConfiguration } from "./actions";
-
-const languageOptions: Record<Language, string> = {
-  en: "English",
-  uk: "Українська",
-};
+import { LanguageOptions } from "@/constants/texts";
 
 export const GeneralSettingsForm: React.FC<{
   values: GeneralConfiguration;
@@ -57,7 +53,14 @@ export const GeneralSettingsForm: React.FC<{
         }
       );
 
-      router.refresh();
+      if (data.language !== values.language && window?.location) {
+        // Hard reload to apply new language and delay to show toast
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        router.refresh();
+      }
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -293,7 +296,7 @@ export const GeneralSettingsForm: React.FC<{
                 <FormControl>
                   <Combobox
                     values={languages.map((language) => ({
-                      label: languageOptions[language],
+                      label: LanguageOptions[language],
                       value: language,
                     }))}
                     className="w-full"

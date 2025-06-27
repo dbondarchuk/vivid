@@ -6,7 +6,6 @@ import {
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { ForeachContainerProps } from "./schema";
-import { formatJsx } from "@vivid/ui";
 
 export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
   const t = useI18n("builder");
@@ -21,13 +20,10 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
   return (
     <div className="w-full">
       <div className="mb-2 text-muted-foreground text-xs w-full">
-        {formatJsx(
-          t(
-            "emailBuilder.blocks.foreachContainer.forEachItemInValueFormat",
-            false
-          ),
+        {t.rich(
+          "emailBuilder.blocks.foreachContainer.forEachItemInValueFormat",
           {
-            item: <em>_item</em>,
+            item: () => <em>_item</em>,
             value: value || t("emailBuilder.blocks.foreachContainer.value"),
           }
         )}

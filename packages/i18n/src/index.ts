@@ -1,3 +1,2 @@
-export * from "./i18n";
+export * from "./client";
 export * from "./types";
-export * from "./with-i18n";

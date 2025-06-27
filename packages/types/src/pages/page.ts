@@ -1,3 +1,4 @@
+import { languages } from "@vivid/i18n";
 import { z } from "zod";
 import { WithDatabaseId } from "../database";
 
@@ -15,6 +16,7 @@ export const pageSchema = z.object({
   published: z.coerce.boolean().default(false),
   publishDate: z.date({ required_error: "page.publishDate.required" }),
   tags: z.array(pageTagSchema).optional(),
+  language: z.enum(languages).optional(),
   doNotCombine: z
     .object({
       title: z.coerce.boolean().optional(),

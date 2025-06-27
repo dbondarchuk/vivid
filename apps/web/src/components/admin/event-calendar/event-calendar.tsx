@@ -1,6 +1,7 @@
 "use client";
 
-import { Appointment, DaySchedule, Event, StatusText } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
+import { Appointment, DaySchedule, Event } from "@vivid/types";
 import {
   CheckCircle,
   DollarSign,
@@ -9,7 +10,6 @@ import {
 } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { AppointmentDialog } from "../appointments/appointment-dialog";
 import { AgendaEventCalendar } from "./agenda-event-calendar";
 import { MonthlyEventCalendar } from "./monthly-event-calendar";
@@ -134,7 +134,9 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
             <dt className="flex self-center items-center gap-1">
               <CheckCircle size={16} /> {t("calendar.status")}:
             </dt>
-            <dd className="col-span-2">{StatusText[appointment.status]}</dd>
+            <dd className="col-span-2">
+              {t(`appointments.status.${appointment.status}`)}
+            </dd>
           </div>
           {appointment.totalPrice && (
             <div className="py-1 flex flex-row gap-2 flex-wrap @sm:py-2 @sm:grid @sm:grid-cols-3 @sm:gap-4">

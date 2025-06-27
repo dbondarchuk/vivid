@@ -5,6 +5,9 @@ import { getLoggerFactory } from "@vivid/logger";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { AuthResult } from "../../auth";
+import { redirect } from "next/navigation";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -15,6 +18,13 @@ export default async function AuthenticationPage() {
   const logger = getLoggerFactory("AdminPages")("signin");
 
   logger.debug("Loading signin page");
+
+  const session = await AuthResult.auth();
+  const t = await getI18nAsync("admin");
+
+  if (session) {
+    redirect("/admin/dashboard");
+  }
 
   const general =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
@@ -35,7 +45,7 @@ export default async function AuthenticationPage() {
           "absolute right-4 top-4 hidden md:right-8 md:top-8"
         )}
       >
-        Login
+        {t("auth.signIn")}
       </Link>
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
         <div className="absolute inset-0 bg-zinc-900" />
@@ -56,17 +66,19 @@ export default async function AuthenticationPage() {
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
-            <p className="text-lg">&ldquo;I love it!&rdquo;</p>
-            <footer className="text-sm">Olesia Bondarchuk</footer>
+            <p className="text-lg">&ldquo;{t("auth.quote")}&rdquo;</p>
+            <footer className="text-sm">{t("auth.quoteAuthor")}</footer>
           </blockquote>
         </div>
       </div>
       <div className="flex h-full items-center p-4 lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {t("auth.signIn")}
+            </h1>
             <p className="text-sm text-muted-foreground">
-              Enter your email below to sign into your account
+              {t("auth.signInDescription")}
             </p>
           </div>
           <Suspense>

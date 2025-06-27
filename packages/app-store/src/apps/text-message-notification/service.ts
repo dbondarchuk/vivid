@@ -11,10 +11,11 @@ import {
   IConnectedAppProps,
   ITextMessageResponder,
   RespondResult,
+  SocialConfiguration,
   TextMessageReply,
 } from "@vivid/types";
-import { formatAmountString, getArguments } from "@vivid/utils";
-import { DateTime } from "luxon";
+import { formatAmountString, getArguments, template } from "@vivid/utils";
+import { TextMessageNotificationMessages } from "./messages";
 import { TextMessageNotificationConfiguration } from "./models";
 
 export class TextMessageNotificationConnectedApp
@@ -123,23 +124,31 @@ export class TextMessageNotificationConnectedApp
         .ConfigurationService()
         .getConfigurations("booking", "general", "social");
 
-      const args = getArguments({
-        appointment,
-        config,
-        customer: appointment.customer,
-      });
-
       const totalAmountPaid = appointment.payments
         ?.filter((payment) => payment.status === "paid")
         .reduce((sum, payment) => sum + payment.amount, 0);
 
-      const body = `Hi ${config.general.name},
-${appointment.customer.name} has requested a new appointment for ${appointment.option.name} (${
-        args.duration?.hours ? `${args.duration.hours}hr ` : ""
-      }${args.duration?.minutes ? `${args.duration.minutes}min` : ""}) for ${
-        args.dateTime
-      }.${args.totalPrice ? ` Total price $${args.totalPriceFormatted}.` : ""}${totalAmountPaid ? ` Amount paid $${formatAmountString(totalAmountPaid)}.` : ""}
-Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
+      const totalAmountPaidFormatted = totalAmountPaid
+        ? formatAmountString(totalAmountPaid)
+        : undefined;
+
+      const args = getArguments({
+        appointment,
+        config,
+        customer: appointment.customer,
+        locale: config.general.language,
+        additionalProperties: {
+          confirmed,
+          totalAmountPaidFormatted,
+        },
+      });
+
+      const body = template(
+        TextMessageNotificationMessages[config.general.language]
+          .newAppointmentRequested ??
+          TextMessageNotificationMessages["en"].newAppointmentRequested,
+        args
+      );
 
       const phone = data?.phone || config.general.phone;
       if (!phone) {
@@ -253,10 +262,9 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
         .EventsService()
         .getAppointment(reply.data.appointmentId);
 
-      const { general: generalConfiguration, booking: bookingConfiguration } =
-        await this.props.services
-          .ConfigurationService()
-          .getConfigurations("general", "booking");
+      const config = await this.props.services
+        .ConfigurationService()
+        .getConfigurations("general", "booking", "social");
 
       if (!appointment) {
         logger.warn(
@@ -268,10 +276,19 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
           "Unknown appointment in reply"
         );
 
+        const body = template(
+          TextMessageNotificationMessages[config.general.language]
+            .unknownAppointment ??
+            TextMessageNotificationMessages["en"].unknownAppointment,
+          {
+            config: config.general,
+          }
+        );
+
         await this.props.services.NotificationService().sendTextMessage({
           phone: reply.from,
-          sender: generalConfiguration.name,
-          body: `Unknown reply`,
+          sender: config.general.name,
+          body,
           webhookData: reply.data,
           participantType: "user",
           handledBy: "textMessageNotification.handlers.autoReply",
@@ -304,13 +321,7 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
           "Processing confirmation reply"
         );
 
-        return await this.processReply(
-          appointment,
-          "confirmed",
-          reply,
-          generalConfiguration,
-          bookingConfiguration
-        );
+        return await this.processReply(appointment, "confirmed", reply, config);
       } else if (
         (replyMessage === "n" || replyMessage === "no") &&
         appointment.status !== "declined"
@@ -320,13 +331,7 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
           "Processing decline reply"
         );
 
-        return await this.processReply(
-          appointment,
-          "declined",
-          reply,
-          generalConfiguration,
-          bookingConfiguration
-        );
+        return await this.processReply(appointment, "declined", reply, config);
       } else {
         logger.warn(
           {
@@ -338,10 +343,23 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
           "Unknown reply message"
         );
 
+        const args = getArguments({
+          appointment,
+          config,
+          locale: config.general.language,
+        });
+
+        const body = template(
+          TextMessageNotificationMessages[config.general.language]
+            .unknownAppointment ??
+            TextMessageNotificationMessages["en"].unknownOption,
+          args
+        );
+
         await this.props.services.NotificationService().sendTextMessage({
           phone: reply.from,
-          sender: generalConfiguration.name,
-          body: `Unknown reply. Respond Y to confirm, N to decline`,
+          sender: config.general.name,
+          body,
           webhookData: reply.data,
           participantType: "user",
           handledBy: "textMessageNotification.handlers.autoReply",
@@ -376,8 +394,11 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
     appointment: Appointment,
     newStatus: Extract<AppointmentStatus, "confirmed" | "declined">,
     reply: TextMessageReply,
-    generalConfiguration: GeneralConfiguration,
-    bookingConfiguration: BookingConfiguration
+    config: {
+      general: GeneralConfiguration;
+      booking: BookingConfiguration;
+      social: SocialConfiguration;
+    }
   ): Promise<RespondResult> {
     const logger = this.loggerFactory("processReply");
     logger.info(
@@ -395,13 +416,25 @@ Respond${!confirmed ? " Y to confirm," : ""} N to decline`;
         .EventsService()
         .changeAppointmentStatus(appointment._id, newStatus);
 
-      const dateTime = DateTime.fromJSDate(appointment.dateTime)
-        .setZone(bookingConfiguration.timeZone)
-        .toLocaleString(DateTime.DATETIME_FULL);
+      const args = getArguments({
+        appointment,
+        config,
+        locale: config.general.language,
+      });
 
-      const responseBody = `Hi ${generalConfiguration.name},
-Appointment by ${appointment.fields.name} for ${appointment.option.name} on ${dateTime} was ${newStatus}.
-Thank you`;
+      const responseBody = template(
+        TextMessageNotificationMessages[config.general.language][
+          newStatus === "confirmed"
+            ? "appointmentConfirmed"
+            : "appointmentDeclined"
+        ] ??
+          TextMessageNotificationMessages["en"][
+            newStatus === "confirmed"
+              ? "appointmentConfirmed"
+              : "appointmentDeclined"
+          ],
+        args
+      );
 
       logger.debug(
         {
@@ -416,7 +449,7 @@ Thank you`;
 
       await this.props.services.NotificationService().sendTextMessage({
         phone: reply.from,
-        sender: generalConfiguration.name,
+        sender: config.general.name,
         body: responseBody,
         webhookData: reply.data,
         participantType: "user",

@@ -20,7 +20,8 @@
       "delete": "Видалити вибраний блок",
       "desktopView": "Вид для комп'ютера",
       "mobileView": "Вид для мобільного",
-      "errors": "У документі є {{count}} проблема(и)",
+      "errors": "У документі є {count, plural, =1 {1 проблема} few {# проблеми} many {# проблем} other {# проблем}}",
+      "noErrors": "Чудово! Проблем не знайденоз!",
       "preview": "Попередній перегляд",
       "context": "Переглянути контекст",
       "contextValues": "Значення контексту",
@@ -153,7 +154,7 @@
       "conditionalContainer": {
         "displayName": "Умовний контейнер",
         "condition": "Умова",
-        "ifConditionIsCorrectFormat": "Якщо умова {{condition}} правильна, тоді",
+        "ifConditionIsCorrectFormat": "Якщо умова {condition} правильна, тоді",
         "otherwise": "Інакше",
         "value": "значення"
       },
@@ -164,7 +165,7 @@
       },
       "foreachContainer": {
         "displayName": "Контейнер циклу",
-        "forEachItemInValueFormat": "Для кожного {{item}} в {{value}}",
+        "forEachItemInValueFormat": "Для кожного <item></item> в {value}",
         "value": "Значення"
       },
       "divider": {

@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger, cn } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { CalendarClock, Clock, Timer } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
@@ -19,12 +19,12 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
   children,
 }) => {
   const t = useI18n("admin");
+  const locale = useLocale();
   const eventDate = DateTime.fromJSDate(event.start).setZone(timeZone);
   const endDate = DateTime.fromJSDate(event.end).setZone(timeZone);
   const duration = durationToTime(
     endDate.diff(eventDate, "minutes").toObject().minutes ?? 0
   );
-
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
@@ -41,7 +41,9 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
 
           <div className="flex items-center text-sm text-muted-foreground">
             <Clock className="mr-2 h-4 w-4" />
-            <span>{eventDate.toLocaleString(DateTime.DATETIME_FULL)}</span>
+            <span>
+              {eventDate.toLocaleString(DateTime.DATETIME_FULL, { locale })}
+            </span>
           </div>
           {duration.hours < 23 && (
             <div className="flex items-center text-sm text-muted-foreground">
@@ -54,7 +56,9 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
           )}
           <div className="flex items-center text-sm text-muted-foreground">
             <CalendarClock className="mr-2 h-4 w-4" />
-            <span>{endDate.toLocaleString(DateTime.DATETIME_FULL)}</span>
+            <span>
+              {endDate.toLocaleString(DateTime.DATETIME_FULL, { locale })}
+            </span>
           </div>
 
           {/* {event.location && (

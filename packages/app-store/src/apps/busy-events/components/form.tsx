@@ -137,7 +137,7 @@ export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
           onChange={setCurrentSchedule}
           disabled={week < todayWeek}
           weekDate={weekDate}
-          shiftsLabel={t("busyEvents.shifts", false)}
+          shiftsLabel={"apps.busyEvents.shifts"}
           addShiftLabel={t("busyEvents.addShift")}
         />
       )}

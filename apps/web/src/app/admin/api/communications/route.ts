@@ -98,7 +98,8 @@ export async function POST(request: NextRequest) {
       "social"
     );
 
-  const args = getArguments({ appointment, config, customer });
+  const locale = config.general.language;
+  const args = getArguments({ appointment, config, customer, locale });
 
   const customerId = "customerId" in data ? data.customerId : undefined;
   const appointmentId =

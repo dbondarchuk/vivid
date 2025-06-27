@@ -1,5 +1,5 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import { AppointmentAddon, IdName } from "@vivid/types";
 import {
@@ -67,10 +67,13 @@ export const columns: ColumnDef<
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) =>
-      DateTime.fromJSDate(field.updatedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
     header: tableSortHeader(
       "services.addons.table.columns.updatedAt",

@@ -23,7 +23,7 @@ export const AppointmentsCard: React.FC<AppointmentsCardProps> = ({
   className,
   onSelect,
 }) => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
 
   const onKeyPress = React.useCallback(
     (id: string, event: React.KeyboardEvent<any>) => {

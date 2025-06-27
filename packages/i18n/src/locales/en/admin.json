@@ -56,7 +56,9 @@
       "delete": "Delete",
       "cancel": "Cancel",
       "close": "Close"
-    }
+    },
+    "optional": "Optional",
+    "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}"
   },
   "navigation": {
     "overview": "Overview",
@@ -118,7 +120,7 @@
       },
       "columns": {
         "status": "Status",
-        "statusAriaLabel": "Status: {{status}}",
+        "statusAriaLabel": "Status: {status}",
         "option": "Option",
         "customer": "Customer",
         "dateTime": "Date & time",
@@ -167,7 +169,7 @@
       "transactionId": "Transaction ID",
       "timePaid": "Time paid",
       "cancel": "Cancel",
-      "declineAndRefund": "Decline and refund {{count}} {{payment}}",
+      "declineAndRefund": "Decline and refund {count} {payment}",
       "decline": "Decline",
       "payment": "payment",
       "payments": "payments",
@@ -196,7 +198,7 @@
     },
     "calendar": {
       "loading": "Loading",
-      "eventTitle": "{{customer}} for {{service}}"
+      "eventTitle": "{customer} for {service}"
     },
     "new": {
       "title": "New appointment",
@@ -247,7 +249,7 @@
       "appointmentCommunications": "Appointment communications"
     },
     "detail": {
-      "by": "By {{name}}"
+      "by": "By {name}"
     },
     "form": {
       "dateTimeRequired": "Date and time are required",
@@ -333,7 +335,7 @@
         "description": "This action cannot be undone. This will delete selected assets",
         "confirm": "Delete selected",
         "cancel": "Cancel",
-        "selectedCount": "Delete selected {{count}} asset(s)",
+        "selectedCount": "Delete selected {count, plural, =1 {asset} other {# assets}}",
         "success": "Selected assets have been deleted",
         "error": "There was a problem with your request."
       },
@@ -343,10 +345,10 @@
     },
     "toasts": {
       "changesSaved": "Your changes were saved.",
-      "assetDeleted": "Asset {{filename}} was successfully deleted.",
+      "assetDeleted": "Asset {filename} was successfully deleted.",
       "copied": "Copied",
-      "relativeUrlCopied": "Asset relative url '{{url}}' was copied to clipboard.",
-      "absoluteUrlCopied": "Asset absolute url '{{url}}' was copied to clipboard."
+      "relativeUrlCopied": "Asset relative url '{url}' was copied to clipboard.",
+      "absoluteUrlCopied": "Asset absolute url '{url}' was copied to clipboard."
     }
   },
   "communicationLogs": {
@@ -360,7 +362,7 @@
     "cancel": "Cancel",
     "logsCleared": "Your logs have been cleared",
     "selectedLogsCleared": "Selected logs have been cleared",
-    "clearSelectedCount": "Clear selected {{count}} log(s)",
+    "clearSelectedCount": "Clear selected {count, plural, =1 {log} other {# logs}}",
     "table": {
       "columns": {
         "direction": "Direction",
@@ -472,7 +474,7 @@
         "description": "This action cannot be undone. This will delete selected customers",
         "confirm": "Delete selected",
         "cancel": "Cancel",
-        "selectedCount": "Delete selected {{count}} customer(s)",
+        "selectedCount": "Delete selected {count, plural, =1 {customer} other {# customers}}",
         "success": "Selected customers have been deleted",
         "error": "There was a problem with your request.",
         "cannotDeleteWithAppointments": "Cannot delete customers who have assigned appointments",
@@ -483,7 +485,7 @@
         "description": "This action cannot be undone. This will merge selected customers into the first one",
         "confirm": "Merge selected",
         "cancel": "Cancel",
-        "selectedCount": "Merge selected {{count}} customer(s)",
+        "selectedCount": "Merge selected {count, plural, =1 {customer} other {# customers}}",
         "success": "Selected customers have been merged",
         "error": "There was a problem with your request.",
         "targetCustomer": "Target customer"
@@ -496,7 +498,7 @@
       "changesSaved": "Your changes were saved.",
       "customerCreated": "Customer created successfully.",
       "customerUpdated": "Customer updated successfully.",
-      "customerDeleted": "Customer '{{name}}' was deleted."
+      "customerDeleted": "Customer '{name}' was deleted."
     }
   },
   "pages": {
@@ -535,7 +537,9 @@
       "doNotCombineKeywords": "Do not combine keywords",
       "doNotCombineKeywordsTooltip": "Should the page keywords be combined with website keywords",
       "fullWidthPage": "Full width page",
-      "fullWidthPageTooltip": "If enabled, page will not be wrapped in Container element"
+      "fullWidthPageTooltip": "If enabled, page will not be wrapped in Container element",
+      "language": "Language",
+      "defaultLanguage": "Default"
     },
     "table": {
       "columns": {
@@ -564,7 +568,7 @@
         "description": "This action cannot be undone. This will delete selected pages",
         "confirm": "Delete selected",
         "cancel": "Cancel",
-        "selectedCount": "Delete selected {{count}} page(s)",
+        "selectedCount": "Delete selected {count, plural, =1 {page} other {# pages}}",
         "success": "Selected pages have been deleted",
         "error": "There was a problem with your request."
       },
@@ -579,9 +583,9 @@
       "changesSaved": "Your changes were saved.",
       "pageCreated": "Page created successfully.",
       "pageUpdated": "Page updated successfully.",
-      "pageDeleted": "Page '{{title}}' was deleted.",
-      "relativeUrlCopied": "Page relative url '{{url}}' was copied to clipboard.",
-      "absoluteUrlCopied": "Page absolute url '{{url}}' was copied to clipboard."
+      "pageDeleted": "Page '{title}' was deleted.",
+      "relativeUrlCopied": "Page relative url '{url}' was copied to clipboard.",
+      "absoluteUrlCopied": "Page absolute url '{url}' was copied to clipboard."
     }
   },
   "services": {
@@ -590,12 +594,12 @@
       "selectField": "Select field"
     },
     "fieldSelectCard": {
-      "moveField": "Move {{type}} field",
+      "moveField": "Move {type} field",
       "field": "Field",
       "required": "Required",
       "requiredTooltip": "Marks field as to be required",
       "deleteConfirmTitle": "Are you absolutely sure?",
-      "deleteConfirmDescription": "Are you sure you want to remove this field from this {{type}}?",
+      "deleteConfirmDescription": "Are you sure you want to remove this field from this {type}?",
       "cancel": "Cancel",
       "delete": "Delete"
     },
@@ -649,7 +653,7 @@
           "name": "Name",
           "updatedAt": "Updated at",
           "cellAction": {
-            "optionDeleted": "Option '{{name}}' was deleted.",
+            "optionDeleted": "Option '{name}' was deleted.",
             "deleteError": "There was a problem with your request.",
             "actions": "Actions",
             "update": "Update",
@@ -661,7 +665,7 @@
       "deleteSelected": {
         "success": "Selected options have been deleted",
         "error": "There was a problem with your request.",
-        "button": "Delete selected {{count}} option(s)",
+        "button": "Delete selected {count, plural, =1 {option} other {# options}}",
         "confirmTitle": "Are you absolutely sure?",
         "confirmDescription": "This action cannot be undone.",
         "cancel": "Cancel",
@@ -718,11 +722,11 @@
           "updatedAt": "Updated at",
           "addons": "Add-ons",
           "options": "Options",
-          "addonsInDialog": "{{label}} in add-ons",
-          "optionsInDialog": "{{label}} in options"
+          "addonsInDialog": "{label} in add-ons",
+          "optionsInDialog": "{label} in options"
         },
         "cellAction": {
-          "fieldDeleted": "Option field '{{label}}' was deleted.",
+          "fieldDeleted": "Option field '{label}' was deleted.",
           "deleteError": "There was a problem with your request.",
           "actions": "Actions",
           "update": "Update",
@@ -733,7 +737,7 @@
       "deleteSelected": {
         "success": "Selected fields have been deleted",
         "error": "There was a problem with your request.",
-        "button": "Delete selected {{count}} field(s)",
+        "button": "Delete selected {count, plural, =1 {field} other {# fields}}",
         "confirmTitle": "Are you absolutely sure?",
         "confirmDescription": "This action cannot be undone. This will delete selected fields and remove them from all options and add-ons that use them",
         "cancel": "Cancel",
@@ -829,7 +833,7 @@
           "updatedAt": "Updated at"
         },
         "cellAction": {
-          "discountDeleted": "Discount '{{name}}' was deleted.",
+          "discountDeleted": "Discount '{name}' was deleted.",
           "deleteError": "There was a problem with your request.",
           "actions": "Actions",
           "update": "Update",
@@ -840,7 +844,7 @@
       "deleteSelected": {
         "success": "Selected discounts have been deleted",
         "error": "There was a problem with your request.",
-        "button": "Delete selected {{count}} discount(s)",
+        "button": "Delete selected {count, plural, =1 {discount} other {# discounts}}",
         "confirmTitle": "Are you absolutely sure?",
         "confirmDescription": "This action cannot be undone. This will delete selected discounts.",
         "confirmDescription2": "This will not affect existing appointments that use these discounts",
@@ -882,10 +886,10 @@
           "name": "Name",
           "updatedAt": "Updated at",
           "options": "Options",
-          "optionsInDialog": "{{name}} in options"
+          "optionsInDialog": "{name} in options"
         },
         "cellAction": {
-          "addonDeleted": "Add-on '{{name}}' was deleted.",
+          "addonDeleted": "Add-on '{name}' was deleted.",
           "deleteError": "There was a problem with your request.",
           "actions": "Actions",
           "update": "Update",
@@ -896,7 +900,7 @@
       "deleteSelected": {
         "success": "Selected add-ons have been deleted",
         "error": "There was a problem with your request.",
-        "button": "Delete selected {{count}} add-on(s)",
+        "button": "Delete selected {count, plural, =1 {add-on} other {# add-ons}}",
         "confirmTitle": "Are you absolutely sure?",
         "confirmDescription": "This action cannot be undone. This will delete selected add-ons and remove them from all options that use them",
         "cancel": "Cancel",
@@ -909,11 +913,11 @@
       "title": "Communication templates"
     },
     "formPage": {
-      "typeTemplates": "{{type}} templates",
+      "typeTemplates": "{type} templates",
       "new": "New"
     },
     "newPage": {
-      "title": "New {{type}} template"
+      "title": "New {type} template"
     },
     "editPage": {
       "title": "Update template",
@@ -947,7 +951,7 @@
       "copied": "Copied",
       "copyPath": "Copy path",
       "close": "Close",
-      "characterCount": "{{count}} characters",
+      "characterCount": "{count, plural, =1 {1 character} other {# characters}}",
       "preview": "Preview"
     },
     "table": {
@@ -961,7 +965,7 @@
         "updatedAt": "Updated at"
       },
       "cellAction": {
-        "templateDeleted": "Template '{{name}}' was deleted.",
+        "templateDeleted": "Template '{name}' was deleted.",
         "deleteError": "There was a problem with your request.",
         "actions": "Actions",
         "update": "Update",
@@ -971,7 +975,7 @@
       "deleteSelected": {
         "success": "Selected templates have been deleted",
         "error": "There was a problem with your request.",
-        "button": "Delete selected {{count}} template(s)",
+        "button": "Delete selected {count, plural, =1 {template} other {# templates}}",
         "confirmTitle": "Are you absolutely sure?",
         "confirmDescription": "This action cannot be undone. This will delete selected templates and may break notifications that use them",
         "cancel": "Cancel",
@@ -1063,10 +1067,10 @@
       "title": "Migrate existing assets",
       "description": "Migrate your existing assets from your previous storage",
       "sourceApp": "Source assets storage app",
-      "done": "Done: {{count}}",
-      "success": "Success: {{count}}",
-      "error": "Error: {{count}}",
-      "total": "Total: {{count}}",
+      "done": "Done: {count}",
+      "success": "Success: {count}",
+      "error": "Error: {count}",
+      "total": "Total: {count}",
       "migrate": "Migrate",
       "toasts": {
         "requestError": "Your request has failed"
@@ -1222,7 +1226,7 @@
             "delete": "Delete"
           },
           "optionSelector": {
-            "time": "{{hours}}hr {{minutes}}min",
+            "time": "{hours}hr {minutes}min",
             "requestFailed": "Request failed.",
             "loadingOptions": "Loading options...",
             "selectOption": "Select option"
@@ -1326,7 +1330,7 @@
       "noAppointments": "No appointments are scheduled",
       "noPendingAppointments": "No pending appointments",
       "caughtUp": "You've caught up on all requests. Good job!",
-      "pendingToast": "You have {{count}} pending appointment(s)",
+      "pendingToast": "You have {count, plural, =1 {one pending appointment} other {# pending appointments}}",
       "view": "View",
       "nextAppointments": "Next appointments"
     },
@@ -1363,7 +1367,7 @@
   "communications": {
     "viewMore": "View more",
     "logContent": "Message content",
-    "handler": "Handler: {{handler}}",
+    "handler": "Handler: {handler}",
     "data": "Data",
     "logData": "Log data",
     "sendNew": "Send new",
@@ -1395,7 +1399,7 @@
     "weekly": "Weekly",
     "daily": "Daily",
     "agenda": "Agenda",
-    "eventTitle": "{{customer}} for {{service}}",
+    "eventTitle": "{customer} for {service}",
     "appointment": "Appointment",
     "status": "Status",
     "price": "Price",
@@ -1424,7 +1428,10 @@
     "email": "Email",
     "password": "Password",
     "email_or_password_incorrect": "Email or password is incorrect",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "signInDescription": "Enter your email below to sign into your account",
+    "quote": "I love it!",
+    "quoteAuthor": "Olesia Bondarchuk"
   },
   "menuItem": {
     "fields": {

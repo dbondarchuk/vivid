@@ -294,7 +294,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
               </PopoverContent>
             </Popover>
           ) : (
-            <ToolbarButton tooltip="Awesome! No issues found!">
+            <ToolbarButton tooltip={t("baseBuilder.builderToolbar.noErrors")}>
               <Check className="text-green-600" />
             </ToolbarButton>
           )}

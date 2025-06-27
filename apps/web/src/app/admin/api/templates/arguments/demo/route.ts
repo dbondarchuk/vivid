@@ -28,7 +28,6 @@ export async function GET(request: NextRequest) {
       "general",
       "social"
     );
-
   const demoArguments = getArguments({
     appointment:
       searchParams.get("noAppointment") !== "true"
@@ -36,6 +35,7 @@ export async function GET(request: NextRequest) {
         : undefined,
     config,
     customer: demoAppointment.customer,
+    locale: config.general.language,
   });
 
   logger.debug({}, "Successfully retrieved demo template arguments");

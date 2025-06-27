@@ -3,6 +3,7 @@
 import { useI18n } from "@vivid/i18n";
 import { AvailablePeriod, Shift } from "@vivid/types";
 import { GripHorizontal, X } from "lucide-react";
+import { DateTime } from "luxon";
 import React, {
   useCallback,
   useEffect,
@@ -10,16 +11,15 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { use12HourFormat } from "../../hooks";
 import { cn } from "../../utils";
-import { is12hourUserTimeFormat } from "@vivid/utils";
-import { DateTime } from "luxon";
 import {
   formatTime,
   generateId,
   generateTimeSlots,
+  getWeekDayMap,
   minutesToTime,
   timeToMinutes,
-  getWeekDayMap,
 } from "./utils";
 
 // Define types
@@ -98,7 +98,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     time: string;
   } | null>(null);
 
-  const uses12HourFormat = useMemo(() => is12hourUserTimeFormat(), []);
+  const uses12HourFormat = use12HourFormat();
   const [cellDimensions, setCellDimensions] = useState<
     Record<number, { width: number; height: number }>
   >({});

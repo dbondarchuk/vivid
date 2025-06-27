@@ -1,6 +1,6 @@
 "use client";
 
-import { ComplexAppSetupProps, StatusText } from "@vivid/types";
+import { ComplexAppSetupProps } from "@vivid/types";
 import {
   ArgumentsAutocomplete,
   ConnectedAppStatusMessage,
@@ -24,9 +24,9 @@ import {
   EmailTemplateKeys,
 } from "./models";
 
+import { useI18n } from "@vivid/i18n";
 import { SaveButton, useDemoArguments } from "@vivid/ui";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
-import { useI18n } from "@vivid/i18n";
 
 const EmailTemplateForm: React.FC<{
   form: UseFormReturn<CustomerEmailNotificationConfiguration>;

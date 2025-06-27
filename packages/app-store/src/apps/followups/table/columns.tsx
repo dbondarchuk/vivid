@@ -9,7 +9,7 @@ import {
 import { DateTime } from "luxon";
 import { FollowUp } from "../models";
 import { CellAction } from "./cell-action";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 
 export const columns: ColumnDef<FollowUp>[] = [
   {
@@ -86,10 +86,13 @@ export const columns: ColumnDef<FollowUp>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) =>
-      DateTime.fromJSDate(field.updatedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
     header: tableSortHeader(
       "followUps.table.columns.updatedAt",

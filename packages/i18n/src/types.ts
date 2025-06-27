@@ -1,9 +1,9 @@
-import admin from "./locales/en/admin.json";
-import apps from "./locales/en/apps.json";
-import builder from "./locales/en/builder.json";
-import translation from "./locales/en/translation.json";
-import ui from "./locales/en/ui.json";
-import validation from "./locales/en/validation.json";
+import type admin from "./locales/en/admin.json";
+import type apps from "./locales/en/apps.json";
+import type builder from "./locales/en/builder.json";
+import type translation from "./locales/en/translation.json";
+import type ui from "./locales/en/ui.json";
+import type validation from "./locales/en/validation.json";
 
 type Leaves<T> = T extends object
   ? {
@@ -36,7 +36,7 @@ export type I18nKeys =
   | ValidationKeys
   | BuilderKeys;
 
-export type I18nKey<T extends I18nNamespaces> = T extends "translation"
+type _I18nKey<T extends I18nNamespaces> = T extends "translation"
   ? TranslationKeys
   : T extends "admin"
     ? AdminKeys
@@ -46,22 +46,41 @@ export type I18nKey<T extends I18nNamespaces> = T extends "translation"
         ? AppsKeys
         : T extends "validation"
           ? ValidationKeys
-          : T extends "builder"
-            ? BuilderKeys
-            : never;
+          : // : T extends "builder"
+            //   ? BuilderKeys
+            //   : never;
+            BuilderKeys;
 
-export type I18nFn<T extends I18nNamespaces> = (
+export type AllKeys = {
+  [K in I18nNamespaces]: `${K}.${_I18nKey<K>}`;
+}[I18nNamespaces];
+
+export type I18nKey<T extends I18nNamespaces | undefined> = T extends undefined
+  ? AllKeys
+  : _I18nKey<NonNullable<T>>;
+
+type I18nBaseFn<T extends I18nNamespaces | undefined> = (
   key: I18nKey<T>,
-  args?: Record<string, any> | false
+  args?: Record<string, any>
 ) => string;
 
-export type Translations = {
-  [x: string]: Translations | string;
+export type ChangeReturnType<T extends (...args: any[]) => any, NewReturn> = (
+  ...args: Parameters<T>
+) => NewReturn;
+
+export type I18nFn<T extends I18nNamespaces | undefined> = I18nBaseFn<T> & {
+  rich: ChangeReturnType<I18nBaseFn<T>, React.ReactNode>;
+  markup: I18nBaseFn<T>;
+  raw: ChangeReturnType<I18nBaseFn<T>, any>;
+  has: (key: I18nKey<T>) => boolean;
 };
 
-export const languages = ["en", "uk"] as const;
-export const defaultNamespace: I18nNamespaces = "translation";
-export const cookieName = "i18next";
+// export type Translations = {
+//   [x: string]: Translations | string;
+// };
 
+// export const defaultNamespace: I18nNamespaces = "translation";
+
+export const languages = ["en", "uk"] as const;
 export type Language = (typeof languages)[number];
 export const fallbackLanguage: Language = "en";

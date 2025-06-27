@@ -1,7 +1,7 @@
 "use client";
 import { Markdown } from "@/components/web/markdown";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import JsonView from "@uiw/react-json-view";
 import { CommunicationLog } from "@vivid/types";
 import {
@@ -223,8 +223,13 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     accessorFn: () => "", // Data column doesn't need sorting
   },
   {
-    accessorFn: (log) =>
-      DateTime.fromJSDate(log.dateTime).toLocaleString(DateTime.DATETIME_MED),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.dateTime).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "dateTime",
     header: tableSortHeader(
       "communicationLogs.table.columns.dateTime",

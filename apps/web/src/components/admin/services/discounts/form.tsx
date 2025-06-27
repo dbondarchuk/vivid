@@ -41,8 +41,9 @@ import {
   NonSortable,
   SaveButton,
   toastPromise,
+  use12HourFormat,
 } from "@vivid/ui";
-import { is12hourUserTimeFormat } from "@vivid/utils";
+
 import { PlusCircle, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -212,8 +213,9 @@ const DiscountLimitCard: React.FC<{
 export const DiscountForm: React.FC<{
   initialData?: DiscountUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
-  const t = useI18n("admin");
-  const use12HourFormat = React.useMemo(() => is12hourUserTimeFormat(), []);
+  const t = useI18n();
+  const timeFormat = t("ui.timePicker.format");
+  const uses12HourFormat = use12HourFormat();
   const formSchema = getDiscountSchemaWithUniqueCheck(
     (name, codes) =>
       checkUniqueNameAndCode(
@@ -255,8 +257,8 @@ export const DiscountForm: React.FC<{
       };
 
       await toastPromise(fn(), {
-        success: t("services.discounts.form.toasts.changesSaved"),
-        error: t("services.discounts.form.toasts.requestError"),
+        success: t("admin.services.discounts.form.toasts.changesSaved"),
+        error: t("admin.services.discounts.form.toasts.requestError"),
       });
     } catch (error: any) {
       console.error(error);
@@ -299,16 +301,18 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.name")}{" "}
+                    {t("admin.services.discounts.form.name")}{" "}
                     <InfoTooltip>
-                      {t("services.discounts.form.nameTooltip")}
+                      {t("admin.services.discounts.form.nameTooltip")}
                     </InfoTooltip>
                   </FormLabel>
 
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder={t("services.discounts.form.namePlaceholder")}
+                      placeholder={t(
+                        "admin.services.discounts.form.namePlaceholder"
+                      )}
                       {...field}
                     />
                   </FormControl>
@@ -321,12 +325,14 @@ export const DiscountForm: React.FC<{
               name="enabled"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("services.discounts.form.status")}</FormLabel>
+                  <FormLabel>
+                    {t("admin.services.discounts.form.status")}
+                  </FormLabel>
                   <FormControl>
                     <BooleanSelect
                       className="w-full"
-                      trueLabel={t("services.discounts.form.active")}
-                      falseLabel={t("services.discounts.form.disabled")}
+                      trueLabel={t("admin.services.discounts.form.active")}
+                      falseLabel={t("admin.services.discounts.form.disabled")}
                       value={field.value}
                       onValueChange={(item) => {
                         field.onChange(item);
@@ -344,9 +350,9 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.type")}{" "}
+                    {t("admin.services.discounts.form.type")}{" "}
                     <InfoTooltip>
-                      {t("services.discounts.form.typeTooltip")}
+                      {t("admin.services.discounts.form.typeTooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -355,9 +361,11 @@ export const DiscountForm: React.FC<{
                       className="flex w-full font-normal text-base"
                       values={discountTypes.map((type) => ({
                         value: type,
-                        label: t(`common.labels.discountType.${type}`),
+                        label: t(`admin.common.labels.discountType.${type}`),
                       }))}
-                      searchLabel={t("services.discounts.form.typePlaceholder")}
+                      searchLabel={t(
+                        "admin.services.discounts.form.typePlaceholder"
+                      )}
                       value={field.value}
                       onItemSelect={(item) => {
                         field.onChange(item);
@@ -374,7 +382,9 @@ export const DiscountForm: React.FC<{
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("services.discounts.form.value")}</FormLabel>
+                  <FormLabel>
+                    {t("admin.services.discounts.form.value")}
+                  </FormLabel>
                   <FormControl>
                     <InputGroup>
                       <InputGroupInput>
@@ -421,18 +431,20 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.startDate")}{" "}
+                    {t("admin.services.discounts.form.startDate")}{" "}
                     <InfoTooltip>
-                      <p>{t("services.discounts.form.startDateTooltip")}</p>
-                      <p>Optional</p>
+                      <p>
+                        {t("admin.services.discounts.form.startDateTooltip")}
+                      </p>
+                      <p>{t("admin.common.optional")}</p>
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <DateTimeInput
                       disabled={loading}
                       clearable
-                      format="MM/dd/yyyy hh:mm a"
-                      use12HourFormat={use12HourFormat}
+                      format={timeFormat}
+                      use12HourFormat={uses12HourFormat}
                       {...field}
                     />
                   </FormControl>
@@ -446,18 +458,18 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.endDate")}{" "}
+                    {t("admin.services.discounts.form.endDate")}{" "}
                     <InfoTooltip>
-                      <p>{t("services.discounts.form.endDateTooltip")}</p>
-                      <p>Optional</p>
+                      <p>{t("admin.services.discounts.form.endDateTooltip")}</p>
+                      <p>{t("admin.common.optional")}</p>
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <DateTimeInput
                       disabled={loading}
                       clearable
-                      format="MM/dd/yyyy hh:mm a"
-                      use12HourFormat={use12HourFormat}
+                      format={timeFormat}
+                      use12HourFormat={uses12HourFormat}
                       {...field}
                     />
                   </FormControl>
@@ -471,22 +483,22 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.appointmentStartDate")}
+                    {t("admin.services.discounts.form.appointmentStartDate")}
                     <InfoTooltip>
                       <p>
                         {t(
-                          "services.discounts.form.appointmentStartDateTooltip"
+                          "admin.services.discounts.form.appointmentStartDateTooltip"
                         )}
                       </p>
-                      <p>Optional</p>
+                      <p>{t("admin.common.optional")}</p>
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <DateTimeInput
                       disabled={loading}
                       clearable
-                      format="MM/dd/yyyy hh:mm a"
-                      use12HourFormat={use12HourFormat}
+                      format={timeFormat}
+                      use12HourFormat={uses12HourFormat}
                       {...field}
                     />
                   </FormControl>
@@ -500,20 +512,22 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.appointmentEndDate")}{" "}
+                    {t("admin.services.discounts.form.appointmentEndDate")}{" "}
                     <InfoTooltip>
                       <p>
-                        {t("services.discounts.form.appointmentEndDateTooltip")}
+                        {t(
+                          "admin.services.discounts.form.appointmentEndDateTooltip"
+                        )}
                       </p>
-                      <p>Optional</p>
+                      <p>{t("admin.common.optional")}</p>
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <DateTimeInput
                       disabled={loading}
                       clearable
-                      format="MM/dd/yyyy hh:mm a"
-                      use12HourFormat={use12HourFormat}
+                      format={timeFormat}
+                      use12HourFormat={uses12HourFormat}
                       {...field}
                     />
                   </FormControl>
@@ -527,10 +541,12 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.maxUsage")}{" "}
+                    {t("admin.services.discounts.form.maxUsage")}{" "}
                     <InfoTooltip>
-                      <p>{t("services.discounts.form.maxUsageTooltip")}</p>
-                      <p>Optional</p>
+                      <p>
+                        {t("admin.services.discounts.form.maxUsageTooltip")}
+                      </p>
+                      <p>{t("admin.common.optional")}</p>
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -551,14 +567,14 @@ export const DiscountForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t("services.discounts.form.maxUsagePerCustomer")}{" "}
+                    {t("admin.services.discounts.form.maxUsagePerCustomer")}{" "}
                     <InfoTooltip>
                       <p>
                         {t(
-                          "services.discounts.form.maxUsagePerCustomerTooltip"
+                          "admin.services.discounts.form.maxUsagePerCustomerTooltip"
                         )}
                       </p>
-                      <p>Optional</p>
+                      <p>{t("admin.common.optional")}</p>
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
@@ -584,7 +600,7 @@ export const DiscountForm: React.FC<{
                   <span
                     className={cn(codesState.invalid && "text-destructive")}
                   >
-                    {t("services.discounts.form.codes")}
+                    {t("admin.services.discounts.form.codes")}
                   </span>
                 }
                 ids={codes}
@@ -638,7 +654,7 @@ export const DiscountForm: React.FC<{
           />
 
           <NonSortable
-            title={t("services.discounts.form.limitTo")}
+            title={t("admin.services.discounts.form.limitTo")}
             ids={limitTo.fields.map((f) => f.id)}
             onAdd={() => limitTo.append({})}
             disabled={loading}
@@ -656,12 +672,12 @@ export const DiscountForm: React.FC<{
               ))}
               {!limitTo.fields.length && (
                 <div className="flex flex-col gap-4 px-2 py-4 border rounded bg-card">
-                  {t("services.discounts.form.anyOptionOrAddon")}
+                  {t("admin.services.discounts.form.anyOptionOrAddon")}
                 </div>
               )}
 
               <div className="text-sm text-muted-foreground">
-                {t("services.discounts.form.limitToDescription")}
+                {t("admin.services.discounts.form.limitToDescription")}
               </div>
             </div>
           </NonSortable>

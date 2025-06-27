@@ -140,6 +140,7 @@ export default class TextMessageAutoReplyConnectedApp
         additionalProperties: {
           reply,
         },
+        locale: config.general.language,
       });
 
       if (appData.data?.autoReplyTemplateId) {

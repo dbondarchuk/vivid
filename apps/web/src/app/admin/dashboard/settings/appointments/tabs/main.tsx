@@ -1,3 +1,4 @@
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   allowPromoCodeType,
   BookingConfiguration,
@@ -29,17 +30,12 @@ import {
   SelectValue,
   SimpleTimePicker,
   TagInput,
+  use12HourFormat,
 } from "@vivid/ui";
-import {
-  formatTime,
-  formatTimeLocale,
-  is12hourUserTimeFormat,
-  parseTime,
-} from "@vivid/utils";
+import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
 import { getTimeZones } from "@vvo/tzdb";
 import React from "react";
 import { TabProps } from "./types";
-import { useI18n } from "@vivid/i18n";
 
 const timeZones = getTimeZones();
 const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
@@ -51,11 +47,12 @@ const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
 const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
   const t = useI18n("admin");
   const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const uses12HourFormat = use12HourFormat();
 
   return (
     <div className="flex flex-col gap-2 p-3">
       <SimpleTimePicker
-        use12HourFormat={is12hourUserTimeFormat()}
+        use12HourFormat={uses12HourFormat}
         onChange={(d) => {
           setDate(d);
         }}
@@ -83,6 +80,7 @@ const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
 
 export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
+  const locale = useLocale();
 
   const stepLabels: Record<
     Exclude<BookingConfiguration["slotStart"], undefined>,
@@ -431,7 +429,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   }}
                   tagValidator={customTimeSlotSchema}
                   tagDisplayTransform={(time) =>
-                    formatTimeLocale(parseTime(time))
+                    formatTimeLocale(parseTime(time), locale)
                   }
                   addItemTemplate={TimePickerTag}
                 />

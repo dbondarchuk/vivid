@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import Image from "next/image";
 import { DefaultExtensionType, defaultStyles, FileIcon } from "react-file-icon";
 
@@ -12,12 +12,7 @@ import {
 import { AppointmentCalendar } from "@/components/admin/appointments/appointment-calendar";
 import { Markdown } from "@/components/web/markdown";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Appointment,
-  AppointmentStatus,
-  AssetEntity,
-  StatusText,
-} from "@vivid/types";
+import { Appointment, AppointmentStatus, AssetEntity } from "@vivid/types";
 import {
   Accordion,
   AccordionContent,
@@ -91,6 +86,7 @@ export const AppointmentView: React.FC<{
   timeZone?: string;
 }> = ({ appointment: propAppointment, timeZone }) => {
   const t = useI18n("admin");
+  const locale = useLocale();
   const router = useRouter();
 
   const [communicationsKey, setCommunicationsKey] = React.useState<string>();
@@ -305,14 +301,14 @@ export const AppointmentView: React.FC<{
                     <AccordionTrigger>
                       {DateTime.fromJSDate(appointment.dateTime)
                         .setZone(timeZone)
-                        .toLocaleString(
-                          DateTime.DATETIME_MED_WITH_WEEKDAY
-                        )}{" "}
+                        .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY, {
+                          locale,
+                        })}{" "}
                       -{" "}
                       {DateTime.fromJSDate(appointment.dateTime)
                         .setZone(timeZone)
                         .plus({ minutes: appointment.totalDuration })
-                        .toLocaleString(DateTime.TIME_SIMPLE)}
+                        .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="grid grid-cols-2 gap-1">
@@ -320,7 +316,12 @@ export const AppointmentView: React.FC<{
                         <div>
                           {DateTime.fromJSDate(appointment.dateTime)
                             .setZone(timeZone)
-                            .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                            .toLocaleString(
+                              DateTime.DATETIME_MED_WITH_WEEKDAY,
+                              {
+                                locale,
+                              }
+                            )}
                         </div>
                         <div>{t("appointments.view.duration")}:</div>
                         <div>
@@ -354,14 +355,20 @@ export const AppointmentView: React.FC<{
                             .setZone(timeZone)
                             .plus({ minutes: appointment.totalDuration })
                             .toLocaleString(
-                              DateTime.DATETIME_MED_WITH_WEEKDAY
+                              DateTime.DATETIME_MED_WITH_WEEKDAY,
+                              { locale }
                             )}{" "}
                         </div>
                         <div>{t("appointments.view.requestedAt")}:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.createdAt)
                             .setZone(timeZone)
-                            .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                            .toLocaleString(
+                              DateTime.DATETIME_MED_WITH_WEEKDAY,
+                              {
+                                locale,
+                              }
+                            )}
                         </div>
                       </div>
                     </AccordionContent>
@@ -373,7 +380,9 @@ export const AppointmentView: React.FC<{
               <dt className="flex self-center">
                 {t("appointments.view.status")}
               </dt>
-              <dd className="col-span-2">{StatusText[appointment.status]}</dd>
+              <dd className="col-span-2">
+                {t(`appointments.status.${appointment.status}`)}
+              </dd>
             </div>
 
             {!!appointment.totalPrice && (

@@ -1,5 +1,5 @@
 "use client";
-import { useI18n } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import { Discount } from "@vivid/types";
 import {
@@ -99,12 +99,15 @@ export const columns: ColumnDef<
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (discount) =>
-      discount.startDate
-        ? DateTime.fromJSDate(discount.startDate).toLocaleString(
-            DateTime.DATETIME_MED
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return row.original.startDate
+        ? DateTime.fromJSDate(row.original.startDate).toLocaleString(
+            DateTime.DATETIME_MED,
+            { locale }
           )
-        : "",
+        : "";
+    },
     id: "startDate",
     header: tableSortHeader(
       "services.discounts.table.columns.startDate",
@@ -114,12 +117,15 @@ export const columns: ColumnDef<
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (discount) =>
-      discount.endDate
-        ? DateTime.fromJSDate(discount.endDate).toLocaleString(
-            DateTime.DATETIME_MED
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return row.original.endDate
+        ? DateTime.fromJSDate(row.original.endDate).toLocaleString(
+            DateTime.DATETIME_MED,
+            { locale }
           )
-        : "",
+        : "";
+    },
     id: "endDate",
     header: tableSortHeader(
       "services.discounts.table.columns.endDate",
@@ -146,10 +152,13 @@ export const columns: ColumnDef<
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) =>
-      DateTime.fromJSDate(field.updatedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
     header: tableSortHeader(
       "services.discounts.table.columns.updatedAt",

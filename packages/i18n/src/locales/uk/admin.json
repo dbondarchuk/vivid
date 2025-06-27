@@ -11,7 +11,7 @@
     "labels": {
       "channel": {
         "text-message": "Текстове повідомлення",
-        "email": "Email"
+        "email": "Електронна пошта"
       },
       "direction": {
         "inbound": "Вхідний",
@@ -56,7 +56,9 @@
       "delete": "Видалити",
       "cancel": "Скасувати",
       "close": "Закрити"
-    }
+    },
+    "optional": "Опціонально",
+    "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}"
   },
   "navigation": {
     "overview": "Огляд",
@@ -83,7 +85,7 @@
     "scripts": "Скрипти",
     "communications": "Комунікації",
     "templates": "Шаблони",
-    "logs": "Журнали",
+    "logs": "Журнал комунікацій",
     "communicationLogs": "Журнал комунікацій",
     "monitorMessages": "Моніторинг усіх надісланих та отриманих повідомлень",
     "apps": "Додатки",
@@ -106,7 +108,7 @@
     "scheduleAppointment": "Запланувати запис",
     "addNew": "Додати новий",
     "status": {
-      "pending": "Очікує",
+      "pending": "Очікуєт підтвердження",
       "confirmed": "Підтверджено",
       "declined": "Відхилено",
       "rescheduled": "Перенесено"
@@ -118,7 +120,7 @@
       },
       "columns": {
         "status": "Статус",
-        "statusAriaLabel": "Статус: {{status}}",
+        "statusAriaLabel": "Статус: {status}",
         "option": "Опція",
         "customer": "Клієнт",
         "dateTime": "Дата та час",
@@ -167,7 +169,7 @@
       "transactionId": "ID транзакції",
       "timePaid": "Час оплати",
       "cancel": "Скасувати",
-      "declineAndRefund": "Відхилити та повернути {{count}} {{payment}}",
+      "declineAndRefund": "Відхилити та повернути {count} {payment}",
       "decline": "Відхилити",
       "payment": "платіж",
       "payments": "платежів",
@@ -178,8 +180,8 @@
       "by": "від",
       "dateTime": "Дата та час",
       "duration": "Тривалість",
-      "confirmOverlap": "Підтвердити перекриття",
-      "confirmOverlapDescription": "Я розумію, що перенесення цього запису створить перекриття в моєму розкладі",
+      "confirmOverlap": "Підтвердити накладення",
+      "confirmOverlapDescription": "Я розумію, що перенесення цього запису створить накладення в моєму розкладі",
       "close": "Закрити",
       "reschedule": "Перенести",
       "confirmTitle": "Ви абсолютно впевнені?",
@@ -196,11 +198,11 @@
     },
     "calendar": {
       "loading": "Завантаження",
-      "eventTitle": "{{customer}} для {{service}}"
+      "eventTitle": "{customer} для {service}"
     },
     "new": {
       "title": "Новий запис",
-      "description": "Запланувати новий запис від імені клієнта"
+      "description": "Створити новий запис від імені клієнта"
     },
     "view": {
       "noteUpdated": "Примітку до запису було оновлено.",
@@ -247,7 +249,7 @@
       "appointmentCommunications": "Комунікації запису"
     },
     "detail": {
-      "by": "Від {{name}}"
+      "by": "Від {name}"
     },
     "form": {
       "dateTimeRequired": "Дата та час обов'язкові",
@@ -279,9 +281,9 @@
       "note": "Примітка",
       "confirmAppointment": "Підтвердити запис",
       "confirmAppointmentDescription": "Позначити запис як підтверджений",
-      "confirmOverlap": "Підтвердити перекриття",
-      "confirmOverlapDescription": "Я розумію, що планування цього запису створить перекриття в моєму розкладі",
-      "scheduleAppointment": "Запланувати запис"
+      "confirmOverlap": "Підтвердити накладення",
+      "confirmOverlapDescription": "Я розумію, що планування цього запису створить накладення в моєму розкладі",
+      "scheduleAppointment": "Створити запис"
     },
     "actionButton": {
       "changesSaved": "Ваші зміни були збережені.",
@@ -333,7 +335,7 @@
         "description": "Цю дію неможливо скасувати. Це видалить вибрані ресурси",
         "confirm": "Видалити вибрані",
         "cancel": "Скасувати",
-        "selectedCount": "Видалити вибрані {{count}} ресурс(ів)",
+        "selectedCount": "Видалити вибрані {count, plural, =1 {ресурс} few {# ресурси} many {# ресурсів} other {# ресурсів}}",
         "success": "Вибрані ресурси були видалені",
         "error": "Виникла проблема з вашим запитом."
       },
@@ -343,10 +345,10 @@
     },
     "toasts": {
       "changesSaved": "Ваші зміни були збережені.",
-      "assetDeleted": "Ресурс {{filename}} було успішно видалено.",
+      "assetDeleted": "Ресурс {filename} було успішно видалено.",
       "copied": "Скопійовано",
-      "relativeUrlCopied": "Відносний url ресурсу '{{url}}' скопійовано в буфер обміну.",
-      "absoluteUrlCopied": "Абсолютний url ресурсу '{{url}}' скопійовано в буфер обміну."
+      "relativeUrlCopied": "Відносний url ресурсу '{url}' скопійовано в буфер обміну.",
+      "absoluteUrlCopied": "Абсолютний url ресурсу '{url}' скопійовано в буфер обміну."
     }
   },
   "communicationLogs": {
@@ -360,7 +362,7 @@
     "cancel": "Скасувати",
     "logsCleared": "Ваші журнали були очищені",
     "selectedLogsCleared": "Вибрані журнали були очищені",
-    "clearSelectedCount": "Очистити вибрані {{count}} запис(ів)",
+    "clearSelectedCount": "Очистити {count, plural, =1 {вибраний запис} few {вибрані # записи} many {вибраних # записів} other {вибраних # записів}}",
     "table": {
       "columns": {
         "direction": "Напрямок",
@@ -472,7 +474,7 @@
         "description": "Цю дію неможливо скасувати. Це видалить вибраних клієнтів",
         "confirm": "Видалити вибраних",
         "cancel": "Скасувати",
-        "selectedCount": "Видалити вибраних {{count}} клієнт(ів)",
+        "selectedCount": "Видалити {count, plural, =1 {вибраного клієнта} few {вибраних # клієнтів} many {вибраних # клієнтів} other {вибраних # клієнтів}}",
         "success": "Вибрані клієнти були видалені",
         "error": "Виникла проблема з вашим запитом.",
         "cannotDeleteWithAppointments": "Неможливо видалити клієнтів, які мають призначені записи",
@@ -483,7 +485,7 @@
         "description": "Цю дію неможливо скасувати. Це об'єднає вибраних клієнтів у першого",
         "confirm": "Об'єднати вибраних",
         "cancel": "Скасувати",
-        "selectedCount": "Об'єднати вибраних {{count}} клієнт(ів)",
+        "selectedCount": "Об'єднати {count, plural, =1 {вибраного клієнта} few {вибраних # клієнти} many {вибраних # клієнтів} other {вибраних # клієнтів}}",
         "success": "Вибрані клієнти були об'єднані",
         "error": "Виникла проблема з вашим запитом.",
         "targetCustomer": "Цільовий клієнт"
@@ -496,7 +498,7 @@
       "changesSaved": "Ваші зміни були збережені.",
       "customerCreated": "Клієнта успішно створено.",
       "customerUpdated": "Клієнта успішно оновлено.",
-      "customerDeleted": "Клієнта '{{name}}' було видалено."
+      "customerDeleted": "Клієнта '{name}' було видалено."
     }
   },
   "pages": {
@@ -511,9 +513,9 @@
       "pageContent": "Вміст сторінки",
       "pageContentTooltip": "Вміст сторінки у форматі MDX. Дізнатися більше про MDX",
       "learnMoreAboutMdx": "Дізнатися більше про MDX",
-      "pageSlug": "Slug сторінки",
-      "pageSlugTooltip": "Відносний URL сторінки. Наприклад, сторінка зі slug 'my-new-page' буде доступна за адресою 'yourdomain.com/my-new-page'",
-      "pageSlugPlaceholder": "Slug сторінки",
+      "pageSlug": "Адреса сторінки",
+      "pageSlugTooltip": "Відносний URL сторінки. Наприклад, сторінка з адресою 'my-new-page' буде доступна за повноюадресою 'yourdomain.com/my-new-page'",
+      "pageSlugPlaceholder": "Адреса сторінки",
       "published": "Опубліковано?",
       "publishedTooltip": "Чи видима сторінка для ваших відвідувачів",
       "publishDate": "Дата публікації",
@@ -535,7 +537,9 @@
       "doNotCombineKeywords": "Не об'єднувати ключові слова",
       "doNotCombineKeywordsTooltip": "Чи повинні ключові слова сторінки об'єднуватися з ключовими словами веб-сайту",
       "fullWidthPage": "Сторінка на всю ширину",
-      "fullWidthPageTooltip": "Якщо увімкнено, сторінка не буде обгорнута в елемент Container"
+      "fullWidthPageTooltip": "Якщо увімкнено, сторінка не буде обгорнута в елемент Container",
+      "language": "Мова",
+      "defaultLanguage": "За замовчуванням"
     },
     "table": {
       "columns": {
@@ -564,7 +568,7 @@
         "description": "Цю дію неможливо скасувати. Це видалить вибрані сторінки",
         "confirm": "Видалити вибрані",
         "cancel": "Скасувати",
-        "selectedCount": "Видалити вибрані {{count}} сторінки(ок)",
+        "selectedCount": "Видалити {count, plural, =1 {вибрану сторінку} few {вибрані # сторінки} many {вибрані # сторінки} other {вибрані # сторінок}}",
         "success": "Вибрані сторінки були видалені",
         "error": "Виникла проблема з вашим запитом."
       },
@@ -579,9 +583,9 @@
       "changesSaved": "Ваші зміни були збережені.",
       "pageCreated": "Сторінку успішно створено.",
       "pageUpdated": "Сторінку успішно оновлено.",
-      "pageDeleted": "Сторінку '{{title}}' було видалено.",
-      "relativeUrlCopied": "Відносний url сторінки '{{url}}' скопійовано в буфер обміну.",
-      "absoluteUrlCopied": "Абсолютний url сторінки '{{url}}' скопійовано в буфер обміну."
+      "pageDeleted": "Сторінку '{title}' було видалено.",
+      "relativeUrlCopied": "Відносний url сторінки '{url}' скопійовано в буфер обміну.",
+      "absoluteUrlCopied": "Абсолютний url сторінки '{url}' скопійовано в буфер обміну."
     }
   },
   "services": {
@@ -590,12 +594,12 @@
       "selectField": "Вибрати поле"
     },
     "fieldSelectCard": {
-      "moveField": "Перемістити поле {{type}}",
+      "moveField": "Перемістити поле {type}",
       "field": "Поле",
       "required": "Обов'язкове",
       "requiredTooltip": "Позначає поле як обов'язкове",
       "deleteConfirmTitle": "Ви абсолютно впевнені?",
-      "deleteConfirmDescription": "Ви впевнені, що хочете видалити це поле з цього {{type}}?",
+      "deleteConfirmDescription": "Ви впевнені, що хочете видалити це поле з цього {type}?",
       "cancel": "Скасувати",
       "delete": "Видалити"
     },
@@ -649,7 +653,7 @@
           "name": "Назва",
           "updatedAt": "Оновлено",
           "cellAction": {
-            "optionDeleted": "Опцію '{{name}}' було видалено.",
+            "optionDeleted": "Опцію '{name}' було видалено.",
             "deleteError": "Виникла проблема з вашим запитом.",
             "actions": "Дії",
             "update": "Оновити",
@@ -661,7 +665,7 @@
       "deleteSelected": {
         "success": "Вибрані опції були видалені",
         "error": "Виникла проблема з вашим запитом.",
-        "button": "Видалити вибрані {{count}} опції(й)",
+        "button": "Видалити {count, plural, =1 {вибрану опцію} few {вибрані # опції} many {вибраних # опцій} other {вибраних # опцій}}",
         "confirmTitle": "Ви абсолютно впевнені?",
         "confirmDescription": "Цю дію неможливо скасувати.",
         "cancel": "Скасувати",
@@ -718,11 +722,11 @@
           "updatedAt": "Оновлено",
           "addons": "Додатки",
           "options": "Опції",
-          "addonsInDialog": "{{label}} в додатках",
-          "optionsInDialog": "{{label}} в опціях"
+          "addonsInDialog": "{label} в додатках",
+          "optionsInDialog": "{label} в опціях"
         },
         "cellAction": {
-          "fieldDeleted": "Поле опції '{{label}}' було видалено.",
+          "fieldDeleted": "Поле опції '{label}' було видалено.",
           "deleteError": "Виникла проблема з вашим запитом.",
           "actions": "Дії",
           "update": "Оновити",
@@ -733,7 +737,7 @@
       "deleteSelected": {
         "success": "Вибрані поля були видалені",
         "error": "Виникла проблема з вашим запитом.",
-        "button": "Видалити вибрані {{count}} поля(ів)",
+        "button": "Видалити {count, plural, =1 {вибране поле} few {вибрані # поля} many {вибраних # поля} other {вибраних # поля}}",
         "confirmTitle": "Ви абсолютно впевнені?",
         "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані поля та видалить їх з усіх опцій та додатків, які їх використовують",
         "cancel": "Скасувати",
@@ -829,7 +833,7 @@
           "updatedAt": "Оновлено"
         },
         "cellAction": {
-          "discountDeleted": "Знижку '{{name}}' було видалено.",
+          "discountDeleted": "Знижку '{name}' було видалено.",
           "deleteError": "Виникла проблема з вашим запитом.",
           "actions": "Дії",
           "update": "Оновити",
@@ -840,7 +844,7 @@
       "deleteSelected": {
         "success": "Вибрані знижки були видалені",
         "error": "Виникла проблема з вашим запитом.",
-        "button": "Видалити вибрані {{count}} знижки(ок)",
+        "button": "Видалити {count, plural, =1 {вибрану знижку} few {вибрані # знижки} many {вибраних # знижок} other {вибраних # знижок}}",
         "confirmTitle": "Ви абсолютно впевнені?",
         "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані знижки.",
         "confirmDescription2": "Це не вплине на існуючі записи, які використовують ці знижки",
@@ -882,10 +886,10 @@
           "name": "Назва",
           "updatedAt": "Оновлено",
           "options": "Опції",
-          "optionsInDialog": "{{name}} в опціях"
+          "optionsInDialog": "{name} в опціях"
         },
         "cellAction": {
-          "addonDeleted": "Додаток '{{name}}' було видалено.",
+          "addonDeleted": "Додаток '{name}' було видалено.",
           "deleteError": "Виникла проблема з вашим запитом.",
           "actions": "Дії",
           "update": "Оновити",
@@ -896,7 +900,7 @@
       "deleteSelected": {
         "success": "Вибрані додатки були видалені",
         "error": "Виникла проблема з вашим запитом.",
-        "button": "Видалити вибрані {{count}} додатки(ів)",
+        "button": "Видалити {count, plural, =1 {вибраний додаток} few {вибрані # додатки} many {вибраних # додатків} other {вибраних # додатків}}",
         "confirmTitle": "Ви абсолютно впевнені?",
         "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані додатки та видалить їх з усіх опцій, які їх використовують",
         "cancel": "Скасувати",
@@ -909,11 +913,11 @@
       "title": "Шаблони комунікацій"
     },
     "formPage": {
-      "typeTemplates": "Шаблони {{type}}",
+      "typeTemplates": "Шаблони {type}",
       "new": "Новий"
     },
     "newPage": {
-      "title": "Новий шаблон {{type}}"
+      "title": "Новий шаблон {type}"
     },
     "editPage": {
       "title": "Оновити шаблон",
@@ -947,7 +951,7 @@
       "copied": "Скопійовано",
       "copyPath": "Копіювати шлях",
       "close": "Закрити",
-      "characterCount": "{{count}} символів",
+      "characterCount": "{count, plural, =1 {1 символ} other {# символів}}",
       "preview": "Попередній перегляд"
     },
     "table": {
@@ -961,7 +965,7 @@
         "updatedAt": "Оновлено"
       },
       "cellAction": {
-        "templateDeleted": "Шаблон '{{name}}' було видалено.",
+        "templateDeleted": "Шаблон '{name}' було видалено.",
         "deleteError": "Виникла проблема з вашим запитом.",
         "actions": "Дії",
         "update": "Оновити",
@@ -971,7 +975,7 @@
       "deleteSelected": {
         "success": "Вибрані шаблони були видалені",
         "error": "Виникла проблема з вашим запитом.",
-        "button": "Видалити вибрані {{count}} шаблони(ів)",
+        "button": "Видалити {count, plural, =1 {вибраний шаблон} few {вибрані # шаблони} many {вибраних # шаблонів} other {вибраних # шаблонів}}",
         "confirmTitle": "Ви абсолютно впевнені?",
         "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані шаблони та може порушити сповіщення, які їх використовують",
         "cancel": "Скасувати",
@@ -1056,10 +1060,10 @@
       "title": "Мігрувати існуючі ресурси",
       "description": "Мігрувати ваші існуючі ресурси з попереднього сховища",
       "sourceApp": "Джерельний додаток сховища ресурсів",
-      "done": "Виконано: {{count}}",
-      "success": "Успішно: {{count}}",
-      "error": "Помилка: {{count}}",
-      "total": "Всього: {{count}}",
+      "done": "Виконано: {count}",
+      "success": "Успішно: {count}",
+      "error": "Помилка: {count}",
+      "total": "Всього: {count}",
       "migrate": "Мігрувати",
       "toasts": {
         "requestError": "Ваш запит не вдався"
@@ -1215,7 +1219,7 @@
             "delete": "Видалити"
           },
           "optionSelector": {
-            "time": "{{hours}}год {{minutes}}хв",
+            "time": "{hours}год {minutes}хв",
             "requestFailed": "Запит не вдався.",
             "loadingOptions": "Завантаження опцій...",
             "selectOption": "Вибрати опцію"
@@ -1319,7 +1323,7 @@
       "noAppointments": "Записи не заплановані",
       "noPendingAppointments": "Немає очікуючих записів",
       "caughtUp": "Ви впоралися з усіма запитами. Молодець!",
-      "pendingToast": "У вас {{count}} очікуючий(их) запис(ів)",
+      "pendingToast": "У вас {count, plural, =1 {один очікуючий запис} few {# очікуючі записи} other {# очікуючих записів}}",
       "view": "Переглянути",
       "nextAppointments": "Наступні записи"
     },
@@ -1356,7 +1360,7 @@
   "communications": {
     "viewMore": "Показати більше",
     "logContent": "Вміст повідомлення",
-    "handler": "Обробник: {{handler}}",
+    "handler": "Обробник: {handler}",
     "data": "Дані",
     "logData": "Дані журналу",
     "sendNew": "Надіслати нове",
@@ -1388,7 +1392,7 @@
     "weekly": "Щотижнево",
     "daily": "Щодня",
     "agenda": "Порядок денний",
-    "eventTitle": "{{customer}} для {{service}}",
+    "eventTitle": "{customer} для {service}",
     "appointment": "Запис",
     "status": "Статус",
     "price": "Ціна",
@@ -1417,7 +1421,10 @@
     "email": "Email",
     "password": "Пароль",
     "email_or_password_incorrect": "Email або пароль неправильний",
-    "signIn": "Увійти"
+    "signIn": "Увійти",
+    "signInDescription": "Введіть ваш email нижче, щоб увійти в ваш обліковий запис",
+    "quote": "Я люблю це!",
+    "quoteAuthor": "Олеся Бондарчук"
   },
   "menuItem": {
     "fields": {
