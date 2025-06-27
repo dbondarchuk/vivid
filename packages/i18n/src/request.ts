@@ -11,9 +11,21 @@ export const config = getRequestConfig(async ({ locale: baseLocale }) => {
 
   let locale =
     baseLocale ||
+    headersList.get("x-locale") ||
     (await ServicesContainer.ConfigurationService().getConfiguration("general"))
       .language ||
     "en";
+
+  const pathname = headersList.get("x-pathname");
+  if (pathname && !isAdminPath) {
+    const trimmedPathname = pathname.replace(/^\//, "");
+    const page =
+      await ServicesContainer.PagesService().getPageBySlug(trimmedPathname);
+
+    if (page?.language) {
+      locale = page.language;
+    }
+  }
 
   const messages: Record<string, any> = {
     translation: (await import(`./locales/${locale}/translation.json`)).default,

@@ -68,7 +68,7 @@ RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 # Copy of i18n jsons
-COPY --from=builder /app/apps/web/src/i18n/locales ./apps/web/src/i18n/locales
+COPY --from=builder /app/packages/i18n ./packages/i18n
 COPY --from=builder /app/packages/types ./packages/types
 
 # Copy node modules for scheduler

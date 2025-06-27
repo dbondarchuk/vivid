@@ -133,21 +133,13 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     <FormLabel>
                       {t("settings.appointments.form.payments.depositAmount")}{" "}
                       <InfoTooltip>
-                        <p>
-                          {t(
-                            "settings.appointments.form.payments.depositAmountTooltip1"
-                          )}
-                        </p>
-                        <p>
-                          {t(
-                            "settings.appointments.form.payments.depositAmountTooltip2"
-                          )}
-                        </p>
-                        <p>
-                          {t(
-                            "settings.appointments.form.payments.depositAmountTooltip3"
-                          )}
-                        </p>
+                        {t.rich(
+                          "settings.appointments.form.payments.depositAmountTooltip",
+                          {
+                            p: (chunks: any) => <p>{chunks}</p>,
+                            strong: (chunks: any) => <strong>{chunks}</strong>,
+                          }
+                        )}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -176,25 +168,17 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Min amount of appointments to not require deposit{" "}
+                      {t(
+                        "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointments"
+                      )}{" "}
                       <InfoTooltip>
-                        <p>
-                          Do not require deposit for customers who have at least
-                          specified amount of appointments completed
-                        </p>
-                        <p>
-                          <strong>Example:</strong> If set to 3, customers who
-                          are booking their first, second, or third appointment
-                          will be required to pay a deposit.
-                        </p>
-                        <p>
-                          While customers who are making their 4th or later
-                          appointmens will not be required to pay deposit unless
-                          it is specifically required for the customer
-                        </p>
-                        <p>
-                          <strong>Optional</strong>
-                        </p>
+                        {t.rich(
+                          "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointmentsTooltip",
+                          {
+                            p: (chunks: any) => <p>{chunks}</p>,
+                            strong: (chunks: any) => <strong>{chunks}</strong>,
+                          }
+                        )}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>

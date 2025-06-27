@@ -418,7 +418,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                       className="w-full"
                       value={field.value || "default"}
                       onItemSelect={(val) => {
-                        field.onChange(val === "default" ? undefined : val);
+                        field.onChange(val === "default" ? null : val);
                         field.onBlur();
                       }}
                       disabled={loading}

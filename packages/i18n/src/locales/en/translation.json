@@ -35,7 +35,7 @@
   "promo_code_success": "Promo code {code} (-${discount}) was successfully applied.",
   "promo_code_error": "Promo code is not valid.",
   "timezone_format": "GMT{timezone}",
-  "select_timezone_label_format": "All times are in {timeZoneCombobox} time zone",
+  "select_timezone_label_format": "All times are in <timeZoneCombobox></timeZoneCombobox> time zone",
   "search_country_code_label": "Search for country...",
   "search_timezone_label": "Search to change the time zone",
   "confirmation_success_title": "Your request has been received!",

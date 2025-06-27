@@ -1,6 +1,6 @@
 import { NextFetchEvent, NextRequest } from "next/server";
 import { MiddlewareFactory } from "./types";
-import { containsAdminDashboard } from "./utils";
+import { containsAdminPath } from "./utils";
 
 export const withLocale: MiddlewareFactory = (next) => {
   return async (request: NextRequest, event: NextFetchEvent) => {
@@ -14,13 +14,15 @@ export const withLocale: MiddlewareFactory = (next) => {
     const { nextUrl } = request;
     const locale = nextUrl.searchParams.get("lng");
     if (locale) {
-      request.headers.set("accept-language", locale);
+      request.headers.set("x-locale", locale);
     }
 
     request.headers.set(
       "x-is-admin-path",
-      containsAdminDashboard(nextUrl.pathname).toString()
+      containsAdminPath(nextUrl.pathname).toString()
     );
+
+    request.headers.set("x-pathname", nextUrl.pathname);
 
     return next(request, event);
   };

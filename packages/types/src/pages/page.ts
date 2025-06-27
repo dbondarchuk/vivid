@@ -16,7 +16,7 @@ export const pageSchema = z.object({
   published: z.coerce.boolean().default(false),
   publishDate: z.date({ required_error: "page.publishDate.required" }),
   tags: z.array(pageTagSchema).optional(),
-  language: z.enum(languages).optional(),
+  language: z.enum(languages).optional().nullable(),
   doNotCombine: z
     .object({
       title: z.coerce.boolean().optional(),
