@@ -198,14 +198,17 @@ export default class FollowUpsConnectedApp
           },
           {
             $facet: {
-              paginatedResults: [
-                ...(typeof query.offset !== "undefined"
-                  ? [{ $skip: query.offset }]
-                  : []),
-                ...(typeof query.limit !== "undefined"
-                  ? [{ $limit: query.limit }]
-                  : []),
-              ],
+              paginatedResults:
+                query.limit === 0
+                  ? undefined
+                  : [
+                      ...(typeof query.offset !== "undefined"
+                        ? [{ $skip: query.offset }]
+                        : []),
+                      ...(typeof query.limit !== "undefined"
+                        ? [{ $limit: query.limit }]
+                        : []),
+                    ],
               totalCount: [
                 {
                   $count: "count",
@@ -668,7 +671,7 @@ export default class FollowUpsConnectedApp
               .getAppointments({
                 customerId: appointment.customer._id,
                 status: ["confirmed"],
-                limit: 1,
+                limit: 0,
                 range: {
                   end: appointmentCompletionTime.toJSDate(),
                 },

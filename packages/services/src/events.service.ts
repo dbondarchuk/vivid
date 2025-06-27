@@ -593,14 +593,17 @@ export class EventsService implements IEventsService {
         },
         {
           $facet: {
-            paginatedResults: [
-              ...(typeof query.offset !== "undefined"
-                ? [{ $skip: query.offset }]
-                : []),
-              ...(typeof query.limit !== "undefined"
-                ? [{ $limit: query.limit }]
-                : []),
-            ],
+            paginatedResults:
+              query.limit === 0
+                ? undefined
+                : [
+                    ...(typeof query.offset !== "undefined"
+                      ? [{ $skip: query.offset }]
+                      : []),
+                    ...(typeof query.limit !== "undefined"
+                      ? [{ $limit: query.limit }]
+                      : []),
+                  ],
             totalCount: [
               {
                 $count: "count",
@@ -1349,27 +1352,39 @@ export class EventsService implements IEventsService {
             _id: intentId,
             paidAt,
             externalId,
+            status,
           } = await this.paymentsService.updateIntent(paymentIntentId, {
             appointmentId: id,
             customerId: customer._id,
           });
 
-          const payment = await this.paymentsService.createPayment({
-            appId,
-            appName,
-            amount,
-            intentId,
-            paidAt: paidAt ?? new Date(),
-            appointmentId: id,
-            customerId: customer._id,
-            description:
-              amount === event.totalPrice ? "full_payment" : "deposit",
-            status: "paid",
-            type: "online",
-            externalId: externalId,
-          });
+          if (status === "paid") {
+            logger.debug(
+              { appointmentId: id, paymentIntentId, amount },
+              "Payment intent is paid, adding to payments"
+            );
+            const payment = await this.paymentsService.createPayment({
+              appId,
+              appName,
+              amount,
+              intentId,
+              paidAt: paidAt ?? new Date(),
+              appointmentId: id,
+              customerId: customer._id,
+              description:
+                amount === event.totalPrice ? "full_payment" : "deposit",
+              status: "paid",
+              type: "online",
+              externalId: externalId,
+            });
 
-          payments.push(payment);
+            payments.push(payment);
+          } else {
+            logger.warn(
+              { appointmentId: id, paymentIntentId, amount, status },
+              "Payment intent is not paid. Skipping it"
+            );
+          }
 
           logger.debug(
             {

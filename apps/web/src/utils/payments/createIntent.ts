@@ -1,4 +1,5 @@
 import { getAppointmentEventAndIsPaymentRequired } from "@/utils/appointments/get-payment-required";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import {
   appointmentRequestSchema,
@@ -12,6 +13,8 @@ export const createOrUpdateIntent = async (
   request: NextRequest,
   intentId?: string
 ) => {
+  const logger = getLoggerFactory("PaymentsUtils")("createOrUpdateIntent");
+
   const body = await request.json();
 
   const {
@@ -20,6 +23,15 @@ export const createOrUpdateIntent = async (
     success,
   } = appointmentRequestSchema.safeParse(body);
   if (!success) {
+    logger.error(
+      {
+        error,
+        success,
+        body,
+      },
+      "Failed to parse request"
+    );
+
     return NextResponse.json(error, { status: 400 });
   }
 
@@ -28,9 +40,20 @@ export const createOrUpdateIntent = async (
     true
   );
 
-  if (!isPaymentRequired) return NextResponse.json(null);
+  if (!isPaymentRequired) {
+    logger.warn({ appointmentRequest }, "IsPaymentRequired is null");
+    return NextResponse.json(null);
+  }
 
   if ("error" in isPaymentRequired) {
+    logger.error(
+      {
+        error: isPaymentRequired.error,
+        appointmentRequest,
+      },
+      "Failed to get event or is payment required"
+    );
+
     return NextResponse.json(
       {
         success: false,
@@ -41,7 +64,13 @@ export const createOrUpdateIntent = async (
     );
   }
 
-  if (!isPaymentRequired.isPaymentRequired) return NextResponse.json(null);
+  if (!isPaymentRequired.isPaymentRequired) {
+    logger.debug({ appointmentRequest }, "payment is not required");
+
+    return NextResponse.json(null);
+  }
+
+  logger.debug({ ...isPaymentRequired, intentId }, "Payment is required.");
 
   const { amount, percentage, appId, customer } = isPaymentRequired;
 
@@ -61,12 +90,22 @@ export const createOrUpdateIntent = async (
     customerId: customer?._id,
   };
 
+  logger.debug(
+    { intent: intentUpdate, isUpdating: !!intentId },
+    "Creating or updating intent"
+  );
+
   const intent = intentId
     ? await ServicesContainer.PaymentsService().updateIntent(intentId, {
         ...intentUpdate,
         status: "created",
       })
     : await ServicesContainer.PaymentsService().createIntent(intentUpdate);
+
+  logger.debug(
+    { intent, isUpdating: !!intentId },
+    "Successfully created or updated intent"
+  );
 
   return NextResponse.json({
     formProps,

@@ -12,11 +12,15 @@ export const withLogger: MiddlewareFactory = (next) => {
       return next(request, event);
 
     const correlationId = crypto.randomUUID();
+
+    let originalSessionId = request.cookies.get("x-session-id");
+    const sessionId = originalSessionId?.value || crypto.randomUUID();
     request.headers.append("x-correlation-id", correlationId);
+    request.headers.append("x-session-id", sessionId);
 
     const logger = getBaseLoggerFactory(correlationId);
 
-    logger.info(
+    logger.debug(
       { url: request.url, method: request.method, correlationId },
       "Incoming request"
     );
@@ -40,6 +44,11 @@ export const withLogger: MiddlewareFactory = (next) => {
     //   );
     // });
 
-    return next(request, event);
+    const result = await next(request, event);
+    if (!originalSessionId) {
+      result.cookies.set("x-session-id", sessionId);
+    }
+
+    return result;
   };
 };

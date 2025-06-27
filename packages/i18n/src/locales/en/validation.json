@@ -502,7 +502,14 @@
           "required": "Deposit amount is required if enabled"
         },
         "depositPercentage": {
-          "required": "Deposit percentage must be an integer number between 10 and 100"
+          "required": "Deposit percentage must be an integer number between 10 and 100",
+          "min": "Deposit percentage must be at least 10",
+          "max": "Deposit percentage must be at most 100",
+          "integer": "Deposit percentage must be an integer number"
+        },
+        "dontRequireIfCompletedMinNumberOfAppointments": {
+          "min": "Min number of appointments must be at least 1",
+          "integer": "Min number of appointments must be an integer number"
         }
       }
     },
@@ -606,7 +613,10 @@
       "required": "Deposit amount is required if enabled"
     },
     "depositPercentage": {
-      "required": "Deposit percentage must be an integer number between 10 and 100"
+      "required": "Deposit percentage must be an integer number between 10 and 100",
+      "min": "Deposit percentage must be at least 10",
+      "max": "Deposit percentage must be at most 100",
+      "integer": "Deposit percentage must be an integer number"
     }
   },
   "page": {

@@ -114,8 +114,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  let paymentIntentId = appointmentRequest.paymentIntentId;
   if (eventOrError.isPaymentRequired) {
-    const paymentIntentId = appointmentRequest.paymentIntentId;
     if (!paymentIntentId) {
       logger.warn("Payment required but no payment intent provided");
       return NextResponse.json(
@@ -159,12 +159,27 @@ export async function POST(request: NextRequest) {
         { status: 402 }
       ); // Payment required
     }
+  } else if (paymentIntentId) {
+    logger.warn("Payment not required but payment intent provided");
+
+    const paymentIntent =
+      await ServicesContainer.PaymentsService().getIntent(paymentIntentId);
+
+    if (!paymentIntent) {
+      logger.warn({ paymentIntentId }, "Payment intent not found");
+    } else if (paymentIntent.status !== "paid") {
+      logger.warn(
+        { paymentIntentId },
+        "Payment intent is not paid. Removing it"
+      );
+      paymentIntentId = undefined;
+    }
   }
 
   try {
     const { _id } = await ServicesContainer.EventsService().createEvent({
       event: eventOrError.event,
-      paymentIntentId: appointmentRequest.paymentIntentId,
+      paymentIntentId,
       files,
     });
 

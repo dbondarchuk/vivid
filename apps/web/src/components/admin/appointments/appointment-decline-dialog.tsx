@@ -7,7 +7,7 @@ import {
   getPaymentStatusColor,
   getPaymentStatusIcon,
 } from "@/components/payments/payment-card";
-import { I18nFn, AdminKeys, useI18n, AppsKeys, useLocale } from "@vivid/i18n";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { Appointment, Payment } from "@vivid/types";
 import {
   AlertDialog,
@@ -45,6 +45,7 @@ export const AppointmentDeclineDialog: React.FC<{
   const t = useI18n();
 
   const locale = useLocale();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const onOpenChange = (open: boolean) => {
     if (!open) onClose?.();
@@ -117,7 +118,12 @@ export const AppointmentDeclineDialog: React.FC<{
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog
+      open={open}
+      onOpenChange={(open) => {
+        if (!isLoading) onOpenChange(open);
+      }}
+    >
       {!!trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -291,7 +297,7 @@ export const AppointmentDeclineDialog: React.FC<{
           </div>
         </ScrollArea>
         <AlertDialogFooter>
-          <AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
             {t("admin.appointments.declineDialog.cancel")}
           </AlertDialogCancel>
           {!!paymentsAvailableToRefund.length && (
@@ -299,9 +305,10 @@ export const AppointmentDeclineDialog: React.FC<{
               <AppointmentActionButton
                 _id={appointment._id}
                 status="declined"
-                disabled={!selectedPaymentsIds.length}
+                disabled={!selectedPaymentsIds.length || isLoading}
                 className="mt-2 sm:mt-0"
                 beforeRequest={() => refundSelected()}
+                setIsLoading={setIsLoading}
               >
                 <CalendarX2 size={20} />
                 {t("admin.appointments.declineDialog.declineAndRefund", {
@@ -315,7 +322,12 @@ export const AppointmentDeclineDialog: React.FC<{
             </AlertDialogAction>
           )}
           <AlertDialogAction asChild variant="destructive">
-            <AppointmentActionButton _id={appointment._id} status="declined">
+            <AppointmentActionButton
+              _id={appointment._id}
+              status="declined"
+              disabled={isLoading}
+              setIsLoading={setIsLoading}
+            >
               <CalendarX2 size={20} />
               {t("admin.appointments.declineDialog.decline")}
             </AppointmentActionButton>

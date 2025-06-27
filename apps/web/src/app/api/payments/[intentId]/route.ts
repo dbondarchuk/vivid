@@ -21,13 +21,22 @@ export async function POST(
   try {
     const result = await createOrUpdateIntent(request, intentId);
 
-    logger.debug(
-      {
-        intentId,
-        success: true,
-      },
-      "Successfully processed payment intent"
-    );
+    if (!result || result.status >= 400) {
+      logger.error(
+        {
+          status: result.status,
+        },
+        "Getting if payment is required has failed"
+      );
+    } else {
+      logger.debug(
+        {
+          intentId,
+          success: true,
+        },
+        "Successfully processed payment intent"
+      );
+    }
 
     return result;
   } catch (error: any) {

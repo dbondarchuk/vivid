@@ -104,8 +104,12 @@ export const getAppointmentEventAndIsPaymentRequired = async (
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
+  const customersPriorAppointmentsCount =
+    await getCustomerCompletedAppointments(customer?._id);
+
   logger.debug(
     {
+      customersPriorAppointmentsCount,
       paymentsEnabled: config.payments?.enable,
       paymentAppId: config.payments?.enable
         ? config.payments.paymentAppId
@@ -117,6 +121,10 @@ export const getAppointmentEventAndIsPaymentRequired = async (
       depositPercentage:
         config.payments?.enable && "depositPercentage" in config.payments
           ? config.payments.depositPercentage
+          : undefined,
+      dontRequireIfCompletedMinNumberOfAppointments:
+        config.payments?.enable && config.payments.requireDeposit
+          ? config.payments.dontRequireIfCompletedMinNumberOfAppointments
           : undefined,
     },
     "Retrieved booking configuration"
@@ -149,6 +157,30 @@ export const getAppointmentEventAndIsPaymentRequired = async (
           reason: "customer_never_require_deposit",
         },
         "Customer never requires deposit"
+      );
+
+      return {
+        event,
+        customer,
+        isPaymentRequired: false,
+      };
+    } else if (
+      customer &&
+      config.payments.requireDeposit &&
+      "depositPercentage" in config.payments &&
+      config.payments.depositPercentage &&
+      config.payments.dontRequireIfCompletedMinNumberOfAppointments &&
+      customersPriorAppointmentsCount >=
+        config.payments.dontRequireIfCompletedMinNumberOfAppointments
+    ) {
+      logger.debug(
+        {
+          customerId: customer._id,
+          customerName: customer.name,
+          customersPriorAppointmentsCount,
+          reason: "customer_has_enough_appointments",
+        },
+        "Customer has enough appointments to not require deposit"
       );
 
       return {
@@ -255,4 +287,18 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     customer,
     isPaymentRequired: false,
   };
+};
+
+const getCustomerCompletedAppointments = async (customerId?: string) => {
+  if (!customerId) return 0;
+  const result = await ServicesContainer.EventsService().getAppointments({
+    customerId: customerId,
+    limit: 0,
+    status: ["confirmed"],
+    endRange: {
+      end: new Date(),
+    },
+  });
+
+  return result.total;
 };

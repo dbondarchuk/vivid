@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { asOptinalNumberField } from "../../utils";
 
 export const paymentsConfigurationSchema = z
   .object({
@@ -30,6 +31,20 @@ export const paymentsConfigurationSchema = z
           .int("configuration.booking.payments.depositPercentage.integer")
           .min(10, "configuration.booking.payments.depositPercentage.min")
           .max(100, "configuration.booking.payments.depositPercentage.max"),
+        dontRequireIfCompletedMinNumberOfAppointments: asOptinalNumberField(
+          z.coerce
+            .number({
+              message:
+                "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.min",
+            })
+            .int(
+              "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.integer"
+            )
+            .min(
+              1,
+              "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.min"
+            )
+        ),
       }),
     ])
   )

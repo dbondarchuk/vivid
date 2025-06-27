@@ -49,6 +49,7 @@ export const AppointmentActionButton = React.forwardRef<
     status: AppointmentStatus;
     onSuccess?: (newStatus: AppointmentStatus) => void;
     beforeRequest?: () => Promise<void> | void;
+    setIsLoading?: (isLoading: boolean) => void;
   }
 >(
   (
@@ -58,12 +59,18 @@ export const AppointmentActionButton = React.forwardRef<
       onSuccess,
       beforeRequest,
       onClick: originalOnClick,
+      setIsLoading: propsSetIsLoading,
       ...props
     },
     ref
   ) => {
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [isLoading, stateSetIsLoading] = React.useState(false);
     const router = useRouter();
+
+    const setIsLoading = (loading: boolean) => {
+      stateSetIsLoading(loading);
+      propsSetIsLoading?.(loading);
+    };
 
     const t = useI18n("admin");
 
