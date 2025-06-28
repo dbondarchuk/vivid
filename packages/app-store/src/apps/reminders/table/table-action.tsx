@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   DataTableFilterBox,
@@ -14,11 +15,16 @@ import {
 import { Plus, Settings2 } from "lucide-react";
 import React from "react";
 import { DeleteSelectedRemindersButton } from "./delete-selected";
-import { CHANNEL_OPTIONS, useRemindersTableFilters } from "./use-table-filters";
+import { useRemindersTableFilters } from "./use-table-filters";
+import { communicationChannels } from "@vivid/types";
 
 export const RemindersTableAction: React.FC<{ appId: string }> = ({
   appId,
 }) => {
+  const t = useI18n("apps");
+  const tUi = useI18n("ui");
+  const tAdmin = useI18n("admin");
+
   const {
     channelFilter,
     setChannelFilter,
@@ -34,8 +40,11 @@ export const RemindersTableAction: React.FC<{ appId: string }> = ({
     <>
       <DataTableFilterBox
         filterKey="channel"
-        title="Channel"
-        options={CHANNEL_OPTIONS}
+        title={t("reminders.table.columns.channel")}
+        options={communicationChannels.map((value) => ({
+          value,
+          label: tAdmin(`common.labels.channel.${value}`),
+        }))}
         setFilterValue={setChannelFilter as any}
         filterValue={channelFilter}
       />
@@ -52,7 +61,11 @@ export const RemindersTableAction: React.FC<{ appId: string }> = ({
           setPage={setPage}
         />
         <Popover>
-          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+          <PopoverTrigger
+            tooltip={tUi("table.filters")}
+            asChild
+            className="md:hidden"
+          >
             <Button variant="outline">
               <Settings2 size={16} />
             </Button>
@@ -74,7 +87,10 @@ export const RemindersTableAction: React.FC<{ appId: string }> = ({
           variant="primary"
           href="/admin/dashboard/communications/reminders/new"
         >
-          <Plus size={16} /> <span className="max-md:hidden">Add new</span>
+          <Plus size={16} />{" "}
+          <span className="max-md:hidden">
+            {t("reminders.table.actions.add")}
+          </span>
         </Link>
       </div>
     </div>

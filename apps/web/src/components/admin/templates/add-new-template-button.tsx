@@ -1,6 +1,6 @@
 "use client";
-import { CommunicationChannelTexts } from "@/constants/labels";
-import { CommunicationChannel } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
+import { CommunicationChannel, communicationChannels } from "@vivid/types";
 import {
   Dialog,
   DialogTrigger,
@@ -25,12 +25,13 @@ import React from "react";
 import { TemplateTemplates } from "./templates";
 
 export const AddNewTemplateButton: React.FC = () => {
+  const t = useI18n("admin");
   const [type, setType] = React.useState<CommunicationChannel>("email");
   const [template, setTemplate] = React.useState<string>("");
 
   const availableTemplates = [
     {
-      label: "Empty template",
+      label: t("templates.addNew.emptyTemplate"),
       value: "",
     },
     ...Object.entries(TemplateTemplates[type] || {}).map(
@@ -46,17 +47,19 @@ export const AddNewTemplateButton: React.FC = () => {
       <DialogTrigger asChild>
         <Button variant="default">
           <Plus className="mr-2 h-4 w-4" />{" "}
-          <span className="md:hidden">Add</span>
-          <span className="hidden md:inline">Add new template</span>
+          <span className="md:hidden">{t("templates.addNew.add")}</span>
+          <span className="hidden md:inline">
+            {t("templates.addNew.addNewTemplate")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-96" overlayVariant="blur">
         <DialogHeader className="px-1">
-          <DialogTitle>Add new template</DialogTitle>
+          <DialogTitle>{t("templates.addNew.addNewTemplate")}</DialogTitle>
         </DialogHeader>
         <div className="w-full  px-1 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label>Type</Label>
+            <Label>{t("templates.addNew.type")}</Label>
             <div className="flex w-full">
               <Select
                 value={type}
@@ -66,22 +69,22 @@ export const AddNewTemplateButton: React.FC = () => {
                 }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select template type" />
+                  <SelectValue
+                    placeholder={t("templates.addNew.selectTemplateType")}
+                  />
                 </SelectTrigger>
                 <SelectContent side="bottom">
-                  {Object.entries(CommunicationChannelTexts).map(
-                    ([key, label]) => (
-                      <SelectItem key={key} value={key}>
-                        {label}
-                      </SelectItem>
-                    )
-                  )}
+                  {communicationChannels.map((channel) => (
+                    <SelectItem key={channel} value={channel}>
+                      {t(`common.labels.channel.${channel}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <Label>Template</Label>
+            <Label>{t("templates.addNew.template")}</Label>
             <div className="flex w-full">
               <Combobox
                 values={availableTemplates}
@@ -94,7 +97,7 @@ export const AddNewTemplateButton: React.FC = () => {
         <DialogFooter className="px-1">
           <DialogClose asChild>
             <Button type="button" variant="secondary">
-              Close
+              {t("templates.addNew.close")}
             </Button>
           </DialogClose>
           <Link
@@ -103,7 +106,7 @@ export const AddNewTemplateButton: React.FC = () => {
             aria-disabled={!!type}
             href={`/admin/dashboard/templates/new/${type}${template ? `?template=${encodeURIComponent(template)}` : ""}`}
           >
-            Add new template
+            {t("templates.addNew.addNewTemplate")}
           </Link>
         </DialogFooter>
       </DialogContent>

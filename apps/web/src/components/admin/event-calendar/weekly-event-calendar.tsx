@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n, useLocale } from "@vivid/i18n";
 import { DaySchedule, Shift } from "@vivid/types";
 import {
   Button,
@@ -8,7 +9,6 @@ import {
   ScrollBar,
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
   useMouse,
 } from "@vivid/ui";
@@ -31,6 +31,8 @@ const ShiftDisplay: React.FC<{
   className: string;
   style: CSSProperties;
 }> = ({ schedule, className, style }) => {
+  const t = useI18n("admin");
+  const locale = useLocale();
   const { ref, x, y } = useMouse<HTMLDivElement>();
   return (
     <Tooltip>
@@ -47,13 +49,13 @@ const ShiftDisplay: React.FC<{
         <div className="bg-accent p-3 rounded-md">
           <div className="text-sm font-medium flex items-center text-accent-foreground">
             <Clock className="h-4 w-4 mr-2" />
-            <span>Working Hours</span>
+            <span>{t("calendar.workingHours")}</span>
           </div>
           <div className="mt-1 flex flex-col gap-1">
             {schedule.map((hours, idx) => (
               <div key={idx} className="text-sm text-accent-foreground/80">
-                {formatTimeLocale(parseTime(hours.start))} -{" "}
-                {formatTimeLocale(parseTime(hours.end))}
+                {formatTimeLocale(parseTime(hours.start), locale)} -{" "}
+                {formatTimeLocale(parseTime(hours.end), locale)}
               </div>
             ))}
           </div>
@@ -79,7 +81,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
 }) => {
   const timeSlotColCount = 1;
   const slotsPerHour = 60 / slotInterval;
-
+  const locale = useLocale();
   const daysAround = ("daysAround" in rest ? rest.daysAround : undefined) ?? 3;
 
   const timeSlots = Array.from({ length: 24 }).flatMap((_, hour) =>
@@ -316,9 +318,13 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
 
   const sizePerRow = 64 / (timeSlots.length / 24);
 
-  const startDateFormatted = dates[0].toLocaleString(DateTime.DATE_MED);
+  const startDateFormatted = dates[0].toLocaleString(DateTime.DATE_MED, {
+    locale,
+  });
+
   const endDateFormatted = dates[dates.length - 1].toLocaleString(
-    DateTime.DATE_MED
+    DateTime.DATE_MED,
+    { locale }
   );
 
   return (
@@ -372,7 +378,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                     "--calendar-col-start": timeSlotColCount + index + 1,
                   }}
                 >
-                  {date.toFormat("EEE, MMM dd")}
+                  {date.toFormat("EEE, MMM dd", { locale })}
                 </div>
                 <div
                   className={cn(
@@ -498,7 +504,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                       year: 2000,
                       month: 1,
                       day: 1,
-                    }).toLocaleString(DateTime.TIME_SIMPLE)
+                    }).toLocaleString(DateTime.TIME_SIMPLE, { locale })
                   )}
                 </div>
               </Fragment>
@@ -545,8 +551,13 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                         className="pt-1 text-[10px]"
                         suppressHydrationWarning
                       >
-                        {event.start.toLocaleString(DateTime.TIME_SIMPLE)} -{" "}
-                        {event.end.toLocaleString(DateTime.TIME_SIMPLE)}
+                        {event.start.toLocaleString(DateTime.TIME_SIMPLE, {
+                          locale,
+                        })}{" "}
+                        -{" "}
+                        {event.end.toLocaleString(DateTime.TIME_SIMPLE, {
+                          locale,
+                        })}
                       </div>
                     )}
                   </div>

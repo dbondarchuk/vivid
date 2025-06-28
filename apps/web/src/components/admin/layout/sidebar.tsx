@@ -34,6 +34,7 @@ import { ChevronRight, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { UserNav } from "./user-nav";
+import { useI18n } from "@vivid/i18n";
 
 type SidebarProps = {
   className?: string;
@@ -66,6 +67,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
 }) => {
   const path = usePathname();
   const { open, isMobile, setOpenMobile } = useSidebar();
+  const t = useI18n("admin");
   React.useEffect(() => {
     setOpenMobile(false);
   }, [path, setOpenMobile]);
@@ -89,7 +91,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
       <SidebarContent>
         {menuItems.map((group, index) => (
           <SidebarGroup key={index}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+            <SidebarGroupLabel>{t(group.title)}</SidebarGroupLabel>
             <SidebarMenu>
               {group.children.map((item) => (
                 <React.Fragment key={item.title}>
@@ -108,7 +110,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                   {item.icon}
                                 </NavIcon>
                               )}
-                              <span>{item.title}</span>
+                              <span>{t(item.title)}</span>
                               <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                             </SidebarMenuButton>
                           </CollapsibleTrigger>
@@ -123,7 +125,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                           {subItem.icon}
                                         </NavIcon>
                                       )}
-                                      <span>{subItem.title}</span>
+                                      <span>{t(subItem.title)}</span>
                                     </Link>
                                   </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
@@ -142,7 +144,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                   {item.icon}
                                 </NavIcon>
                               )}
-                              <span>{item.title}</span>
+                              <span>{t(item.title)}</span>
                             </SidebarMenuButton>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
@@ -150,7 +152,9 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                             side={isMobile ? "bottom" : "right"}
                             align={isMobile ? "end" : "start"}
                           >
-                            <DropdownMenuLabel>{item.title}</DropdownMenuLabel>
+                            <DropdownMenuLabel>
+                              {t(item.title)}
+                            </DropdownMenuLabel>
                             {item.items?.map((subItem) => (
                               <DropdownMenuItem asChild key={subItem.title}>
                                 <Link
@@ -162,7 +166,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                                       {subItem.icon}
                                     </NavIcon>
                                   )}
-                                  <span>{subItem.title}</span>
+                                  <span>{t(subItem.title)}</span>
                                 </Link>
                               </DropdownMenuItem>
                             ))}
@@ -175,13 +179,13 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       <SidebarMenuButton
                         className="text-sidebar-foreground"
                         asChild
-                        tooltip={item.title}
+                        tooltip={t(item.title)}
                       >
                         <Link href={item.href || "/"}>
                           {item.icon && (
                             <NavIcon className={`size-5`}>{item.icon}</NavIcon>
                           )}
-                          <span>{item.title}</span>
+                          <span>{t(item.title)}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

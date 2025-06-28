@@ -17,6 +17,7 @@ import {
   AsyncFilterBoxProps,
   DataTableAsyncFilterBox,
 } from "./data-table-async-filter-box";
+import { useI18n } from "@vivid/i18n";
 
 const DiscountShortLabel: React.FC<{
   discount: Discount;
@@ -52,7 +53,10 @@ export const DiscountsDataTableAsyncFilterBox: React.FC<
     title?: AsyncFilterBoxProps["title"];
     filterKey?: AsyncFilterBoxProps["filterKey"];
   }
-> = ({ title = "Discount", filterKey = "discountId", ...rest }) => {
+> = ({ title: propsTitle, filterKey = "discountId", ...rest }) => {
+  const t = useI18n("admin");
+  const title = propsTitle ?? t("appointments.table.columns.discount");
+
   const getDiscounts = async (page: number, search?: string) => {
     const limit = 10;
     let url = `/admin/api/discounts?page=${page}&limit=${limit}`;
@@ -68,7 +72,7 @@ export const DiscountsDataTableAsyncFilterBox: React.FC<
     });
 
     if (response.status >= 400) {
-      toast.error("Request failed.");
+      toast.error(t("common.toasts.error"));
       const text = await response.text();
       console.error(
         `Request to fetch disconts failed: ${response.status}; ${text}`

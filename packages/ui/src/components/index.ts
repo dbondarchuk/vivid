@@ -74,7 +74,6 @@ export * from "./split-button";
 export * from "./supports-markdown-tooltip";
 export * from "./switch";
 export * from "./table";
-export * from "./table-sort-header";
 export * from "./tabs";
 export * from "./tag-input";
 export * from "./template-selector";

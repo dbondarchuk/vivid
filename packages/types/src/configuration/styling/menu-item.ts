@@ -14,7 +14,7 @@ import { icons } from "lucide-react";
 
 const [firstIcon, ...restIcons] = Object.keys(icons);
 const iconsEnum = z.enum([firstIcon, ...restIcons], {
-  required_error: "Icon is required",
+  required_error: "configuration.styling.menuItem.icon.required",
 });
 
 export const menuItemTypes = z.enum(["icon", "link", "button", "submenu"]);
@@ -29,8 +29,8 @@ const [firstTextSize, ...restTextSizes] = TextSizes;
 const [firstTextWeight, ...restTextWeights] = TextWeights;
 
 export const baseMenuItemSchema = z.object({
-  url: z.string().min(1, "URL must be provided"),
-  label: z.string().min(1, "Label is required"),
+  url: z.string().min(1, "common.url.invalid"),
+  label: z.string().min(1, "configuration.styling.menuItem.label.required"),
   className: z.string().optional(),
 });
 
@@ -108,7 +108,7 @@ export const subMenuMenuItemSchema = linkMenuItemSchema
     z.object({
       children: subMenuItemSchema
         .array()
-        .min(1, "Sub menu should have at least one item"),
+        .min(1, "configuration.styling.menuItem.submenu.min"),
       type: menuItemTypes.extract(["submenu"]),
     })
   );

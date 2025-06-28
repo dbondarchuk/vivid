@@ -7,6 +7,7 @@ import {
 } from "./tooltip";
 import { CodeSquare } from "lucide-react";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 
 export type SupportsMarkdownTooltipProps = {
   supportsMdx?: boolean;
@@ -15,6 +16,8 @@ export type SupportsMarkdownTooltipProps = {
 export const SupportsMarkdownTooltip: React.FC<
   SupportsMarkdownTooltipProps
 > = ({ supportsMdx }) => {
+  const t = useI18n("ui");
+
   return (
     <TooltipProvider>
       <Tooltip>
@@ -22,7 +25,11 @@ export const SupportsMarkdownTooltip: React.FC<
           <CodeSquare className="w-3 h-3" />
         </TooltipTrigger>
         <TooltipContent className="pt-2">
-          <p>This field supports {supportsMdx ? "MDX" : "Markdown"}</p>
+          <p>
+            {t("markdownTooltip.supports", {
+              type: supportsMdx ? "MDX" : "Markdown",
+            })}
+          </p>
           <p>
             <Link
               variant="dashed"
@@ -33,7 +40,7 @@ export const SupportsMarkdownTooltip: React.FC<
                   : "https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
               }
             >
-              Learn more
+              {t("markdownTooltip.learnMore")}
             </Link>
           </p>
         </TooltipContent>

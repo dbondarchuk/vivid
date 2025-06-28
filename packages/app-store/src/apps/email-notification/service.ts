@@ -15,23 +15,7 @@ import {
 } from "@vivid/utils";
 import { EmailNotificationConfiguration } from "./models";
 
-import { template } from "@vivid/utils";
-import autoConfirmedTemplate from "./emails/appointment-auto-confirmed.html";
-import confirmedTemplate from "./emails/appointment-confirmed.html";
-import pendingTemplate from "./emails/appointment-created.html";
-import declinedTemplate from "./emails/appointment-declined.html";
-import rescheduledTemplate from "./emails/appointment-rescheduled.html";
-
-const emailTemplates: Record<
-  keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
-  string
-> = {
-  confirmed: confirmedTemplate,
-  declined: declinedTemplate,
-  pending: pendingTemplate,
-  rescheduled: rescheduledTemplate,
-  "auto-confirmed": autoConfirmedTemplate,
-};
+import { getEmailTemplate } from "./emails/utils";
 
 export class EmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -82,13 +66,13 @@ export class EmailNotificationConnectedApp
         );
         return {
           status: "failed",
-          statusText: "Email sender default is not configured",
+          statusText: "emailNotification.statusText.email_app_not_configured",
         };
       }
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully set up`,
+        statusText: "emailNotification.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -110,7 +94,8 @@ export class EmailNotificationConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error processing email notification configuration",
+        statusText:
+          "emailNotification.statusText.error_processing_configuration",
       });
 
       throw error;
@@ -133,7 +118,7 @@ export class EmailNotificationConnectedApp
         appData,
         appointment,
         confirmed ? "auto-confirmed" : "pending",
-        "New Request"
+        "newRequest"
       );
 
       logger.info(
@@ -148,7 +133,8 @@ export class EmailNotificationConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error sending email notification for new appointment",
+        statusText:
+          "emailNotification.statusText.error_sending_email_notification_for_new_appointment",
       });
 
       throw error;
@@ -186,7 +172,8 @@ export class EmailNotificationConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error sending email notification for status change",
+        statusText:
+          "emailNotification.statusText.error_sending_email_notification_for_status_change",
       });
 
       throw error;
@@ -221,7 +208,7 @@ export class EmailNotificationConnectedApp
         appData,
         newAppointment,
         "rescheduled",
-        "Rescheduled"
+        "rescheduled"
       );
 
       logger.info(
@@ -248,7 +235,7 @@ export class EmailNotificationConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          "Error sending email notification for rescheduled appointment",
+          "emailNotification.statusText.error_sending_email_notification_for_rescheduled_appointment",
       });
 
       throw error;
@@ -259,7 +246,7 @@ export class EmailNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
-    initiator: string
+    initiator: keyof typeof AppointmentStatusToICalMethodMap | "newRequest"
   ) {
     const logger = this.loggerFactory("sendNotification");
     logger.debug(
@@ -282,6 +269,7 @@ export class EmailNotificationConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       logger.debug(
@@ -291,7 +279,13 @@ export class EmailNotificationConnectedApp
 
       const data = appData.data as EmailNotificationConfiguration;
 
-      const description = template(emailTemplates[status], args);
+      const { template: description, subject } = await getEmailTemplate(
+        status,
+        config.general.language,
+        config.general.url,
+        appointment,
+        args
+      );
 
       logger.debug(
         {
@@ -305,11 +299,10 @@ export class EmailNotificationConnectedApp
 
       const newStatus = status === "auto-confirmed" ? "confirmed" : status;
 
-      const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
       const eventContent = getEventCalendarContent(
         config.general,
         appointment,
-        eventSummary,
+        subject,
         description,
         status === "auto-confirmed"
           ? "REQUEST"
@@ -322,9 +315,6 @@ export class EmailNotificationConnectedApp
       );
 
       const recipientEmail = data?.email || config.general.email;
-      const subject = `Appointment for ${args.option!.name} by ${
-        args.fields!.name
-      } at ${args.dateTime}`;
 
       logger.debug(
         {
@@ -355,7 +345,7 @@ export class EmailNotificationConnectedApp
           },
         },
         participantType: "user",
-        handledBy: `Email Notification Service - ${initiator}`,
+        handledBy: `emailNotification.handlers.${initiator}`,
         appointmentId: appointment._id,
       });
 

@@ -1,7 +1,9 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AvailablePeriod, Shift } from "@vivid/types";
 import { GripHorizontal, X } from "lucide-react";
+import { DateTime } from "luxon";
 import React, {
   useCallback,
   useEffect,
@@ -9,16 +11,15 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { use12HourFormat } from "../../hooks";
 import { cn } from "../../utils";
-import { is12hourUserTimeFormat } from "@vivid/utils";
-import { DateTime } from "luxon";
 import {
   formatTime,
   generateId,
   generateTimeSlots,
+  getWeekDayMap,
   minutesToTime,
   timeToMinutes,
-  weekDayMap,
 } from "./utils";
 
 // Define types
@@ -83,6 +84,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   disabled,
   weekDate,
 }) => {
+  const t = useI18n("ui");
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const isUpdatingRef = useRef(false);
@@ -96,7 +98,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     time: string;
   } | null>(null);
 
-  const uses12HourFormat = useMemo(() => is12hourUserTimeFormat(), []);
+  const uses12HourFormat = use12HourFormat();
   const [cellDimensions, setCellDimensions] = useState<
     Record<number, { width: number; height: number }>
   >({});
@@ -118,6 +120,16 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     );
   }, [startHour, endHour, interval]);
 
+  const weekDayMap = getWeekDayMap(
+    t("calendar.monday"),
+    t("calendar.tuesday"),
+    t("calendar.wednesday"),
+    t("calendar.thursday"),
+    t("calendar.friday"),
+    t("calendar.saturday"),
+    t("calendar.sunday")
+  );
+
   // Store blocks directly instead of using a grid
   const [blocks, setBlocks] = useState<Block[]>(() => {
     const initialBlocks: Block[] = [];
@@ -138,8 +150,12 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   });
 
   // Format time with the utility function
-  const formatTimeWithLocale = (time: string) => {
-    return formatTime(time, uses12HourFormat);
+  const formatTimeWithLocale = (
+    time: string,
+    amLabel = "AM",
+    pmLabel = "PM"
+  ) => {
+    return formatTime(time, uses12HourFormat, amLabel, pmLabel);
   };
 
   // Convert blocks to AvailablePeriod[] format
@@ -862,7 +878,11 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                   isHourStart(time) && "border-t-2 border-t-gray-300 pt-2"
                 )}
               >
-                {formatTimeWithLocale(time)}
+                {formatTimeWithLocale(
+                  time,
+                  t("timePicker.am"),
+                  t("timePicker.pm")
+                )}
               </div>
               {days.map((day, dayIndex) => (
                 <div
@@ -944,9 +964,21 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                     onTouchStart={(e) => handleBlockMoveStart(e, block)}
                   >
                     <div className="text-xs font-medium select-none">
-                      <span>{formatTimeWithLocale(block.startTime)}</span>
+                      <span>
+                        {formatTimeWithLocale(
+                          block.startTime,
+                          t("timePicker.am"),
+                          t("timePicker.pm")
+                        )}
+                      </span>
                       <span> - </span>
-                      <span>{formatTimeWithLocale(block.endTime)}</span>
+                      <span>
+                        {formatTimeWithLocale(
+                          block.endTime,
+                          t("timePicker.am"),
+                          t("timePicker.pm")
+                        )}
+                      </span>
                     </div>
                     <button
                       disabled={disabled}

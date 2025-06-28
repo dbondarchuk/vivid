@@ -2,6 +2,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 
 import { ServiceFieldForm } from "@/components/admin/services/fields/form";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
@@ -12,6 +13,7 @@ type Props = {
 
 export default async function EditFieldPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-service-field");
+  const t = await getI18nAsync("admin");
   const params = await props.params;
 
   logger.debug(
@@ -39,9 +41,9 @@ export default async function EditFieldPage(props: Props) {
   );
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Services", link: "/admin/dashboard/services" },
-    { title: "Fields", link: "/admin/dashboard/services/fields" },
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    { title: t("navigation.fields"), link: "/admin/dashboard/services/fields" },
     {
       title: field.data.label,
       link: `/admin/dashboard/services/fields/${params.id}`,
@@ -53,7 +55,10 @@ export default async function EditFieldPage(props: Props) {
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title={field.data.label} description="Edit custom field" />
+          <Heading
+            title={field.data.label}
+            description={t("services.fields.editDescription")}
+          />
 
           {/* <Separator /> */}
         </div>

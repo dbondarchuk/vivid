@@ -1,4 +1,5 @@
 import { AvailableApps } from "@vivid/app-store";
+import { AdminKeys, AllKeys, useI18n, useLocale } from "@vivid/i18n";
 import { Payment, PaymentStatus, PaymentType } from "@vivid/types";
 import {
   AlertDialog,
@@ -23,7 +24,6 @@ import {
 } from "@vivid/ui";
 import { formatAmountString } from "@vivid/utils";
 import {
-  AlertTriangle,
   Check,
   CheckCircle,
   CircleDollarSign,
@@ -66,25 +66,28 @@ export const getPaymentStatusColor = (status: PaymentStatus) => {
   }
 };
 
-export const getPaymentDescription = (description: string) => {
+export const getPaymentDescription = (description: string): AdminKeys => {
   switch (description) {
     case "full_payment":
-      return "Full payment";
+      return "payment.descriptions.fullPayment";
 
     case "deposit":
-      return "Deposit";
+      return "payment.descriptions.deposit";
 
     default:
-      return description;
+      return description as AdminKeys;
   }
 };
 
-export const getPaymentMethod = (type: PaymentType, appName?: string) => {
+export const getPaymentMethod = (
+  type: PaymentType,
+  appName?: string
+): AllKeys => {
   return type === "online" && appName
-    ? AvailableApps[appName]?.displayName
+    ? `apps.${AvailableApps[appName]?.displayName}`
     : type === "cash"
-      ? "Cash"
-      : "Card";
+      ? "admin.payment.methods.cash"
+      : "admin.payment.methods.card";
 };
 
 export const getPaymentMethodIcon = (type: PaymentType, appName?: string) => {
@@ -114,6 +117,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
   const [isRefundDialogOpen, setIsRefundDialogOpen] = React.useState(false);
 
   const router = useRouter();
+
+  const t = useI18n();
+  const locale = useLocale();
 
   const dateTime =
     typeof paidAt === "string"
@@ -154,8 +160,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
         throw new Error(`Refund has failed: ${result.error}`);
       }
 
-      toast.success("Payment was refunded", {
-        description: "Payment was successfully refunded",
+      toast.success(t("admin.payment.toasts.refundSuccess"), {
+        description: t("admin.payment.toasts.refundSuccessDescription"),
       });
 
       Object.assign(payment, result.payment);
@@ -164,9 +170,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
       router.refresh();
     } catch (e) {
       console.error(e);
-      toast.error("Payment refund has failed", {
-        description:
-          "Payment refund has failed. Please see details on browser console",
+      toast.error(t("admin.payment.toasts.refundError"), {
+        description: t("admin.payment.toasts.refundErrorDescription"),
       });
     } finally {
       setIsRefundInProgress(false);
@@ -184,13 +189,15 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
             )}
             <div>
               <h3 className="font-semibold text-lg">
-                {getPaymentMethod(
-                  type,
-                  "appName" in rest ? rest.appName : undefined
+                {t(
+                  getPaymentMethod(
+                    type,
+                    "appName" in rest ? rest.appName : undefined
+                  )
                 )}
               </h3>
               <p className="text-sm text-gray-600">
-                {getPaymentDescription(description)}
+                {t(`admin.${getPaymentDescription(description)}`)}
               </p>
             </div>
           </div>
@@ -200,7 +207,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                 type,
                 "appName" in rest ? rest.appName : undefined
               )}
-              <span className="capitalize">{status}</span>
+              <span>
+                {t(`admin.common.labels.paymentStatus.${payment.status}`)}
+              </span>
             </div>
           </Badge>
         </div>
@@ -209,7 +218,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-foreground/80">Amount</span>
+            <span className="text-foreground/80">
+              {t("admin.payment.card.amount")}
+            </span>
             <span className="font-semibold text-lg">
               ${formatAmountString(amount)}
             </span>
@@ -224,7 +235,9 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
 
           {"externalId" in rest && (
             <div className="flex justify-between items-center text-sm">
-              <span className="text-foreground/80">Transaction ID</span>
+              <span className="text-foreground/80">
+                {t("admin.payment.card.transactionId")}
+              </span>
               <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
                 {rest.externalId}
               </span>
@@ -232,16 +245,18 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
           )}
 
           <div className="flex justify-between items-center text-sm">
-            <span className="text-foreground/80">Time paid</span>
+            <span className="text-foreground/80">
+              {t("admin.payment.card.timePaid")}
+            </span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
-                    {dateTime.toRelative()}
+                    {dateTime.setLocale(locale).toRelative()}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {dateTime.toLocaleString(DateTime.DATETIME_MED)}
+                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -249,16 +264,20 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
 
           {refundedDateTime?.isValid && (
             <div className="flex justify-between items-center text-sm">
-              <span className="text-foreground/80">Time refunded</span>
+              <span className="text-foreground/80">
+                {t("admin.payment.card.timeRefunded")}
+              </span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
-                      {refundedDateTime.toRelative()}
+                      {refundedDateTime.setLocale(locale).toRelative()}
                     </span>
                   </TooltipTrigger>
                   <TooltipContent side="left">
-                    {refundedDateTime.toLocaleString(DateTime.DATETIME_MED)}
+                    {refundedDateTime.toLocaleString(DateTime.DATETIME_MED, {
+                      locale,
+                    })}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -277,7 +296,8 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                     className="w-full"
                     disabled={isRefundInProgress}
                   >
-                    {isRefundInProgress && <Spinner />} Refund
+                    {isRefundInProgress && <Spinner />}{" "}
+                    {t("admin.payment.card.refund")}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -296,33 +316,41 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                           </p>
                         </div>
                       </div> */}
-                      Confirm Refund
+                      {t("admin.payment.card.confirmRefund")}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone
+                      {t("admin.payment.card.confirmRefundDescription")}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="bg-muted text-foreground font-thin rounded-lg p-4">
-                    <h4 className="font-semibold mb-3">Refund Details</h4>
+                    <h4 className="font-semibold mb-3">
+                      {t("admin.payment.card.refundDetails")}
+                    </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="">Payment Method</span>
+                        <span className="">
+                          {t("admin.payment.card.paymentMethod")}
+                        </span>
                         <span className="font-semibold">
-                          {getPaymentMethod(
-                            type,
-                            "appName" in rest ? rest.appName : undefined
+                          {t(
+                            getPaymentMethod(
+                              type,
+                              "appName" in rest ? rest.appName : undefined
+                            )
                           )}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="">Original Amount</span>
+                        <span className="">
+                          {t("admin.payment.card.originalAmount")}
+                        </span>
                         <span className="font-semibold">
                           ${formatAmountString(payment.amount)}
                         </span>
                       </div>
                       <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-semibold">
-                          <span>Refund Amount</span>
+                          <span>{t("admin.payment.card.refundAmount")}</span>
                           <span>${amount.toFixed(2)}</span>
                         </div>
                       </div>
@@ -330,14 +358,15 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
                   </div>
                   <AlertDialogFooter>
                     <AlertDialogCancel disabled={isRefundInProgress}>
-                      Cancel
+                      {t("admin.payment.card.cancel")}
                     </AlertDialogCancel>
                     <Button
                       variant="destructive"
                       onClick={() => refund()}
                       disabled={isRefundInProgress}
                     >
-                      {isRefundInProgress && <Spinner />} Confirm refund
+                      {isRefundInProgress && <Spinner />}{" "}
+                      {t("admin.payment.card.confirmRefundButton")}
                     </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -348,7 +377,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
           {status === "refunded" && (
             <div className="mt-4">
               <Button variant="destructive" className="w-full" disabled>
-                <Check /> Refunded
+                <Check /> {t("admin.payment.card.refunded")}
               </Button>
             </div>
           )}

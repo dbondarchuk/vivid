@@ -15,11 +15,13 @@ import {
   toast,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 
 export const MigrateAssetsDialog: React.FC<{
   appId: string;
   disabled?: boolean;
 }> = ({ appId, disabled }) => {
+  const t = useI18n("admin");
   const [newAppId, setNewAppId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -64,7 +66,7 @@ export const MigrateAssetsDialog: React.FC<{
         }
       }
     } catch (error) {
-      toast.error("Your request has failed");
+      toast.error(t("apps.migrateAssetsDialog.toasts.requestError"));
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -79,18 +81,18 @@ export const MigrateAssetsDialog: React.FC<{
           variant="secondary"
           className="inline-flex gap-2 items-center w-full"
         >
-          Migrate assets
+          {t("apps.migrateAssetsDialog.migrateAssets")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Migrate existing assets</DialogTitle>
+          <DialogTitle>{t("apps.migrateAssetsDialog.title")}</DialogTitle>
           <DialogDescription>
-            Migrate your existing assets from your previous storage
+            {t("apps.migrateAssetsDialog.description")}
           </DialogDescription>
         </DialogHeader>
-        <div className="w-full flex flex-col gap-2">
-          <Label>Source assets storage app</Label>
+        <div className="w-full grid grid-cols-1 gap-2">
+          <Label>{t("apps.migrateAssetsDialog.sourceApp")}</Label>
           <AppSelector
             scope="assets-storage"
             excludeIds={[appId]}
@@ -113,10 +115,24 @@ export const MigrateAssetsDialog: React.FC<{
                 ]}
               />
               <div className="flex flex-row gap-2 flex-wrap bg-muted text-muted-foreground p-2">
-                <div>Done: {progress.done}</div>
-                <div>Success: {progress.success}</div>
-                <div>Error: {progress.error}</div>
-                <div>Total: {progress.total}</div>
+                <div>
+                  {t("apps.migrateAssetsDialog.done", { count: progress.done })}
+                </div>
+                <div>
+                  {t("apps.migrateAssetsDialog.success", {
+                    count: progress.success,
+                  })}
+                </div>
+                <div>
+                  {t("apps.migrateAssetsDialog.error", {
+                    count: progress.error,
+                  })}
+                </div>
+                <div>
+                  {t("apps.migrateAssetsDialog.total", {
+                    count: progress.total,
+                  })}
+                </div>
               </div>
             </div>
           )}
@@ -129,7 +145,7 @@ export const MigrateAssetsDialog: React.FC<{
             disabled={!newAppId || newAppId === appId || isLoading}
           >
             {isLoading && <Spinner />}
-            Migrate
+            {t("apps.migrateAssetsDialog.migrate")}
           </Button>
         </DialogFooter>
       </DialogContent>

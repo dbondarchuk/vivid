@@ -88,7 +88,7 @@ export default class WeeklyScheduleConnectedApp
 
           const status: ConnectedAppStatusWithText = {
             status: "connected",
-            statusText: `Successfully installed the app`,
+            statusText: "weeklySchedule.statusText.successfully_installed",
           };
 
           this.props.update({
@@ -111,7 +111,7 @@ export default class WeeklyScheduleConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error processing weekly schedule request",
+        statusText: "weeklySchedule.statusText.error_processing_request",
       });
 
       throw error;

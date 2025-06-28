@@ -13,15 +13,15 @@ export const timeSchema = z.string().refine((x) => {
   } catch {
     return false;
   }
-}, "Must be a valid time in format HH:mm");
+}, "configuration.schedule.shifts.time.invalid");
 
 export const shiftsSchema = zUniqueArray(
   z.array(
     z.object({
       weekDay: z
         .number()
-        .min(1, "Week day must start from 1 for Monday")
-        .max(7, "Week day must not be larger than 7 for Sunday"),
+        .min(1, "configuration.schedule.shifts.weekDay.min")
+        .max(7, "configuration.schedule.shifts.weekDay.max"),
       shifts: z.array(
         z.object({
           start: timeSchema,

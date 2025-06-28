@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfigurationProps, SliderInput } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { ArrowUpDown } from "lucide-react";
 import { SpacerProps, SpacerPropsDefaults } from "./schema";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
@@ -9,12 +10,13 @@ export const SpacerConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<SpacerProps>) => {
+  const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as SpacerProps);
 
   return (
     <>
       <SliderInput
-        label="Height"
+        label={t("emailBuilder.blocks.spacer.height")}
         iconLabel={<ArrowUpDown />}
         units="px"
         step={4}

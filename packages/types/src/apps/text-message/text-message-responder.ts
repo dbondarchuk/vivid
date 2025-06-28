@@ -1,3 +1,4 @@
+import { AppsKeys } from "@vivid/i18n";
 import { Appointment } from "../../booking";
 import { CommunicationParticipantType } from "../../communication";
 import { Customer } from "../../customers";
@@ -14,7 +15,7 @@ export type TextMessageReply = {
 };
 
 export type RespondResult = {
-  handledBy: string;
+  handledBy: AppsKeys;
   participantType: CommunicationParticipantType;
 };
 

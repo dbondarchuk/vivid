@@ -28,6 +28,7 @@ import {
 import { ChevronDown, icons, Menu, X } from "lucide-react";
 import React from "react";
 import { HeaderWithScrollShadow } from "./with-scroll-shadow";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export type HeaderProps = {
   name: string;
@@ -57,7 +58,8 @@ const LinkRender: React.FC<{
   </>
 );
 
-const HeaderBase: React.FC<HeaderProps> = ({ name, logo, config }) => {
+const HeaderBase: React.FC<HeaderProps> = async ({ name, logo, config }) => {
+  const t = await getI18nAsync("translation");
   const getLink = (item: MenuItem, isSidebar: boolean) => {
     switch (item.type) {
       case "icon":
@@ -191,7 +193,7 @@ const HeaderBase: React.FC<HeaderProps> = ({ name, logo, config }) => {
         <div className="flex ml-auto md:hidden">
           <Drawer direction="right">
             <DrawerTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" aria-label={t("header.menu")}>
                 <Menu />
               </Button>
             </DrawerTrigger>
@@ -201,7 +203,7 @@ const HeaderBase: React.FC<HeaderProps> = ({ name, logo, config }) => {
                   <Button
                     variant="ghost"
                     className="w-fit ml-auto"
-                    aria-label="Close"
+                    aria-label={t("header.close")}
                   >
                     <X />
                   </Button>

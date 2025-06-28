@@ -6,6 +6,7 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import {
   addNewApp,
   getAppLoginUrl,
@@ -19,6 +20,7 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
   onError,
   appId: existingAppId,
 }) => {
+  const t = useI18n("apps");
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
@@ -63,7 +65,7 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
         appId = (app?._id || existingAppId)!;
         await setAppStatus(appId, {
           status: "pending",
-          statusText: "Pending authorization",
+          statusText: "outlook.form.pendingAuthorization",
         });
       } else {
         appId = await addNewApp(OutlookApp.name);
@@ -91,11 +93,11 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
           className="inline-flex gap-2 items-center w-full"
         >
           {isLoading && <Spinner />}
-          <span>Connect with</span>
-          <ConnectedAppNameAndLogo app={{ name: OutlookApp.name }} />
+          <span>{t("outlook.form.connectWith")}</span>
+          <ConnectedAppNameAndLogo app={{ name: OutlookApp.name }} t={t} />
         </Button>
       </div>
-      {app && <ConnectedAppStatusMessage app={app} />}
+      {app && <ConnectedAppStatusMessage app={app} t={t} />}
     </>
   );
 };

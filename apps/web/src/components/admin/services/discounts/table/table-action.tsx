@@ -13,11 +13,9 @@ import {
 } from "@vivid/ui";
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedDiscountsButton } from "./delete-selected";
-import {
-  ENABLED_OPTIONS,
-  TYPE_OPTIONS,
-  useFieldsTableFilters,
-} from "./use-table-filters";
+import { useFieldsTableFilters } from "./use-table-filters";
+import { discountTypes } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
 
 export function DiscountsTableAction() {
   const {
@@ -36,20 +34,33 @@ export function DiscountsTableAction() {
     setEndValue,
   } = useFieldsTableFilters();
   const { rowSelection } = useSelectedRowsStore();
+  const t = useI18n("admin");
 
   const additionalFilters = (
     <>
       <DataTableFilterBox
         filterKey="type"
-        title="Type"
-        options={TYPE_OPTIONS}
+        title={t("services.discounts.table.columns.type")}
+        options={discountTypes.map((type) => ({
+          value: type,
+          label: t(`common.labels.discountType.${type}`),
+        }))}
         setFilterValue={setTypeFilter as any}
         filterValue={typeFilter}
       />
       <DataTableFilterBox
         filterKey="status"
-        title="Status"
-        options={ENABLED_OPTIONS}
+        title={t("services.discounts.table.columns.enabled")}
+        options={[
+          {
+            value: false,
+            label: t("common.labels.discountStatus.disabled"),
+          },
+          {
+            value: true,
+            label: t("common.labels.discountStatus.active"),
+          },
+        ]}
         setFilterValue={setEnabledFilter as any}
         filterValue={enabledFilter}
       />
@@ -72,7 +83,11 @@ export function DiscountsTableAction() {
           setPage={setPage}
         />
         <Popover>
-          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+          <PopoverTrigger
+            tooltip={t("common.labels.filters")}
+            asChild
+            className="md:hidden"
+          >
             <Button variant="outline">
               <Settings2 size={16} />
             </Button>

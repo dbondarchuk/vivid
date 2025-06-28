@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { ConnectedAppStatusWithText } from "@vivid/types";
 import { toastPromise } from "@vivid/ui";
 import React from "react";
@@ -20,11 +21,12 @@ export function useConnectedAppSetup<T extends FieldValues>({
   appId: existingAppId,
   appName,
   schema,
-  successText = "Your app was successfully connected",
-  errorText = "The request to connect the app has failed. Please try again.",
+  successText,
+  errorText,
   onSuccess,
   onError,
 }: UseConnectedAppSetupProps<T>) {
+  const t = useI18n("apps");
   const [appId, setAppId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isDataLoading, setIsDataLoading] = React.useState(false);
@@ -85,12 +87,14 @@ export function useConnectedAppSetup<T extends FieldValues>({
 
       await toastPromise(promise, {
         success: {
-          message: "Success!",
-          description: successText,
+          message: t("common.connectedAppSetup.success.title"),
+          description:
+            successText || t("common.connectedAppSetup.success.description"),
         },
         error: {
-          message: "Uh oh! Something went wrong.",
-          description: errorText,
+          message: t("common.connectedAppSetup.error.title"),
+          description:
+            errorText || t("common.connectedAppSetup.error.description"),
         },
       });
 

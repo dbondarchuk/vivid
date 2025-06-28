@@ -1,4 +1,4 @@
-import { getI18nAsync } from "@/i18n/i18n";
+import { getI18nAsync } from "@vivid/i18n/server";
 import {
   Card,
   CardHeader,
@@ -18,7 +18,7 @@ export const BookingConfirmation: React.FC = async () => {
     redirect("/");
   }
 
-  const i18n = await getI18nAsync();
+  const i18n = await getI18nAsync("translation");
 
   const appointment = await ServicesContainer.EventsService().getAppointment(
     appointmentIdCookie.value

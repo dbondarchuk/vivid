@@ -1,6 +1,6 @@
 "use client";
 
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 import type {
   AppointmentAddon,
   AppointmentChoice,
@@ -11,21 +11,13 @@ import type {
   FieldSchema,
   WithDatabaseId,
 } from "@vivid/types";
-import { ApplyDiscountResponse, Availability, getFields } from "@vivid/types";
+import { ApplyDiscountResponse, Availability } from "@vivid/types";
 import { Spinner, toast } from "@vivid/ui";
 import { DateTime as LuxonDateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { AddonsCard } from "./addons-card";
-import { CalendarCard } from "./calendar-card";
-import { ConfirmationCard } from "./confirmation-card";
-import { DurationCard } from "./duration-card";
-import { FormCard } from "./form-card";
-import { PaymentCard } from "./payment-card";
-import { ScheduleContext, Step, StepType } from "./context";
+import { ScheduleContext, StepType } from "./context";
 import { StepCard } from "./step-card";
-import { fieldSchemaMapper } from "../forms/fields";
-import { ScheduleSteps } from "./steps";
 
 export type ScheduleProps = {
   appointmentOption: AppointmentChoice;
@@ -37,7 +29,7 @@ export type ScheduleProps = {
 };
 
 export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
 
   const errors = React.useMemo(
     () => ({

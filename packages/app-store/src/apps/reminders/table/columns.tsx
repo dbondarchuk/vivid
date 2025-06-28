@@ -1,4 +1,5 @@
 "use client";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   Checkbox,
@@ -14,20 +15,26 @@ import { CellAction } from "./cell-action";
 export const columns: ColumnDef<Reminder>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("ui");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("common.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("ui");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("common.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -41,28 +48,45 @@ export const columns: ColumnDef<Reminder>[] = [
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("Name", "string"),
+    header: tableSortHeader("reminders.table.columns.name", "string", "apps"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) => reminderTypeLabels[field.type],
+    cell: ({ row }) => {
+      const t = useI18n("apps");
+      return t(reminderTypeLabels[row.original.type]);
+    },
     id: "type",
-    header: tableSortHeader("Type", "string"),
+    header: tableSortHeader("reminders.table.columns.type", "string", "apps"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) => reminderChannelLabels[field.channel],
+    cell: ({ row }) => {
+      const t = useI18n("apps");
+      return t(reminderChannelLabels[row.original.channel]);
+    },
     id: "channel",
-    header: tableSortHeader("Channel", "string"),
+    header: tableSortHeader(
+      "reminders.table.columns.channel",
+      "string",
+      "apps"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) =>
-      DateTime.fromJSDate(field.updatedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
-    header: tableSortHeader("Updated at", "date"),
+    header: tableSortHeader(
+      "reminders.table.columns.updatedAt",
+      "date",
+      "apps"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {

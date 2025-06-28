@@ -1,4 +1,4 @@
-import { fallbackLanguage, I18nKeys, useI18n } from "@/i18n/i18n";
+import { TranslationKeys, useI18n, useLocale } from "@vivid/i18n";
 import { Time } from "@vivid/types";
 import { timeZones } from "@vivid/types/src/utils/zTimeZone";
 import {
@@ -13,10 +13,11 @@ import React from "react";
 import { useScheduleContext } from "./context";
 
 export const CardWithAppointmentInformation: React.FC<
-  React.PropsWithChildren & { title: I18nKeys }
+  React.PropsWithChildren & { title: TranslationKeys }
 > = ({ children, title }) => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { dateTime, duration, price } = useScheduleContext();
+  const locale = useLocale();
 
   if (!dateTime) return children;
 
@@ -53,24 +54,21 @@ export const CardWithAppointmentInformation: React.FC<
             <Calendar className="mr-1" />
             {i18n("form_date_label_format", {
               date: date.toLocaleString(Luxon.DATE_FULL, {
-                locale: fallbackLanguage,
+                locale,
               }),
             })}
           </div>
           <div className="flex items-center">
             <Clock className="mr-1" />
             {i18n("form_time_label_format", {
-              start: formatTimeLocale(dateTime.time),
-              end: formatTimeLocale(timeEnd),
+              start: formatTimeLocale(dateTime.time, locale),
+              end: formatTimeLocale(timeEnd, locale),
             })}
           </div>
           {!!duration && (
             <div className="flex items-center">
               <Timer className="mr-1" />
-              {i18n(
-                "form_duration_hour_minutes_label_format",
-                durationToTime(duration)
-              )}
+              {i18n("duration_hour_minutes_format", durationToTime(duration))}
             </div>
           )}
           {!!price && (
@@ -84,7 +82,7 @@ export const CardWithAppointmentInformation: React.FC<
           <div className="flex items-center">
             <Globe2 className="mr-1 flex-none" />
             {i18n("timezone_format", {
-              timezone: timeZone?.currentTimeFormat,
+              timezone: timeZone?.currentTimeFormat || "",
             })}
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { Appointment, AppointmentStatus } from "@vivid/types";
 import {
@@ -25,6 +26,8 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
   timeZone,
   ...rest
 }) => {
+  const t = useI18n("admin");
+
   return (
     <Dialog {...rest}>
       <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
@@ -33,20 +36,22 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
             <span>{appointment.option.name}</span>
             <Link
               variant="ghost"
-              title="View full appointment information"
+              title={t("appointments.dialog.viewFullInfo")}
               href={`/admin/dashboard/appointments/${appointment._id}`}
             >
               <SquareArrowOutUpRight size={20} />
             </Link>
           </DialogTitle>
-          <DialogDescription>By {appointment.fields.name}</DialogDescription>
+          <DialogDescription>
+            {t("appointments.dialog.by")} {appointment.fields.name}
+          </DialogDescription>
         </DialogHeader>
         <div className="flex-1 w-full overflow-auto">
           <AppointmentView appointment={appointment} timeZone={timeZone} />
         </div>
         <DialogFooter className="flex-row gap-2">
           <DialogClose asChild>
-            <Button variant="secondary">Close</Button>
+            <Button variant="secondary">{t("common.buttons.close")}</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

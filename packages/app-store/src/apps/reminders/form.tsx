@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { DatabaseId } from "@vivid/types";
 import {
   ArgumentsAutocomplete,
@@ -18,9 +19,9 @@ import {
   SimpleTimePicker,
   TemplateSelector,
   toastPromise,
+  use12HourFormat,
   useDemoArguments,
 } from "@vivid/ui";
-import { is12hourUserTimeFormat } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -33,21 +34,25 @@ import {
   ReminderUpdateModel,
 } from "./models";
 
-const reminderTypeValues = Object.entries(reminderTypeLabels).map(
-  ([value, label]) => ({ value, label }) as IComboboxItem
-);
-
-const reminderChannelValues = Object.entries(reminderChannelLabels).map(
-  ([value, label]) => ({ value, label }) as IComboboxItem
-);
-
 export const ReminderForm: React.FC<{
   initialData?: ReminderUpdateModel & Partial<DatabaseId>;
   appId: string;
 }> = ({ initialData, appId }) => {
+  const t = useI18n("apps");
+  const tAdmin = useI18n("admin");
+  const uses12HourFormat = use12HourFormat();
+
+  const reminderTypeValues = Object.entries(reminderTypeLabels).map(
+    ([value, label]) => ({ value, label: t(label) }) as IComboboxItem
+  );
+
+  const reminderChannelValues = Object.entries(reminderChannelLabels).map(
+    ([value, label]) => ({ value, label: t(label) }) as IComboboxItem
+  );
+
   const formSchema = getReminderSchemaWithUniqueCheck(
     (name) => checkUniqueName(appId, name, initialData?._id),
-    "Reminder name must be unique"
+    t("reminders.form.name.validation.unique")
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -80,8 +85,8 @@ export const ReminderForm: React.FC<{
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: tAdmin("common.toasts.saved"),
+        error: tAdmin("common.toasts.error"),
       });
     } catch (error: any) {
       console.error(error);
@@ -124,12 +129,12 @@ export const ReminderForm: React.FC<{
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("reminders.form.name.label")}</FormLabel>
 
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Reminder name"
+                    placeholder={t("reminders.form.name.placeholder")}
                     {...field}
                   />
                 </FormControl>
@@ -142,13 +147,13 @@ export const ReminderForm: React.FC<{
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
+                <FormLabel>{t("reminders.form.type.label")}</FormLabel>
                 <FormControl>
                   <Combobox
                     disabled={loading}
                     className="flex w-full font-normal text-base"
                     values={reminderTypeValues}
-                    searchLabel="Select type"
+                    searchLabel={t("reminders.form.type.searchLabel")}
                     value={field.value}
                     onItemSelect={(value) => {
                       field.onChange(value);
@@ -168,10 +173,9 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Weeks{" "}
+                      {t("reminders.form.weeks.label")}{" "}
                       <InfoTooltip>
-                        How many weeks before the appointment to send the
-                        reminder
+                        {t("reminders.form.weeks.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
 
@@ -193,10 +197,9 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Days{" "}
+                      {t("reminders.form.days.label")}{" "}
                       <InfoTooltip>
-                        How many days before the appointment to send the
-                        reminder
+                        {t("reminders.form.days.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
 
@@ -219,10 +222,9 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Hours{" "}
+                      {t("reminders.form.hours.label")}{" "}
                       <InfoTooltip>
-                        How many hours before the appointment to send the
-                        reminder
+                        {t("reminders.form.hours.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
 
@@ -244,10 +246,9 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Minutes{" "}
+                      {t("reminders.form.minutes.label")}{" "}
                       <InfoTooltip>
-                        How many minutes before the appointment to send the
-                        reminder
+                        {t("reminders.form.minutes.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
 
@@ -273,10 +274,9 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Weeks{" "}
+                      {t("reminders.form.weeks.label")}{" "}
                       <InfoTooltip>
-                        How many weeks before the appointment to send the
-                        reminder
+                        {t("reminders.form.weeks.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
 
@@ -302,10 +302,9 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Days{" "}
+                      {t("reminders.form.days.label")}{" "}
                       <InfoTooltip>
-                        How many days before the appointment to send the
-                        reminder
+                        {t("reminders.form.days.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
 
@@ -328,15 +327,15 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Time{" "}
+                      {t("reminders.form.time.label")}{" "}
                       <InfoTooltip>
-                        At what hour to send the reminder
+                        {t("reminders.form.time.tooltip")}
                       </InfoTooltip>
                     </FormLabel>
 
                     <FormControl>
                       <SimpleTimePicker
-                        use12HourFormat={is12hourUserTimeFormat()}
+                        use12HourFormat={uses12HourFormat}
                         value={DateTime.fromObject({
                           hour: field.value?.hour,
                           minute: field.value?.minute,
@@ -368,15 +367,17 @@ export const ReminderForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Channel type{" "}
-                  <InfoTooltip>Determines how to send the reminder</InfoTooltip>
+                  {t("reminders.form.channel.label")}{" "}
+                  <InfoTooltip>
+                    {t("reminders.form.channel.tooltip")}
+                  </InfoTooltip>
                 </FormLabel>
                 <FormControl>
                   <Combobox
                     disabled={loading}
                     className="flex w-full font-normal text-base"
                     values={reminderChannelValues}
-                    searchLabel="Select channel type"
+                    searchLabel={t("reminders.form.channel.searchLabel")}
                     value={field.value}
                     onItemSelect={(value) => {
                       field.onChange(value);
@@ -396,12 +397,10 @@ export const ReminderForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Email subject
+                      {t("reminders.form.subject.label")}
                       <InfoTooltip>
-                        <p>
-                          Subject of the email, that your customers will see.
-                        </p>
-                        <p>* Uses templated values</p>
+                        <p>{t("reminders.form.subject.tooltip")}</p>
+                        <p>{t("reminders.form.subject.templatedValues")}</p>
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -411,7 +410,7 @@ export const ReminderForm: React.FC<{
                         value={field.value}
                         onChange={(value) => field.onChange(value)}
                         disabled={loading}
-                        placeholder="Subject"
+                        placeholder={t("reminders.form.subject.placeholder")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -426,9 +425,9 @@ export const ReminderForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Template
+                  {t("reminders.form.template.label")}
                   <InfoTooltip>
-                    Reminder body, that your customers will see.
+                    {t("reminders.form.template.tooltip")}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>

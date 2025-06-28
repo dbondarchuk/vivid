@@ -4,6 +4,7 @@ import {
   Appointment,
   BookingConfiguration,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   GeneralConfiguration,
   IConnectedApp,
@@ -123,13 +124,13 @@ export default class RemindersConnectedApp
             );
             return {
               status: "failed",
-              statusText: "Email sender default app is not configured",
+              statusText: "reminders.statusText.email_app_not_configured",
             };
           }
 
           const status: ConnectedAppStatusWithText = {
             status: "connected",
-            statusText: `Successfully set up`,
+            statusText: "reminders.statusText.successfully_set_up",
           };
 
           this.props.update({
@@ -348,12 +349,13 @@ export default class RemindersConnectedApp
         updatedAt: DateTime.utc().toJSDate(),
       };
 
-      if (!this.checkUniqueName(appId, reminder.name)) {
+      const isUnique = await this.checkUniqueName(appId, reminder.name);
+      if (!isUnique) {
         logger.error(
           { appId, reminderName: reminder.name },
           "Reminder name already exists"
         );
-        throw new Error("Name already exists");
+        throw new ConnectedAppError("reminders.form.name.validation.unique");
       }
 
       const db = await this.props.getDbConnection();
@@ -397,12 +399,13 @@ export default class RemindersConnectedApp
 
       const { _id, ...updateObj } = update as Reminder; // Remove fields in case it slips here
 
-      if (!this.checkUniqueName(appId, update.name, id)) {
+      const isUnique = await this.checkUniqueName(appId, update.name, id);
+      if (!isUnique) {
         logger.error(
           { appId, reminderId: id, reminderName: update.name },
           "Reminder name already exists"
         );
-        throw new Error("Name already exists");
+        throw new ConnectedAppError("reminders.form.name.validation.unique");
       }
 
       updateObj.updatedAt = DateTime.utc().toJSDate();
@@ -472,7 +475,7 @@ export default class RemindersConnectedApp
 
     try {
       const db = await this.props.getDbConnection();
-      const templates = db.collection<Reminder>(REMINDERS_COLLECTION_NAME);
+      const reminders = db.collection<Reminder>(REMINDERS_COLLECTION_NAME);
 
       const filter: Filter<Reminder> = {
         name,
@@ -485,8 +488,12 @@ export default class RemindersConnectedApp
         };
       }
 
-      const result = await templates.countDocuments(filter);
-      const isUnique = result === 0;
+      const result = reminders.aggregate([
+        {
+          $match: filter,
+        },
+      ]);
+      const isUnique = !(await result.hasNext());
 
       logger.debug(
         { appId, name, reminderId: id, isUnique },
@@ -760,6 +767,7 @@ export default class RemindersConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       const channel = reminder.channel;
@@ -811,7 +819,12 @@ export default class RemindersConnectedApp
               to: appointment.fields.email,
             },
             participantType: "customer",
-            handledBy: `Reminder Service - ${reminder.name}`,
+            handledBy: {
+              key: `reminders.handler`,
+              args: {
+                reminderName: reminder.name,
+              },
+            },
             appointmentId: appointment._id,
           });
 
@@ -861,7 +874,12 @@ export default class RemindersConnectedApp
               appId: appData._id,
             },
             participantType: "customer",
-            handledBy: `Reminder service - ${reminder.name}`,
+            handledBy: {
+              key: `reminders.handler`,
+              args: {
+                reminderName: reminder.name,
+              },
+            },
             appointmentId: appointment._id,
           });
 

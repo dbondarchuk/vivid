@@ -33,7 +33,6 @@ export default async function AppointmentPage(props: Props) {
                 <Skeleton className="w-full max-w-80 h-9" />
                 <Skeleton className="w-full max-w-80 h-5" />
               </div>
-              {/* <Separator /> */}
             </div>
             <Skeleton className="w-full max-h-svh h-full min-h-96" />
           </div>

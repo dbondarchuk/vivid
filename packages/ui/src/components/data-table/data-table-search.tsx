@@ -4,6 +4,7 @@ import { Input } from "../input";
 import { cn } from "../../utils";
 import { Options } from "nuqs";
 import { useTransition } from "react";
+import { useI18n } from "@vivid/i18n";
 
 interface DataTableSearchProps {
   searchKey: string;
@@ -46,6 +47,7 @@ export function DataTableSearch({
   setSearchQuery,
   setPage,
 }: DataTableSearchProps) {
+  const t = useI18n("ui");
   const [isLoading, startTransition] = useTransition();
 
   const handleSearch = (value: string) => {
@@ -55,7 +57,7 @@ export function DataTableSearch({
 
   return (
     <Input
-      placeholder="Search..."
+      placeholder={t("dataTable.searchPlaceholder", { searchKey })}
       value={searchQuery ?? ""}
       onChange={(e) => handleSearch(e.target.value)}
       className={cn("w-full md:max-w-sm", isLoading && "animate-pulse")}

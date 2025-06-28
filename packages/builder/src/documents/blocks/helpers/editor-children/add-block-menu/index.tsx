@@ -15,9 +15,9 @@ import {
 } from "@vivid/ui";
 import { useBlocks, useRootBlock } from "../../../../editor/context";
 import { generateId } from "../../../../helpers/block-id";
-import { BlockTypeButton } from "./block-button";
 import { DividerButton } from "./divider-button";
 import { PlaceholderButton } from "./placeholder-button";
+import { BuilderKeys, useI18n } from "@vivid/i18n";
 
 type Props = {
   onSelect: (block: TEditorBlock) => void;
@@ -35,6 +35,8 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
   const [open, setOpen] = React.useState(false);
   const blocks = useBlocks();
   const rootBlock = useRootBlock();
+  const t = useI18n("builder");
+  const tUi = useI18n("ui");
 
   const onItemSelect = (block: Omit<TEditorBlock, "id">) => {
     onSelect({
@@ -55,9 +57,9 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
       )}
       <PopoverContent className="sm:w-fit">
         <Command>
-          <CommandInput placeholder="Search blocks..." />
+          <CommandInput placeholder={t("baseBuilder.searchBlocks")} />
           <CommandList>
-            <CommandEmpty>No results found</CommandEmpty>
+            <CommandEmpty>{tUi("common.noResults")}</CommandEmpty>
             {Object.entries(
               Object.entries(blocks)
                 .filter(([type]) => rootBlock.type !== type)
@@ -87,7 +89,7 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
               //   }
               // />
               <Fragment key={category}>
-                <CommandGroup heading={category}>
+                <CommandGroup heading={t(category as BuilderKeys)}>
                   {values.map(({ name, defaultValue, icon, displayName }) => (
                     <CommandItem
                       key={name}
@@ -99,7 +101,7 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
                         })
                       }
                     >
-                      {icon} {displayName}
+                      {icon} {t(displayName)}
                     </CommandItem>
                   ))}
                 </CommandGroup>

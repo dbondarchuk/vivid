@@ -1,0 +1,657 @@
+{
+  "common": {
+    "email": {
+      "invalid": "Invalid email",
+      "required": "Valid email is required"
+    },
+    "phone": {
+      "invalid": "Invalid phone number",
+      "required": "Phone number is required"
+    },
+    "number": {
+      "integer": "Value must be an integer"
+    },
+    "url": {
+      "invalid": "Invalid URL"
+    }
+  },
+  "customerEmailNotification": {
+    "eventTemplate": {
+      "summary": {
+        "required": "Event summary is required",
+        "min": "Event summary is required"
+      },
+      "templateId": {
+        "required": "Event template is required",
+        "min": "Event template is required"
+      }
+    },
+    "emailTemplate": {
+      "subject": {
+        "required": "Email subject is required",
+        "min": "Email subject is required"
+      },
+      "templateId": {
+        "required": "Email template is required",
+        "min": "Email template is required"
+      }
+    }
+  },
+  "calDav": {
+    "calendarName": {
+      "required": "Calendar name is required",
+      "min": "Calendar name is required"
+    },
+    "serverUrl": {
+      "required": "Server URL is required",
+      "url": "Server URL must be a valid URL"
+    }
+  },
+  "calendarWriter": {
+    "appId": {
+      "required": "Calendar app is required"
+    }
+  },
+  "followUps": {
+    "form": {
+      "name": {
+        "required": "Name is required",
+        "min": "Name must be at least 2 characters long"
+      },
+      "weeks": {
+        "min": "Min amount of weeks is 0",
+        "max": "Max amount of weeks is 10"
+      },
+      "days": {
+        "min": "Min amount of days is 0",
+        "max": "Max amount of days is 31"
+      },
+      "hours": {
+        "min": "Min amount of hours is 0",
+        "max": "Max amount of hours is 120"
+      },
+      "minutes": {
+        "min": "Min amount of minutes is 0",
+        "max": "Max amount of minutes is 600"
+      },
+      "time": {
+        "hour": {
+          "min": "Hour must be between 0 and 23",
+          "max": "Hour must be between 0 and 23"
+        },
+        "minute": {
+          "min": "Minute must be between 0 and 59",
+          "max": "Minute must be between 0 and 59"
+        }
+      },
+      "templateId": {
+        "required": "Template is required"
+      },
+      "subject": {
+        "required": "Email subject is required"
+      },
+      "afterAppointmentCount": {
+        "min": "Min appointment count is 1",
+        "max": "Max appointment count is 100"
+      },
+      "atTime": {
+        "days": {
+          "min": "Follow-up should be sent at least 1 day after the appointment"
+        },
+        "minutes": {
+          "min": "Follow-up should be sent at least 1 minute after the appointment"
+        }
+      }
+    }
+  },
+  "ics": {
+    "invalidUrl": "ICS must be a valid URL to your calendar"
+  },
+  "logCleanup": {
+    "amountMin": "Amount must be at least 1",
+    "amountInteger": "Should be the integer value"
+  },
+  "reminders": {
+    "form": {
+      "name": {
+        "required": "Reminder name must be at least 2 characters long",
+        "min": "Reminder name must be at least 2 characters long"
+      },
+      "weeks": {
+        "min": "Min amount of weeks is 0",
+        "max": "Max amount of weeks is 10"
+      },
+      "days": {
+        "min": "Min amount of days is 0",
+        "max": "Max amount of days is 31"
+      },
+      "hours": {
+        "min": "Min amount of hours is 0",
+        "max": "Max amount of hours is 120"
+      },
+      "minutes": {
+        "min": "Min amount of minutes is 0",
+        "max": "Max amount of minutes is 600"
+      },
+      "time": {
+        "hour": {
+          "min": "Hour should be between 0 and 23",
+          "max": "Hour should be between 0 and 23"
+        },
+        "minute": {
+          "min": "Minute should be between 0 and 59",
+          "max": "Minute should be between 0 and 59"
+        }
+      },
+      "templateId": {
+        "required": "Template is required"
+      },
+      "subject": {
+        "required": "Email subject is required"
+      },
+      "atTime": {
+        "days": {
+          "min": "Reminder should be sent at least 1 day before the appointment"
+        },
+        "minutes": {
+          "min": "Reminder should be sent at least 1 minute before the appointment"
+        }
+      }
+    }
+  },
+  "paypal": {
+    "clientId": {
+      "required": "PayPal Client ID is required"
+    },
+    "secretKey": {
+      "required": "PayPal API key is required"
+    },
+    "buttonStyle": {
+      "shape": {
+        "invalid": "Unknown shape"
+      },
+      "layout": {
+        "invalid": "Unknown layout"
+      },
+      "color": {
+        "invalid": "Unknown color"
+      },
+      "label": {
+        "invalid": "Unknown label"
+      }
+    },
+    "paymentIntentId": {
+      "required": "Payment intent ID is required"
+    },
+    "orderId": {
+      "required": "Order ID is required"
+    }
+  },
+  "s3AssetsStorage": {
+    "form": {
+      "region": {
+        "required": "S3 region is required"
+      },
+      "accessKeyId": {
+        "required": "Access key ID is required"
+      },
+      "secretAccessKey": {
+        "required": "Secret access key is required"
+      },
+      "endpoint": {
+        "url": "Should be a valid URL"
+      }
+    }
+  },
+  "smtp": {
+    "host": {
+      "required": "SMTP host is required",
+      "min": "SMTP host is required"
+    },
+    "port": {
+      "integer": "Should be the integer value",
+      "min": "SMTP port number must be between 1 and 99999",
+      "max": "SMTP port number must be between 1 and 99999"
+    },
+    "email": {
+      "invalid": "Email must be a correct email address"
+    }
+  },
+  "textBelt": {
+    "apiKey": {
+      "required": "TextBelt API key is required",
+      "min": "TextBelt API key is required"
+    }
+  },
+  "textMessageAutoReply": {
+    "autoReplyTemplateId": {
+      "required": "Template is required",
+      "min": "Template is required"
+    }
+  },
+  "assets": {
+    "fileRequired": "File must be attached",
+    "fileNameMinLength": "File name must be at least 3 characters",
+    "fileNameExtension": "File name must have an extension",
+    "fileNameUnique": "File name must be unique"
+  },
+  "customers": {
+    "emailAlreadyExists": "There is already a customer with one or more of the emails",
+    "phoneAlreadyExists": "There is already a customer with one or more of the phones"
+  },
+  "pages": {
+    "slugMustBeUnique": "Page slug must be unique"
+  },
+  "templates": {
+    "nameMustBeUnique": "Template name must be unique"
+  },
+  "services": {
+    "discounts": {
+      "nameUnique": "Discount name must be unique",
+      "codeUnique": "Discount code must be unique"
+    },
+    "fields": {
+      "nameUnique": "Field name must be unique"
+    },
+    "options": {
+      "nameUnique": "Option name must be unique"
+    },
+    "addons": {
+      "nameUnique": "Add-on name must be unique"
+    }
+  },
+  "install": {
+    "nameMin": "Name must be at least 3 characters long",
+    "titleMin": "Title must be at least 3 characters long"
+  },
+  "appointments": {
+    "request": {
+      "optionId": {
+        "required": "Option ID is required"
+      },
+      "addonsIds": {
+        "required": "Add-on IDs are required",
+        "unique": "Add-on IDs should be unique"
+      },
+      "dateTime": {
+        "required": "Date and time are required"
+      },
+      "duration": {
+        "required": "Duration is required",
+        "positive": "Duration must be a integer number greater or equal to 1"
+      },
+      "fields": {
+        "email": {
+          "required": "Valid email is required"
+        },
+        "name": {
+          "required": "Name is required"
+        }
+      },
+      "promoCode": {
+        "min": "Promo code should be undefined or at least 1 character long"
+      },
+      "paymentIntentId": {
+        "min": "Payment Intent ID should be undefined or at least one character long"
+      }
+    },
+    "option": {
+      "name": {
+        "required": "Option name must be at least 2 characters long"
+      },
+      "description": {
+        "required": "Option description is required"
+      },
+      "duration": {
+        "required": "Duration is required",
+        "positive": "Duration must be a integer number greater or equal to 1 minute"
+      },
+      "price": {
+        "min": "Price must be at least 1"
+      },
+      "addons": {
+        "id": {
+          "required": "Add-on ID is required",
+          "unique": "Add-on IDs should be unique"
+        }
+      },
+      "fields": {
+        "id": {
+          "required": "Field ID is required",
+          "unique": "Field IDs should be unique"
+        }
+      },
+      "requireDeposit": {
+        "required": "Deposit amount is required if set to always"
+      },
+      "depositPercentage": {
+        "required": "Deposit percentage must be an integer number between 10 and 100"
+      }
+    }
+  },
+  "addons": {
+    "name": {
+      "required": "Add-on name must be at least 2 characters long"
+    },
+    "description": {
+      "required": "Add-on description is required"
+    },
+    "duration": {
+      "positive": "Duration must be a integer number greater or equal to 1 minute"
+    },
+    "price": {
+      "min": "Price must be at least 1"
+    },
+    "fields": {
+      "id": {
+        "required": "Field ID is required",
+        "unique": "Field IDs should be unique"
+      }
+    }
+  },
+  "discount": {
+    "name": {
+      "required": "Discount name must be at least 2 characters long"
+    },
+    "code": {
+      "required": "Discount code must be at least 2 characters long"
+    },
+    "maxUsage": {
+      "min": "Max usage must be a integer number greater or equal to 1"
+    },
+    "maxUsagePerCustomer": {
+      "min": "Max usage per customer must be a integer number greater or equal to 1"
+    },
+    "limitTo": {
+      "addons": {
+        "required": "Add-on ID is required",
+        "unique": "Add-on IDs should be unique",
+        "min": "At least one addon is required"
+      },
+      "options": {
+        "required": "Option ID is required",
+        "unique": "Option IDs should be unique"
+      }
+    },
+    "value": {
+      "required": "Promo code value should be positive number",
+      "max": "Value can not be greater than 100"
+    },
+    "codes": {
+      "min": "At least one promo code should be added",
+      "max": "Maximum 10 promo codes per discount is allowed",
+      "minLength": "Promo code should be at least 3 characters long",
+      "unique": "Promo codes should be unique"
+    },
+    "endDate": {
+      "min": "End date should be greater than start date"
+    },
+    "applyRequest": {
+      "optionId": {
+        "required": "Option ID is required"
+      },
+      "dateTime": {
+        "required": "Valid date and time are required"
+      },
+      "addons": {
+        "required": "Add-on ID is required",
+        "unique": "Add-on IDs should be unique"
+      },
+      "code": {
+        "required": "Promo code is required"
+      }
+    }
+  },
+  "fields": {
+    "type": {
+      "invalid": "Unknown field type"
+    },
+    "label": {
+      "required": "Field label is required"
+    },
+    "description": {
+      "min": "Field description should be at least 3 characters long"
+    },
+    "name": {
+      "required": "Field name must be at least 2 characters long",
+      "invalid": "Field name must start with letter and contain only letters, digits, and underscore (_)"
+    },
+    "option": {
+      "required": "Option value is required",
+      "unique": "Option values should be unique"
+    },
+    "accept": {
+      "min": "Accept item should be at least one character",
+      "invalid": "Invalid accept type"
+    },
+    "maxSizeMb": {
+      "min": "Value should be at least 1",
+      "max": "Max size allowed is 100mb"
+    }
+  },
+  "communication": {
+    "template": {
+      "required": "Template is required"
+    },
+    "appointment": {
+      "required": "Appointment ID is required"
+    },
+    "customer": {
+      "required": "Customer ID is required"
+    },
+    "message": {
+      "required": "Message content is required"
+    },
+    "email": {
+      "subject": {
+        "required": "Email subject is required"
+      },
+      "content": {
+        "required": "Email content is required"
+      }
+    },
+    "appointmentOrCustomer": {
+      "required": "Either appointment ID or customer ID is required",
+      "onlyOne": "Only one of customerId or appointmentId should be present"
+    }
+  },
+  "configuration": {
+    "apps": {
+      "email": {
+        "required": "Email sender APP is required"
+      },
+      "assetsStorage": {
+        "required": "Assets storage APP is required"
+      }
+    },
+    "booking": {
+      "calendarSource": {
+        "required": "Calendar source app is required"
+      },
+      "maxWeeksInFuture": {
+        "min": "Max weeks in future must be at least 2",
+        "max": "Max weeks in future must be at most 20",
+        "integer": "Max weeks in future must be an integer"
+      },
+      "minHoursBeforeBooking": {
+        "min": "Min hours before booking must be at least 0",
+        "max": "Min hours before booking must be at most 72",
+        "integer": "Min hours before booking must be an integer"
+      },
+      "breakDuration": {
+        "min": "Break duration must be at least 0",
+        "max": "Break duration must be at most 120",
+        "integer": "Break duration must be an integer"
+      },
+      "slotStart": {
+        "unknown": "Unknown option"
+      },
+      "options": {
+        "id": {
+          "required": "Option is required"
+        }
+      },
+      "customSlotTimes": {
+        "required": "Custom time slots are required"
+      },
+      "payments": {
+        "paymentAppId": {
+          "required": "Payment app is required if enabled"
+        },
+        "requireDeposit": {
+          "required": "Deposit amount is required if enabled"
+        },
+        "depositPercentage": {
+          "required": "Deposit percentage must be an integer number between 10 and 100",
+          "min": "Deposit percentage must be at least 10",
+          "max": "Deposit percentage must be at most 100",
+          "integer": "Deposit percentage must be an integer number"
+        },
+        "dontRequireIfCompletedMinNumberOfAppointments": {
+          "min": "Min number of appointments must be at least 1",
+          "integer": "Min number of appointments must be an integer number"
+        }
+      }
+    },
+    "general": {
+      "name": {
+        "min": "Website name must be at least 3 characters long"
+      },
+      "title": {
+        "min": "Website title must be at least 3 characters long"
+      },
+      "description": {
+        "min": "Website description must be at least 3 characters long"
+      },
+      "keywords": {
+        "min": "Website keywords must be at least 3 characters long"
+      },
+      "url": {
+        "invalid": "Website URL should be valid URL address",
+        "min": "Website URL must be at least 3 characters long"
+      }
+    },
+    "resources": {
+      "type": {
+        "invalid": "Unknown resource type"
+      },
+      "value": {
+        "required": "Resource value is required"
+      }
+    },
+    "schedule": {
+      "override": {
+        "week": {
+          "integer": "Week must be an integer",
+          "positive": "Week must be a positive integer"
+        }
+      },
+      "shifts": {
+        "weekDay": {
+          "min": "Week day must start from 1 for Monday",
+          "max": "Week day must not be larger than 7 for Sunday"
+        },
+        "time": {
+          "invalid": "Time must be in format HH:mm"
+        }
+      }
+    },
+    "social": {
+      "type": {
+        "invalid": "Unknown social type"
+      }
+    },
+    "styling": {
+      "footer": {
+        "contactUsLabel": {
+          "min": "Contact us label must contain at least 2 symbols"
+        }
+      },
+      "menuItem": {
+        "icon": {
+          "required": "Icon is required"
+        },
+        "label": {
+          "required": "Label is required"
+        },
+        "submenu": {
+          "min": "Sub menu should have at least one item"
+        }
+      },
+      "fonts": {
+        "unknown": "Unknown font"
+      },
+      "colors": {
+        "invalid": "Unknown color setting",
+        "value": {
+          "invalid": "Color must be a valid HEX value, starting with #"
+        },
+        "unique": "Colors should be unique"
+      }
+    }
+  },
+  "customer": {
+    "name": {
+      "required": "Name is required"
+    },
+    "email": {
+      "required": "Valid email is required"
+    },
+    "phone": {
+      "required": "Phone is required"
+    },
+    "knownNames": {
+      "unique": "Names should be unique"
+    },
+    "knownEmails": {
+      "unique": "Emails should be unique"
+    },
+    "knownPhones": {
+      "unique": "Phones should be unique"
+    },
+    "requireDeposit": {
+      "required": "Deposit amount is required if enabled"
+    },
+    "depositPercentage": {
+      "required": "Deposit percentage must be an integer number between 10 and 100",
+      "min": "Deposit percentage must be at least 10",
+      "max": "Deposit percentage must be at most 100",
+      "integer": "Deposit percentage must be an integer number"
+    }
+  },
+  "page": {
+    "title": {
+      "required": "Page title must be at least 2 characters long"
+    },
+    "content": {
+      "required": "Page content is required"
+    },
+    "slug": {
+      "required": "Page slug is required",
+      "invalid": "Page slug must contain only latin lower case letters, digits, slash, and hyphens"
+    },
+    "description": {
+      "required": "Page description is required"
+    },
+    "keywords": {
+      "required": "Page keywords are required"
+    },
+    "publishDate": {
+      "required": "Publish date is required"
+    },
+    "tag": {
+      "min": "Tag should be at least 3 characters long"
+    }
+  },
+  "template": {
+    "name": {
+      "required": "Template name is required"
+    },
+    "type": {
+      "invalid": "Unknown type"
+    },
+    "value": {
+      "required": "Template value is required"
+    }
+  }
+}

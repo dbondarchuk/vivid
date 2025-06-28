@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import {
   useBlocks,
   useDispatchAction,
@@ -8,9 +9,10 @@ import BaseSidebarPanel from "./configuration-panel/input-panels/helpers/base-si
 export const StylesPanel: React.FC = () => {
   const block = useDocument();
   const dispatchAction = useDispatchAction();
+  const t = useI18n("builder");
 
   if (!block) {
-    return <p>Block not found</p>;
+    return <p>{t("baseBuilder.inspector.stylesPanel.blockNotFound")}</p>;
   }
 
   const { data, type } = block;

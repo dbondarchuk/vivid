@@ -9,16 +9,13 @@ import {
 import { fieldTypes } from "./fields";
 
 const fieldTypeEnum = z.enum(fieldTypes, {
-  required_error: "Unknown field type",
+  message: "fields.type.invalid",
 });
 
 export const defaultFieldDataSchema = z.object({
-  label: z.string().min(1, "Field label is required"),
+  label: z.string().min(1, "fields.label.required"),
   // description: z.array(z.any()),
-  description: zOptionalOrMinLengthString(
-    3,
-    "Field description should be at least 3 characters long"
-  ),
+  description: zOptionalOrMinLengthString(3, "fields.description.min"),
 });
 
 export const selectFieldDataSchema = defaultFieldDataSchema.merge(
@@ -26,21 +23,21 @@ export const selectFieldDataSchema = defaultFieldDataSchema.merge(
     options: zUniqueArray(
       z.array(
         z.object({
-          option: z.string().min(1, "Option value is required"),
+          option: z.string().min(1, "fields.option.required"),
         })
       ),
       (item) => item.option,
-      "All options should be unique"
+      "fields.option.unique"
     ),
   })
 );
 
 export const fileFieldAcceptItemSchema = z
   .string()
-  .min(1, "Accept item should be at least one character")
+  .min(1, "fields.accept.min")
   .regex(
     /(\.[a-zA-Z0-9]+$)|(^(image|video|audio)\/\*$)|(^[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_\.]+$)/,
-    "Invalid accept type"
+    "fields.accept.invalid"
   );
 
 export const fileFieldDataSchema = defaultFieldDataSchema.merge(
@@ -52,8 +49,8 @@ export const fileFieldDataSchema = defaultFieldDataSchema.merge(
     maxSizeMb: asOptionalField(
       z.coerce
         .number()
-        .min(1, "Value should be at least 1")
-        .max(100, "Max size allowed is 100mb")
+        .min(1, "fields.maxSizeMb.min")
+        .max(100, "fields.maxSizeMb.max")
     ),
   })
 );
@@ -61,11 +58,8 @@ export const fileFieldDataSchema = defaultFieldDataSchema.merge(
 export const baseFieldSchema = z.object({
   name: z
     .string()
-    .min(2, "Field name must me at least 2 characters long")
-    .refine(
-      (s) => /^[a-z_][a-z0-9_]+$/i.test(s),
-      "Field name must start with letter and contain only letters, digits, and underscore (_)"
-    ),
+    .min(2, "fields.name.required")
+    .refine((s) => /^[a-z_][a-z0-9_]+$/i.test(s), "fields.name.invalid"),
   required: z.boolean().optional(),
 });
 

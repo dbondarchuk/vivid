@@ -1,4 +1,5 @@
 import { WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -32,6 +33,7 @@ export const ResetAllDialog: React.FC<ResetAllDialogProps> = ({
   className,
   onConfirm: onResetAll,
 }) => {
+  const t = useI18n("apps");
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -39,8 +41,10 @@ export const ResetAllDialog: React.FC<ResetAllDialogProps> = ({
     try {
       setLoading(true);
       await toastPromise(resetAllWeeklySchedule(appId, week), {
-        success: `All weekly schedules for week of ${getWeekDisplay(week)} and forward were successfully reset to the default`,
-        error: "There was a problem with your request.",
+        success: t("weeklySchedule.dialogs.resetAll.success", {
+          week: getWeekDisplay(week),
+        }),
+        error: t("weeklySchedule.statusText.request_error"),
       });
 
       setOpenConfirmDialog(false);
@@ -56,25 +60,31 @@ export const ResetAllDialog: React.FC<ResetAllDialogProps> = ({
     <AlertDialog open={openConfirmDialog} onOpenChange={setOpenConfirmDialog}>
       <AlertDialogTrigger asChild>
         <Button variant="secondary" disabled={disabled} className={className}>
-          <RotateCcw /> Reset all
+          <RotateCcw /> {t("weeklySchedule.dialogs.resetAll.resetAllToDefault")}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("weeklySchedule.dialogs.resetAll.title")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will reset all existing schedules
-            starting from the week of {getWeekDisplay(week)} to the default one.
+            {t("weeklySchedule.dialogs.resetAll.description", {
+              week: getWeekDisplay(week),
+            })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("weeklySchedule.dialogs.resetAll.cancel")}
+          </AlertDialogCancel>
           <Button
             disabled={loading}
             className="flex flex-row gap-1 items-center"
             onClick={onConfirm}
           >
-            {loading && <Spinner />} <span>Reset</span>
+            {loading && <Spinner />}{" "}
+            <span>{t("weeklySchedule.dialogs.resetAll.reset")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

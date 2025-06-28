@@ -10,7 +10,7 @@ export const fontsNames = allFonts.items.map((font) => font.family);
 const [firstFont, ...restFonts] = fontsNames;
 
 export const fontName = z.enum([firstFont, ...restFonts], {
-  message: "Unknown font",
+  message: "configuration.styling.fonts.unknown",
 });
 
 export const colors = [
@@ -51,12 +51,14 @@ export const colorsLabels: Record<(typeof colors)[number], string> = {
   "destructive-foreground": "Destructive text",
 };
 
-export const colorsEnum = z.enum(colors, { message: "Unknown color setting" });
+export const colorsEnum = z.enum(colors, {
+  message: "configuration.styling.colors.invalid",
+});
 
 export const colorOverrideSchema = z.object({
   type: colorsEnum,
   value: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, {
-    message: "Color must be a valid HEX value, starting with #",
+    message: "configuration.styling.colors.value.invalid",
   }),
 });
 
@@ -66,7 +68,7 @@ export const stylingConfigurationSchema = z.object({
   colors: zUniqueArray(
     colorOverrideSchema.array(),
     (item) => item.type,
-    "Colors should be unique"
+    "configuration.styling.colors.unique"
   ).optional(),
   fonts: z
     .object({

@@ -9,22 +9,22 @@ export const baseSendCommunicationRequestSchema = z.object({
 });
 
 export const sendAppointmentCommunicationRequestSchema = z.object({
-  appointmentId: z.string().min(1, "Appointment ID is required"),
+  appointmentId: z.string().min(1, "communication.appointment.required"),
 });
 
 export const sendCustomerCommunicationRequestSchema = z.object({
-  customerId: z.string().min(1, "Customer ID is required"),
+  customerId: z.string().min(1, "communication.customer.required"),
   ...baseSendCommunicationRequestSchema.shape,
 });
 
 export const sendTextMessageCommunicationRequestSchema = z.object({
   channel: z.literal(textMessageCommunicationChannel),
-  content: z.string().min(1, "Message content is required"),
+  content: z.string().min(1, "communication.message.required"),
 });
 
 export const sendEmailCommunicationRequestSchema = z.object({
   channel: z.literal(emailCommunicationChannel),
-  subject: z.string().min(1, "Email subject is required"),
+  subject: z.string().min(1, "communication.email.subject.required"),
   content: z
     .object(
       {
@@ -33,8 +33,8 @@ export const sendEmailCommunicationRequestSchema = z.object({
         id: z.string().min(1),
       },
       {
-        required_error: "Message content is required",
-        message: "Message content is required",
+        required_error: "communication.email.content.required",
+        message: "communication.email.content.required",
       }
     )
     .passthrough(),
@@ -56,13 +56,13 @@ export const sendCommunicationRequestSchema = z
       ctx.addIssue({
         path: ["customerId", "appointmentId"],
         code: "custom",
-        message: "Either customerId or appointmentId is required",
+        message: "communication.appointmentOrCustomer.required",
       });
     } else if ("appointmentId" in arg && "customerId" in arg) {
       ctx.addIssue({
         path: ["customerId", "appointmentId"],
         code: "custom",
-        message: "Only one of customerId or appointmentId should be present",
+        message: "communication.appointmentOrCustomer.onlyOne",
       });
     }
   });

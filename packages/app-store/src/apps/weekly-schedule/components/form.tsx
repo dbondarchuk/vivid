@@ -1,6 +1,7 @@
 "use client";
 
 import { Schedule, ScheduleOverride, WeekIdentifier } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   DayScheduleSelector,
@@ -30,6 +31,7 @@ type WeeklyScheduleFormProps = {
 export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
   appId,
 }) => {
+  const t = useI18n("apps");
   const [loading, setLoading] = React.useState(true);
 
   const weekStr = useSearchParams().get("week");
@@ -58,7 +60,7 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
       setLoading(false);
     } catch (e: any) {
       console.error(e);
-      toast.error("Failed to load the schedule");
+      toast.error(t("weeklySchedule.statusText.failed_to_load_schedule"));
     }
   };
 
@@ -73,8 +75,8 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
     try {
       // setLoading(true);
       await toastPromise(updateWeeklySchedule(appId, week, newSchedule), {
-        success: "Saved!",
-        error: "There was a problem with your request.",
+        success: t("weeklySchedule.statusText.saved"),
+        error: t("weeklySchedule.statusText.request_error"),
       });
 
       setIsDefault(false);
@@ -108,13 +110,13 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
           disabled={week === todayWeek || loading}
           onClick={() => onWeekChange(todayWeek)}
         >
-          This week
+          {t("weeklySchedule.form.thisWeek")}
         </Button>
         <div className="flex flex-row gap-1 max-lg:w-full">
           <Button
             variant="outline"
             size="icon"
-            title="Previous week"
+            title={t("weeklySchedule.form.previousWeek")}
             disabled={loading}
             onClick={() => onWeekChange(week - 1)}
           >
@@ -129,7 +131,7 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
           <Button
             variant="outline"
             size="icon"
-            title="Next week"
+            title={t("weeklySchedule.form.nextWeek")}
             disabled={loading}
             onClick={() => onWeekChange(week + 1)}
           >

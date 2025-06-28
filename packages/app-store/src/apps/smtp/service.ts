@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   Email,
   EmailResponse,
@@ -49,7 +50,9 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
           { appId: appData._id, host: data.host, port: data.port },
           "SMTP connection verification failed"
         );
-        throw new Error("Failed to connect");
+        throw new ConnectedAppError(
+          "smtp.statusText.connection_verification_failed"
+        );
       }
 
       logger.debug(
@@ -59,7 +62,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully connected to server`,
+        statusText: "smtp.statusText.successfully_connected",
       };
 
       this.props.update({
@@ -94,7 +97,13 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
 
       const status: ConnectedAppStatusWithText = {
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          e instanceof ConnectedAppError
+            ? {
+                key: e.key,
+                args: e.args,
+              }
+            : "smtp.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -145,7 +154,9 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
             { appId: appData._id, icsError },
             "Failed to parse iCal event"
           );
-          throw new Error(icsError?.toString() || "Failed to parse iCal event");
+          throw new ConnectedAppError(
+            "smtp.statusText.error_parsing_ical_event"
+          );
         }
 
         icalEvent = {
@@ -216,7 +227,13 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
 
       const status: ConnectedAppStatusWithText = {
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          e instanceof ConnectedAppError
+            ? {
+                key: e.key,
+                args: e.args,
+              }
+            : "smtp.statusText.error_sending_email",
       };
 
       this.props.update({

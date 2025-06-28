@@ -7,6 +7,7 @@ import { Clock, ChevronDownIcon, CheckIcon } from "lucide-react";
 import { Button } from "../button";
 import { ScrollArea } from "../scroll-area";
 import { DateTime } from "luxon";
+import { useI18n } from "@vivid/i18n";
 
 interface SimpleTimeOption {
   value: any;
@@ -41,6 +42,7 @@ export function SimpleTimePicker({
   minutesDivisibleBy?: number;
   timeZone?: string;
 }) {
+  const t = useI18n("ui");
   // hours24h = HH
   // hours12h = hh
   const formatStr = useMemo(
@@ -162,8 +164,8 @@ export function SimpleTimePicker({
     const startD = value.startOf("day");
     const endD = value.endOf("day");
     return [
-      { value: AM_VALUE, label: "AM" },
-      { value: PM_VALUE, label: "PM" },
+      { value: AM_VALUE, label: t("timePicker.am") },
+      { value: PM_VALUE, label: t("timePicker.pm") },
     ].map((v) => {
       let disabled = false;
       const start = startD.plus({ hours: v.value * 12 });

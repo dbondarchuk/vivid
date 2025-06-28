@@ -1,3 +1,4 @@
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   CalendarBusyTime,
@@ -115,7 +116,7 @@ export default class BusyEventsConnectedApp
 
           const status: ConnectedAppStatusWithText = {
             status: "connected",
-            statusText: `Successfully installed the app`,
+            statusText: "common.statusText.successfully_set_up",
           };
 
           this.props.update({
@@ -226,6 +227,7 @@ export default class BusyEventsConnectedApp
     end: Date
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
+    const t = await getI18nAsync("apps");
     logger.debug(
       { appId, start: start.toISOString(), end: end.toISOString() },
       "Getting busy times"
@@ -295,7 +297,7 @@ export default class BusyEventsConnectedApp
           endAt: day.set(parseTime(event.end)).toJSDate(),
           startAt: day.set(parseTime(event.start)).toJSDate(),
           uid: `busy-event-${day.toISODate()}-${index}`,
-          title: "Busy",
+          title: t("busyEvents.eventTitle"),
         }));
       });
 

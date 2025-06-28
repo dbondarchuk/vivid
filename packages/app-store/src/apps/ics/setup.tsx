@@ -16,6 +16,7 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { IcsApp } from "./app";
 import { IcsLinkCalendarSource, icsLinkCalendarSourceSchema } from "./models";
@@ -25,6 +26,7 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
   onError,
   appId: existingAppId,
 }) => {
+  const t = useI18n("apps");
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<IcsLinkCalendarSource>({
       appId: existingAppId,
@@ -45,10 +47,14 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    ICS link <InfoTooltip>URL to ICS calendar</InfoTooltip>
+                    {t("ics.form.link.label")}{" "}
+                    <InfoTooltip>{t("ics.form.link.tooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="https://" {...field} />
+                    <Input
+                      placeholder={t("ics.form.link.placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -61,13 +67,13 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>Connect with</span>
-              <ConnectedAppNameAndLogo app={{ name: IcsApp.name }} />
+              <span>{t("ics.form.connect")}</span>
+              <ConnectedAppNameAndLogo app={{ name: IcsApp.name }} t={t} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

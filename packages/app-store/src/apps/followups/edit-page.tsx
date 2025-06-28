@@ -7,12 +7,13 @@ import React from "react";
 import { FollowUp } from "./models";
 import { getFollowUp } from "./actions";
 import { Skeleton, toast } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 
 export const EditFollowUpPage: React.FC<ComplexAppSetupProps> = ({ appId }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = searchParams.get("id");
-
+  const t = useI18n("apps");
   const [loading, setLoading] = React.useState(true);
   const [followUp, setFollowUp] = React.useState<FollowUp>();
 
@@ -35,7 +36,7 @@ export const EditFollowUpPage: React.FC<ComplexAppSetupProps> = ({ appId }) => {
         setLoading(false);
       } catch (e: any) {
         console.error(e);
-        toast.error("Failed to load the follow-up");
+        toast.error(t("followUps.statusText.error_loading_follow_up"));
       } finally {
       }
     };

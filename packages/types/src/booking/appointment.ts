@@ -24,8 +24,8 @@ export type Appointment = AppointmentEntity & {
   endAt: Date;
 };
 
-export const StatusText: Record<AppointmentStatus, string> = {
-  pending: "Pending",
-  confirmed: "Confirmed",
-  declined: "Declined",
-};
+// export const StatusText: Record<AppointmentStatus, string> = {
+//   pending: "Pending",
+//   confirmed: "Confirmed",
+//   declined: "Declined",
+// };

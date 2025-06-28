@@ -3,20 +3,16 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Assets", link: "/admin/dashboard/assets" },
-  { title: "Edit", link: "/admin/dashboard/assets" },
-];
-
 export default async function EditAssetsPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-asset");
+  const t = await getI18nAsync("admin");
   const params = await props.params;
 
   logger.debug(
@@ -42,12 +38,18 @@ export default async function EditAssetsPage(props: Props) {
     "Asset edit page loaded"
   );
 
+  const breadcrumbItems = [
+    { title: t("assets.dashboard"), link: "/admin/dashboard" },
+    { title: t("assets.title"), link: "/admin/dashboard/assets" },
+    { title: t("assets.editPage"), link: "/admin/dashboard/assets" },
+  ];
+
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title="Edit asset" description={asset.filename} />
+          <Heading title={t("assets.edit")} description={asset.filename} />
           {/* <Separator /> */}
         </div>
         <AssetEditForm asset={asset} />

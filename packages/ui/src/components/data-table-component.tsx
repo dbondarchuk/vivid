@@ -7,6 +7,7 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useI18n } from "@vivid/i18n";
 
 import {
   Table,
@@ -31,6 +32,7 @@ export function BasicDataTable<TData, TValue>({
   data,
   searchKey,
 }: DataTableProps<TData, TValue>) {
+  const t = useI18n("ui");
   const table = useReactTable({
     data,
     columns,
@@ -44,7 +46,7 @@ export function BasicDataTable<TData, TValue>({
   return (
     <>
       <Input
-        placeholder={`Search ${searchKey}...`}
+        placeholder={t("dataTable.searchPlaceholder", { searchKey })}
         value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
         onChange={(event) =>
           table.getColumn(searchKey)?.setFilterValue(event.target.value)
@@ -94,7 +96,7 @@ export function BasicDataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("common.noResults")}
                 </TableCell>
               </TableRow>
             )}
@@ -104,8 +106,10 @@ export function BasicDataTable<TData, TValue>({
       </ScrollArea>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {t("dataTable.selectedRows", {
+            selected: table.getFilteredSelectedRowModel().rows.length,
+            total: table.getFilteredRowModel().rows.length,
+          })}
         </div>
         <div className="space-x-2">
           <Button
@@ -114,7 +118,7 @@ export function BasicDataTable<TData, TValue>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            {t("dataTable.previous")}
           </Button>
           <Button
             variant="outline"
@@ -122,7 +126,7 @@ export function BasicDataTable<TData, TValue>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            {t("dataTable.next")}
           </Button>
         </div>
       </div>

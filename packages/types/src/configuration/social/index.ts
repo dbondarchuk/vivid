@@ -10,7 +10,7 @@ export const socialType = z.enum(
     "twitch",
     "youtube",
   ],
-  { message: "Unknown social type" }
+  { message: "configuration.social.type.invalid" }
 );
 
 export type SocialLinkType = z.infer<typeof socialType>;
@@ -24,7 +24,7 @@ export const socialTypeLabels = Object.keys(socialType.Values).reduce(
 );
 
 export const socialLinkSchema = z.object({
-  url: z.string().min(3, "Url must be at least 3 characters"),
+  url: z.string().min(3, "common.url.invalid"),
   type: socialType,
 });
 

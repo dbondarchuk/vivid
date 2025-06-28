@@ -5,7 +5,11 @@ export const SpacerPropsSchema = z.object({
   style: zStylesBase.pick({ backgroundColor: true }).optional().nullable(),
   props: z
     .object({
-      height: z.number().gte(0).optional().nullish(),
+      height: z
+        .number()
+        .gte(0, "emailBuilder.blocks.spacer.validation.height")
+        .optional()
+        .nullish(),
     })
     .optional()
     .nullable(),

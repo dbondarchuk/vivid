@@ -1,11 +1,13 @@
 "use client";
 
+import { AllKeys, useI18n } from "@vivid/i18n";
 import { AvailablePeriod } from "@vivid/types";
-import { is12hourUserTimeFormat, parseTime } from "@vivid/utils";
+import { parseTime, template } from "@vivid/utils";
 import { Clock, Plus, X } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { use12HourFormat } from "../../hooks";
 import {
   Accordion,
   AccordionContent,
@@ -14,20 +16,26 @@ import {
 } from "../accordion";
 import { Button } from "../button";
 import { Card, CardContent } from "../card";
-import { SimpleTimePicker, TimePicker } from "../time-picker";
-import { formatTime, timeToMinutes, weekDayMap } from "./utils";
+import { SimpleTimePicker } from "../time-picker";
+import { formatTime, getWeekDayMap, timeToMinutes } from "./utils";
 
 export interface SimpleSchedulerProps {
   days?: number[];
   value: AvailablePeriod[];
   onChange: (value: AvailablePeriod[]) => void;
+  addShiftLabel?: string;
+  shiftsLabel?: AllKeys;
 }
 
 export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
   days = [1, 2, 3, 4, 5, 6, 7],
   value,
   onChange,
+  addShiftLabel,
+  shiftsLabel,
 }) => {
+  const t = useI18n("ui");
+  const tAll = useI18n();
   const [expandedDays, setExpandedDays] = useState<string[]>([]);
   const [editingShift, setEditingShift] = useState<{
     day: number;
@@ -41,7 +49,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
     endTime: string;
   } | null>(null);
 
-  const uses12HourFormat = useMemo(() => is12hourUserTimeFormat(), []);
+  const uses12HourFormat = use12HourFormat();
 
   // Format time with the utility function
   const formatTimeWithLocale = (time: string) => {
@@ -112,8 +120,8 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
       timeToMinutes(editingShift.startTime) >=
       timeToMinutes(editingShift.endTime)
     ) {
-      toast.error("Invalid time range", {
-        description: "Start time must be before end time",
+      toast.error(t("scheduler.invalidTimeRange"), {
+        description: t("scheduler.startTimeBeforeEndTime"),
       });
 
       return;
@@ -193,8 +201,8 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
 
     // Validate times
     if (timeToMinutes(newShift.startTime) >= timeToMinutes(newShift.endTime)) {
-      toast.error("Invalid time range", {
-        description: "Start time must be before end time",
+      toast.error(t("scheduler.invalidTimeRange"), {
+        description: t("scheduler.startTimeBeforeEndTime"),
       });
       return;
     }
@@ -240,6 +248,16 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
     return `${dateTime.hour.toString().padStart(2, "0")}:${dateTime.minute.toString().padStart(2, "0")}`;
   };
 
+  const weekDayMap = getWeekDayMap(
+    t("calendar.monday"),
+    t("calendar.tuesday"),
+    t("calendar.wednesday"),
+    t("calendar.thursday"),
+    t("calendar.friday"),
+    t("calendar.saturday"),
+    t("calendar.sunday")
+  );
+
   return (
     <div className="space-y-4">
       <Accordion
@@ -254,7 +272,13 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
               <div className="flex justify-between items-center w-full pr-4">
                 <span>{weekDayMap[day]}</span>
                 <span className="text-xs text-muted-foreground">
-                  {getShiftsForDay(day).length} shifts
+                  {shiftsLabel
+                    ? tAll(shiftsLabel, {
+                        count: getShiftsForDay(day).length,
+                      })
+                    : t("scheduler.shifts", {
+                        count: getShiftsForDay(day).length,
+                      })}
                 </span>
               </div>
             </AccordionTrigger>
@@ -272,7 +296,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                           <div className="grid grid-cols-2 gap-2">
                             <div>
                               <label className="text-xs font-medium mb-1 block">
-                                Start Time
+                                {t("scheduler.startTime")}
                               </label>
                               <SimpleTimePicker
                                 modal
@@ -289,7 +313,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                             </div>
                             <div>
                               <label className="text-xs font-medium mb-1 block">
-                                End Time
+                                {t("scheduler.endTime")}
                               </label>
                               <SimpleTimePicker
                                 modal
@@ -311,10 +335,10 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                               variant="outline"
                               onClick={handleCancelEdit}
                             >
-                              Cancel
+                              {t("common.cancel")}
                             </Button>
                             <Button size="sm" onClick={handleSaveEdit}>
-                              Save
+                              {t("common.save")}
                             </Button>
                           </div>
                         </div>
@@ -342,7 +366,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                                 )
                               }
                             >
-                              Edit
+                              {t("scheduler.edit")}
                             </Button>
                             <Button
                               size="sm"
@@ -366,7 +390,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="text-xs font-medium mb-1 block">
-                            Start Time
+                            {t("scheduler.startTime")}
                           </label>
                           <SimpleTimePicker
                             modal
@@ -383,7 +407,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                         </div>
                         <div>
                           <label className="text-xs font-medium mb-1 block">
-                            End Time
+                            {t("scheduler.endTime")}
                           </label>
                           <SimpleTimePicker
                             modal
@@ -405,10 +429,10 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                           variant="outline"
                           onClick={handleCancelNewShift}
                         >
-                          Cancel
+                          {t("common.cancel")}
                         </Button>
                         <Button size="sm" onClick={handleSaveNewShift}>
-                          Add Shift
+                          {addShiftLabel ?? t("scheduler.addShift")}
                         </Button>
                       </div>
                     </CardContent>
@@ -420,7 +444,8 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                     className="w-full mt-2"
                     onClick={() => handleStartAddShift(day)}
                   >
-                    <Plus className="h-4 w-4 mr-1" /> Add Shift
+                    <Plus className="h-4 w-4 mr-1" />{" "}
+                    {addShiftLabel ?? t("scheduler.addShift")}
                   </Button>
                 )}
               </div>

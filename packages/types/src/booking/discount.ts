@@ -12,7 +12,7 @@ export const discountTypes = [
 
 export const discountSchema = z
   .object({
-    name: z.string().min(2, "Discount name should be at least 2 characters"),
+    name: z.string().min(2, "discount.name.required"),
     enabled: z.coerce.boolean(),
     startDate: z.coerce.date().optional(),
     endDate: z.coerce.date().optional(),
@@ -20,15 +20,15 @@ export const discountSchema = z
     appointmentEndDate: z.coerce.date().optional(),
     maxUsage: asOptinalNumberField(
       z.coerce
-        .number({ message: "Must be a number greater than 1" })
-        .int("Must be a number greater than 1")
-        .min(1, "Must be a number greater than 1")
+        .number({ message: "discount.maxUsage.min" })
+        .int("discount.maxUsage.min")
+        .min(1, "discount.maxUsage.min")
     ),
     maxUsagePerCustomer: asOptinalNumberField(
       z.coerce
-        .number({ message: "Must be a number greater than 1" })
-        .int("Must be a number greater than 1")
-        .min(1, "Must be a number greater than 1")
+        .number({ message: "discount.maxUsagePerCustomer.min" })
+        .int("discount.maxUsagePerCustomer.min")
+        .min(1, "discount.maxUsagePerCustomer.min")
     ),
     type: z.enum(discountTypes),
     limitTo: z
@@ -38,15 +38,14 @@ export const discountSchema = z
             .array(
               z.object({
                 ids: zUniqueArray(
-                  z
-                    .array(
-                      z.object({
-                        id: z.string().min(1, "Addon id is required"),
-                      })
-                    )
-                    .min(1, "At least one addon is required"),
+                  z.array(
+                    z.object({
+                      id: z.string().min(1, "discount.limitTo.addons.required"),
+                    })
+                  ),
+                  // .min(1, "discount.limitTo.addons.min"),
                   (addon) => addon.id,
-                  "Must be unique values"
+                  "discount.limitTo.addons.unique"
                 ),
               })
             )
@@ -54,26 +53,25 @@ export const discountSchema = z
           options: zUniqueArray(
             z.array(
               z.object({
-                id: z.string().min(1, "Option id is required"),
+                id: z.string().min(1, "discount.limitTo.options.required"),
               })
             ),
-            (option) => option.id
+            (option) => option.id,
+            "discount.limitTo.options.unique"
           ).optional(),
         })
       )
       .optional(),
     value: z.coerce
-      .number({ message: "Promo code value should be positive number" })
-      .int("Promo code value should be positive number"),
+      .number({ message: "discount.value.required" })
+      .int("discount.value.required"),
     codes: zUniqueArray(
       z
-        .array(
-          z.string().min(3, "Promo code should be at least 3 characters long")
-        )
-        .min(1, "At least one promo code should be added")
-        .max(10, "Maximum 10 promo codes per discount is allowed"),
+        .array(z.string().min(3, "discount.codes.minLength"))
+        .min(1, "discount.codes.min")
+        .max(10, "discount.codes.max"),
       (code) => code,
-      "Codes must be unique"
+      "discount.codes.unique"
     ),
   })
   .superRefine((arg, ctx) => {
@@ -81,14 +79,14 @@ export const discountSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["endDate"],
-        message: "End date should be greater than start date",
+        message: "discount.endDate.min",
       });
     }
     if (arg.type === "percentage" && arg.value > 100) {
       ctx.addIssue({
         code: "custom",
         path: ["value"],
-        message: "Value can not be greater than 100",
+        message: "discount.value.max",
       });
     }
   });
@@ -139,14 +137,16 @@ export const applyDiscountRequestSchema = z.object({
   name: z.string(),
   email: z.string(),
   phone: z.string(),
-  optionId: z.string().min(1, "Option ID is required"),
-  dateTime: z.coerce.date({ message: "Must be a valid date" }),
+  optionId: z.string().min(1, "discount.applyRequest.optionId.required"),
+  dateTime: z.coerce.date({
+    message: "discount.applyRequest.dateTime.required",
+  }),
   addons: zUniqueArray(
-    z.array(z.string().min(1, "Addon ID is required")),
+    z.array(z.string().min(1, "discount.applyRequest.addons.required")),
     (id) => id,
-    "Addons IDs should be unique"
+    "discount.applyRequest.addons.unique"
   ).optional(),
-  code: z.string().min(1, "Promo code is required"),
+  code: z.string().min(1, "discount.applyRequest.code.required"),
 });
 
 export type ApplyDiscountRequest = z.infer<typeof applyDiscountRequestSchema>;

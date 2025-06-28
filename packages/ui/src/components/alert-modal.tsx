@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useI18n } from "@vivid/i18n";
 import { Modal } from "./modal";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
@@ -12,6 +13,7 @@ interface AlertModalProps {
   title?: string;
   description?: string;
   continueButton?: string;
+  cancelButton?: string;
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
@@ -19,10 +21,12 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   onClose,
   onConfirm,
   loading,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-  continueButton = "Continue",
+  title,
+  description,
+  continueButton,
+  cancelButton,
 }) => {
+  const t = useI18n("ui");
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -35,14 +39,14 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
   return (
     <Modal
-      title={title}
-      description={description}
+      title={title || t("alertModal.defaultTitle")}
+      description={description || t("alertModal.defaultDescription")}
       isOpen={isOpen}
       onClose={onClose}
     >
       <div className="flex w-full items-center justify-end space-x-2 pt-6">
         <Button disabled={loading} variant="outline" onClick={onClose}>
-          Cancel
+          {cancelButton || t("common.cancel")}
         </Button>
         <Button
           disabled={loading}
@@ -51,7 +55,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
           className="flex flex-row gap-1 items-center"
         >
           {loading && <Spinner />}
-          <span>{continueButton}</span>
+          <span>{continueButton || t("alertModal.continueButton")}</span>
         </Button>
       </div>
     </Modal>

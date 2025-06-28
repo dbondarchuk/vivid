@@ -1,21 +1,23 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { SocialSettingsForm } from "./form";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Settings", link: "/admin/dashboard" },
-  { title: "Social", link: "/admin/dashboard/settings/social" },
-];
-
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("social");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading social page");
   const settings =
     await ServicesContainer.ConfigurationService().getConfiguration("social");
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.settings"), link: "/admin/dashboard" },
+    { title: t("navigation.social"), link: "/admin/dashboard/settings/social" },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -23,10 +25,9 @@ export default async function Page() {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="Social Settings"
-            description="Adjust social links settings"
+            title={t("settings.social.title")}
+            description={t("settings.social.description")}
           />
-          {/* <Separator /> */}
         </div>
         <SocialSettingsForm values={settings} />
       </div>

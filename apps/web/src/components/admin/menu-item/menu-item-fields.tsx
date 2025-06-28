@@ -18,6 +18,7 @@ import {
   TextSizes,
   TextWeights,
 } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { useMemo } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { IconSelect } from "./icon-select";
@@ -162,6 +163,8 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
   disabled,
   type,
 }) => {
+  const t = useI18n("admin");
+
   const {
     fields: subMenuItems,
     append: appendSubMenu,
@@ -202,9 +205,13 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
             name={`${name}.url`}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Url</FormLabel>
+                <FormLabel>{t("menuItem.fields.url")}</FormLabel>
                 <FormControl>
-                  <Input disabled={disabled} placeholder="Link" {...field} />
+                  <Input
+                    disabled={disabled}
+                    placeholder={t("menuItem.fields.urlPlaceholder")}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -216,9 +223,13 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
           name={`${name}.label`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Label</FormLabel>
+              <FormLabel>{t("menuItem.fields.label")}</FormLabel>
               <FormControl>
-                <Input disabled={disabled} placeholder="Label" {...field} />
+                <Input
+                  disabled={disabled}
+                  placeholder={t("menuItem.fields.labelPlaceholder")}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -230,7 +241,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
             name={`${name}.icon`}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Icon</FormLabel>
+                <FormLabel>{t("menuItem.fields.icon")}</FormLabel>
                 <FormControl>
                   <IconSelect field={field} disabled={disabled} />
                 </FormControl>
@@ -248,7 +259,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.variant`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Variant</FormLabel>
+                  <FormLabel>{t("menuItem.fields.variant")}</FormLabel>
 
                   <FormControl>
                     <Combobox
@@ -256,7 +267,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={linkVariantsValues}
-                      searchLabel="Select link variant"
+                      searchLabel={t("menuItem.fields.selectVariant")}
                       value={field.value}
                       onItemSelect={field.onChange}
                     />
@@ -271,7 +282,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.size`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Size</FormLabel>
+                  <FormLabel>{t("menuItem.fields.size")}</FormLabel>
 
                   <FormControl>
                     <Combobox
@@ -279,7 +290,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={linkSizesValues}
-                      searchLabel="Select size"
+                      searchLabel={t("menuItem.fields.selectSize")}
                       value={field.value}
                       onItemSelect={(value) => field.onChange(value)}
                     />
@@ -298,7 +309,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.variant`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Variant</FormLabel>
+                  <FormLabel>{t("menuItem.fields.variant")}</FormLabel>
 
                   <FormControl>
                     <Combobox
@@ -306,7 +317,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={buttonVariantsValues}
-                      searchLabel="Select button variant"
+                      searchLabel={t("menuItem.fields.selectButtonVariant")}
                       value={field.value}
                       onItemSelect={field.onChange}
                     />
@@ -321,7 +332,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.size`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Size</FormLabel>
+                  <FormLabel>{t("menuItem.fields.size")}</FormLabel>
 
                   <FormControl>
                     <Combobox
@@ -329,7 +340,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={buttonSizesValues}
-                      searchLabel="Select size"
+                      searchLabel={t("menuItem.fields.selectSize")}
                       value={field.value}
                       onItemSelect={(value) => field.onChange(value)}
                     />
@@ -348,7 +359,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.font`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Text font</FormLabel>
+                  <FormLabel>{t("menuItem.fields.textFont")}</FormLabel>
 
                   <FormControl>
                     <Combobox
@@ -356,7 +367,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={textFontValues}
-                      searchLabel="Select text font"
+                      searchLabel={t("menuItem.fields.selectTextFont")}
                       value={field.value}
                       onItemSelect={(value) => field.onChange(value)}
                     />
@@ -371,7 +382,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.fontSize`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Text size</FormLabel>
+                  <FormLabel>{t("menuItem.fields.textSize")}</FormLabel>
 
                   <FormControl>
                     <Combobox
@@ -379,7 +390,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={textSizesValues}
-                      searchLabel="Select text size"
+                      searchLabel={t("menuItem.fields.selectTextSize")}
                       value={field.value}
                       onItemSelect={(value) => field.onChange(value)}
                     />
@@ -394,7 +405,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.fontWeight`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Text weight</FormLabel>
+                  <FormLabel>{t("menuItem.fields.textWeight")}</FormLabel>
 
                   <FormControl>
                     <Combobox
@@ -402,7 +413,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                       disabled={disabled}
                       className="flex w-full font-normal text-base"
                       values={textWeightsValues}
-                      searchLabel="Select text weight"
+                      searchLabel={t("menuItem.fields.selectTextWeight")}
                       value={field.value}
                       onItemSelect={(value) => field.onChange(value)}
                     />
@@ -416,7 +427,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.prefixIcon`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Prefix Icon</FormLabel>
+                  <FormLabel>{t("menuItem.fields.prefixIcon")}</FormLabel>
                   <FormControl>
                     <IconSelect field={field} disabled={disabled} allowClear />
                   </FormControl>
@@ -429,7 +440,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
               name={`${name}.suffixIcon`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Suffix Icon</FormLabel>
+                  <FormLabel>{t("menuItem.fields.suffixIcon")}</FormLabel>
                   <FormControl>
                     <IconSelect field={field} disabled={disabled} allowClear />
                   </FormControl>
@@ -444,9 +455,15 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
           name={`${name}.className`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Additional classes</FormLabel>
+              <FormLabel>{t("menuItem.fields.additionalClasses")}</FormLabel>
               <FormControl>
-                <Input disabled={disabled} placeholder="font-bold" {...field} />
+                <Input
+                  disabled={disabled}
+                  placeholder={t(
+                    "menuItem.fields.additionalClassesPlaceholder"
+                  )}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -455,7 +472,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
       </div>
       {type === "submenu" && (
         <Sortable
-          title="Sub Menu"
+          title={t("menuItem.subMenu.title")}
           ids={subMenusIds}
           onSort={sortSubMenus}
           onAdd={addNewSubMenu}

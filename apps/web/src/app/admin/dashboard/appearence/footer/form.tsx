@@ -3,6 +3,7 @@
 import { MenuItemCard } from "@/components/admin/menu-item/menu-item-card";
 import { MdxContent } from "@/components/web/mdx/mdx-content-client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Editor } from "@monaco-editor/react";
 import {
@@ -36,6 +37,7 @@ import { updateFooterConfiguration } from "./actions";
 export const FooterSettingsForm: React.FC<{
   values: FooterConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<FooterConfiguration>({
     resolver: zodResolver(footerConfigurationSchema),
     mode: "all",
@@ -53,8 +55,8 @@ export const FooterSettingsForm: React.FC<{
       setLoading(true);
 
       await toastPromise(updateFooterConfiguration(data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("appearance.footer.form.toasts.changesSaved"),
+        error: t("appearance.footer.form.toasts.requestError"),
       });
 
       router.refresh();
@@ -114,7 +116,7 @@ export const FooterSettingsForm: React.FC<{
                     htmlFor="useCustomFooter"
                     className="cursor-pointer"
                   >
-                    Use custom footer
+                    {t("appearance.footer.form.useCustomFooter")}
                   </FormLabel>
                 </div>
               </div>
@@ -134,7 +136,7 @@ export const FooterSettingsForm: React.FC<{
                 <ResizablePanel className="pr-1">
                   <FormItem>
                     <FormLabel>
-                      Footer content
+                      {t("appearance.footer.form.footerContent")}
                       <SupportsMarkdownTooltip supportsMdx />
                     </FormLabel>
                     <FormControl>
@@ -153,7 +155,7 @@ export const FooterSettingsForm: React.FC<{
                 <ResizableHandle withHandle />
                 <ResizablePanel className="pl-1">
                   <FormItem>
-                    <FormLabel>Preview</FormLabel>
+                    <FormLabel>{t("appearance.footer.form.preview")}</FormLabel>
                     {/* <IFrame className="h-[60vh] w-full"> */}
                     <ScrollArea className="h-[60vh] w-full">
                       <MdxContent source={field.value || ""} />
@@ -173,15 +175,17 @@ export const FooterSettingsForm: React.FC<{
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Contact us label{" "}
+                      {t("appearance.footer.form.contactUsLabel")}{" "}
                       <InfoTooltip>
-                        Defaults to &quote;Contact us&quote;
+                        {t("appearance.footer.form.contactUsLabelTooltip")}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Contact us"
+                        placeholder={t(
+                          "appearance.footer.form.contactUsPlaceholder"
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -189,7 +193,12 @@ export const FooterSettingsForm: React.FC<{
                 )}
               />
             </div>
-            <Sortable title="Links" ids={ids} onSort={sort} onAdd={addNew}>
+            <Sortable
+              title={t("appearance.footer.form.links")}
+              ids={ids}
+              onSort={sort}
+              onAdd={addNew}
+            >
               <div className="flex flex-grow flex-col gap-4">
                 {fields.map((item, index) => {
                   return (

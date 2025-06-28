@@ -1,4 +1,4 @@
-import { I18nKeys, useI18n } from "@/i18n/i18n";
+import { TranslationKeys, useI18n } from "@vivid/i18n";
 import { cn, useFormField } from "@vivid/ui";
 import React from "react";
 
@@ -6,7 +6,7 @@ export const FormFieldErrorMessage = React.forwardRef<
   HTMLParagraphElement,
   Exclude<React.HTMLAttributes<HTMLParagraphElement>, "children">
 >(({ className, ...props }, ref) => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { error, formMessageId } = useFormField();
   const body = error?.message;
 
@@ -21,7 +21,7 @@ export const FormFieldErrorMessage = React.forwardRef<
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
-      {i18n(body as I18nKeys)}
+      {i18n(body as TranslationKeys)}
     </p>
   );
 });

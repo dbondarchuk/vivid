@@ -14,10 +14,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Sort } from "@vivid/types";
-import { template } from "@vivid/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useI18n } from "@vivid/i18n";
 import { cn } from "../../utils";
 import { Button } from "../button";
 import { ScrollArea, ScrollBar } from "../scroll-area";
@@ -112,6 +112,7 @@ export function DataTable<TData, TValue>({
   additionalCellProps,
   className,
 }: DataTableProps<TData, TValue>) {
+  const t = useI18n("ui");
   const [currentPage, setCurrentPage] = useQueryState(
     "page",
     parseAsInteger.withOptions({ shallow: false }).withDefault(1)
@@ -284,7 +285,7 @@ export function DataTable<TData, TValue>({
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No results
+                      {t("common.noResults")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -299,7 +300,7 @@ export function DataTable<TData, TValue>({
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm text-muted-foreground">
             {totalItems > 0
-              ? template("Showing {{start}} to {{end}} of {{total}} entries", {
+              ? t("dataTable.showingEntries", {
                   start:
                     paginationState.pageIndex * paginationState.pageSize + 1,
                   end: Math.min(
@@ -308,12 +309,12 @@ export function DataTable<TData, TValue>({
                   ),
                   total: totalItems,
                 })
-              : "No entries found"}
+              : t("dataTable.noEntriesFound")}
           </div>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
               <p className="whitespace-nowrap text-sm font-medium">
-                Rows per page
+                {t("dataTable.rowsPerPage")}
               </p>
               <Select
                 value={`${paginationState.pageSize}`}
@@ -338,15 +339,15 @@ export function DataTable<TData, TValue>({
         <div className="flex w-full items-center justify-between gap-2 sm:justify-end">
           <div className="flex w-[150px] items-center justify-center text-sm font-medium">
             {totalItems > 0
-              ? template("Page {{page}} of {{totalPages}}", {
+              ? t("dataTable.pageOf", {
                   page: paginationState.pageIndex + 1,
                   totalPages: table.getPageCount(),
                 })
-              : "No pages"}
+              : t("dataTable.noPages")}
           </div>
           <div className="flex items-center space-x-2">
             <Button
-              aria-label="Go to first page"
+              aria-label={t("dataTable.goToFirstPage")}
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(0)}
@@ -355,7 +356,7 @@ export function DataTable<TData, TValue>({
               <DoubleArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
             <Button
-              aria-label="Go to previous page"
+              aria-label={t("dataTable.goToPreviousPage")}
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.previousPage()}
@@ -364,7 +365,7 @@ export function DataTable<TData, TValue>({
               <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
             <Button
-              aria-label="Go to next page"
+              aria-label={t("dataTable.goToNextPage")}
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.nextPage()}
@@ -373,7 +374,7 @@ export function DataTable<TData, TValue>({
               <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
             <Button
-              aria-label="Go to last page"
+              aria-label={t("dataTable.goToLastPage")}
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}

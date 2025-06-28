@@ -1,16 +1,16 @@
-import React from "react";
-
-import { ConditionalContainerProps } from "./schema";
 import {
   EditorChildren,
   useCurrentBlock,
   useDispatchAction,
   useSetSelectedBlockId,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
+import { ConditionalContainerProps } from "./schema";
 
 export const ConditionalContainerEditor = ({
   props,
 }: ConditionalContainerProps) => {
+  const t = useI18n("builder");
   const condition = props?.condition || "";
 
   const currentBlock = useCurrentBlock<ConditionalContainerProps>();
@@ -23,7 +23,15 @@ export const ConditionalContainerEditor = ({
   return (
     <div className="w-full">
       <div className="mb-2 text-muted-foreground text-xs w-full">
-        If condition <em>{condition || "value"}</em> is <em>correct</em>, then
+        {t.rich(
+          "emailBuilder.blocks.conditionalContainer.ifConditionIsCorrectFormat",
+
+          {
+            condition:
+              condition ||
+              t("emailBuilder.blocks.conditionalContainer.condition"),
+          }
+        )}
       </div>
       <EditorChildren
         block={currentBlock}
@@ -51,7 +59,7 @@ export const ConditionalContainerEditor = ({
         }}
       />
       <div className="mb-2 text-muted-foreground text-xs w-full">
-        Otherwise,
+        {t("emailBuilder.blocks.conditionalContainer.otherwise")},
       </div>
       <EditorChildren
         block={currentBlock}

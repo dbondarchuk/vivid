@@ -2,6 +2,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 
 import { AddonForm } from "@/components/admin/services/addons/form";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
@@ -12,6 +13,7 @@ type Props = {
 
 export default async function EditAddonPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-service-addon");
+  const t = await getI18nAsync("admin");
   const params = await props.params;
 
   logger.debug(
@@ -38,9 +40,9 @@ export default async function EditAddonPage(props: Props) {
   );
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Services", link: "/admin/dashboard/services" },
-    { title: "Addons", link: "/admin/dashboard/services/addons" },
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    { title: t("navigation.addons"), link: "/admin/dashboard/services/addons" },
     {
       title: addon.name,
       link: `/admin/dashboard/services/addons/${params.id}`,
@@ -52,7 +54,10 @@ export default async function EditAddonPage(props: Props) {
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title={addon.name} description="Edit addon" />
+          <Heading
+            title={addon.name}
+            description={t("services.addons.editDescription")}
+          />
 
           {/* <Separator /> */}
         </div>

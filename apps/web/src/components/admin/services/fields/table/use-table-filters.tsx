@@ -3,14 +3,6 @@
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
-import { FieldTypeLabels } from "@/constants/labels";
-
-export const TYPE_OPTIONS = Object.entries(FieldTypeLabels).map(
-  ([value, label]) => ({
-    value,
-    label,
-  })
-);
 
 export function useFieldsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(

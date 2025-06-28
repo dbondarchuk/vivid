@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { ServiceField } from "@vivid/types";
 import {
   AlertModal,
@@ -23,6 +24,7 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ field }) => {
+  const t = useI18n("admin");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -32,8 +34,10 @@ export const CellAction: React.FC<CellActionProps> = ({ field }) => {
       setLoading(true);
 
       await toastPromise(deleteField(field._id), {
-        success: `Option field '${field.data.label}' was deleted.`,
-        error: "There was a problem with your request.",
+        success: t("services.fields.table.cellAction.fieldDeleted", {
+          label: field.data.label,
+        }),
+        error: t("services.fields.table.cellAction.deleteError"),
       });
 
       setOpen(false);
@@ -57,27 +61,32 @@ export const CellAction: React.FC<CellActionProps> = ({ field }) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t("common.openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            {t("services.fields.table.cellAction.actions")}
+          </DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
               href={`/admin/dashboard/services/fields/new?from=${field._id}`}
             >
-              <Copy className="h-4 w-4" /> Clone
+              <Copy className="h-4 w-4" />{" "}
+              {t("services.fields.table.cellAction.clone")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/admin/dashboard/services/fields/${field._id}`}>
-              <Edit className="h-4 w-4" /> Update
+              <Edit className="h-4 w-4" />{" "}
+              {t("services.fields.table.cellAction.update")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> Delete
+            <Trash className="h-4 w-4" />{" "}
+            {t("services.fields.table.cellAction.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

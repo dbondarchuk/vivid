@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -26,6 +27,7 @@ export const DeleteSelectedAssetsButton: React.FC<{
   const [isOpen, setIsOpen] = React.useState(false);
 
   const router = useRouter();
+  const t = useI18n("admin");
   const action = async () => {
     try {
       setIsLoading(true);
@@ -33,8 +35,8 @@ export const DeleteSelectedAssetsButton: React.FC<{
       await toastPromise(
         deleteSelectedAssets(selected.map((asset) => asset._id)),
         {
-          success: "Selected assets have been deleted",
-          error: "There was a problem with your request.",
+          success: t("assets.table.delete.success"),
+          error: t("assets.table.delete.error"),
         }
       );
 
@@ -56,21 +58,25 @@ export const DeleteSelectedAssetsButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} asset(s)</span>
+          <span>
+            {t("assets.table.delete.selectedCount", { count: selected.length })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{t("assets.table.delete.title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will delete selected assets
+            {t("assets.table.delete.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("assets.table.delete.cancel")}
+          </AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Delete selected</span>
+            <span>{t("assets.table.delete.confirm")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

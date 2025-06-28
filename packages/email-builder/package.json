@@ -11,7 +11,7 @@
   },
   "exports": {
     ".": "./src/index.tsx",
-    "./static": "./src/static.ts"
+    "./static": "./src/static/index.ts"
   },
   "devDependencies": {
     "@types/node": "^20",

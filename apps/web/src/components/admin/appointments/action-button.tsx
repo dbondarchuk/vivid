@@ -1,5 +1,6 @@
 "use client";
 
+import { I18nFn, useI18n } from "@vivid/i18n";
 import { AppointmentStatus, okStatus } from "@vivid/types";
 import { Button, ButtonProps, cn, Spinner, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ import { changeAppointmentStatus } from "./actions";
 export const changeStatus = async (
   _id: string,
   status: AppointmentStatus,
+  t: I18nFn<"admin">,
   setIsLoading: (isLoading: boolean) => void,
   refresh: () => void,
   onSuccess?: (newStatus: AppointmentStatus) => void,
@@ -28,8 +30,8 @@ export const changeStatus = async (
 
   try {
     await toastPromise(fn(), {
-      success: "Your changes were saved.",
-      error: "There was a problem with your request.",
+      success: t("appointments.actionButton.changesSaved"),
+      error: t("appointments.actionButton.requestError"),
     });
     refresh();
     onSuccess?.(status);
@@ -70,10 +72,13 @@ export const AppointmentActionButton = React.forwardRef<
       propsSetIsLoading?.(loading);
     };
 
+    const t = useI18n("admin");
+
     const onClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
       await changeStatus(
         _id,
         status,
+        t,
         setIsLoading,
         router.refresh,
         (newStatus) => {

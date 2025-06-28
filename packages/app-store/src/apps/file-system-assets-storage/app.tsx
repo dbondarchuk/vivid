@@ -4,14 +4,14 @@ import { Folder } from "lucide-react";
 
 export const FileSystemAssetsStorageApp: App = {
   name: FILE_SYSTEM_ASSETS_STORAGE_APP_NAME,
-  displayName: "File system assets storage",
+  displayName: "fileSystemAssetsStorage.displayName",
   scope: ["assets-storage"],
   type: "system",
-  category: ["Storage"],
+  category: ["categories.storage"],
   Logo: ({ className }) => <Folder className={className} />,
   dontAllowMultiple: true,
   isHidden: true,
   description: {
-    text: "Store assets in file system.",
+    text: "fileSystemAssetsStorage.description",
   },
 };

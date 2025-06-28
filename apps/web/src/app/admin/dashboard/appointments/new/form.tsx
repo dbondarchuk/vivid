@@ -6,6 +6,7 @@ import {
   fieldsComponentMap,
 } from "@/components/web/forms/fields";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   Appointment,
   AppointmentAddon,
@@ -46,17 +47,14 @@ import {
   Spinner,
   Textarea,
   toastPromise,
+  use12HourFormat,
 } from "@vivid/ui";
-import {
-  formatAmount,
-  getDiscountAmount,
-  is12hourUserTimeFormat,
-} from "@vivid/utils";
+import { formatAmount, getDiscountAmount } from "@vivid/utils";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm, useFormState, Field as UseFormField } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { createAppointment } from "./actions";
 
@@ -102,6 +100,7 @@ const getSelectedFields = (
 export const AppointmentScheduleForm: React.FC<
   AppointmentScheduleFormProps
 > = ({ options, timeZone, knownFields, from, customer: propsCustomer }) => {
+  const t = useI18n("admin");
   const now = React.useMemo(
     () => DateTime.now().set({ second: 0 }).toJSDate(),
     []
@@ -109,34 +108,37 @@ export const AppointmentScheduleForm: React.FC<
 
   const formSchema = z
     .object({
-      dateTime: z.date({ message: "Date and time are required" }),
+      dateTime: z.date({ message: t("appointments.form.dateTimeRequired") }),
       totalDuration: z.coerce
-        .number({ message: "Duration is required" })
-        .int("Should be the integer value")
-        .min(1, "Minimum duration is 1 minute")
-        .max(60 * 24 * 10, "Maximum duration is 10 days"),
+        .number({ message: t("appointments.form.durationRequired") })
+        .int(t("appointments.form.durationInteger"))
+        .min(1, t("appointments.form.durationMin"))
+        .max(60 * 24 * 10, t("appointments.form.durationMax")),
       totalPrice: asOptionalField(
         z.coerce
-          .number({ message: "Total price must be a number" })
-          .min(0, "Minimum price is 0")
+          .number({ message: t("appointments.form.priceNumber") })
+          .min(0, t("appointments.form.priceMin"))
       ).transform((e) => (e === 0 ? undefined : e)),
-      option: z.string({ message: "Option must be selected" }),
+      option: z.string({ message: t("appointments.form.optionRequired") }),
       addons: z
         .array(
           z.object({
-            id: z.string({ message: "Addon must be selected" }),
+            id: z.string({ message: t("appointments.form.addonRequired") }),
           })
         )
         .optional(),
       fields: z
         .object({
-          name: z.string().min(1, "Name is required").trim(),
-          email: z.string().email("Must be a valid email").trim(),
+          name: z.string().min(1, t("appointments.form.nameRequired")).trim(),
+          email: z.string().email(t("appointments.form.emailValid")).trim(),
           phone: z
             .string()
-            .min(1, "Phone is required")
+            .min(1, t("appointments.form.phoneRequired"))
             .trim()
-            .refine((s) => !s?.includes("_"), "Valid phone number is required"),
+            .refine(
+              (s) => !s?.includes("_"),
+              t("appointments.form.phoneValid")
+            ),
         })
         .and(z.record(z.string(), z.any().optional())),
 
@@ -333,8 +335,8 @@ export const AppointmentScheduleForm: React.FC<
       const id = await toastPromise(
         createAppointment(appointmentEvent, files, data.confirmed),
         {
-          success: "Appointment was succesfully scheduled",
-          error: "There was a problem with your request.",
+          success: t("appointments.form.scheduledSuccess"),
+          error: t("appointments.form.requestError"),
         }
       );
 
@@ -470,6 +472,8 @@ export const AppointmentScheduleForm: React.FC<
     }
   };
 
+  const uses12HourFormat = use12HourFormat();
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -481,12 +485,14 @@ export const AppointmentScheduleForm: React.FC<
                 name="option"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Appointment type</FormLabel>
+                    <FormLabel>
+                      {t("appointments.form.appointmentType")}
+                    </FormLabel>
                     <FormControl>
                       <Combobox
                         disabled={loading}
                         className="flex w-full font-normal text-base"
-                        searchLabel="Select option"
+                        searchLabel={t("appointments.form.selectOption")}
                         value={field.value}
                         onItemSelect={field.onChange}
                         values={options.map((x) => ({
@@ -499,9 +505,11 @@ export const AppointmentScheduleForm: React.FC<
                                 <div className="inline-flex items-center gap-1">
                                   <Clock size={16} />{" "}
                                   {!!x.duration ? (
-                                    <>{x.duration} min</>
+                                    <>
+                                      {x.duration} {t("appointments.form.min")}
+                                    </>
                                   ) : (
-                                    "Custom"
+                                    t("appointments.form.custom")
                                   )}
                                 </div>
                                 {!!x.price && (
@@ -524,28 +532,15 @@ export const AppointmentScheduleForm: React.FC<
                 name="dateTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date & Time</FormLabel>
+                    <FormLabel>{t("appointments.form.dateTime")}</FormLabel>
                     <FormControl>
                       <DateTimePicker
-                        use12HourFormat={is12hourUserTimeFormat()}
+                        use12HourFormat={uses12HourFormat}
                         disabled={loading}
                         commitOnChange
                         min={new Date()}
                         timeZone={timeZone}
                         {...field}
-                        // value={DateTime.fromJSDate(field.value)
-                        //   .setZone("local")
-                        //   .toJSDate()}
-                        // onChange={(d) => {
-                        //   field.onChange(
-                        //     d
-                        //       ? DateTime.fromJSDate(d)
-                        //           .setZone(timeZone)
-                        //           .toJSDate()
-                        //       : undefined
-                        //   );
-                        //   field.onBlur();
-                        // }}
                         className="flex w-full"
                         minutesDivisibleBy={5}
                       />
@@ -559,10 +554,10 @@ export const AppointmentScheduleForm: React.FC<
                 name="addons"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Addons</FormLabel>
+                    <FormLabel>{t("appointments.form.addons")}</FormLabel>
                     <FormControl>
                       <MultiSelect
-                        placeholder="Select addons..."
+                        placeholder={t("appointments.form.selectAddons")}
                         selected={field.value?.map((x) => x.id) || []}
                         onChange={(value) =>
                           field.onChange(
@@ -586,7 +581,7 @@ export const AppointmentScheduleForm: React.FC<
                 name="customerId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Customer</FormLabel>
+                    <FormLabel>{t("appointments.form.customer")}</FormLabel>
                     <FormControl>
                       <CustomerSelector
                         onItemSelect={field.onChange}
@@ -617,7 +612,7 @@ export const AppointmentScheduleForm: React.FC<
                 name="promoCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Discount</FormLabel>
+                    <FormLabel>{t("appointments.form.discount")}</FormLabel>
                     <FormControl>
                       <PromoCodeSelector
                         onItemSelect={field.onChange}
@@ -638,7 +633,7 @@ export const AppointmentScheduleForm: React.FC<
                 name="totalDuration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Duration</FormLabel>
+                    <FormLabel>{t("appointments.form.duration")}</FormLabel>
                     <FormControl>
                       <DurationInput disabled={loading} {...field} />
                     </FormControl>
@@ -651,7 +646,7 @@ export const AppointmentScheduleForm: React.FC<
                 name="totalPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price</FormLabel>
+                    <FormLabel>{t("appointments.form.price")}</FormLabel>
                     <FormControl>
                       <InputGroup>
                         <InputSuffix
@@ -683,7 +678,7 @@ export const AppointmentScheduleForm: React.FC<
                 name="note"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Note</FormLabel>
+                    <FormLabel>{t("appointments.form.note")}</FormLabel>
                     <FormControl>
                       <Textarea autoResize {...field} />
                     </FormControl>
@@ -704,11 +699,11 @@ export const AppointmentScheduleForm: React.FC<
                         onCheckedChange={field.onChange}
                       />
                       <FormLabel htmlFor="confirmed" className="cursor-pointer">
-                        Confirm appointment
+                        {t("appointments.form.confirmAppointment")}
                       </FormLabel>
                     </div>
                     <FormDescription>
-                      Mark appointment as confirmed
+                      {t("appointments.form.confirmAppointmentDescription")}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -727,12 +722,11 @@ export const AppointmentScheduleForm: React.FC<
                       htmlFor="confirm-overlap"
                       className="cursor-pointer"
                     >
-                      Confirm overlap
+                      {t("appointments.form.confirmOverlap")}
                     </FormLabel>
                   </div>
                   <FormDescription>
-                    I understand that scheduling this appointment will create an
-                    overlap in my schedule
+                    {t("appointments.form.confirmOverlapDescription")}
                   </FormDescription>
                 </FormItem>
               )}
@@ -758,7 +752,7 @@ export const AppointmentScheduleForm: React.FC<
           ) : (
             <CalendarClock className="w-4 h-4" />
           )}{" "}
-          Schedule appointment
+          {t("appointments.form.scheduleAppointment")}
         </Button>
       </form>
     </Form>

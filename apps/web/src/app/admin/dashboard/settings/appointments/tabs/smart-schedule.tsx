@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import {
   BooleanSelect,
   FormControl,
@@ -12,6 +13,7 @@ import { TabProps } from "./types";
 import { OptionSelector } from "./cards/option-selector";
 
 export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
+  const t = useI18n("admin");
   const allowSmartSchedule = form.watch("smartSchedule.allowSmartSchedule");
   return (
     <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full">
@@ -22,10 +24,13 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Enable SmartSchedule{" "}
+              {t(
+                "settings.appointments.form.smartSchedule.enableSmartSchedule"
+              )}{" "}
               <InfoTooltip>
-                Enables more sophisticated features for finding time slots and
-                maximizing bookings
+                {t(
+                  "settings.appointments.form.smartSchedule.enableSmartScheduleTooltip"
+                )}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -33,13 +38,16 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                 value={field.value}
                 onValueChange={field.onChange}
                 className="w-full"
-                trueLabel="Enable"
-                falseLabel="Disable"
+                trueLabel={t("settings.appointments.form.smartSchedule.enable")}
+                falseLabel={t(
+                  "settings.appointments.form.smartSchedule.disable"
+                )}
               />
             </FormControl>
             <FormDescription className="text-destructive font-semibold">
-              Attention! This is highly experimental feature that may cause
-              unexpected behavior during appointment booking.
+              {t(
+                "settings.appointments.form.smartSchedule.experimentalWarning"
+              )}
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -54,9 +62,11 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Allow skipping break{" "}
+                  {t("settings.appointments.form.smartSchedule.allowSkipBreak")}{" "}
                   <InfoTooltip>
-                    Allows skipping break when no other has been found
+                    {t(
+                      "settings.appointments.form.smartSchedule.allowSkipBreakTooltip"
+                    )}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -64,8 +74,12 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                     value={field.value}
                     onValueChange={field.onChange}
                     className="w-full"
-                    trueLabel="Enable"
-                    falseLabel="Disable"
+                    trueLabel={t(
+                      "settings.appointments.form.smartSchedule.enable"
+                    )}
+                    falseLabel={t(
+                      "settings.appointments.form.smartSchedule.disable"
+                    )}
                   />
                 </FormControl>
                 <FormMessage />
@@ -78,10 +92,13 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Prefer back-to-back appointments{" "}
+                  {t(
+                    "settings.appointments.form.smartSchedule.preferBackToBack"
+                  )}{" "}
                   <InfoTooltip>
-                    Will give higher preference for time slots, that will allow
-                    back-to-back appointments
+                    {t(
+                      "settings.appointments.form.smartSchedule.preferBackToBackTooltip"
+                    )}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -89,8 +106,12 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                     value={field.value}
                     onValueChange={field.onChange}
                     className="w-full"
-                    trueLabel="Enable"
-                    falseLabel="Disable"
+                    trueLabel={t(
+                      "settings.appointments.form.smartSchedule.enable"
+                    )}
+                    falseLabel={t(
+                      "settings.appointments.form.smartSchedule.disable"
+                    )}
                   />
                 </FormControl>
                 <FormMessage />
@@ -103,10 +124,13 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Allow smart slot start times{" "}
+                  {t(
+                    "settings.appointments.form.smartSchedule.allowSmartSlotStarts"
+                  )}{" "}
                   <InfoTooltip>
-                    If no allowed slot start times were found, will try to find
-                    unconventional time slot
+                    {t(
+                      "settings.appointments.form.smartSchedule.allowSmartSlotStartsTooltip"
+                    )}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -114,8 +138,12 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                     value={field.value}
                     onValueChange={field.onChange}
                     className="w-full"
-                    trueLabel="Enable"
-                    falseLabel="Disable"
+                    trueLabel={t(
+                      "settings.appointments.form.smartSchedule.enable"
+                    )}
+                    falseLabel={t(
+                      "settings.appointments.form.smartSchedule.disable"
+                    )}
                   />
                 </FormControl>
                 <FormMessage />
@@ -128,10 +156,13 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Prefered service{" "}
+                  {t(
+                    "settings.appointments.form.smartSchedule.preferredService"
+                  )}{" "}
                   <InfoTooltip>
-                    If selected, will prioritize time slots that will produce
-                    maximum number of appointments of the selected service
+                    {t(
+                      "settings.appointments.form.smartSchedule.preferredServiceTooltip"
+                    )}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>

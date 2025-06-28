@@ -5,22 +5,22 @@ import { Mails } from "lucide-react";
 
 export const CustomerEmailNotificationApp: App = {
   name: CUSTOMER_EMAIL_NOTIFICATION_APP_NAME,
-  displayName: "Customer email notifications",
-  category: ["Notifications"],
+  displayName: "customerEmailNotification.displayName",
+  category: ["categories.notifications"],
   scope: ["appointment-hook"],
   type: "complex",
   Logo: ({ className }) => <Mails className={className} />,
   isFeatured: true,
   dontAllowMultiple: true,
   description: {
-    text: "Send an email with the appointment details to customers.",
+    text: "customerEmailNotification.description",
   },
   menuItems: [
     {
       href: "communications/customer-email",
       parent: "communications",
       id: "communications-customer-email",
-      label: "Customer Email Notifications",
+      label: "navigation.customerEmailNotification",
       icon: <Mails />,
       Page: (props) => <CustomerEmailNotificationAppSetup {...props} />,
     },

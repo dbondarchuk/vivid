@@ -9,6 +9,7 @@ import {
   TextDoubleNumberInput,
   TextInput,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { ArrowDownToLine, ArrowUpToLine, FoldVertical } from "lucide-react";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { ImageProps, ImagePropsDefaults } from "./schema";
@@ -17,12 +18,13 @@ export const ImageConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<ImageProps>) => {
+  const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as ImageProps);
 
   return (
     <>
       <FileInput
-        label="Image URL"
+        label={t("emailBuilder.blocks.image.imageUrl")}
         accept="image/*"
         defaultValue={data.props?.url ?? ""}
         onChange={(v) => {
@@ -32,14 +34,14 @@ export const ImageConfiguration = ({
       />
 
       <TextInput
-        label="Alt text"
+        label={t("emailBuilder.blocks.image.altText")}
         defaultValue={data.props?.alt ?? ""}
         onChange={(alt) =>
           updateData({ ...data, props: { ...data.props, alt } })
         }
       />
       <TextInput
-        label="Click through URL"
+        label={t("emailBuilder.blocks.image.clickThroughUrl")}
         defaultValue={data.props?.linkHref ?? ""}
         onChange={(v) => {
           const linkHref = v.trim().length === 0 ? null : v.trim();
@@ -66,7 +68,7 @@ export const ImageConfiguration = ({
       /> */}
 
       <TextDoubleNumberInput
-        label="Size"
+        label={t("emailBuilder.blocks.image.size")}
         prefix1="W:"
         prefix2="H:"
         nullable
@@ -82,7 +84,7 @@ export const ImageConfiguration = ({
       />
 
       <TextDoubleNumberInput
-        label="Position"
+        label={t("emailBuilder.blocks.image.position")}
         prefix1="x:"
         prefix2="y:"
         defaultValue1={data.props?.x ?? ImagePropsDefaults.props.x}
@@ -93,20 +95,23 @@ export const ImageConfiguration = ({
       />
 
       <RadioGroupInput
-        label="Alignment"
+        label={t("emailBuilder.blocks.image.alignment")}
         defaultValue={data.props?.contentAlignment ?? "middle"}
         onChange={(contentAlignment) =>
           updateData({ ...data, props: { ...data.props, contentAlignment } })
         }
       >
         <RadioGroupInputItem value="top">
-          <ArrowUpToLine fontSize="small" /> Top
+          <ArrowUpToLine fontSize="small" />{" "}
+          {t("emailBuilder.blocks.image.top")}
         </RadioGroupInputItem>
         <RadioGroupInputItem value="middle">
-          <FoldVertical fontSize="small" /> Middle
+          <FoldVertical fontSize="small" />{" "}
+          {t("emailBuilder.blocks.image.middle")}
         </RadioGroupInputItem>
         <RadioGroupInputItem value="bottom">
-          <ArrowDownToLine fontSize="small" /> Bottom
+          <ArrowDownToLine fontSize="small" />{" "}
+          {t("emailBuilder.blocks.image.bottom")}
         </RadioGroupInputItem>
       </RadioGroupInput>
 

@@ -14,6 +14,7 @@ import {
 
 import { cn } from "../utils";
 import { Label } from "./label";
+import { useI18n, ValidationKeys } from "@vivid/i18n";
 
 const Form = FormProvider;
 
@@ -150,6 +151,9 @@ const FormMessage = React.forwardRef<
   const { error, formMessageId } = useFormField();
   const body = error && error?.message ? String(error?.message) : children;
 
+  const t = useI18n("validation");
+  const hasKey = t.has(body as ValidationKeys);
+
   if (!body) {
     return null;
   }
@@ -161,7 +165,7 @@ const FormMessage = React.forwardRef<
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
-      {body}
+      {hasKey ? t(body as ValidationKeys) : body}
     </p>
   );
 });

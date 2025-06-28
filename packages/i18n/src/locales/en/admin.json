@@ -1,0 +1,1528 @@
+{
+  "common": {
+    "usesTemplatedValues": "* Uses templated values",
+    "toasts": {
+      "saved": "Saved!",
+      "error": "There was a problem with your request."
+    },
+    "openMenu": "Open menu",
+    "selectAll": "Select all",
+    "selectRow": "Select row",
+    "labels": {
+      "channel": {
+        "text-message": "Text message",
+        "email": "Email"
+      },
+      "direction": {
+        "inbound": "Inbound",
+        "outbound": "Outbound"
+      },
+      "participantType": {
+        "user": "User",
+        "customer": "Customer"
+      },
+      "fieldType": {
+        "email": "Email",
+        "name": "Name",
+        "phone": "Phone",
+        "oneLine": "One line",
+        "multiLine": "Multi line",
+        "checkbox": "Checkbox",
+        "select": "Select",
+        "file": "File"
+      },
+      "allowPromoCodeType": {
+        "always": "Always",
+        "never": "Never",
+        "allow-if-has-active": "Only if has active discounts"
+      },
+      "discountType": {
+        "amount": "Fixed amount",
+        "percentage": "Percentage"
+      },
+      "discountStatus": {
+        "disabled": "Disabled",
+        "active": "Active"
+      },
+      "paymentStatus": {
+        "paid": "Paid",
+        "refunded": "Refunded",
+        "pending": "Pending"
+      },
+      "filters": "Filters",
+      "loading": "Loading"
+    },
+    "buttons": {
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "optional": "Optional",
+    "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}"
+  },
+  "navigation": {
+    "overview": "Overview",
+    "dashboard": "Dashboard",
+    "appointments": "Appointments",
+    "schedule": "Schedule",
+    "defaultSchedule": "Default schedule",
+    "services": "Services",
+    "fields": "Fields",
+    "addons": "Add-ons",
+    "options": "Options",
+    "discounts": "Discounts",
+    "customers": "Customers",
+    "website": "Website",
+    "pages": "Pages",
+    "assets": "Assets",
+    "appearance": "Appearance",
+    "styling": "Styling",
+    "header": "Header",
+    "footer": "Footer",
+    "settings": "Settings",
+    "general": "General",
+    "social": "Social",
+    "scripts": "Scripts",
+    "communications": "Communications",
+    "templates": "Templates",
+    "logs": "Logs",
+    "communicationLogs": "Communication logs",
+    "monitorMessages": "Monitor all sent and received messages",
+    "apps": "Apps",
+    "installedApps": "Installed apps",
+    "store": "Store",
+    "defaultApps": "Default apps",
+    "logout": "Log out",
+    "follow-ups": "Follow-ups",
+    "reminders": "Reminders",
+    "customerEmailNotification": "Customer email notification",
+    "customerTextMessageNotification": "Customer text message notification",
+    "busyEvents": "Busy events",
+    "smtp": "SMTP",
+    "textBelt": "TextBelt SMS",
+    "weeklySchedule": "Weekly schedule",
+    "viewWebsite": "View website"
+  },
+  "appointments": {
+    "title": "Appointments",
+    "scheduleAppointment": "Schedule appointment",
+    "addNew": "Add new",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "declined": "Declined",
+      "rescheduled": "Rescheduled"
+    },
+    "table": {
+      "filters": {
+        "status": "Status",
+        "tooltip": "Filters"
+      },
+      "columns": {
+        "status": "Status",
+        "statusAriaLabel": "Status: {status}",
+        "option": "Option",
+        "customer": "Customer",
+        "dateTime": "Date & time",
+        "requestedAt": "Requested at",
+        "duration": "Duration",
+        "discount": "Discount",
+        "price": "Price",
+        "optionName": "Option name",
+        "optionPrice": "Option price",
+        "optionDuration": "Option duration",
+        "selectedAddons": "Selected add-ons",
+        "note": "Note",
+        "customerName": "Name",
+        "customerEmail": "Email",
+        "customerPhone": "Phone"
+      }
+    },
+    "dialog": {
+      "viewFullInfo": "View full appointment information",
+      "by": "By",
+      "close": "Close"
+    },
+    "card": {
+      "by": "By",
+      "appointment": "Appointment",
+      "status": "Status",
+      "dateTime": "Date & Time",
+      "duration": "Duration",
+      "hours": "hours",
+      "minutes": "minutes",
+      "endsAt": "Ends at",
+      "price": "Price",
+      "note": "Note",
+      "decline": "Decline",
+      "confirm": "Confirm"
+    },
+    "declineDialog": {
+      "title": "Decline appointment",
+      "description": "This action cannot be undone. This will permanently decline this appointment.",
+      "appointmentDetails": "Appointment details",
+      "customer": "Customer",
+      "service": "Service",
+      "dateTime": "Date & Time",
+      "refundPayments": "Refund payments",
+      "amount": "Amount",
+      "transactionId": "Transaction ID",
+      "timePaid": "Time paid",
+      "cancel": "Cancel",
+      "declineAndRefund": "Decline and refund {count} {payment}",
+      "decline": "Decline",
+      "payment": "payment",
+      "payments": "payments",
+      "refundError": "One or more refund requests have failed."
+    },
+    "rescheduleDialog": {
+      "title": "Reschedule the appointment",
+      "by": "by",
+      "dateTime": "Date & Time",
+      "duration": "Duration",
+      "confirmOverlap": "Confirm overlap",
+      "confirmOverlapDescription": "I understand that rescheduling this appointment will create an overlap in my schedule",
+      "close": "Close",
+      "reschedule": "Reschedule",
+      "confirmTitle": "Are you absolutely sure?",
+      "confirmDescription": "This action cannot be undone. This will reschedule this appointment.",
+      "cancel": "Cancel",
+      "success": "Appointment was successfully rescheduled.",
+      "error": "There was a problem with your request."
+    },
+    "addFile": {
+      "success": "File was successfully added.",
+      "error": "There was a problem with your request.",
+      "upload": "Upload",
+      "pleaseWait": "Please wait..."
+    },
+    "calendar": {
+      "loading": "Loading",
+      "eventTitle": "{customer} for {service}"
+    },
+    "new": {
+      "title": "New appointment",
+      "description": "Schedule a new appointment on behalf of the customer"
+    },
+    "view": {
+      "noteUpdated": "Appointment note was updated.",
+      "requestError": "There was a problem with your request.",
+      "changesSaved": "Your changes were saved.",
+      "sendMessage": "Send message",
+      "scheduleAgain": "Schedule again",
+      "reschedule": "Reschedule",
+      "decline": "Decline",
+      "confirm": "Confirm",
+      "dateTime": "Date & Time",
+      "dateAndTime": "Date and time",
+      "duration": "Duration",
+      "hours": "hours",
+      "minutes": "minutes",
+      "timezone": "Timezone",
+      "endsAt": "Ends at",
+      "requestedAt": "Requested at",
+      "status": "Status",
+      "price": "Price",
+      "amountPaid": "Amount paid",
+      "amountLeftToPay": "Amount left to pay",
+      "customer": "Customer",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "fields": "Fields",
+      "yes": "Yes",
+      "no": "No",
+      "selectedOption": "Selected option",
+      "option": "Option",
+      "description": "Description",
+      "selectedAddons": "Selected addons",
+      "min": "min",
+      "note": "Note",
+      "files": "Files",
+      "upload": "Upload",
+      "removeAppointmentFile": "Remove appointment file",
+      "confirmTitle": "Are you absolutely sure?",
+      "confirmRemoveFile": "Are you sure that you want to remove this file?",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "payments": "Payments",
+      "appointmentCommunications": "Appointment communications"
+    },
+    "detail": {
+      "by": "By {name}"
+    },
+    "form": {
+      "dateTimeRequired": "Date and time are required",
+      "durationRequired": "Duration is required",
+      "durationInteger": "Should be the integer value",
+      "durationMin": "Minimum duration is 1 minute",
+      "durationMax": "Maximum duration is 10 days",
+      "priceNumber": "Total price must be a number",
+      "priceMin": "Minimum price is 0",
+      "optionRequired": "Option must be selected",
+      "addonRequired": "Addon must be selected",
+      "nameRequired": "Name is required",
+      "emailValid": "Must be a valid email",
+      "phoneRequired": "Phone is required",
+      "phoneValid": "Valid phone number is required",
+      "scheduledSuccess": "Appointment was successfully scheduled",
+      "requestError": "There was a problem with your request.",
+      "appointmentType": "Appointment type",
+      "selectOption": "Select option",
+      "min": "min",
+      "custom": "Custom",
+      "dateTime": "Date & Time",
+      "addons": "Addons",
+      "selectAddons": "Select addons...",
+      "customer": "Customer",
+      "discount": "Discount",
+      "duration": "Duration",
+      "price": "Price",
+      "note": "Note",
+      "confirmAppointment": "Confirm appointment",
+      "confirmAppointmentDescription": "Mark appointment as confirmed",
+      "confirmOverlap": "Confirm overlap",
+      "confirmOverlapDescription": "I understand that scheduling this appointment will create an overlap in my schedule",
+      "scheduleAppointment": "Schedule appointment"
+    },
+    "actionButton": {
+      "changesSaved": "Your changes were saved.",
+      "requestError": "There was a problem with your request."
+    }
+  },
+  "assets": {
+    "title": "Assets",
+    "new": "New asset",
+    "edit": "Edit asset",
+    "uploadNewAssets": "Upload new assets",
+    "addNew": "Add New",
+    "dashboard": "Dashboard",
+    "newPage": "New",
+    "editPage": "Edit",
+    "form": {
+      "asset": "Asset",
+      "fileName": "File name",
+      "fileNamePlaceholder": "Asset file name",
+      "description": "Description",
+      "descriptionPlaceholder": "Asset description",
+      "assetName": "Asset name"
+    },
+    "table": {
+      "columns": {
+        "preview": "Preview",
+        "fileName": "File name",
+        "fileType": "File type",
+        "fileSize": "File size",
+        "description": "Description",
+        "appointment": "Appointment",
+        "customer": "Customer",
+        "uploadTime": "Upload time",
+        "actions": "Actions"
+      },
+      "actions": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
+        "openMenu": "Open menu",
+        "actions": "Actions",
+        "update": "Update",
+        "delete": "Delete",
+        "copyRelativeUrl": "Copy relative url",
+        "copyAbsoluteUrl": "Copy absolute url",
+        "download": "Download"
+      },
+      "delete": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will delete selected assets",
+        "confirm": "Delete selected",
+        "cancel": "Cancel",
+        "selectedCount": "Delete selected {count, plural, =1 {asset} other {# assets}}",
+        "success": "Selected assets have been deleted",
+        "error": "There was a problem with your request."
+      },
+      "filters": {
+        "filters": "Filters"
+      }
+    },
+    "toasts": {
+      "changesSaved": "Your changes were saved.",
+      "assetDeleted": "Asset {filename} was successfully deleted.",
+      "copied": "Copied",
+      "relativeUrlCopied": "Asset relative url '{url}' was copied to clipboard.",
+      "absoluteUrlCopied": "Asset absolute url '{url}' was copied to clipboard."
+    }
+  },
+  "communicationLogs": {
+    "title": "Communication logs",
+    "clearAll": "Clear all",
+    "clearSelected": "Clear selected",
+    "clearAllTitle": "Are you absolutely sure?",
+    "clearAllDescription": "This action cannot be undone. This will delete all communication logs",
+    "clearSelectedTitle": "Are you absolutely sure?",
+    "clearSelectedDescription": "This action cannot be undone. This will delete selected communication logs",
+    "cancel": "Cancel",
+    "logsCleared": "Your logs have been cleared",
+    "selectedLogsCleared": "Selected logs have been cleared",
+    "clearSelectedCount": "Clear selected {count, plural, =1 {log} other {# logs}}",
+    "table": {
+      "columns": {
+        "direction": "Direction",
+        "channel": "Channel",
+        "participantType": "Participant",
+        "participant": "Participant",
+        "handler": "Handler",
+        "subject": "Subject",
+        "content": "Content",
+        "data": "Data",
+        "dateTime": "Date & time",
+        "appointment": "Appointment",
+        "customer": "Customer"
+      },
+      "actions": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
+        "viewMore": "View more",
+        "view": "View",
+        "close": "Close",
+        "logContent": "Message content",
+        "logData": "Log data"
+      },
+      "filters": {
+        "filters": "Filters",
+        "direction": "Direction",
+        "channel": "Channel",
+        "participant": "Participant",
+        "status": "Status"
+      }
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "new": "New customer",
+    "edit": "Edit customer",
+    "addNew": "Add New",
+    "addNewCustomer": "Add a new customer",
+    "manageCustomers": "Manage your customers",
+    "manageCustomer": "Manage customer",
+    "scheduleAppointment": "Schedule Appointment",
+    "addNewShort": "Add New",
+    "details": "Details",
+    "appointments": "Appointments",
+    "files": "Files",
+    "communications": "Communications",
+    "form": {
+      "customerPhoto": "Customer photo",
+      "personalInformation": "Personal information",
+      "contactInformation": "Contact information",
+      "additionalInformation": "Additional information",
+      "name": "Name",
+      "namePlaceholder": "Customer name",
+      "email": "Email",
+      "emailPlaceholder": "Customer email",
+      "phone": "Phone",
+      "phonePlaceholder": "Customer phone",
+      "address": "Address",
+      "addressPlaceholder": "Customer address",
+      "notes": "Notes",
+      "notesPlaceholder": "Customer notes",
+      "dateOfBirth": "Date of birth",
+      "dontAllowAppointments": "Do not allow appointments",
+      "dontAllowAppointmentsTooltip": "If checked, customer will not be able to make appointments. Appointment can only be done by you",
+      "requireDeposit": "Require deposit",
+      "requireDepositTooltip": "Whether this customer should be required to pay a deposit",
+      "depositAmount": "Deposit amount",
+      "depositAmountTooltip": "Deposit amount in percents. If set to 100, full price will be required to be paid upfront",
+      "selectOption": "Select option",
+      "always": "Always",
+      "never": "Never",
+      "inherit": "Same as selected option or general configuration",
+      "knownNames": "Known names",
+      "knownNamesTooltip": "Alternative names are provided by customers during the appointment request",
+      "knownEmails": "Known emails",
+      "knownEmailsTooltip": "Alternative emails help to match appointments by alternative emails that customer may use",
+      "knownPhones": "Known phones",
+      "knownPhonesTooltip": "Alternative phones help to match appointments by alternative phone numbers that customer may use",
+      "addName": "Add name",
+      "addEmail": "Add email",
+      "addPhone": "Add phone",
+      "remove": "Remove",
+      "changePhoto": "Change photo",
+      "customerPhotoAlt": "Customer photo"
+    },
+    "table": {
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "appointments": "Appointments",
+        "lastAppointment": "Last appointment",
+        "nextAppointment": "Next appointment",
+        "createdAt": "Created at",
+        "actions": "Actions"
+      },
+      "actions": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
+        "openMenu": "Open menu",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete",
+        "merge": "Merge"
+      },
+      "delete": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will delete selected customers",
+        "confirm": "Delete selected",
+        "cancel": "Cancel",
+        "selectedCount": "Delete selected {count, plural, =1 {customer} other {# customers}}",
+        "success": "Selected customers have been deleted",
+        "error": "There was a problem with your request.",
+        "cannotDeleteWithAppointments": "Cannot delete customers who have assigned appointments",
+        "deleteSelectedCustomers": "Delete selected customers"
+      },
+      "merge": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will merge selected customers into the first one",
+        "confirm": "Merge selected",
+        "cancel": "Cancel",
+        "selectedCount": "Merge selected {count, plural, =1 {customer} other {# customers}}",
+        "success": "Selected customers have been merged",
+        "error": "There was a problem with your request.",
+        "targetCustomer": "Target customer"
+      },
+      "filters": {
+        "filters": "Filters"
+      }
+    },
+    "toasts": {
+      "changesSaved": "Your changes were saved.",
+      "customerCreated": "Customer created successfully.",
+      "customerUpdated": "Customer updated successfully.",
+      "customerDeleted": "Customer '{name}' was deleted."
+    }
+  },
+  "pages": {
+    "title": "Pages",
+    "new": "New page",
+    "edit": "Edit page",
+    "addNew": "Add New",
+    "addNewPage": "Add new page",
+    "managePages": "Manage pages",
+    "viewPage": "View page",
+    "form": {
+      "pageContent": "Page content",
+      "pageContentTooltip": "Page content using MDX format. Learn more about MDX",
+      "learnMoreAboutMdx": "Learn more about MDX",
+      "pageSlug": "Page slug",
+      "pageSlugTooltip": "Page relative URL. For example, page with slug 'my-new-page' will be available at 'yourdomain.com/my-new-page'",
+      "pageSlugPlaceholder": "Page slug",
+      "published": "Published?",
+      "publishedTooltip": "Is page visible to your visitors",
+      "publishDate": "Publish date",
+      "publishDateTooltip": "Publish date will be used for SEO, to determine chronological order, and to determine if it is visible to visitors yet",
+      "tags": "Tags",
+      "tagsPlaceholder": "Enter tags separated by commas",
+      "tagsTooltip": "Page tags for easy distinction",
+      "title": "Title",
+      "titlePlaceholder": "Page title",
+      "doNotCombineTitle": "Do not combine title",
+      "doNotCombineTitleTooltip": "Should the page title be combined with website title for SEO like 'Page Title - Website Name'",
+      "description": "Description",
+      "descriptionPlaceholder": "Page description",
+      "descriptionTooltip": "It is also used by page list component (a.k.a blog list) for showing preview",
+      "doNotCombineDescription": "Do not combine description",
+      "doNotCombineDescriptionTooltip": "Should the page description be combined with website description for SEO",
+      "keywords": "Keywords",
+      "keywordsTooltip": "Page keywords separated by comma",
+      "doNotCombineKeywords": "Do not combine keywords",
+      "doNotCombineKeywordsTooltip": "Should the page keywords be combined with website keywords",
+      "fullWidthPage": "Full width page",
+      "fullWidthPageTooltip": "If enabled, page will not be wrapped in Container element",
+      "language": "Language",
+      "defaultLanguage": "Default"
+    },
+    "table": {
+      "columns": {
+        "title": "Title",
+        "slug": "Slug",
+        "published": "Published",
+        "publishDate": "Publish date",
+        "createdAt": "Created at",
+        "updatedAt": "Updated at",
+        "tags": "Tags",
+        "actions": "Actions"
+      },
+      "actions": {
+        "selectAll": "Select all",
+        "selectRow": "Select row",
+        "openMenu": "Open menu",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete",
+        "view": "View",
+        "copyRelativeUrl": "Copy relative url",
+        "copyAbsoluteUrl": "Copy absolute url"
+      },
+      "delete": {
+        "title": "Are you absolutely sure?",
+        "description": "This action cannot be undone. This will delete selected pages",
+        "confirm": "Delete selected",
+        "cancel": "Cancel",
+        "selectedCount": "Delete selected {count, plural, =1 {page} other {# pages}}",
+        "success": "Selected pages have been deleted",
+        "error": "There was a problem with your request."
+      },
+      "filters": {
+        "filters": "Filters",
+        "status": "Status",
+        "published": "Published",
+        "draft": "Draft"
+      }
+    },
+    "toasts": {
+      "changesSaved": "Your changes were saved.",
+      "pageCreated": "Page created successfully.",
+      "pageUpdated": "Page updated successfully.",
+      "pageDeleted": "Page '{title}' was deleted.",
+      "relativeUrlCopied": "Page relative url '{url}' was copied to clipboard.",
+      "absoluteUrlCopied": "Page absolute url '{url}' was copied to clipboard."
+    }
+  },
+  "services": {
+    "fieldSelector": {
+      "loading": "Loading fields...",
+      "selectField": "Select field"
+    },
+    "fieldSelectCard": {
+      "moveField": "Move {type} field",
+      "field": "Field",
+      "required": "Required",
+      "requiredTooltip": "Marks field as to be required",
+      "deleteConfirmTitle": "Are you absolutely sure?",
+      "deleteConfirmDescription": "Are you sure you want to remove this field from this {type}?",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "addonSelectCard": {
+      "moveAddon": "Move option addon",
+      "addon": "Addon",
+      "deleteConfirmTitle": "Are you absolutely sure?",
+      "deleteConfirmDescription": "Are you sure you want to remove this addon from this option?",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "addonSelector": {
+      "loading": "Loading addons...",
+      "selectAddon": "Select addon"
+    },
+    "options": {
+      "title": "Services",
+      "description": "Manage services that you provide",
+      "addNew": "Add New",
+      "new": "New",
+      "newTitle": "New service option",
+      "newDescription": "Add new service that you provide",
+      "editDescription": "Edit option",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Option name",
+        "description": "Short description",
+        "descriptionTooltip": "Short text that will be visible during booking",
+        "duration": "Duration",
+        "price": "Price",
+        "requireDeposit": "Require deposit",
+        "requireDepositTooltip1": "Should this option require deposit",
+        "requireDepositTooltip2": "Requires configured payments app",
+        "depositAmount": "Deposit amount",
+        "depositAmountTooltip1": "Deposit amount in percents",
+        "depositAmountTooltip2": "If set to 100, full price will be required to be paid upfront",
+        "depositAmountTooltip3": "Can be overriden per each customer",
+        "selectOption": "Select option",
+        "fields": "Fields",
+        "addons": "Add-ons",
+        "validation": {
+          "nameUnique": "Option name must be unique"
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "updatedAt": "Updated at",
+          "cellAction": {
+            "optionDeleted": "Option '{name}' was deleted.",
+            "deleteError": "There was a problem with your request.",
+            "actions": "Actions",
+            "update": "Update",
+            "delete": "Delete",
+            "clone": "Clone"
+          }
+        }
+      },
+      "deleteSelected": {
+        "success": "Selected options have been deleted",
+        "error": "There was a problem with your request.",
+        "button": "Delete selected {count, plural, =1 {option} other {# options}}",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDescription": "This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleteSelected": "Delete selected"
+      }
+    },
+    "fields": {
+      "title": "Fields",
+      "description": "Manage custom fields",
+      "addNew": "Add New",
+      "new": "New",
+      "newTitle": "New field",
+      "newDescription": "Add new custom field",
+      "editDescription": "Edit custom field",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Field name",
+        "nameTooltip": "Unique ID of the field. Can contain only letter, digits, and underscore",
+        "label": "Label",
+        "labelPlaceholder": "Field label",
+        "labelTooltip": "Label that will be shown to the user",
+        "type": "Type",
+        "typePlaceholder": "Select field type",
+        "typeTooltip": "Type of the field",
+        "description": "Description",
+        "descriptionPlaceholder": "Field description",
+        "descriptionTooltip": "Short description for the field",
+        "required": "Required",
+        "requiredTooltip": "Marks field as to be required",
+        "options": "Options",
+        "addOption": "Add option",
+        "fileTypes": "File types",
+        "fileTypesTooltip": "Allowed file types for upload",
+        "validation": {
+          "nameUnique": "Field name must be unique"
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        },
+        "optionsTitle": "Options",
+        "maxSizeMbLabel": "Max file size (MB)",
+        "maxSizeMbTooltip": "Max allowed file size in megabytes.",
+        "maxSizeMbPlaceholder": "5",
+        "acceptedFilesLabel": "Accepted files",
+        "acceptedFilesTooltip": "List of accepted file and file types. See MDN for details.",
+        "acceptedFilesPlaceholder": "Click plus button to add new file type"
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "type": "Type",
+          "label": "Label",
+          "updatedAt": "Updated at",
+          "addons": "Add-ons",
+          "options": "Options",
+          "addonsInDialog": "{label} in add-ons",
+          "optionsInDialog": "{label} in options"
+        },
+        "cellAction": {
+          "fieldDeleted": "Option field '{label}' was deleted.",
+          "deleteError": "There was a problem with your request.",
+          "actions": "Actions",
+          "update": "Update",
+          "delete": "Delete",
+          "clone": "Clone"
+        }
+      },
+      "deleteSelected": {
+        "success": "Selected fields have been deleted",
+        "error": "There was a problem with your request.",
+        "button": "Delete selected {count, plural, =1 {field} other {# fields}}",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDescription": "This action cannot be undone. This will delete selected fields and remove them from all options and add-ons that use them",
+        "cancel": "Cancel",
+        "deleteSelected": "Delete selected"
+      },
+      "selectFieldOptionCard": {
+        "moveOption": "Move option",
+        "option": "Option",
+        "deleteConfirmTitle": "Are you absolutely sure?",
+        "deleteConfirmDescription": "Are you sure you want to remove this option?"
+      }
+    },
+    "discounts": {
+      "title": "Discounts",
+      "description": "Manage discounts",
+      "addNew": "Add New",
+      "new": "New",
+      "newTitle": "New discount",
+      "newDescription": "Add new discount",
+      "editDescription": "Edit discount",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Discount name",
+        "nameTooltip": "Unique discount name",
+        "description": "Description",
+        "descriptionPlaceholder": "Discount description",
+        "descriptionTooltip": "Short description for the discount",
+        "type": "Type",
+        "typePlaceholder": "Select discount type",
+        "typeTooltip": "Type of discount",
+        "value": "Value",
+        "valuePlaceholder": "Discount value",
+        "valueTooltip": "Discount amount or percentage",
+        "enabled": "Enabled",
+        "enabledTooltip": "Whether this discount is active",
+        "status": "Status",
+        "active": "Active",
+        "disabled": "Disabled",
+        "codes": "Codes",
+        "codesPlaceholder": "Discount codes",
+        "codesTooltip": "Codes that can be used to apply this discount",
+        "addCode": "Add code",
+        "removeCode": "Remove code",
+        "startDate": "Start date",
+        "startDatePlaceholder": "When discount becomes active",
+        "startDateTooltip": "Date when discount starts being valid",
+        "endDate": "End date",
+        "endDatePlaceholder": "When discount expires",
+        "endDateTooltip": "Date when discount stops being valid",
+        "appointmentStartDate": "Earliest eligible appointment date",
+        "appointmentStartDateTooltip": "The earliest appointment date (inclusive) for which this discount can be applied. Appointments scheduled before this date will not be eligible for the discount.",
+        "appointmentEndDate": "Latest eligible appointment date",
+        "appointmentEndDateTooltip": "The latest appointment date (inclusive) for which this discount can be applied. Appointments scheduled after this date will not be eligible for the discount.",
+        "maxUsage": "Maximum total uses",
+        "maxUsageTooltip": "The total number of times this discount can be used across all customers. Once this limit is reached, the discount will no longer be available.",
+        "maxUsagePerCustomer": "Maximum uses per customer",
+        "maxUsagePerCustomerTooltip": "The maximum number of times an individual customer can use this discount. Further attempts to use the discount by that customer will be rejected after this limit is reached.",
+        "limitTo": "Limit to",
+        "limitToTooltip": "Restrict discount to specific options and add-ons",
+        "addLimit": "Add limit",
+        "removeLimit": "Remove limit",
+        "anyOption": "Any option",
+        "anyAddon": "Any add-on",
+        "anyOptionOrAddon": "Any option or add-on",
+        "addNew": "Add new",
+        "optionsLabel": "Any of following options:",
+        "addonsLabel": "Any of following add-on bundles:",
+        "andLabel": "And",
+        "removeLimitTitle": "Are you absolutely sure?",
+        "removeLimitDescription": "Are you sure you want to remove this limit?",
+        "limitToDescription": "You can limit this discount to specific options and add-ons",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "validation": {
+          "nameUnique": "Discount name must be unique",
+          "codeUnique": "Discount code must be unique"
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "codes": "Codes",
+          "type": "Type",
+          "value": "Value",
+          "enabled": "Status",
+          "startDate": "From",
+          "endDate": "To",
+          "usedCount": "Total usage",
+          "updatedAt": "Updated at"
+        },
+        "cellAction": {
+          "discountDeleted": "Discount '{name}' was deleted.",
+          "deleteError": "There was a problem with your request.",
+          "actions": "Actions",
+          "update": "Update",
+          "delete": "Delete",
+          "clone": "Clone"
+        }
+      },
+      "deleteSelected": {
+        "success": "Selected discounts have been deleted",
+        "error": "There was a problem with your request.",
+        "button": "Delete selected {count, plural, =1 {discount} other {# discounts}}",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDescription": "This action cannot be undone. This will delete selected discounts.",
+        "confirmDescription2": "This will not affect existing appointments that use these discounts",
+        "cancel": "Cancel",
+        "deleteSelected": "Delete selected"
+      }
+    },
+    "addons": {
+      "title": "Add-ons",
+      "description": "Manage add-ons",
+      "addNew": "Add New",
+      "new": "New",
+      "newTitle": "New add-on",
+      "newDescription": "Add new add-on",
+      "editDescription": "Edit add-on",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Add-on name",
+        "nameTooltip": "Unique add-on name",
+        "description": "Short description",
+        "descriptionTooltip": "Short text that will be visible during booking",
+        "duration": "Duration",
+        "durationTooltip": "Duration of the add-on",
+        "price": "Price",
+        "pricePlaceholder": "20",
+        "priceTooltip": "Price of the add-on",
+        "fields": "Fields",
+        "fieldsTooltip": "Fields required for this add-on",
+        "validation": {
+          "nameUnique": "Add-on name must be unique"
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "updatedAt": "Updated at",
+          "options": "Options",
+          "optionsInDialog": "{name} in options"
+        },
+        "cellAction": {
+          "addonDeleted": "Add-on '{name}' was deleted.",
+          "deleteError": "There was a problem with your request.",
+          "actions": "Actions",
+          "update": "Update",
+          "delete": "Delete",
+          "clone": "Clone"
+        }
+      },
+      "deleteSelected": {
+        "success": "Selected add-ons have been deleted",
+        "error": "There was a problem with your request.",
+        "button": "Delete selected {count, plural, =1 {add-on} other {# add-ons}}",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDescription": "This action cannot be undone. This will delete selected add-ons and remove them from all options that use them",
+        "cancel": "Cancel",
+        "deleteSelected": "Delete selected"
+      }
+    }
+  },
+  "templates": {
+    "page": {
+      "title": "Communication templates"
+    },
+    "formPage": {
+      "typeTemplates": "{type} templates",
+      "new": "New"
+    },
+    "newPage": {
+      "title": "New {type} template"
+    },
+    "editPage": {
+      "title": "Update template",
+      "clone": "Clone"
+    },
+    "addNew": {
+      "emptyTemplate": "Empty template",
+      "add": "Add",
+      "addNewTemplate": "Add new template",
+      "type": "Type",
+      "selectTemplateType": "Select template type",
+      "template": "Template",
+      "close": "Close"
+    },
+    "form": {
+      "name": "Template name",
+      "nameTooltip": "Unique template name",
+      "namePlaceholder": "Template name",
+      "validation": {
+        "templateNotValid": "Template is not valid"
+      },
+      "toasts": {
+        "changesSaved": "Your changes were saved.",
+        "requestError": "There was a problem with your request."
+      }
+    },
+    "textMessageBuilder": {
+      "content": "Text message content",
+      "viewContext": "View context",
+      "contextValues": "Context values",
+      "copied": "Copied",
+      "copyPath": "Copy path",
+      "close": "Close",
+      "characterCount": "{count, plural, =1 {1 character} other {# characters}}",
+      "preview": "Preview"
+    },
+    "table": {
+      "filters": {
+        "type": "Type",
+        "filters": "Filters"
+      },
+      "columns": {
+        "type": "Type",
+        "name": "Name",
+        "updatedAt": "Updated at"
+      },
+      "cellAction": {
+        "templateDeleted": "Template '{name}' was deleted.",
+        "deleteError": "There was a problem with your request.",
+        "actions": "Actions",
+        "update": "Update",
+        "delete": "Delete",
+        "clone": "Clone"
+      },
+      "deleteSelected": {
+        "success": "Selected templates have been deleted",
+        "error": "There was a problem with your request.",
+        "button": "Delete selected {count, plural, =1 {template} other {# templates}}",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDescription": "This action cannot be undone. This will delete selected templates and may break notifications that use them",
+        "cancel": "Cancel",
+        "deleteSelected": "Delete selected"
+      }
+    }
+  },
+  "appearance": {
+    "styling": {
+      "title": "Styling",
+      "description": "Adjust general styling",
+      "form": {
+        "primaryFont": "Primary font",
+        "secondaryFont": "Secondary font",
+        "tertiaryFont": "Tertiary font",
+        "selectFont": "Select font",
+        "colorOverrides": "Color overrides",
+        "invalidField": "Invalid field",
+        "duplicateType": "Duplicate type",
+        "remove": "Remove",
+        "deleteConfirmTitle": "Are you absolutely sure?",
+        "deleteConfirmDescription": "Are you sure that you want to remove this color override?",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "type": "Type",
+        "selectColorOverrideType": "Select color override type",
+        "color": "Color",
+        "colorTooltip": "Color in CSS format (HEX, rgb, rgba, hsl)",
+        "additionalCss": "Additional CSS",
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "header": {
+      "title": "Header menu",
+      "description": "Adjust links and style of the header",
+      "form": {
+        "showLogo": "Show logo",
+        "showLogoDescription": "Should be logo showed in header",
+        "stickyHeader": "Sticky header",
+        "stickyHeaderDescription": "Should header move with the page scroll",
+        "headerShadow": "Header shadow",
+        "selectShadowType": "Select shadow type",
+        "menu": "Menu",
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "footer": {
+      "title": "Footer",
+      "description": "Adjust links in footer",
+      "form": {
+        "useCustomFooter": "Use custom footer",
+        "footerContent": "Footer content",
+        "preview": "Preview",
+        "contactUsLabel": "Contact us label",
+        "contactUsLabelTooltip": "Defaults to 'Contact us'",
+        "contactUsPlaceholder": "Contact us",
+        "links": "Links",
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    }
+  },
+  "apps": {
+    "heading": "Connected apps",
+    "description": "Manage your connected apps",
+    "defaultApps": "Default apps",
+    "appStore": "App Store",
+    "noConnectedApps": "You do not have any connected apps",
+    "defaultAppsForm": {
+      "emailSender": "Email sender",
+      "textMessageSender": "Text message sender",
+      "assetsStorage": "Assets storage",
+      "toasts": {
+        "changesSaved": "Your changes were saved.",
+        "requestError": "There was a problem with your request."
+      }
+    },
+    "defaultAppsDescription": "Select default apps",
+    "migrateAssetsDialog": {
+      "migrateAssets": "Migrate assets",
+      "title": "Migrate existing assets",
+      "description": "Migrate your existing assets from your previous storage",
+      "sourceApp": "Source assets storage app",
+      "done": "Done: {count}",
+      "success": "Success: {count}",
+      "error": "Error: {count}",
+      "total": "Total: {count}",
+      "migrate": "Migrate",
+      "toasts": {
+        "requestError": "Your request has failed"
+      }
+    }
+  },
+  "settings": {
+    "general": {
+      "title": "General Settings",
+      "description": "Adjust general settings",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Website name",
+        "title": "Title",
+        "titlePlaceholder": "Website title",
+        "description": "Description",
+        "descriptionPlaceholder": "Website description",
+        "keywords": "Keywords",
+        "keywordsTooltip": "Website keywords separated by comma",
+        "keywordValidation": "Keyword must be at least 2 characters",
+        "phone": "Phone number",
+        "email": "Email address",
+        "emailPlaceholder": "Your email address",
+        "url": "Website base URL",
+        "urlPlaceholder": "Website url",
+        "address": "Address",
+        "addressTooltip": "Physical office address",
+        "addressPlaceholder": "Physical office address",
+        "logo": "Logo",
+        "logoTooltip": "URL to image to be used as logo (for example in header)",
+        "logoPlaceholder": "Logo URL",
+        "language": "Language",
+        "favicon": "Favicon",
+        "faviconTooltip": "URL to image to be used as favicon (icon that is shown in browser tab)",
+        "faviconPlaceholder": "Favicon URL",
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "appointments": {
+      "title": "Appointment Settings",
+      "description": "Adjust appointment settings",
+      "form": {
+        "tabs": {
+          "main": "Main",
+          "calendarSources": "Calendar sources",
+          "options": "Options",
+          "smartSchedule": "SmartSchedule",
+          "payments": "Payments"
+        },
+        "main": {
+          "add": "Add",
+          "timeZone": "Time zone",
+          "selectTimeZone": "Select time zone",
+          "scheduleProviderApp": "Schedule provider app",
+          "scheduleProviderAppTooltip1": "Select optional app to provide your work schedule.",
+          "scheduleProviderAppTooltip2": "If no app is selected, base schedule will be applied.",
+          "autoConfirmAppointments": "Auto confirm appointments",
+          "autoConfirmTooltip1": "Select this option if you want to auto confirm all appointments created by customers.",
+          "autoConfirmTooltip2": "By default, you will need to manually confirm each appointment.",
+          "showPromoCodeField": "Show promo code field",
+          "showPromoCodeTooltip": "Configure should the promo code field be shown during the booking",
+          "maxWeeksInFuture": "Maximum number of weeks into the future",
+          "maxWeeksInFutureTooltip1": "Specifies the maximum number of weeks into the future that a user can schedule appointments.",
+          "maxWeeksInFutureTooltip2": "If set to 6, users can only schedule events up to 6 weeks from the current date.",
+          "maxWeeksInFutureTooltip3": "8 weeks",
+          "minBreakTime": "Minimum break time",
+          "minBreakTimeTooltip1": "Defines the minimum required time interval that must be left available before and after a scheduled time slot.",
+          "minBreakTimeTooltip2": "This field ensures there is a buffer period before and after each slot to accommodate breaks, preparation time, or to prevent scheduling conflicts.",
+          "minBreakTimeTooltip3": "If set to 30, there must be at least 30 minutes of free time before and after each scheduled slot before the next slot can begin.",
+          "minBreakTimeTooltip4": "0 minutes",
+          "minHoursBeforeBooking": "Minimum number of hours before booking",
+          "minHoursBeforeBookingTooltip1": "Specifies the minimum number of hours required in advance for a booking to be made. This parameter helps ensure that users cannot book an appointment with less notice than the designated time frame, allowing you to prepare accordingly",
+          "minHoursBeforeBookingTooltip2": "If set to 24, a booking can only be made if it is at least 24 hours before the desired start time.",
+          "allowedSlotStartTimes": "Allowed slot start times",
+          "allowedSlotStartTimesTooltip": "Defines at which times appointments allowed to start",
+          "customTimeSlots": "Custom time slots",
+          "customTimeSlotsTooltip": "Defines at which minute appointments allowed to start",
+          "customTimeSlotsPlaceholder": "Click plus button to add time slot",
+          "selectStep": "Select step",
+          "example": "Example",
+          "default": "Default",
+          "weeks": "weeks",
+          "minutes": "minutes",
+          "hours": "hours",
+          "stepLabels": {
+            "everyHour": "Every hour at XX:00",
+            "custom": "Custom",
+            "five": "Every hour at XX:05, XX:10, XX:15, XX:20, XX:25, XX:30, XX:35, XX:40, XX:45, XX:50, XX:55",
+            "ten": "Every hour at XX:00, XX:10, XX:20, XX:30, XX:40, XX:50",
+            "fifteen": "Every hour at XX:00, XX:15, XX:30, XX:45",
+            "twenty": "Every hour at XX:00, XX:20, XX:40",
+            "thirty": "Every hour at XX:00, XX:30"
+          }
+        },
+        "smartSchedule": {
+          "enableSmartSchedule": "Enable SmartSchedule",
+          "enableSmartScheduleTooltip": "Enables more sophisticated features for finding time slots and maximizing bookings",
+          "enable": "Enable",
+          "disable": "Disable",
+          "experimentalWarning": "Attention! This is highly experimental feature that may cause unexpected behavior during appointment booking.",
+          "allowSkipBreak": "Allow skipping break",
+          "allowSkipBreakTooltip": "Allows skipping break when no other has been found",
+          "preferBackToBack": "Prefer back-to-back appointments",
+          "preferBackToBackTooltip": "Will give higher preference for time slots, that will allow back-to-back appointments",
+          "allowSmartSlotStarts": "Allow smart slot start times",
+          "allowSmartSlotStartsTooltip": "If no allowed slot start times were found, will try to find unconventional time slot",
+          "preferredService": "Preferred service",
+          "preferredServiceTooltip": "If selected, will prioritize time slots that will produce maximum number of appointments of the selected service"
+        },
+        "calendarSources": {
+          "title": "Calendar sources"
+        },
+        "options": {
+          "title": "Options"
+        },
+        "payments": {
+          "enableDeposits": "Enable Deposits",
+          "enableDepositsTooltip": "Enables ability to ask for a deposit to book an appointment",
+          "enable": "Enable",
+          "disable": "Disable",
+          "paymentsApp": "Payments app",
+          "paymentsAppTooltip": "What payment processor to use for payments",
+          "requireDeposit": "Require deposit",
+          "requireDepositTooltip1": "If enabled, each customer will be required to pay a deposit to book an appointment",
+          "requireDepositTooltip2": "Can be overriden per each customer",
+          "require": "Require",
+          "doNotRequire": "Do not require",
+          "depositAmount": "Deposit amount",
+          "depositAmountTooltip": "<p>Deposit amount in percents</p><p><strong>Example:</strong> If set to 100, full price will be required to be paid upfront</p><p><strong>Optional</strong></p>",
+          "dontRequireIfCompletedMinNumberOfAppointments": "Min amount of appointments to not require deposit",
+          "dontRequireIfCompletedMinNumberOfAppointmentsTooltip": "<p>Do not require deposit for customers who have at least specified amount of appointments completed</p><p><strong>Example:</strong> If set to 3, customers who are booking their first, second, or third appointment will be required to pay a deposit. While customers who are making their 4th or later appointmens will not be required to pay deposit unless it is specifically required for the customer</p><p><strong>Optional</strong></p>"
+        },
+        "cards": {
+          "calendarSource": {
+            "app": "App",
+            "appTooltip": "Select supported app",
+            "remove": "Remove",
+            "deleteConfirmTitle": "Are you absolutely sure?",
+            "deleteConfirmDescription": "Are you sure you want to remove this calendar source?",
+            "cancel": "Cancel",
+            "delete": "Delete"
+          },
+          "optionSelect": {
+            "roleDescription": "Option",
+            "moveOption": "Move option",
+            "option": "Option",
+            "deleteConfirmTitle": "Are you absolutely sure?",
+            "deleteConfirmDescription": "Are you sure you want to remove this option from list of available options?",
+            "cancel": "Cancel",
+            "delete": "Delete"
+          },
+          "optionSelector": {
+            "time": "{hours}hr {minutes}min",
+            "requestFailed": "Request failed.",
+            "loadingOptions": "Loading options...",
+            "selectOption": "Select option"
+          }
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "social": {
+      "title": "Social Settings",
+      "description": "Adjust social links settings",
+      "form": {
+        "socialLinks": "Social links",
+        "card": {
+          "roleDescription": "Social Link",
+          "moveOption": "Move social link",
+          "invalidType": "Invalid type",
+          "remove": "Remove",
+          "deleteConfirmTitle": "Are you absolutely sure?",
+          "deleteConfirmDescription": "Are you sure that you want to remove this link?",
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "type": "Type",
+          "selectType": "Select social link type",
+          "url": "Url",
+          "urlTooltip": "Full link to your profile"
+        },
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "schedule": {
+      "title": "Default schedule",
+      "description": "Set your base schedule",
+      "form": {
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    },
+    "scripts": {
+      "title": "Scripts",
+      "description": "Add additional third-party scripts to the website",
+      "form": {
+        "headerScripts": "Header scripts",
+        "footerScripts": "Footer scripts",
+        "toasts": {
+          "changesSaved": "Your changes were saved.",
+          "requestError": "There was a problem with your request."
+        }
+      }
+    }
+  },
+  "form": {
+    "dateTimeRequired": "Date and time are required",
+    "durationRequired": "Duration is required",
+    "durationInteger": "Should be the integer value",
+    "durationMin": "Minimum duration is 1 minute",
+    "durationMax": "Maximum duration is 10 days",
+    "priceNumber": "Total price must be a number",
+    "priceMin": "Minimum price is 0",
+    "optionRequired": "Option must be selected",
+    "addonRequired": "Addon must be selected",
+    "nameRequired": "Name is required",
+    "emailValid": "Must be a valid email",
+    "phoneRequired": "Phone is required",
+    "phoneValid": "Valid phone number is required",
+    "scheduledSuccess": "Appointment was successfully scheduled",
+    "requestError": "There was a problem with your request.",
+    "appointmentType": "Appointment type",
+    "selectOption": "Select option",
+    "min": "min",
+    "custom": "Custom",
+    "dateTime": "Date & Time",
+    "addons": "Addons",
+    "selectAddons": "Select addons...",
+    "customer": "Customer",
+    "discount": "Discount",
+    "duration": "Duration",
+    "price": "Price",
+    "note": "Note",
+    "confirmAppointment": "Confirm appointment",
+    "confirmAppointmentDescription": "Mark appointment as confirmed",
+    "confirmOverlap": "Confirm overlap",
+    "confirmOverlapDescription": "I understand that scheduling this appointment will create an overlap in my schedule",
+    "scheduleAppointment": "Schedule appointment"
+  },
+  "table": {
+    "filters": {
+      "status": "Status"
+    }
+  },
+  "dashboard": {
+    "appointments": {
+      "noAppointments": "No appointments are scheduled",
+      "noPendingAppointments": "No pending appointments",
+      "caughtUp": "You've caught up on all requests. Good job!",
+      "pendingToast": "You have {count, plural, =1 {one pending appointment} other {# pending appointments}}",
+      "view": "View",
+      "nextAppointments": "Next appointments"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "pendingAppointments": "Pending Appointments"
+    }
+  },
+  "install": {
+    "page": {
+      "title": "Install",
+      "description": "Quickly set up your website"
+    },
+    "form": {
+      "websiteName": "Website Name",
+      "websiteNamePlaceholder": "Website name",
+      "websiteTitle": "Website Title",
+      "websiteTitlePlaceholder": "Website title",
+      "emailAddress": "Email address",
+      "emailAddressPlaceholder": "Your email address",
+      "websiteUrl": "Website URL",
+      "websiteUrlPlaceholder": "Website url",
+      "install": "Install",
+      "pleaseWait": "Please wait...",
+      "success": "You have successfully created your website!",
+      "error": "There was a problem with your request.",
+      "fixErrors": "Please fix errors in installation form."
+    },
+    "layout": {
+      "title": "VIVID CMS - Install",
+      "description": "Installation of vivid"
+    }
+  },
+  "communications": {
+    "viewMore": "View more",
+    "logContent": "Message content",
+    "handler": "Handler: {handler}",
+    "data": "Data",
+    "logData": "Log data",
+    "sendNew": "Send new",
+    "requestError": "There was a problem with your request.",
+    "sendNewMessage": "Send new message",
+    "sendNewMessageDescription": "Send a new email or text message to the customer",
+    "closeDialogWarning": "You will lose all content if you close the dialog",
+    "contentNotValid": "Content is not valid",
+    "messageSent": "Your message was successfully sent.",
+    "wrongTemplateType": "Wrong template type",
+    "channel": "Channel",
+    "selectTemplate": "Select template",
+    "selectExistingTemplate": "Select existing template",
+    "template": "Template",
+    "attention": "Attention",
+    "templateReplaceWarning": "Selecting a template will replace your current content.",
+    "select": "Select",
+    "emailSubject": "Email subject",
+    "emailSubjectDescription": "Subject of the email, that your customers will see.",
+    "usesTemplatedValues": "* Uses templated values",
+    "subject": "Subject",
+    "content": "Content",
+    "send": "Send"
+  },
+  "calendar": {
+    "today": "Today",
+    "selectView": "Select view",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "daily": "Daily",
+    "agenda": "Agenda",
+    "eventTitle": "{customer} for {service}",
+    "appointment": "Appointment",
+    "status": "Status",
+    "price": "Price",
+    "note": "Note",
+    "loading": "Loading",
+    "workingHours": "Working Hours",
+    "workingDay": "Working Day",
+    "work": "Work",
+    "hour": "hr",
+    "minute": "min",
+    "event": "event",
+    "events": "events",
+    "noEventsScheduled": "No events scheduled",
+    "noEventsInRange": "No events in the selected date range",
+    "collapseAll": "Collapse All",
+    "expandAll": "Expand All",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "email_or_password_incorrect": "Email or password is incorrect",
+    "signIn": "Sign in",
+    "signInDescription": "Enter your email below to sign into your account",
+    "quote": "I love it!",
+    "quoteAuthor": "Olesia Bondarchuk"
+  },
+  "menuItem": {
+    "fields": {
+      "url": "Url",
+      "urlPlaceholder": "Link",
+      "label": "Label",
+      "labelPlaceholder": "Label",
+      "icon": "Icon",
+      "variant": "Variant",
+      "selectVariant": "Select link variant",
+      "size": "Size",
+      "selectSize": "Select size",
+      "selectButtonVariant": "Select button variant",
+      "textFont": "Text font",
+      "selectTextFont": "Select text font",
+      "textSize": "Text size",
+      "selectTextSize": "Select text size",
+      "textWeight": "Text weight",
+      "selectTextWeight": "Select text weight",
+      "prefixIcon": "Prefix Icon",
+      "suffixIcon": "Suffix Icon",
+      "additionalClasses": "Additional classes",
+      "additionalClassesPlaceholder": "font-bold"
+    },
+    "card": {
+      "moveMenuItem": "Move menu item",
+      "itemType": "Item type",
+      "selectType": "Select type",
+      "invalid": "Invalid"
+    },
+    "subMenu": {
+      "title": "Sub Menu",
+      "moveMenuItem": "Move menu item",
+      "invalid": "Invalid"
+    },
+    "iconSelect": {
+      "selectIcon": "Select icon"
+    },
+    "types": {
+      "icon": "Icon",
+      "link": "Link",
+      "button": "Button",
+      "submenu": "Submenu"
+    }
+  },
+  "resource": {
+    "card": {
+      "moveResource": "Move resource",
+      "sourceType": "Source type",
+      "selectSourceType": "Select source type",
+      "url": "Url",
+      "urlPlaceholder": "Url",
+      "value": "Value",
+      "invalid": "Invalid",
+      "remove": "Remove",
+      "deleteConfirmTitle": "Are you absolutely sure?",
+      "deleteConfirmDescription": "Are you sure that you want to remove this resource?",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    }
+  },
+  "payment": {
+    "card": {
+      "amount": "Amount",
+      "transactionId": "Transaction ID",
+      "timePaid": "Time paid",
+      "timeRefunded": "Time refunded",
+      "refund": "Refund",
+      "refunded": "Refunded",
+      "confirmRefund": "Confirm Refund",
+      "confirmRefundDescription": "This action cannot be undone",
+      "refundDetails": "Refund Details",
+      "paymentMethod": "Payment Method",
+      "originalAmount": "Original Amount",
+      "refundAmount": "Refund Amount",
+      "cancel": "Cancel",
+      "confirmRefundButton": "Confirm refund"
+    },
+    "toasts": {
+      "refundSuccess": "Payment was refunded",
+      "refundSuccessDescription": "Payment was successfully refunded",
+      "refundError": "Payment refund has failed",
+      "refundErrorDescription": "Payment refund has failed. Please see details on browser console"
+    },
+    "descriptions": {
+      "fullPayment": "Full payment",
+      "deposit": "Deposit"
+    },
+    "methods": {
+      "cash": "Cash",
+      "card": "Card"
+    }
+  }
+}

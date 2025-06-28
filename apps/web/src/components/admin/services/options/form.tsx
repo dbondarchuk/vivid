@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { PlateMarkdownEditor } from "@vivid/rte";
 import {
   AppointmentOption,
@@ -50,9 +51,10 @@ const IsPaymentRequiredForOptionTypesLabels: Record<
 export const OptionForm: React.FC<{
   initialData?: AppointmentOptionUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
+  const t = useI18n("admin");
   const formSchema = getAppointmentOptionSchemaWithUniqueCheck(
     (slug) => checkUniqueName(slug, initialData?._id),
-    "Option name must be unique"
+    "services.options.nameUnique"
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -84,8 +86,8 @@ export const OptionForm: React.FC<{
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("services.options.form.toasts.changesSaved"),
+        error: t("services.options.form.toasts.requestError"),
       });
     } catch (error: any) {
       console.error(error);
@@ -163,12 +165,12 @@ export const OptionForm: React.FC<{
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("services.options.form.name")}</FormLabel>
 
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Option name"
+                    placeholder={t("services.options.form.namePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -182,9 +184,9 @@ export const OptionForm: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Short description{" "}
+                  {t("services.options.form.description")}{" "}
                   <InfoTooltip>
-                    Short text that will be visible during booking
+                    {t("services.options.form.descriptionTooltip")}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -208,7 +210,7 @@ export const OptionForm: React.FC<{
               name="duration"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Duration</FormLabel>
+                  <FormLabel>{t("services.options.form.duration")}</FormLabel>
                   <FormControl>
                     <DurationInput {...field} disabled={loading} />
                   </FormControl>
@@ -221,7 +223,7 @@ export const OptionForm: React.FC<{
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>{t("services.options.form.price")}</FormLabel>
                   <FormControl>
                     <InputGroup>
                       <InputSuffix
@@ -254,11 +256,11 @@ export const OptionForm: React.FC<{
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Require deposit{" "}
+                    {t("services.options.form.requireDeposit")}{" "}
                     <InfoTooltip>
-                      <p>Should this option require deposit</p>
+                      <p>{t("services.options.form.requireDepositTooltip1")}</p>
                       <p className="font-semibold">
-                        Requires configured payments app
+                        {t("services.options.form.requireDepositTooltip2")}
                       </p>
                     </InfoTooltip>
                   </FormLabel>
@@ -270,7 +272,7 @@ export const OptionForm: React.FC<{
                         value,
                         label: IsPaymentRequiredForOptionTypesLabels[value],
                       }))}
-                      searchLabel="Select option"
+                      searchLabel={t("services.options.form.selectOption")}
                       value={field.value}
                       onItemSelect={(item) => {
                         field.onChange(item);
@@ -290,14 +292,17 @@ export const OptionForm: React.FC<{
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Deposit amount{" "}
+                        {t("services.options.form.depositAmount")}{" "}
                         <InfoTooltip>
-                          <p>Deposit amount in percents</p>
                           <p>
-                            If set to 100, full price will be required to be
-                            paid upfront
+                            {t("services.options.form.depositAmountTooltip1")}
                           </p>
-                          <p>Can be overriden per each customer</p>
+                          <p>
+                            {t("services.options.form.depositAmountTooltip2")}
+                          </p>
+                          <p>
+                            {t("services.options.form.depositAmountTooltip3")}
+                          </p>
                         </InfoTooltip>
                       </FormLabel>
                       <FormControl>
@@ -329,7 +334,7 @@ export const OptionForm: React.FC<{
           </div>
           <div className="w-full  grid md:grid-cols-2 gap-4">
             <Sortable
-              title="Fields"
+              title={t("services.options.form.fields")}
               ids={fieldsFieldsIds}
               onSort={sortFields}
               onAdd={addNewField}
@@ -358,7 +363,7 @@ export const OptionForm: React.FC<{
               </div>
             </Sortable>
             <Sortable
-              title="Addons"
+              title={t("services.options.form.addons")}
               ids={addonsFieldsIds}
               onSort={sortAddons}
               onAdd={addNewAddon}

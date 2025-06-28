@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   CustomerUpdateModel,
   DatabaseId,
@@ -57,11 +58,13 @@ const IsPaymentRequiredForCustomerTypesLabels: Record<
 export const CustomerForm: React.FC<{
   initialData?: CustomerUpdateModel & Partial<DatabaseId>;
 }> = ({ initialData }) => {
+  const t = useI18n("admin");
+
   const formSchema = getCustomerSchemaWithUniqueCheck(
     (emails, phones) =>
       checkUniqueEmailAndPhone(emails, phones, initialData?._id),
-    "There is already a customer with one or more of the emails",
-    "There is already a customer with one or more of the phones"
+    "customers.emailAlreadyExists",
+    "customers.phoneAlreadyExists"
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -106,8 +109,8 @@ export const CustomerForm: React.FC<{
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("customers.toasts.changesSaved"),
+        error: t("common.toasts.error"),
       });
     } catch (error: any) {
       console.error(error);
@@ -164,7 +167,9 @@ export const CustomerForm: React.FC<{
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Customer photo</CardTitle>
+                <CardTitle className="text-lg">
+                  {t("customers.form.customerPhoto")}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <FormField
@@ -175,7 +180,7 @@ export const CustomerForm: React.FC<{
                       <div className="w-full relative justify-center flex flex-row">
                         <Image
                           src={field.value ?? "/unknown-person.png"}
-                          alt="Customer photo"
+                          alt={t("customers.form.customerPhotoAlt")}
                           height={200}
                           width={200}
                         />
@@ -199,7 +204,7 @@ export const CustomerForm: React.FC<{
                             variant="secondary"
                             onClick={() => setAvatarDialogOpen(true)}
                           >
-                            Change photo
+                            {t("customers.form.changePhoto")}
                           </Button>
                         </div>
                       )}
@@ -211,7 +216,9 @@ export const CustomerForm: React.FC<{
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Customer information</CardTitle>
+                <CardTitle className="text-lg">
+                  {t("customers.form.personalInformation")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 <FormField
@@ -219,12 +226,12 @@ export const CustomerForm: React.FC<{
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>{t("customers.form.name")}</FormLabel>
 
                       <FormControl>
                         <Input
                           disabled={loading}
-                          placeholder="John Doe"
+                          placeholder={t("customers.form.namePlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -237,13 +244,13 @@ export const CustomerForm: React.FC<{
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("customers.form.email")}</FormLabel>
 
                       <FormControl>
                         <Input
                           type="email"
                           disabled={loading}
-                          placeholder="john.doe@example.com"
+                          placeholder={t("customers.form.emailPlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -256,11 +263,11 @@ export const CustomerForm: React.FC<{
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone</FormLabel>
+                      <FormLabel>{t("customers.form.phone")}</FormLabel>
 
                       <FormControl>
                         <PhoneInput
-                          label="Phone"
+                          label={t("customers.form.phone")}
                           disabled={loading}
                           {...field}
                         />
@@ -274,7 +281,7 @@ export const CustomerForm: React.FC<{
                   name="dateOfBirth"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date of birth</FormLabel>
+                      <FormLabel>{t("customers.form.dateOfBirth")}</FormLabel>
 
                       <FormControl>
                         <DateTimeInput
@@ -305,10 +312,9 @@ export const CustomerForm: React.FC<{
                           htmlFor="dontAllowBookings"
                           className="cursor-pointer"
                         >
-                          Do not allow appointments{" "}
+                          {t("customers.form.dontAllowAppointments")}{" "}
                           <InfoTooltip>
-                            If checked, customer will not be able to make
-                            appointments. Appointment can only be done by you
+                            {t("customers.form.dontAllowAppointmentsTooltip")}
                           </InfoTooltip>
                         </FormLabel>
                       </div>
@@ -322,12 +328,9 @@ export const CustomerForm: React.FC<{
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Require deposit{" "}
+                        {t("customers.form.requireDeposit")}{" "}
                         <InfoTooltip>
-                          <p>Should this customer be required to pay deposit</p>
-                          <p className="font-semibold">
-                            Requires configured payments app
-                          </p>
+                          {t("customers.form.requireDepositTooltip")}
                         </InfoTooltip>
                       </FormLabel>
                       <FormControl>
@@ -337,11 +340,10 @@ export const CustomerForm: React.FC<{
                           values={isPaymentRequiredForCustomerTypes.map(
                             (value) => ({
                               value,
-                              label:
-                                IsPaymentRequiredForCustomerTypesLabels[value],
+                              label: t(`customers.form.${value}`),
                             })
                           )}
-                          searchLabel="Select option"
+                          searchLabel={t("customers.form.selectOption")}
                           value={field.value}
                           onItemSelect={(item) => {
                             field.onChange(item);
@@ -361,13 +363,9 @@ export const CustomerForm: React.FC<{
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Deposit amount{" "}
+                            {t("customers.form.depositAmount")}{" "}
                             <InfoTooltip>
-                              <p>Deposit amount in percents</p>
-                              <p>
-                                If set to 100, full price will be required to be
-                                paid upfront
-                              </p>
+                              <p>{t("customers.form.depositAmountTooltip")}</p>
                             </InfoTooltip>
                           </FormLabel>
                           <FormControl>
@@ -403,17 +401,18 @@ export const CustomerForm: React.FC<{
           </div>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Additional information</CardTitle>
+              <CardTitle className="text-lg">
+                {t("customers.form.additionalInformation")}
+              </CardTitle>
             </CardHeader>
 
             <CardContent className="flex flex-col gap-4">
               <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
                 <div className="flex flex-col gap-4">
                   <Label>
-                    Alternative names{" "}
+                    {t("customers.form.knownNames")}{" "}
                     <InfoTooltip>
-                      Alternative names are provided by customers during the
-                      appointment request
+                      {t("customers.form.knownNamesTooltip")}
                     </InfoTooltip>
                   </Label>
                   {(knownNames || []).map((name, index) => (
@@ -427,7 +426,9 @@ export const CustomerForm: React.FC<{
                             <InputGroup>
                               <Input
                                 disabled={loading}
-                                placeholder="John Doe"
+                                placeholder={t(
+                                  "customers.form.namePlaceholder"
+                                )}
                                 className={cn(
                                   InputGroupInputClasses(),
                                   "flex-1"
@@ -459,15 +460,14 @@ export const CustomerForm: React.FC<{
                     className="w-full"
                     onClick={onAddName}
                   >
-                    <PlusCircle /> Add new
+                    <PlusCircle /> {t("customers.form.addName")}
                   </Button>
                 </div>
                 <div className="flex flex-col gap-4">
                   <Label>
-                    Alternative emails
+                    {t("customers.form.knownEmails")}
                     <InfoTooltip>
-                      Alternative emails help to match appointments by
-                      alternative emails that customer may use
+                      {t("customers.form.knownEmailsTooltip")}
                     </InfoTooltip>
                   </Label>
                   {(knownEmails || []).map((email, index) => (
@@ -482,7 +482,9 @@ export const CustomerForm: React.FC<{
                               <Input
                                 type="email"
                                 disabled={loading}
-                                placeholder="john.doe@example.com"
+                                placeholder={t(
+                                  "customers.form.emailPlaceholder"
+                                )}
                                 className={cn(
                                   InputGroupInputClasses(),
                                   "flex-1"
@@ -514,15 +516,14 @@ export const CustomerForm: React.FC<{
                     className="w-full"
                     onClick={onAddEmail}
                   >
-                    <PlusCircle /> Add new
+                    <PlusCircle /> {t("customers.form.addEmail")}
                   </Button>
                 </div>
                 <div className="flex flex-col gap-4">
                   <Label>
-                    Alternative phones{" "}
+                    {t("customers.form.knownPhones")}{" "}
                     <InfoTooltip>
-                      Alternative phones help to match appointments by
-                      alternative phone numbers that customer may use
+                      {t("customers.form.knownPhonesTooltip")}
                     </InfoTooltip>
                   </Label>
                   {(knownPhones || []).map((phone, index) => (
@@ -535,7 +536,7 @@ export const CustomerForm: React.FC<{
                           <FormControl>
                             <InputGroup>
                               <PhoneInput
-                                label="Phone"
+                                label={t("customers.form.phone")}
                                 disabled={loading}
                                 className={cn(
                                   InputGroupInputClasses(),
@@ -568,7 +569,7 @@ export const CustomerForm: React.FC<{
                     className="w-full"
                     onClick={onAddPhone}
                   >
-                    <PlusCircle /> Add new
+                    <PlusCircle /> {t("customers.form.addPhone")}
                   </Button>
                 </div>
               </div>
@@ -577,13 +578,13 @@ export const CustomerForm: React.FC<{
                 name="note"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Note</FormLabel>
+                    <FormLabel>{t("customers.form.notes")}</FormLabel>
 
                     <FormControl>
                       <Textarea
                         autoResize
                         disabled={loading}
-                        placeholder="Customer notes"
+                        placeholder={t("customers.form.notesPlaceholder")}
                         {...field}
                       />
                     </FormControl>

@@ -1,6 +1,7 @@
 "use client";
 
 import JsonView from "@uiw/react-json-view";
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   CommunicationChannel,
   CommunicationDirection,
@@ -9,11 +10,8 @@ import {
 } from "@vivid/types";
 import { useInView } from "react-intersection-observer";
 
+import { SendCommunicationDialog } from "@/components/admin/communications/send-message-dialog";
 import { Markdown } from "@/components/web/markdown";
-import {
-  CommunicationChannelTexts,
-  CommunicationDirectionTexts,
-} from "@/constants/labels";
 import {
   Badge,
   Button,
@@ -34,14 +32,16 @@ import {
 } from "@vivid/ui";
 import { Mail, MailQuestion, MessageSquare, Send } from "lucide-react";
 import { DateTime } from "luxon";
-import React from "react";
 import { useRouter } from "next/navigation";
-import { SendCommunicationDialog } from "@/components/admin/communications/send-message-dialog";
+import React from "react";
 
 const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
   entry,
 }) => {
+  const t = useI18n("admin");
+  const tApps = useI18n("apps");
   const dateTime = DateTime.fromISO(entry.dateTime as any as string);
+  const locale = useLocale();
   return (
     <div className="flex flex-row w-full bg-card items-start space-x-4 p-4 border rounded-lg">
       <div className="flex-shrink-0 mt-1">
@@ -55,17 +55,27 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <p className="font-medium">{entry.subject ?? entry.handledBy}</p>
+          <p className="font-medium">
+            {entry.subject ??
+              tApps(
+                typeof entry.handledBy === "string"
+                  ? entry.handledBy
+                  : entry.handledBy.key,
+                typeof entry.handledBy === "object" && entry.handledBy.args
+                  ? entry.handledBy.args
+                  : undefined
+              )}
+          </p>
           <div className="flex items-center space-x-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="text-sm text-gray-500 underline decoration-dashed cursor-help">
-                    {dateTime.toRelative()}
+                    {dateTime.setLocale(locale).toRelative()}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent side="left">
-                  {dateTime.toLocaleString(DateTime.DATETIME_MED)}
+                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -76,13 +86,13 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="link-dashed" className="px-0">
-                View more
+                {t("communications.viewMore")}
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
               <DialogHeader>
                 <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                  Log content
+                  {t("communications.logContent")}
                 </DialogTitle>
               </DialogHeader>
               <div className="flex-1 w-full overflow-auto">
@@ -96,7 +106,9 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               </div>
               <DialogFooter className="flex-row !justify-between gap-2">
                 <DialogClose asChild>
-                  <Button variant="secondary">Close</Button>
+                  <Button variant="secondary">
+                    {t("common.buttons.close")}
+                  </Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
@@ -104,24 +116,33 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
         </div>
         <div className="flex items-center gap-2 mt-2 flex-wrap">
           <Badge variant="outline" className="text-xs">
-            {CommunicationChannelTexts[entry.channel]}
+            {t(`common.labels.channel.${entry.channel}`)}
           </Badge>
           <Badge variant="secondary" className="text-xs">
-            {CommunicationDirectionTexts[entry.direction]}
+            {t(`common.labels.direction.${entry.direction}`)}
           </Badge>
           <Badge variant="outline" className="text-xs">
-            Handler: {entry.handledBy}
+            {t("communications.handler", {
+              handler: tApps(
+                typeof entry.handledBy === "string"
+                  ? entry.handledBy
+                  : entry.handledBy.key,
+                typeof entry.handledBy === "object" && entry.handledBy.args
+                  ? entry.handledBy.args
+                  : undefined
+              ),
+            })}
           </Badge>
           {entry.data && (
             <div className="flex flex-col gap-1">
               <Dialog>
                 <DialogTrigger>
-                  <Badge variant="default">Data</Badge>
+                  <Badge variant="default">{t("communications.data")}</Badge>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[80%] flex flex-col max-h-[100%]">
                   <DialogHeader>
                     <DialogTitle className="w-full flex flex-row justify-between items-center mt-2">
-                      Log data
+                      {t("communications.logData")}
                     </DialogTitle>
                   </DialogHeader>
                   <div className="flex-1 w-full overflow-auto">
@@ -129,7 +150,9 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
                   </div>
                   <DialogFooter className="flex-row !justify-between gap-2">
                     <DialogClose asChild>
-                      <Button variant="secondary">Close</Button>
+                      <Button variant="secondary">
+                        {t("common.buttons.close")}
+                      </Button>
                     </DialogClose>
                   </DialogFooter>
                 </DialogContent>
@@ -185,6 +208,7 @@ export type CustomerOrAppointment =
 export const SendCommunicationButton: React.FC<CustomerOrAppointment> = (
   props
 ) => {
+  const t = useI18n("admin");
   const router = useRouter();
   return (
     <SendCommunicationDialog
@@ -192,7 +216,7 @@ export const SendCommunicationButton: React.FC<CustomerOrAppointment> = (
       onSuccess={() => router.replace(`?key=${new Date().getTime()}`)}
     >
       <Button variant="primary">
-        <Send /> Send new
+        <Send /> {t("communications.sendNew")}
       </Button>
     </SendCommunicationDialog>
   );
@@ -216,6 +240,7 @@ export const RecentCommunications: React.FC<RecentCommunicationsProps> = ({
   search,
   ...rest
 }) => {
+  const t = useI18n("admin");
   const [logs, setLogs] = React.useState<CommunicationLog[]>([]);
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(false);
@@ -284,7 +309,7 @@ export const RecentCommunications: React.FC<RecentCommunicationsProps> = ({
         setInitialLoad(false);
       } catch (error) {
         console.error("Failed to fetch items:", error);
-        toast.error("There was a problem with your request.");
+        toast.error(t("communications.requestError"));
       } finally {
         setLoading(false);
       }

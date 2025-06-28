@@ -1,4 +1,5 @@
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import {
   Select,
   SelectContent,
@@ -19,22 +20,28 @@ export type BooleanSelectProps = {
 export const BooleanSelect: React.FC<BooleanSelectProps> = ({
   value,
   onValueChange,
-  trueLabel = "Yes",
-  falseLabel = "No",
+  trueLabel,
+  falseLabel,
   className,
-  placeholder = "Select option",
+  placeholder,
 }) => {
+  const t = useI18n("ui");
+
+  const defaultTrueLabel = t("booleanSelect.yes");
+  const defaultFalseLabel = t("booleanSelect.no");
+  const defaultPlaceholder = t("common.placeholder");
+
   return (
     <Select
       value={value?.toString()}
       onValueChange={(value) => onValueChange(value === "true")}
     >
       <SelectTrigger className={className}>
-        <SelectValue placeholder={placeholder} />
+        <SelectValue placeholder={placeholder || defaultPlaceholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="false">{falseLabel}</SelectItem>
-        <SelectItem value="true">{trueLabel}</SelectItem>
+        <SelectItem value="false">{falseLabel || defaultFalseLabel}</SelectItem>
+        <SelectItem value="true">{trueLabel || defaultTrueLabel}</SelectItem>
       </SelectContent>
     </Select>
   );

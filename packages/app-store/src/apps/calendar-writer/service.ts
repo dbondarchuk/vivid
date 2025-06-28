@@ -4,6 +4,7 @@ import {
   AppointmentStatus,
   CalendarEvent,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   IAppointmentHook,
   ICalendarWriter,
@@ -18,24 +19,8 @@ import {
 import { convert } from "html-to-text";
 import { CalendarWriterConfiguration } from "./models";
 
-import { template } from "@vivid/utils";
 import { AvailableApps } from "../../apps";
-import autoConfirmedTemplate from "./templates/appointment-auto-confirmed.html";
-import confirmedTemplate from "./templates/appointment-confirmed.html";
-import pendingTemplate from "./templates/appointment-created.html";
-import declinedTemplate from "./templates/appointment-declined.html";
-import rescheduledTemplate from "./templates/appointment-rescheduled.html";
-
-const bodyTemplates: Record<
-  keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
-  string
-> = {
-  confirmed: confirmedTemplate,
-  "auto-confirmed": autoConfirmedTemplate,
-  declined: declinedTemplate,
-  pending: pendingTemplate,
-  rescheduled: rescheduledTemplate,
-};
+import { getEmailTemplate } from "../email-notification/emails/utils";
 
 export class CalendarWriterConnectedApp
   implements IConnectedApp, IAppointmentHook
@@ -79,7 +64,9 @@ export class CalendarWriterConnectedApp
           "Target app does not support calendar-write scope"
         );
 
-        throw new Error("Wrong app scope");
+        throw new ConnectedAppError(
+          "calendarWriter.statusText.calendar_app_not_found"
+        );
       }
 
       logger.debug(
@@ -94,13 +81,13 @@ export class CalendarWriterConnectedApp
 
       return {
         status: "failed",
-        statusText: "Calendar app is not found or does not support write",
+        statusText: "calendarWriter.statusText.calendar_app_not_found",
       };
     }
 
     const status: ConnectedAppStatusWithText = {
       status: "connected",
-      statusText: `Successfully set up`,
+      statusText: "calendarWriter.statusText.successfully_set_up",
     };
 
     this.props.update({
@@ -147,7 +134,8 @@ export class CalendarWriterConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error creating calendar event for new appointment",
+        statusText:
+          "calendarWriter.statusText.error_creating_calendar_event_for_new_appointment",
       });
 
       throw error;
@@ -185,7 +173,8 @@ export class CalendarWriterConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error updating calendar event for status change",
+        statusText:
+          "calendarWriter.statusText.error_updating_calendar_event_for_status_change",
       });
 
       throw error;
@@ -203,31 +192,20 @@ export class CalendarWriterConnectedApp
       {
         appId: appData._id,
         appointmentId: appointment._id,
-        newTime: newTime.toISOString(),
+        newTime,
         newDuration,
       },
       "Appointment rescheduled, updating calendar event"
     );
 
     try {
-      const newAppointment: Appointment = {
-        ...appointment,
-        dateTime: newTime,
-        totalDuration: newDuration,
-      };
-
-      await this.makeEvent(
-        appData,
-        newAppointment,
-        "rescheduled",
-        "Rescheduled"
-      );
+      await this.makeEvent(appData, appointment, "rescheduled", "Rescheduled");
 
       logger.info(
         {
           appId: appData._id,
           appointmentId: appointment._id,
-          newTime: newTime.toISOString(),
+          newTime,
           newDuration,
         },
         "Successfully updated calendar event for rescheduled appointment"
@@ -237,7 +215,7 @@ export class CalendarWriterConnectedApp
         {
           appId: appData._id,
           appointmentId: appointment._id,
-          newTime: newTime.toISOString(),
+          newTime,
           newDuration,
           error,
         },
@@ -246,7 +224,8 @@ export class CalendarWriterConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: "Error updating calendar event for rescheduled appointment",
+        statusText:
+          "calendarWriter.statusText.error_updating_calendar_event_for_rescheduled_appointment",
       });
 
       throw error;
@@ -280,13 +259,18 @@ export class CalendarWriterConnectedApp
         config,
         customer: appointment.customer,
         useAppointmentTimezone: true,
+        locale: config.general.language,
       });
 
       const data = appData.data as CalendarWriterConfiguration;
 
-      const description = template(bodyTemplates[status], args);
-
-      const eventSummary = `${appointment.fields.name} for ${appointment.option.name}`;
+      const { template: description, subject } = await getEmailTemplate(
+        status,
+        config.general.language,
+        config.general.url,
+        appointment,
+        args
+      );
 
       logger.debug(
         {
@@ -311,7 +295,7 @@ export class CalendarWriterConnectedApp
 
       const event: CalendarEvent = {
         id: appointment._id,
-        title: eventSummary,
+        title: subject,
         description: {
           html: description,
           plainText: convert(description, { wordwrap: 130 })

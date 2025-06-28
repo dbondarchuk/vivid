@@ -1,0 +1,235 @@
+{
+  "baseBuilder": {
+    "inspector": {
+      "configurationPanel": {
+        "title": "Configuration",
+        "clickOnBlockToInspect": "Click on a block to inspect."
+      },
+      "styles": "Styles",
+      "inspect": "Inspect",
+      "stylesPanel": {
+        "blockNotFound": "Block not found"
+      }
+    },
+    "builderToolbar": {
+      "undo": "Undo (⌘+Z)",
+      "redo": "Redo (⌘+⇧+Z)",
+      "moveUp": "Move selected block up",
+      "moveDown": "Move selected block down",
+      "clone": "Clone selected block",
+      "delete": "Delete selected block",
+      "desktopView": "Desktop view",
+      "mobileView": "Mobile view",
+      "errors": "There are {count, plural, =1 {1 issue} other {# issues}} in the document",
+      "noErrors": "Awesome! No issues found!",
+      "preview": "Preview",
+      "context": "View context",
+      "contextValues": "Context values",
+      "contextValuesDescription": "The context values are the values that are available to the template. They are the values that are passed to the template when it is rendered.",
+      "toggleSidebar": "Toggle sidebar panel",
+      "copied": "Copied",
+      "copyPath": "Copy path"
+    },
+    "navMenu": {
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "clone": "Clone",
+      "delete": "Delete"
+    },
+    "searchBlocks": "Search blocks..."
+  },
+  "emailBuilder": {
+    "common": {
+      "validation": {
+        "borderRadius": "Border radius must be integer and greater than 0",
+        "fontSize": "Font size must be integer and greater than 0"
+      },
+      "styleInputs": {
+        "backgroundColor": "Background color",
+        "borderColor": "Border color",
+        "borderRadius": "Border radius",
+        "color": "Text color",
+        "fontFamily": "Font family",
+        "fontSize": "Font size",
+        "fontWeight": "Font weight",
+        "padding": "Padding",
+        "textAlign": "Text align"
+      },
+      "toolbars": {
+        "contentAlignment": {
+          "label": "Content alignment",
+          "top": "Top",
+          "middle": "Middle",
+          "bottom": "Bottom"
+        },
+        "fontFamily": {
+          "label": "Font family",
+          "inherit": "Inherit"
+        },
+        "fontSize": {
+          "label": "Font size"
+        },
+        "fontWeight": {
+          "label": "Font weight",
+          "normal": "Normal",
+          "bold": "Bold"
+        },
+        "textAlign": {
+          "label": "Text align",
+          "left": "Left",
+          "center": "Center",
+          "right": "Right"
+        }
+      }
+    },
+    "blocks": {
+      "categories": {
+        "images": "Images",
+        "text": "Text",
+        "dividers": "Dividers",
+        "containers": "Containers",
+        "layout": "Layout"
+      },
+      "avatar": {
+        "displayName": "Avatar",
+        "size": "Size",
+        "shape": "Shape",
+        "imageUrl": "Image URL",
+        "alt": "Alt text",
+        "shapes": {
+          "circle": "Circle",
+          "square": "Square",
+          "rounded": "Rounded"
+        },
+        "validation": {
+          "size": "Size must be integer and greater than 0"
+        }
+      },
+      "button": {
+        "displayName": "Button",
+        "text": "Text",
+        "url": "URL",
+        "width": "Width",
+        "size": "Size",
+        "style": "Style",
+        "textColor": "Text color",
+        "buttonColor": "Button color",
+        "backgroundColor": "Background color",
+        "widths": {
+          "auto": "Auto",
+          "full": "Full width"
+        },
+        "sizes": {
+          "x-small": "X-Small",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        },
+        "styles": {
+          "rectangle": "Rectangle",
+          "rounded": "Rounded",
+          "pill": "Pill"
+        }
+      },
+      "columnsContainer": {
+        "displayName": "Columns Container",
+        "numberOfColumns": "Number of columns",
+        "columnsGap": "Columns gap",
+        "alignment": "Alignment",
+        "backgroundColor": "Background color",
+        "columns": "Columns",
+        "column1": "Column 1",
+        "column2": "Column 2",
+        "column3": "Column 3",
+        "alignments": {
+          "top": "Top",
+          "middle": "Middle",
+          "bottom": "Bottom"
+        },
+        "columnCounts": {
+          "2": "2 Columns",
+          "3": "3 Columns"
+        }
+      },
+      "conditionalContainer": {
+        "displayName": "Conditional Container",
+        "condition": "Condition",
+        "ifConditionIsCorrectFormat": "If condition {condition} is correct, then",
+        "otherwise": "Otherwise",
+        "value": "value"
+      },
+      "container": {
+        "displayName": "Container",
+        "backgroundColor": "Background color",
+        "borderColor": "Border color"
+      },
+      "foreachContainer": {
+        "displayName": "Loop Container",
+        "forEachItemInValueFormat": "For each <item></item> in {value}",
+        "value": "Value"
+      },
+      "divider": {
+        "displayName": "Divider",
+        "color": "Color",
+        "height": "Height",
+        "lineColor": "Line color",
+        "lineHeight": "Line height",
+        "backgroundColor": "Background color"
+      },
+      "emailLayout": {
+        "displayName": "Email Layout",
+        "backdropColor": "Backdrop color",
+        "canvasColor": "Canvas color",
+        "canvasBorderColor": "Canvas border color",
+        "canvasBorderRadius": "Canvas border radius",
+        "textColor": "Text color",
+        "previewText": "Preview text",
+        "fontFamily": "Font family",
+        "borderColor": "Border color",
+        "inherit": "Inherit"
+      },
+      "heading": {
+        "displayName": "Heading",
+        "content": "Content",
+        "level": "Level",
+        "h1": "H1",
+        "h2": "H2",
+        "h3": "H3",
+        "textColor": "Text color",
+        "backgroundColor": "Background color"
+      },
+      "image": {
+        "displayName": "Image",
+        "imageUrl": "Image URL",
+        "altText": "Alt text",
+        "clickThroughUrl": "Click through URL",
+        "size": "Size",
+        "position": "Position",
+        "alignment": "Alignment",
+        "top": "Top",
+        "middle": "Middle",
+        "bottom": "Bottom",
+        "backgroundColor": "Background color",
+        "validation": {
+          "width": "Width must be integer and greater than 0",
+          "height": "Height must be integer and greater than 0",
+          "x": "X position must be between 0 and 100",
+          "y": "Y position must be between 0 and 100"
+        }
+      },
+      "spacer": {
+        "displayName": "Spacer",
+        "height": "Height",
+        "backgroundColor": "Background color",
+        "validation": {
+          "height": "Height must be greater than 0"
+        }
+      },
+      "text": {
+        "displayName": "Text",
+        "textColor": "Text color",
+        "backgroundColor": "Background color"
+      }
+    }
+  }
+}

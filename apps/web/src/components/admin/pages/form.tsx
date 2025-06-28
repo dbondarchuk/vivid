@@ -1,13 +1,16 @@
 "use client";
 
+import { LanguageOptions } from "@/constants/texts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@monaco-editor/react";
+import { Language, languages, useI18n } from "@vivid/i18n";
 import {
   getPageSchemaWithUniqueCheck,
   Page,
   pageTagSchema,
 } from "@vivid/types";
 import {
+  Combobox,
   DateTimePicker,
   Form,
   FormControl,
@@ -23,18 +26,21 @@ import {
   TagInput,
   Textarea,
   toastPromise,
+  use12HourFormat,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
-import { is12hourUserTimeFormat } from "@vivid/utils";
 
 export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
+  const t = useI18n("admin");
+  const uses12HourFormat = use12HourFormat();
+
   const formSchema = getPageSchemaWithUniqueCheck(
     (slug) => checkUniqueSlug(slug, initialData?._id),
-    "Page slug must be unique"
+    "pages.slugMustBeUnique"
   );
 
   type PageFormValues = z.infer<typeof formSchema>;
@@ -63,6 +69,10 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       setLoading(true);
 
       const fn = async () => {
+        if (data.language === ("default" as Language)) {
+          data.language = undefined;
+        }
+
         if (!initialData) {
           const { _id } = await createPage(data);
           router.push(`/admin/dashboard/pages/${_id}`);
@@ -74,8 +84,8 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       };
 
       await toastPromise(fn(), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("pages.toasts.changesSaved"),
+        error: t("common.toasts.error"),
       });
     } catch (error: any) {
       console.error(error);
@@ -94,16 +104,16 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
             render={({ field }) => (
               <FormItem className="w-full lg:w-4/5 flex-grow">
                 <FormLabel>
-                  Page content
+                  {t("pages.form.pageContent")}
                   <InfoTooltip>
-                    <p>Page content using MDX format</p>
+                    <p>{t("pages.form.pageContentTooltip")}</p>
                     <p>
                       <Link
                         href="https://mdxjs.com/docs/what-is-mdx/"
                         target="_blank"
                         variant="primary"
                       >
-                        Learn more about MDX
+                        {t("pages.form.learnMoreAboutMdx")}
                       </Link>
                     </p>
                   </InfoTooltip>
@@ -130,25 +140,15 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Page slug{" "}
+                    {t("pages.form.pageSlug")}{" "}
                     <InfoTooltip>
-                      <p>Page relative URL.</p>
-                      <p>
-                        For example, page with slug{" "}
-                        <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
-                          my-new-page
-                        </code>{" "}
-                        will be available at{" "}
-                        <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
-                          {`${window?.location?.origin}/my-new-page`}
-                        </code>
-                      </p>
+                      <p>{t("pages.form.pageSlugTooltip")}</p>
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Page slug"
+                      placeholder={t("pages.form.pageSlugPlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -163,9 +163,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
                     <FormLabel>
-                      Published?{" "}
+                      {t("pages.form.published")}{" "}
                       <InfoTooltip>
-                        Is page visible to your visitors
+                        {t("pages.form.publishedTooltip")}
                       </InfoTooltip>
                     </FormLabel>
                   </div>
@@ -184,16 +184,14 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Publish date
+                    {t("pages.form.publishDate")}
                     <InfoTooltip>
-                      Publish date will be used for SEO, to determine
-                      chronological order, and to determine if it is visible to
-                      visitors yet
+                      {t("pages.form.publishDateTooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <DateTimePicker
-                      use12HourFormat={is12hourUserTimeFormat()}
+                      use12HourFormat={uses12HourFormat}
                       onChange={(e) => {
                         field.onChange(e);
                         field.onBlur();
@@ -211,8 +209,8 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Tags{" "}
-                    <InfoTooltip>Page tags for easy distinction</InfoTooltip>
+                    {t("pages.form.tags")}{" "}
+                    <InfoTooltip>{t("pages.form.tagsTooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <TagInput
@@ -234,11 +232,11 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Page title</FormLabel>
+                  <FormLabel>{t("pages.form.title")}</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Page title"
+                      placeholder={t("pages.form.titlePlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -253,12 +251,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
                     <FormLabel>
-                      Do not combine title{" "}
+                      {t("pages.form.doNotCombineTitle")}{" "}
                       <InfoTooltip>
-                        <p>
-                          Should the page title be combined with website title
-                          for SEO like
-                        </p>
+                        <p>{t("pages.form.doNotCombineTitleTooltip")}</p>
                         <p>
                           <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
                             {"{website title} - {page title}"}
@@ -282,17 +277,16 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Page description{" "}
+                    {t("pages.form.description")}{" "}
                     <InfoTooltip>
-                      It is also used by page list component (a.k.a blog list)
-                      for showing preview
+                      {t("pages.form.descriptionTooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Textarea
                       disabled={loading}
                       autoResize
-                      placeholder="Page description"
+                      placeholder={t("pages.form.descriptionPlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -307,12 +301,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
                     <FormLabel>
-                      Do not combine description{" "}
+                      {t("pages.form.doNotCombineDescription")}{" "}
                       <InfoTooltip>
-                        <p>
-                          Should the page description be combined with website
-                          description for SEO like
-                        </p>
+                        <p>{t("pages.form.doNotCombineDescriptionTooltip")}</p>
                         <p>
                           <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
                             {"{website description}"}
@@ -338,8 +329,8 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Keywords{" "}
-                    <InfoTooltip>Page keywords separated by comma</InfoTooltip>
+                    {t("pages.form.keywords")}{" "}
+                    <InfoTooltip>{t("pages.form.keywordsTooltip")}</InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <TagInput
@@ -364,12 +355,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
                     <FormLabel>
-                      Do not combine keywords
+                      {t("pages.form.doNotCombineKeywords")}{" "}
                       <InfoTooltip>
-                        <p>
-                          Should the page keywords be combined with website
-                          keywords like
-                        </p>
+                        <p>{t("pages.form.doNotCombineKeywordsTooltip")}</p>
                         <p>
                           <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
                             {"{website keywords}, {page keywords}"}
@@ -394,10 +382,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
                     <FormLabel>
-                      Full width page{" "}
+                      {t("pages.form.fullWidthPage")}{" "}
                       <InfoTooltip>
-                        If enabled, page will not be wrapped in{" "}
-                        <em>Container</em> element
+                        {t("pages.form.fullWidthPageTooltip")}
                       </InfoTooltip>
                     </FormLabel>
                   </div>
@@ -407,6 +394,37 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="language"
+              render={({ field }) => (
+                <FormItem className="mb-2">
+                  <FormLabel>{t("pages.form.language")}</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      values={[
+                        {
+                          label: t("pages.form.defaultLanguage"),
+                          value: "default",
+                        },
+                        ...languages.map((language) => ({
+                          label: LanguageOptions[language],
+                          value: language,
+                        })),
+                      ]}
+                      className="w-full"
+                      value={field.value || "default"}
+                      onItemSelect={(val) => {
+                        field.onChange(val === "default" ? null : val);
+                        field.onBlur();
+                      }}
+                      disabled={loading}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

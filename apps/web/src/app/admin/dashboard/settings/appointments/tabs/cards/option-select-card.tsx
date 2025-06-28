@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,6 +55,7 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
   isOverlay,
   remove,
 }) => {
+  const t = useI18n("admin");
   const {
     setNodeRef,
     attributes,
@@ -68,7 +70,9 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
       item,
     } satisfies OptionSelectDragData,
     attributes: {
-      roleDescription: "Option",
+      roleDescription: t(
+        "settings.appointments.form.cards.optionSelect.roleDescription"
+      ),
     },
   });
 
@@ -105,7 +109,9 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
         className="h-auto cursor-grab p-1 text-secondary-foreground/50"
       >
         <></>
-        <span className="sr-only">Move option</span>
+        <span className="sr-only">
+          {t("settings.appointments.form.cards.optionSelect.moveOption")}
+        </span>
         <GripVertical />
       </Button>
       <div className="grid grid-cols-1 gap-2 flex-grow w-full">
@@ -114,7 +120,9 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
           name={`${name}.id`}
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Option</FormLabel>
+              <FormLabel>
+                {t("settings.appointments.form.cards.optionSelect.option")}
+              </FormLabel>
 
               <FormControl>
                 <OptionSelector
@@ -145,16 +153,25 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>
+                {t(
+                  "settings.appointments.form.cards.optionSelect.deleteConfirmTitle"
+                )}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to remove this option from list of
-                available options?
+                {t(
+                  "settings.appointments.form.cards.optionSelect.deleteConfirmDescription"
+                )}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>
+                {t("settings.appointments.form.cards.optionSelect.cancel")}
+              </AlertDialogCancel>
               <AlertDialogAction asChild variant="destructive">
-                <Button onClick={remove}>Delete</Button>
+                <Button onClick={remove}>
+                  {t("settings.appointments.form.cards.optionSelect.delete")}
+                </Button>
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

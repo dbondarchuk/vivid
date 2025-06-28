@@ -9,6 +9,7 @@ import {
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { ArgumentsAutocomplete, cn } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 import { ButtonProps } from "./schema";
@@ -16,6 +17,7 @@ import { getLinkStyles, getWrapperStyles } from "./styles";
 import { Button } from "./reader";
 
 export const ButtonEditor = ({ props, style }: ButtonProps) => {
+  const t = useI18n("builder");
   const ref = useRef<HTMLInputElement>(null);
 
   const wrapperStyles = getWrapperStyles({ style });
@@ -72,7 +74,7 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
           props?.width === "full" ? "w-full" : "w-auto"
         )}
         style={{ ...linkStyles, textAlign: style?.textAlign ?? undefined }}
-        value={value ?? "Button"}
+        value={value ?? t("emailBuilder.blocks.button.text")}
         onChange={onChange}
         onKeyDown={handleKeyPress}
       />

@@ -1,21 +1,26 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { ScriptsSettingsForm } from "./form";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Settings", link: "/admin/dashboard" },
-  { title: "Scripts", link: "/admin/dashboard/settings/scripts" },
-];
-
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("scripts");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading scripts page");
   const settings =
     await ServicesContainer.ConfigurationService().getConfiguration("scripts");
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.settings"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.scripts"),
+      link: "/admin/dashboard/settings/scripts",
+    },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -23,10 +28,9 @@ export default async function Page() {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="Scripts"
-            description="Add additional third-party scripts to the website"
+            title={t("settings.scripts.title")}
+            description={t("settings.scripts.description")}
           />
-          {/* <Separator /> */}
         </div>
         <ScriptsSettingsForm values={settings} />
       </div>

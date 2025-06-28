@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import { LogCleanupApp } from "./app";
 import {
   CleanUpIntervalType,
@@ -31,17 +32,19 @@ import {
 } from "@vivid/ui";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 
-const intervalTypeLabels: Record<CleanUpIntervalType, string> = {
-  days: "Days",
-  weeks: "Weeks",
-  months: "Months",
-};
-
 export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
   appId: existingAppId,
 }) => {
+  const t = useI18n("apps");
+
+  const intervalTypeLabels: Record<CleanUpIntervalType, string> = {
+    days: t("logCleanup.intervals.days"),
+    weeks: t("logCleanup.intervals.weeks"),
+    months: t("logCleanup.intervals.months"),
+  };
+
   const { appStatus, form, isLoading, isValid, onSubmit } =
     useConnectedAppSetup<LogCleanupConfiguration>({
       appId: existingAppId,
@@ -62,12 +65,12 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Interval amount</FormLabel>
+                    <FormLabel>{t("logCleanup.form.amount.label")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
                         type="number"
-                        placeholder="1"
+                        placeholder={t("logCleanup.form.amount.placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -80,7 +83,7 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Interval type</FormLabel>
+                    <FormLabel>{t("logCleanup.form.type.label")}</FormLabel>
                     <FormControl>
                       <Select
                         disabled={isLoading}
@@ -91,7 +94,9 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                         }}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Interval type" />
+                          <SelectValue
+                            placeholder={t("logCleanup.form.type.placeholder")}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {Object.entries(intervalTypeLabels).map(
@@ -116,13 +121,20 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{existingAppId ? "Update" : "Add"}</span>
-              <ConnectedAppNameAndLogo app={{ name: LogCleanupApp.name }} />
+              <span>
+                {existingAppId
+                  ? t("logCleanup.form.update")
+                  : t("logCleanup.form.add")}
+              </span>
+              <ConnectedAppNameAndLogo
+                app={{ name: LogCleanupApp.name }}
+                t={t}
+              />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

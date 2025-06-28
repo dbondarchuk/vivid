@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   DndFileInput,
   Form,
@@ -22,27 +23,29 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueFileName, createAsset } from "./actions";
 
-const formSchema = z.object({
-  file: z.instanceof(File, { message: "File must be attached" }),
-  filename: z
-    .string()
-    .min(3, { message: "File name must be at least 3 characters" })
-    .regex(
-      /^[\w,\.\(\)\s-]+\.[A-Za-z0-9]{1,6}$/gi,
-      "File name must have an exension"
-    )
-    .refine((filename) => checkUniqueFileName(filename), {
-      message: "File name must be unique",
-    }),
-  mimeType: z.string(),
-  description: z.string().optional(),
-});
-
-type FileFormValues = z.infer<typeof formSchema>;
-
 export const AssetForm: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
+  const t = useI18n("admin");
+
+  const formSchema = z.object({
+    file: z.instanceof(File, { message: "assets.fileRequired" }),
+    filename: z
+      .string()
+      .min(3, { message: "assets.fileNameMinLength" })
+      .regex(
+        /^[\w,\.\(\)\s-]+\.[A-Za-z0-9]{1,6}$/gi,
+        "assets.fileNameExtension"
+      )
+      .refine((filename) => checkUniqueFileName(filename), {
+        message: "assets.fileNameUnique",
+      }),
+    mimeType: z.string(),
+    description: z.string().optional(),
+  });
+
+  type FileFormValues = z.infer<typeof formSchema>;
+
   const form = useForm<FileFormValues>({
     resolver: zodResolver(formSchema),
     mode: "all",
@@ -80,8 +83,8 @@ export const AssetForm: React.FC = () => {
       });
 
       await toastPromise(createAsset(formData), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("assets.toasts.changesSaved"),
+        error: t("common.toasts.error"),
       });
 
       router.push(`/admin/dashboard/assets`);
@@ -100,7 +103,7 @@ export const AssetForm: React.FC = () => {
           name="file"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Asset</FormLabel>
+              <FormLabel>{t("assets.form.asset")}</FormLabel>
               <FormControl>
                 <DndFileInput
                   disabled={loading}
@@ -121,11 +124,11 @@ export const AssetForm: React.FC = () => {
             name="filename"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>File name</FormLabel>
+                <FormLabel>{t("assets.form.fileName")}</FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Asset file name"
+                    placeholder={t("assets.form.fileNamePlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -138,12 +141,12 @@ export const AssetForm: React.FC = () => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{t("assets.form.description")}</FormLabel>
                 <FormControl>
                   <Textarea
                     autoResize
                     disabled={loading}
-                    placeholder="Asset description"
+                    placeholder={t("assets.form.descriptionPlaceholder")}
                     {...field}
                   />
                 </FormControl>

@@ -6,6 +6,7 @@ import {
   CalendarEventAttendee,
   CalendarEventResult,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppResponse,
   ICalendarBusyTimeProvider,
   ICalendarWriter,
@@ -206,7 +207,10 @@ class GoogleCalendarConnectedApp
           { url: request.url },
           "Redirect request does not contain app ID"
         );
-        throw new Error("Redirect request does not contain app ID");
+
+        throw new ConnectedAppError(
+          "googleCalendar.statusText.redirect_request_does_not_contain_app_id"
+        );
       }
 
       if (!code) {
@@ -214,10 +218,9 @@ class GoogleCalendarConnectedApp
           { appId },
           "Redirect request does not contain authorization code"
         );
-        return {
-          appId,
-          error: "Redirect request does not contain authorization code",
-        };
+        throw new ConnectedAppError(
+          "googleCalendar.statusText.redirect_request_does_not_contain_authorization_code"
+        );
       }
 
       logger.debug({ appId }, "Exchanging authorization code for tokens");
@@ -235,7 +238,10 @@ class GoogleCalendarConnectedApp
           },
           "App was not authorized properly"
         );
-        throw new Error("App was not authorized properly");
+
+        throw new ConnectedAppError(
+          "googleCalendar.statusText.app_was_not_authorized_properly"
+        );
       }
 
       logger.debug(
@@ -248,7 +254,9 @@ class GoogleCalendarConnectedApp
           { appId, requiredScopes, actualScopes: tokens.scope },
           "App was not given required scopes"
         );
-        throw new Error("App was not given required scopes");
+        throw new ConnectedAppError(
+          "googleCalendar.statusText.app_was_not_given_required_scopes"
+        );
       }
 
       logger.debug({ appId }, "Verifying ID token");
@@ -258,7 +266,9 @@ class GoogleCalendarConnectedApp
 
       if (!email) {
         logger.error({ appId }, "Failed to get user email from ID token");
-        throw new Error("Failed to get user email");
+        throw new ConnectedAppError(
+          "googleCalendar.statusText.failed_to_get_user_email"
+        );
       }
 
       logger.info(
@@ -278,9 +288,14 @@ class GoogleCalendarConnectedApp
         { url: request.url, error: e?.message || e?.toString() },
         "Error processing Google Calendar OAuth redirect"
       );
+
       return {
         appId: new URL(request.url).searchParams.get("state") as string,
-        error: e?.message || "Something went wrong",
+        error:
+          e instanceof ConnectedAppError
+            ? e.key
+            : e?.message || "Something went wrong",
+        errorArgs: e instanceof ConnectedAppError ? e.args : undefined,
       };
     }
   }
@@ -358,7 +373,7 @@ class GoogleCalendarConnectedApp
 
       await this.props.update({
         status: "connected",
-        statusText: "Successfully fetched events",
+        statusText: "googleCalendar.statusText.successfully_set_up",
       });
 
       return result;
@@ -370,7 +385,7 @@ class GoogleCalendarConnectedApp
 
       await this.props.update({
         status: "failed",
-        statusText: e?.message || "Failed to get events",
+        statusText: "googleCalendar.statusText.error_getting_busy_times",
       });
 
       throw e;

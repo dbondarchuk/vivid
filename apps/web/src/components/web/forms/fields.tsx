@@ -25,12 +25,12 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
   email: (field: Field) =>
     z
       .string()
-      .min(field.required ? 1 : 0, "field_required_error")
+      .min(field.required ? 1 : 0, "email_required_error")
       .email("invalid_email_error"),
   phone: (field: Field) =>
     z
       .string()
-      .min(field.required ? 1 : 0, "field_required_error")
+      .min(field.required ? 1 : 0, "phone_required_error")
       .refine((s) => !s?.includes("_"), "invalid_phone_error"),
   oneLine: (field: Field) =>
     z.string().min(field.required ? 1 : 0, "field_required_error"),
@@ -56,9 +56,9 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
   file: (field: Field) => {
     return z
       .custom((f) => typeof f === "undefined" || f instanceof File, {
-        message: "Expected file",
+        message: "file_type_error",
       })
-      .refine((file) => !field.required || !!file, "File is required.")
+      .refine((file) => !field.required || !!file, "file_required_error")
       .refine(
         (file) => {
           if (field.required && !file) return false;
@@ -69,7 +69,11 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
           );
         },
         {
-          message: `Your file must be less than ${(field.data as unknown as FieldFileData).maxSizeMb}MB.`,
+          message: "file_max_size_error",
+
+          params: {
+            maxSizeMb: (field.data as unknown as FieldFileData).maxSizeMb,
+          },
         }
       );
   },

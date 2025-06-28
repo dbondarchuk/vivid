@@ -2,6 +2,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 
 import { DiscountForm } from "@/components/admin/services/discounts/form";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
 import { notFound } from "next/navigation";
@@ -12,6 +13,7 @@ type Props = {
 
 export default async function EditDiscountPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-service-discount");
+  const t = await getI18nAsync("admin");
   const params = await props.params;
 
   logger.debug(
@@ -41,9 +43,12 @@ export default async function EditDiscountPage(props: Props) {
   );
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Services", link: "/admin/dashboard/services" },
-    { title: "Discounts", link: "/admin/dashboard/services/discounts" },
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.services"), link: "/admin/dashboard/services" },
+    {
+      title: t("navigation.discounts"),
+      link: "/admin/dashboard/services/discounts",
+    },
     {
       title: discount.name,
       link: `/admin/dashboard/services/discounts/${params.id}`,
@@ -55,7 +60,10 @@ export default async function EditDiscountPage(props: Props) {
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title={discount.name} description="Edit discount" />
+          <Heading
+            title={discount.name}
+            description={t("services.discounts.editDescription")}
+          />
         </div>
         <DiscountForm initialData={discount} />
       </div>

@@ -1,3 +1,5 @@
+import { AppsKeys } from "@vivid/i18n";
+
 export type ConnectedAppStatus = "pending" | "connected" | "failed";
 
 export type ConnectedAppResponse = {
@@ -9,7 +11,8 @@ export type ConnectedAppResponse = {
       account: ConnectedAppAccount;
     }
   | {
-      error: string;
+      error: AppsKeys;
+      errorArgs?: Record<string, any>;
     }
 );
 
@@ -31,9 +34,24 @@ export type ConnectedAppAccount = (
   additional?: string;
 };
 
+export class ConnectedAppError extends Error {
+  constructor(
+    public readonly key: AppsKeys,
+    public readonly args?: Record<string, any>,
+    message?: string
+  ) {
+    super(message || key);
+  }
+}
+
 export type ConnectedAppStatusWithText = {
   status: ConnectedAppStatus;
-  statusText: string;
+  statusText:
+    | AppsKeys
+    | {
+        key: AppsKeys;
+        args?: Record<string, any>;
+      };
 };
 
 export type ConnectedAppData<

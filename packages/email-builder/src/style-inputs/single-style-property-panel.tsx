@@ -12,6 +12,7 @@ import {
   TextAlignInput,
 } from "@vivid/builder";
 import { FONT_FAMILIES } from "./helpers/font-family";
+import { useI18n } from "@vivid/i18n";
 
 type StylePropertyPanelProps = {
   name: keyof TStyle;
@@ -24,6 +25,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
   value,
   onChange,
 }) => {
+  const t = useI18n("builder");
   const defaultValue = value[name] ?? null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (v: any) => {
@@ -35,7 +37,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
       return (
         <ColorInput
           nullable
-          label="Background color"
+          label={t("emailBuilder.common.styleInputs.backgroundColor")}
           defaultValue={defaultValue}
           onChange={handleChange}
         />
@@ -44,7 +46,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
       return (
         <ColorInput
           nullable
-          label="Border color"
+          label={t("emailBuilder.common.styleInputs.borderColor")}
           defaultValue={defaultValue}
           onChange={handleChange}
         />
@@ -58,7 +60,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
           step={4}
           min={0}
           max={48}
-          label="Border radius"
+          label={t("emailBuilder.common.styleInputs.borderRadius")}
           defaultValue={defaultValue}
           onChange={handleChange}
         />
@@ -67,7 +69,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
       return (
         <ColorInput
           nullable
-          label="Text color"
+          label={t("emailBuilder.common.styleInputs.color")}
           defaultValue={defaultValue}
           onChange={handleChange}
         />
@@ -87,7 +89,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
     case "fontSize":
       return (
         <FontSizeInput
-          label="Font size"
+          label={t("emailBuilder.common.styleInputs.fontSize")}
           defaultValue={defaultValue}
           onChange={handleChange}
         />
@@ -95,7 +97,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
     case "fontWeight":
       return (
         <SelectInput
-          label="Font weight"
+          label={t("emailBuilder.common.styleInputs.fontWeight")}
           defaultValue={defaultValue}
           onChange={handleChange}
           options={[
@@ -113,7 +115,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
     case "textAlign":
       return (
         <TextAlignInput
-          label="Alignment"
+          label={t("emailBuilder.common.styleInputs.textAlign")}
           defaultValue={defaultValue}
           onChange={handleChange}
         />
@@ -121,7 +123,7 @@ export const SingleStylePropertyPanel: React.FC<StylePropertyPanelProps> = ({
     case "padding":
       return (
         <PaddingInput
-          label="Padding"
+          label={t("emailBuilder.common.styleInputs.padding")}
           defaultValue={defaultValue}
           onChange={handleChange}
         />

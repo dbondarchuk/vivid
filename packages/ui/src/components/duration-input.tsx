@@ -2,6 +2,7 @@ import { durationToTime, timeToDuration } from "@vivid/utils";
 import { Clock } from "lucide-react";
 import React from "react";
 import { Input, InputProps } from "./input";
+import { useI18n } from "@vivid/i18n";
 
 export type DurationInputProps = Omit<
   InputProps,
@@ -25,6 +26,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
   itemRef: _,
   ...rest
 }) => {
+  const t = useI18n("ui");
   const duration = value ? durationToTime(value) : undefined;
   const minutesRef = React.useRef<HTMLInputElement>(null);
   const hoursRef = React.useRef<HTMLInputElement>(null);
@@ -167,14 +169,16 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           value={duration?.hours}
           onChange={handleHoursChange}
           variant="ghost"
-          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0 "
-          aria-label="Hours"
-          name={name ? `${name}.hours` : undefined}
+          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+          aria-label={t("common.hours")}
+          name={name ? `${name}.hours` : "hours"}
           onKeyDown={(e) => handleKeyDown(e, "hours")}
           {...rest}
           ref={hoursRef}
         />
-        <span className="pr-3 text-sm text-muted-foreground">hr</span>
+        <span className="pr-3 text-sm text-muted-foreground">
+          {t("durationInput.hr")}
+        </span>
         <span className="text-lg font-medium px-0.5">:</span>
         <Input
           type="text"
@@ -186,13 +190,15 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           min={0}
           max={59}
           variant="ghost"
-          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0 "
-          aria-label="Minutes"
-          name={name ? `${name}.minutes` : undefined}
+          className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
+          aria-label={t("common.minutes")}
+          name={name ? `${name}.minutes` : "minutes"}
           {...rest}
           ref={minutesRef}
         />
-        <span className="pr-3 text-sm text-muted-foreground">min</span>
+        <span className="pr-3 text-sm text-muted-foreground">
+          {t("durationInput.min")}
+        </span>
       </div>
     </div>
   );

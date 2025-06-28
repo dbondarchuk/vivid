@@ -35,9 +35,10 @@ export const formatTime = (time: Time) =>
     .toString()
     .padStart(2, "0")}`;
 
-export const formatTimeLocale = (time: Time) =>
+export const formatTimeLocale = (time: Time, locale?: string) =>
   DateTime.fromObject({ hour: time.hour, minute: time.minute }).toLocaleString(
-    DateTime.TIME_SIMPLE
+    DateTime.TIME_SIMPLE,
+    { locale }
   );
 
 export const durationToTime = (minutes: number) => {
@@ -60,8 +61,8 @@ export const areTimesEqual = (
   timeB: Time | undefined | null
 ) => timeA?.hour === timeB?.hour && timeA?.minute === timeB?.minute;
 
-export const is12hourUserTimeFormat = () => {
-  const format = new Intl.DateTimeFormat(undefined, {
+export const is12hourUserTimeFormat = (locale?: string) => {
+  const format = new Intl.DateTimeFormat(locale, {
     hour: "numeric",
   }).resolvedOptions().hourCycle;
   return format?.startsWith("h12") ?? false;

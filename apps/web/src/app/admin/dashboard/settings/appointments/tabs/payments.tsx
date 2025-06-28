@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import {
   AppSelector,
   BooleanSelect,
@@ -17,6 +18,7 @@ import {
 import { TabProps } from "./types";
 
 export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
+  const t = useI18n("admin");
   const enablePayments = form.watch("payments.enable");
   const requireDeposit = form.watch("payments.requireDeposit");
   return (
@@ -28,9 +30,9 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>
-              Enable Deposits{" "}
+              {t("settings.appointments.form.payments.enableDeposits")}{" "}
               <InfoTooltip>
-                Enables ability to ask for a deposit to book an appointment
+                {t("settings.appointments.form.payments.enableDepositsTooltip")}
               </InfoTooltip>
             </FormLabel>
             <FormControl>
@@ -45,8 +47,8 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                   form.trigger("payments.paymentAppId");
                 }}
                 className="w-full"
-                trueLabel="Enable"
-                falseLabel="Disable"
+                trueLabel={t("settings.appointments.form.payments.enable")}
+                falseLabel={t("settings.appointments.form.payments.disable")}
               />
             </FormControl>
             <FormMessage />
@@ -61,9 +63,11 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Payments app{" "}
+                  {t("settings.appointments.form.payments.paymentsApp")}{" "}
                   <InfoTooltip>
-                    What payment processor to use for payments
+                    {t(
+                      "settings.appointments.form.payments.paymentsAppTooltip"
+                    )}
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -90,13 +94,18 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Require deposit{" "}
+                  {t("settings.appointments.form.payments.requireDeposit")}{" "}
                   <InfoTooltip>
                     <p>
-                      If enabled, each customer will be required to pay a
-                      deposit to book an appointment
+                      {t(
+                        "settings.appointments.form.payments.requireDepositTooltip1"
+                      )}
                     </p>
-                    <p>Can be overriden per each customer</p>
+                    <p>
+                      {t(
+                        "settings.appointments.form.payments.requireDepositTooltip2"
+                      )}
+                    </p>
                   </InfoTooltip>
                 </FormLabel>
                 <FormControl>
@@ -104,8 +113,10 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     value={field.value}
                     onValueChange={field.onChange}
                     className="w-full"
-                    trueLabel="Require"
-                    falseLabel="Do not require"
+                    trueLabel={t("settings.appointments.form.payments.require")}
+                    falseLabel={t(
+                      "settings.appointments.form.payments.doNotRequire"
+                    )}
                   />
                 </FormControl>
                 <FormMessage />
@@ -120,14 +131,15 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Deposit amount{" "}
+                      {t("settings.appointments.form.payments.depositAmount")}{" "}
                       <InfoTooltip>
-                        <p>Deposit amount in percents</p>
-                        <p>
-                          If set to 100, full price will be required to be paid
-                          upfront
-                        </p>
-                        <p>Can be overriden per each option or customer</p>
+                        {t.rich(
+                          "settings.appointments.form.payments.depositAmountTooltip",
+                          {
+                            p: (chunks: any) => <p>{chunks}</p>,
+                            strong: (chunks: any) => <strong>{chunks}</strong>,
+                          }
+                        )}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>
@@ -156,25 +168,17 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Min amount of appointments to not require deposit{" "}
+                      {t(
+                        "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointments"
+                      )}{" "}
                       <InfoTooltip>
-                        <p>
-                          Do not require deposit for customers who have at least
-                          specified amount of appointments completed
-                        </p>
-                        <p>
-                          <strong>Example:</strong> If set to 3, customers who
-                          are booking their first, second, or third appointment
-                          will be required to pay a deposit.
-                        </p>
-                        <p>
-                          While customers who are making their 4th or later
-                          appointmens will not be required to pay deposit unless
-                          it is specifically required for the customer
-                        </p>
-                        <p>
-                          <strong>Optional</strong>
-                        </p>
+                        {t.rich(
+                          "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointmentsTooltip",
+                          {
+                            p: (chunks: any) => <p>{chunks}</p>,
+                            strong: (chunks: any) => <strong>{chunks}</strong>,
+                          }
+                        )}
                       </InfoTooltip>
                     </FormLabel>
                     <FormControl>

@@ -6,14 +6,9 @@ import {
 import { AssetsTable } from "@/components/admin/assets/table/table";
 import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import {
-  Breadcrumbs,
-  DataTableSkeleton,
-  Heading,
-  Link,
-  Separator,
-} from "@vivid/ui";
+import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { Upload } from "lucide-react";
 import { Suspense } from "react";
 
@@ -21,13 +16,9 @@ type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Assets", link: "/admin/dashboard/assets" },
-];
-
 export default async function AssetsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("assets");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading assets page");
   const searchParams = await props.searchParams;
@@ -35,16 +26,21 @@ export default async function AssetsPage(props: Params) {
 
   const key = serialize({ ...parsed });
 
+  const breadcrumbItems = [
+    { title: t("assets.dashboard"), link: "/admin/dashboard" },
+    { title: t("assets.title"), link: "/admin/dashboard/assets" },
+  ];
+
   return (
     <PageContainer scrollable={false}>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-center justify-between">
-            <Heading title="Assets" />
+            <Heading title={t("assets.title")} />
 
             <Link button href={"/admin/dashboard/assets/new"} variant="default">
-              <Upload className="mr-2 h-4 w-4" /> Add New
+              <Upload className="mr-2 h-4 w-4" /> {t("assets.addNew")}
             </Link>
           </div>
           {/* <Separator /> */}

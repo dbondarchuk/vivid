@@ -1,42 +1,120 @@
+import type { Language } from "@vivid/i18n";
+
 import {
   Appointment,
+  AppointmentDiscount,
+  AppointmentStatus,
+  AssetEntity,
   BookingConfiguration,
   Customer,
   GeneralConfiguration,
+  Payment,
   SocialConfiguration,
+  SocialLinkType,
   socialType,
-  StatusText,
 } from "@vivid/types";
 import { DateTime } from "luxon";
 import { formatAmountString } from "./currency";
 import { durationToTime } from "./time";
 
-type Props = {
-  appointment?: Appointment | null;
+const AppointmentStatusTexts: Record<
+  AppointmentStatus,
+  Record<Language, string>
+> = {
+  pending: {
+    en: "Pending",
+    uk: "Очікуєт підтвердження",
+  },
+  confirmed: {
+    en: "Confirmed",
+    uk: "Підтверджено",
+  },
+  declined: {
+    en: "Declined",
+    uk: "Скасовано",
+  },
+};
+
+type Props<
+  TAppointment extends Appointment | null | undefined,
+  T extends Record<string | number, any> | undefined,
+> = {
+  appointment?: TAppointment;
   customer?: Customer | null;
   config: {
     booking: BookingConfiguration;
     general: GeneralConfiguration;
     social: SocialConfiguration;
   };
+  locale?: Language;
   useAppointmentTimezone?: boolean;
-  additionalProperties?: Record<string | number, any>;
+  additionalProperties?: T;
 };
 
-export const getArguments = ({
+type ArgsProps = {
+  totalPriceFormatted?: string;
+  payments?: (Omit<Payment, "paidAt" | "refundedAt" | "updatedAt"> & {
+    amountFormatted: string;
+    paidAt?: string;
+    refundedAt?: string;
+    updatedAt?: string;
+  })[];
+  totalAmountPaid?: number;
+  totalAmountPaidFormatted?: string;
+  discount?: AppointmentDiscount & {
+    discountAmountFormatted: string;
+  };
+  dateTime?: string;
+  endAt?: string;
+  restFields: {
+    name: string;
+    value: any;
+    label: string;
+  }[];
+  files: AssetEntity[];
+  images: (AssetEntity & { cid: string })[];
+  statusText?: string;
+  confirmed: boolean;
+  declined: boolean;
+  pending: boolean;
+  duration?: {
+    hours: number;
+    minutes: number;
+  };
+  config: GeneralConfiguration;
+  socials: {
+    type: SocialLinkType;
+    url: string;
+  }[];
+  locale: Language;
+};
+
+type BaseArgs<TAppointment extends Appointment | null | undefined> =
+  TAppointment extends Appointment
+    ? ArgsProps & Appointment
+    : ArgsProps & Partial<Appointment>;
+
+export type Args<
+  TAppointment extends Appointment | null | undefined,
+  TAdditional extends Record<string | number, any> | undefined,
+> = TAdditional extends undefined
+  ? BaseArgs<TAppointment>
+  : BaseArgs<TAppointment> & TAdditional;
+
+export const getArguments = <
+  TAppointment extends Appointment | null | undefined,
+  TAdditional extends Record<string | number, any> | undefined,
+>({
   appointment,
   customer,
   config,
+  locale = config.general.language,
   useAppointmentTimezone = false,
-  additionalProperties = {},
-}: Props) => {
+  additionalProperties,
+}: Props<TAppointment, TAdditional>): Args<TAppointment, TAdditional> => {
   const { name, email, phone, ...restFields } = appointment?.fields || {};
-  const args = {
-    ...(appointment || {}),
-    totalPriceFormatted: appointment?.totalPrice
-      ? formatAmountString(appointment?.totalPrice)
-      : undefined,
-    payments: appointment?.payments
+  const payments: ArgsProps["payments"] =
+    appointment?.payments
       ?.filter((payment) => payment.status === "paid")
       .map((payment) => ({
         ...payment,
@@ -48,7 +126,7 @@ export const getArguments = ({
                   ? appointment.timeZone
                   : config.booking?.timeZone
               )
-              .toLocaleString(DateTime.DATETIME_FULL)
+              .toLocaleString(DateTime.DATETIME_FULL, { locale })
           : undefined,
         refundedAt: payment.refundedAt
           ? DateTime.fromJSDate(payment.refundedAt)
@@ -57,7 +135,7 @@ export const getArguments = ({
                   ? appointment.timeZone
                   : config.booking?.timeZone
               )
-              .toLocaleString(DateTime.DATETIME_FULL)
+              .toLocaleString(DateTime.DATETIME_FULL, { locale })
           : undefined,
         updatedAt: payment.updatedAt
           ? DateTime.fromJSDate(payment.updatedAt)
@@ -66,9 +144,24 @@ export const getArguments = ({
                   ? appointment.timeZone
                   : config.booking?.timeZone
               )
-              .toLocaleString(DateTime.DATETIME_FULL)
+              .toLocaleString(DateTime.DATETIME_FULL, { locale })
           : undefined,
-      })),
+      })) || [];
+
+  const totalAmountPaid = payments?.reduce(
+    (sum, payment) => sum + payment.amount,
+    0
+  );
+
+  const extendedArgs: ArgsProps = {
+    totalPriceFormatted: appointment?.totalPrice
+      ? formatAmountString(appointment?.totalPrice)
+      : undefined,
+    payments,
+    totalAmountPaid,
+    totalAmountPaidFormatted: totalAmountPaid
+      ? formatAmountString(totalAmountPaid)
+      : undefined,
     discount: appointment?.discount
       ? {
           ...appointment.discount,
@@ -84,7 +177,7 @@ export const getArguments = ({
               ? appointment.timeZone
               : config.booking?.timeZone
           )
-          .toLocaleString(DateTime.DATETIME_FULL)
+          .toLocaleString(DateTime.DATETIME_FULL, { locale })
       : undefined,
     endAt: appointment
       ? DateTime.fromJSDate(appointment.endAt)
@@ -93,7 +186,7 @@ export const getArguments = ({
               ? appointment.timeZone
               : config.booking?.timeZone
           )
-          .toLocaleString(DateTime.DATETIME_FULL)
+          .toLocaleString(DateTime.DATETIME_FULL, { locale })
       : undefined,
     restFields: Object.entries(restFields).map(([name, value]) => ({
       name,
@@ -104,20 +197,26 @@ export const getArguments = ({
       appointment?.files?.filter(
         (file) => !file.mimeType.startsWith("image/")
       ) || [],
-    images: appointment?.files
-      ?.filter((file) => file.mimeType.startsWith("image/"))
-      .map((file) => ({
-        ...file,
-        cid: file._id,
-      })),
-    statusText: appointment ? StatusText[appointment.status] : undefined,
+    images:
+      appointment?.files
+        ?.filter((file) => file.mimeType.startsWith("image/"))
+        .map((file) => ({
+          ...file,
+          cid: file._id,
+        })) || [],
+    statusText: appointment?.status
+      ? AppointmentStatusTexts[appointment.status][locale as Language] ||
+        AppointmentStatusTexts[appointment.status]["en"]
+      : undefined,
+    confirmed: appointment?.status === "confirmed",
+    declined: appointment?.status === "declined",
+    pending: appointment?.status === "pending",
     duration: appointment
       ? durationToTime(appointment.totalDuration)
       : undefined,
     config: {
       ...config.general,
     },
-    customer,
     socials:
       config.social?.links?.map((link) =>
         Object.keys(socialType.Values).reduce(
@@ -128,8 +227,19 @@ export const getArguments = ({
           { ...link }
         )
       ) || [],
-    ...(additionalProperties || {}),
+    locale,
   };
+
+  const baseArgs: BaseArgs<TAppointment> = {
+    ...((appointment || {}) as TAppointment),
+    ...extendedArgs,
+    customer: customer || appointment?.customer,
+  };
+
+  const args = {
+    ...baseArgs,
+    ...(additionalProperties || {}),
+  } as Args<TAppointment, TAdditional>;
 
   return args;
 };

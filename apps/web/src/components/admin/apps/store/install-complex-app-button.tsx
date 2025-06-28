@@ -1,6 +1,7 @@
 "use client";
 
 import { AvailableApps } from "@vivid/app-store";
+import { I18nFn } from "@vivid/i18n";
 import { Button, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -9,7 +10,8 @@ import { installComplexApp, setAppStatus } from "./actions";
 export const InstallComplexAppButton: React.FC<{
   appName: string;
   installed: number;
-}> = ({ appName, installed }) => {
+  t: I18nFn<"apps">;
+}> = ({ appName, installed, t }) => {
   const app = React.useMemo(() => AvailableApps[appName], [appName]);
   const router = useRouter();
 
@@ -23,7 +25,7 @@ export const InstallComplexAppButton: React.FC<{
       } else if (app.type === "system") {
         await setAppStatus(appId, {
           status: "connected",
-          statusText: "Installed",
+          statusText: "common.statusText.installed",
         });
 
         router.refresh();
@@ -32,8 +34,8 @@ export const InstallComplexAppButton: React.FC<{
 
     try {
       await toastPromise(installFn(), {
-        success: "Your app was successfully connected.",
-        error: "The request to connect the app has failed. Please try again.",
+        success: t("common.statusText.connected"),
+        error: t("common.statusText.error"),
       });
     } catch (error: any) {
       console.error(`Failed to set up app: ${error}`);
@@ -45,7 +47,9 @@ export const InstallComplexAppButton: React.FC<{
       disabled={app.dontAllowMultiple && installed > 0}
       onClick={installComplex}
     >
-      {app.dontAllowMultiple && installed > 0 ? "Already installed" : "Add app"}
+      {app.dontAllowMultiple && installed > 0
+        ? t("common.alreadyInstalled")
+        : t("common.addApp")}
     </Button>
   );
 };

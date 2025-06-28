@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteApp } from "@vivid/app-store";
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -25,6 +26,7 @@ export type DeleteAppButtonProps = {
 
 export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({ appId }) => {
   const router = useRouter();
+  const t = useI18n("apps");
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -33,8 +35,8 @@ export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({ appId }) => {
     setIsLoading(true);
     try {
       await toastPromise(deleteApp(appId), {
-        success: "App was succesfully disconnected.",
-        error: "There was a problem with your request.",
+        success: t("common.appDisconnected"),
+        error: t("common.disconnectError"),
       });
 
       setIsDialogOpen(false);
@@ -50,25 +52,27 @@ export const DeleteAppButton: React.FC<DeleteAppButtonProps> = ({ appId }) => {
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="destructive">
-          <Unplug /> Disconnect app
+          <Unplug /> {t("common.disconnectApp")}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("common.disconnectConfirmTitle")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will remove this app and may
-            break services that are using it.
+            {t("common.disconnectConfirmDescription")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
           <Button
             disabled={isLoading}
             onClick={disconnectApp}
             className="flex flex-row gap-1 items-center"
           >
-            {isLoading ? <Spinner /> : <Unplug />} <span>Disconnect</span>
+            {isLoading ? <Spinner /> : <Unplug />}{" "}
+            <span>{t("common.disconnect")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const textBeltConfigurationSchema = z.object({
-  apiKey: z.string().min(1, "TextBelt API key is required"),
+  apiKey: z.string().min(1, "textBelt.apiKey.required"),
   textMessageResponderAppId: z.string().optional(),
 });
 

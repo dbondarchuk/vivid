@@ -10,6 +10,7 @@ import {
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   IAssetsStorage,
   IConnectedApp,
@@ -85,13 +86,15 @@ export default class S3AssetsStorageConnectedApp
             },
             "Error checking S3 bucket"
           );
-          throw error;
+          throw new ConnectedAppError(
+            "s3AssetsStorage.statusText.error_checking_bucket"
+          );
         }
       }
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Bucket successfully created`,
+        statusText: "s3AssetsStorage.statusText.bucket_successfully_created",
       };
 
       this.props.update({
@@ -117,7 +120,13 @@ export default class S3AssetsStorageConnectedApp
 
       const status: ConnectedAppStatusWithText = {
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          e instanceof ConnectedAppError
+            ? {
+                key: e.key,
+                args: e.args,
+              }
+            : "s3AssetsStorage.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -157,7 +166,9 @@ export default class S3AssetsStorageConnectedApp
           { appId: appData._id, filename },
           "S3 response has no body"
         );
-        throw new Error("No body present");
+        throw new ConnectedAppError(
+          "s3AssetsStorage.statusText.no_body_present"
+        );
       }
 
       logger.debug(
@@ -169,7 +180,10 @@ export default class S3AssetsStorageConnectedApp
     } catch (error: any) {
       if (error?.name === "NotFound") {
         logger.warn({ appId: appData._id, filename }, "File not found in S3");
-        throw new Error(`File ${filename} was not found`);
+        throw new ConnectedAppError(
+          "s3AssetsStorage.statusText.file_not_found",
+          { filename }
+        );
       }
 
       logger.error(
@@ -180,7 +194,9 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error getting file from S3"
       );
-      throw error;
+      throw new ConnectedAppError(
+        "s3AssetsStorage.statusText.error_getting_file"
+      );
     }
   }
 
@@ -227,7 +243,9 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error saving file to S3"
       );
-      throw error;
+      throw new ConnectedAppError(
+        "s3AssetsStorage.statusText.error_saving_file"
+      );
     }
   }
 
@@ -277,7 +295,9 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error deleting file from S3"
       );
-      throw error;
+      throw new ConnectedAppError(
+        "s3AssetsStorage.statusText.error_deleting_file"
+      );
     }
   }
 
@@ -309,7 +329,9 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error deleting files from S3"
       );
-      throw error;
+      throw new ConnectedAppError(
+        "s3AssetsStorage.statusText.error_deleting_files"
+      );
     }
   }
 
@@ -357,7 +379,9 @@ export default class S3AssetsStorageConnectedApp
         },
         "Error checking if file exists in S3"
       );
-      throw error;
+      throw new ConnectedAppError(
+        "s3AssetsStorage.statusText.error_checking_file_exists"
+      );
     }
   }
 
@@ -382,7 +406,9 @@ export default class S3AssetsStorageConnectedApp
         },
         "Invalid S3 configuration"
       );
-      throw new Error("Invalid configuration");
+      throw new ConnectedAppError(
+        "s3AssetsStorage.statusText.error_processing_configuration"
+      );
     }
 
     logger.debug(

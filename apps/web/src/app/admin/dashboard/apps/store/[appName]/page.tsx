@@ -3,6 +3,7 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { AvailableApps } from "@vivid/app-store";
 import { Breadcrumbs } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 type Params = {
   params: Promise<{ appName: string }>;
@@ -10,6 +11,8 @@ type Params = {
 
 export default async function AppsStorePage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("app-store-details");
+  const t = await getI18nAsync("admin");
+  const tApps = await getI18nAsync("apps");
   const { appName } = await props.params;
 
   logger.debug(
@@ -20,11 +23,11 @@ export default async function AppsStorePage(props: Params) {
   );
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Apps", link: "/admin/dashboard/apps" },
-    { title: "Apps Store", link: "/admin/dashboard/apps/store" },
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    { title: t("navigation.apps"), link: "/admin/dashboard/apps" },
+    { title: t("apps.appStore"), link: "/admin/dashboard/apps/store" },
     {
-      title: AvailableApps[appName].displayName,
+      title: tApps(AvailableApps[appName].displayName),
       link: `/admin/dashboard/apps/store/${appName}`,
     },
   ];

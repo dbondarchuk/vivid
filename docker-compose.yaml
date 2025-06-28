@@ -11,6 +11,7 @@ services:
       - AUTH_TRUST_HOST=http://localhost:3000
       - AUTH_URL=http://localhost:3000
       - SCHEDULER_KEY="ZAvNcu8xIQOawePzQmh5JxMpFGK0g5Tp"
+      - LOG_LEVEL="debug"
 
     restart: unless-stopped
     ports:

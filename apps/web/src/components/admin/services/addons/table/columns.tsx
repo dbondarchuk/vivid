@@ -1,4 +1,5 @@
 "use client";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
 import { AppointmentAddon, IdName } from "@vivid/types";
 import {
@@ -25,20 +26,26 @@ export const columns: ColumnDef<
 >[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("common.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("common.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -52,27 +59,43 @@ export const columns: ColumnDef<
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("Name", "string"),
+    header: tableSortHeader(
+      "services.addons.table.columns.name",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (field) =>
-      DateTime.fromJSDate(field.updatedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "updatedAt",
-    header: tableSortHeader("Updated at", "date"),
+    header: tableSortHeader(
+      "services.addons.table.columns.updatedAt",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row }) =>
-      row.original.options?.length ? (
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return row.original.options?.length ? (
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="link-dashed">{row.original.options.length}</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogTitle>{row.original.name} in options</DialogTitle>
+            <DialogTitle>
+              {t("services.addons.table.columns.optionsInDialog", {
+                name: row.original.name,
+              })}
+            </DialogTitle>
             <ScrollArea className="max-h-64">
               <ul>
                 {row.original.options.map((option) => (
@@ -90,7 +113,7 @@ export const columns: ColumnDef<
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
-                  Close
+                  {t("common.buttons.close")}
                 </Button>
               </DialogClose>
             </DialogFooter>
@@ -100,9 +123,14 @@ export const columns: ColumnDef<
         <Button variant="link" disabled>
           0
         </Button>
-      ),
+      );
+    },
     id: "options",
-    header: tableSortHeader("Options", "number"),
+    header: tableSortHeader(
+      "services.addons.table.columns.options",
+      "number",
+      "admin"
+    ),
   },
   {
     id: "actions",

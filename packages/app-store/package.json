@@ -35,6 +35,7 @@
     "@vivid/email-builder": "*",
     "@vivid/types": "*",
     "@vivid/logger": "*",
+    "@vivid/i18n": "*",
     "@vivid/ui": "*",
     "@vivid/utils": "*",
     "html-to-text": "^9.0.5",

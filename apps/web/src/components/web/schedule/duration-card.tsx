@@ -1,4 +1,4 @@
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 import { Button } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import React from "react";
@@ -7,7 +7,7 @@ import { useScheduleContext } from "./context";
 const durations = [15, 30, 45, 60, 90, 120];
 
 export const DurationCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { setDuration, duration } = useScheduleContext();
 
   return (

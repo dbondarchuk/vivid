@@ -1,3 +1,4 @@
+import { getLocale } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { cn, Link } from "@vivid/ui";
 import { getPageData } from "@vivid/utils";
@@ -22,6 +23,7 @@ export const PageList: React.FC<PageListProps> = async ({
   pagesPerPage = 10,
 }) => {
   const page = parseInt(getPageData()?.searchParams?.page) - 1 || 0;
+  const locale = await getLocale();
 
   const pages = await ServicesContainer.PagesService().getPages({
     publishStatus: [true],
@@ -44,7 +46,8 @@ export const PageList: React.FC<PageListProps> = async ({
           <div className={cn("flex flex-col gap-2", postClassName)}>
             <div className="text-muted-foreground text-sm">
               {DateTime.fromJSDate(page.publishDate).toLocaleString(
-                DateTime.DATE_HUGE
+                DateTime.DATE_HUGE,
+                { locale }
               )}
             </div>
             <h3 className="mt-0 mb-2">

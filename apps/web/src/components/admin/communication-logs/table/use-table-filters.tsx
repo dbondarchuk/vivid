@@ -1,34 +1,8 @@
 "use client";
 
-import {
-  CommunicationChannelTexts,
-  CommunicationDirectionTexts,
-  CommunicationParticipantTypeTexts,
-} from "@/constants/labels";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
-
-export const DIRECTION_OPTIONS = Object.entries(
-  CommunicationDirectionTexts
-).map(([name, value]) => ({
-  value: name,
-  label: value,
-}));
-
-export const CHANNEL_OPTIONS = Object.entries(CommunicationChannelTexts).map(
-  ([name, value]) => ({
-    value: name,
-    label: value,
-  })
-);
-
-export const PARTICIPANT_TYPE_OPTIONS = Object.entries(
-  CommunicationParticipantTypeTexts
-).map(([name, value]) => ({
-  value: name,
-  label: value,
-}));
 
 export function useCommunicationLogsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(

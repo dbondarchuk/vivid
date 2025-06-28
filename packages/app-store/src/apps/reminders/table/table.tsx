@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { useQueryStates } from "nuqs";
 import React from "react";
 import { searchParams } from "./search-params";
@@ -10,6 +11,7 @@ import { columns } from "./columns";
 
 export const RemindersTable: React.FC<{ appId: string }> = ({ appId }) => {
   const [query] = useQueryStates(searchParams);
+  const t = useI18n("apps");
 
   const delayedQuery = useDebounce(query, 100);
 
@@ -42,7 +44,7 @@ export const RemindersTable: React.FC<{ appId: string }> = ({ appId }) => {
       setResponse(res);
     } catch (e: any) {
       console.error(e);
-      toast.error("There was an error while loading the reminders");
+      toast.error(t("reminders.statusText.error_loading_reminders"));
     } finally {
       setLoading(false);
     }
@@ -53,7 +55,7 @@ export const RemindersTable: React.FC<{ appId: string }> = ({ appId }) => {
   }, [delayedQuery]);
 
   return loading ? (
-    <DataTableSkeleton rowCount={10} columnCount={6} />
+    <DataTableSkeleton rowCount={10} columnCount={columns.length} />
   ) : (
     <DataTable
       columns={columns}

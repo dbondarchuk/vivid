@@ -1,5 +1,6 @@
 import Providers from "@/components/admin/layout/providers";
 import { Toaster } from "@vivid/ui";
+import { getI18nAsync } from "@vivid/i18n/server";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
@@ -9,10 +10,14 @@ export const dynamic = "force-dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "VIVID CMS - Install",
-  description: "Installation of vivid",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+
+  return {
+    title: t("install.layout.title"),
+    description: t("install.layout.description"),
+  };
+}
 
 export default async function RootLayout({
   children,

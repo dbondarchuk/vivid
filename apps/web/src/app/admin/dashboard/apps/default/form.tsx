@@ -21,10 +21,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { updateDefaultAppsConfiguration } from "./actions";
 import { MigrateAssetsDialog } from "./migrate-assets-dialog";
+import { useI18n } from "@vivid/i18n";
 
 export const DefaultAppsConfigurationForm: React.FC<{
   values: DefaultAppsConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<DefaultAppsConfiguration>({
     resolver: zodResolver(defaultAppsConfigurationSchema),
     mode: "all",
@@ -38,8 +40,8 @@ export const DefaultAppsConfigurationForm: React.FC<{
     try {
       setLoading(true);
       await toastPromise(updateDefaultAppsConfiguration(data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("apps.defaultAppsForm.toasts.changesSaved"),
+        error: t("apps.defaultAppsForm.toasts.requestError"),
       });
 
       router.refresh();
@@ -62,7 +64,7 @@ export const DefaultAppsConfigurationForm: React.FC<{
             name="email.appId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email sender</FormLabel>
+                <FormLabel>{t("apps.defaultAppsForm.emailSender")}</FormLabel>
                 <FormControl>
                   <AppSelector
                     onItemSelect={field.onChange}
@@ -81,7 +83,9 @@ export const DefaultAppsConfigurationForm: React.FC<{
             name="textMessage.appId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Text message sender</FormLabel>
+                <FormLabel>
+                  {t("apps.defaultAppsForm.textMessageSender")}
+                </FormLabel>
                 <FormControl>
                   <AppSelector
                     onItemSelect={field.onChange}
@@ -102,7 +106,7 @@ export const DefaultAppsConfigurationForm: React.FC<{
           name="assetsStorage.appId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Assets storage</FormLabel>
+              <FormLabel>{t("apps.defaultAppsForm.assetsStorage")}</FormLabel>
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                 <FormControl>
                   <AppSelector

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import { BookingConfiguration, bookingConfigurationSchema } from "@vivid/types";
 import {
   cn,
@@ -25,6 +26,7 @@ import { PaymentsTab } from "./tabs/payments";
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
 }> = ({ values }) => {
+  const t = useI18n("admin");
   const form = useForm<BookingConfiguration>({
     resolver: zodResolver(bookingConfigurationSchema),
     mode: "all",
@@ -39,8 +41,8 @@ export const AppointmentsSettingsForm: React.FC<{
     try {
       setLoading(true);
       await toastPromise(updateBookingConfiguration(data), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("settings.appointments.form.toasts.changesSaved"),
+        error: t("settings.appointments.form.toasts.requestError"),
       });
       router.refresh();
     } catch (error: any) {
@@ -83,7 +85,7 @@ export const AppointmentsSettingsForm: React.FC<{
               value="main"
               className={cn(mainTabInvalid ? "text-destructive" : "")}
             >
-              Main
+              {t("settings.appointments.form.tabs.main")}
             </TabsTrigger>
             <TabsTrigger
               value="calendarSources"
@@ -93,7 +95,7 @@ export const AppointmentsSettingsForm: React.FC<{
                   : ""
               )}
             >
-              Calendar sources
+              {t("settings.appointments.form.tabs.calendarSources")}
             </TabsTrigger>
             <TabsTrigger
               value="options"
@@ -101,7 +103,7 @@ export const AppointmentsSettingsForm: React.FC<{
                 form.getFieldState("options").invalid ? "text-destructive" : ""
               )}
             >
-              Options
+              {t("settings.appointments.form.tabs.options")}
             </TabsTrigger>
             <TabsTrigger
               value="smartSchedule"
@@ -111,7 +113,7 @@ export const AppointmentsSettingsForm: React.FC<{
                   : ""
               )}
             >
-              SmartSchedule
+              {t("settings.appointments.form.tabs.smartSchedule")}
             </TabsTrigger>
             <TabsTrigger
               value="payments"
@@ -119,7 +121,7 @@ export const AppointmentsSettingsForm: React.FC<{
                 form.getFieldState("payments").invalid ? "text-destructive" : ""
               )}
             >
-              Payments
+              {t("settings.appointments.form.tabs.payments")}
             </TabsTrigger>
           </TabsList>
           <TabsContent value="main">

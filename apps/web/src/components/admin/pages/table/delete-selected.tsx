@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -22,6 +23,7 @@ import { Page } from "@vivid/types";
 export const DeleteSelectedPagesButton: React.FC<{
   selected: Page[];
 }> = ({ selected }) => {
+  const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -33,8 +35,8 @@ export const DeleteSelectedPagesButton: React.FC<{
       await toastPromise(
         deleteSelectedPages(selected.map((page) => page._id)),
         {
-          success: "Selected pages have been deleted",
-          error: "There was a problem with your request.",
+          success: t("pages.table.delete.success"),
+          error: t("pages.table.delete.error"),
         }
       );
 
@@ -56,21 +58,25 @@ export const DeleteSelectedPagesButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} page(s)</span>
+          <span>
+            {t("pages.table.delete.selectedCount", { count: selected.length })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{t("pages.table.delete.title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will delete selected pages
+            {t("pages.table.delete.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("pages.table.delete.cancel")}
+          </AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Delete selected</span>
+            <span>{t("pages.table.delete.confirm")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

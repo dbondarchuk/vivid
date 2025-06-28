@@ -1,4 +1,4 @@
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   Card,
@@ -16,7 +16,7 @@ import { useScheduleContext } from "./context";
 import { ScheduleSteps } from "./steps";
 
 export const StepCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const ctx = useScheduleContext();
   const { duration, price, appointmentOption, step: stepType } = ctx;
 

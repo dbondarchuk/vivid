@@ -1,5 +1,6 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   AppointmentEntity,
   AppointmentOption,
@@ -18,38 +19,48 @@ import React from "react";
 
 const AppointmentCell: React.FC<{ appointment?: AppointmentEntity }> = ({
   appointment,
-}) =>
-  appointment && appointment.option ? (
+}) => {
+  const locale = useLocale();
+
+  return appointment && appointment.option ? (
     <Link
       href={`/admin/dashboard/appointments/${appointment._id}`}
       variant="underline"
     >
       {appointment.option.name} at{" "}
       {DateTime.fromJSDate(appointment.dateTime).toLocaleString(
-        DateTime.DATETIME_MED
+        DateTime.DATETIME_MED,
+        { locale }
       )}
     </Link>
   ) : (
     ""
   );
+};
 
 export const columns: ColumnDef<CustomerListModel>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("customers.table.actions.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("customers.table.actions.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -76,7 +87,7 @@ export const columns: ColumnDef<CustomerListModel>[] = [
       </Link>
     ),
     id: "name",
-    header: tableSortHeader("Name", "string"),
+    header: tableSortHeader("customers.table.columns.name", "string", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -89,7 +100,7 @@ export const columns: ColumnDef<CustomerListModel>[] = [
       </Link>
     ),
     id: "email",
-    header: tableSortHeader("Email", "string"),
+    header: tableSortHeader("customers.table.columns.email", "string", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -102,7 +113,7 @@ export const columns: ColumnDef<CustomerListModel>[] = [
       </Link>
     ),
     id: "phone",
-    header: tableSortHeader("Phone", "string"),
+    header: tableSortHeader("customers.table.columns.phone", "string", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -110,7 +121,11 @@ export const columns: ColumnDef<CustomerListModel>[] = [
       <AppointmentCell appointment={row.original.lastAppointment} />
     ),
     id: "lastAppointment.dateTime",
-    header: tableSortHeader("Last appointment", "date"),
+    header: tableSortHeader(
+      "customers.table.columns.lastAppointment",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -118,7 +133,11 @@ export const columns: ColumnDef<CustomerListModel>[] = [
       <AppointmentCell appointment={row.original.nextAppointment} />
     ),
     id: "nextAppointment.dateTime",
-    header: tableSortHeader("Next appointment", "date"),
+    header: tableSortHeader(
+      "customers.table.columns.nextAppointment",
+      "date",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -131,7 +150,11 @@ export const columns: ColumnDef<CustomerListModel>[] = [
       </Link>
     ),
     id: "appointmentsCount",
-    header: tableSortHeader("Appointments", "number"),
+    header: tableSortHeader(
+      "customers.table.columns.appointments",
+      "number",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {

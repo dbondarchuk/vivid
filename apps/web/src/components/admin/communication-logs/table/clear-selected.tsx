@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -26,6 +27,7 @@ export const ClearSelectedCommunicationLogsButton: React.FC<{
   const [isOpen, setIsOpen] = React.useState(false);
 
   const router = useRouter();
+  const t = useI18n("admin");
   const action = async () => {
     try {
       setIsLoading(true);
@@ -33,8 +35,8 @@ export const ClearSelectedCommunicationLogsButton: React.FC<{
       await toastPromise(
         clearSelectedCommunicationLogs(selected.map((log) => log._id)),
         {
-          success: "Selected logs have been cleared",
-          error: "There was a problem with your request.",
+          success: t("communicationLogs.selectedLogsCleared"),
+          error: t("common.toasts.error"),
         }
       );
 
@@ -56,22 +58,27 @@ export const ClearSelectedCommunicationLogsButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Clear selected {selected.length} log(s)</span>
+          <span>
+            {t("communicationLogs.clearSelectedCount", {
+              count: selected.length,
+            })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("communicationLogs.clearSelectedTitle")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will delete selected
-            communication logs
+            {t("communicationLogs.clearSelectedDescription")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t("communicationLogs.cancel")}</AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Clear selected</span>
+            <span>{t("communicationLogs.clearSelected")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -35,7 +35,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
     const app: ConnectedAppData = {
       _id: new ObjectId().toString(),
       status: "pending",
-      statusText: "Pending",
+      statusText: "common.statusText.pending",
       name,
     };
 
@@ -193,7 +193,10 @@ export class ConnectedAppsService implements IConnectedAppsService {
         {
           $set: {
             status: "failed",
-            statusText: result.error,
+            statusText: {
+              key: result.error,
+              args: result.errorArgs ?? {},
+            },
           },
         }
       );
@@ -206,7 +209,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
         {
           $set: {
             status: "connected",
-            statusText: "connected",
+            statusText: "common.statusText.connected",
             data: result.data,
             account: result.account,
           },

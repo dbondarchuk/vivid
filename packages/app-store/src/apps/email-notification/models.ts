@@ -1,8 +1,8 @@
-import { asOptionalField } from "@vivid/types";
+import { asOptionalField, zEmail } from "@vivid/types";
 import { z } from "zod";
 
 export const emailNotificationConfigurationSchema = z.object({
-  email: asOptionalField(z.string().email("Invalid email")),
+  email: asOptionalField(zEmail),
 });
 
 export type EmailNotificationConfiguration = z.infer<

@@ -3,14 +3,6 @@
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
-import { CommunicationChannelTexts } from "@/constants/labels";
-
-export const TYPE_OPTIONS = Object.entries(CommunicationChannelTexts).map(
-  ([name, value]) => ({
-    value: name,
-    label: value,
-  })
-);
 
 export function useTemplatesTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(

@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { CalendarSourceConfiguration } from "@vivid/types";
 import { NonSortable } from "@vivid/ui";
 import React from "react";
@@ -6,6 +7,7 @@ import { CalendarSourceCard } from "./cards/calendar-source-card";
 import { TabProps } from "./types";
 
 export const CalendarSourcesTab: React.FC<TabProps> = ({ form, disabled }) => {
+  const t = useI18n("admin");
   const { fields, append, remove, swap, update, insert } = useFieldArray({
     control: form.control,
     name: "calendarSources",
@@ -27,7 +29,11 @@ export const CalendarSourcesTab: React.FC<TabProps> = ({ form, disabled }) => {
   };
 
   return (
-    <NonSortable title="Calendar sources" ids={ids} onAdd={addNew}>
+    <NonSortable
+      title={t("settings.appointments.form.calendarSources.title")}
+      ids={ids}
+      onAdd={addNew}
+    >
       <div className="flex flex-grow flex-col gap-4">
         {fields.map((item, index) => {
           return (

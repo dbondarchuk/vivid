@@ -5,11 +5,7 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 const { auth } = AuthResult;
 
 import { MiddlewareFactory } from "./types";
-
-function containsAdminDashboard(value: string) {
-  const regex = /^\/admin\/(api|dashboard)/i;
-  return regex.test(value);
-}
+import { containsAdminDashboard } from "./utils";
 
 export const withAuth: MiddlewareFactory = (next) => {
   return async (request: NextRequest, event: NextFetchEvent) => {

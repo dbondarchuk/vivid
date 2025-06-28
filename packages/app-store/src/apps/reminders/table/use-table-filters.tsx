@@ -3,14 +3,6 @@
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
-import { reminderChannelLabels } from "../const";
-
-export const CHANNEL_OPTIONS = Object.entries(reminderChannelLabels).map(
-  ([value, label]) => ({
-    value,
-    label,
-  })
-);
 
 export function useRemindersTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(

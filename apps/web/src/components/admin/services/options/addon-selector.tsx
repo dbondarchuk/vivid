@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { AppointmentAddon } from "@vivid/types";
 import {
   cn,
@@ -80,6 +81,7 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
   onItemSelect,
   multi,
 }) => {
+  const t = useI18n("admin");
   const [addons, setAddons] = React.useState<AppointmentAddon[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -127,7 +129,11 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
       options={addonMultiOptions(addons)}
-      placeholder={isLoading ? "Loading addons..." : "Select addon"}
+      placeholder={
+        isLoading
+          ? t("services.addonSelector.loading")
+          : t("services.addonSelector.selectAddon")
+      }
       selected={value || []}
       onChange={(value) => onItemSelect?.(value as string[])}
     />
@@ -136,7 +142,11 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
       values={addonValues(addons)}
-      searchLabel={isLoading ? "Loading addons..." : "Select addon"}
+      searchLabel={
+        isLoading
+          ? t("services.addonSelector.loading")
+          : t("services.addonSelector.selectAddon")
+      }
       value={value}
       customSearch={(search) =>
         addonValues(addons.filter((app) => checkAddonSearch(app, search)))

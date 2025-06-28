@@ -2,24 +2,26 @@ import PageContainer from "@/components/admin/layout/page-container";
 import { PageForm } from "@/components/admin/pages/form";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
-
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Pages", link: "/admin/dashboard/pages" },
-  { title: "New", link: "/admin/dashboard/pages/new" },
-];
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export default async function NewPagesPage() {
   const logger = getLoggerFactory("AdminPages")("new-page");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading new page creation page");
+
+  const breadcrumbItems = [
+    { title: t("assets.dashboard"), link: "/admin/dashboard" },
+    { title: t("pages.title"), link: "/admin/dashboard/pages" },
+    { title: t("pages.new"), link: "/admin/dashboard/pages/new" },
+  ];
 
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading title="New page" description="Add new page" />
+          <Heading title={t("pages.new")} description={t("pages.addNewPage")} />
           {/* <Separator /> */}
         </div>
         <PageForm />

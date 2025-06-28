@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -22,6 +23,7 @@ import { Template } from "@vivid/types";
 export const DeleteSelectedTemplatesButton: React.FC<{
   selected: Template[];
 }> = ({ selected }) => {
+  const t = useI18n("admin");
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -33,8 +35,8 @@ export const DeleteSelectedTemplatesButton: React.FC<{
       await toastPromise(
         deleteSelectedTemplates(selected.map((page) => page._id)),
         {
-          success: "Selected templates have been deleted",
-          error: "There was a problem with your request.",
+          success: t("templates.table.deleteSelected.success"),
+          error: t("templates.table.deleteSelected.error"),
         }
       );
 
@@ -56,22 +58,29 @@ export const DeleteSelectedTemplatesButton: React.FC<{
         >
           {isLoading && <Spinner />}
           <Trash className="mr-2 h-4 w-4" />
-          <span>Delete selected {selected.length} template(s)</span>
+          <span>
+            {t("templates.table.deleteSelected.button", {
+              count: selected.length,
+            })}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("templates.table.deleteSelected.confirmTitle")}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will delete selected templates
-            and may break notifications that use them
+            {t("templates.table.deleteSelected.confirmDescription")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("templates.table.deleteSelected.cancel")}
+          </AlertDialogCancel>
           <Button onClick={action} variant="default">
             {isLoading && <Spinner />}
-            <span>Delete selected</span>
+            <span>{t("templates.table.deleteSelected.deleteSelected")}</span>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

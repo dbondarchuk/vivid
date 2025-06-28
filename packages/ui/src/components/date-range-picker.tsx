@@ -7,6 +7,7 @@ import { DateRange } from "@vivid/types";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { DateTime } from "luxon";
 import * as React from "react";
+import { useI18n } from "@vivid/i18n";
 
 export type CalendarDateRangePickerProps =
   React.HTMLAttributes<HTMLDivElement> & {
@@ -17,6 +18,7 @@ export type CalendarDateRangePickerProps =
 export const CalendarDateRangePicker: React.FC<
   CalendarDateRangePickerProps
 > = ({ className, range, onChange }) => {
+  const t = useI18n("ui");
   const [date, setDate] = React.useState<DateRange | undefined>(range);
   React.useEffect(() => {
     setDate(range);
@@ -51,7 +53,7 @@ export const CalendarDateRangePicker: React.FC<
               )
             ) : (
               <span className="text-sm text-muted-foreground">
-                Pick a date range
+                {t("dateRangePicker.placeholder")}
               </span>
             )}
           </Button>

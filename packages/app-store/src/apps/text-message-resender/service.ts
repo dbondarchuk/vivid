@@ -8,6 +8,8 @@ import {
   RespondResult,
   TextMessageReply,
 } from "@vivid/types";
+import { getArguments, template } from "@vivid/utils";
+import { TextMessageResenderMessages } from "./messages";
 import { TextMessageResenderConfiguration } from "./models";
 
 export default class TextMessageResenderConnectedApp
@@ -32,7 +34,7 @@ export default class TextMessageResenderConnectedApp
     try {
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `App is connected`,
+        statusText: "textMessageResender.statusText.successfully_set_up",
       };
 
       this.props.update({
@@ -55,7 +57,7 @@ export default class TextMessageResenderConnectedApp
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          "textMessageResender.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -113,7 +115,7 @@ export default class TextMessageResenderConnectedApp
           appointmentId: reply.data.appointmentId,
           customerId: reply.data.customerId,
           participantType: "customer",
-          handledBy: `Text Message Responder - resend to customer`,
+          handledBy: "textMessageResender.handlers.resendToCustomer",
         });
 
         logger.info(
@@ -122,7 +124,7 @@ export default class TextMessageResenderConnectedApp
         );
 
         return {
-          handledBy: "Text Message Responder - process user's reply",
+          handledBy: "textMessageResender.handlers.processUserReply",
           participantType: "user",
         };
       }
@@ -137,10 +139,22 @@ export default class TextMessageResenderConnectedApp
         "Processing reply from customer - resending to user"
       );
 
-      const body = `Hi ${config.general.name},
-${customer?.name ? `${customer.name} has replied from ${reply.from}` : `You have text message from ${reply.from}`}:
-${reply.message}
-You can reply to this message directly`;
+      const args = getArguments({
+        appointment,
+        config,
+        customer,
+        locale: config.general.language,
+        additionalProperties: {
+          reply,
+        },
+      });
+
+      const body = template(
+        TextMessageResenderMessages[config.general.language]
+          .resendToUserFromCustomer ??
+          TextMessageResenderMessages["en"].resendToUserFromCustomer,
+        args
+      );
 
       const phone = appData?.data?.phone || config.general.phone;
       if (!phone) {
@@ -172,7 +186,7 @@ You can reply to this message directly`;
         appointmentId: reply.data.appointmentId,
         customerId: reply.data.customerId,
         participantType: "user",
-        handledBy: `Text Message Responder - resend to user`,
+        handledBy: "textMessageResender.handlers.resendToUser",
       });
 
       logger.info(
@@ -181,7 +195,7 @@ You can reply to this message directly`;
       );
 
       return {
-        handledBy: "Text Message Responder - process customer's reply",
+        handledBy: "textMessageResender.handlers.processCustomerReply",
         participantType: "customer",
       };
     } catch (error: any) {
@@ -196,7 +210,7 @@ You can reply to this message directly`;
 
       this.props.update({
         status: "failed",
-        statusText: "Error processing text message resender reply",
+        statusText: "textMessageResender.statusText.error_processing_reply",
       });
 
       throw error;

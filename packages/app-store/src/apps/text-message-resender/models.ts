@@ -1,10 +1,8 @@
+import { asOptionalField, zPhone } from "@vivid/types";
 import { z } from "zod";
 
 export const textMessageResenderConfigurationSchema = z.object({
-  phone: z
-    .string()
-    .refine((s) => !s?.includes("_"), "Invalid phone number")
-    .optional(),
+  phone: asOptionalField(zPhone),
 });
 
 export type TextMessageResenderConfiguration = z.infer<

@@ -2,6 +2,7 @@ import { CustomerListModel, WithTotal } from "@vivid/types";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
 import Image from "next/image";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 
 const CustomerShortLabel: React.FC<{
   customer: CustomerListModel;
@@ -66,6 +67,7 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
   onValueChange,
   allowClear,
 }) => {
+  const t = useI18n("ui");
   const [itemsCache, setItemsCache] = React.useState<
     Record<string, CustomerListModel>
   >({});
@@ -83,11 +85,11 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
       });
 
       if (response.status >= 400) {
-        toast.error("Request failed.");
         const text = await response.text();
-        console.error(
-          `Request to fetch customers failed: ${response.status}; ${text}`
-        );
+        const message = `Request to fetch customers failed: ${response.status}; ${text}`;
+        console.error(message);
+
+        toast.error(t("customerSelector.requestFailed"));
 
         return {
           items: [],
@@ -117,7 +119,7 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
         hasMore: page * limit < res.total,
       };
     },
-    [value, setItemsCache]
+    [value, setItemsCache, t]
   );
 
   React.useEffect(() => {
@@ -130,7 +132,7 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
       onChange={onItemSelect}
       disabled={disabled}
       className={cn("flex font-normal text-base max-w-full", className)}
-      placeholder="Select customer"
+      placeholder={t("customerSelector.placeholder")}
       value={value}
       allowClear={allowClear}
       fetchItems={getCustomers}

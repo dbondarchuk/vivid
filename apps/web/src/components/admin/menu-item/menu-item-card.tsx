@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
@@ -82,6 +83,7 @@ export function MenuItemCard({
   remove,
   update,
 }: MenuItemProps) {
+  const t = useI18n("admin");
   const {
     setNodeRef,
     attributes,
@@ -144,13 +146,13 @@ export function MenuItemCard({
           {...listeners}
           className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
         >
-          <span className="sr-only">Move menu item</span>
+          <span className="sr-only">{t("menuItem.card.moveMenuItem")}</span>
           <GripVertical />
         </Button>
         <span
           className={cn(!itemTypesLabels[itemType] ? "text-destructive" : "")}
         >
-          {itemLabel || itemTypesLabels[itemType] || "Invalid"}
+          {itemLabel || itemTypesLabels[itemType] || t("menuItem.card.invalid")}
         </span>
         <Button
           disabled={disabled}
@@ -169,7 +171,7 @@ export function MenuItemCard({
           name={`${name}.type`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Item type</FormLabel>
+              <FormLabel>{t("menuItem.card.itemType")}</FormLabel>
 
               <FormControl>
                 <Combobox
@@ -178,7 +180,7 @@ export function MenuItemCard({
                   values={itemTypesValues.filter(
                     (x) => !!supportsSubmenus || x.value !== "submenu"
                   )}
-                  searchLabel="Select type"
+                  searchLabel={t("menuItem.card.selectType")}
                   value={field.value}
                   onItemSelect={(value) => {
                     field.onChange(value);

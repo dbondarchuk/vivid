@@ -1,7 +1,7 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { TemplateTemplates } from "@/components/admin/templates/templates";
 import { TemplatesTemplate } from "@/components/admin/templates/templates/type";
-import { CommunicationChannelTexts } from "@/constants/labels";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { CommunicationChannel } from "@vivid/types";
 import { Heading, Skeleton } from "@vivid/ui";
@@ -17,6 +17,7 @@ type Props = {
 
 export default async function NewTemplatePage({ params, searchParams }: Props) {
   const logger = getLoggerFactory("AdminPages")("new-template");
+  const t = await getI18nAsync("admin");
   const { type } = await params;
   const query = await searchParams;
 
@@ -47,9 +48,10 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
       <div className="flex flex-1 flex-col gap-4 h-full">
         <div className="flex flex-col gap-4 justify-between">
           <Heading
-            title={`New ${CommunicationChannelTexts[type].toLowerCase()} template`}
+            title={t("templates.newPage.title", {
+              type: t(`common.labels.channel.${type}`).toLowerCase(),
+            })}
           />
-          {/* <Separator /> */}
         </div>
         <Suspense fallback={<Skeleton className="w-full h-full" />}>
           <TemplateFormPage type={type} template={template} />

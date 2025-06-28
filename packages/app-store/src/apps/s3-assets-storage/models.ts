@@ -1,10 +1,12 @@
 import { z } from "zod";
 
 export const s3ConfigurationSchema = z.object({
-  region: z.string().min(1, "S3 region is required"),
-  accessKeyId: z.string().min(1, "Access key ID is required"),
-  secretAccessKey: z.string().min(1, "Secret access key is required"),
-  endpoint: z.string().url("Should be a valid URL").optional(),
+  region: z.string().min(1, "s3AssetsStorage.form.region.required"),
+  accessKeyId: z.string().min(1, "s3AssetsStorage.form.accessKeyId.required"),
+  secretAccessKey: z
+    .string()
+    .min(1, "s3AssetsStorage.form.secretAccessKey.required"),
+  endpoint: z.string().url("s3AssetsStorage.form.endpoint.url").optional(),
   bucket: z.string().optional(),
   forcePathStyle: z.coerce.boolean().optional(),
 });

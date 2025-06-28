@@ -16,6 +16,7 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { EmailNotificationApp } from "./app";
 import {
@@ -37,6 +38,8 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
       onError,
     });
 
+  const t = useI18n("apps");
+
   return (
     <>
       <Form {...form}>
@@ -48,17 +51,18 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    Send to email
+                    {t("emailNotification.form.email.label")}
                     <InfoTooltip>
-                      Email address to which email notification should be send.
-                      Leave empty to use your default email address.
+                      {t("emailNotification.form.email.tooltip")}
                     </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
                       type="email"
-                      placeholder="john@example.com"
+                      placeholder={t(
+                        "emailNotification.form.email.placeholder"
+                      )}
                       {...field}
                     />
                   </FormControl>
@@ -73,15 +77,20 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>{existingAppId ? "Update" : "Add"}</span>
+              <span>
+                {existingAppId
+                  ? t("emailNotification.form.update")
+                  : t("emailNotification.form.add")}
+              </span>
               <ConnectedAppNameAndLogo
                 app={{ name: EmailNotificationApp.name }}
+                t={t}
               />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

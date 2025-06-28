@@ -1,9 +1,12 @@
 "use client";
 
-import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import * as React from "react";
 import { DayPicker, DropdownProps } from "react-day-picker";
 
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useLocale } from "@vivid/i18n";
+import { useIsMobile } from "../hooks";
 import { cn } from "../utils";
 import { buttonVariants } from "./button";
 import {
@@ -13,8 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { useIsMobile } from "../hooks";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -25,8 +26,10 @@ function Calendar({
   ...props
 }: CalendarProps) {
   const isMobile = useIsMobile();
+  const locale = useLocale();
   return (
     <DayPicker
+      lang={locale}
       showOutsideDays={showOutsideDays}
       captionLayout="dropdown"
       className={cn("p-3", className)}

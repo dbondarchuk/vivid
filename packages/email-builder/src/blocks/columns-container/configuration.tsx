@@ -8,6 +8,7 @@ import {
   RadioGroupInputItem,
   SliderInput,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import {
   ArrowDownToLine,
   ArrowUpToLine,
@@ -21,12 +22,13 @@ export const ColumnsContainerConfiguration = ({
   data,
   setData,
 }: ConfigurationProps<ColumnsContainerProps>) => {
+  const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as ColumnsContainerProps);
 
   return (
     <>
       <RadioGroupInput
-        label="Number of columns"
+        label={t("emailBuilder.blocks.columnsContainer.numberOfColumns")}
         defaultValue={data.props?.columnsCount === 2 ? "2" : "3"}
         onChange={(v) => {
           updateData({
@@ -46,7 +48,7 @@ export const ColumnsContainerConfiguration = ({
         }}
       />
       <SliderInput
-        label="Columns gap"
+        label={t("emailBuilder.blocks.columnsContainer.columnsGap")}
         iconLabel={
           <BetweenVerticalStart className="text-secondary-foreground" />
         }
@@ -60,20 +62,23 @@ export const ColumnsContainerConfiguration = ({
         }
       />
       <RadioGroupInput
-        label="Alignment"
+        label={t("emailBuilder.blocks.columnsContainer.alignment")}
         defaultValue={data.props?.contentAlignment ?? "middle"}
         onChange={(contentAlignment) => {
           updateData({ ...data, props: { ...data.props, contentAlignment } });
         }}
       >
         <RadioGroupInputItem value="top">
-          <ArrowUpToLine fontSize="small" /> Top
+          <ArrowUpToLine fontSize="small" />{" "}
+          {t("emailBuilder.blocks.columnsContainer.alignments.top")}
         </RadioGroupInputItem>
         <RadioGroupInputItem value="middle">
-          <FoldVertical fontSize="small" /> Middle
+          <FoldVertical fontSize="small" />{" "}
+          {t("emailBuilder.blocks.columnsContainer.alignments.middle")}
         </RadioGroupInputItem>
         <RadioGroupInputItem value="bottom">
-          <ArrowDownToLine fontSize="small" /> Bottom
+          <ArrowDownToLine fontSize="small" />{" "}
+          {t("emailBuilder.blocks.columnsContainer.alignments.bottom")}
         </RadioGroupInputItem>
       </RadioGroupInput>
 

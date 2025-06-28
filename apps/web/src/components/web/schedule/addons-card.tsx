@@ -1,4 +1,4 @@
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 import { AppointmentAddon } from "@vivid/types";
 import {
   Card,
@@ -15,7 +15,7 @@ import { MdxContent } from "../mdx/mdx-content-client";
 import { useScheduleContext } from "./context";
 
 export const AddonsCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const { appointmentOption, setSelectedAddons, selectedAddons, setDiscount } =
     useScheduleContext();
 

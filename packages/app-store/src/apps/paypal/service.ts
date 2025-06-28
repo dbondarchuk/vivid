@@ -10,6 +10,7 @@ import {
   ApiRequest,
   ApiResponse,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -50,7 +51,9 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
           { appId: appData._id },
           "Invalid PayPal configuration data"
         );
-        throw new Error("Bad data");
+        throw new ConnectedAppError(
+          "paypal.statusText.invalid_configuration_data"
+        );
       }
 
       logger.debug({ appId: appData._id }, "Validating PayPal configuration");
@@ -65,7 +68,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully connect to Paypal Account`,
+        statusText: "paypal.statusText.successfully_connected",
       };
 
       this.props.update({
@@ -90,7 +93,10 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
       const status: ConnectedAppStatusWithText = {
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          e instanceof ConnectedAppError
+            ? e.key
+            : "paypal.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -228,7 +234,8 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   public getFormProps(
     appData: ConnectedAppData<PaypalConfiguration>
   ): PaypalFormProps {
-    if (!appData.data) throw new Error("Paypal app is not configured");
+    if (!appData.data)
+      throw new ConnectedAppError("paypal.statusText.app_not_configured");
     const { secretKey, ...rest } = appData.data;
 
     return {
@@ -579,7 +586,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
     if (!data) {
       logger.error("No PayPal configuration data provided");
-      throw new Error("No data");
+      throw new ConnectedAppError("paypal.statusText.no_data");
     }
 
     try {
@@ -620,7 +627,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
     if (!data) {
       logger.error("No PayPal configuration data provided");
-      throw new Error("No data");
+      throw new ConnectedAppError("paypal.statusText.no_data");
     }
 
     logger.debug(

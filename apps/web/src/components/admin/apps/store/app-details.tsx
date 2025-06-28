@@ -16,8 +16,8 @@ import Image from "next/image";
 import React from "react";
 import { AddOrUpdateAppButton } from "../add-or-update-app-dialog";
 import { getInstalledApps } from "./actions";
-import { AppScopeLabels } from "./app-scope-labels";
 import { InstallComplexAppButton } from "./install-complex-app-button";
+import { getI18nAsync } from "@vivid/i18n/server";
 
 export type AppDetailsProps = {
   appName: string;
@@ -26,7 +26,7 @@ export type AppDetailsProps = {
 export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
   const app = React.useMemo(() => AvailableApps[appName], [appName]);
   const installed = await getInstalledApps(appName);
-
+  const t = await getI18nAsync("apps");
   //if (app.isHidden) return null;
 
   return (
@@ -40,7 +40,7 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
         >
           <ArrowLeft />
         </Link>
-        <Heading title="App store" />
+        <Heading title={t("common.appStore")} />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <div className="flex flex-col w-full gap-8">
@@ -48,15 +48,18 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
             app={app}
             nameClassName="text-3xl text-accent-foreground"
             logoClassName="w-12 h-12"
+            t={t}
           />
           <div className="flex flex-row flex-wrap gap-4 items-center">
-            {app.isFeatured && <span className="text-emphasis">Featured</span>}
+            {app.isFeatured && (
+              <span className="text-emphasis">{t("common.featured")}</span>
+            )}
             {app.scope.map((scope) => (
               <span
                 className="bg-secondary text-secondary-foreground text-emphasis rounded-md p-2 text-xs capitalize"
                 key={scope}
               >
-                {AppScopeLabels[scope]}
+                {t(`scopes.${scope}`)}
               </span>
             ))}
           </div>
@@ -68,19 +71,20 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
                   disabled={app.dontAllowMultiple && installed.length > 0}
                 >
                   {app.dontAllowMultiple && installed.length > 0
-                    ? "Already installed"
-                    : "Add app"}
+                    ? t("common.alreadyInstalled")
+                    : t("common.addApp")}
                 </Button>
               </AddOrUpdateAppButton>
             ) : (
               <InstallComplexAppButton
                 appName={appName}
                 installed={installed.length}
+                t={t}
               />
             )}
           </div>
 
-          <Markdown markdown={app.description.text} className="max-w-full" />
+          <Markdown markdown={t(app.description.text)} className="max-w-full" />
         </div>
 
         {app.description.images?.length && (

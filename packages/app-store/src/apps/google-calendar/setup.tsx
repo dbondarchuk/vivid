@@ -10,6 +10,7 @@ import {
   toastPromise,
 } from "@vivid/ui";
 import React from "react";
+import { useI18n } from "@vivid/i18n";
 import {
   addNewApp,
   getAppLoginUrl,
@@ -20,22 +21,23 @@ import {
 import { GoogleCalendarApp } from "./app";
 import { CalendarListItem, RequestAction } from "./models";
 
-const primaryCalendar: CalendarListItem = {
-  id: "primary",
-  name: "Primary",
-};
-
 export const GoogleAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
   appId: existingAppId,
 }) => {
+  const t = useI18n("apps");
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
   const [timer, setTimer] = React.useState<NodeJS.Timeout>();
 
   const appId = app?._id ?? existingAppId;
+
+  const primaryCalendar: CalendarListItem = {
+    id: "primary",
+    name: t("googleCalendar.primaryCalendar"),
+  };
 
   const [calendars, setCalendars] = React.useState<CalendarListItem[]>([
     primaryCalendar,
@@ -70,7 +72,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     };
 
     fn();
-  }, [appId]);
+  }, [appId, t]);
 
   const updateCalendarObject = async (calendar?: CalendarListItem) => {
     if (!appId || !calendar) return;
@@ -83,8 +85,8 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
           calendar,
         } as RequestAction),
         {
-          success: "Your changes were saved.",
-          error: "There was a problem with your request.",
+          success: t("googleCalendar.toast.changes_saved"),
+          error: t("googleCalendar.toast.request_error"),
         }
       );
     } catch (e: any) {
@@ -133,7 +135,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
         appId = (app?._id || existingAppId)!;
         await setAppStatus(appId, {
           status: "pending",
-          statusText: "Pending authorization",
+          statusText: "googleCalendar.form.pendingAuthorization",
         });
       } else {
         appId = await addNewApp(GoogleCalendarApp.name);
@@ -163,12 +165,12 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
     <>
       {appId && (
         <div className="flex flex-col gap-2">
-          <Label>Select calendar</Label>
+          <Label>{t("googleCalendar.form.selectCalendar.label")}</Label>
           <Combobox
             values={calendarListValues}
             disabled={isLoading}
             className="flex w-full font-normal text-base"
-            searchLabel="Select calendar"
+            searchLabel={t("googleCalendar.form.selectCalendar.searchLabel")}
             value={selectedCalendar}
             onItemSelect={(value) => {
               setSelectedCalendar(value);
@@ -186,11 +188,18 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
           className="inline-flex gap-2 items-center w-full"
         >
           {isLoading && <Spinner />}
-          <span>{appId ? "Reconnect" : "Connect with"}</span>
-          <ConnectedAppNameAndLogo app={{ name: GoogleCalendarApp.name }} />
+          <span>
+            {appId
+              ? t("googleCalendar.form.reconnect")
+              : t("googleCalendar.form.connect")}
+          </span>
+          <ConnectedAppNameAndLogo
+            app={{ name: GoogleCalendarApp.name }}
+            t={t}
+          />
         </Button>
       </div>
-      {app && <ConnectedAppStatusMessage app={app} />}
+      {app && <ConnectedAppStatusMessage app={app} t={t} />}
     </>
   );
 };

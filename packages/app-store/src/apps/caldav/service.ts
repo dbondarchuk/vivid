@@ -6,6 +6,7 @@ import {
   CalendarEventAttendee,
   CalendarEventResult,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   ICalendarBusyTimeProvider,
   ICalendarWriter,
@@ -98,12 +99,19 @@ export default class CaldavConnectedApp
           "Target calendar not found"
         );
 
-        throw new Error(`Calendar '${data.calendarName}' was not found`);
+        throw new ConnectedAppError("calDav.statusText.calendar_not_found", {
+          calendarName: data.calendarName,
+        });
       }
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Successfully fetched ${data.calendarName} calendar`,
+        statusText: {
+          key: "calDav.statusText.successfully_set_up",
+          args: {
+            calendarName: data.calendarName,
+          },
+        },
       };
 
       this.props.update({
@@ -138,7 +146,12 @@ export default class CaldavConnectedApp
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "common.statusText.error",
       };
 
       this.props.update({
@@ -192,7 +205,12 @@ export default class CaldavConnectedApp
         "Failed to fetch calendars"
       );
 
-      throw error;
+      throw new ConnectedAppError(
+        "calDav.statusText.failed_to_fetch_calendars",
+        {
+          serverUrl: request.serverUrl,
+        }
+      );
     }
   }
 
@@ -293,7 +311,12 @@ export default class CaldavConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: "Successfully fetched events",
+        statusText: {
+          key: "calDav.statusText.successfully_fetched_calendars",
+          args: {
+            serverUrl: appData.data?.serverUrl,
+          },
+        },
       });
 
       return calDavEvents;
@@ -306,7 +329,12 @@ export default class CaldavConnectedApp
       const status: ConnectedAppStatusWithText = {
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "common.statusText.error",
       };
 
       this.props.update({
@@ -369,7 +397,12 @@ export default class CaldavConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "common.statusText.error",
       });
 
       throw error;
@@ -427,7 +460,12 @@ export default class CaldavConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "common.statusText.error",
       });
 
       throw error;
@@ -478,7 +516,12 @@ export default class CaldavConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "common.statusText.error",
       });
 
       throw error;
@@ -635,7 +678,12 @@ export default class CaldavConnectedApp
       this.props.update({
         status: "failed",
         statusText:
-          error?.message || error?.toString() || "Something went wrong",
+          error instanceof ConnectedAppError
+            ? {
+                key: error.key,
+                args: error.args,
+              }
+            : error?.message || error?.toString() || "common.statusText.error",
       });
 
       throw error;

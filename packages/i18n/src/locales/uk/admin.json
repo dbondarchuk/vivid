@@ -1,0 +1,1521 @@
+{
+  "common": {
+    "usesTemplatedValues": "* Використовує шаблонні значення",
+    "toasts": {
+      "saved": "Збережено!",
+      "error": "Виникла проблема з вашим запитом."
+    },
+    "openMenu": "Відкрити меню",
+    "selectAll": "Вибрати все",
+    "selectRow": "Вибрати рядок",
+    "labels": {
+      "channel": {
+        "text-message": "Текстове повідомлення",
+        "email": "Електронна пошта"
+      },
+      "direction": {
+        "inbound": "Вхідний",
+        "outbound": "Вихідний"
+      },
+      "participantType": {
+        "user": "Користувач",
+        "customer": "Клієнт"
+      },
+      "fieldType": {
+        "email": "Email",
+        "name": "Ім'я",
+        "phone": "Телефон",
+        "oneLine": "Один рядок",
+        "multiLine": "Кілька рядків",
+        "checkbox": "Прапорець",
+        "select": "Вибрати",
+        "file": "Файл"
+      },
+      "allowPromoCodeType": {
+        "always": "Завжди",
+        "never": "Ніколи",
+        "allow-if-has-active": "Тільки якщо є активні знижки"
+      },
+      "discountType": {
+        "amount": "Фіксована сума",
+        "percentage": "Відсоток"
+      },
+      "discountStatus": {
+        "disabled": "Вимкнено",
+        "active": "Активна"
+      },
+      "paymentStatus": {
+        "paid": "Оплачено",
+        "refunded": "Повернено",
+        "pending": "Очікує"
+      },
+      "filters": "Фільтри",
+      "loading": "Завантаження"
+    },
+    "buttons": {
+      "delete": "Видалити",
+      "cancel": "Скасувати",
+      "close": "Закрити"
+    },
+    "optional": "Опціонально",
+    "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}"
+  },
+  "navigation": {
+    "overview": "Огляд",
+    "dashboard": "Панель керування",
+    "appointments": "Записи",
+    "schedule": "Розклад",
+    "defaultSchedule": "Розклад за замовчуванням",
+    "services": "Послуги",
+    "fields": "Поля",
+    "addons": "Додатки",
+    "options": "Опції",
+    "discounts": "Знижки",
+    "customers": "Клієнти",
+    "website": "Веб-сайт",
+    "pages": "Сторінки",
+    "assets": "Ресурси",
+    "appearance": "Зовнішній вигляд",
+    "styling": "Стилізація",
+    "header": "Заголовок",
+    "footer": "Підвал",
+    "settings": "Налаштування",
+    "general": "Загальні",
+    "social": "Соціальні мережі",
+    "scripts": "Скрипти",
+    "communications": "Комунікації",
+    "templates": "Шаблони",
+    "logs": "Журнал комунікацій",
+    "communicationLogs": "Журнал комунікацій",
+    "monitorMessages": "Моніторинг усіх надісланих та отриманих повідомлень",
+    "apps": "Додатки",
+    "installedApps": "Встановлені додатки",
+    "store": "Магазин",
+    "defaultApps": "Додатки за замовчуванням",
+    "logout": "Вийти",
+    "follow-ups": "Додаткові дії",
+    "reminders": "Нагадування",
+    "customerEmailNotification": "Email повідомлення клієнту",
+    "customerTextMessageNotification": "Текстове повідомлення клієнту",
+    "busyEvents": "Зайняті події",
+    "smtp": "SMTP",
+    "textBelt": "TextBelt SMS",
+    "weeklySchedule": "Тижневий розклад",
+    "viewWebsite": "Переглянути сайт"
+  },
+  "appointments": {
+    "title": "Записи",
+    "scheduleAppointment": "Запланувати запис",
+    "addNew": "Додати новий",
+    "status": {
+      "pending": "Очікує підтвердження",
+      "confirmed": "Підтверджено",
+      "declined": "Відхилено",
+      "rescheduled": "Перенесено"
+    },
+    "table": {
+      "filters": {
+        "status": "Статус",
+        "tooltip": "Фільтри"
+      },
+      "columns": {
+        "status": "Статус",
+        "statusAriaLabel": "Статус: {status}",
+        "option": "Опція",
+        "customer": "Клієнт",
+        "dateTime": "Дата та час",
+        "requestedAt": "Затребувано",
+        "duration": "Тривалість",
+        "discount": "Знижка",
+        "price": "Ціна",
+        "optionName": "Назва опції",
+        "optionPrice": "Ціна опції",
+        "optionDuration": "Тривалість опції",
+        "selectedAddons": "Вибрані додатки",
+        "note": "Примітка",
+        "customerName": "Ім'я",
+        "customerEmail": "Email",
+        "customerPhone": "Телефон"
+      }
+    },
+    "dialog": {
+      "viewFullInfo": "Переглянути повну інформацію про запис",
+      "by": "Від",
+      "close": "Закрити"
+    },
+    "card": {
+      "by": "Від",
+      "appointment": "Запис",
+      "status": "Статус",
+      "dateTime": "Дата та час",
+      "duration": "Тривалість",
+      "hours": "годин",
+      "minutes": "хвилин",
+      "endsAt": "Закінчується о",
+      "price": "Ціна",
+      "note": "Примітка",
+      "decline": "Відхилити",
+      "confirm": "Підтвердити"
+    },
+    "declineDialog": {
+      "title": "Відхилити запис",
+      "description": "Цю дію неможливо скасувати. Це назавжди відхилить цей запис.",
+      "appointmentDetails": "Деталі запису",
+      "customer": "Клієнт",
+      "service": "Послуга",
+      "dateTime": "Дата та час",
+      "refundPayments": "Повернути платежі",
+      "amount": "Сума",
+      "transactionId": "ID транзакції",
+      "timePaid": "Час оплати",
+      "cancel": "Скасувати",
+      "declineAndRefund": "Відхилити та повернути {count} {payment}",
+      "decline": "Відхилити",
+      "payment": "платіж",
+      "payments": "платежів",
+      "refundError": "Один або більше запитів на повернення не вдалися."
+    },
+    "rescheduleDialog": {
+      "title": "Перенести запис",
+      "by": "від",
+      "dateTime": "Дата та час",
+      "duration": "Тривалість",
+      "confirmOverlap": "Підтвердити накладення",
+      "confirmOverlapDescription": "Я розумію, що перенесення цього запису створить накладення в моєму розкладі",
+      "close": "Закрити",
+      "reschedule": "Перенести",
+      "confirmTitle": "Ви абсолютно впевнені?",
+      "confirmDescription": "Цю дію неможливо скасувати. Це перенесе цей запис.",
+      "cancel": "Скасувати",
+      "success": "Запис було успішно перенесено.",
+      "error": "Виникла проблема з вашим запитом."
+    },
+    "addFile": {
+      "success": "Файл було успішно додано.",
+      "error": "Виникла проблема з вашим запитом.",
+      "upload": "Завантажити",
+      "pleaseWait": "Будь ласка, зачекайте..."
+    },
+    "calendar": {
+      "loading": "Завантаження",
+      "eventTitle": "{customer} для {service}"
+    },
+    "new": {
+      "title": "Новий запис",
+      "description": "Створити новий запис від імені клієнта"
+    },
+    "view": {
+      "noteUpdated": "Примітку до запису було оновлено.",
+      "requestError": "Виникла проблема з вашим запитом.",
+      "changesSaved": "Ваші зміни були збережені.",
+      "sendMessage": "Надіслати повідомлення",
+      "scheduleAgain": "Запланувати знову",
+      "reschedule": "Перенести",
+      "decline": "Відхилити",
+      "confirm": "Підтвердити",
+      "dateTime": "Дата та час",
+      "dateAndTime": "Дата та час",
+      "duration": "Тривалість",
+      "hours": "годин",
+      "minutes": "хвилин",
+      "timezone": "Часовий пояс",
+      "endsAt": "Закінчується о",
+      "requestedAt": "Затребувано",
+      "status": "Статус",
+      "price": "Ціна",
+      "amountPaid": "Сума оплачена",
+      "amountLeftToPay": "Сума, що залишилася до оплати",
+      "customer": "Клієнт",
+      "name": "Ім'я",
+      "email": "Email",
+      "phone": "Телефон",
+      "fields": "Поля",
+      "yes": "Так",
+      "no": "Ні",
+      "selectedOption": "Вибрана опція",
+      "option": "Опція",
+      "description": "Опис",
+      "selectedAddons": "Вибрані додатки",
+      "min": "хв",
+      "note": "Примітка",
+      "files": "Файли",
+      "upload": "Завантажити",
+      "removeAppointmentFile": "Видалити файл запису",
+      "confirmTitle": "Ви абсолютно впевнені?",
+      "confirmRemoveFile": "Ви впевнені, що хочете видалити цей файл?",
+      "cancel": "Скасувати",
+      "delete": "Видалити",
+      "payments": "Платежі",
+      "appointmentCommunications": "Комунікації запису"
+    },
+    "detail": {
+      "by": "Від {name}"
+    },
+    "form": {
+      "dateTimeRequired": "Дата та час обов'язкові",
+      "durationRequired": "Тривалість обов'язкова",
+      "durationInteger": "Повинно бути цілим числом",
+      "durationMin": "Мінімальна тривалість 1 хвилина",
+      "durationMax": "Максимальна тривалість 10 днів",
+      "priceNumber": "Загальна ціна повинна бути числом",
+      "priceMin": "Мінімальна ціна 0",
+      "optionRequired": "Опція повинна бути вибрана",
+      "addonRequired": "Додаток повинен бути вибраний",
+      "nameRequired": "Ім'я обов'язкове",
+      "emailValid": "Повинен бути дійсний email",
+      "phoneRequired": "Телефон обов'язковий",
+      "phoneValid": "Потрібен дійсний номер телефону",
+      "scheduledSuccess": "Запис було успішно заплановано",
+      "requestError": "Виникла проблема з вашим запитом.",
+      "appointmentType": "Тип запису",
+      "selectOption": "Вибрати опцію",
+      "min": "хв",
+      "custom": "Власний",
+      "dateTime": "Дата та час",
+      "addons": "Додатки",
+      "selectAddons": "Вибрати додатки...",
+      "customer": "Клієнт",
+      "discount": "Знижка",
+      "duration": "Тривалість",
+      "price": "Ціна",
+      "note": "Примітка",
+      "confirmAppointment": "Підтвердити запис",
+      "confirmAppointmentDescription": "Позначити запис як підтверджений",
+      "confirmOverlap": "Підтвердити накладення",
+      "confirmOverlapDescription": "Я розумію, що планування цього запису створить накладення в моєму розкладі",
+      "scheduleAppointment": "Створити запис"
+    },
+    "actionButton": {
+      "changesSaved": "Ваші зміни були збережені.",
+      "requestError": "Виникла проблема з вашим запитом."
+    }
+  },
+  "assets": {
+    "title": "Ресурси",
+    "new": "Новий ресурс",
+    "edit": "Редагувати ресурс",
+    "uploadNewAssets": "Завантажити нові ресурси",
+    "addNew": "Додати новий",
+    "dashboard": "Панель керування",
+    "newPage": "Новий",
+    "editPage": "Редагувати",
+    "form": {
+      "asset": "Ресурс",
+      "fileName": "Назва файлу",
+      "fileNamePlaceholder": "Назва файлу ресурсу",
+      "description": "Опис",
+      "descriptionPlaceholder": "Опис ресурсу",
+      "assetName": "Назва ресурсу"
+    },
+    "table": {
+      "columns": {
+        "preview": "Попередній перегляд",
+        "fileName": "Назва файлу",
+        "fileType": "Тип файлу",
+        "fileSize": "Розмір файлу",
+        "description": "Опис",
+        "appointment": "Запис",
+        "customer": "Клієнт",
+        "uploadTime": "Час завантаження",
+        "actions": "Дії"
+      },
+      "actions": {
+        "selectAll": "Вибрати все",
+        "selectRow": "Вибрати рядок",
+        "openMenu": "Відкрити меню",
+        "actions": "Дії",
+        "update": "Оновити",
+        "delete": "Видалити",
+        "copyRelativeUrl": "Копіювати відносний url",
+        "copyAbsoluteUrl": "Копіювати абсолютний url",
+        "download": "Завантажити"
+      },
+      "delete": {
+        "title": "Ви абсолютно впевнені?",
+        "description": "Цю дію неможливо скасувати. Це видалить вибрані ресурси",
+        "confirm": "Видалити вибрані",
+        "cancel": "Скасувати",
+        "selectedCount": "Видалити вибрані {count, plural, =1 {ресурс} few {# ресурси} many {# ресурсів} other {# ресурсів}}",
+        "success": "Вибрані ресурси були видалені",
+        "error": "Виникла проблема з вашим запитом."
+      },
+      "filters": {
+        "filters": "Фільтри"
+      }
+    },
+    "toasts": {
+      "changesSaved": "Ваші зміни були збережені.",
+      "assetDeleted": "Ресурс {filename} було успішно видалено.",
+      "copied": "Скопійовано",
+      "relativeUrlCopied": "Відносний url ресурсу '{url}' скопійовано в буфер обміну.",
+      "absoluteUrlCopied": "Абсолютний url ресурсу '{url}' скопійовано в буфер обміну."
+    }
+  },
+  "communicationLogs": {
+    "title": "Журнал комунікацій",
+    "clearAll": "Очистити все",
+    "clearSelected": "Очистити вибрані",
+    "clearAllTitle": "Ви абсолютно впевнені?",
+    "clearAllDescription": "Цю дію неможливо скасувати. Це видалить весь журнал комунікацій",
+    "clearSelectedTitle": "Ви абсолютно впевнені?",
+    "clearSelectedDescription": "Цю дію неможливо скасувати. Це видалить вибрані записи журналу комунікацій",
+    "cancel": "Скасувати",
+    "logsCleared": "Ваші журнали були очищені",
+    "selectedLogsCleared": "Вибрані журнали були очищені",
+    "clearSelectedCount": "Очистити {count, plural, =1 {вибраний запис} few {вибрані # записи} many {вибраних # записів} other {вибраних # записів}}",
+    "table": {
+      "columns": {
+        "direction": "Напрямок",
+        "channel": "Канал",
+        "participantType": "Учасник",
+        "participant": "Учасник",
+        "handler": "Обробник",
+        "subject": "Тема",
+        "content": "Вміст",
+        "data": "Дані",
+        "dateTime": "Дата та час",
+        "appointment": "Запис",
+        "customer": "Клієнт"
+      },
+      "actions": {
+        "selectAll": "Вибрати все",
+        "selectRow": "Вибрати рядок",
+        "viewMore": "Показати більше",
+        "view": "Переглянути",
+        "close": "Закрити",
+        "logContent": "Вміст повідомлення",
+        "logData": "Дані журналу"
+      },
+      "filters": {
+        "filters": "Фільтри",
+        "direction": "Напрямок",
+        "channel": "Канал",
+        "participant": "Учасник",
+        "status": "Статус"
+      }
+    }
+  },
+  "customers": {
+    "title": "Клієнти",
+    "new": "Новий клієнт",
+    "edit": "Редагувати клієнта",
+    "addNew": "Додати новий",
+    "addNewCustomer": "Додати нового клієнта",
+    "manageCustomers": "Керувати вашими клієнтами",
+    "manageCustomer": "Керувати клієнтом",
+    "scheduleAppointment": "Запланувати запис",
+    "addNewShort": "Додати новий",
+    "details": "Деталі",
+    "appointments": "Записи",
+    "files": "Файли",
+    "communications": "Комунікації",
+    "form": {
+      "customerPhoto": "Фото клієнта",
+      "personalInformation": "Особиста інформація",
+      "contactInformation": "Контактна інформація",
+      "additionalInformation": "Додаткова інформація",
+      "name": "Ім'я",
+      "namePlaceholder": "Ім'я клієнта",
+      "email": "Email",
+      "emailPlaceholder": "Email клієнта",
+      "phone": "Телефон",
+      "phonePlaceholder": "Телефон клієнта",
+      "address": "Адреса",
+      "addressPlaceholder": "Адреса клієнта",
+      "notes": "Примітки",
+      "notesPlaceholder": "Примітки про клієнта",
+      "dateOfBirth": "Дата народження",
+      "dontAllowAppointments": "Не дозволяти записи",
+      "dontAllowAppointmentsTooltip": "Якщо відмічено, клієнт не зможе робити записи. Запис може бути зроблений тільки вами",
+      "requireDeposit": "Вимагати завдаток",
+      "requireDepositTooltip": "Чи повинен цей клієнт платити завдаток",
+      "depositAmount": "Сума завдатку",
+      "depositAmountTooltip": "Сума завдатку у відсотках. Якщо встановлено 100, повна ціна має бути сплачена наперед",
+      "selectOption": "Вибрати опцію",
+      "always": "Завжди",
+      "never": "Ніколи",
+      "inherit": "Те саме, що вибрана опція або загальна конфігурація",
+      "knownNames": "Відомі імена",
+      "knownNamesTooltip": "Альтернативні імена надаються клієнтами під час запиту на запис",
+      "knownEmails": "Відомі email",
+      "knownEmailsTooltip": "Альтернативні email допомагають зіставляти записи за альтернативними email, які може використовувати клієнт",
+      "knownPhones": "Відомі телефони",
+      "knownPhonesTooltip": "Альтернативні телефони допомагають зіставляти записи за альтернативними номерами телефонів, які може використовувати клієнт",
+      "addName": "Додати ім'я",
+      "addEmail": "Додати email",
+      "addPhone": "Додати телефон",
+      "remove": "Видалити",
+      "changePhoto": "Змінити фото",
+      "customerPhotoAlt": "Фото клієнта"
+    },
+    "table": {
+      "columns": {
+        "name": "Ім'я",
+        "email": "Email",
+        "phone": "Телефон",
+        "address": "Адреса",
+        "appointments": "Записи",
+        "lastAppointment": "Останній запис",
+        "nextAppointment": "Наступний запис",
+        "createdAt": "Створено",
+        "actions": "Дії"
+      },
+      "actions": {
+        "selectAll": "Вибрати все",
+        "selectRow": "Вибрати рядок",
+        "openMenu": "Відкрити меню",
+        "actions": "Дії",
+        "edit": "Редагувати",
+        "delete": "Видалити",
+        "merge": "Об'єднати"
+      },
+      "delete": {
+        "title": "Ви абсолютно впевнені?",
+        "description": "Цю дію неможливо скасувати. Це видалить вибраних клієнтів",
+        "confirm": "Видалити вибраних",
+        "cancel": "Скасувати",
+        "selectedCount": "Видалити {count, plural, =1 {вибраного клієнта} few {вибраних # клієнтів} many {вибраних # клієнтів} other {вибраних # клієнтів}}",
+        "success": "Вибрані клієнти були видалені",
+        "error": "Виникла проблема з вашим запитом.",
+        "cannotDeleteWithAppointments": "Неможливо видалити клієнтів, які мають призначені записи",
+        "deleteSelectedCustomers": "Видалити вибраних клієнтів"
+      },
+      "merge": {
+        "title": "Ви абсолютно впевнені?",
+        "description": "Цю дію неможливо скасувати. Це об'єднає вибраних клієнтів у першого",
+        "confirm": "Об'єднати вибраних",
+        "cancel": "Скасувати",
+        "selectedCount": "Об'єднати {count, plural, =1 {вибраного клієнта} few {вибраних # клієнти} many {вибраних # клієнтів} other {вибраних # клієнтів}}",
+        "success": "Вибрані клієнти були об'єднані",
+        "error": "Виникла проблема з вашим запитом.",
+        "targetCustomer": "Цільовий клієнт"
+      },
+      "filters": {
+        "filters": "Фільтри"
+      }
+    },
+    "toasts": {
+      "changesSaved": "Ваші зміни були збережені.",
+      "customerCreated": "Клієнта успішно створено.",
+      "customerUpdated": "Клієнта успішно оновлено.",
+      "customerDeleted": "Клієнта '{name}' було видалено."
+    }
+  },
+  "pages": {
+    "title": "Сторінки",
+    "new": "Нова сторінка",
+    "edit": "Редагувати сторінку",
+    "addNew": "Додати нову",
+    "addNewPage": "Додати нову сторінку",
+    "managePages": "Керувати сторінками",
+    "viewPage": "Переглянути сторінку",
+    "form": {
+      "pageContent": "Вміст сторінки",
+      "pageContentTooltip": "Вміст сторінки у форматі MDX. Дізнатися більше про MDX",
+      "learnMoreAboutMdx": "Дізнатися більше про MDX",
+      "pageSlug": "Адреса сторінки",
+      "pageSlugTooltip": "Відносний URL сторінки. Наприклад, сторінка з адресою 'my-new-page' буде доступна за повноюадресою 'yourdomain.com/my-new-page'",
+      "pageSlugPlaceholder": "Адреса сторінки",
+      "published": "Опубліковано?",
+      "publishedTooltip": "Чи видима сторінка для ваших відвідувачів",
+      "publishDate": "Дата публікації",
+      "publishDateTooltip": "Дата публікації буде використовуватися для SEO, для визначення хронологічного порядку та для визначення, чи вона видима для відвідувачів",
+      "tags": "Теги",
+      "tagsPlaceholder": "Введіть теги, розділені комами",
+      "tagsTooltip": "Теги сторінки для легкого розрізнення",
+      "title": "Заголовок",
+      "titlePlaceholder": "Заголовок сторінки",
+      "doNotCombineTitle": "Не об'єднувати заголовок",
+      "doNotCombineTitleTooltip": "Чи повинен заголовок сторінки об'єднуватися з заголовком веб-сайту для SEO як 'Заголовок сторінки - Назва веб-сайту'",
+      "description": "Опис",
+      "descriptionPlaceholder": "Опис сторінки",
+      "descriptionTooltip": "Також використовується компонентом списку сторінок (тобто списком блогу) для показу попереднього перегляду",
+      "doNotCombineDescription": "Не об'єднувати опис",
+      "doNotCombineDescriptionTooltip": "Чи повинен опис сторінки об'єднуватися з описом веб-сайту для SEO",
+      "keywords": "Ключові слова",
+      "keywordsTooltip": "Ключові слова сторінки, розділені комами",
+      "doNotCombineKeywords": "Не об'єднувати ключові слова",
+      "doNotCombineKeywordsTooltip": "Чи повинні ключові слова сторінки об'єднуватися з ключовими словами веб-сайту",
+      "fullWidthPage": "Сторінка на всю ширину",
+      "fullWidthPageTooltip": "Якщо увімкнено, сторінка не буде обгорнута в елемент Container",
+      "language": "Мова",
+      "defaultLanguage": "За замовчуванням"
+    },
+    "table": {
+      "columns": {
+        "title": "Заголовок",
+        "slug": "Slug",
+        "published": "Опубліковано",
+        "publishDate": "Дата публікації",
+        "createdAt": "Створено",
+        "updatedAt": "Оновлено",
+        "tags": "Теги",
+        "actions": "Дії"
+      },
+      "actions": {
+        "selectAll": "Вибрати все",
+        "selectRow": "Вибрати рядок",
+        "openMenu": "Відкрити меню",
+        "actions": "Дії",
+        "edit": "Редагувати",
+        "delete": "Видалити",
+        "view": "Переглянути",
+        "copyRelativeUrl": "Копіювати відносний url",
+        "copyAbsoluteUrl": "Копіювати абсолютний url"
+      },
+      "delete": {
+        "title": "Ви абсолютно впевнені?",
+        "description": "Цю дію неможливо скасувати. Це видалить вибрані сторінки",
+        "confirm": "Видалити вибрані",
+        "cancel": "Скасувати",
+        "selectedCount": "Видалити {count, plural, =1 {вибрану сторінку} few {вибрані # сторінки} many {вибрані # сторінки} other {вибрані # сторінок}}",
+        "success": "Вибрані сторінки були видалені",
+        "error": "Виникла проблема з вашим запитом."
+      },
+      "filters": {
+        "filters": "Фільтри",
+        "status": "Статус",
+        "published": "Опубліковано",
+        "draft": "Чернетка"
+      }
+    },
+    "toasts": {
+      "changesSaved": "Ваші зміни були збережені.",
+      "pageCreated": "Сторінку успішно створено.",
+      "pageUpdated": "Сторінку успішно оновлено.",
+      "pageDeleted": "Сторінку '{title}' було видалено.",
+      "relativeUrlCopied": "Відносний url сторінки '{url}' скопійовано в буфер обміну.",
+      "absoluteUrlCopied": "Абсолютний url сторінки '{url}' скопійовано в буфер обміну."
+    }
+  },
+  "services": {
+    "fieldSelector": {
+      "loading": "Завантаження полів...",
+      "selectField": "Вибрати поле"
+    },
+    "fieldSelectCard": {
+      "moveField": "Перемістити поле {type}",
+      "field": "Поле",
+      "required": "Обов'язкове",
+      "requiredTooltip": "Позначає поле як обов'язкове",
+      "deleteConfirmTitle": "Ви абсолютно впевнені?",
+      "deleteConfirmDescription": "Ви впевнені, що хочете видалити це поле з цього {type}?",
+      "cancel": "Скасувати",
+      "delete": "Видалити"
+    },
+    "addonSelectCard": {
+      "moveAddon": "Перемістити додаток опції",
+      "addon": "Додаток",
+      "deleteConfirmTitle": "Ви абсолютно впевнені?",
+      "deleteConfirmDescription": "Ви впевнені, що хочете видалити цей додаток з цієї опції?",
+      "cancel": "Скасувати",
+      "delete": "Видалити"
+    },
+    "addonSelector": {
+      "loading": "Завантаження додатків...",
+      "selectAddon": "Вибрати додаток"
+    },
+    "options": {
+      "title": "Послуги",
+      "description": "Керувати послугами, які ви надаєте",
+      "addNew": "Додати нову",
+      "new": "Нова",
+      "newTitle": "Нова опція послуги",
+      "newDescription": "Додати нову послугу, яку ви надаєте",
+      "editDescription": "Редагувати опцію",
+      "form": {
+        "name": "Назва",
+        "namePlaceholder": "Назва опції",
+        "description": "Короткий опис",
+        "descriptionTooltip": "Короткий текст, який буде видимий під час бронювання",
+        "duration": "Тривалість",
+        "price": "Ціна",
+        "requireDeposit": "Вимагати завдаток",
+        "requireDepositTooltip1": "Чи повинна ця опція вимагати завдаток",
+        "requireDepositTooltip2": "Потребує налаштованого платіжного додатку",
+        "depositAmount": "Сума завдатку",
+        "depositAmountTooltip1": "Сума завдатку у відсотках",
+        "depositAmountTooltip2": "Якщо встановлено 100, повна ціна має бути сплачена наперед",
+        "depositAmountTooltip3": "Може бути перевизначено для кожного клієнта",
+        "selectOption": "Вибрати опцію",
+        "fields": "Поля",
+        "addons": "Додатки",
+        "validation": {
+          "nameUnique": "Назва опції повинна бути унікальною"
+        },
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Назва",
+          "updatedAt": "Оновлено",
+          "cellAction": {
+            "optionDeleted": "Опцію '{name}' було видалено.",
+            "deleteError": "Виникла проблема з вашим запитом.",
+            "actions": "Дії",
+            "update": "Оновити",
+            "delete": "Видалити",
+            "clone": "Клонувати"
+          }
+        }
+      },
+      "deleteSelected": {
+        "success": "Вибрані опції були видалені",
+        "error": "Виникла проблема з вашим запитом.",
+        "button": "Видалити {count, plural, =1 {вибрану опцію} few {вибрані # опції} many {вибраних # опцій} other {вибраних # опцій}}",
+        "confirmTitle": "Ви абсолютно впевнені?",
+        "confirmDescription": "Цю дію неможливо скасувати.",
+        "cancel": "Скасувати",
+        "deleteSelected": "Видалити вибрані"
+      }
+    },
+    "fields": {
+      "title": "Поля",
+      "description": "Керувати власними полями",
+      "addNew": "Додати нове",
+      "new": "Нове",
+      "newTitle": "Нове поле",
+      "newDescription": "Додати нове власне поле",
+      "editDescription": "Редагувати власне поле",
+      "form": {
+        "name": "Назва",
+        "namePlaceholder": "Назва поля",
+        "nameTooltip": "Унікальний ID поля. Може містити тільки літери, цифри та підкреслення",
+        "label": "Мітка",
+        "labelPlaceholder": "Мітка поля",
+        "labelTooltip": "Мітка, яка буде показана користувачу",
+        "type": "Тип",
+        "typePlaceholder": "Вибрати тип поля",
+        "typeTooltip": "Тип поля",
+        "description": "Опис",
+        "descriptionPlaceholder": "Опис поля",
+        "descriptionTooltip": "Короткий опис для поля",
+        "required": "Обов'язкове",
+        "requiredTooltip": "Позначає поле як обов'язкове",
+        "options": "Опції",
+        "addOption": "Додати опцію",
+        "fileTypes": "Типи файлів",
+        "fileTypesTooltip": "Дозволені типи файлів для завантаження",
+        "validation": {
+          "nameUnique": "Назва поля повинна бути унікальною"
+        },
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        },
+        "optionsTitle": "Опції",
+        "maxSizeMbLabel": "Макс. розмір файлу (МБ)",
+        "maxSizeMbTooltip": "Максимальний дозволений розмір файлу в мегабайтах.",
+        "maxSizeMbPlaceholder": "5",
+        "acceptedFilesLabel": "Прийнятні файли",
+        "acceptedFilesTooltip": "Список прийнятних файлів та типів файлів. Дивіться MDN для деталей.",
+        "acceptedFilesPlaceholder": "Натисніть кнопку плюс, щоб додати новий тип файлу"
+      },
+      "table": {
+        "columns": {
+          "name": "Назва",
+          "type": "Тип",
+          "label": "Мітка",
+          "updatedAt": "Оновлено",
+          "addons": "Додатки",
+          "options": "Опції",
+          "addonsInDialog": "{label} в додатках",
+          "optionsInDialog": "{label} в опціях"
+        },
+        "cellAction": {
+          "fieldDeleted": "Поле опції '{label}' було видалено.",
+          "deleteError": "Виникла проблема з вашим запитом.",
+          "actions": "Дії",
+          "update": "Оновити",
+          "delete": "Видалити",
+          "clone": "Клонувати"
+        }
+      },
+      "deleteSelected": {
+        "success": "Вибрані поля були видалені",
+        "error": "Виникла проблема з вашим запитом.",
+        "button": "Видалити {count, plural, =1 {вибране поле} few {вибрані # поля} many {вибраних # поля} other {вибраних # поля}}",
+        "confirmTitle": "Ви абсолютно впевнені?",
+        "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані поля та видалить їх з усіх опцій та додатків, які їх використовують",
+        "cancel": "Скасувати",
+        "deleteSelected": "Видалити вибрані"
+      },
+      "selectFieldOptionCard": {
+        "moveOption": "Перемістити опцію",
+        "option": "Опція",
+        "deleteConfirmTitle": "Ви абсолютно впевнені?",
+        "deleteConfirmDescription": "Ви впевнені, що хочете видалити цю опцію?"
+      }
+    },
+    "discounts": {
+      "title": "Знижки",
+      "description": "Керувати знижками",
+      "addNew": "Додати нову",
+      "new": "Нова",
+      "newTitle": "Нова знижка",
+      "newDescription": "Додати нову знижку",
+      "editDescription": "Редагувати знижку",
+      "form": {
+        "name": "Назва",
+        "namePlaceholder": "Назва знижки",
+        "nameTooltip": "Унікальна назва знижки",
+        "description": "Опис",
+        "descriptionPlaceholder": "Опис знижки",
+        "descriptionTooltip": "Короткий опис для знижки",
+        "type": "Тип",
+        "typePlaceholder": "Вибрати тип знижки",
+        "typeTooltip": "Тип знижки",
+        "value": "Значення",
+        "valuePlaceholder": "Значення знижки",
+        "valueTooltip": "Сума або відсоток знижки",
+        "enabled": "Увімкнено",
+        "enabledTooltip": "Чи активна ця знижка",
+        "status": "Статус",
+        "active": "Активна",
+        "disabled": "Вимкнено",
+        "codes": "Коди",
+        "codesPlaceholder": "Коди знижок",
+        "codesTooltip": "Коди, які можна використовувати для застосування цієї знижки",
+        "addCode": "Додати код",
+        "removeCode": "Видалити код",
+        "startDate": "Дата початку",
+        "startDatePlaceholder": "Коли знижка стає активною",
+        "startDateTooltip": "Дата, коли знижка починає діяти",
+        "endDate": "Дата закінчення",
+        "endDatePlaceholder": "Коли знижка закінчується",
+        "endDateTooltip": "Дата, коли знижка перестає діяти",
+        "appointmentStartDate": "Найраніша дата запису для знижки",
+        "appointmentStartDateTooltip": "Найраніша дата запису (включно), для якої можна застосувати цю знижку. Записи, заплановані до цієї дати, не будуть мати право на знижку.",
+        "appointmentEndDate": "Найпізніша дата запису для знижки",
+        "appointmentEndDateTooltip": "Найпізніша дата запису (включно), для якої можна застосувати цю знижку. Записи, заплановані після цієї дати, не будуть мати право на знижку.",
+        "maxUsage": "Максимальна кількість використань",
+        "maxUsageTooltip": "Загальна кількість разів, яку можна використати цю знижку серед усіх клієнтів. Після досягнення цього ліміту знижка більше не буде доступна.",
+        "maxUsagePerCustomer": "Максимальна кількість використань на клієнта",
+        "maxUsagePerCustomerTooltip": "Максимальна кількість разів, яку окремий клієнт може використати цю знижку. Подальші спроби використання знижки цим клієнтом будуть відхилені після досягнення цього ліміту.",
+        "limitTo": "Обмежити до",
+        "limitToTooltip": "Обмежити знижку до конкретних опцій та додатків",
+        "addLimit": "Додати обмеження",
+        "removeLimit": "Видалити обмеження",
+        "anyOption": "Будь-яка опція",
+        "anyAddon": "Будь-який додаток",
+        "anyOptionOrAddon": "Будь-яка опція або додаток",
+        "addNew": "Додати нове",
+        "optionsLabel": "Будь-яка з наступних опцій:",
+        "addonsLabel": "Будь-який з наступних пакетів додатків:",
+        "andLabel": "І",
+        "removeLimitTitle": "Ви абсолютно впевнені?",
+        "removeLimitDescription": "Ви впевнені, що хочете видалити це обмеження?",
+        "limitToDescription": "Ви можете обмежити цю знижку до конкретних опцій та додатків",
+        "cancel": "Скасувати",
+        "delete": "Видалити",
+        "validation": {
+          "nameUnique": "Назва знижки повинна бути унікальною",
+          "codeUnique": "Код знижки повинен бути унікальним"
+        },
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Назва",
+          "codes": "Коди",
+          "type": "Тип",
+          "value": "Значення",
+          "enabled": "Статус",
+          "startDate": "Від",
+          "endDate": "До",
+          "usedCount": "Загальне використання",
+          "updatedAt": "Оновлено"
+        },
+        "cellAction": {
+          "discountDeleted": "Знижку '{name}' було видалено.",
+          "deleteError": "Виникла проблема з вашим запитом.",
+          "actions": "Дії",
+          "update": "Оновити",
+          "delete": "Видалити",
+          "clone": "Клонувати"
+        }
+      },
+      "deleteSelected": {
+        "success": "Вибрані знижки були видалені",
+        "error": "Виникла проблема з вашим запитом.",
+        "button": "Видалити {count, plural, =1 {вибрану знижку} few {вибрані # знижки} many {вибраних # знижок} other {вибраних # знижок}}",
+        "confirmTitle": "Ви абсолютно впевнені?",
+        "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані знижки.",
+        "confirmDescription2": "Це не вплине на існуючі записи, які використовують ці знижки",
+        "cancel": "Скасувати",
+        "deleteSelected": "Видалити вибрані"
+      }
+    },
+    "addons": {
+      "title": "Додатки",
+      "description": "Керувати додатками",
+      "addNew": "Додати новий",
+      "new": "Новий",
+      "newTitle": "Новий додаток",
+      "newDescription": "Додати новий додаток",
+      "editDescription": "Редагувати додаток",
+      "form": {
+        "name": "Назва",
+        "namePlaceholder": "Назва додатку",
+        "nameTooltip": "Унікальна назва додатку",
+        "description": "Короткий опис",
+        "descriptionTooltip": "Короткий текст, який буде видимий під час бронювання",
+        "duration": "Тривалість",
+        "durationTooltip": "Тривалість додатку",
+        "price": "Ціна",
+        "pricePlaceholder": "20",
+        "priceTooltip": "Ціна додатку",
+        "fields": "Поля",
+        "fieldsTooltip": "Поля, необхідні для цього додатку",
+        "validation": {
+          "nameUnique": "Назва додатку повинна бути унікальною"
+        },
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Назва",
+          "updatedAt": "Оновлено",
+          "options": "Опції",
+          "optionsInDialog": "{name} в опціях"
+        },
+        "cellAction": {
+          "addonDeleted": "Додаток '{name}' було видалено.",
+          "deleteError": "Виникла проблема з вашим запитом.",
+          "actions": "Дії",
+          "update": "Оновити",
+          "delete": "Видалити",
+          "clone": "Клонувати"
+        }
+      },
+      "deleteSelected": {
+        "success": "Вибрані додатки були видалені",
+        "error": "Виникла проблема з вашим запитом.",
+        "button": "Видалити {count, plural, =1 {вибраний додаток} few {вибрані # додатки} many {вибраних # додатків} other {вибраних # додатків}}",
+        "confirmTitle": "Ви абсолютно впевнені?",
+        "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані додатки та видалить їх з усіх опцій, які їх використовують",
+        "cancel": "Скасувати",
+        "deleteSelected": "Видалити вибрані"
+      }
+    }
+  },
+  "templates": {
+    "page": {
+      "title": "Шаблони комунікацій"
+    },
+    "formPage": {
+      "typeTemplates": "Шаблони {type}",
+      "new": "Новий"
+    },
+    "newPage": {
+      "title": "Новий шаблон {type}"
+    },
+    "editPage": {
+      "title": "Оновити шаблон",
+      "clone": "Клонувати"
+    },
+    "addNew": {
+      "emptyTemplate": "Порожній шаблон",
+      "add": "Додати",
+      "addNewTemplate": "Додати новий шаблон",
+      "type": "Тип",
+      "selectTemplateType": "Вибрати тип шаблону",
+      "template": "Шаблон",
+      "close": "Закрити"
+    },
+    "form": {
+      "name": "Назва шаблону",
+      "nameTooltip": "Унікальна назва шаблону",
+      "namePlaceholder": "Назва шаблону",
+      "validation": {
+        "templateNotValid": "Шаблон недійсний"
+      },
+      "toasts": {
+        "changesSaved": "Ваші зміни були збережені.",
+        "requestError": "Виникла проблема з вашим запитом."
+      }
+    },
+    "textMessageBuilder": {
+      "content": "Вміст текстового повідомлення",
+      "viewContext": "Переглянути контекст",
+      "contextValues": "Значення контексту",
+      "copied": "Скопійовано",
+      "copyPath": "Копіювати шлях",
+      "close": "Закрити",
+      "characterCount": "{count, plural, =1 {1 символ} other {# символів}}",
+      "preview": "Попередній перегляд"
+    },
+    "table": {
+      "filters": {
+        "type": "Тип",
+        "filters": "Фільтри"
+      },
+      "columns": {
+        "type": "Тип",
+        "name": "Назва",
+        "updatedAt": "Оновлено"
+      },
+      "cellAction": {
+        "templateDeleted": "Шаблон '{name}' було видалено.",
+        "deleteError": "Виникла проблема з вашим запитом.",
+        "actions": "Дії",
+        "update": "Оновити",
+        "delete": "Видалити",
+        "clone": "Клонувати"
+      },
+      "deleteSelected": {
+        "success": "Вибрані шаблони були видалені",
+        "error": "Виникла проблема з вашим запитом.",
+        "button": "Видалити {count, plural, =1 {вибраний шаблон} few {вибрані # шаблони} many {вибраних # шаблонів} other {вибраних # шаблонів}}",
+        "confirmTitle": "Ви абсолютно впевнені?",
+        "confirmDescription": "Цю дію неможливо скасувати. Це видалить вибрані шаблони та може порушити сповіщення, які їх використовують",
+        "cancel": "Скасувати",
+        "deleteSelected": "Видалити вибрані"
+      }
+    }
+  },
+  "appearance": {
+    "styling": {
+      "title": "Стилізація",
+      "description": "Налаштувати загальну стилізацію",
+      "form": {
+        "primaryFont": "Основний шрифт",
+        "secondaryFont": "Додатковий шрифт",
+        "tertiaryFont": "Третій шрифт",
+        "selectFont": "Вибрати шрифт",
+        "colorOverrides": "Перевизначення кольорів",
+        "invalidField": "Недійсне поле",
+        "duplicateType": "Дублікат типу",
+        "remove": "Видалити",
+        "deleteConfirmTitle": "Ви абсолютно впевнені?",
+        "deleteConfirmDescription": "Ви впевнені, що хочете видалити це перевизначення кольору?",
+        "cancel": "Скасувати",
+        "delete": "Видалити",
+        "type": "Тип",
+        "selectColorOverrideType": "Вибрати тип перевизначення кольору"
+      }
+    },
+    "header": {
+      "title": "Меню заголовка",
+      "description": "Налаштувати посилання та стиль заголовка",
+      "form": {
+        "showLogo": "Показати логотип",
+        "showLogoDescription": "Чи повинен логотип показуватися в заголовку",
+        "stickyHeader": "Закріплений заголовок",
+        "stickyHeaderDescription": "Чи повинен заголовок рухатися з прокруткою сторінки",
+        "headerShadow": "Тінь заголовка",
+        "selectShadowType": "Вибрати тип тіні",
+        "menu": "Меню",
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
+    "footer": {
+      "title": "Підвал",
+      "description": "Налаштувати посилання в підвалі",
+      "form": {
+        "useCustomFooter": "Використовувати власний підвал",
+        "footerContent": "Вміст підвалу",
+        "preview": "Попередній перегляд",
+        "contactUsLabel": "Мітка 'Зв'язатися з нами'",
+        "contactUsLabelTooltip": "За замовчуванням 'Зв'язатися з нами'",
+        "contactUsPlaceholder": "Зв'язатися з нами",
+        "links": "Посилання",
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    }
+  },
+  "apps": {
+    "heading": "Підключені додатки",
+    "description": "Керувати вашими підключеними додатками",
+    "defaultApps": "Додатки за замовчуванням",
+    "appStore": "Магазин додатків",
+    "noConnectedApps": "У вас немає підключених додатків",
+    "defaultAppsForm": {
+      "emailSender": "Відправник email",
+      "textMessageSender": "Відправник текстових повідомлень",
+      "assetsStorage": "Сховище ресурсів",
+      "toasts": {
+        "changesSaved": "Ваші зміни були збережені.",
+        "requestError": "Виникла проблема з вашим запитом."
+      }
+    },
+    "defaultAppsDescription": "Вибрати додатки за замовчуванням",
+    "migrateAssetsDialog": {
+      "migrateAssets": "Мігрувати ресурси",
+      "title": "Мігрувати існуючі ресурси",
+      "description": "Мігрувати ваші існуючі ресурси з попереднього сховища",
+      "sourceApp": "Джерельний додаток сховища ресурсів",
+      "done": "Виконано: {count}",
+      "success": "Успішно: {count}",
+      "error": "Помилка: {count}",
+      "total": "Всього: {count}",
+      "migrate": "Мігрувати",
+      "toasts": {
+        "requestError": "Ваш запит не вдався"
+      }
+    }
+  },
+  "settings": {
+    "general": {
+      "title": "Загальні налаштування",
+      "description": "Налаштувати загальні параметри",
+      "form": {
+        "name": "Назва",
+        "namePlaceholder": "Назва веб-сайту",
+        "title": "Заголовок",
+        "titlePlaceholder": "Заголовок веб-сайту",
+        "description": "Опис",
+        "descriptionPlaceholder": "Опис веб-сайту",
+        "keywords": "Ключові слова",
+        "keywordsTooltip": "Ключові слова веб-сайту, розділені комами",
+        "keywordValidation": "Ключове слово повинно містити щонайменше 2 символи",
+        "phone": "Номер телефону",
+        "email": "Email адреса",
+        "emailPlaceholder": "Ваша email адреса",
+        "url": "Базова URL веб-сайту",
+        "urlPlaceholder": "URL веб-сайту",
+        "address": "Адреса",
+        "addressTooltip": "Фізична адреса офісу",
+        "addressPlaceholder": "Фізична адреса офісу",
+        "logo": "Логотип",
+        "logoTooltip": "URL до зображення, яке буде використовуватися як логотип (наприклад, в заголовку)",
+        "logoPlaceholder": "URL логотипу",
+        "language": "Мова",
+        "favicon": "Favicon",
+        "faviconTooltip": "URL до зображення, яке буде використовуватися як favicon (іконка, яка показується на вкладці браузера)",
+        "faviconPlaceholder": "URL favicon",
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
+    "appointments": {
+      "title": "Налаштування записів",
+      "description": "Налаштувати параметри записів",
+      "form": {
+        "tabs": {
+          "main": "Основні",
+          "calendarSources": "Джерела календаря",
+          "options": "Опції",
+          "smartSchedule": "Розумний розклад",
+          "payments": "Платежі"
+        },
+        "main": {
+          "add": "Додати",
+          "timeZone": "Часовий пояс",
+          "selectTimeZone": "Вибрати часовий пояс",
+          "scheduleProviderApp": "Додаток постачальника розкладу",
+          "scheduleProviderAppTooltip1": "Вибрати додатковий додаток для надання вашого робочого розкладу.",
+          "scheduleProviderAppTooltip2": "Якщо додаток не вибрано, буде застосовано базовий розклад.",
+          "autoConfirmAppointments": "Автоматично підтверджувати записи",
+          "autoConfirmTooltip1": "Виберіть цю опцію, якщо хочете автоматично підтверджувати всі записи, створені клієнтами.",
+          "autoConfirmTooltip2": "За замовчуванням вам потрібно буде вручну підтверджувати кожен запис.",
+          "showPromoCodeField": "Показати поле промокоду",
+          "showPromoCodeTooltip": "Налаштувати, чи повинно поле промокоду показуватися під час бронювання",
+          "maxWeeksInFuture": "Максимальна кількість тижнів у майбутньому",
+          "maxWeeksInFutureTooltip1": "Визначає максимальну кількість тижнів у майбутньому, на яку користувач може запланувати записи.",
+          "maxWeeksInFutureTooltip2": "Якщо встановлено 6, користувачі можуть планувати події тільки на 6 тижнів вперед від поточної дати.",
+          "maxWeeksInFutureTooltip3": "8 тижнів",
+          "minBreakTime": "Мінімальний час перерви",
+          "minBreakTimeTooltip1": "Визначає мінімальний необхідний часовий інтервал, який повинен залишатися доступним до та після запланованого часового слоту.",
+          "minBreakTimeTooltip2": "Це поле забезпечує буферний період до та після кожного слоту для розміщення перерв, часу підготовки або для запобігання конфліктів розкладу.",
+          "minBreakTimeTooltip3": "Якщо встановлено 30, повинно бути щонайменше 30 хвилин вільного часу до та після кожного запланованого слоту перед початком наступного слоту.",
+          "minBreakTimeTooltip4": "0 хвилин",
+          "minHoursBeforeBooking": "Мінімальна кількість годин до бронювання",
+          "minHoursBeforeBookingTooltip1": "Визначає мінімальну кількість годин, необхідну заздалегідь для бронювання. Цей параметр допомагає забезпечити, щоб користувачі не могли забронювати запис з меншим попередженням, ніж встановлений часовий проміжок, дозволяючи вам відповідно підготуватися",
+          "minHoursBeforeBookingTooltip2": "Якщо встановлено 24, бронювання може бути зроблено тільки якщо це щонайменше 24 години до бажаного часу початку.",
+          "allowedSlotStartTimes": "Дозволені часи початку слотів",
+          "allowedSlotStartTimesTooltip": "Визначає, в які часи дозволено починати записи",
+          "customTimeSlots": "Власні часові слоти",
+          "customTimeSlotsTooltip": "Визначає, на якій хвилині дозволено починати записи",
+          "customTimeSlotsPlaceholder": "Натисніть кнопку плюс, щоб додати часовий слот",
+          "selectStep": "Вибрати крок",
+          "example": "Приклад",
+          "default": "За замовчуванням",
+          "weeks": "тижнів",
+          "minutes": "хвилин",
+          "hours": "годин",
+          "stepLabels": {
+            "everyHour": "Кожну годину о XX:00",
+            "custom": "Власний",
+            "five": "Кожну годину о XX:05, XX:10, XX:15, XX:20, XX:25, XX:30, XX:35, XX:40, XX:45, XX:50, XX:55",
+            "ten": "Кожну годину о XX:00, XX:10, XX:20, XX:30, XX:40, XX:50",
+            "fifteen": "Кожну годину о XX:00, XX:15, XX:30, XX:45",
+            "twenty": "Кожну годину о XX:00, XX:20, XX:40",
+            "thirty": "Кожну годину о XX:00, XX:30"
+          }
+        },
+        "smartSchedule": {
+          "enableSmartSchedule": "Увімкнути розумний розклад",
+          "enableSmartScheduleTooltip": "Увімкнути більш складні функції для пошуку часових слотів та максимізації бронювань",
+          "enable": "Увімкнути",
+          "disable": "Вимкнути",
+          "experimentalWarning": "Увага! Це високоекспериментальна функція, яка може викликати неочікувану поведінку під час бронювання записів.",
+          "allowSkipBreak": "Дозволити пропускати перерву",
+          "allowSkipBreakTooltip": "Дозволяє пропускати перерву, коли не знайдено іншої",
+          "preferBackToBack": "Віддавати перевагу послідовним записам",
+          "preferBackToBackTooltip": "Буде надавати вищу перевагу часовим слотам, які дозволять послідовні записи",
+          "allowSmartSlotStarts": "Дозволити розумні часи початку слотів",
+          "allowSmartSlotStartsTooltip": "Якщо не знайдено дозволених часів початку слотів, спробує знайти нетрадиційний часовий слот",
+          "preferredService": "Бажана послуга",
+          "preferredServiceTooltip": "Якщо вибрано, буде пріоритизувати часові слоти, які дадуть максимальну кількість записів обраної послуги"
+        },
+        "calendarSources": {
+          "title": "Джерела календаря"
+        },
+        "options": {
+          "title": "Опції"
+        },
+        "payments": {
+          "enableDeposits": "Увімкнути завдатки",
+          "enableDepositsTooltip": "Увімкнути можливість просити завдаток для бронювання запису",
+          "enable": "Увімкнути",
+          "disable": "Вимкнути",
+          "paymentsApp": "Платіжний додаток",
+          "paymentsAppTooltip": "Який платіжний процесор використовувати для платежів",
+          "requireDeposit": "Вимагати завдаток",
+          "requireDepositTooltip1": "Якщо увімкнено, кожен клієнт буде зобов'язаний внести завдаток для бронювання запису",
+          "requireDepositTooltip2": "Може бути перевизначено для кожного клієнта",
+          "require": "Вимагати",
+          "doNotRequire": "Не вимагати",
+          "depositAmount": "Сума завдатку",
+          "depositAmountTooltip": "<p>Сума завдатку у відсотках</p><p><strong>Приклад:</strong> Якщо встановлено 100, повна ціна має бути сплачена наперед</p><p><strong>Опціонально</strong></p>",
+          "dontRequireIfCompletedMinNumberOfAppointments": "Мінімальна кількість записів для невимоги завдатку",
+          "dontRequireIfCompletedMinNumberOfAppointmentsTooltip": "<p>Не вимагати завдаток для клієнтів, які мають принаймні вказану кількість завершених записів</p><p><strong>Приклад:</strong> Якщо встановлено 3, клієнти, які роблять свій перший, другий або третій запис, будуть зобов'язані сплатити завдаток. Клієнти, які роблять свій четвертий або наступні записи, не будуть зобов'язані сплачувати завдаток, якщо це не вимагається окремо для цього клієнта</p><p><strong>Опціонально</strong></p>"
+        },
+        "cards": {
+          "calendarSource": {
+            "app": "Додаток",
+            "appTooltip": "Вибрати підтримуваний додаток",
+            "remove": "Видалити",
+            "deleteConfirmTitle": "Ви абсолютно впевнені?",
+            "deleteConfirmDescription": "Ви впевнені, що хочете видалити це джерело календаря?",
+            "cancel": "Скасувати",
+            "delete": "Видалити"
+          },
+          "optionSelect": {
+            "roleDescription": "Опція",
+            "moveOption": "Перемістити опцію",
+            "option": "Опція",
+            "deleteConfirmTitle": "Ви абсолютно впевнені?",
+            "deleteConfirmDescription": "Ви впевнені, що хочете видалити цю опцію зі списку доступних опцій?",
+            "cancel": "Скасувати",
+            "delete": "Видалити"
+          },
+          "optionSelector": {
+            "time": "{hours}год {minutes}хв",
+            "requestFailed": "Запит не вдався.",
+            "loadingOptions": "Завантаження опцій...",
+            "selectOption": "Вибрати опцію"
+          }
+        },
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
+    "social": {
+      "title": "Налаштування соціальних мереж",
+      "description": "Налаштувати параметри соціальних посилань",
+      "form": {
+        "socialLinks": "Соціальні посилання",
+        "card": {
+          "roleDescription": "Соціальне посилання",
+          "moveOption": "Перемістити соціальне посилання",
+          "invalidType": "Недійсний тип",
+          "remove": "Видалити",
+          "deleteConfirmTitle": "Ви абсолютно впевнені?",
+          "deleteConfirmDescription": "Ви впевнені, що хочете видалити це посилання?",
+          "cancel": "Скасувати",
+          "delete": "Видалити",
+          "type": "Тип",
+          "selectType": "Вибрати тип соціального посилання",
+          "url": "Url",
+          "urlTooltip": "Повне посилання на ваш профіль"
+        },
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
+    "schedule": {
+      "title": "Розклад за замовчуванням",
+      "description": "Встановити ваш базовий розклад",
+      "form": {
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    },
+    "scripts": {
+      "title": "Скрипти",
+      "description": "Додати додаткові сторонні скрипти до веб-сайту",
+      "form": {
+        "headerScripts": "Скрипти заголовка",
+        "footerScripts": "Скрипти підвалу",
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      }
+    }
+  },
+  "form": {
+    "dateTimeRequired": "Дата та час обов'язкові",
+    "durationRequired": "Тривалість обов'язкова",
+    "durationInteger": "Повинно бути цілим числом",
+    "durationMin": "Мінімальна тривалість 1 хвилина",
+    "durationMax": "Максимальна тривалість 10 днів",
+    "priceNumber": "Загальна ціна повинна бути числом",
+    "priceMin": "Мінімальна ціна 0",
+    "optionRequired": "Опція повинна бути вибрана",
+    "addonRequired": "Додаток повинен бути вибраний",
+    "nameRequired": "Ім'я обов'язкове",
+    "emailValid": "Повинен бути дійсний email",
+    "phoneRequired": "Телефон обов'язковий",
+    "phoneValid": "Потрібен дійсний номер телефону",
+    "scheduledSuccess": "Запис було успішно заплановано",
+    "requestError": "Виникла проблема з вашим запитом.",
+    "appointmentType": "Тип запису",
+    "selectOption": "Вибрати опцію",
+    "min": "хв",
+    "custom": "Власний",
+    "dateTime": "Дата та час",
+    "addons": "Додатки",
+    "selectAddons": "Вибрати додатки...",
+    "customer": "Клієнт",
+    "discount": "Знижка",
+    "duration": "Тривалість",
+    "price": "Ціна",
+    "note": "Примітка",
+    "confirmAppointment": "Підтвердити запис",
+    "confirmAppointmentDescription": "Позначити запис як підтверджений",
+    "confirmOverlap": "Підтвердити перекриття",
+    "confirmOverlapDescription": "Я розумію, що планування цього запису створить перекриття в моєму розкладі",
+    "scheduleAppointment": "Запланувати запис"
+  },
+  "table": {
+    "filters": {
+      "status": "Статус"
+    }
+  },
+  "dashboard": {
+    "appointments": {
+      "noAppointments": "Записи не заплановані",
+      "noPendingAppointments": "Немає очікуючих записів",
+      "caughtUp": "Ви впоралися з усіма запитами. Молодець!",
+      "pendingToast": "У вас {count, plural, =1 {один очікуючий запис} few {# очікуючі записи} other {# очікуючих записів}}",
+      "view": "Переглянути",
+      "nextAppointments": "Наступні записи"
+    },
+    "tabs": {
+      "overview": "Огляд",
+      "pendingAppointments": "Очікуючі записи"
+    }
+  },
+  "install": {
+    "page": {
+      "title": "Встановлення",
+      "description": "Швидко налаштуйте ваш веб-сайт"
+    },
+    "form": {
+      "websiteName": "Назва веб-сайту",
+      "websiteNamePlaceholder": "Назва веб-сайту",
+      "websiteTitle": "Заголовок веб-сайту",
+      "websiteTitlePlaceholder": "Заголовок веб-сайту",
+      "emailAddress": "Email адреса",
+      "emailAddressPlaceholder": "Ваша email адреса",
+      "websiteUrl": "URL веб-сайту",
+      "websiteUrlPlaceholder": "URL веб-сайту",
+      "install": "Встановити",
+      "pleaseWait": "Будь ласка, зачекайте...",
+      "success": "Ви успішно створили ваш веб-сайт!",
+      "error": "Виникла проблема з вашим запитом.",
+      "fixErrors": "Будь ласка, виправте помилки у формі встановлення."
+    },
+    "layout": {
+      "title": "VIVID CMS - Встановлення",
+      "description": "Встановлення vivid"
+    }
+  },
+  "communications": {
+    "viewMore": "Показати більше",
+    "logContent": "Вміст повідомлення",
+    "handler": "Обробник: {handler}",
+    "data": "Дані",
+    "logData": "Дані журналу",
+    "sendNew": "Надіслати нове",
+    "requestError": "Виникла проблема з вашим запитом.",
+    "sendNewMessage": "Надіслати нове повідомлення",
+    "sendNewMessageDescription": "Надіслати новий email або текстове повідомлення клієнту",
+    "closeDialogWarning": "Ви втратите весь вміст, якщо закриєте діалог",
+    "contentNotValid": "Вміст недійсний",
+    "messageSent": "Ваше повідомлення було успішно надіслано.",
+    "wrongTemplateType": "Неправильний тип шаблону",
+    "channel": "Канал",
+    "selectTemplate": "Вибрати шаблон",
+    "selectExistingTemplate": "Вибрати існуючий шаблон",
+    "template": "Шаблон",
+    "attention": "Увага",
+    "templateReplaceWarning": "Вибір шаблону замінить ваш поточний вміст.",
+    "select": "Вибрати",
+    "emailSubject": "Тема email",
+    "emailSubjectDescription": "Тема email, яку побачать ваші клієнти.",
+    "usesTemplatedValues": "* Використовує шаблонні значення",
+    "subject": "Тема",
+    "content": "Вміст",
+    "send": "Надіслати"
+  },
+  "calendar": {
+    "today": "Сьогодні",
+    "selectView": "Вибрати вигляд",
+    "monthly": "Щомісячно",
+    "weekly": "Щотижнево",
+    "daily": "Щодня",
+    "agenda": "Порядок денний",
+    "eventTitle": "{customer} для {service}",
+    "appointment": "Запис",
+    "status": "Статус",
+    "price": "Ціна",
+    "note": "Примітка",
+    "loading": "Завантаження",
+    "workingHours": "Робочі години",
+    "workingDay": "Робочий день",
+    "work": "Робота",
+    "hour": "год",
+    "minute": "хв",
+    "event": "подія",
+    "events": "подій",
+    "noEventsScheduled": "Немає запланованих подій",
+    "noEventsInRange": "Немає подій у вибраному діапазоні дат",
+    "collapseAll": "Згорнути все",
+    "expandAll": "Розгорнути все",
+    "mon": "Пн",
+    "tue": "Вт",
+    "wed": "Ср",
+    "thu": "Чт",
+    "fri": "Пт",
+    "sat": "Сб",
+    "sun": "Нд"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Пароль",
+    "email_or_password_incorrect": "Email або пароль неправильний",
+    "signIn": "Увійти",
+    "signInDescription": "Введіть ваш email нижче, щоб увійти в ваш обліковий запис",
+    "quote": "Я люблю це!",
+    "quoteAuthor": "Олеся Бондарчук"
+  },
+  "menuItem": {
+    "fields": {
+      "url": "Url",
+      "urlPlaceholder": "Посилання",
+      "label": "Мітка",
+      "labelPlaceholder": "Мітка",
+      "icon": "Іконка",
+      "variant": "Варіант",
+      "selectVariant": "Вибрати варіант посилання",
+      "size": "Розмір",
+      "selectSize": "Вибрати розмір",
+      "selectButtonVariant": "Вибрати варіант кнопки",
+      "textFont": "Шрифт тексту",
+      "selectTextFont": "Вибрати шрифт тексту",
+      "textSize": "Розмір тексту",
+      "selectTextSize": "Вибрати розмір тексту",
+      "textWeight": "Товщина тексту",
+      "selectTextWeight": "Вибрати товщину тексту",
+      "prefixIcon": "Префікс іконка",
+      "suffixIcon": "Суфікс іконка",
+      "additionalClasses": "Додаткові класи",
+      "additionalClassesPlaceholder": "font-bold"
+    },
+    "card": {
+      "moveMenuItem": "Перемістити пункт меню",
+      "itemType": "Тип елемента",
+      "selectType": "Вибрати тип",
+      "invalid": "Недійсний"
+    },
+    "subMenu": {
+      "title": "Підменю",
+      "moveMenuItem": "Перемістити пункт меню",
+      "invalid": "Недійсний"
+    },
+    "iconSelect": {
+      "selectIcon": "Вибрати іконку"
+    },
+    "types": {
+      "icon": "Іконка",
+      "link": "Посилання",
+      "button": "Кнопка",
+      "submenu": "Підменю"
+    }
+  },
+  "resource": {
+    "card": {
+      "moveResource": "Перемістити ресурс",
+      "sourceType": "Тип джерела",
+      "selectSourceType": "Вибрати тип джерела",
+      "url": "Url",
+      "urlPlaceholder": "Url",
+      "value": "Значення",
+      "invalid": "Недійсний",
+      "remove": "Видалити",
+      "deleteConfirmTitle": "Ви абсолютно впевнені?",
+      "deleteConfirmDescription": "Ви впевнені, що хочете видалити цей ресурс?",
+      "cancel": "Скасувати",
+      "delete": "Видалити"
+    }
+  },
+  "payment": {
+    "card": {
+      "amount": "Сума",
+      "transactionId": "ID транзакції",
+      "timePaid": "Час оплати",
+      "timeRefunded": "Час повернення",
+      "refund": "Повернення",
+      "refunded": "Повернено",
+      "confirmRefund": "Підтвердити повернення",
+      "confirmRefundDescription": "Цю дію неможливо скасувати",
+      "refundDetails": "Деталі повернення",
+      "paymentMethod": "Спосіб оплати",
+      "originalAmount": "Початкова сума",
+      "refundAmount": "Сума повернення",
+      "cancel": "Скасувати",
+      "confirmRefundButton": "Підтвердити повернення"
+    },
+    "toasts": {
+      "refundSuccess": "Оплату повернено",
+      "refundSuccessDescription": "Оплату було успішно повернено",
+      "refundError": "Повернення оплати не вдалося",
+      "refundErrorDescription": "Повернення оплати не вдалося. Дивіться деталі в консолі браузера"
+    },
+    "descriptions": {
+      "fullPayment": "Повна оплата",
+      "deposit": "Депозит"
+    },
+    "methods": {
+      "cash": "Готівка",
+      "card": "Картка"
+    }
+  }
+}

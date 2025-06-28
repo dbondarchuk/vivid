@@ -16,6 +16,7 @@ import {
   Period,
   setDateByType,
 } from "./time-picker-utils";
+import { useI18n } from "@vivid/i18n";
 
 interface TimePickerDemoProps {
   date: Date | undefined;
@@ -28,6 +29,7 @@ export function TimePicker({
   setDate,
   seconds = false,
 }: TimePickerDemoProps) {
+  const t = useI18n("ui");
   const minuteRef = React.useRef<HTMLInputElement>(null);
   const hourRef = React.useRef<HTMLInputElement>(null);
   const secondRef = React.useRef<HTMLInputElement>(null);
@@ -52,7 +54,7 @@ export function TimePicker({
     <div className="flex items-end gap-2">
       <div className="grid gap-1 text-center">
         <Label htmlFor="hours" className="text-xs">
-          Hours
+          {t("common.hours")}
         </Label>
         <TimePickerInput
           picker="12hours"
@@ -65,7 +67,7 @@ export function TimePicker({
       </div>
       <div className="grid gap-1 text-center">
         <Label htmlFor="minutes" className="text-xs">
-          Minutes
+          {t("common.minutes")}
         </Label>
         <TimePickerInput
           picker="minutes"
@@ -79,7 +81,7 @@ export function TimePicker({
       {seconds && (
         <div className="grid gap-1 text-center">
           <Label htmlFor="seconds" className="text-xs">
-            Seconds
+            {t("timePicker.seconds")}
           </Label>
           <TimePickerInput
             picker="seconds"
@@ -100,11 +102,11 @@ export function TimePicker({
           value={period}
         >
           <SelectTrigger className="w-16">
-            <SelectValue placeholder="AM" />
+            <SelectValue placeholder={t("timePicker.am")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="AM">AM</SelectItem>
-            <SelectItem value="PM">PM</SelectItem>
+            <SelectItem value="AM">{t("timePicker.am")}</SelectItem>
+            <SelectItem value="PM">{t("timePicker.pm")}</SelectItem>
           </SelectContent>
         </Select>
       </div>

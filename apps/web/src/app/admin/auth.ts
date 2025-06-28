@@ -1,4 +1,5 @@
-import NextAuth from "next-auth";
+import { Language } from "@vivid/i18n";
+import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
 export const AuthResult = NextAuth({
@@ -34,9 +35,19 @@ export const AuthResult = NextAuth({
     signIn: "/admin", //sigin page
   },
   callbacks: {
-    authorized: async ({ auth }) => {
+    authorized: async ({ auth, request }) => {
       // Logged in users are authenticated, otherwise redirect to login page
       return !!auth;
+    },
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.language = (user as User & { language: Language }).language;
+      }
+      return token;
+    },
+    session: async ({ session, token }) => {
+      session.user.language = token.language as Language;
+      return session;
     },
   },
 });

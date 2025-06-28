@@ -5,6 +5,7 @@ import {
   BaseParagraphPlugin,
   createSlateEditor,
   PlateStatic,
+  SlateEditor,
   SlateLeaf,
   Value,
 } from "@udecode/plate";
@@ -64,6 +65,7 @@ import {
   BaseTableRowPlugin,
 } from "@udecode/plate-table";
 import { BaseTogglePlugin } from "@udecode/plate-toggle";
+import { MarkdownPlugin } from "@udecode/plate-markdown";
 import Prism from "prismjs";
 import { BlockquoteElementStatic } from "../plate-ui/blockquote-element-static";
 import { CodeBlockElementStatic } from "../plate-ui/code-block-element-static";
@@ -107,12 +109,13 @@ export type PlateStaticEditorProps = {
   className?: string;
 };
 
-export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
-  value,
-  style,
-  className,
-}) => {
-  const editorStatic = createSlateEditor({
+export const createPlateStaticEditor = (
+  value?: string | Value | ((editor: SlateEditor) => Value) | undefined,
+  options?: {
+    includeMarkdown?: boolean;
+  }
+) =>
+  createSlateEditor({
     plugins: [
       BaseColumnPlugin,
       BaseColumnItemPlugin,
@@ -203,9 +206,25 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
       BaseMentionPlugin,
       BaseCommentsPlugin,
       BaseTogglePlugin,
+      ...(options?.includeMarkdown
+        ? [
+            MarkdownPlugin.configure({
+              options: {
+                indentList: true,
+              },
+            }),
+          ]
+        : []),
     ],
     value: value,
   });
+
+export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
+  value,
+  style,
+  className,
+}) => {
+  const editorStatic = createPlateStaticEditor(value);
 
   const components = {
     [BaseAudioPlugin.key]: MediaAudioElementStatic,

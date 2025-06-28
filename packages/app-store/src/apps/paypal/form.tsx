@@ -17,6 +17,7 @@ import React from "react";
 import { PaypalLogo } from "./logo";
 import { PaypalFormProps } from "./models";
 import { PaypalOrder } from "./types";
+import { useI18n } from "@vivid/i18n";
 
 const SubmitPayment: React.FC<{
   isPaying: boolean;
@@ -24,14 +25,14 @@ const SubmitPayment: React.FC<{
   billingAddress: any;
 }> = ({ isPaying, setIsPaying, billingAddress }) => {
   const { cardFieldsForm } = usePayPalCardFields();
+  const t = useI18n("apps");
 
   const handleClick = async () => {
     if (!cardFieldsForm) {
-      const childErrorMessage =
-        "Unable to find any child components in the <PayPalCardFieldsProvider />";
-
+      const childErrorMessage = t("paypal.form.cardFieldsProviderError");
       throw new Error(childErrorMessage);
     }
+
     const formState = await cardFieldsForm.getState();
 
     if (!formState.isFormValid) {
@@ -54,17 +55,11 @@ const SubmitPayment: React.FC<{
         onClick={handleClick}
         disabled={isPaying}
       >
-        {isPaying && <Spinner />} <PaypalLogo /> Pay
+        {isPaying && <Spinner />} <PaypalLogo /> {t("paypal.form.payButton")}
       </Button>
       {}
     </div>
   );
-};
-
-const Message: React.FC<{ content: string }> = ({ content }) => {
-  return content ? (
-    <div className="text-sm font-medium text-destructive">{content}</div>
-  ) : null;
 };
 
 export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
@@ -74,6 +69,7 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   onSubmit,
   isSandbox,
 }) => {
+  const t = useI18n("apps");
   const [isPaying, setIsPaying] = React.useState(false);
 
   const initialOptions: ReactPayPalScriptOptions = {
@@ -172,9 +168,8 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
       }
     } catch (error) {
       console.error(`Payment has failed`, error);
-      toast.error("Payment has failed", {
-        description:
-          "Your payment has failed. Please try again. If the issue persists, please give us a call",
+      toast.error(t("paypal.toast.payment_failed"), {
+        description: t("paypal.toast.payment_failed_description"),
       });
     }
   };

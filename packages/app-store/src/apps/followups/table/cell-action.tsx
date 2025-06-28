@@ -16,6 +16,7 @@ import { useQueryState } from "nuqs";
 
 import { deleteFollowUps } from "../actions";
 import { FollowUp } from "../models";
+import { useI18n } from "@vivid/i18n";
 
 interface CellActionProps {
   followUp: FollowUp;
@@ -25,6 +26,8 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ followUp, appId }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const t = useI18n("apps");
+  const tUi = useI18n("ui");
 
   const [_, reload] = useQueryState("ts", { history: "replace" });
 
@@ -33,8 +36,10 @@ export const CellAction: React.FC<CellActionProps> = ({ followUp, appId }) => {
       setLoading(true);
 
       await toastPromise(deleteFollowUps(appId, [followUp._id]), {
-        success: `Follow-up '${followUp.name}' was deleted.`,
-        error: "There was a problem with your request.",
+        success: t("followUps.statusText.follow_up_deleted", {
+          name: followUp.name,
+        }),
+        error: t("followUps.statusText.error_deleting_follow_up"),
       });
 
       setOpen(false);
@@ -54,25 +59,28 @@ export const CellAction: React.FC<CellActionProps> = ({ followUp, appId }) => {
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
         loading={loading}
+        title={t("followUps.table.delete.title")}
+        description={t("followUps.table.delete.description")}
+        continueButton={t("followUps.table.delete.confirm")}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{tUi("common.openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>{tUi("actions.label")}</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link
               href={`/admin/dashboard/communications/follow-ups/edit?id=${followUp._id}`}
             >
-              <Edit className="h-4 w-4" /> Update
+              <Edit className="h-4 w-4" /> {tUi("actions.update")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="h-4 w-4" /> Delete
+            <Trash className="h-4 w-4" /> {tUi("actions.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

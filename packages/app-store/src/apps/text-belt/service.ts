@@ -3,6 +3,7 @@ import {
   ApiRequest,
   ApiResponse,
   ConnectedAppData,
+  ConnectedAppError,
   ConnectedAppStatusWithText,
   IConnectedApp,
   IConnectedAppProps,
@@ -14,9 +15,9 @@ import {
   TextMessageReply,
   TextMessageResponse,
 } from "@vivid/types";
-import { getArguments, maskify, template } from "@vivid/utils";
+import { getArguments, maskify } from "@vivid/utils";
 import crypto from "crypto";
-import ownerTextMessageReplyTemplate from "./emails/owner-text-message-reply.html";
+import { getEmailTemplate } from "./emails/utils";
 import { TextBeltConfiguration } from "./models";
 
 const scrambleKey = (key: string) => {
@@ -102,7 +103,7 @@ export default class TextBeltConnectedApp
     );
 
     try {
-      const { url } = await this.props.services
+      const config = await this.props.services
         .ConfigurationService()
         .getConfiguration("general");
 
@@ -111,7 +112,7 @@ export default class TextBeltConnectedApp
         key: (app.data as TextBeltConfiguration).apiKey,
         phone: message.phone,
         sender: message.sender,
-        replyWebhookUrl: `${url}/api/apps/${app._id}/webhook`,
+        replyWebhookUrl: `${config.url}/api/apps/${app._id}/webhook`,
         webhookData: message.data
           ? `${message.data.appId ?? ""}|${message.data.appointmentId ?? ""}|${message.data.customerId ?? ""}|${message.data.data ?? ""}`
           : undefined,
@@ -143,9 +144,9 @@ export default class TextBeltConnectedApp
           },
           "Failed to send SMS via TextBelt"
         );
-        throw new Error(
-          `Failed to send SMS: ${response.error || "unknown error"}`
-        );
+        throw new ConnectedAppError("textBelt.statusText.failed_to_send_sms", {
+          error: response.error || "unknown error",
+        });
       }
 
       logger.info(
@@ -160,8 +161,33 @@ export default class TextBeltConnectedApp
 
       this.props.update({
         status: "connected",
-        statusText: `Remaining quota: ${response.quotaRemaining}`,
+        statusText: {
+          key: "textBelt.statusText.remaining_quota",
+          args: { quota: response.quotaRemaining },
+        },
       });
+
+      if (response.quotaRemaining < 100) {
+        const { template: description, subject } = await getEmailTemplate(
+          "user-notify-low-quota",
+          config.language,
+          config.url,
+          {
+            quotaRemaining: response.quotaRemaining,
+            config,
+          }
+        );
+
+        await this.props.services.NotificationService().sendEmail({
+          email: {
+            to: config.email,
+            subject,
+            body: description,
+          },
+          handledBy: "textBelt.lowQuotaHandler",
+          participantType: "user",
+        });
+      }
 
       return {
         success: response.success,
@@ -183,7 +209,13 @@ export default class TextBeltConnectedApp
 
       this.props.update({
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          e instanceof ConnectedAppError
+            ? {
+                key: e.key,
+                args: e.args,
+              }
+            : "textBelt.statusText.error_sending_sms",
       });
 
       throw e;
@@ -352,8 +384,8 @@ export default class TextBeltConnectedApp
             },
             "Provided app does not exist or does not support responding to text messages"
           );
-          throw new Error(
-            `Provided app does not exist or does not support responding to text messages`
+          throw new ConnectedAppError(
+            "textBelt.statusText.invalid_responder_app"
           );
         }
 
@@ -371,7 +403,12 @@ export default class TextBeltConnectedApp
           { appId: appData._id, statusCode: response.status },
           "Failed to fetch TextBelt quota"
         );
-        throw new Error(`Failed to fetch url. Status code: ${response.status}`);
+        throw new ConnectedAppError(
+          "textBelt.statusText.failed_to_fetch_quota",
+          {
+            statusCode: response.status,
+          }
+        );
       }
 
       const json = (await response.json()) as SmsResponse;
@@ -385,7 +422,7 @@ export default class TextBeltConnectedApp
           },
           "Failed to get remaining quota or quota is zero"
         );
-        throw new Error(`Failed to get remaining quota or quota is zero`);
+        throw new ConnectedAppError("textBelt.statusText.failed_to_get_quota");
       }
 
       logger.debug(
@@ -395,7 +432,10 @@ export default class TextBeltConnectedApp
 
       const status: ConnectedAppStatusWithText = {
         status: "connected",
-        statusText: `Remaining quota is ${json.quotaRemaining}`,
+        statusText: {
+          key: "textBelt.statusText.remaining_quota",
+          args: { quota: json.quotaRemaining },
+        },
       };
 
       this.props.update({
@@ -420,7 +460,13 @@ export default class TextBeltConnectedApp
 
       const status: ConnectedAppStatusWithText = {
         status: "failed",
-        statusText: e?.message || e?.toString() || "Something went wrong",
+        statusText:
+          e instanceof ConnectedAppError
+            ? {
+                key: e.key,
+                args: e.args,
+              }
+            : "textBelt.statusText.error_processing_configuration",
       };
 
       this.props.update({
@@ -447,8 +493,6 @@ export default class TextBeltConnectedApp
       "Processing text message reply"
     );
 
-    const bodyTemplate = ownerTextMessageReplyTemplate;
-
     const config = await this.props.services
       .ConfigurationService()
       .getConfigurations("booking", "general", "social");
@@ -463,9 +507,17 @@ export default class TextBeltConnectedApp
       additionalProperties: {
         reply,
       },
+      locale: config.general.language,
     });
 
-    const description = template(bodyTemplate, args);
+    const { template: description, subject } = await getEmailTemplate(
+      "user-notify-reply",
+      config.general.language,
+      config.general.url,
+      args,
+      appointment?._id,
+      customer?._id
+    );
 
     logger.debug(
       { appId: appData._id, ownerEmail: config.general.email },
@@ -475,10 +527,10 @@ export default class TextBeltConnectedApp
     await this.props.services.NotificationService().sendEmail({
       email: {
         to: config.general.email,
-        subject: "SMS reply",
+        subject,
         body: description,
       },
-      handledBy: "TextBelt Webkook - notify owner",
+      handledBy: "textBelt.webhookHandlerUser",
       participantType: "user",
       appointmentId: appointment?._id,
       customerId: customer?._id,
@@ -531,7 +583,7 @@ export default class TextBeltConnectedApp
         );
 
         result = {
-          handledBy: "TextBelt Webkook",
+          handledBy: "textBelt.webhookHandler",
           participantType: "customer",
         };
       }
@@ -549,7 +601,7 @@ export default class TextBeltConnectedApp
         channel: "text-message",
         direction: "inbound",
         participant: reply.from,
-        participantType: result?.participantType,
+        participantType: result.participantType,
         handledBy: result.handledBy,
         text: reply.message,
         data: reply.data,

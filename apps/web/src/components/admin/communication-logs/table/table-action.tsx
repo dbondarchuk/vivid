@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   cn,
@@ -15,15 +16,15 @@ import {
 } from "@vivid/ui";
 
 import {
-  DIRECTION_OPTIONS,
-  CHANNEL_OPTIONS,
-  useCommunicationLogsTableFilters,
-  PARTICIPANT_TYPE_OPTIONS,
-} from "./use-table-filters";
-import { ClearSelectedCommunicationLogsButton } from "./clear-selected";
-import { ClearAllCommunicationLogsButton } from "./clear-all";
+  communicationChannels,
+  communicationDirectionSchema,
+  communicationParticipantTypeSchema,
+} from "@vivid/types";
 import { Settings2 } from "lucide-react";
 import React from "react";
+import { ClearAllCommunicationLogsButton } from "./clear-all";
+import { ClearSelectedCommunicationLogsButton } from "./clear-selected";
+import { useCommunicationLogsTableFilters } from "./use-table-filters";
 
 export const CommunicationLogsTableAction: React.FC<{
   allowClearAll?: boolean;
@@ -59,28 +60,40 @@ export const CommunicationLogsTableAction: React.FC<{
   } = useCommunicationLogsTableFilters();
 
   const { rowSelection } = useSelectedRowsStore();
+  const t = useI18n("admin");
 
   const additionalFilters = (
     <>
       <DataTableFilterBox
         filterKey="direction"
-        title="Direction"
-        options={DIRECTION_OPTIONS}
+        title={t("communicationLogs.table.filters.direction")}
+        options={communicationDirectionSchema.map((direction) => ({
+          value: direction,
+          label: t(`common.labels.direction.${direction}`),
+        }))}
         setFilterValue={setDirectionFilter as any}
         filterValue={directionFilter}
       />
       <DataTableFilterBox
         filterKey="channel"
-        title="Channel"
-        options={CHANNEL_OPTIONS}
+        title={t("communicationLogs.table.filters.channel")}
+        options={communicationChannels.map((channel) => ({
+          value: channel,
+          label: t(`common.labels.channel.${channel}`),
+        }))}
         setFilterValue={setChannelFilter as any}
         filterValue={channelFilter}
       />
       {showParticipantTypeFilter && (
         <DataTableFilterBox
           filterKey="participantType"
-          title="Participant"
-          options={PARTICIPANT_TYPE_OPTIONS}
+          title={t("communicationLogs.table.filters.participant")}
+          options={communicationParticipantTypeSchema.map(
+            (participantType) => ({
+              value: participantType,
+              label: t(`common.labels.participantType.${participantType}`),
+            })
+          )}
           setFilterValue={setParticipantTypeFilter as any}
           filterValue={participantTypeFilter}
         />
@@ -115,7 +128,11 @@ export const CommunicationLogsTableAction: React.FC<{
           setPage={setPage}
         />
         <Popover>
-          <PopoverTrigger tooltip="Filters" asChild className="md:hidden">
+          <PopoverTrigger
+            tooltip={t("communicationLogs.table.filters.filters")}
+            asChild
+            className="md:hidden"
+          >
             <Button variant="outline">
               <Settings2 size={16} />
             </Button>

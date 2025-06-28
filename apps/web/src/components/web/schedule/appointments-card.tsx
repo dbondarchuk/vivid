@@ -1,4 +1,3 @@
-import { IWithI18nProps, withI18n } from "@/i18n/with-i18n";
 import { AppointmentChoice } from "@vivid/types";
 import {
   Card,
@@ -11,7 +10,7 @@ import { durationToTime } from "@vivid/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
 import { MdxContent } from "../mdx/mdx-content-client";
-import { useI18n } from "@/i18n/i18n";
+import { useI18n } from "@vivid/i18n";
 
 export type AppointmentsCardProps = {
   options: AppointmentChoice[];
@@ -24,7 +23,7 @@ export const AppointmentsCard: React.FC<AppointmentsCardProps> = ({
   className,
   onSelect,
 }) => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
 
   const onKeyPress = React.useCallback(
     (id: string, event: React.KeyboardEvent<any>) => {

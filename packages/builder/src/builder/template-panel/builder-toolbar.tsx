@@ -1,6 +1,7 @@
 import JsonView from "@uiw/react-json-view";
 import { darkTheme } from "@uiw/react-json-view/dark";
 import { lightTheme } from "@uiw/react-json-view/light";
+import { BuilderKeys, useI18n } from "@vivid/i18n";
 import {
   Button,
   cn,
@@ -76,6 +77,8 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   const document = useDocument();
   const blocks = useBlocks();
   const rootBlock = useRootBlock();
+  const t = useI18n("builder");
+  const tUi = useI18n("ui");
 
   const history = useEditorStateStore((s) => s.history);
   const selectedScreenSize = useSelectedScreenSize();
@@ -153,14 +156,14 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
       <Toolbar className="flex-1 has-[button]:flex-wrap">
         <ToolbarGroup>
           <ToolbarButton
-            tooltip="Undo (⌘+Z)"
+            tooltip={t("baseBuilder.builderToolbar.undo")}
             disabled={!canUndo}
             onClick={() => undoHistory()}
           >
             <Undo2 />
           </ToolbarButton>
           <ToolbarButton
-            tooltip="Redo (⌘+⇧+Z)"
+            tooltip={t("baseBuilder.builderToolbar.redo")}
             disabled={!canRedo}
             onClick={() => redoHistory()}
           >
@@ -169,7 +172,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         </ToolbarGroup>
         <ToolbarGroup>
           <ToolbarButton
-            tooltip="Move selected block up"
+            tooltip={t("baseBuilder.builderToolbar.moveUp")}
             disabled={!canDoBlockActions}
             onClick={() =>
               dispatchAction({
@@ -183,7 +186,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
             <ArrowUp />
           </ToolbarButton>
           <ToolbarButton
-            tooltip="Move selected block down"
+            tooltip={t("baseBuilder.builderToolbar.moveDown")}
             disabled={!canDoBlockActions}
             onClick={() =>
               dispatchAction({
@@ -199,7 +202,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         </ToolbarGroup>
         <ToolbarGroup>
           <ToolbarButton
-            tooltip="Clone selected block"
+            tooltip={t("baseBuilder.builderToolbar.clone")}
             disabled={!canDoBlockActions}
             onClick={() =>
               dispatchAction({
@@ -213,7 +216,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
             <Copy />
           </ToolbarButton>
           <ToolbarButton
-            tooltip="Delete selected block"
+            tooltip={t("baseBuilder.builderToolbar.delete")}
             disabled={!canDoBlockActions}
             onClick={() => {
               dispatchAction({
@@ -239,14 +242,14 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
       <Toolbar className="has-[button]:flex-wrap">
         <ToolbarGroup>
           <ToolbarButton
-            tooltip="Desktop view"
+            tooltip={t("baseBuilder.builderToolbar.desktopView")}
             pressed={selectedScreenSize === "desktop"}
             onClick={() => handleScreenSizeChange("desktop")}
           >
             <Monitor />
           </ToolbarButton>
           <ToolbarButton
-            tooltip="Mobile view"
+            tooltip={t("baseBuilder.builderToolbar.mobileView")}
             pressed={selectedScreenSize === "mobile"}
             onClick={() => handleScreenSizeChange("mobile")}
           >
@@ -258,7 +261,9 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
             <Popover>
               <PopoverTrigger asChild>
                 <ToolbarButton
-                  tooltip={`There are ${errorsCount} issue(s) in the document`}
+                  tooltip={t("baseBuilder.builderToolbar.errors", {
+                    count: errorsCount,
+                  })}
                 >
                   <TriangleAlert className="text-destructive" />
                 </ToolbarButton>
@@ -278,7 +283,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
                             <em>
                               {displayName}.{property}:
                             </em>{" "}
-                            {error}
+                            {t(error as BuilderKeys)}
                           </div>
                           {index < flattendErrors.length - 1 && <Separator />}
                         </Fragment>
@@ -289,7 +294,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
               </PopoverContent>
             </Popover>
           ) : (
-            <ToolbarButton tooltip="Awesome! No issues found!">
+            <ToolbarButton tooltip={t("baseBuilder.builderToolbar.noErrors")}>
               <Check className="text-green-600" />
             </ToolbarButton>
           )}
@@ -303,7 +308,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
               )
             }
           >
-            <Eye /> Preview
+            <Eye /> {t("baseBuilder.builderToolbar.preview")}
           </ToolbarButton>
         </ToolbarGroup>
         <ToolbarGroup>
@@ -316,10 +321,14 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
                   </ToolbarButton>
                 </DialogTrigger>
               </TooltipTrigger>
-              <TooltipContent side="bottom">View context</TooltipContent>
+              <TooltipContent side="bottom">
+                {t("baseBuilder.builderToolbar.context")}
+              </TooltipContent>
             </Tooltip>
             <DialogContent className="md:max-w-3/5">
-              <DialogTitle>Context values</DialogTitle>
+              <DialogTitle>
+                {t("baseBuilder.builderToolbar.contextValues")}
+              </DialogTitle>
               <ScrollArea className="max-h-[60vh]">
                 <JsonView
                   value={args || {}}
@@ -355,7 +364,9 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {copied ? "Copied" : "Copy path"}
+                            {copied
+                              ? t("baseBuilder.builderToolbar.copied")
+                              : t("baseBuilder.builderToolbar.copyPath")}
                           </TooltipContent>
                         </Tooltip>
                       );
@@ -366,7 +377,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="secondary">
-                    Close
+                    {tUi("common.close")}
                   </Button>
                 </DialogClose>
               </DialogFooter>
@@ -378,7 +389,9 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
                 <PanelRight />
               </ToolbarButton>
             </TooltipTrigger>
-            <TooltipContent side="bottom">Toggle sidebar panel</TooltipContent>
+            <TooltipContent side="bottom">
+              {t("baseBuilder.builderToolbar.toggleSidebar")}
+            </TooltipContent>
           </Tooltip>
         </ToolbarGroup>
       </Toolbar>

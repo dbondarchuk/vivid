@@ -1,30 +1,26 @@
+import { languages } from "@vivid/i18n";
 import { z } from "zod";
+import { asOptionalField, zPhone } from "../../utils";
 
 export const generalConfigurationSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Website Name must be at least 3 characters" }),
-  title: z
-    .string()
-    .min(3, { message: "Website Title must be at least 3 characters" }),
+  name: z.string().min(3, { message: "configuration.general.name.min" }),
+  title: z.string().min(3, { message: "configuration.general.title.min" }),
   description: z
     .string()
-    .min(3, { message: "Website Description must be at least 3 characters" }),
+    .min(3, { message: "configuration.general.description.min" }),
   keywords: z
     .string()
-    .min(3, { message: "Website Keywords must be at least 3 characters" }),
-  phone: z
-    .string()
-    .refine((s) => !s?.includes("_"), "Invalid phone number")
-    .optional(),
-  email: z.string().email("Email is required"),
+    .min(3, { message: "configuration.general.keywords.min" }),
+  phone: asOptionalField(zPhone),
+  email: z.string().email("common.email.required"),
   address: z.string().optional(),
   url: z
     .string()
-    .url("Website url should be valid URL address")
-    .min(3, { message: "Website Name must be at least 3 characters" }),
+    .url("configuration.general.url.invalid")
+    .min(3, { message: "configuration.general.url.min" }),
   logo: z.string().optional(),
   favicon: z.string().optional(),
+  language: z.enum(languages),
 });
 
 export type GeneralConfiguration = z.infer<typeof generalConfigurationSchema>;

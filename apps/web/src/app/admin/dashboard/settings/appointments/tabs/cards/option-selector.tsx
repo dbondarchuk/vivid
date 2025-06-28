@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { AppointmentOption } from "@vivid/types";
 import { cn, Combobox, IComboboxItem, toast } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
@@ -5,13 +6,15 @@ import { Clock, DollarSign } from "lucide-react";
 import React from "react";
 
 const OptionLabel: React.FC<{ option: AppointmentOption }> = ({ option }) => {
+  const t = useI18n("admin");
   const time = option.duration ? durationToTime(option.duration) : null;
   return (
     <span className="flex flex-col justify-center gap-2 shrink overflow-hidden text-nowrap min-w-0">
       {option.name}{" "}
       {time && (
         <div className="inline-flex gap-2 items-center text-xs italic">
-          <Clock size={16} /> {`${time.hours}hr ${time.minutes}min`}
+          <Clock size={16} />
+          {t("settings.appointments.form.cards.optionSelector.time", time)}
         </div>
       )}
       {option.price && (
@@ -31,13 +34,10 @@ const getOptions = async () => {
   });
 
   if (response.status >= 400) {
-    toast.error("Request failed.");
     const text = await response.text();
-    console.error(
-      `Request to fetch options failed: ${response.status}; ${text}`
-    );
-
-    return [];
+    const message = `Request to fetch options failed: ${response.status}; ${text}`;
+    console.error(message);
+    throw new Error(message);
   }
 
   return (await response.json()) as AppointmentOption[];
@@ -65,6 +65,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
   onItemSelect,
   allowClear,
 }) => {
+  const t = useI18n("admin");
   const [options, setOptions] = React.useState<AppointmentOption[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -74,6 +75,12 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
         setIsLoading(true);
         const fields = await getOptions();
         setOptions(fields);
+      } catch (e) {
+        toast.error(
+          t("settings.appointments.form.cards.optionSelector.requestFailed")
+        );
+        console.error(e);
+        setOptions([]);
       } finally {
         setIsLoading(false);
       }
@@ -103,7 +110,11 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
       values={OptionValues(options)}
-      searchLabel={isLoading ? "Loading options..." : "Select option"}
+      searchLabel={
+        isLoading
+          ? t("settings.appointments.form.cards.optionSelector.loadingOptions")
+          : t("settings.appointments.form.cards.optionSelector.selectOption")
+      }
       value={value}
       customSearch={(search) =>
         OptionValues(options.filter((app) => checkOptionSearch(app, search)))

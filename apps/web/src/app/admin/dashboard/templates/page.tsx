@@ -6,8 +6,9 @@ import {
 } from "@/components/admin/templates/table/search-params";
 import { TemplatesTable } from "@/components/admin/templates/table/table";
 import { TemplatesTableAction } from "@/components/admin/templates/table/table-action";
-import { Breadcrumbs, DataTableSkeleton, Heading, Separator } from "@vivid/ui";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, DataTableSkeleton, Heading } from "@vivid/ui";
 import { Suspense } from "react";
 
 type Params = {
@@ -16,14 +17,18 @@ type Params = {
 
 export default async function EmailTemplatesPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("templates");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading templates page");
   const searchParams = await props.searchParams;
 
   const breadcrumbItems = [
-    { title: "Dashboard", link: "/admin/dashboard" },
-    { title: "Communications", link: "/admin/dashboard/communication-logs" },
-    { title: "Templates", link: "/admin/dashboard/templates" },
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.communications"),
+      link: "/admin/dashboard/communication-logs",
+    },
+    { title: t("navigation.templates"), link: "/admin/dashboard/templates" },
   ];
 
   const parsed = searchParamsCache.parse(searchParams);
@@ -36,11 +41,10 @@ export default async function EmailTemplatesPage(props: Params) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <div className="flex items-start justify-between">
-            <Heading title={`Communication templates`} />
+            <Heading title={t("templates.page.title")} />
 
             <AddNewTemplateButton />
           </div>
-          {/* <Separator /> */}
         </div>
         <TemplatesTableAction />
         <Suspense

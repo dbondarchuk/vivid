@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n, useLocale } from "@vivid/i18n";
 import Image from "next/image";
 import { DefaultExtensionType, defaultStyles, FileIcon } from "react-file-icon";
 
@@ -11,12 +12,7 @@ import {
 import { AppointmentCalendar } from "@/components/admin/appointments/appointment-calendar";
 import { Markdown } from "@/components/web/markdown";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Appointment,
-  AppointmentStatus,
-  AssetEntity,
-  StatusText,
-} from "@vivid/types";
+import { Appointment, AppointmentStatus, AssetEntity } from "@vivid/types";
 import {
   Accordion,
   AccordionContent,
@@ -89,6 +85,8 @@ export const AppointmentView: React.FC<{
   appointment: Appointment;
   timeZone?: string;
 }> = ({ appointment: propAppointment, timeZone }) => {
+  const t = useI18n("admin");
+  const locale = useLocale();
   const router = useRouter();
 
   const [communicationsKey, setCommunicationsKey] = React.useState<string>();
@@ -109,8 +107,8 @@ export const AppointmentView: React.FC<{
     try {
       setLoading(true);
       await toastPromise(updateAppointmentNote(appointment._id, data.note), {
-        success: "Appointment note was updated.",
-        error: "There was a problem with your request.",
+        success: t("appointments.view.noteUpdated"),
+        error: t("appointments.view.requestError"),
       });
 
       router.refresh();
@@ -125,8 +123,8 @@ export const AppointmentView: React.FC<{
     try {
       setLoading(true);
       await toastPromise(removeAppointmentFile(fileId), {
-        success: "Your changes were saved.",
-        error: "There was a problem with your request.",
+        success: t("appointments.view.changesSaved"),
+        error: t("appointments.view.requestError"),
       });
 
       const fileIndex =
@@ -236,7 +234,7 @@ export const AppointmentView: React.FC<{
           }
         >
           <Button variant="outline">
-            <Send /> Send message
+            <Send /> {t("appointments.view.sendMessage")}
           </Button>
         </SendCommunicationDialog>
         <Link
@@ -245,7 +243,7 @@ export const AppointmentView: React.FC<{
           button
           href={`/admin/dashboard/appointments/new?from=${appointment._id}`}
         >
-          <CalendarSync size={20} /> Schedule again
+          <CalendarSync size={20} /> {t("appointments.view.scheduleAgain")}
         </Link>
 
         {appointment.status !== "declined" ? (
@@ -260,7 +258,7 @@ export const AppointmentView: React.FC<{
                   className="inline-flex flex-row gap-2 items-center"
                 >
                   <CalendarSearch size={20} />
-                  Reschedule
+                  {t("appointments.view.reschedule")}
                 </Button>
               }
             />
@@ -271,7 +269,7 @@ export const AppointmentView: React.FC<{
                   variant="destructive"
                   className="inline-flex flex-row gap-2 items-center"
                 >
-                  <CalendarX2 size={20} /> Decline
+                  <CalendarX2 size={20} /> {t("appointments.view.decline")}
                 </Button>
               }
             />
@@ -286,7 +284,7 @@ export const AppointmentView: React.FC<{
             className="gap-2"
             onSuccess={updateStatus}
           >
-            <CalendarCheck2 size={20} /> Confirm
+            <CalendarCheck2 size={20} /> {t("appointments.view.confirm")}
           </AppointmentActionButton>
         ) : null}
       </div>
@@ -294,39 +292,53 @@ export const AppointmentView: React.FC<{
         <div className="flex flex-col gap-2">
           <dl className="divide-y">
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">Date &amp; Time:</dt>
+              <dt className="flex self-center">
+                {t("appointments.view.dateTime")}:
+              </dt>
               <dd className="col-span-2">
                 <Accordion type="single" collapsible>
                   <AccordionItem value="dateTime" className="border-none">
                     <AccordionTrigger>
                       {DateTime.fromJSDate(appointment.dateTime)
                         .setZone(timeZone)
-                        .toLocaleString(
-                          DateTime.DATETIME_MED_WITH_WEEKDAY
-                        )}{" "}
+                        .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY, {
+                          locale,
+                        })}{" "}
                       -{" "}
                       {DateTime.fromJSDate(appointment.dateTime)
                         .setZone(timeZone)
                         .plus({ minutes: appointment.totalDuration })
-                        .toLocaleString(DateTime.TIME_SIMPLE)}
+                        .toLocaleString(DateTime.TIME_SIMPLE, { locale })}
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="grid grid-cols-2 gap-1">
-                        <div>Date and time:</div>
+                        <div>{t("appointments.view.dateAndTime")}:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.dateTime)
                             .setZone(timeZone)
-                            .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                            .toLocaleString(
+                              DateTime.DATETIME_MED_WITH_WEEKDAY,
+                              {
+                                locale,
+                              }
+                            )}
                         </div>
-                        <div>Duration:</div>
+                        <div>{t("appointments.view.duration")}:</div>
                         <div>
-                          {duration.hours > 0 && <>{duration.hours} hours</>}
+                          {duration.hours > 0 && (
+                            <>
+                              {duration.hours} {t("appointments.view.hours")}
+                            </>
+                          )}
                           {duration.hours > 0 && duration.minutes > 0 && <> </>}
                           {duration.minutes > 0 && (
-                            <>{duration.minutes} minutes</>
+                            <>
+                              {duration.minutes}{" "}
+                              {t("appointments.view.minutes")}
+                            </>
                           )}
                         </div>
-                        <div>Timezone:</div>
+                        <div>{t("appointments.view.timezone")}:</div>
                         <div>
                           {
                             timeZones.find(
@@ -337,44 +349,45 @@ export const AppointmentView: React.FC<{
                             ({appointment.timeZone})
                           </span>
                         </div>
-                        <div>Ends at:</div>
+                        <div>{t("appointments.view.endsAt")}:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.dateTime)
                             .setZone(timeZone)
                             .plus({ minutes: appointment.totalDuration })
                             .toLocaleString(
-                              DateTime.DATETIME_MED_WITH_WEEKDAY
+                              DateTime.DATETIME_MED_WITH_WEEKDAY,
+                              { locale }
                             )}{" "}
                         </div>
-                        <div>Requested at:</div>
+                        <div>{t("appointments.view.requestedAt")}:</div>
                         <div>
                           {DateTime.fromJSDate(appointment.createdAt)
                             .setZone(timeZone)
-                            .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                            .toLocaleString(
+                              DateTime.DATETIME_MED_WITH_WEEKDAY,
+                              {
+                                locale,
+                              }
+                            )}
                         </div>
                       </div>
-                      {/* {appointment.status !== "declined" && (
-                        <AppointmentRescheduleDialog
-                          appointment={appointment}
-                          onRescheduled={reschedule}
-                          trigger={
-                            <Button variant={"default"}>Reschedule</Button>
-                          }
-                        />
-                      )} */}
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               </dd>
             </div>
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">Status</dt>
-              <dd className="col-span-2">{StatusText[appointment.status]}</dd>
+              <dt className="flex self-center">
+                {t("appointments.view.status")}
+              </dt>
+              <dd className="col-span-2">
+                {t(`appointments.status.${appointment.status}`)}
+              </dd>
             </div>
 
             {!!appointment.totalPrice && (
               <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt>Price:</dt>
+                <dt>{t("appointments.view.price")}:</dt>
                 <dd className="col-span-2">
                   ${formatAmountString(appointment.totalPrice)}
                 </dd>
@@ -383,7 +396,7 @@ export const AppointmentView: React.FC<{
             {!!totalPaid && (
               <>
                 <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt>Amount paid:</dt>
+                  <dt>{t("appointments.view.amountPaid")}:</dt>
                   <dd className="col-span-2">
                     ${formatAmountString(totalPaid)}
                   </dd>
@@ -391,7 +404,7 @@ export const AppointmentView: React.FC<{
                 {!!appointment.totalPrice &&
                   appointment.totalPrice - totalPaid > 0 && (
                     <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt>Amount left to pay:</dt>
+                      <dt>{t("appointments.view.amountLeftToPay")}:</dt>
                       <dd className="col-span-2">
                         $
                         {formatAmountString(appointment.totalPrice - totalPaid)}
@@ -401,7 +414,9 @@ export const AppointmentView: React.FC<{
               </>
             )}
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">Customer</dt>
+              <dt className="flex self-center">
+                {t("appointments.view.customer")}
+              </dt>
               <dd className="col-span-2">
                 <Accordion type="single" collapsible>
                   <AccordionItem value="option" className="border-none">
@@ -415,7 +430,7 @@ export const AppointmentView: React.FC<{
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="grid grid-cols-3 gap-1">
-                        <div>Name:</div>
+                        <div>{t("appointments.view.name")}:</div>
                         <div className="col-span-2">
                           <Link
                             variant="default"
@@ -424,11 +439,11 @@ export const AppointmentView: React.FC<{
                             {appointment.customer.name}
                           </Link>
                         </div>
-                        <div>Email:</div>
+                        <div>{t("appointments.view.email")}:</div>
                         <div className="col-span-2">
                           {appointment.customer.email}
                         </div>
-                        <div>Phone:</div>
+                        <div>{t("appointments.view.phone")}:</div>
                         <div className="col-span-2">
                           {appointment.customer.phone}
                         </div>
@@ -439,94 +454,12 @@ export const AppointmentView: React.FC<{
               </dd>
             </div>
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">Fields</dt>
+              <dt className="flex self-center">
+                {t("appointments.view.fields")}
+              </dt>
               <dd className="col-span-2">
-                {/* <Accordion type="single" collapsible>
-                  <AccordionItem value="option" className="border-none">
-                    <AccordionTrigger className="text-left">
-                      <span>
-                        {name}{" "}
-                        <span className="text-sm text-muted-foreground">
-                          ({email})
-                        </span>
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="grid grid-cols-3 gap-1">
-                        <div>Name:</div>
-                        <div className="col-span-2">
-                          <Link
-                            variant="default"
-                            href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                              name
-                            )}`}
-                          >
-                            {name}
-                          </Link>
-                        </div>
-                        <div>Email:</div>
-                        <div className="col-span-2">
-                          <Link
-                            variant="default"
-                            href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                              email
-                            )}`}
-                          >
-                            {email}
-                          </Link>
-                        </div>
-                        <div>Phone:</div>
-                        <div className="col-span-2">
-                          <Link
-                            variant="default"
-                            href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                              phone
-                            )}`}
-                          >
-                            {phone}
-                          </Link>
-                        </div>
-                        {Object.entries(restFields).map(([key, value]) => (
-                          <React.Fragment key={key}>
-                            <div>
-                              {appointment.fieldsLabels?.[key] ? (
-                                <>
-                                  <span>{appointment.fieldsLabels?.[key]}</span>{" "}
-                                  <span className="text-sm text-muted-foreground">
-                                    ({key})
-                                  </span>
-                                </>
-                              ) : (
-                                key
-                              )}
-                              :
-                            </div>
-                            <div className="col-span-2">
-                              {typeof value === "boolean" ? (
-                                value ? (
-                                  "Yes"
-                                ) : (
-                                  "No"
-                                )
-                              ) : (
-                                <Link
-                                  variant="default"
-                                  href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                                    value.toString()
-                                  )}`}
-                                >
-                                  {value.toString()}
-                                </Link>
-                              )}
-                            </div>
-                          </React.Fragment>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion> */}
                 <div className="grid grid-cols-3 gap-1 text-sm">
-                  <div>Name:</div>
+                  <div>{t("appointments.view.name")}:</div>
                   <div className="col-span-2">
                     <Link
                       variant="default"
@@ -537,7 +470,7 @@ export const AppointmentView: React.FC<{
                       {name}
                     </Link>
                   </div>
-                  <div>Email:</div>
+                  <div>{t("appointments.view.email")}:</div>
                   <div className="col-span-2">
                     <Link
                       variant="default"
@@ -548,7 +481,7 @@ export const AppointmentView: React.FC<{
                       {email}
                     </Link>
                   </div>
-                  <div>Phone:</div>
+                  <div>{t("appointments.view.phone")}:</div>
                   <div className="col-span-2">
                     <Link
                       variant="default"
@@ -577,9 +510,9 @@ export const AppointmentView: React.FC<{
                       <div className="col-span-2">
                         {typeof value === "boolean" ? (
                           value ? (
-                            "Yes"
+                            t("appointments.view.yes")
                           ) : (
-                            "No"
+                            t("appointments.view.no")
                           )
                         ) : (
                           <Link
@@ -598,7 +531,9 @@ export const AppointmentView: React.FC<{
               </dd>
             </div>
             <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="flex self-center">Selected option</dt>
+              <dt className="flex self-center">
+                {t("appointments.view.selectedOption")}
+              </dt>
               <dd className="col-span-2">
                 <Accordion type="single" collapsible>
                   <AccordionItem value="option" className="border-none">
@@ -607,7 +542,7 @@ export const AppointmentView: React.FC<{
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="grid grid-cols-3 gap-1">
-                        <div>Option:</div>
+                        <div>{t("appointments.view.option")}:</div>
                         <div className="col-span-2">
                           <Link
                             href={`/admin/dashboard/services/options/${appointment.option._id}`}
@@ -618,21 +553,22 @@ export const AppointmentView: React.FC<{
                         </div>
                         {!!appointment.option.duration && (
                           <>
-                            <div>Duration:</div>
+                            <div>{t("appointments.view.duration")}:</div>
                             <div className="col-span-2">
-                              {appointment.option.duration} minutes
+                              {appointment.option.duration}{" "}
+                              {t("appointments.view.minutes")}
                             </div>
                           </>
                         )}
                         {!!appointment.option.price && (
                           <>
-                            <div>Price:</div>
+                            <div>{t("appointments.view.price")}:</div>
                             <div className="col-span-2">
                               ${formatAmountString(appointment.option.price)}
                             </div>
                           </>
                         )}
-                        <div>Description:</div>
+                        <div>{t("appointments.view.description")}:</div>
                         <div className="col-span-2">
                           <Markdown
                             markdown={appointment.option.description}
@@ -647,7 +583,9 @@ export const AppointmentView: React.FC<{
             </div>
             {appointment.addons && appointment.addons.length > 0 && (
               <div className="py-1 sm:py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="flex self-center">Selected addons:</dt>
+                <dt className="flex self-center">
+                  {t("appointments.view.selectedAddons")}:
+                </dt>
                 <dd className="col-span-2">
                   <Accordion type="single" collapsible>
                     <AccordionItem value="addons" className="border-none">
@@ -669,11 +607,16 @@ export const AppointmentView: React.FC<{
                               {(addon.price || addon.duration) && (
                                 <ul className="pl-2">
                                   {!!addon.duration && (
-                                    <li>Duration: {addon.duration} min</li>
+                                    <li>
+                                      {t("appointments.view.duration")}:{" "}
+                                      {addon.duration}{" "}
+                                      {t("appointments.view.min")}
+                                    </li>
                                   )}
                                   {!!addon.price && (
                                     <li>
-                                      Price: ${formatAmountString(addon.price)}
+                                      {t("appointments.view.price")}: $
+                                      {formatAmountString(addon.price)}
                                     </li>
                                   )}
                                 </ul>
@@ -701,7 +644,7 @@ export const AppointmentView: React.FC<{
           className="flex flex-col gap-2"
         >
           <div className="font-semibold flex flex-row gap-1 items-center">
-            Note
+            {t("appointments.view.note")}
           </div>
           <FormField
             control={noteForm.control}
@@ -709,7 +652,11 @@ export const AppointmentView: React.FC<{
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea disabled={loading} placeholder="Note" {...field} />
+                  <Textarea
+                    disabled={loading}
+                    placeholder={t("appointments.view.note")}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -720,7 +667,7 @@ export const AppointmentView: React.FC<{
 
       <div className="flex flex-col gap-2 @container/files">
         <div className="font-semibold flex flex-row gap-1 items-center">
-          Files
+          {t("appointments.view.files")}
         </div>
         <div className="flex flex-col gap-2">
           <div className="w-full flex flex-col gap-2">
@@ -736,7 +683,7 @@ export const AppointmentView: React.FC<{
               onClick={onClickUpload}
               disabled={loading || isUploading || !fileToUpload}
             >
-              Upload
+              {t("appointments.view.upload")}
             </Button>
           </div>
           <div className="grid grid-cols-1 @md/files:grid-cols-2 @lg/files:grid-cols-3 @xl/files:grid-cols-4 gap-2">
@@ -788,7 +735,7 @@ export const AppointmentView: React.FC<{
                       className="absolute -right-1 -top-1 text-destructive hover:bg-destructive hover:text-destructive-foreground z-[3]"
                       size="icon"
                       type="button"
-                      title="Remove appointment file"
+                      title={t("appointments.view.removeAppointmentFile")}
                     >
                       <Trash size={16} />
                     </Button>
@@ -796,19 +743,21 @@ export const AppointmentView: React.FC<{
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>
-                        Are you absolutely sure?
+                        {t("appointments.view.confirmTitle")}
                       </AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure that you want to remove this file?
+                        {t("appointments.view.confirmRemoveFile")}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>
+                        {t("appointments.view.cancel")}
+                      </AlertDialogCancel>
                       <AlertDialogAction variant="destructive" asChild>
                         <Button
                           onClick={() => onRemoveAppointmentFile(file._id)}
                         >
-                          Delete
+                          {t("appointments.view.delete")}
                         </Button>
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -890,7 +839,7 @@ export const AppointmentView: React.FC<{
       {!!appointment.payments?.length && (
         <div className="flex flex-col gap-2 @container/payments">
           <div className="font-semibold flex flex-row gap-1 items-center">
-            Payments
+            {t("appointments.view.payments")}
           </div>
           <div className="grid grid-cols-1 @md/payments:grid-cols-2 @lg/payments:grid-cols-3 gap-2 py-2">
             {appointment.payments.map((payment) => (
@@ -901,7 +850,7 @@ export const AppointmentView: React.FC<{
       )}
       <div className="flex flex-col gap-2">
         <div className="font-semibold flex flex-row gap-1 items-center">
-          Appointment communications
+          {t("appointments.view.appointmentCommunications")}
         </div>
         <RecentCommunications
           appointmentId={appointment._id}

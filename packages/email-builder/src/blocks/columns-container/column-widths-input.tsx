@@ -1,4 +1,5 @@
 import { TextDimensionInput } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { useState } from "react";
 
 export const DEFAULT_2_COLUMNS = [6] as [number];
@@ -22,6 +23,7 @@ export const ColumnWidthsInput = ({
   columnsCount = 3,
   onChange,
 }: ColumnsLayoutInputProps) => {
+  const t = useI18n("builder");
   const [currentValue, setCurrentValue] = useState<
     [TWidthValue, TWidthValue, TWidthValue]
   >(() => {
@@ -45,7 +47,7 @@ export const ColumnWidthsInput = ({
   if (columnsCount === 3) {
     column3 = (
       <TextDimensionInput
-        label="Column 3"
+        label={t("emailBuilder.blocks.columnsContainer.column3")}
         nullable
         defaultValue={currentValue?.[2] ?? null}
         onChange={(v) => {
@@ -57,7 +59,7 @@ export const ColumnWidthsInput = ({
   return (
     <div className="flex flex-col gap-2">
       <TextDimensionInput
-        label="Column 1"
+        label={t("emailBuilder.blocks.columnsContainer.column1")}
         nullable
         defaultValue={currentValue?.[0] ?? null}
         onChange={(v) => {
@@ -65,7 +67,7 @@ export const ColumnWidthsInput = ({
         }}
       />
       <TextDimensionInput
-        label="Column 2"
+        label={t("emailBuilder.blocks.columnsContainer.column2")}
         nullable
         defaultValue={currentValue?.[1] ?? null}
         onChange={(v) => {

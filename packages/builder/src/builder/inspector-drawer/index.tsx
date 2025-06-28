@@ -14,10 +14,12 @@ import {
 import { ConfigurationPanel } from "./configuration-panel";
 import { StylesPanel } from "./styles-panel";
 import { Paintbrush, SquareDashedMousePointer } from "lucide-react";
+import { useI18n } from "@vivid/i18n";
 
 export const InspectorDrawer: React.FC = () => {
   const selectedTab = useSelectedSidebarTab();
   const setSidebarTab = useSetSidebarTab();
+  const t = useI18n("builder");
 
   return (
     <Sidebar
@@ -35,10 +37,11 @@ export const InspectorDrawer: React.FC = () => {
           >
             <TabsList className="w-full justify-between sticky top-0 z-[1]">
               <TabsTrigger value="styles" className="gap-2">
-                <Paintbrush size={16} /> Styles
+                <Paintbrush size={16} /> {t("baseBuilder.inspector.styles")}
               </TabsTrigger>
               <TabsTrigger value="block-configuration" className="gap-2">
-                <SquareDashedMousePointer size={16} /> Inspect
+                <SquareDashedMousePointer size={16} />{" "}
+                {t("baseBuilder.inspector.inspect")}
               </TabsTrigger>
             </TabsList>
             <TabsContent value="styles">

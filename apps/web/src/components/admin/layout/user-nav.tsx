@@ -17,10 +17,11 @@ import {
 } from "@vivid/ui";
 import { ChevronsUpDown } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import { useI18n } from "@vivid/i18n";
 export function UserNav() {
   const { data: session } = useSession();
   const { isMobile } = useSidebar();
-
+  const t = useI18n("admin");
   if (session) {
     return (
       <SidebarMenu>
@@ -70,7 +71,7 @@ export function UserNav() {
           </DropdownMenuGroup> */}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut()}>
-                Log out
+                {t("navigation.logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

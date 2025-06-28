@@ -27,6 +27,7 @@ import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CaldavApp } from "./app";
 import { CaldavCalendarSource, caldavCalendarSourceSchema } from "./models";
 import { CALDAV_APP_NAME } from "./const";
+import { useI18n } from "@vivid/i18n";
 
 export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -41,6 +42,8 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
       onSuccess,
       onError,
     });
+
+  const t = useI18n("apps");
 
   const [calendars, setCalendars] = React.useState<string[]>([]);
 
@@ -62,7 +65,11 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
 
       setCalendars(result);
     } catch (error: any) {
-      toast.error("Failed to fetch calendars from CalDAV server");
+      toast.error(
+        t("calDav.toast.failed_to_fetch_calendars", {
+          serverUrl: form.getValues("serverUrl"),
+        })
+      );
       console.error(error);
     } finally {
       setFetchingCalendars(false);
@@ -80,8 +87,10 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    CalDAV Server{" "}
-                    <InfoTooltip>URL to CalDAV server</InfoTooltip>
+                    {t("calDav.form.serverUrl.label")}
+                    <InfoTooltip>
+                      {t("calDav.form.serverUrl.tooltip")}
+                    </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="https://" {...field} />
@@ -96,8 +105,10 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    Username
-                    <InfoTooltip>Optional username</InfoTooltip>
+                    {t("calDav.form.username.label")}
+                    <InfoTooltip>
+                      {t("calDav.form.username.tooltip")}
+                    </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="username" {...field} />
@@ -112,8 +123,10 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>
-                    Password
-                    <InfoTooltip>Optional password</InfoTooltip>
+                    {t("calDav.form.password.label")}
+                    <InfoTooltip>
+                      {t("calDav.form.password.tooltip")}
+                    </InfoTooltip>
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -132,7 +145,7 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
               name="calendarName"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Calendar</FormLabel>
+                  <FormLabel>{t("calDav.form.calendar.label")}</FormLabel>
                   <div className="flex flex-row gap-2 items-center">
                     <FormControl className="flex-grow">
                       <Select
@@ -143,7 +156,9 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
                         }}
                       >
                         <SelectTrigger className="w-full" disabled={isLoading}>
-                          <SelectValue placeholder="Select calendar" />
+                          <SelectValue
+                            placeholder={t("calDav.form.calendar.placeholder")}
+                          />
                         </SelectTrigger>
                         <SelectContent side="bottom">
                           {calendars.map((calendar) => (
@@ -162,7 +177,7 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
                       onClick={fetchCalendars}
                     >
                       {fetchingCalendars && <Spinner />}
-                      <span>Fetch</span>
+                      <span>{t("calDav.form.fetch")}</span>
                     </Button>
                   </div>
                   <FormMessage />
@@ -176,13 +191,13 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
               className="inline-flex gap-2 items-center w-full"
             >
               {isLoading && <Spinner />}
-              <span>Connect with</span>
-              <ConnectedAppNameAndLogo app={{ name: CaldavApp.name }} />
+              <span>{t("calDav.form.connectWith")}</span>
+              <ConnectedAppNameAndLogo app={{ name: CaldavApp.name }} t={t} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} />}
+      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
     </>
   );
 };

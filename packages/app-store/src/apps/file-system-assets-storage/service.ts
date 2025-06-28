@@ -6,6 +6,7 @@ import { Readable } from "stream";
 
 import {
   ConnectedAppData,
+  ConnectedAppError,
   IAssetsStorage,
   IConnectedApp,
   IConnectedAppProps,
@@ -49,7 +50,11 @@ export default class FileSystemAssetsStorageConnectedApp
           { appId: appData._id, filename, filepath },
           "File does not exist"
         );
-        throw new Error(`File ${filename} does not exist`);
+
+        throw new ConnectedAppError(
+          "fileSystemAssetsStorage.statusText.file_not_found",
+          { filename }
+        );
       }
 
       const stream = createReadStream(filepath);
@@ -107,7 +112,11 @@ export default class FileSystemAssetsStorageConnectedApp
         { appId: appData._id, filename, fileLength, error },
         "Error saving file to file system storage"
       );
-      throw error;
+
+      throw new ConnectedAppError(
+        "fileSystemAssetsStorage.statusText.error_saving_file",
+        { filename }
+      );
     }
   }
 
@@ -148,7 +157,11 @@ export default class FileSystemAssetsStorageConnectedApp
         { appId: appData._id, filename, error },
         "Error deleting file from file system storage"
       );
-      throw error;
+
+      throw new ConnectedAppError(
+        "fileSystemAssetsStorage.statusText.error_deleting_file",
+        { filename }
+      );
     }
   }
 
@@ -206,7 +219,11 @@ export default class FileSystemAssetsStorageConnectedApp
         { appId: appData._id, filenames, error },
         "Error deleting files from file system storage"
       );
-      throw error;
+
+      throw new ConnectedAppError(
+        "fileSystemAssetsStorage.statusText.error_deleting_file",
+        { filename: filenames.join(", ") }
+      );
     }
   }
 

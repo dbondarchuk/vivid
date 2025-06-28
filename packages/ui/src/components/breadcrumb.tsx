@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ChevronRightIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Slot } from "@radix-ui/react-slot";
+import { useI18n } from "@vivid/i18n";
 
 import { cn } from "../utils";
 
@@ -91,17 +92,21 @@ BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 const BreadcrumbEllipsis = ({
   className,
   ...props
-}: React.ComponentProps<"span">) => (
-  <span
-    role="presentation"
-    aria-hidden="true"
-    className={cn("flex h-9 w-9 items-center justify-center", className)}
-    {...props}
-  >
-    <DotsHorizontalIcon className="h-4 w-4" />
-    <span className="sr-only">More</span>
-  </span>
-);
+}: React.ComponentProps<"span">) => {
+  const t = useI18n("ui");
+
+  return (
+    <span
+      role="presentation"
+      aria-hidden="true"
+      className={cn("flex h-9 w-9 items-center justify-center", className)}
+      {...props}
+    >
+      <DotsHorizontalIcon className="h-4 w-4" />
+      <span className="sr-only">{t("breadcrumb.more")}</span>
+    </span>
+  );
+};
 BreadcrumbEllipsis.displayName = "BreadcrumbElipssis";
 
 export {

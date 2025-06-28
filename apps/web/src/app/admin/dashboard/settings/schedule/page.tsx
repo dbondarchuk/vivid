@@ -1,21 +1,29 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 import { ScheduleSettingsForm } from "./form";
 
-const breadcrumbItems = [
-  { title: "Dashboard", link: "/admin/dashboard" },
-  { title: "Schedule", link: "/admin/dashboard/settings/schedule" },
-  { title: "Default schedule", link: "/admin/dashboard/settings/schedule" },
-];
-
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("schedule");
+  const t = await getI18nAsync("admin");
 
   logger.debug("Loading schedule page");
   const schedule =
     await ServicesContainer.ConfigurationService().getConfiguration("schedule");
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.schedule"),
+      link: "/admin/dashboard/settings/schedule",
+    },
+    {
+      title: t("navigation.defaultSchedule"),
+      link: "/admin/dashboard/settings/schedule",
+    },
+  ];
 
   return (
     <PageContainer scrollable={true}>
@@ -23,10 +31,9 @@ export default async function Page() {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title="Default schedule"
-            description="Set your base schedule"
+            title={t("settings.schedule.title")}
+            description={t("settings.schedule.description")}
           />
-          {/* <Separator /> */}
         </div>
         <ScheduleSettingsForm values={schedule} />
       </div>

@@ -1,14 +1,17 @@
-import { FieldTypeLabels } from "@/constants/labels";
+import { I18nFn, useI18n } from "@vivid/i18n";
 import { ServiceField } from "@vivid/types";
 import { cn, Combobox, IComboboxItem, toast } from "@vivid/ui";
 import React from "react";
 
-const FieldLabel: React.FC<{ field: ServiceField }> = ({ field }) => {
+const FieldLabel: React.FC<{ field: ServiceField; t: I18nFn<"admin"> }> = ({
+  field,
+  t,
+}) => {
   return (
     <span className="inline-flex items-center gap-2 shrink overflow-hidden text-nowrap min-w-0">
       {field.data.label}{" "}
       <span className="text-xs italic">
-        {field.name} - {FieldTypeLabels[field.type]}
+        {field.name} - {t(`common.labels.fieldType.${field.type}`)}
       </span>
     </span>
   );
@@ -34,12 +37,18 @@ const getFields = async () => {
   return (await response.json()) as ServiceField[];
 };
 
-const checkFieldSearch = (field: ServiceField, query: string) => {
+const checkFieldSearch = (
+  field: ServiceField,
+  query: string,
+  t: I18nFn<"admin">
+) => {
   const search = query.toLocaleLowerCase();
   return (
     field.name.toLocaleLowerCase().includes(search) ||
     field.data.label.toLocaleLowerCase().includes(search) ||
-    FieldTypeLabels[field.type].toLocaleUpperCase().includes(search)
+    t(`common.labels.fieldType.${field.type}`)
+      .toLocaleUpperCase()
+      .includes(search)
   );
 };
 
@@ -58,6 +67,7 @@ export const FieldSelector: React.FC<FieldSelectorProps> = ({
   value,
   onItemSelect,
 }) => {
+  const t = useI18n("admin");
   const [fields, setFields] = React.useState<ServiceField[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -81,8 +91,8 @@ export const FieldSelector: React.FC<FieldSelectorProps> = ({
       .map((field) => {
         return {
           value: field._id,
-          shortLabel: <FieldLabel field={field} />,
-          label: <FieldLabel field={field} />,
+          shortLabel: <FieldLabel field={field} t={t} />,
+          label: <FieldLabel field={field} t={t} />,
         };
       });
 
@@ -92,10 +102,14 @@ export const FieldSelector: React.FC<FieldSelectorProps> = ({
       disabled={disabled || isLoading}
       className={cn("flex font-normal text-base", className)}
       values={FieldValues(fields)}
-      searchLabel={isLoading ? "Loading fields..." : "Select field"}
+      searchLabel={
+        isLoading
+          ? t("services.fieldSelector.loading")
+          : t("services.fieldSelector.selectField")
+      }
       value={value}
       customSearch={(search) =>
-        FieldValues(fields.filter((app) => checkFieldSearch(app, search)))
+        FieldValues(fields.filter((app) => checkFieldSearch(app, search, t)))
       }
       onItemSelect={onItemSelect}
     />

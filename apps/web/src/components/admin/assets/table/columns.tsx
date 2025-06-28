@@ -1,5 +1,6 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { Asset } from "@vivid/types";
 import {
   AssetPreview,
@@ -40,27 +41,38 @@ const shortenFilename = (filename: string, maxLength = 20): string => {
 export const columns: ColumnDef<Asset>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label={t("assets.table.actions.selectAll")}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      const t = useI18n("admin");
+      return (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={t("assets.table.actions.selectRow")}
+        />
+      );
+    },
     enableSorting: false,
     enableHiding: false,
   },
   {
-    header: "Preview",
+    id: "preview",
+    header: () => {
+      const t = useI18n("admin");
+      return t("assets.table.columns.preview");
+    },
     enableSorting: false,
     cell: ({ row }) => <AssetPreview asset={row.original} />,
+    accessorFn: () => "",
   },
   {
     id: "filename",
@@ -80,26 +92,30 @@ export const columns: ColumnDef<Asset>[] = [
         </Tooltip>
       </TooltipProvider>
     ),
-    header: tableSortHeader("File name", "string"),
+    header: tableSortHeader("assets.table.columns.fileName", "string", "admin"),
     accessorFn: (asset) => asset.filename,
     sortingFn: tableSortNoopFunction,
   },
   {
     id: "mimeType",
-    header: tableSortHeader("File type", "string"),
+    header: tableSortHeader("assets.table.columns.fileType", "string", "admin"),
     accessorFn: (asset) => asset.mimeType,
     sortingFn: tableSortNoopFunction,
   },
   {
     id: "size",
-    header: tableSortHeader("File size", "number"),
+    header: tableSortHeader("assets.table.columns.fileSize", "number", "admin"),
     accessorFn: (asset) => humanFileSize(asset.size),
     sortingFn: tableSortNoopFunction,
   },
   {
     accessorFn: (asset) => asset.description || "",
     id: "description",
-    header: tableSortHeader("Description", "string"),
+    header: tableSortHeader(
+      "assets.table.columns.description",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -113,7 +129,11 @@ export const columns: ColumnDef<Asset>[] = [
         </Link>
       ) : null,
     id: "appointment.option.name",
-    header: tableSortHeader("Appointment", "string"),
+    header: tableSortHeader(
+      "assets.table.columns.appointment",
+      "string",
+      "admin"
+    ),
     sortingFn: tableSortNoopFunction,
   },
   {
@@ -127,16 +147,19 @@ export const columns: ColumnDef<Asset>[] = [
         </Link>
       ) : null,
     id: "customer.name",
-    header: tableSortHeader("Customer", "string"),
+    header: tableSortHeader("assets.table.columns.customer", "string", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {
-    accessorFn: (asset) =>
-      DateTime.fromJSDate(asset.uploadedAt).toLocaleString(
-        DateTime.DATETIME_MED
-      ),
+    cell: ({ row }) => {
+      const locale = useLocale();
+      return DateTime.fromJSDate(row.original.uploadedAt).toLocaleString(
+        DateTime.DATETIME_MED,
+        { locale }
+      );
+    },
     id: "uploadedAt",
-    header: tableSortHeader("Upload time", "date"),
+    header: tableSortHeader("assets.table.columns.uploadTime", "date", "admin"),
     sortingFn: tableSortNoopFunction,
   },
   {

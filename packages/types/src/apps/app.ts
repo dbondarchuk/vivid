@@ -1,3 +1,4 @@
+import type { AdminKeys, AppsKeys } from "@vivid/i18n";
 import type { ReactElement, ReactNode } from "react";
 
 export type AppScope =
@@ -14,7 +15,9 @@ export type AppScope =
 
 export type AppSetupProps = {
   onSuccess: () => void;
-  onError: (error: string) => void;
+  onError: (
+    error: string | { key: string; args?: Record<string, any> }
+  ) => void;
   appId?: string;
 };
 
@@ -28,11 +31,11 @@ export type AppLogoProps = {
 
 type BaseApp = {
   name: string;
-  displayName: string;
-  category: string[];
+  displayName: AppsKeys;
+  category: AppsKeys[];
   scope: AppScope[];
   description: {
-    text: string;
+    text: AppsKeys;
     images?: string[];
   };
   Logo: (props: AppLogoProps) => ReactNode;
@@ -41,18 +44,18 @@ type BaseApp = {
     parent?: string;
     order?: number;
     id: string;
-    label: string;
+    label: AdminKeys;
     href: string;
     icon: ReactElement;
     Page: (props: ComplexAppSetupProps) => ReactNode;
     pageBreadcrumbs?: {
       link: string;
-      title: string;
+      title: AppsKeys;
     }[];
     notScrollable?: boolean;
     isHidden?: boolean;
-    pageTitle?: string;
-    pageDescription?: string;
+    pageTitle?: AppsKeys;
+    pageDescription?: AppsKeys;
   }[];
 };
 

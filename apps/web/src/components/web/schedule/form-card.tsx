@@ -8,9 +8,9 @@ import {
 
 import React from "react";
 
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import z from "zod";
 
 import {
   Button,
@@ -23,7 +23,7 @@ import {
   usePrevious,
 } from "@vivid/ui";
 
-import { I18nKeys, useI18n } from "@/i18n/i18n";
+import { TranslationKeys, useI18n } from "@vivid/i18n";
 import { formatAmountString } from "@vivid/utils";
 import { DateTime as Luxon } from "luxon";
 import { fieldSchemaMapper, fieldsComponentMap } from "../forms/fields";
@@ -31,7 +31,7 @@ import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";
 
 export const FormCard: React.FC = () => {
-  const i18n = useI18n();
+  const i18n = useI18n("translation");
   const {
     appointmentOption,
     selectedAddons,
@@ -49,7 +49,7 @@ export const FormCard: React.FC = () => {
   if (!dateTime) return null;
 
   const [promoCode, setPromoCode] = React.useState(discount?.code ?? "");
-  const [promoCodeError, setPromoCodeError] = React.useState<I18nKeys>();
+  const [promoCodeError, setPromoCodeError] = React.useState<TranslationKeys>();
   const [isLoading, setIsLoading] = React.useState(false);
 
   const fields = getFields(formFields);

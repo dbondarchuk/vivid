@@ -3,14 +3,6 @@
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 import { searchParams } from "./search-params";
-import { StatusText } from "@vivid/types";
-
-export const STATUS_OPTIONS = Object.entries(StatusText).map(
-  ([name, value]) => ({
-    value: name,
-    label: value,
-  })
-);
 
 export function useAppointmentsTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
