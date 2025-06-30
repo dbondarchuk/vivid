@@ -87,6 +87,7 @@ export const UkEmailTemplates: EmailTemplates = {
     ),
   },
   subject: "Запис на {{option.name}} від {{fields.name}} на {{dateTime}}",
+  eventTitle: "{{fields.name}} на {{option.name}}",
   buttonTexts: {
     viewAppointment: "Переглянути запис",
     decline: "Відхилити",

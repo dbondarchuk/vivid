@@ -309,7 +309,7 @@ export class CalendarWriterConnectedApp
         },
         startTime: appointment.dateTime,
         duration: appointment.totalDuration,
-        timeZone: config.booking.timeZone,
+        timeZone: config.general.timeZone,
         uid,
         status: newStatus,
         attendees: [

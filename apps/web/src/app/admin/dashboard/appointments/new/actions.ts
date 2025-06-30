@@ -28,7 +28,7 @@ export const createAppointment = async (
   try {
     const { timeZone } =
       await ServicesContainer.ConfigurationService().getConfiguration(
-        "booking"
+        "general"
       );
 
     const appointmentEvent: AppointmentEvent = {
@@ -58,6 +58,7 @@ export const createAppointment = async (
       confirmed,
       force: true,
       files,
+      by: "user",
     });
 
     actionLogger.debug(

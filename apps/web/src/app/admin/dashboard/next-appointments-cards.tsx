@@ -14,7 +14,7 @@ export const NextAppointmentsCards: React.FC = async () => {
     );
 
   const { timeZone } =
-    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   return (
     <div className="flex flex-col gap-2">

@@ -49,6 +49,13 @@
         "refunded": "Повернено",
         "pending": "Очікує"
       },
+      "appointmentHistoryType": {
+        "statusChanged": "Статус змінено",
+        "rescheduled": "Перенесено",
+        "created": "Створено",
+        "paymentAdded": "Платіж додано",
+        "paymentRefunded": "Платіж повернено"
+      },
       "filters": "Фільтри",
       "loading": "Завантаження"
     },
@@ -246,7 +253,10 @@
       "cancel": "Скасувати",
       "delete": "Видалити",
       "payments": "Платежі",
-      "appointmentCommunications": "Комунікації запису"
+      "communications": "Комунікації",
+      "history": "Історія",
+      "details": "Деталі",
+      "noPayments": "Немає платежів"
     },
     "detail": {
       "by": "Від {name}"
@@ -288,6 +298,15 @@
     "actionButton": {
       "changesSaved": "Ваші зміни були збережені.",
       "requestError": "Виникла проблема з вашим запитом."
+    },
+    "history": {
+      "byUser": "Створено користувачем",
+      "byCustomer": "Створено клієнтом",
+      "payment": "Платіж ${amount} через {appName}",
+      "oldStatus": "Старий статус: {oldStatus}",
+      "newStatus": "Новий статус: {newStatus}",
+      "oldDateTime": "Старий час: {oldDateTime}",
+      "newDateTime": "Новий час: {newDateTime}"
     }
   },
   "assets": {
@@ -1099,6 +1118,8 @@
         "favicon": "Favicon",
         "faviconTooltip": "URL до зображення, яке буде використовуватися як favicon (іконка, яка показується на вкладці браузера)",
         "faviconPlaceholder": "URL favicon",
+        "timeZone": "Часовий пояс",
+        "selectTimeZone": "Вибрати часовий пояс",
         "toasts": {
           "changesSaved": "Ваші зміни були збережені.",
           "requestError": "Виникла проблема з вашим запитом."
@@ -1118,8 +1139,6 @@
         },
         "main": {
           "add": "Додати",
-          "timeZone": "Часовий пояс",
-          "selectTimeZone": "Вибрати часовий пояс",
           "scheduleProviderApp": "Додаток постачальника розкладу",
           "scheduleProviderAppTooltip1": "Вибрати додатковий додаток для надання вашого робочого розкладу.",
           "scheduleProviderAppTooltip2": "Якщо додаток не вибрано, буде застосовано базовий розклад.",

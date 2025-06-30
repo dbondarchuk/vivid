@@ -8,7 +8,7 @@ import {
   getPaymentStatusIcon,
 } from "@/components/payments/payment-card";
 import { useI18n, useLocale } from "@vivid/i18n";
-import { Appointment, Payment } from "@vivid/types";
+import { Appointment, AppointmentStatus, Payment } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +23,7 @@ import {
   Card,
   CardContent,
   Checkbox,
+  cn,
   ScrollArea,
   Separator,
   Tooltip,
@@ -41,7 +42,8 @@ export const AppointmentDeclineDialog: React.FC<{
   trigger?: React.ReactNode;
   open?: boolean;
   onClose?: () => void;
-}> = ({ appointment, open, trigger, onClose }) => {
+  onSuccess?: (status: AppointmentStatus) => void;
+}> = ({ appointment, open, trigger, onClose, onSuccess }) => {
   const t = useI18n();
 
   const locale = useLocale();
@@ -125,7 +127,7 @@ export const AppointmentDeclineDialog: React.FC<{
       }}
     >
       {!!trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
-      <AlertDialogContent>
+      <AlertDialogContent className="md:max-w-2xl">
         <AlertDialogHeader>
           <AlertDialogTitle>
             {t("admin.appointments.declineDialog.title")}
@@ -185,7 +187,11 @@ export const AppointmentDeclineDialog: React.FC<{
 
                     return (
                       <Card
-                        className="w-full max-w-md cursor-pointer"
+                        className={cn(
+                          "w-full cursor-pointer",
+                          paymentsIdsSelectionState[payment._id] &&
+                            "bg-blue-50 dark:bg-sky-600/20"
+                        )}
                         key={payment._id}
                         onClick={() =>
                           payment.status === "paid" && setSelected(payment._id)
@@ -309,6 +315,7 @@ export const AppointmentDeclineDialog: React.FC<{
                 className="mt-2 sm:mt-0"
                 beforeRequest={() => refundSelected()}
                 setIsLoading={setIsLoading}
+                onSuccess={onSuccess}
               >
                 <CalendarX2 size={20} />
                 {t("admin.appointments.declineDialog.declineAndRefund", {
@@ -327,6 +334,7 @@ export const AppointmentDeclineDialog: React.FC<{
               status="declined"
               disabled={isLoading}
               setIsLoading={setIsLoading}
+              onSuccess={onSuccess}
             >
               <CalendarX2 size={20} />
               {t("admin.appointments.declineDialog.decline")}

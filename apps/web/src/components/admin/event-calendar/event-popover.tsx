@@ -1,4 +1,10 @@
-import { Popover, PopoverContent, PopoverTrigger, cn } from "@vivid/ui";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  cn,
+  useTimeZone,
+} from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import { useI18n, useLocale } from "@vivid/i18n";
 import { CalendarClock, Clock, Timer } from "lucide-react";
@@ -9,17 +15,17 @@ import { CalendarEvent } from "./types";
 
 export type EventPopoverProps = {
   event: CalendarEvent;
-  timeZone?: string;
   children: React.ReactNode;
 };
 
 export const EventPopover: React.FC<EventPopoverProps> = ({
   event,
-  timeZone,
   children,
 }) => {
   const t = useI18n("admin");
   const locale = useLocale();
+  const timeZone = useTimeZone();
+
   const eventDate = DateTime.fromJSDate(event.start).setZone(timeZone);
   const endDate = DateTime.fromJSDate(event.end).setZone(timeZone);
   const duration = durationToTime(

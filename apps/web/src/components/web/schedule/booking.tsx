@@ -11,6 +11,9 @@ export const Booking: React.FC<BookingProps> = async ({
   className,
   successPage,
 }) => {
+  const { timeZone } =
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
+
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
@@ -77,7 +80,7 @@ export const Booking: React.FC<BookingProps> = async ({
       optionsClassName={className}
       successPage={successPage}
       fieldsSchema={configFields}
-      timeZone={config.timeZone}
+      timeZone={timeZone}
       showPromoCode={showPromoCode}
     />
   );

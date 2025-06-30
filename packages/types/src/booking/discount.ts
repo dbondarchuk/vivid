@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { WithDatabaseId } from "../database";
 import { asOptinalNumberField, zUniqueArray } from "../utils";
+import { Prettify } from "../utils/helpers";
 
 export const fixedAmountDiscountType = "amount";
 export const percentageDiscountType = "percentage";
@@ -150,12 +151,11 @@ export const applyDiscountRequestSchema = z.object({
 });
 
 export type ApplyDiscountRequest = z.infer<typeof applyDiscountRequestSchema>;
-export type ApplyCustomerDiscountRequest = Omit<
-  ApplyDiscountRequest,
-  "name" | "email" | "phone"
-> & {
-  customerId?: string;
-};
+export type ApplyCustomerDiscountRequest = Prettify<
+  Omit<ApplyDiscountRequest, "name" | "email" | "phone"> & {
+    customerId?: string;
+  }
+>;
 
 export type ApplyDiscountResponse = {
   code: string;

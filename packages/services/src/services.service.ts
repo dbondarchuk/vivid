@@ -1437,7 +1437,8 @@ export class ServicesService implements IServicesService {
     }
 
     const { timeZone } =
-      await this.configurationService.getConfiguration("booking");
+      await this.configurationService.getConfiguration("general");
+
     const now = DateTime.now().setZone(timeZone);
 
     if (
@@ -1563,7 +1564,7 @@ export class ServicesService implements IServicesService {
     const discounts = db.collection<Discount>(DISCOUNTS_COLLECTION_NAME);
 
     const { timeZone } =
-      await this.configurationService.getConfiguration("booking");
+      await this.configurationService.getConfiguration("general");
 
     const dt = DateTime.fromJSDate(date).setZone(timeZone).toJSDate();
 

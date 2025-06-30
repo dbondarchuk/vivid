@@ -533,7 +533,7 @@ export default class RemindersConnectedApp
         })
       ).items;
 
-      const timeZone = config.booking.timeZone;
+      const timeZone = config.general.timeZone;
       const db = await this.props.getDbConnection();
 
       logger.debug(

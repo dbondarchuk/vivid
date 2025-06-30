@@ -15,7 +15,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  IComboboxItem,
   InfoTooltip,
   Input,
   InputGroup,
@@ -33,16 +32,8 @@ import {
   use12HourFormat,
 } from "@vivid/ui";
 import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
-import { getTimeZones } from "@vvo/tzdb";
 import React from "react";
 import { TabProps } from "./types";
-
-const timeZones = getTimeZones();
-const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
-  label: `GMT${zone.currentTimeFormat}`,
-  shortLabel: `${zone.alternativeName}`,
-  value: zone.name,
-}));
 
 const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
   const t = useI18n("admin");
@@ -97,38 +88,6 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
 
   return (
     <div className="gap-2 flex flex-col md:grid md:grid-cols-2 md:gap-4 w-full">
-      <FormField
-        control={form.control}
-        name="timeZone"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              {t("settings.appointments.form.main.timeZone")}
-            </FormLabel>
-            <FormControl>
-              <Combobox
-                className="flex w-full font-normal text-base"
-                values={timeZoneValues}
-                searchLabel={t(
-                  "settings.appointments.form.main.selectTimeZone"
-                )}
-                disabled={disabled}
-                customSearch={(search) =>
-                  timeZoneValues.filter(
-                    (zone) =>
-                      (zone.label as string)
-                        .toLocaleLowerCase()
-                        .indexOf(search.toLocaleLowerCase()) >= 0
-                  )
-                }
-                value={field.value}
-                onItemSelect={(value) => field.onChange(value)}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
       <FormField
         control={form.control}
         name="scheduleAppId"

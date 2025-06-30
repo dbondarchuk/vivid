@@ -1,5 +1,6 @@
 export * from "./appointment";
 export * from "./appointment-event";
+export * from "./appointment-history";
 export * from "./appointment-option";
 export * from "./availability";
 export * from "./date-time";

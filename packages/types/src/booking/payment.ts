@@ -1,4 +1,5 @@
 import { WithDatabaseId } from "../database";
+import { Prettify } from "../utils/helpers";
 import { AppointmentRequest } from "./appointment-event";
 
 export type PaymentIntentStatus = "created" | "failed" | "paid";
@@ -54,9 +55,11 @@ export type PaymentUpdateModel = {
     }
 );
 
-export type Payment = WithDatabaseId<
-  PaymentUpdateModel & {
-    refundedAt?: Date;
-    updatedAt: Date;
-  }
+export type Payment = Prettify<
+  WithDatabaseId<
+    PaymentUpdateModel & {
+      refundedAt?: Date;
+      updatedAt: Date;
+    }
+  >
 >;

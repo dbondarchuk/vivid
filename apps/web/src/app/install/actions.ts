@@ -28,6 +28,7 @@ export async function install(data: InstallFormData) {
       description: "",
       keywords: "",
       language: fallbackLanguage,
+      timeZone: DateTime.now().zoneName,
     });
 
     logger.info("Creating home page");
@@ -51,7 +52,6 @@ export async function install(data: InstallFormData) {
     logger.info("Setting booking configuration");
     await ServicesContainer.ConfigurationService().setConfiguration("booking", {
       options: [],
-      timeZone: DateTime.now().zoneName,
       allowPromoCode: "allow-if-has-active",
       smartSchedule: {
         allowSmartSchedule: false,

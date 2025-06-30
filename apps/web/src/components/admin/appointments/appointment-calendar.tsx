@@ -2,7 +2,7 @@
 
 import { useI18n } from "@vivid/i18n";
 import { Appointment, DaySchedule, Event } from "@vivid/types";
-import { cn } from "@vivid/ui";
+import { cn, useTimeZone } from "@vivid/ui";
 import { DateTime, HourNumbers } from "luxon";
 import React from "react";
 import {
@@ -14,10 +14,9 @@ import {
 export const AppointmentCalendar: React.FC<
   Pick<WeeklyEventCalendarProps, "className"> & {
     appointment: Appointment;
-    timeZone?: string;
     onEventsLoad?: (events: Event[]) => void;
   }
-> = ({ appointment, timeZone: propTimeZone, onEventsLoad, ...props }) => {
+> = ({ appointment, onEventsLoad, ...props }) => {
   const t = useI18n("admin");
   const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
   const [events, setEvents] = React.useState<Event[]>([]);
@@ -25,9 +24,8 @@ export const AppointmentCalendar: React.FC<
     {}
   );
   const [loading, setLoading] = React.useState(false);
-  const [timeZone, setTimeZone] = React.useState<string | undefined>(
-    propTimeZone
-  );
+
+  const timeZone = useTimeZone();
 
   const appointmentDateTime = appointment.dateTime;
   const appointmentDate = React.useMemo(
@@ -44,20 +42,18 @@ export const AppointmentCalendar: React.FC<
     const body = (await response.json()) as {
       events: Event[];
       schedule: Record<string, DaySchedule>;
-      timeZone: string;
     };
 
     const apiEvents = (body.events || []).map((a) => ({
       ...a,
       dateTime: DateTime.fromISO(a.dateTime as unknown as string)
-        .setZone(body.timeZone)
+        .setZone(timeZone)
         .toJSDate(),
     }));
 
     setLoading(false);
     setApiEvents(apiEvents);
     setSchedule(body.schedule);
-    setTimeZone(body.timeZone);
   };
 
   React.useEffect(() => {
@@ -148,7 +144,6 @@ export const AppointmentCalendar: React.FC<
         schedule={schedule}
         variant="days-around"
         daysAround={1}
-        timeZone={timeZone}
         scrollToHour={
           Math.max(appointment.dateTime.getHours() - 2, 0) as HourNumbers
         }

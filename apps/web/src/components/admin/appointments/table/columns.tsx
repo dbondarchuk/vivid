@@ -11,6 +11,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
+  useTimeZone,
 } from "@vivid/ui";
 import { durationToTime, formatAmountString } from "@vivid/utils";
 import {
@@ -66,15 +67,12 @@ const StatusCell: React.FC<{ appointment: Appointment } & LucideProps> = ({
 
 const OptionCell: React.FC<{
   appointment: Appointment;
-  timeZone?: string;
-}> = ({ appointment, timeZone }) => {
-  const t = useI18n("admin");
+}> = ({ appointment }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   return (
     <>
       {isDialogOpen && (
         <AppointmentDialog
-          timeZone={timeZone}
           defaultOpen={isDialogOpen}
           onOpenChange={(open) => !open && setIsDialogOpen(false)}
           appointment={appointment}
@@ -201,12 +199,11 @@ const CustomerCell: React.FC<{
   );
 };
 
-type TimezoneCellContext<TData extends RowData, TValue = unknown> = CellContext<
-  TData,
-  TValue
-> & {
-  timeZone?: string;
-};
+// type TimezoneCellContext<TData extends RowData, TValue = unknown> = CellContext<
+//   TData,
+//   TValue
+// > & {
+// };
 
 export const columns: ColumnDef<Appointment>[] = [
   // {
@@ -243,9 +240,7 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
-    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) => (
-      <OptionCell appointment={row.original} timeZone={timeZone} />
-    ),
+    cell: ({ row }) => <OptionCell appointment={row.original} />,
     id: "option.name",
     header: tableSortHeader(
       "appointments.table.columns.option",
@@ -265,7 +260,8 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) => {
+    cell: ({ row }) => {
+      const timeZone = useTimeZone();
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.dateTime)
         .setZone(timeZone)
@@ -280,7 +276,8 @@ export const columns: ColumnDef<Appointment>[] = [
     sortingFn: tableSortNoopFunction,
   },
   {
-    cell: ({ row, timeZone }: TimezoneCellContext<Appointment>) => {
+    cell: ({ row }) => {
+      const timeZone = useTimeZone();
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.createdAt)
         .setZone(timeZone)

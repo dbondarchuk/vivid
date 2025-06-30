@@ -54,7 +54,6 @@ export const AppointmentsSettingsForm: React.FC<{
 
   const mainTabInvalid =
     form.getFieldState("maxWeeksInFuture").invalid ||
-    form.getFieldState("timeZone").invalid ||
     form.getFieldState("slotStart").invalid ||
     form.getFieldState("breakDuration").invalid;
 

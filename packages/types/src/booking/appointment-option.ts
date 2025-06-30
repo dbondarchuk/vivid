@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { WithDatabaseId } from "../database";
 import { asOptinalNumberField, zUniqueArray } from "../utils";
+import { Prettify } from "../utils/helpers";
 
 export const isPaymentRequiredForOptionTypes = [
   "inherit",
@@ -74,7 +75,9 @@ export type AppointmentOptionUpdateModel = z.infer<
   typeof appointmentOptionSchema
 >;
 
-export type AppointmentOption = WithDatabaseId<AppointmentOptionUpdateModel> & {
+export type AppointmentOption = Prettify<
+  WithDatabaseId<AppointmentOptionUpdateModel>
+> & {
   updatedAt: Date;
 };
 
@@ -137,7 +140,9 @@ export type AppointmentAddonUpdateModel = z.infer<
   typeof appointmentAddonSchema
 >;
 
-export type AppointmentAddon = WithDatabaseId<AppointmentAddonUpdateModel> & {
+export type AppointmentAddon = Prettify<
+  WithDatabaseId<AppointmentAddonUpdateModel>
+> & {
   updatedAt: Date;
 };
 
@@ -146,6 +151,8 @@ export const appointmentAddonsSchema = z
   .optional();
 export type AppointmentAddons = z.infer<typeof appointmentAddonsSchema>;
 
-export type AppointmentChoice = Omit<AppointmentOption, "addons"> & {
-  addons: AppointmentAddon[];
-};
+export type AppointmentChoice = Prettify<
+  Omit<AppointmentOption, "addons"> & {
+    addons: AppointmentAddon[];
+  }
+>;

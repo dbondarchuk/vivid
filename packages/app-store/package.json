@@ -40,7 +40,7 @@
     "@vivid/utils": "*",
     "html-to-text": "^9.0.5",
     "ics": "^3.7.6",
-    "lucide-react": "^0.479.0",
+    "lucide-react": "^0.525.0",
     "nodemailer": "^6.9.14",
     "ts-ics": "2.0.4",
     "tsdav": "2.1.2"

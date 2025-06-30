@@ -87,6 +87,7 @@ export const EnEmailTemplates: EmailTemplates = {
     ),
   },
   subject: "Appointment for {{option.name}} by {{fields.name}} at {{dateTime}}",
+  eventTitle: "{{fields.name}} for {{option.name}}",
   buttonTexts: {
     viewAppointment: "View Appointment",
     decline: "Decline",

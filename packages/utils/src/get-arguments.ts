@@ -124,7 +124,7 @@ export const getArguments = <
               .setZone(
                 useAppointmentTimezone
                   ? appointment.timeZone
-                  : config.booking?.timeZone
+                  : config?.general?.timeZone
               )
               .toLocaleString(DateTime.DATETIME_FULL, { locale })
           : undefined,
@@ -133,7 +133,7 @@ export const getArguments = <
               .setZone(
                 useAppointmentTimezone
                   ? appointment.timeZone
-                  : config.booking?.timeZone
+                  : config?.general?.timeZone
               )
               .toLocaleString(DateTime.DATETIME_FULL, { locale })
           : undefined,
@@ -142,7 +142,7 @@ export const getArguments = <
               .setZone(
                 useAppointmentTimezone
                   ? appointment.timeZone
-                  : config.booking?.timeZone
+                  : config?.general?.timeZone
               )
               .toLocaleString(DateTime.DATETIME_FULL, { locale })
           : undefined,
@@ -175,7 +175,7 @@ export const getArguments = <
           .setZone(
             useAppointmentTimezone
               ? appointment.timeZone
-              : config.booking?.timeZone
+              : config?.general?.timeZone
           )
           .toLocaleString(DateTime.DATETIME_FULL, { locale })
       : undefined,
@@ -184,7 +184,7 @@ export const getArguments = <
           .setZone(
             useAppointmentTimezone
               ? appointment.timeZone
-              : config.booking?.timeZone
+              : config?.general?.timeZone
           )
           .toLocaleString(DateTime.DATETIME_FULL, { locale })
       : undefined,

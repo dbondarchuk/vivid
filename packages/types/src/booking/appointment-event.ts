@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { zOptionalOrMinLengthString, zPhone, zUniqueArray } from "../utils";
+import { Prettify } from "../utils/helpers";
 import { zTimeZone } from "../utils/zTimeZone";
 import { AppointmentAddon, AppointmentOption } from "./appointment-option";
 
@@ -19,15 +20,22 @@ export type AppointmentDiscount = {
   discountAmount: number;
 };
 
+export type AppointmentEventOption = Prettify<
+  Pick<AppointmentOption, "_id" | "name" | "price" | "duration">
+>;
+export type AppointmentEventAddon = Prettify<
+  Pick<AppointmentAddon, "_id" | "name" | "price" | "duration">
+>;
+
 export type AppointmentEvent = {
   totalDuration: number;
   totalPrice?: number;
   dateTime: Date;
   timeZone: string;
   fields: AppointmentFields;
-  option: Omit<AppointmentOption, "fields" | "addons" | "updatedAt">;
+  option: AppointmentEventOption;
   fieldsLabels?: Record<string, string>;
-  addons?: Omit<AppointmentAddon, "updatedAt">[];
+  addons?: AppointmentEventAddon[];
   note?: string;
   discount?: AppointmentDiscount;
 };

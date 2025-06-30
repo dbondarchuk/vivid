@@ -1,6 +1,6 @@
-import { useI18n } from "@vivid/i18n";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { Appointment, AppointmentStatus } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
+import { Appointment } from "@vivid/types";
 import {
   Button,
   Dialog,
@@ -18,12 +18,10 @@ import { AppointmentView } from "./appoitment-view";
 
 export type AppointmentDialogProps = DialogProps & {
   appointment: Appointment;
-  timeZone?: string;
 };
 
 export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
   appointment,
-  timeZone,
   ...rest
 }) => {
   const t = useI18n("admin");
@@ -47,7 +45,7 @@ export const AppointmentDialog: React.FC<AppointmentDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
         <div className="flex-1 w-full overflow-auto">
-          <AppointmentView appointment={appointment} timeZone={timeZone} />
+          <AppointmentView appointment={appointment} />
         </div>
         <DialogFooter className="flex-row gap-2">
           <DialogClose asChild>

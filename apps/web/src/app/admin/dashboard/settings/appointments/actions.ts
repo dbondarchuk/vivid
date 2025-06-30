@@ -11,7 +11,6 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
 
   actionLogger.debug(
     {
-      timeZone: data.timeZone,
       optionsCount: data.options.length,
       smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
     },
@@ -26,7 +25,6 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
 
     actionLogger.debug(
       {
-        timeZone: data.timeZone,
         optionsCount: data.options.length,
         smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
       },
@@ -35,7 +33,6 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
   } catch (error) {
     actionLogger.error(
       {
-        timeZone: data.timeZone,
         optionsCount: data.options.length,
         smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
         error: error instanceof Error ? error.message : String(error),

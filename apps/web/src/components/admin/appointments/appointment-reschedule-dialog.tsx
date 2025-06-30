@@ -33,6 +33,7 @@ import {
   Spinner,
   toastPromise,
   use12HourFormat,
+  useTimeZone,
 } from "@vivid/ui";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
@@ -44,7 +45,6 @@ import { AppointmentCalendar } from "./appointment-calendar";
 
 export type AppointmentRescheduleDialogProps = DialogProps & {
   appointment: Appointment;
-  timeZone?: string;
   trigger?: React.ReactNode;
   onRescheduled?: (props: { dateTime: Date; duration: number }) => void;
 };
@@ -62,14 +62,10 @@ type FormValues = z.infer<typeof formSchema>;
 
 export const AppointmentRescheduleDialog: React.FC<
   AppointmentRescheduleDialogProps
-> = ({
-  appointment: propAppointment,
-  timeZone,
-  trigger,
-  onRescheduled,
-  ...rest
-}) => {
+> = ({ appointment: propAppointment, trigger, onRescheduled, ...rest }) => {
   const t = useI18n("admin");
+  const timeZone = useTimeZone();
+
   const [appointment, setAppointment] =
     React.useState<Appointment>(propAppointment);
   const uses12HourFormat = use12HourFormat();
@@ -249,7 +245,6 @@ export const AppointmentRescheduleDialog: React.FC<
                   </div>
                   <div className="flex flex-col gap-2">
                     <AppointmentCalendar
-                      timeZone={timeZone}
                       appointment={appointment}
                       onEventsLoad={setCalendarEvents}
                     />

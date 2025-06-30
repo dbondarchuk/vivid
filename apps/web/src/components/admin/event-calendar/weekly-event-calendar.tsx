@@ -11,6 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
   useMouse,
+  useTimeZone,
 } from "@vivid/ui";
 import { formatTime, formatTimeLocale, parseTime } from "@vivid/utils";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
@@ -69,7 +70,6 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   date,
   variant = "week-of",
   events: propsEvents,
-  timeZone,
   className,
   scrollToHour = 8,
   disableTimeChange = false,
@@ -79,6 +79,8 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   onRangeChange,
   ...rest
 }) => {
+  const timeZone = useTimeZone();
+
   const timeSlotColCount = 1;
   const slotsPerHour = 60 / slotInterval;
   const locale = useLocale();

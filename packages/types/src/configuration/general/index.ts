@@ -1,6 +1,7 @@
 import { languages } from "@vivid/i18n";
 import { z } from "zod";
 import { asOptionalField, zPhone } from "../../utils";
+import { zTimeZone } from "../../utils/zTimeZone";
 
 export const generalConfigurationSchema = z.object({
   name: z.string().min(3, { message: "configuration.general.name.min" }),
@@ -21,6 +22,7 @@ export const generalConfigurationSchema = z.object({
   logo: z.string().optional(),
   favicon: z.string().optional(),
   language: z.enum(languages),
+  timeZone: zTimeZone,
 });
 
 export type GeneralConfiguration = z.infer<typeof generalConfigurationSchema>;

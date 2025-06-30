@@ -15,7 +15,7 @@ export const PendingAppointmentsTab: React.FC = async () => {
     );
 
   const { timeZone } =
-    await ServicesContainer.ConfigurationService().getConfiguration("booking");
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   return (
     <>

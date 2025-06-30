@@ -1,5 +1,5 @@
 import { useI18n, useLocale } from "@vivid/i18n";
-import { Button, cn, ScrollArea } from "@vivid/ui";
+import { Button, cn, ScrollArea, useTimeZone } from "@vivid/ui";
 import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
 import {
   CalendarIcon,
@@ -26,13 +26,14 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   disableTimeChange = false,
   daysToShow = 3,
   schedule = {},
-  timeZone,
   onEventClick,
   onRangeChange,
   renderEvent,
 }) => {
-  const locale = useLocale();
   const t = useI18n("admin");
+  const locale = useLocale();
+  const timeZone = useTimeZone();
+
   const [currentDate, setCurrentDate] = React.useState<DateTime>(
     DateTime.fromJSDate(date || new Date())
   );
@@ -247,11 +248,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                         );
 
                         return (
-                          <EventPopover
-                            key={idx}
-                            event={event}
-                            timeZone={timeZone}
-                          >
+                          <EventPopover key={idx} event={event}>
                             <div
                               className="flex items-start space-x-3 p-3 rounded-md hover:bg-accent/50 cursor-pointer transition-colors"
                               onClick={(e) => {

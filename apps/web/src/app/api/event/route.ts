@@ -181,6 +181,7 @@ export async function POST(request: NextRequest) {
       event: eventOrError.event,
       paymentIntentId,
       files,
+      by: "customer",
     });
 
     logger.debug(

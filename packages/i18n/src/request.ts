@@ -31,11 +31,11 @@ export const config = getRequestConfig(async ({ locale: baseLocale }) => {
     translation: (await import(`./locales/${locale}/translation.json`)).default,
     ui: (await import(`./locales/${locale}/ui.json`)).default,
     validation: (await import(`./locales/${locale}/validation.json`)).default,
+    apps: (await import(`./locales/${locale}/apps.json`)).default,
   };
 
   if (isAdminPath) {
     messages.admin = (await import(`./locales/${locale}/admin.json`)).default;
-    messages.apps = (await import(`./locales/${locale}/apps.json`)).default;
     messages.builder = (
       await import(`./locales/${locale}/builder.json`)
     ).default;
