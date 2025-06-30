@@ -4,13 +4,12 @@ import { Prettify } from "../utils/helpers";
 import { zTimeZone } from "../utils/zTimeZone";
 import { AppointmentAddon, AppointmentOption } from "./appointment-option";
 
-export type AppointmentFields = Record<
-  string,
-  string | boolean | Date | number
-> & {
+export type AppointmentFields = {
   name: string;
   email: string;
   phone: string;
+} & {
+  [key: string]: any;
 };
 
 export type AppointmentDiscount = {
@@ -67,12 +66,7 @@ export const appointmentRequestSchema = z.object({
         .trim(),
       phone: zPhone,
     })
-    .and(
-      z.record(
-        z.string(),
-        z.union([z.number(), z.date(), z.boolean(), z.string()])
-      )
-    ),
+    .passthrough(),
   promoCode: zOptionalOrMinLengthString(
     1,
     "appointments.request.promoCode.min"
