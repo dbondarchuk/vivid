@@ -145,7 +145,12 @@ export default async function RootLayout({
             }}
           />
           {general.favicon && (
-            <link rel="icon" href={general.favicon} sizes="any" />
+            <link
+              rel="icon"
+              href={general.favicon}
+              type="image/x-icon"
+              sizes="any"
+            />
           )}
           {scripts?.header?.map((resource, index) => (
             <ScriptRenderer resource={resource} id={index} key={index} />

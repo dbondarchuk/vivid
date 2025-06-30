@@ -1,12 +1,20 @@
 import { CustomerForm } from "@/components/admin/customers/form";
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, Heading } from "@vivid/ui";
+import { Metadata } from "next";
 
 type Props = {
   searchParams: Promise<{ from?: string }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("customers.new"),
+  };
+}
 
 export default async function NewCustomerPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("new-customer");

@@ -3,11 +3,26 @@ import { Skeleton } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { Suspense } from "react";
 import { AppointmentViewWrapper } from "./appointment-view-wrapper";
+import { getI18nAsync } from "@vivid/i18n/server";
+import { Metadata } from "next";
+import { getAppointment } from "./cached";
 
 type Props = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ decline?: any }>;
 };
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  const { id } = await props.params;
+  const appointment = await getAppointment(id);
+  return {
+    title: appointment?.option.name,
+    description: t("appointments.detail.by", {
+      name: appointment?.fields.name,
+    }),
+  };
+}
 
 export default async function AppointmentPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("appointment-detail");

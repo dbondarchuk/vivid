@@ -6,14 +6,22 @@ import {
 import { CommunicationLogsTable } from "@/components/admin/communication-logs/table/table";
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import PageContainer from "@/components/admin/layout/page-container";
-import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading } from "@vivid/ui";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("navigation.communicationLogs"),
+  };
+}
 
 export default async function CommunicationLogsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("communication-logs");

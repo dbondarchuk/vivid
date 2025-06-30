@@ -256,7 +256,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                         <p>{t("pages.form.doNotCombineTitleTooltip")}</p>
                         <p>
                           <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
-                            {"{website title} - {page title}"}
+                            {"{page title} | {website title}"}
                           </code>
                         </p>
                       </InfoTooltip>

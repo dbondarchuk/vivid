@@ -9,11 +9,19 @@ import { TemplatesTableAction } from "@/components/admin/templates/table/table-a
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading } from "@vivid/ui";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("templates.page.title"),
+  };
+}
 
 export default async function EmailTemplatesPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("templates");

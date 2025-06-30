@@ -10,11 +10,19 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { CalendarClock } from "lucide-react";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("navigation.appointments"),
+  };
+}
 
 export default async function AppointmentsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("appointments");

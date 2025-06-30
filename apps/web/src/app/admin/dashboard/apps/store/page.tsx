@@ -1,13 +1,20 @@
 import { AppStore } from "@/components/admin/apps/store/app-store";
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
-import React from "react";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs } from "@vivid/ui";
+import { Metadata } from "next";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("apps.appStore"),
+  };
+}
 
 export default async function AppsStorePage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("store");

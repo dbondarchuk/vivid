@@ -1,26 +1,28 @@
-import { CustomersTable } from "@/components/admin/customers/table/table";
-import { CustomersTableAction } from "@/components/admin/customers/table/table-action";
-import PageContainer from "@/components/admin/layout/page-container";
+import { CustomersTableColumnLength } from "@/components/admin/customers/table/columns";
 import {
   searchParamsCache,
   serialize,
 } from "@/components/admin/customers/table/search-params";
-import {
-  Breadcrumbs,
-  DataTableSkeleton,
-  Heading,
-  Link,
-  Separator,
-} from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
+import { CustomersTable } from "@/components/admin/customers/table/table";
+import { CustomersTableAction } from "@/components/admin/customers/table/table-action";
+import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { Plus } from "lucide-react";
+import { Metadata } from "next/types";
 import { Suspense } from "react";
-import { CustomersTableColumnLength } from "@/components/admin/customers/table/columns";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("customers.title"),
+  };
+}
 
 export default async function CustomersPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("customers");

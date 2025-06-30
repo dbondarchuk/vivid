@@ -1,4 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import {
   Breadcrumbs,
@@ -8,19 +10,25 @@ import {
   TabsList,
   TabsViaUrl,
 } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
+import { Metadata } from "next";
 import { Suspense } from "react";
 import { EventsCalendar } from "./events-calendar";
 import { NextAppointmentsCards } from "./next-appointments-cards";
 import { PendingAppointmentsTab } from "./pending-appointments-tab";
 import { PendingAppointmentsBadge } from "./pending-appointments-toast-stream";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 type Params = {
   searchParams: Promise<{ activeTab?: string; key?: string }>;
 };
 
 const defaultTab = "overview";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("navigation.dashboard"),
+  };
+}
 
 export default async function Page({ searchParams }: Params) {
   const logger = getLoggerFactory("AdminPages")("dashboard");

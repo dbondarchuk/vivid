@@ -5,14 +5,14 @@ import { Breadcrumbs, Heading } from "@vivid/ui";
 import { notFound } from "next/navigation";
 import React from "react";
 import { AppointmentDeclineDialogWrapper } from "./appointment-decline-dialog";
+import { getAppointment } from "./cached";
 
 export const AppointmentViewWrapper: React.FC<{
   appointmentId: string;
   shouldShowDeclineModal?: boolean;
 }> = async ({ appointmentId, shouldShowDeclineModal }) => {
   const t = await getI18nAsync("admin");
-  const appointment =
-    await ServicesContainer.EventsService().getAppointment(appointmentId);
+  const appointment = await getAppointment(appointmentId);
 
   if (!appointment) {
     return notFound();

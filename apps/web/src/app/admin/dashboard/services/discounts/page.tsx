@@ -8,19 +8,21 @@ import { DiscountsTable } from "@/components/admin/services/discounts/table/tabl
 import { DiscountsTableAction } from "@/components/admin/services/discounts/table/table-action";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import {
-  Breadcrumbs,
-  DataTableSkeleton,
-  Heading,
-  Link,
-  Separator,
-} from "@vivid/ui";
+import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { Plus } from "lucide-react";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("services.discounts.title"),
+  };
+}
 
 export default async function DiscountsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("discounts");

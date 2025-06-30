@@ -17,30 +17,25 @@ type Props = {
 export const dynamicParams = true;
 export const revalidate = 60;
 
-const getSource = cache(async (slug: string[], preview = false) => {
+const getSource = cache(async (slug?: string, preview = false) => {
   const logger = getLoggerFactory("PageComponent")("getSource");
 
-  logger.debug(
-    { slug, preview, slugLength: slug?.length },
-    "Getting page source"
-  );
+  logger.debug({ slug, preview }, "Getting page source");
 
   if (!slug || !slug.length) {
     logger.debug(
       { originalSlug: slug },
       "No slug provided, defaulting to home"
     );
-    slug = ["home"];
+    slug = "home";
   }
 
-  const pageSlug = slug.join("/");
+  logger.debug({ slug, preview }, "Retrieving page by slug");
 
-  logger.debug({ pageSlug, preview }, "Retrieving page by slug");
-
-  const page = await ServicesContainer.PagesService().getPageBySlug(pageSlug);
+  const page = await ServicesContainer.PagesService().getPageBySlug(slug);
 
   if (slug.length === 1 && slug[0] === "home" && !page) {
-    logger.info({ pageSlug }, "Home page not found, redirecting to install");
+    logger.info({ slug }, "Home page not found, redirecting to install");
     redirect("/install");
   }
 
@@ -50,7 +45,7 @@ const getSource = cache(async (slug: string[], preview = false) => {
   ) {
     logger.warn(
       {
-        pageSlug,
+        slug,
         preview,
         pageExists: !!page,
         pagePublished: page?.published,
@@ -62,9 +57,13 @@ const getSource = cache(async (slug: string[], preview = false) => {
     notFound();
   }
 
+  // read route params
+  const settings =
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
+
   logger.debug(
     {
-      pageSlug,
+      slug,
       pageId: page._id,
       pageTitle: page.title,
       pagePublished: page.published,
@@ -73,7 +72,7 @@ const getSource = cache(async (slug: string[], preview = false) => {
     "Successfully retrieved page source"
   );
 
-  return page;
+  return { page, settings };
 });
 
 export async function generateMetadata(
@@ -96,11 +95,10 @@ export async function generateMetadata(
       "Processing metadata generation request"
     );
 
-    // read route params
-    const settings =
-      await ServicesContainer.ConfigurationService().getConfiguration(
-        "general"
-      );
+    const { page, settings } = await getSource(
+      params.slug?.join("/"),
+      searchParams?.preview
+    );
 
     logger.debug(
       {
@@ -110,11 +108,9 @@ export async function generateMetadata(
       "Retrieved general configuration"
     );
 
-    const page = await getSource(params.slug, searchParams?.preview);
-
     const title = page.doNotCombine?.title
       ? page.title
-      : [settings.title, page.title].filter((x) => !!x).join(" - ");
+      : [page.title, settings.title].filter((x) => !!x).join(" | ");
 
     const description = page.doNotCombine?.description
       ? page.description
@@ -140,6 +136,9 @@ export async function generateMetadata(
       title,
       description,
       keywords,
+      icons: {
+        icon: settings.favicon || "/icon.ico",
+      },
     };
   } catch (error: any) {
     logger.error(
@@ -176,7 +175,10 @@ export default async function Page(props: Props) {
       "Processing page render request"
     );
 
-    const page = await getSource(params.slug, searchParams?.preview);
+    const { page, settings } = await getSource(
+      params.slug?.join("/"),
+      searchParams?.preview
+    );
 
     logger.debug(
       {

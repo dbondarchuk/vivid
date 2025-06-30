@@ -4,6 +4,14 @@ import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { ScriptsSettingsForm } from "./form";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("settings.scripts.title"),
+  };
+}
 
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("scripts");

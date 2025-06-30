@@ -5,10 +5,18 @@ import { ServicesContainer } from "@vivid/services";
 import { AppointmentChoice } from "@vivid/types";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 import { AppointmentScheduleForm } from "./form";
+import { Metadata } from "next";
 
 type Props = {
   searchParams: Promise<{ from?: string; customer?: string }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("appointments.new.title"),
+  };
+}
 
 export default async function NewAssetsPage(props: Props) {
   const t = await getI18nAsync("admin");

@@ -9,10 +9,12 @@ import { AuthResult } from "../../auth";
 import { redirect } from "next/navigation";
 import { getI18nAsync } from "@vivid/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Sign in",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("auth.signIn"),
+  };
+}
 
 export default async function AuthenticationPage() {
   const logger = getLoggerFactory("AdminPages")("signin");

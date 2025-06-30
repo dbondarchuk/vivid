@@ -1,14 +1,22 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs, Heading, Link, Separator, Skeleton } from "@vivid/ui";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, Heading, Link, Skeleton } from "@vivid/ui";
 import { Boxes, Store } from "lucide-react";
+import { Metadata } from "next/types";
 import { Suspense } from "react";
 import { InstalledApps } from "./installed-apps";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 type Params = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("navigation.apps"),
+  };
+}
 
 export default async function AppsPage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("apps");

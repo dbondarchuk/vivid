@@ -4,10 +4,21 @@ import { AvailableApps } from "@vivid/app-store";
 import { Breadcrumbs } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { Metadata } from "next/types";
 
 type Params = {
   params: Promise<{ appName: string }>;
 };
+
+export async function generateMetadata(props: Params): Promise<Metadata> {
+  const t = await getI18nAsync("apps");
+  const { appName } = await props.params;
+  const app = AvailableApps[appName];
+  return {
+    title: t(app.displayName),
+    description: t(app.description.text),
+  };
+}
 
 export default async function AppsStorePage(props: Params) {
   const logger = getLoggerFactory("AdminPages")("app-store-details");

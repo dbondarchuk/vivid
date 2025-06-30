@@ -22,8 +22,13 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "VIVID CMS",
-  description: "Manage your website from here",
+  title: {
+    default: "Dashboard",
+    template: "%s | VIVID CMS",
+  },
+  icons: {
+    icon: "/icon.ico",
+  },
 };
 
 export default async function RootLayout({

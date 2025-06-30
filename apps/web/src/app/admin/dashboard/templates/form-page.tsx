@@ -7,6 +7,7 @@ import { Breadcrumbs } from "@vivid/ui";
 import { demoAppointment, getArguments, template } from "@vivid/utils";
 import { notFound } from "next/navigation";
 import React from "react";
+import { getTemplate } from "./cached";
 
 export const TemplateFormPage: React.FC<
   | {
@@ -36,9 +37,7 @@ export const TemplateFormPage: React.FC<
   let type: CommunicationChannel;
   let template: TemplatesTemplate | undefined;
   if ("id" in props) {
-    const data = await ServicesContainer.TemplatesService().getTemplate(
-      props.id
-    );
+    const data = await getTemplate(props.id);
     if (!data) {
       notFound();
     }

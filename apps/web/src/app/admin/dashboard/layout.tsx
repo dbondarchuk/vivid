@@ -11,14 +11,9 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@vivid/ui";
-import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../../components/cookies-provider";
 import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
-
-export const metadata: Metadata = {
-  title: "VIVID Dashboard",
-};
 
 export default async function DashboardLayout({
   children,

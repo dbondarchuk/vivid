@@ -5,6 +5,7 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { CommunicationChannel } from "@vivid/types";
 import { Heading, Skeleton } from "@vivid/ui";
+import { Metadata } from "next";
 import { Suspense } from "react";
 import { TemplateFormPage } from "../../form-page";
 
@@ -14,6 +15,16 @@ type Props = {
     template?: string;
   }>;
 };
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  const { type } = await props.params;
+  return {
+    title: t("templates.newPage.title", {
+      type: t(`common.labels.channel.${type}`).toLowerCase(),
+    }),
+  };
+}
 
 export default async function NewTemplatePage({ params, searchParams }: Props) {
   const logger = getLoggerFactory("AdminPages")("new-template");

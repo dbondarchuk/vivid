@@ -1,9 +1,17 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
+import { Metadata } from "next";
 import { HeaderSettingsForm } from "./form";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("navigation.header"),
+  };
+}
 
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("header");

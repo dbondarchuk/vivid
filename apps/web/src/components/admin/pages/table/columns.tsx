@@ -2,7 +2,12 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@vivid/i18n";
 import { Page } from "@vivid/types";
-import { Checkbox, tableSortHeader, tableSortNoopFunction } from "@vivid/ui";
+import {
+  Checkbox,
+  Link,
+  tableSortHeader,
+  tableSortNoopFunction,
+} from "@vivid/ui";
 import { DateTime } from "luxon";
 import { CellAction } from "./cell-action";
 
@@ -34,7 +39,13 @@ export const columns: ColumnDef<Page>[] = [
     enableHiding: false,
   },
   {
-    accessorFn: (page) => page.title,
+    cell: ({ row }) => {
+      return (
+        <Link href={`/admin/dashboard/pages/${row.original._id}`}>
+          {row.original.title}
+        </Link>
+      );
+    },
     id: "title",
     header: tableSortHeader("pages.table.columns.title", "string", "admin"),
     sortingFn: tableSortNoopFunction,

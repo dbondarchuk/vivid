@@ -1,15 +1,23 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { ServiceFieldForm } from "@/components/admin/services/fields/form";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { ServiceFieldUpdateModel } from "@vivid/types";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { notFound } from "next/navigation";
+import { Metadata } from "next/types";
 
 type Props = {
   searchParams: Promise<{ from?: string }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("services.fields.new"),
+  };
+}
 
 export default async function NewServicePage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("new-service-field");

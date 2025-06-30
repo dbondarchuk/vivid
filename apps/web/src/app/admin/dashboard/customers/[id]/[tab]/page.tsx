@@ -39,6 +39,8 @@ import {
 } from "../../../../../../components/admin/communications/communications";
 import { CustomerFiles, CustomerFileUpload } from "./files";
 import { CalendarClock } from "lucide-react";
+import { Metadata } from "next";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ id: string; tab: string }>;
@@ -62,6 +64,19 @@ const tabs = [
 const scrollableTabs = [detailsTab, communicationsTab, filesTab];
 
 type Tab = (typeof tabs)[number];
+
+const getCustomer = cache(async (id: string) => {
+  return await ServicesContainer.CustomersService().getCustomer(id);
+});
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  const { id } = await props.params;
+  const customer = await getCustomer(id);
+  return {
+    title: `${customer?.name} | ${t("customers.title")}`,
+  };
+}
 
 export default async function CustomerPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("customer-detail");
@@ -105,9 +120,7 @@ export default async function CustomerPage(props: Props) {
     "Loading customer detail page"
   );
 
-  const customer = await ServicesContainer.CustomersService().getCustomer(
-    params.id
-  );
+  const customer = await getCustomer(params.id);
 
   if (!customer) {
     logger.warn({ customerId: params.id }, "Customer not found");

@@ -1,15 +1,23 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { AddonForm } from "@/components/admin/services/addons/form";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentAddonUpdateModel } from "@vivid/types";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 import { notFound } from "next/navigation";
+import { Metadata } from "next/types";
 
 type Props = {
   searchParams: Promise<{ from?: string }>;
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("services.addons.new"),
+  };
+}
 
 export default async function NewAddonPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("new-service-addon");

@@ -1,16 +1,30 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 
 import { AddonForm } from "@/components/admin/services/addons/form";
 import { getI18nAsync } from "@vivid/i18n/server";
-import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
+import { ServicesContainer } from "@vivid/services";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
+const getAddon = cache(async (id: string) => {
+  return await ServicesContainer.ServicesService().getAddon(id);
+});
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  const { id } = await props.params;
+  const addon = await getAddon(id);
+  return {
+    title: `${addon?.name} | ${t("services.addons.title")}`,
+  };
+}
 export default async function EditAddonPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-service-addon");
   const t = await getI18nAsync("admin");
@@ -23,7 +37,7 @@ export default async function EditAddonPage(props: Props) {
     "Loading service addon edit page"
   );
 
-  const addon = await ServicesContainer.ServicesService().getAddon(params.id);
+  const addon = await getAddon(params.id);
 
   if (!addon) {
     logger.warn({ addonId: params.id }, "Service addon not found");

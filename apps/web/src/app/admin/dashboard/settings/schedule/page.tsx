@@ -4,6 +4,14 @@ import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 import { ScheduleSettingsForm } from "./form";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("settings.schedule.title"),
+  };
+}
 
 export default async function Page() {
   const logger = getLoggerFactory("AdminPages")("schedule");

@@ -4,7 +4,9 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -13,18 +15,14 @@ type Props = {
   }>;
 };
 
-export default async function Page(props: Props) {
-  const logger = getLoggerFactory("AdminDashboardPage")("Page");
+const getAppPage = cache(async (path: string) => {
+  const logger = getLoggerFactory("AdminDashboardPage")("getAppPage");
   const t = await getI18nAsync("admin");
   const tApps = await getI18nAsync("apps");
 
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-  const path = params.slug?.join("/").toLocaleLowerCase() || "/";
   logger.debug(
     {
       slug: path,
-      searchParams: searchParams,
     },
     "Processing dashboard page request"
   );
@@ -73,20 +71,57 @@ export default async function Page(props: Props) {
     ]),
   ];
 
+  return {
+    title: tApps(menuItem.pageTitle || app.displayName),
+    description: tApps(
+      menuItem.pageDescription || "common.defaultDescription",
+      {
+        appName: tApps(app.displayName),
+      }
+    ),
+    breadcrumbItems,
+    appId,
+    menuItem,
+    app,
+  };
+});
+
+const getSlug = cache(async (props: Props) => {
+  const { slug } = await props.params;
+  return slug?.join("/").toLocaleLowerCase() || "/";
+});
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const path = await getSlug(props);
+  const appPage = await getAppPage(path);
+  return {
+    title: appPage.title,
+    description: appPage.description,
+  };
+}
+
+export default async function Page(props: Props) {
+  const logger = getLoggerFactory("AdminDashboardPage")("Page");
+  const path = await getSlug(props);
+  const searchParams = await props.searchParams;
+
+  logger.debug(
+    {
+      slug: path,
+      searchParams: searchParams,
+    },
+    "Processing dashboard page request"
+  );
+
+  const { menuItem, breadcrumbItems, appId, title, description } =
+    await getAppPage(path);
+
   return (
     <PageContainer scrollable={!menuItem.notScrollable}>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
-          <Heading
-            title={tApps(menuItem.pageTitle || app.displayName)}
-            description={tApps(
-              menuItem.pageDescription || "common.defaultDescription",
-              {
-                appName: tApps(app.displayName),
-              }
-            )}
-          />
+          <Heading title={title} description={description} />
           {/* <Separator /> */}
         </div>
         <menuItem.Page appId={appId} />

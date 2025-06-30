@@ -1,8 +1,16 @@
 import { AssetForm } from "@/components/admin/assets/form";
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, Heading } from "@vivid/ui";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  return {
+    title: t("assets.new"),
+  };
+}
 
 export default async function NewAssetsPage() {
   const logger = getLoggerFactory("AdminPages")("new-asset");

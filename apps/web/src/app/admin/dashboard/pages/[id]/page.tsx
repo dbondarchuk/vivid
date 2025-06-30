@@ -8,10 +8,25 @@ import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { Globe } from "lucide-react";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+const getPage = cache(async (id: string) => {
+  return await ServicesContainer.PagesService().getPage(id);
+});
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  const { id } = await props.params;
+  const page = await getPage(id);
+  return {
+    title: `${page?.title} | ${t("pages.title")}`,
+  };
+}
 
 export default async function EditPagesPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-page");
@@ -25,7 +40,7 @@ export default async function EditPagesPage(props: Props) {
     "Loading page edit page"
   );
 
-  const page = await ServicesContainer.PagesService().getPage(params.id);
+  const page = await getPage(params.id);
 
   if (!page) {
     logger.warn({ pageId: params.id }, "Page not found");

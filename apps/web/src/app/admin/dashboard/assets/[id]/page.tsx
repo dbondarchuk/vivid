@@ -1,14 +1,25 @@
 import { AssetEditForm } from "@/components/admin/assets/edit-form";
 import PageContainer from "@/components/admin/layout/page-container";
-import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
+import { ServicesContainer } from "@vivid/services";
+import { Breadcrumbs, Heading } from "@vivid/ui";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  const { id } = await props.params;
+  const asset = await ServicesContainer.AssetsService().getAsset(id);
+  return {
+    title: t("assets.edit"),
+    description: asset?.filename,
+  };
+}
 
 export default async function EditAssetsPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-asset");

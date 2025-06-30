@@ -6,10 +6,25 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { notFound } from "next/navigation";
+import { Metadata } from "next/types";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+const getOption = cache(async (id: string) => {
+  return await ServicesContainer.ServicesService().getOption(id);
+});
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const t = await getI18nAsync("admin");
+  const { id } = await props.params;
+  const option = await getOption(id);
+  return {
+    title: `${option?.name} | ${t("services.options.title")}`,
+  };
+}
 
 export default async function EditOptionPage(props: Props) {
   const logger = getLoggerFactory("AdminPages")("edit-service-option");
@@ -23,7 +38,7 @@ export default async function EditOptionPage(props: Props) {
     "Loading service option edit page"
   );
 
-  const option = await ServicesContainer.ServicesService().getOption(params.id);
+  const option = await getOption(params.id);
 
   if (!option) {
     logger.warn({ optionId: params.id }, "Service option not found");
