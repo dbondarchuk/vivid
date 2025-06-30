@@ -518,8 +518,7 @@
       },
       "selectPlaceholder": "Вибрати вигляд",
       "connectWith": "Підключитися з",
-      "cardFieldsProviderError": "Не вдалося знайти дочірні компоненти в <PayPalCardFieldsProvider />",
-      "payButton": "Оплатити"
+      "cardFieldsProviderError": "Не вдалося знайти дочірні компоненти в <PayPalCardFieldsProvider />"
     },
     "statusText": {
       "successfully_set_up": "Успішно підключено до PayPal",
@@ -546,6 +545,10 @@
       "refund_error": "Помилка повернення платежу",
       "payment_failed": "Платіж не вдався",
       "payment_failed_description": "Ваш платіж не вдався. Будь ласка, спробуйте ще раз. Якщо проблема не зникає, будь ласка, зателефонуйте нам"
+    },
+    "ui": {
+      "payButton": "Оплатити",
+      "or": "або"
     }
   },
   "reminders": {

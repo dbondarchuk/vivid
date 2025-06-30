@@ -12,5 +12,6 @@ export type EmailTemplates = {
     | "auto-confirmed"]: EmailTemplate;
 } & {
   subject: string;
+  eventTitle: string;
   buttonTexts: Record<"viewAppointment" | "decline" | "confirm", string>;
 };

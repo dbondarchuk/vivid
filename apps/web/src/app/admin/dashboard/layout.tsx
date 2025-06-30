@@ -5,7 +5,12 @@ import { navItems } from "@/constants/data";
 import { AvailableApps } from "@vivid/app-store";
 import { ServicesContainer } from "@vivid/services";
 import { NavItemGroup } from "@vivid/types";
-import { BreadcrumbsProvider, SidebarInset, SidebarProvider } from "@vivid/ui";
+import {
+  BreadcrumbsProvider,
+  ConfigProvider,
+  SidebarInset,
+  SidebarProvider,
+} from "@vivid/ui";
 import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../../components/cookies-provider";
@@ -70,25 +75,30 @@ export default async function DashboardLayout({
       });
     });
 
+  const config =
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
+
   return (
     <div className="flex">
-      <SidebarProvider>
-        <BreadcrumbsProvider>
-          <CookiesProvider>
-            <NuqsAdapter>
-              <AppSidebar menuItems={groups} name={name} logo={logo} />
-              <PendingAppointmentsToastStream />
+      <ConfigProvider config={config}>
+        <SidebarProvider>
+          <BreadcrumbsProvider>
+            <CookiesProvider>
+              <NuqsAdapter>
+                <AppSidebar menuItems={groups} name={name} logo={logo} />
+                <PendingAppointmentsToastStream />
 
-              <SidebarInset>
-                {/* <main className="w-full flex-1 overflow-hidden"> */}
-                <Header />
-                {children}
-                {/* </main> */}
-              </SidebarInset>
-            </NuqsAdapter>
-          </CookiesProvider>
-        </BreadcrumbsProvider>
-      </SidebarProvider>
+                <SidebarInset>
+                  {/* <main className="w-full flex-1 overflow-hidden"> */}
+                  <Header />
+                  {children}
+                  {/* </main> */}
+                </SidebarInset>
+              </NuqsAdapter>
+            </CookiesProvider>
+          </BreadcrumbsProvider>
+        </SidebarProvider>
+      </ConfigProvider>
     </div>
   );
 }

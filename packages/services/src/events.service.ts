@@ -6,12 +6,14 @@ import { getLoggerFactory } from "@vivid/logger";
 import {
   Appointment,
   AppointmentEntity,
+  AppointmentHistoryEntry,
   AppointmentTimeNotAvaialbleError,
   Customer,
   CustomerUpdateModel,
   IPaymentsService,
   IServicesService,
   Payment,
+  PaymentHistory,
   TimeSlot,
   type AppointmentEvent,
   type AppointmentStatus,
@@ -52,6 +54,7 @@ import { CUSTOMERS_COLLECTION_NAME } from "./customers.service";
 import { PAYMENTS_COLLECTION_NAME } from "./payments.service";
 
 export const APPOINTMENTS_COLLECTION_NAME = "appointments";
+export const APPOINTMENTS_HISTORY_COLLECTION_NAME = "appointments-history";
 
 export class EventsService implements IEventsService {
   protected readonly loggerFactory = getLoggerFactory("EventsService");
@@ -70,7 +73,8 @@ export class EventsService implements IEventsService {
     const logger = this.loggerFactory("getAvailability");
     logger.debug({ duration }, "Getting availability");
 
-    const config = await this.configurationService.getConfiguration("booking");
+    const { booking: config, general: generalConfig } =
+      await this.configurationService.getConfigurations("booking", "general");
 
     const events = await this.getBusyEvents();
 
@@ -91,6 +95,7 @@ export class EventsService implements IEventsService {
       duration,
       events,
       config,
+      generalConfig,
       schedule
     );
 
@@ -150,12 +155,14 @@ export class EventsService implements IEventsService {
     force = false,
     files,
     paymentIntentId,
+    by,
   }: {
     event: AppointmentEvent;
     confirmed?: boolean;
     force?: boolean;
     files?: Record<string, File>;
     paymentIntentId?: string;
+    by: "customer" | "user";
   }): Promise<Appointment> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
@@ -182,7 +189,7 @@ export class EventsService implements IEventsService {
     if (!force) {
       const eventTime = DateTime.fromJSDate(event.dateTime, {
         zone: "utc",
-      }).setZone(config.timeZone);
+      }).setZone(generalConfig.timeZone);
 
       if (eventTime < DateTime.now()) {
         logger.error(
@@ -209,6 +216,7 @@ export class EventsService implements IEventsService {
         event.totalDuration,
         events,
         config,
+        generalConfig,
         schedule
       );
 
@@ -262,6 +270,7 @@ export class EventsService implements IEventsService {
     const appointment = await this.saveEvent(
       appointmentId,
       event,
+      by,
       assets.length ? assets : undefined,
       paymentIntentId,
       confirmed ? "confirmed" : "pending",
@@ -556,7 +565,6 @@ export class EventsService implements IEventsService {
       const queries = buildSearchQuery<Appointment>(
         { $regex },
         "option.name",
-        "option.description",
         "note",
         "addons.name",
         "addons.description",
@@ -789,6 +797,15 @@ export class EventsService implements IEventsService {
 
     appointment.status = newStatus;
 
+    await this.addAppointmentHistory({
+      appointmentId: id,
+      type: "statusChanged",
+      data: {
+        oldStatus,
+        newStatus,
+      },
+    });
+
     const hooks =
       await this.appsService.getAppsByScopeWithData("appointment-hook");
 
@@ -974,6 +991,15 @@ export class EventsService implements IEventsService {
         }
       );
 
+    await this.addAppointmentHistory({
+      appointmentId: id,
+      type: "rescheduled",
+      data: {
+        oldDateTime: oldTime,
+        newDateTime: newTime,
+      },
+    });
+
     logger.debug(
       { appointmentId: id, newTime, newDuration },
       "Appointment rescheduled in db"
@@ -1049,12 +1075,114 @@ export class EventsService implements IEventsService {
     );
   }
 
+  public async getAppointmentHistory(
+    query: Query & {
+      appointmentId: string;
+      type?: AppointmentHistoryEntry["type"];
+    }
+  ): Promise<WithTotal<AppointmentHistoryEntry>> {
+    const logger = this.loggerFactory("getAppointmentHistory");
+    logger.debug({ query }, "Getting appointment history");
+
+    const sort: Sort = query.sort?.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.id]: curr.desc ? -1 : 1,
+      }),
+      {}
+    ) || { dateTime: -1 };
+
+    const filter: Filter<AppointmentHistoryEntry> = {};
+    if (query.appointmentId) {
+      filter.appointmentId = query.appointmentId;
+    }
+
+    if (query.type) {
+      filter.type = query.type;
+    }
+
+    if (query.search) {
+      const $regex = new RegExp(escapeRegex(query.search), "i");
+      const queries = buildSearchQuery<AppointmentHistoryEntry>(
+        { $regex },
+        "type"
+      );
+
+      filter.$or = queries;
+    }
+
+    const db = await getDbConnection();
+
+    const [result] = await db
+      .collection<AppointmentHistoryEntry>(APPOINTMENTS_HISTORY_COLLECTION_NAME)
+      .aggregate([
+        { $match: filter },
+        { $sort: sort },
+        {
+          $facet: {
+            paginatedResults:
+              query.limit === 0
+                ? undefined
+                : [
+                    ...(typeof query.offset !== "undefined"
+                      ? [{ $skip: query.offset }]
+                      : []),
+                    ...(typeof query.limit !== "undefined"
+                      ? [{ $limit: query.limit }]
+                      : []),
+                  ],
+            totalCount: [
+              {
+                $count: "count",
+              },
+            ],
+          },
+        },
+      ])
+      .toArray();
+
+    const response = {
+      total: result.totalCount?.[0]?.count || 0,
+      items: result.paginatedResults || [],
+    };
+
+    logger.debug(
+      { total: response.total, items: response.items.length },
+      "Appointment history retrieved"
+    );
+
+    return response;
+  }
+
+  public async addAppointmentHistory(
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">
+  ): Promise<string> {
+    const logger = this.loggerFactory("addAppointmentHistory");
+    logger.debug({ entry }, "Adding appointment history");
+
+    const db = await getDbConnection();
+    const historyEntry = {
+      ...entry,
+      _id: new ObjectId().toString(),
+      dateTime: new Date(),
+    } as AppointmentHistoryEntry;
+
+    await db
+      .collection<AppointmentHistoryEntry>(APPOINTMENTS_HISTORY_COLLECTION_NAME)
+      .insertOne(historyEntry);
+
+    logger.debug({ historyEntry }, "Appointment history added");
+
+    return historyEntry._id;
+  }
+
   private async getAvailableTimes(
     start: DateTime,
     end: DateTime,
     duration: number,
     events: Period[],
     config: BookingConfiguration,
+    generalConfig: GeneralConfiguration,
     schedule: Record<string, DaySchedule>
   ) {
     const logger = this.loggerFactory("getAvailableTimes");
@@ -1077,7 +1205,7 @@ export class EventsService implements IEventsService {
         configuration: {
           timeSlotDuration: duration,
           schedule,
-          timeZone: config.timeZone || DateTime.now().zoneName!,
+          timeZone: generalConfig.timeZone || DateTime.now().zoneName!,
           minAvailableTimeAfterSlot: config.breakDuration ?? 0,
           minAvailableTimeBeforeSlot: config.breakDuration ?? 0,
           slotStart: config.slotStart ?? 15,
@@ -1112,7 +1240,7 @@ export class EventsService implements IEventsService {
         duration,
         schedule,
         configuration: {
-          timeZone: config.timeZone || DateTime.now().zoneName!,
+          timeZone: generalConfig.timeZone || DateTime.now().zoneName!,
           breakDuration: config.breakDuration ?? 0,
           slotStart: config.slotStart ?? 15,
           allowSkipBreak: config.smartSchedule?.allowSkipBreak,
@@ -1284,6 +1412,7 @@ export class EventsService implements IEventsService {
   private async saveEvent(
     id: string,
     event: AppointmentEvent,
+    by: "customer" | "user",
     files?: Asset[],
     paymentIntentId?: string,
     status: AppointmentStatus = "pending",
@@ -1408,6 +1537,34 @@ export class EventsService implements IEventsService {
             })
             .toJSDate(),
         };
+
+        const historyPayment: PaymentHistory | undefined = payments?.[0]
+          ? {
+              id: payments[0]._id,
+              amount: payments[0].amount,
+              status: payments[0].status,
+              type: payments[0].type,
+              intentId:
+                "intentId" in payments[0] ? payments[0].intentId : undefined,
+              externalId:
+                "externalId" in payments[0]
+                  ? payments[0].externalId
+                  : undefined,
+              appName:
+                "appName" in payments[0] ? payments[0].appName : undefined,
+              appId: "appId" in payments[0] ? payments[0].appId : undefined,
+            }
+          : undefined;
+
+        await this.addAppointmentHistory({
+          appointmentId: id,
+          type: "created",
+          data: {
+            by,
+            confirmed: status === "confirmed",
+            payment: historyPayment,
+          },
+        });
 
         logger.debug(
           { appointmentId: id, customerName: customer.name, status },

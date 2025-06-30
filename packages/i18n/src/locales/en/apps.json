@@ -518,8 +518,7 @@
       },
       "selectPlaceholder": "Select view",
       "connectWith": "Connect with",
-      "cardFieldsProviderError": "Unable to find any child components in the <PayPalCardFieldsProvider />",
-      "payButton": "Pay"
+      "cardFieldsProviderError": "Unable to find any child components in the <PayPalCardFieldsProvider />"
     },
     "statusText": {
       "successfully_set_up": "Successfully connected to PayPal",
@@ -546,6 +545,10 @@
       "refund_error": "Error refunding payment",
       "payment_failed": "Payment has failed",
       "payment_failed_description": "Your payment has failed. Please try again. If the issue persists, please give us a call"
+    },
+    "ui": {
+      "payButton": "Pay",
+      "or": "or"
     }
   },
   "reminders": {

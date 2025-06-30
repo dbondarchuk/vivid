@@ -36,6 +36,27 @@ export async function POST(
     );
   }
 
+  await ServicesContainer.EventsService().addAppointmentHistory({
+    type: "paymentRefunded",
+    data: {
+      payment: {
+        id: result.updatedPayment._id,
+        amount: result.updatedPayment.amount,
+        status: result.updatedPayment.status,
+        type: result.updatedPayment.type,
+        appName:
+          "appName" in result.updatedPayment
+            ? result.updatedPayment.appName
+            : undefined,
+        externalId:
+          "externalId" in result.updatedPayment
+            ? result.updatedPayment.externalId
+            : undefined,
+      },
+    },
+    appointmentId: result.updatedPayment.appointmentId,
+  });
+
   logger.debug(
     {
       paymentId,

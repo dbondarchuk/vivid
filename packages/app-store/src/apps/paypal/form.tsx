@@ -55,7 +55,7 @@ const SubmitPayment: React.FC<{
         onClick={handleClick}
         disabled={isPaying}
       >
-        {isPaying && <Spinner />} <PaypalLogo /> {t("paypal.form.payButton")}
+        {isPaying && <Spinner />} <PaypalLogo /> {t("paypal.ui.payButton")}
       </Button>
       {}
     </div>
@@ -193,7 +193,9 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
 
         <div className="items-center flex my-px text-center">
           <div className="bg-muted flex-1 h-px mx-2" />
-          <span className="text-sm text-muted-foreground">OR</span>
+          <span className="text-sm text-muted-foreground uppercase">
+            {t("paypal.ui.or")}
+          </span>
           <div className="bg-muted flex-1 h-px mx-2" />
         </div>
 

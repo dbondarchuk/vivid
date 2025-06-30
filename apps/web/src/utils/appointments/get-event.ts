@@ -1,6 +1,7 @@
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import {
+  AppointmentAddon,
   AppointmentDiscount,
   AppointmentEvent,
   AppointmentOption,
@@ -83,7 +84,7 @@ export const getAppointmentEventFromRequest = async (
     };
   }
 
-  let selectedAddons: AppointmentEvent["addons"] = undefined;
+  let selectedAddons: AppointmentAddon[] | undefined = undefined;
   if (request.addonsIds) {
     logger.debug(
       { addonsIds: request.addonsIds },
@@ -298,11 +299,21 @@ export const getAppointmentEventFromRequest = async (
 
   const event: AppointmentEvent = {
     dateTime: request.dateTime,
-    option: selectedOption,
+    option: {
+      _id: selectedOption._id,
+      name: selectedOption.name,
+      price: selectedOption.price,
+      duration: selectedOption.duration,
+    },
     timeZone: request.timeZone,
     totalDuration,
     totalPrice,
-    addons: selectedAddons,
+    addons: selectedAddons?.map((addon) => ({
+      _id: addon._id,
+      name: addon.name,
+      price: addon.price,
+      duration: addon.duration,
+    })),
     fields: request.fields,
     discount: appointmentDiscount,
     fieldsLabels: serviceFields.reduce(

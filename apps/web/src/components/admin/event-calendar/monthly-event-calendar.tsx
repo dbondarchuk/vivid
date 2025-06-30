@@ -1,4 +1,11 @@
-import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
+import {
+  Button,
+  cn,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  useTimeZone,
+} from "@vivid/ui";
 import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
 import { useI18n, useLocale } from "@vivid/i18n";
 
@@ -32,13 +39,14 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
   className,
   disableTimeChange = false,
   schedule = {},
-  timeZone,
   onEventClick,
   onRangeChange,
   onDateClick,
 }) => {
-  const locale = useLocale();
   const t = useI18n("admin");
+  const locale = useLocale();
+  const timeZone = useTimeZone();
+
   const [dates, setDates] = React.useState<Dates>(
     getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone))
   );
@@ -132,7 +140,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
           </div>
           <div className="mt-2 space-y-1 overflow-y-auto max-h-24">
             {dayEvents.map((event, idx) => (
-              <EventPopover key={idx} event={event} timeZone={timeZone}>
+              <EventPopover key={idx} event={event}>
                 <div
                   key={idx}
                   className={cn(

@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     (s) => includeDeclined || s !== "declined"
   );
 
-  const [events, schedule, config] = await Promise.all([
+  const [events, schedule] = await Promise.all([
     ServicesContainer.EventsService().getEvents(
       start.toJSDate(),
       end.toJSDate(),
@@ -59,7 +59,6 @@ export async function GET(request: NextRequest) {
       start.toJSDate(),
       end.toJSDate()
     ),
-    ServicesContainer.ConfigurationService().getConfiguration("booking"),
   ]);
 
   logger.debug(
@@ -73,6 +72,5 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     events,
     schedule,
-    timeZone: config.timeZone,
   });
 }

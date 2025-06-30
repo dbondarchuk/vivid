@@ -90,7 +90,6 @@ export default async function NewAssetsPage(props: Props) {
           />
         </div>
         <AppointmentScheduleForm
-          timeZone={config.timeZone}
           options={choices}
           knownFields={fields.items || []}
           from={from}

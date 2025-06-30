@@ -19,13 +19,23 @@ import {
   Textarea,
   toastPromise,
   Combobox,
+  IComboboxItem,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { getTimeZones } from "@vvo/tzdb";
+
 import { updateGeneralConfiguration } from "./actions";
 import { LanguageOptions } from "@/constants/texts";
+
+const timeZones = getTimeZones();
+const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
+  label: `GMT${zone.currentTimeFormat}`,
+  shortLabel: `${zone.alternativeName}`,
+  value: zone.name,
+}));
 
 export const GeneralSettingsForm: React.FC<{
   values: GeneralConfiguration;
@@ -306,6 +316,34 @@ export const GeneralSettingsForm: React.FC<{
                       field.onBlur();
                     }}
                     disabled={loading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="timeZone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("settings.general.form.timeZone")}</FormLabel>
+                <FormControl>
+                  <Combobox
+                    className="flex w-full font-normal text-base"
+                    values={timeZoneValues}
+                    searchLabel={t("settings.general.form.selectTimeZone")}
+                    disabled={loading}
+                    customSearch={(search) =>
+                      timeZoneValues.filter(
+                        (zone) =>
+                          (zone.label as string)
+                            .toLocaleLowerCase()
+                            .indexOf(search.toLocaleLowerCase()) >= 0
+                      )
+                    }
+                    value={field.value}
+                    onItemSelect={(value) => field.onChange(value)}
                   />
                 </FormControl>
                 <FormMessage />

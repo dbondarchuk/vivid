@@ -2,6 +2,7 @@ import { AssetEntity } from "../assets";
 import {
   Appointment,
   AppointmentEvent,
+  AppointmentHistoryEntry,
   AppointmentStatus,
   Availability,
   Event,
@@ -20,6 +21,7 @@ export interface IEventsService {
     force?: boolean;
     files?: Record<string, File>;
     paymentIntentId?: string;
+    by: "customer" | "user";
   }): Promise<Appointment>;
   getPendingAppointmentsCount(after?: Date): Promise<number>;
   getPendingAppointments(
@@ -53,4 +55,14 @@ export interface IEventsService {
     newTime: Date,
     newDuration: number
   ): Promise<void>;
+
+  getAppointmentHistory(
+    query: Query & {
+      appointmentId: string;
+      type?: AppointmentHistoryEntry["type"];
+    }
+  ): Promise<WithTotal<AppointmentHistoryEntry>>;
+  addAppointmentHistory(
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">
+  ): Promise<string>;
 }

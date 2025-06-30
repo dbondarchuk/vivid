@@ -48,6 +48,7 @@ import {
   Textarea,
   toastPromise,
   use12HourFormat,
+  useTimeZone,
 } from "@vivid/ui";
 import { formatAmount, getDiscountAmount } from "@vivid/utils";
 import { CalendarClock, Clock, DollarSign } from "lucide-react";
@@ -61,7 +62,6 @@ import { createAppointment } from "./actions";
 export type AppointmentScheduleFormProps = {
   options: AppointmentChoice[];
   knownFields: (Field<WithLabelFieldData> & { _id: string })[];
-  timeZone: string;
   from?: Appointment | null;
   customer?: Customer | null;
 };
@@ -99,8 +99,9 @@ const getSelectedFields = (
 
 export const AppointmentScheduleForm: React.FC<
   AppointmentScheduleFormProps
-> = ({ options, timeZone, knownFields, from, customer: propsCustomer }) => {
+> = ({ options, knownFields, from, customer: propsCustomer }) => {
   const t = useI18n("admin");
+  const timeZone = useTimeZone();
   const now = React.useMemo(
     () => DateTime.now().set({ second: 0 }).toJSDate(),
     []
@@ -311,11 +312,10 @@ export const AppointmentScheduleForm: React.FC<
       const appointmentEvent: Omit<AppointmentEvent, "timeZone"> = {
         dateTime: data.dateTime,
         option: {
-          ...eventOption,
-          // @ts-ignore we just clear this
-          addons: undefined,
-          // @ts-ignore we just clear this
-          fields: undefined,
+          _id: eventOption._id,
+          name: eventOption.name,
+          price: eventOption.price,
+          duration: eventOption.duration,
         },
         fields,
         fieldsLabels: selectedFields.reduce(
@@ -327,7 +327,12 @@ export const AppointmentScheduleForm: React.FC<
         ),
         totalDuration: data.totalDuration,
         totalPrice: data.totalPrice,
-        addons,
+        addons: addons.map((addon) => ({
+          _id: addon._id,
+          name: addon.name,
+          price: addon.price,
+          duration: addon.duration,
+        })),
         note: data.note,
         discount: appointmentDiscount,
       };
@@ -734,7 +739,6 @@ export const AppointmentScheduleForm: React.FC<
             <div className="flex flex-col gap-2">
               {appointment && (
                 <AppointmentCalendar
-                  timeZone={timeZone}
                   appointment={appointment}
                   onEventsLoad={setCalendarEvents}
                 />

@@ -24,10 +24,10 @@ export const demoAppointment: Appointment = {
   option: {
     _id: "dfjkdlfj",
     name: "Demo option",
-    description: "This is a demo option",
+    // description: "This is a demo option",
     duration: 100,
     price: 50,
-    requireDeposit: "inherit",
+    // requireDeposit: "inherit",
   },
   files: [
     {
@@ -71,14 +71,14 @@ export const demoAppointment: Appointment = {
     {
       _id: "addon1",
       name: "Addon #1",
-      description: "This is first addon",
+      // description: "This is first addon",
       duration: 20,
       price: 20,
     },
     {
       _id: "addon2",
       name: "Addon #2",
-      description: "This is second addon",
+      // description: "This is second addon",
       duration: 30,
       price: 20,
     },

@@ -21,6 +21,11 @@ export const getEmailTemplate = async (
     UserEmailTemplates[language]?.buttonTexts ??
     UserEmailTemplates["en"].buttonTexts;
 
+  const eventTitleTemplate =
+    UserEmailTemplates[language]?.eventTitle ??
+    UserEmailTemplates["en"].eventTitle;
+
+  const eventTitle = template(eventTitleTemplate, args);
   const subject = template(subjectTemplate, args);
 
   const description = await renderUserEmailTemplate(
@@ -55,5 +60,6 @@ export const getEmailTemplate = async (
   return {
     template: description,
     subject,
+    eventTitle,
   };
 };

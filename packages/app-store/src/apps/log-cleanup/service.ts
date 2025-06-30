@@ -103,7 +103,7 @@ export default class LogCleanupConnectedApp
 
       const { timeZone } = await this.props.services
         .ConfigurationService()
-        .getConfiguration("booking");
+        .getConfiguration("general");
 
       logger.debug(
         { appId: appData._id, timeZone },

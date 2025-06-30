@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { asOptinalNumberField, asOptionalField } from "../../utils";
-import { zTimeZone } from "../../utils/zTimeZone";
 import { calendarSourcesConfigurationSchema } from "./calendar-source";
 import { paymentsConfigurationSchema } from "./payments";
 
@@ -67,7 +66,6 @@ export const generalBookingConfigurationSchema = z.object({
     )
     .optional(),
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
-  timeZone: zTimeZone,
   scheduleAppId: z.string().optional(),
   autoConfirm: z.coerce.boolean().optional(),
   allowPromoCode: z.enum(allowPromoCodeType).default("allow-if-has-active"),

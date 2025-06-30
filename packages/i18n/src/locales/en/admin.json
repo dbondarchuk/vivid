@@ -49,6 +49,13 @@
         "refunded": "Refunded",
         "pending": "Pending"
       },
+      "appointmentHistoryType": {
+        "statusChanged": "Status changed",
+        "rescheduled": "Rescheduled",
+        "created": "Created",
+        "paymentAdded": "Payment added",
+        "paymentRefunded": "Payment refunded"
+      },
       "filters": "Filters",
       "loading": "Loading"
     },
@@ -246,10 +253,22 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "payments": "Payments",
-      "appointmentCommunications": "Appointment communications"
+      "communications": "Communications",
+      "history": "History",
+      "details": "Details",
+      "noPayments": "No payments"
     },
     "detail": {
       "by": "By {name}"
+    },
+    "history": {
+      "byUser": "Created by user",
+      "byCustomer": "Created by customer",
+      "payment": "Payment ${amount} via {appName}",
+      "oldStatus": "Old status: {oldStatus}",
+      "newStatus": "New status: {newStatus}",
+      "oldDateTime": "Old date and time: {oldDateTime}",
+      "newDateTime": "New date and time: {newDateTime}"
     },
     "form": {
       "dateTimeRequired": "Date and time are required",
@@ -1106,6 +1125,8 @@
         "favicon": "Favicon",
         "faviconTooltip": "URL to image to be used as favicon (icon that is shown in browser tab)",
         "faviconPlaceholder": "Favicon URL",
+        "timeZone": "Time zone",
+        "selectTimeZone": "Select time zone",
         "toasts": {
           "changesSaved": "Your changes were saved.",
           "requestError": "There was a problem with your request."
@@ -1125,8 +1146,6 @@
         },
         "main": {
           "add": "Add",
-          "timeZone": "Time zone",
-          "selectTimeZone": "Select time zone",
           "scheduleProviderApp": "Schedule provider app",
           "scheduleProviderAppTooltip1": "Select optional app to provide your work schedule.",
           "scheduleProviderAppTooltip2": "If no app is selected, base schedule will be applied.",

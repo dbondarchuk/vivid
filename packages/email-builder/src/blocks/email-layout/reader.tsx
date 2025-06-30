@@ -20,7 +20,7 @@ export const EmailLayoutReader = ({
       {props.previewText && (
         <div style={{ display: "none", maxHeight: "0px", overflow: "hidden" }}>
           {props.previewText}
-          &nbsp;&#8204;&nbsp;&#204;&nbsp;&#8204;&nbsp;
+          &nbsp;&#8204;&nbsp;&#124;&nbsp;&#8204;&nbsp;
         </div>
       )}
       <div

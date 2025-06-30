@@ -279,7 +279,11 @@ export class EmailNotificationConnectedApp
 
       const data = appData.data as EmailNotificationConfiguration;
 
-      const { template: description, subject } = await getEmailTemplate(
+      const {
+        template: description,
+        subject,
+        eventTitle,
+      } = await getEmailTemplate(
         status,
         config.general.language,
         config.general.url,
@@ -302,7 +306,7 @@ export class EmailNotificationConnectedApp
       const eventContent = getEventCalendarContent(
         config.general,
         appointment,
-        subject,
+        eventTitle,
         description,
         status === "auto-confirmed"
           ? "REQUEST"
