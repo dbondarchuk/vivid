@@ -6,6 +6,7 @@ import { setPageData } from "@vivid/utils";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
+import { headers } from "next/headers";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -16,6 +17,13 @@ type Props = {
 
 export const dynamicParams = true;
 export const revalidate = 60;
+
+class NotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "NotFoundError";
+  }
+}
 
 const getSource = cache(async (slug?: string, preview = false) => {
   const logger = getLoggerFactory("PageComponent")("getSource");
@@ -39,10 +47,14 @@ const getSource = cache(async (slug?: string, preview = false) => {
     redirect("/install");
   }
 
-  if (
-    !page ||
-    (!preview && (!page.published || page.publishDate > new Date()))
-  ) {
+  if (!page) {
+    const headersList = await headers();
+    const ua = headersList.get("user-agent");
+    logger.warn({ slug, ua }, "Page not found, returning 404");
+    throw new NotFoundError("Page not found");
+  }
+
+  if (!preview && (!page.published || page.publishDate > new Date())) {
     logger.warn(
       {
         slug,
@@ -54,7 +66,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
       },
       "Page not found or not published"
     );
-    notFound();
+    throw new NotFoundError("Page not found");
   }
 
   // read route params
@@ -141,7 +153,10 @@ export async function generateMetadata(
       },
     };
   } catch (error: any) {
-    logger.error(
+    const loggerFn =
+      error instanceof NotFoundError ? logger.warn : logger.error;
+
+    loggerFn(
       {
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
@@ -217,13 +232,20 @@ export default async function Page(props: Props) {
       </div>
     );
   } catch (error: any) {
-    logger.error(
+    const loggerFn =
+      error instanceof NotFoundError ? logger.warn : logger.error;
+
+    loggerFn(
       {
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
       },
       "Error rendering page"
     );
+
+    if (error instanceof NotFoundError) {
+      notFound();
+    }
 
     // Re-throw to let Next.js handle the error
     throw error;

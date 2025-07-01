@@ -913,7 +913,7 @@ export const AppointmentView: React.FC<{
 
       <Tabs defaultValue={defaultView} className="flex flex-col gap-2 mb-4">
         {/* <TabsList className="w-fit self-end"> */}
-        <TabsList className="">
+        <TabsList className="w-full [&>button]:flex-1 bg-card border flex-wrap h-auto">
           <TabsTrigger value="details">
             {t("appointments.view.details")}
           </TabsTrigger>
