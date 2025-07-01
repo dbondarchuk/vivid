@@ -134,7 +134,7 @@ export const AppointmentScheduleForm: React.FC<
           email: z.string().trim(),
           phone: z.string().trim(),
         })
-        .and(z.record(z.string(), z.any().optional())),
+        .passthrough(),
 
       note: z.string().optional(),
       confirmed: z.coerce.boolean().optional(),
