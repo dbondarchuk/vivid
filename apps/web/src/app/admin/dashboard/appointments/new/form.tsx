@@ -130,16 +130,9 @@ export const AppointmentScheduleForm: React.FC<
         .optional(),
       fields: z
         .object({
-          name: z.string().min(1, t("appointments.form.nameRequired")).trim(),
-          email: z.string().email(t("appointments.form.emailValid")).trim(),
-          phone: z
-            .string()
-            .min(1, t("appointments.form.phoneRequired"))
-            .trim()
-            .refine(
-              (s) => !s?.includes("_"),
-              t("appointments.form.phoneValid")
-            ),
+          name: z.string().trim(),
+          email: z.string().trim(),
+          phone: z.string().trim(),
         })
         .and(z.record(z.string(), z.any().optional())),
 
