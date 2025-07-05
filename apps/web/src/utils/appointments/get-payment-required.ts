@@ -101,6 +101,26 @@ export const getAppointmentEventAndIsPaymentRequired = async (
     "Total price exists, checking payment configuration"
   );
 
+  if (customer?.dontAllowBookings) {
+    logger.warn(
+      {
+        optionId: option._id,
+        optionName: option.name,
+        customerId: customer._id,
+        customerName: customer.name,
+      },
+      "Customer is not allowed to book appointments. Returning error."
+    );
+
+    return {
+      error: {
+        code: "customer_not_allowed_to_book",
+        status: 405,
+        message: "Customer is not allowed to book appointments",
+      },
+    };
+  }
+
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
 
