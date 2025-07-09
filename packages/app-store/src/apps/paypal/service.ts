@@ -1,8 +1,4 @@
-import {
-  Client,
-  Environment,
-  PaymentsController,
-} from "@paypal/paypal-server-sdk";
+import { Client, Environment } from "@paypal/paypal-server-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
@@ -540,24 +536,27 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         "Processing PayPal refund with capture ID"
       );
 
-      const clientRefund = this.getClient(appData);
-      const paymentsController = new PaymentsController(clientRefund);
-      const { result, ...refundHttpResponse } =
-        await paymentsController.refundCapturedPayment({ captureId });
+      // const clientRefund = this.getClient(appData);
+      // const paymentsController = new PaymentsController(clientRefund);
+      // const { result, ...refundHttpResponse } =
+      //   await paymentsController.refundCapturedPayment({ captureId });
 
-      if (refundHttpResponse.statusCode >= 400) {
+      const { ok: refundOk, error: refundError } =
+        await client.refundPayment(captureId);
+
+      if (!refundOk || refundError) {
         logger.error(
           {
             appId: appData._id,
             paymentId: payment._id,
             captureId,
-            statusCode: refundHttpResponse.statusCode,
+            statusCode: refundError.statusCode,
           },
           "Failed to refund PayPal payment"
         );
         return {
           success: false,
-          error: refundHttpResponse.body.toString(),
+          error: JSON.stringify(refundError),
         };
       }
 

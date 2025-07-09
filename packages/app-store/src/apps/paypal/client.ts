@@ -195,6 +195,33 @@ export class PaypalClient {
     }
   }
 
+  public async refundPayment(
+    captureId: string
+  ): Promise<
+    { ok: true; error?: never } | { ok: false; error: { statusCode?: number } }
+  > {
+    const logger = this.loggerFactory("refundPayment");
+    let response: Response | undefined;
+    try {
+      response = await this.fetcher(
+        `/v2/payments/captures/${captureId}/refund`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (response.ok) {
+        return { ok: true };
+      }
+
+      throw new Error("Request to get order has failed");
+    } catch (error) {
+      logger.error({ response, error }, "Request to get order has failed");
+
+      return { ok: false, error: { statusCode: response?.status } };
+    }
+  }
+
   // public async createWebhook(): Promise<boolean | string> {
   //   const body = {
   //     url: `${this.appUrl}/api/integrations/paypal/webhook`,
