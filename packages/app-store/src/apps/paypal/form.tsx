@@ -152,8 +152,8 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
       //   (3) Successful transaction -> Show confirmation or thank you message
 
       const transaction =
-        orderData?.purchaseUnits?.[0]?.payments?.captures?.[0] ||
-        orderData?.purchaseUnits?.[0]?.payments?.authorizations?.[0];
+        orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
+        orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
 
       const status = orderData.status;
 

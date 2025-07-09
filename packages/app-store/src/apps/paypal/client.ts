@@ -1,21 +1,25 @@
+import { getLoggerFactory } from "@vivid/logger";
+import { formatAmountString } from "@vivid/utils";
 import { v4 as uuidv4 } from "uuid";
 import z from "zod";
+import { PaypalOrder } from "./types";
 
 export class PaypalClient {
   url: string;
   accessToken: string | null = null;
   expiresAt: number | null = null;
 
+  private readonly loggerFactory = getLoggerFactory("PaypalClient");
+
   constructor(
     private readonly clientId: string,
     private readonly secretKey: string,
-    private readonly appUrl: string
+    isProduction: boolean
+    // private readonly appUrl: string
   ) {
-    this.url =
-      process.env.PAYPAL_API_URL ||
-      (process.env.NODE_ENV === "development"
-        ? "https://api-m.sandbox.paypal.com"
-        : "https://api-m.paypal.com");
+    this.url = isProduction
+      ? "https://api-m.paypal.com"
+      : "https://api-m.sandbox.paypal.com";
   }
 
   private fetcher = async (
@@ -73,13 +77,17 @@ export class PaypalClient {
     // cancelUrl,
     intent = "CAPTURE",
   }: {
-    referenceId: string;
+    referenceId?: string;
     amount: number;
     currency: string;
     // returnUrl: string;
     // cancelUrl: string;
     intent?: "CAPTURE" | "AUTHORIZE";
-  }): Promise<CreateOrderResponse> {
+  }): Promise<
+    | { order: CreateOrderResponse; error?: never }
+    | { order?: never; error: { statusCode?: number } }
+  > {
+    const logger = this.loggerFactory("createOrder");
     const createOrderRequestBody: CreateOrderRequestBody = {
       intent,
       purchase_units: [
@@ -87,7 +95,7 @@ export class PaypalClient {
           reference_id: referenceId,
           amount: {
             currency_code: currency,
-            value: (amount / 100).toString(),
+            value: formatAmountString(amount),
           },
         },
       ],
@@ -102,8 +110,10 @@ export class PaypalClient {
       //   },
     };
 
+    let response: Response | undefined;
+
     try {
-      const response = await this.fetcher("/v2/checkout/orders", {
+      response = await this.fetcher("/v2/checkout/orders", {
         method: "POST",
         headers: {
           "PayPal-Request-Id": uuidv4(),
@@ -113,112 +123,110 @@ export class PaypalClient {
 
       if (response.ok) {
         const createOrderResponse: CreateOrderResponse = await response.json();
-        return createOrderResponse;
-      } else {
-        console.error(`Request failed with status ${response.status}`);
+        return { order: createOrderResponse };
       }
+
+      throw new Error("Request has failed");
     } catch (error) {
-      console.error(error);
+      logger.error({ error, response }, "Request to create order has failed");
+      return { error: { statusCode: response?.status } };
     }
-    return {} as CreateOrderResponse;
   }
 
-  public async captureOrder(orderId: string): Promise<boolean> {
+  public async captureOrder(
+    orderId: string
+  ): Promise<
+    | { order: PaypalOrder; error?: never }
+    | { order?: never; error: { statusCode?: number } }
+  > {
+    const logger = this.loggerFactory("captureOrder");
+    let response: Response | undefined;
+    let result: PaypalOrder | undefined;
     try {
-      const captureResult = await this.fetcher(
-        `/v2/checkout/orders/${orderId}/capture`,
-        {
-          method: "POST",
-        }
-      );
-      if (captureResult.ok) {
-        const result = await captureResult.json();
-        if (result?.status === "COMPLETED") {
-          // Get payment reference id
-
-          //   const payment = await prisma.payment.findFirst({
-          //     where: {
-          //       externalId: orderId,
-          //     },
-          //     select: {
-          //       id: true,
-          //       bookingId: true,
-          //       data: true,
-          //     },
-          //   });
-
-          //   if (!payment) {
-          //     throw new Error("Payment not found");
-          //   }
-
-          //   await prisma.payment.update({
-          //     where: {
-          //       id: payment?.id,
-          //     },
-          //     data: {
-          //       success: true,
-          //       data: Object.assign(
-          //         {},
-          //         {
-          //           ...(payment?.data as Record<string, string | number>),
-          //           capture: result.id,
-          //         }
-          //       ) as unknown as Prisma.InputJsonValue,
-          //     },
-          //   });
-
-          //   // Update booking as paid
-          //   await prisma.booking.update({
-          //     where: {
-          //       id: payment.bookingId,
-          //     },
-          //     data: {
-          //       status: "ACCEPTED",
-          //     },
-          //   });
-
-          return true;
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-    return false;
-  }
-
-  public async createWebhook(): Promise<boolean | string> {
-    const body = {
-      url: `${this.appUrl}/api/integrations/paypal/webhook`,
-      event_types: [
-        {
-          name: "CHECKOUT.ORDER.APPROVED",
-        },
-        {
-          name: "CHECKOUT.ORDER.COMPLETED",
-        },
-      ],
-    };
-
-    try {
-      const response = await this.fetcher(`/v1/notifications/webhooks`, {
+      response = await this.fetcher(`/v2/checkout/orders/${orderId}/capture`, {
         method: "POST",
-        body: JSON.stringify(body),
       });
 
-      if (!response.ok) {
-        const message = `${response.statusText}: ${JSON.stringify(await response.json())}`;
-        throw new Error(message);
+      if (response.ok) {
+        result = (await response.json()) as PaypalOrder;
+        if (result?.status === "COMPLETED") {
+          return { order: result };
+        }
       }
 
-      const result = await response.json();
-      return result.id as string;
-    } catch (e) {
-      console.error("Error creating webhook", e);
-    }
+      throw new Error("Request to create order has failed");
+    } catch (error) {
+      logger.error(
+        { response, result, error },
+        "Request to create order has failed"
+      );
 
-    return false;
+      return { error: { statusCode: response?.status } };
+    }
   }
+
+  public async getOrder(
+    orderId: string
+  ): Promise<
+    | { order: PaypalOrder; error?: never }
+    | { order?: never; error: { statusCode?: number } }
+  > {
+    const logger = this.loggerFactory("getOrder");
+    let response: Response | undefined;
+    let result: PaypalOrder | undefined;
+    try {
+      response = await this.fetcher(`/v2/checkout/orders/${orderId}`, {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        result = (await response.json()) as PaypalOrder;
+        return { order: result };
+      }
+
+      throw new Error("Request to get order has failed");
+    } catch (error) {
+      logger.error(
+        { response, result, error },
+        "Request to get order has failed"
+      );
+
+      return { error: { statusCode: response?.status } };
+    }
+  }
+
+  // public async createWebhook(): Promise<boolean | string> {
+  //   const body = {
+  //     url: `${this.appUrl}/api/integrations/paypal/webhook`,
+  //     event_types: [
+  //       {
+  //         name: "CHECKOUT.ORDER.APPROVED",
+  //       },
+  //       {
+  //         name: "CHECKOUT.ORDER.COMPLETED",
+  //       },
+  //     ],
+  //   };
+
+  //   try {
+  //     const response = await this.fetcher(`/v1/notifications/webhooks`, {
+  //       method: "POST",
+  //       body: JSON.stringify(body),
+  //     });
+
+  //     if (!response.ok) {
+  //       const message = `${response.statusText}: ${JSON.stringify(await response.json())}`;
+  //       throw new Error(message);
+  //     }
+
+  //     const result = await response.json();
+  //     return result.id as string;
+  //   } catch (e) {
+  //     console.error("Error creating webhook", e);
+  //   }
+
+  //   return false;
+  // }
 
   async listWebhooks(): Promise<string[]> {
     try {
@@ -318,7 +326,7 @@ interface PurchaseUnit {
     currency_code: string;
     value: string;
   };
-  reference_id: string;
+  reference_id?: string;
 }
 
 interface ExperienceContext {
