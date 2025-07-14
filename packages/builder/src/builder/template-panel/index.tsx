@@ -25,7 +25,11 @@ import {
 } from "@dnd-kit/core";
 import { cn, Tabs, TabsContent } from "@vivid/ui";
 import React, { useState } from "react";
-import { findBlock, findParentBlock } from "../../documents/helpers/blocks";
+import {
+  findBlock,
+  findParentBlock,
+  findBlockHierarchy,
+} from "../../documents/helpers/blocks";
 import { Reader } from "../../documents/reader/block";
 import { ReaderDocumentBlocksDictionary } from "../../documents/types";
 import { BuilderToolbar, ViewType } from "./builder-toolbar";
@@ -124,6 +128,12 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
       const overParent = findBlock(document, overBlockId);
       if (!overParent) return;
 
+      const hierarchy = findBlockHierarchy(document, overBlockId);
+      if (hierarchy && hierarchy.find((block) => block.id === activeId)) {
+        console.log("cannot move block inside itself");
+        return;
+      }
+
       // const block = deleteBlockInLevel(activeParent, activeId);
       // insertBlockInLevel(overParent, block!, property, 0);
 
@@ -181,6 +191,13 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
       // insertBlockInLevel(overParent, block!, property, index);
 
       // setDocument(document);
+
+      const hierarchy = findBlockHierarchy(document, dropTarget.id);
+      if (hierarchy && hierarchy.find((block) => block.id === activeId)) {
+        console.log("cannot move block inside itself");
+        return;
+      }
+
       dispatchAction({
         type: "move-block",
         value: {

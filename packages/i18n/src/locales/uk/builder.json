@@ -659,6 +659,7 @@
         "items2Xl": "Кількість елементів на екрані (2xl)",
         "loop": "Зациклити",
         "autoPlay": "Автоматичне відтворення",
+        "autoPlaySpeed": "Швидкість автовідтворення",
         "autoPlaySeconds": "с",
         "itemPosition": {
           "label": "Розміщення елементу",
@@ -666,6 +667,25 @@
           "center": "По центру",
           "end": "Кінець",
           "stretch": "Розтягнути"
+        },
+        "styles": {
+          "carouselChildrenItemsPerSlide": "Кількість елементів на слайді",
+          "carouselChildrenAlign": "Вирівнювання елементів"
+        },
+        "shortcuts": {
+          "itemsPerSlide": {
+            "label": "Кількість елементів на слайді",
+            "mobile": "Оптимізовано для мобільних",
+            "tablet": "Оптимізовано для планшетів",
+            "desktop": "Оптимізовано для десктопу"
+          },
+          "childrenPosition": {
+            "label": "Позиція елементів",
+            "start": "Початок",
+            "center": "По центру",
+            "end": "Кінець",
+            "stretch": "Розтягнути"
+          }
         }
       },
       "container": {
@@ -705,7 +725,10 @@
         },
         "widths": {
           "contained": "Обмежений",
-          "full": "Повна ширина"
+          "full": "Повна ширина",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий"
         },
         "flexDirections": {
           "row": "Рядок",
@@ -842,7 +865,8 @@
         "displayName": "Hero секція"
       },
       "booking": {
-        "displayName": "Форма бронювання"
+        "displayName": "Форма бронювання",
+        "confirmationPage": "Сторінка підтвердження"
       }
     },
     "shortcuts": {

@@ -4,6 +4,7 @@ import {
 } from "../../documents/editor/context";
 
 import {
+  ScrollArea,
   Sidebar,
   SidebarContent,
   Tabs,
@@ -53,11 +54,10 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
   return (
     <Sidebar
       side="right"
-      className="absolute h-full group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1.2)] pt-0"
+      className="absolute h-full group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1.2)] pt-0 [&>[data-sidebar=sidebar]]:sticky [&>[data-sidebar=sidebar]]:top-0 [&>[data-sidebar=sidebar]]:h-fit"
       variant="inset"
-      sidebarGapClassName="h-full"
     >
-      <SidebarContent className="w-full border-b border-secondary bg-background relative h-full">
+      <SidebarContent className="w-full border-b border-secondary bg-background relative h-full overflow-hidden">
         <div className="px-2 py-2">
           <Tabs
             defaultValue={allTabs[0].value}
@@ -75,11 +75,13 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
                 </TabsTrigger>
               ))}
             </TabsList>
-            {allTabs.map((tab) => (
-              <TabsContent key={tab.value} value={tab.value}>
-                {tab.content}
-              </TabsContent>
-            ))}
+            <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
+              {allTabs.map((tab) => (
+                <TabsContent key={tab.value} value={tab.value}>
+                  {tab.content}
+                </TabsContent>
+              ))}
+            </div>
           </Tabs>
         </div>
       </SidebarContent>

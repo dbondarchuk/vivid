@@ -9,6 +9,8 @@ import { cache } from "react";
 import { headers } from "next/headers";
 import { PageReader } from "@vivid/page-builder/reader";
 import { Styling } from "@vivid/page-builder";
+import { cookies } from "next/headers";
+import { DateTime } from "luxon";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -228,6 +230,24 @@ export default async function Page(props: Props) {
       "Successfully rendered page"
     );
 
+    const { content, ...rest } = page;
+    const args: Record<string, any> = { page: rest, isPage: true };
+    const cookieStore = await cookies();
+    const appointmentId = cookieStore.get("appointment_id")?.value;
+    if (appointmentId) {
+      const appointment =
+        await ServicesContainer.EventsService().getAppointment(appointmentId);
+      if (
+        appointment &&
+        DateTime.fromJSDate(appointment.createdAt).diffNow().toMillis() <
+          60 * 1000 // 60 seconds
+      ) {
+        args.appointment = appointment;
+      } else {
+        notFound();
+      }
+    }
+
     return (
       <div
         className={cn(
@@ -237,7 +257,7 @@ export default async function Page(props: Props) {
       >
         <Styling styling={styling} />
         {/* <MdxContent source={page.content} /> */}
-        <PageReader document={page.content} />
+        <PageReader document={content} args={args} />
       </div>
     );
   } catch (error: any) {

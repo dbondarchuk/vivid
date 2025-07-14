@@ -226,6 +226,6 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   backgroundColorShortcut,
-  fontFamilyShortcut,
+  fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,
 ];

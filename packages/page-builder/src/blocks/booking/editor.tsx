@@ -22,7 +22,7 @@ export const BookingEditor = ({ props, style }: BookingProps) => {
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
-      <Booking className={className} />
+      <Booking className={className} successPage={props.confirmationPage} />
     </>
   );
 };

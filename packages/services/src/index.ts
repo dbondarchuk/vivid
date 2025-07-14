@@ -24,6 +24,8 @@ export * from "./payments.service";
 export * from "./schedule.service";
 export * from "./services.service";
 
+export * from "./utils";
+
 export const ServicesContainer: IServicesContainer = {
   ConfigurationService: cache(() => new CachedConfigurationService()),
   AssetsService: cache(

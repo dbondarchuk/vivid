@@ -46,6 +46,6 @@ export const bookingShortcuts: Shortcut<AllStylesSchemas>[] = [
       },
     ],
   },
-  fontFamilyShortcut,
+  fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,
 ];

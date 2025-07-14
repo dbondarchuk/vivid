@@ -170,17 +170,17 @@ export const PageSelectorDialog: React.FC<PageSelectorProps> = ({
       onClose={onClose}
       // className="sm:max-w-[80%]"
     >
-      <ScrollArea className="w-full h-[80vh]">
-        <div className="flex flex-col gap-4">
-          <div className="w-full">
-            <Input
-              placeholder={t("common.search")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+      <div className="flex flex-col gap-4">
+        <div className="w-full">
+          <Input
+            placeholder={t("common.search")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <ScrollArea className="w-full h-[60vh]">
           {loading && page === 1 && <Loaders />}
-          <div className="w-full" id="asset-scroll-area">
+          <div className="w-full" id="page-scroll-area">
             <div className="grid grid-cols-1 gap-2">
               <RadioGroup
                 value={selected?._id}
@@ -220,8 +220,8 @@ export const PageSelectorDialog: React.FC<PageSelectorProps> = ({
           </div>
           {hasMore && !loading && <div ref={ref} className="h-1" />}
           {loading && page > 1 && <Loaders />}
-        </div>
-      </ScrollArea>
+        </ScrollArea>
+      </div>
       <div className="flex w-full items-center justify-end space-x-2 pt-6">
         <Button type="button" variant="secondary" onClick={close}>
           {t("common.close")}

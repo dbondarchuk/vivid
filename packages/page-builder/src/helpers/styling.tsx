@@ -96,13 +96,19 @@ export const BlockStyle = <T extends BaseStyleDictionary>({
   defaults?: DefaultCSSProperties<T>;
   isEditor?: boolean;
 }) => {
-  // Handle both old style format (CSSProperties) and new format (Styles)
-  const css = renderStylesToCSS(styleDefinitions, styles, defaults, isEditor);
+  // renderStylesToCSS now handles the .className wrapper internally
+  const css = renderStylesToCSS(
+    styleDefinitions,
+    styles,
+    defaults,
+    isEditor,
+    name
+  );
 
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `.${name} { ${css} }`,
+        __html: css,
       }}
     />
   );

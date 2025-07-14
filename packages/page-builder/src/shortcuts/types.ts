@@ -7,12 +7,33 @@ type ShortcutTargetValue<T extends BaseStyleDictionary, K extends keyof T> =
   | z.infer<T[K]>
   | ((prev: z.infer<T[K]> | undefined) => z.infer<T[K]>);
 
+// Enhanced target style that supports variants
+export interface ShortcutTargetStyle<
+  T extends BaseStyleDictionary,
+  K extends keyof T,
+> {
+  value: ShortcutTargetValue<T, K>;
+  breakpoint?: string[] | null;
+  state?: string[] | null;
+}
+
+// Support for multiple variants of the same style
+export interface ShortcutTargetStyleVariants<
+  T extends BaseStyleDictionary,
+  K extends keyof T,
+> {
+  variants: ShortcutTargetStyle<T, K>[];
+}
+
 export interface ShortcutOption<T extends BaseStyleDictionary> {
   label: BuilderKeys;
   labelStyle?: React.CSSProperties;
   value: string;
   targetStyles: {
-    [K in keyof T]?: ShortcutTargetValue<T, K>;
+    [K in keyof T]?:
+      | ShortcutTargetStyle<T, K>
+      | ShortcutTargetStyleVariants<T, K>
+      | ShortcutTargetValue<T, K>;
   };
 }
 

@@ -160,6 +160,6 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   backgroundColorShortcut,
-  fontFamilyShortcut,
+  fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,
 ];

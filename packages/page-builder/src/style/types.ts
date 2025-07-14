@@ -32,6 +32,8 @@ export interface StyleDefinition<T extends z.ZodTypeAny> {
     value: z.infer<T>;
     onChange: (value: z.infer<T>) => void;
   }>;
+  // Optional selector to indicate if this style should be applied to children
+  selector?: string;
 }
 
 // Style variant interface

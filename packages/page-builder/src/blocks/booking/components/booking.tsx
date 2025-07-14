@@ -3,11 +3,7 @@ import { GetAppointmentOptionsResponse } from "@vivid/types";
 import React from "react";
 import { Appointments } from "./appointments";
 import { Skeleton } from "@vivid/ui";
-
-export type BookingProps = {
-  successPage?: string;
-  className?: string;
-};
+import { BookingProps } from "./types";
 
 export const Booking: React.FC<BookingProps> = ({ successPage, className }) => {
   const [response, setResponse] =
@@ -36,7 +32,7 @@ export const Booking: React.FC<BookingProps> = ({ successPage, className }) => {
     <Appointments
       className={className}
       options={response.options}
-      successPage={successPage}
+      successPage={successPage ?? undefined}
       fieldsSchema={response.fieldsSchema}
       timeZone={response.timeZone}
       showPromoCode={response.showPromoCode}

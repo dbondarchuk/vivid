@@ -18,7 +18,8 @@ export type DefaultCSSProperties<T extends BaseStyleDictionary> = {
   [property in keyof T]?: z.infer<T[property]>;
 };
 
-export function renderStylesToCSS<T extends BaseStyleDictionary>(
+// Helper to render a style object to CSS string (for direct styles only)
+function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
   styleDefinitions: StyleDictionary<T>,
   styles?: StyleValue<T> | null,
   defaultProperties?: DefaultCSSProperties<T> | null,
@@ -48,12 +49,12 @@ export function renderStylesToCSS<T extends BaseStyleDictionary>(
 
   // Process each style
   Object.entries(styles ?? {}).forEach(
-    ([styleName, styleValue]: [keyof T, StyleValue<T>[keyof T]]) => {
+    ([styleName, styleValue]: [keyof T | string, any]) => {
       const styleDef = styleDefinitions[styleName as keyof T];
       if (!styleDef || !styleValue?.length) return;
 
       // Process variants
-      styleValue.forEach((variant) => {
+      styleValue.forEach((variant: any) => {
         const variantCSS = styleDef.renderToCSS(variant.value, isEditor);
         if (!variantCSS) return;
 
@@ -69,7 +70,7 @@ export function renderStylesToCSS<T extends BaseStyleDictionary>(
           if (!variantsByBreakpoint[breakpointKey]) {
             variantsByBreakpoint[breakpointKey] = {};
           }
-          variant.state!.forEach((state) => {
+          variant.state!.forEach((state: string) => {
             if (!variantsByBreakpoint[breakpointKey][state]) {
               variantsByBreakpoint[breakpointKey][state] = [];
             }
@@ -90,7 +91,7 @@ export function renderStylesToCSS<T extends BaseStyleDictionary>(
         }
         // If only states are provided (no breakpoints)
         else if (variant.state?.length) {
-          variant.state.forEach((state) => {
+          variant.state.forEach((state: string) => {
             if (!variantsByState[state]) {
               variantsByState[state] = [];
             }
@@ -143,6 +144,67 @@ export function renderStylesToCSS<T extends BaseStyleDictionary>(
       css += "}\n";
     }
   );
+
+  return css.trim();
+}
+
+// Main function: render styles for root and children
+export function renderStylesToCSS<T extends BaseStyleDictionary>(
+  styleDefinitions: StyleDictionary<T>,
+  styles?: StyleValue<T> | null,
+  defaultProperties?: DefaultCSSProperties<T> | null,
+  isEditor?: boolean,
+  className?: string
+): string {
+  let css = "";
+  const rootSelector = className ? `.${className}` : "&";
+
+  // Separate styles by whether they have selectors or not
+  const directStyles: StyleValue<T> = {};
+  const childStyles: Record<string, StyleValue<T>> = {};
+
+  if (styles) {
+    Object.entries(styles).forEach(([styleName, styleValue]) => {
+      const styleDef = styleDefinitions[styleName as keyof T];
+      if (!styleDef) return;
+
+      if (styleDef.selector) {
+        // This style should be applied to children
+        if (!childStyles[styleDef.selector]) {
+          childStyles[styleDef.selector] = {};
+        }
+        childStyles[styleDef.selector][styleName as keyof T] = styleValue;
+      } else {
+        // This style should be applied directly
+        directStyles[styleName as keyof T] = styleValue;
+      }
+    });
+  }
+
+  // Render direct styles for this level
+  const directCSS = renderDirectStylesToCSS(
+    styleDefinitions,
+    directStyles,
+    defaultProperties,
+    isEditor
+  );
+  if (directCSS.trim()) {
+    css += `${rootSelector} {\n${directCSS}\n}\n`;
+  }
+
+  // Render child styles (styles with selectors)
+  Object.entries(childStyles).forEach(([selector, childStyle]) => {
+    const childCSS = renderDirectStylesToCSS(
+      styleDefinitions,
+      childStyle,
+      undefined,
+      isEditor
+    );
+    if (childCSS.trim()) {
+      const fullSelector = className ? `.${className} ${selector}` : selector;
+      css += `\n${fullSelector} {\n${childCSS}\n}`;
+    }
+  });
 
   return css.trim();
 }

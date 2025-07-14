@@ -109,6 +109,6 @@ export const headingShortcuts: Shortcut<AllStylesSchemas>[] = [
     ],
   },
   backgroundColorShortcut,
-  fontFamilyShortcut,
+  fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,
 ];

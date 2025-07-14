@@ -27,6 +27,7 @@ export const InputGroupSuffixClasses = cva(
         prefix: ["pl-3", "border-r-0", "rounded-r-none"],
       },
       h: {
+        lg: "h-10",
         md: "h-9",
         sm: "h-8",
         xs: "h-7",

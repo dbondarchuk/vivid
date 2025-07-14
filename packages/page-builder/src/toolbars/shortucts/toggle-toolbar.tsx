@@ -1,8 +1,11 @@
 import { BuilderKeys, useI18n } from "@vivid/i18n";
 import { ToolbarButton } from "@vivid/ui";
 import { Shortcut } from "../../shortcuts";
+import {
+  applyShortcutOption,
+  getShortcutCurrentValue,
+} from "../../shortcuts/utils";
 import { BaseStyleDictionary } from "../../style/types";
-import { applyShortcut, getCurrentValue } from "./dropdown-toolbar";
 
 export interface ShortcutToggleToolbarItem {
   shortcut: Extract<Shortcut<BaseStyleDictionary>, { inputType: "toggle" }>;
@@ -16,6 +19,31 @@ export const createToggleToolbarItem = <T extends BaseStyleDictionary>(
   data: any,
   setData: (data: any) => void
 ): ShortcutToggleToolbarItem => {
+  const getCurrentValue = (
+    shortcut: Shortcut<T>,
+    data: any
+  ): string | undefined => {
+    return getShortcutCurrentValue(shortcut, data.style);
+  };
+
+  const applyShortcut = (
+    shortcut: Extract<Shortcut<T>, { inputType: "toggle" }>,
+    data: any,
+    setData: (data: any) => void,
+    optionValue: string
+  ) => {
+    const selectedOption = shortcut.options.find(
+      (opt: any) => opt.value === optionValue
+    );
+    if (!selectedOption) return;
+
+    applyShortcutOption(selectedOption, {
+      styles: data.style,
+      setData,
+      data,
+    });
+  };
+
   return {
     shortcut,
     currentValue: getCurrentValue(shortcut, data) || "",

@@ -287,6 +287,6 @@ export const pageHeroShortcuts: Shortcut<AllStylesSchemas>[] = [
   },
   backgroundColorShortcut,
   backgroundImageShortcut as Shortcut<AllStylesSchemas>,
-  fontFamilyShortcut,
+  fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,
 ];

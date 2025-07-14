@@ -686,7 +686,10 @@
         },
         "widths": {
           "contained": "Contained",
-          "full": "Full Width"
+          "full": "Full Width",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
         },
         "flexDirections": {
           "row": "Row",
@@ -725,6 +728,7 @@
         "items2Xl": "Items per screen (2xl)",
         "loop": "Loop",
         "autoPlay": "Auto play",
+        "autoPlaySpeed": "Auto Play Speed",
         "autoPlaySeconds": "s",
         "itemPosition": {
           "label": "Item position",
@@ -732,6 +736,25 @@
           "center": "Center",
           "end": "End",
           "stretch": "Stretch"
+        },
+        "styles": {
+          "carouselChildrenItemsPerSlide": "Items per slide",
+          "carouselChildrenAlign": "Items align"
+        },
+        "shortcuts": {
+          "itemsPerSlide": {
+            "label": "Items per slide",
+            "mobile": "Mobile optimized",
+            "tablet": "Tablet optimized",
+            "desktop": "Desktop optimized"
+          },
+          "childrenPosition": {
+            "label": "Children position",
+            "start": "Start",
+            "center": "Center",
+            "end": "End",
+            "stretch": "Stretch"
+          }
         }
       },
       "spacer": {
@@ -834,7 +857,8 @@
         "displayName": "Page Hero"
       },
       "booking": {
-        "displayName": "Booking form"
+        "displayName": "Booking form",
+        "confirmationPage": "Confirmation Page"
       }
     },
     "shortcuts": {

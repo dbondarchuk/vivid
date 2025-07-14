@@ -42,6 +42,7 @@ export const TextInput: React.FC<Props> = ({
     <div className="flex flex-col gap-2">
       <Label>{label}</Label>
       <div className="flex w-full">
+        {/* @ts-expect-error - TODO: fix this */}
         <ArgumentsAutocomplete
           args={args}
           asInput={!isMultiline}

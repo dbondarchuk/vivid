@@ -8,6 +8,7 @@ import { generateClassName } from "../../helpers/class-name-generator";
 export const BookingReader = ({
   props,
   style,
+  args,
   ...rest
 }: BookingReaderProps) => {
   const className = generateClassName();
@@ -15,7 +16,7 @@ export const BookingReader = ({
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
-      <Booking className={className} />
+      <Booking className={className} successPage={props.confirmationPage} />
     </>
   );
 };

@@ -4,6 +4,7 @@ import {
   AlignVerticalSpaceBetween,
   ArrowRight,
   Box,
+  Maximize,
   Move,
   WrapText,
 } from "lucide-react";
@@ -337,30 +338,51 @@ export const containerShortcuts: Shortcut<AllStylesSchemas>[] = [
       },
     ],
   },
-  // {
-  //   label: "pageBuilder.blocks.container.shortcuts.widthContainer",
-  //   icon: Maximize,
-  //   inputType: "toggle",
-  //   options: [
-  //     {
-  //       label: "pageBuilder.blocks.container.widthContainers.full",
-  //       targetStyles: {
-  //         width: {
-  //           value: 100,
-  //           unit: "%",
-  //         },
-  //       },
-  //     },
-  //     {
-  //       label: "pageBuilder.blocks.container.widthContainers.container",
-  //       targetStyles: {
-  //         width: "100%",
-  //       },
-  //     },
-  //   ],
-  // },
+  {
+    label: "pageBuilder.blocks.container.shortcuts.width",
+    icon: Maximize,
+    options: [
+      {
+        label: "pageBuilder.blocks.container.widths.full",
+        value: "full",
+        targetStyles: {
+          width: { value: 100, unit: "%" },
+          maxWidth: undefined, // Explicitly remove maxWidth when switching to full width
+          margin: {
+            top: "auto",
+            right: "auto",
+            bottom: "auto",
+            left: "auto",
+          },
+        },
+      },
+      {
+        label: "pageBuilder.blocks.container.widths.contained",
+        value: "contained",
+        targetStyles: {
+          width: { value: 100, unit: "%" },
+          maxWidth: {
+            variants: [
+              { value: { value: 640, unit: "px" }, breakpoint: [] },
+              { value: { value: 768, unit: "px" }, breakpoint: ["sm"] },
+              { value: { value: 1024, unit: "px" }, breakpoint: ["md"] },
+              { value: { value: 1280, unit: "px" }, breakpoint: ["lg"] },
+              { value: { value: 1536, unit: "px" }, breakpoint: ["xl"] },
+              { value: { value: 1536, unit: "px" }, breakpoint: ["2xl"] },
+            ],
+          },
+          margin: {
+            top: "auto",
+            right: "auto",
+            bottom: "auto",
+            left: "auto",
+          },
+        },
+      },
+    ],
+  },
   backgroundColorShortcut,
   backgroundImageShortcut as Shortcut<AllStylesSchemas>,
-  fontFamilyShortcut,
+  fontFamilyShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,
 ];

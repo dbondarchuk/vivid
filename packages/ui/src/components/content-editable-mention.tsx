@@ -375,7 +375,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
           isUpdatingContent.current = false;
         }
       }
-    }, [textValue]);
+    }, [textValue, Tag]);
 
     return (
       <div className="relative w-full">

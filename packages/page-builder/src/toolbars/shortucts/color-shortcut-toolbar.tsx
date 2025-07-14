@@ -24,6 +24,7 @@ import React from "react";
 import { useI18n } from "../../../../i18n/src/client";
 import { BuilderKeys } from "../../../../i18n/src/types";
 import { ShortcutWithColor } from "../../shortcuts";
+import { applyShortcutOption } from "../../shortcuts/utils";
 import { BaseStyleDictionary, COLORS_LIST, getColorStyle } from "../../style";
 
 export interface ColorShortcutToolbarItem {

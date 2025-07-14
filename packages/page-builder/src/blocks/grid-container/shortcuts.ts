@@ -391,5 +391,5 @@ export const gridContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
   backgroundColorShortcut,
   backgroundImageShortcut as Shortcut<AllStylesSchemas>,
   colorShortcut,
-  fontFamilyShortcut,
+  fontFamilyShortcut as Shortcut<AllStylesSchemas>,
 ];

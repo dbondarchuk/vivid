@@ -59,6 +59,7 @@ export const PageInput: React.FC<Props> = ({
               setValue(null);
               onChange(null);
             }}
+            size="sm"
           />
         )}
       </div>

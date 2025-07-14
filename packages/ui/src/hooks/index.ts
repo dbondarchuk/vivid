@@ -4,6 +4,7 @@ export * from "./use-arguments";
 export * from "./use-attribute-observer";
 export * from "./use-auto-resize-textarea";
 export * from "./use-debounce";
+export * from "./use-debounce-cache-fn";
 export * from "./use-demo-arguments";
 export * from "./use-did-update-effect";
 export * from "./use-effect-debugger";

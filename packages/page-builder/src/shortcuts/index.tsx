@@ -28,6 +28,7 @@ import {
   ShortcutWithRadio,
   ShortcutWithToggle,
 } from "./types";
+import { applyShortcutOption, getShortcutCurrentValue } from "./utils";
 
 export * from "./types";
 
@@ -46,80 +47,14 @@ export const Shortcuts = <T extends BaseStyleDictionary>({
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
   const applyShortcut = (option: ShortcutOption<T>) => {
-    const newStyles = { ...styles };
-
-    // Apply each target style
-    Object.keys(option.targetStyles).forEach((styleName: keyof T) => {
-      const value = option.targetStyles[styleName];
-
-      if (newStyles[styleName]) {
-        // Update existing style variants
-        const currentVariants = newStyles[styleName];
-        if (currentVariants && currentVariants.length > 0) {
-          const updatedVariants = currentVariants.map((variant) => ({
-            ...variant,
-            value: typeof value === "function" ? value(variant.value) : value,
-          }));
-          newStyles[styleName] = updatedVariants;
-        }
-      } else {
-        // Create new style variant
-        newStyles[styleName] = [
-          {
-            breakpoint: [],
-            state: [],
-            value: typeof value === "function" ? value() : value,
-          },
-        ];
-      }
+    applyShortcutOption(option, {
+      styles,
+      onStylesChange,
     });
-
-    onStylesChange(newStyles);
   };
 
   const getCurrentValue = (shortcut: Shortcut<T>): string | undefined => {
-    // Handle number-with-unit type separately
-    if (shortcut.inputType === "number-with-unit") {
-      return undefined; // Number-with-unit doesn't use string values
-    }
-
-    // Handle asset-selector type separately
-    if (shortcut.inputType === "asset-selector") {
-      return undefined; // Asset-selector doesn't use predefined options
-    }
-
-    // Handle color type separately
-    if (shortcut.inputType === "color") {
-      return undefined; // Color doesn't use predefined options
-    }
-
-    // Try to find which option matches the current styles
-    for (const option of shortcut.options) {
-      const matches = Object.keys(option.targetStyles).every(
-        (styleName: keyof T) => {
-          const targetValue = option.targetStyles[styleName];
-          const currentStyle = styles[styleName]?.find(
-            (s) => !s.breakpoint?.length && !s.state?.length
-          );
-
-          if (!currentStyle) return false;
-
-          const target =
-            typeof targetValue === "function"
-              ? targetValue(currentStyle.value)
-              : targetValue;
-
-          const currentValue = currentStyle.value;
-          return JSON.stringify(currentValue) === JSON.stringify(target);
-        }
-      );
-
-      if (matches) {
-        return option.value;
-      }
-    }
-
-    return undefined;
+    return getShortcutCurrentValue(shortcut, styles);
   };
 
   const renderInputComponent = (shortcut: Shortcut<T>) => {

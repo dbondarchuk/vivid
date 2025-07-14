@@ -5,15 +5,7 @@ import { zStyles } from "./styles";
 export const BookingPropsSchema = z.object({
   style: zStyles,
   props: z.object({
-    // title: z.object({
-    //   children: z.array(z.any()).max(1),
-    // }),
-    // subtitle: z.object({
-    //   children: z.array(z.any()).max(1),
-    // }),
-    // buttons: z.object({
-    //   children: z.array(z.any()).max(1),
-    // }),
+    confirmationPage: z.string().optional().nullable(),
   }),
 });
 

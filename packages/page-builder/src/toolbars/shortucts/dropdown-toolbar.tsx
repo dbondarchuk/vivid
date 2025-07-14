@@ -9,6 +9,10 @@ import {
   useOpenState,
 } from "@vivid/ui";
 import { Shortcut, ShortcutOption } from "../../shortcuts";
+import {
+  applyShortcutOption,
+  getShortcutCurrentValue,
+} from "../../shortcuts/utils";
 import { BaseStyleDictionary } from "../../style/types";
 
 export interface ShortcutDropdownToolbarItem {
@@ -27,31 +31,7 @@ export const getCurrentValue = <T extends BaseStyleDictionary>(
   shortcut: Extract<Shortcut<T>, { options: ShortcutOption<T>[] }>,
   data: any
 ): string | undefined => {
-  for (const option of shortcut.options) {
-    const matches = Object.keys(option.targetStyles).every(
-      (styleName: keyof T) => {
-        const targetValue = option.targetStyles[styleName];
-        const currentStyle = data.style?.[styleName]?.find(
-          (s: any) => !s.breakpoint?.length && !s.state?.length
-        );
-
-        if (!currentStyle) return false;
-
-        const target =
-          typeof targetValue === "function"
-            ? targetValue(currentStyle.value)
-            : targetValue;
-
-        const currentValue = currentStyle.value;
-        return JSON.stringify(currentValue) === JSON.stringify(target);
-      }
-    );
-
-    if (matches) {
-      return option.value;
-    }
-  }
-  return undefined;
+  return getShortcutCurrentValue(shortcut, data.style);
 };
 
 // Apply shortcut option
@@ -66,37 +46,11 @@ export const applyShortcut = <T extends BaseStyleDictionary>(
   );
   if (!selectedOption) return;
 
-  const newData = { ...data };
-  const newStyles = { ...newData.style };
-
-  // Apply each target style
-  Object.keys(selectedOption.targetStyles).forEach((styleName: keyof T) => {
-    const value = selectedOption.targetStyles[styleName];
-
-    if (newStyles[styleName]) {
-      // Update existing style variants
-      const currentVariants = newStyles[styleName];
-      if (currentVariants && currentVariants.length > 0) {
-        const updatedVariants = currentVariants.map((variant: any) => ({
-          ...variant,
-          value: typeof value === "function" ? value(variant.value) : value,
-        }));
-        newStyles[styleName] = updatedVariants;
-      }
-    } else {
-      // Create new style variant
-      newStyles[styleName] = [
-        {
-          breakpoint: [],
-          state: [],
-          value: typeof value === "function" ? value() : value,
-        },
-      ];
-    }
+  applyShortcutOption(selectedOption, {
+    styles: data.style,
+    setData,
+    data,
   });
-
-  newData.style = newStyles;
-  setData(newData);
 };
 
 export const createDropdownToolbarItem = <T extends BaseStyleDictionary>(

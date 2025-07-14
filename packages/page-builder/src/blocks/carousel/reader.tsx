@@ -9,7 +9,6 @@ import {
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { CarouselReaderProps, styles } from "./schema";
-import { getCarouselItemStyles } from "./styles";
 
 export const CarouselReader = ({
   style,
@@ -20,16 +19,9 @@ export const CarouselReader = ({
 
   const className = generateClassName();
 
-  const carouselItemStyles = getCarouselItemStyles(props);
-
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
-      <BlockStyle
-        name={`${className} .carousel-item`}
-        styleDefinitions={styles}
-        styles={carouselItemStyles}
-      />
       <Carousel
         opts={{
           loop: !!props.loop,

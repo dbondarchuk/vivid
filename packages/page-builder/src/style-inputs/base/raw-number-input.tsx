@@ -64,79 +64,81 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
   const inputId = propId ?? id;
 
   return (
-    <div className="flex flex-row gap-0.5 items-center shrink">
+    <div className="flex flex-row gap-0.5 items-center grow w-full">
       <label className="min-w-6 shrink-0 cursor-pointer" htmlFor={inputId}>
         {iconLabel}
       </label>
 
-      <Button
-        onClick={() => handleDeltaChange(-step)}
-        variant="ghost"
-        size="sm"
-        disabled={disabled}
-        // className="w-6 h-6"
-      >
-        <Minus className="" />
-      </Button>
-
-      <Popover open={isFocused} modal={false}>
-        <PopoverTrigger asChild>
-          <input
-            className={cn(
-              "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-8 min-w-10 max-w-12 shrink bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted disabled:text-muted-foreground"
-            )}
-            value={value?.toString()}
-            onBlur={() => {
-              setIsFocused(false);
-            }}
-            onChange={(e) => handleInputChange(parseFn(e.target.value))}
-            onFocus={() => {
-              setIsFocused(true);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleInputChange(parseFn(e.currentTarget.value));
-                setIsFocused(false);
-              }
-            }}
-            data-plate-focus="true"
-            type="number"
-            id={inputId}
-            disabled={disabled}
-          />
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-10 px-px py-1"
-          onOpenAutoFocus={(e) => e.preventDefault()}
+      <div className="flex flex-row gap-0.5 items-center justify-center grow w-full">
+        <Button
+          onClick={() => handleDeltaChange(-step)}
+          variant="ghost"
+          size="sm"
+          disabled={disabled}
+          // className="w-6 h-6"
         >
-          {options.map((option) => (
-            <button
-              key={option}
-              className={cn(
-                "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent"
-              )}
-              onClick={() => {
-                handleInputChange(option);
-              }}
-              data-highlighted={option.toString() === value?.toString()}
-              type="button"
-            >
-              {option}
-            </button>
-          ))}
-        </PopoverContent>
-      </Popover>
+          <Minus className="" />
+        </Button>
 
-      <Button
-        onClick={() => handleDeltaChange(step)}
-        variant="ghost"
-        size="sm"
-        disabled={disabled}
-        // className="w-6 h-6"
-      >
-        <Plus className="" />
-      </Button>
+        <Popover open={isFocused} modal={false}>
+          <PopoverTrigger asChild>
+            <input
+              className={cn(
+                "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-8 min-w-10 max-w-12 shrink bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted disabled:text-muted-foreground"
+              )}
+              value={value?.toString()}
+              onBlur={() => {
+                setIsFocused(false);
+              }}
+              onChange={(e) => handleInputChange(parseFn(e.target.value))}
+              onFocus={() => {
+                setIsFocused(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleInputChange(parseFn(e.currentTarget.value));
+                  setIsFocused(false);
+                }
+              }}
+              data-plate-focus="true"
+              type="number"
+              id={inputId}
+              disabled={disabled}
+            />
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-10 px-px py-1"
+            onOpenAutoFocus={(e) => e.preventDefault()}
+          >
+            {options.map((option) => (
+              <button
+                key={option}
+                className={cn(
+                  "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent"
+                )}
+                onClick={() => {
+                  handleInputChange(option);
+                }}
+                data-highlighted={option.toString() === value?.toString()}
+                type="button"
+              >
+                {option}
+              </button>
+            ))}
+          </PopoverContent>
+        </Popover>
+
+        <Button
+          onClick={() => handleDeltaChange(step)}
+          variant="ghost"
+          size="sm"
+          disabled={disabled}
+          // className="w-6 h-6"
+        >
+          <Plus className="" />
+        </Button>
+      </div>
     </div>
   );
 };

@@ -22,10 +22,12 @@ import {
   SaveButton,
   toastPromise,
   use12HourFormat,
+  useDebounceCacheFn,
+  useDemoArguments,
 } from "@vivid/ui";
 import { Globe, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { cache, useEffect } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
@@ -46,8 +48,10 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const t = useI18n("admin");
   const uses12HourFormat = use12HourFormat();
 
+  const cachedUniqueSlugCheck = useDebounceCacheFn(checkUniqueSlug, 300);
+
   const formSchema = getPageSchemaWithUniqueCheck(
-    (slug) => checkUniqueSlug(slug, initialData?._id),
+    (slug) => cachedUniqueSlugCheck(slug, initialData?._id),
     "pages.slugMustBeUnique"
   );
 
@@ -76,6 +80,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       const generatedSlug = generateSlug(title);
       if (generatedSlug && generatedSlug !== slug) {
         form.setValue("slug", generatedSlug);
+        form.trigger("slug");
       }
     }
   }, [title, isNewPage, slugManuallyChanged, slug, form]);
@@ -139,7 +144,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
     }
   };
 
-  const { content: _, ...args } = form.watch();
+  const { content: _, ...restFields } = form.watch();
+  const demoAppointment = useDemoArguments();
+  const args = { ...restFields, appointment: demoAppointment };
 
   // Determine if any settings fields have errors
   const nonSettingsFields = ["title", "slug", "content"];

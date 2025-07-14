@@ -15,7 +15,6 @@ import React, { useCallback } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { CarouselProps, styles } from "./schema";
-import { getCarouselItemStyles } from "./styles";
 
 export const CarouselEditor = ({ style, props }: CarouselProps) => {
   const currentBlock = useCurrentBlock<CarouselProps>();
@@ -25,7 +24,6 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
   const children = currentBlock.data?.props?.children;
   const className = generateClassName();
 
-  const carouselItemStyles = getCarouselItemStyles(currentBlock.data.props);
   const childWrapper = useCallback(
     ({ children }: { children: React.ReactNode }) => (
       <CarouselItem className="carousel-item">{children}</CarouselItem>
@@ -70,11 +68,6 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
         styleDefinitions={styles}
         styles={newStyle}
       />
-      {/* <BlockStyle
-        name={`${className} .carousel-item`}
-        styleDefinitions={styles}
-        styles={carouselItemStyles}
-      /> */}
       <EditorChildren
         block={currentBlock}
         className={className}

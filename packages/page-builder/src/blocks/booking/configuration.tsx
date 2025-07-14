@@ -1,6 +1,7 @@
 "use client";
 
-import { ConfigurationProps } from "@vivid/builder";
+import { ConfigurationProps, PageInput } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { BookingProps } from "./schema";
 import { bookingShortcuts } from "./shortcuts";
@@ -11,13 +12,25 @@ export const BookingConfiguration = ({
   setData,
 }: ConfigurationProps<BookingProps>) => {
   const updateData = (d: unknown) => setData(d as BookingProps);
-
+  const t = useI18n("builder");
   return (
     <StylesConfigurationPanel
       styles={data.style ?? {}}
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={bookingShortcuts}
-    />
+    >
+      <PageInput
+        label={t("pageBuilder.blocks.booking.confirmationPage")}
+        defaultValue={data.props.confirmationPage ?? null}
+        nullable
+        onChange={(value) =>
+          updateData({
+            ...data,
+            props: { ...data.props, confirmationPage: value },
+          })
+        }
+      />
+    </StylesConfigurationPanel>
   );
 };
