@@ -12,7 +12,7 @@ export default function BaseSidebarPanel({
   const t = useI18n("builder");
   return (
     <div className="p-2">
-      <div className="mb-2 text-secondary-foreground">{t(title)}</div>
+      <div className="mb-2 font-bold">{t(title)}</div>
       <div className="flex flex-col gap-5 mb-3">{children}</div>
     </div>
   );

@@ -5,12 +5,16 @@ import { TEditorBlock, TEditorConfiguration } from "../editor/core";
 import { BuilderSchema } from "../types";
 import { generateId } from "./block-id";
 
-const findChildrenProps = (obj: any): any[] => {
+const findChildrenProps = (
+  obj: any,
+  parentProps: string[]
+): { children: any; property: string }[] => {
   if (!obj || typeof obj !== "object") return [];
-  const result = [];
+  const result: { children: any; property: string }[] = [];
   for (const prop of Object.keys(obj)) {
-    if (prop === "children" && Array.isArray(obj[prop])) result.push(obj[prop]);
-    else result.push(...findChildrenProps(obj[prop]));
+    if (prop === "children" && Array.isArray(obj[prop]))
+      result.push({ children: obj[prop], property: parentProps.join(".") });
+    else result.push(...findChildrenProps(obj[prop], [...parentProps, prop]));
   }
 
   return result;
@@ -50,15 +54,19 @@ export const insertBlockInLevel = (
   block: TEditorBlock,
   newBlock: TEditorBlock,
   property: string | undefined | null,
-  index: number
+  index: number | "last"
 ) => {
   const prop = property
-    ? resolve(block, property, true)
+    ? resolve(block, property, true) || resolve(block, `data.${property}`, true)
     : findChildrenProp(block)[0];
   if (!prop) return;
 
   if (!prop.children) prop.children = [];
-  (prop.children as any[]).splice(index, 0, newBlock);
+  if (index === "last") {
+    (prop.children as any[]).push(newBlock);
+  } else {
+    (prop.children as any[]).splice(index, 0, newBlock);
+  }
 };
 
 export const moveBlockInLevel = (
@@ -169,8 +177,11 @@ const recursiveFindBlock = (
 ): TEditorBlock | null => {
   if (block.id === blockId) return block;
 
-  const childrenProps = findChildrenProps(block.data).flatMap((x) => x);
-  for (const child of (childrenProps as TEditorBlock[]) || []) {
+  const childrenProps = findChildrenProps(block.data, []).flatMap(
+    (x) => x.children
+  );
+
+  for (const child of childrenProps || []) {
     if (!child || !("id" in child)) continue;
     const result = recursiveFindBlock(child, blockId);
     if (result) return result;
@@ -207,8 +218,11 @@ const recursiveValidateBlocks = (
     };
   }
 
-  const childrenProps = findChildrenProps(block.data).flatMap((x) => x);
-  for (const child of (childrenProps as TEditorBlock[]) || []) {
+  const childrenProps = findChildrenProps(block.data, []).flatMap(
+    (x) => x.children
+  );
+
+  for (const child of childrenProps || []) {
     if (!child || !("id" in child)) continue;
 
     const result = recursiveValidateBlocks(child, schemas);
@@ -224,8 +238,10 @@ const recursiveFindBlockHierarchy = (
 ): TEditorBlock[] | null => {
   if (block.id === blockId) return [block];
 
-  const childrenProps = findChildrenProps(block.data).flatMap((x) => x);
-  for (const child of (childrenProps as TEditorBlock[]) || []) {
+  const childrenProps = findChildrenProps(block.data, []).flatMap(
+    (x) => x.children
+  );
+  for (const child of childrenProps || []) {
     if (!child || !("id" in child)) continue;
     const result = recursiveFindBlockHierarchy(child, blockId);
     if (result) return [block, ...result];
@@ -237,15 +253,22 @@ const recursiveFindBlockHierarchy = (
 const recursiveFindParentBlock = (
   block: TEditorBlock,
   blockId: string,
-  parent: TEditorBlock
-): TEditorBlock | null => {
-  if (block.id === blockId) return parent;
+  parent: TEditorBlock,
+  parentProperty: string
+): { block: TEditorBlock; property: string } | null => {
+  if (block.id === blockId)
+    return {
+      block: parent,
+      property: parentProperty,
+    };
 
-  const childrenProps = findChildrenProps(block.data).flatMap((x) => x);
-  for (const child of (childrenProps as TEditorBlock[]) || []) {
-    if (!child || !("id" in child)) continue;
-    const result = recursiveFindParentBlock(child, blockId, block);
-    if (result) return result;
+  const childrenProps = findChildrenProps(block.data, []);
+  for (const { children, property } of childrenProps || []) {
+    for (const child of children || []) {
+      if (!child || !("id" in child)) continue;
+      const result = recursiveFindParentBlock(child, blockId, block, property);
+      if (result) return result;
+    }
   }
 
   return null;
@@ -273,5 +296,5 @@ export const findParentBlock = (
   document: TEditorConfiguration,
   blockId: string
 ) => {
-  return recursiveFindParentBlock(document, blockId, document);
+  return recursiveFindParentBlock(document, blockId, document, "");
 };

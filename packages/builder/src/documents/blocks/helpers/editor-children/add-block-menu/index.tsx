@@ -18,20 +18,28 @@ import { generateId } from "../../../../helpers/block-id";
 import { DividerButton } from "./divider-button";
 import { PlaceholderButton } from "./placeholder-button";
 import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { BaseZodDictionary } from "../../../../types";
 
-type Props = {
+type Props<T extends BaseZodDictionary = any> = {
   onSelect: (block: TEditorBlock) => void;
+  allowOnly?: keyof T | keyof T[];
 } & (
   | {
       placeholder: true;
       contextId: string;
+      isOver?: boolean;
+      className?: string;
     }
   | {
       placeholder?: false;
     }
 );
 
-export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
+export const AddBlockButton = <T extends BaseZodDictionary = any>({
+  onSelect,
+  allowOnly,
+  ...rest
+}: Props<T>) => {
   const [open, setOpen] = React.useState(false);
   const blocks = useBlocks();
   const rootBlock = useRootBlock();
@@ -51,7 +59,11 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
   return (
     <Popover modal open={open} onOpenChange={setOpen}>
       {rest.placeholder ? (
-        <PlaceholderButton contextId={rest.contextId} />
+        <PlaceholderButton
+          contextId={rest.contextId}
+          isOver={rest.isOver}
+          className={rest.className}
+        />
       ) : (
         <DividerButton />
       )}
@@ -62,7 +74,13 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
             <CommandEmpty>{tUi("common.noResults")}</CommandEmpty>
             {Object.entries(
               Object.entries(blocks)
-                .filter(([type]) => rootBlock.type !== type)
+                .filter(([type]) =>
+                  allowOnly
+                    ? Array.isArray(allowOnly)
+                      ? allowOnly.includes(type as keyof T)
+                      : type === allowOnly
+                    : rootBlock.type !== type
+                )
                 .reduce(
                   (map, [name, value]) => ({
                     ...map,
@@ -93,7 +111,7 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
                   {values.map(({ name, defaultValue, icon, displayName }) => (
                     <CommandItem
                       key={name}
-                      className="gap-2 [&>svg]:size-4"
+                      className="cursor-pointer gap-2 [&>svg]:size-4"
                       onSelect={() =>
                         onItemSelect({
                           type: name,

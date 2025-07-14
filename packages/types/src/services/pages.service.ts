@@ -1,5 +1,5 @@
 import { Query, WithTotal } from "../database";
-import { Page, PageUpdateModel } from "../pages";
+import { Page, PageListModel, PageUpdateModel } from "../pages";
 
 export interface IPagesService {
   getPage(id: string): Promise<Page | null>;
@@ -10,7 +10,7 @@ export interface IPagesService {
       maxPublishDate?: Date;
       tags?: string[];
     }
-  ): Promise<WithTotal<Page>>;
+  ): Promise<WithTotal<PageListModel>>;
   createPage(page: PageUpdateModel): Promise<Page>;
   updatePage(id: string, update: PageUpdateModel): Promise<void>;
   deletePage(id: string): Promise<Page | null>;

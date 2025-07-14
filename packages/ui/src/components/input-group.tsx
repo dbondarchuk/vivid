@@ -4,7 +4,7 @@ import { cn } from "../utils";
 
 export const InputGroupSuffixClasses = cva(
   [
-    "h-9",
+    // "h-9",
     "rounded-md",
     "border",
     "border-input",
@@ -25,6 +25,11 @@ export const InputGroupSuffixClasses = cva(
       variant: {
         suffix: ["pr-3", "border-l-0", "rounded-l-none"],
         prefix: ["pl-3", "border-r-0", "rounded-r-none"],
+      },
+      h: {
+        md: "h-9",
+        sm: "h-8",
+        xs: "h-7",
       },
     },
     defaultVariants: {

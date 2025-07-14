@@ -7,7 +7,7 @@ import {
   AlignStartHorizontal,
   AlignStartVertical,
 } from "lucide-react";
-import RawSliderInput from "./raw/raw-slider-input";
+import { RawSliderInput } from "./raw/raw-slider-input";
 
 type TPaddingValue = {
   top: number;

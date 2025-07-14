@@ -43,6 +43,9 @@
     "title": "Select asset",
     "upload": "Upload"
   },
+  "pageSelector": {
+    "title": "Select page"
+  },
   "promoCodeSelector": {
     "placeholder": "Select promo code",
     "notActive": "Not active",

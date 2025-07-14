@@ -1,0 +1,32 @@
+import { RulerDimensionLine } from "lucide-react";
+import {} from "../../../style-inputs/base/raw-number-input-with-units";
+import { RawNumberInputWithUnitsAndKeywords } from "../../../style-inputs/base/raw-number-input-with-units-and-keywords";
+import { StyleDefinition } from "../../types";
+import { getZNumberValueWithUnitOrKeyword } from "../../zod";
+import { widthOrHeightOptions } from "../../../style-inputs/base/types";
+import { renderRawNumberWithUnitOrKeywordCss } from "../../utils";
+
+const WidthSchema = getZNumberValueWithUnitOrKeyword(
+  widthOrHeightOptions.map((option) => option.value)
+);
+
+export const widthStyle = {
+  name: "width",
+  label: "pageBuilder.styles.properties.width",
+  category: "layout",
+  schema: WidthSchema,
+  icon: ({ className }) => <RulerDimensionLine className={className} />,
+  defaultValue: { value: 100, unit: "%" },
+  renderToCSS: (value) => {
+    if (!value) return null;
+    return `width: ${renderRawNumberWithUnitOrKeywordCss(value)};`;
+  },
+  component: ({ value, onChange }) => (
+    <RawNumberInputWithUnitsAndKeywords
+      icon={<RulerDimensionLine className="size-4" />}
+      value={value}
+      onChange={onChange}
+      keywords={widthOrHeightOptions}
+    />
+  ),
+} as const satisfies StyleDefinition<typeof WidthSchema>;

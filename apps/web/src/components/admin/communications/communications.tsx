@@ -11,7 +11,6 @@ import {
 import { useInView } from "react-intersection-observer";
 
 import { SendCommunicationDialog } from "@/components/admin/communications/send-message-dialog";
-import { Markdown } from "@/components/web/markdown";
 import {
   Badge,
   Button,
@@ -23,6 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
   IFrame,
+  Markdown,
   Skeleton,
   toast,
   Tooltip,

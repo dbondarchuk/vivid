@@ -2,9 +2,9 @@ import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
 } from "@vivid/builder";
-import { Leaves } from "@vivid/utils";
-import { ArrowUpToLine, FoldVertical, ArrowDownToLine } from "lucide-react";
 import { useI18n } from "@vivid/i18n";
+import { Leaves } from "@vivid/types";
+import { ArrowDownToLine, ArrowUpToLine, FoldVertical } from "lucide-react";
 
 type PropsType = {
   props?: { contentAlignment?: "top" | "middle" | "bottom" | null } | null;

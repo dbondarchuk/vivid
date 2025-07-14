@@ -1,10 +1,10 @@
 "use client";
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 
 import { findBlock } from "../helpers/blocks";
-import { useDocument } from "./context";
-import { CoreEditorBlock, TEditorBlock } from "./core";
+import { useDocument, useSetBlockDisableOptions } from "./context";
+import { BlockDisableOptions, CoreEditorBlock, TEditorBlock } from "./core";
 
 const EditorBlockContext = createContext<{
   blockId: string;
@@ -21,15 +21,43 @@ export const useCurrentBlockIsOverlay = () =>
 export const useCurrentBlock = <T,>() => {
   const currentBlockId = useCurrentBlockId();
   const document = useDocument();
-  return findBlock(document, currentBlockId)! as TEditorBlock<T>;
+  // const context = useContext(EditorBlockContext);
+  const block = useMemo(
+    () => findBlock(document, currentBlockId)! as TEditorBlock<T>,
+    [document, currentBlockId]
+  );
+
+  return block;
 };
 
 type EditorBlockProps = {
   block: TEditorBlock;
   isOverlay?: boolean;
+  disableMove?: boolean;
+  disableDelete?: boolean;
+  disableClone?: boolean;
+  disableDrag?: boolean;
 };
 
-export const EditorBlock = ({ block, isOverlay }: EditorBlockProps) => {
+export const EditorBlock = ({
+  block,
+  isOverlay,
+  disableMove,
+  disableDelete,
+  disableClone,
+  disableDrag,
+}: EditorBlockProps) => {
+  const setBlockDisableOptions = useSetBlockDisableOptions();
+
+  useEffect(() => {
+    setBlockDisableOptions(block.id, {
+      move: disableMove,
+      delete: disableDelete,
+      clone: disableClone,
+      drag: disableDrag,
+    });
+  }, [block.id, disableMove, disableDelete, disableClone, disableDrag]);
+
   return (
     <EditorBlockContext.Provider
       value={{ blockId: block.id, isOverlay: !!isOverlay }}

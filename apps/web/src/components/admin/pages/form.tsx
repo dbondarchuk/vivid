@@ -1,38 +1,46 @@
 "use client";
 
-import { LanguageOptions } from "@/constants/texts";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Editor } from "@monaco-editor/react";
-import { Language, languages, useI18n } from "@vivid/i18n";
+import { Language, useI18n } from "@vivid/i18n";
+import { PageBuilder } from "@vivid/page-builder";
+import { getPageSchemaWithUniqueCheck, Page } from "@vivid/types";
 import {
-  getPageSchemaWithUniqueCheck,
-  Page,
-  pageTagSchema,
-} from "@vivid/types";
-import {
-  Combobox,
-  DateTimePicker,
+  Breadcrumbs,
+  cn,
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
-  InfoTooltip,
   Input,
+  InputGroup,
+  InputGroupInput,
+  InputGroupInputClasses,
+  InputGroupSuffixClasses,
+  InputSuffix,
   Link,
   SaveButton,
-  Switch,
-  TagInput,
-  Textarea,
   toastPromise,
   use12HourFormat,
 } from "@vivid/ui";
+import { Globe, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
+import { PageSettingsPanel } from "./page-settings-panel";
+
+// Helper function to generate slug from title
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+};
 
 export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const t = useI18n("admin");
@@ -46,6 +54,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   type PageFormValues = z.infer<typeof formSchema>;
 
   const [loading, setLoading] = React.useState(false);
+  const [slugManuallyChanged, setSlugManuallyChanged] = React.useState(false);
   const router = useRouter();
   const form = useForm<PageFormValues>({
     resolver: zodResolver(formSchema),
@@ -56,6 +65,42 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
       published: true,
     },
   });
+
+  const slug = form.watch("slug");
+  const title = form.watch("title");
+  const isNewPage = !initialData;
+
+  // Auto-generate slug when title changes (only for new pages and when slug hasn't been manually changed)
+  React.useEffect(() => {
+    if (isNewPage && !slugManuallyChanged && title) {
+      const generatedSlug = generateSlug(title);
+      if (generatedSlug && generatedSlug !== slug) {
+        form.setValue("slug", generatedSlug);
+      }
+    }
+  }, [title, isNewPage, slugManuallyChanged, slug, form]);
+
+  const breadcrumbItems = [
+    { title: t("assets.dashboard"), link: "/admin/dashboard" },
+    { title: t("pages.title"), link: "/admin/dashboard/pages" },
+    {
+      title: title || t("pages.new"),
+      link: initialData?._id
+        ? `/admin/dashboard/pages/${initialData._id}`
+        : "/admin/dashboard/pages/new",
+    },
+  ];
+
+  const { setError, trigger } = form;
+  const onPageBuilderValidChange = React.useCallback(
+    (isValid: boolean) =>
+      isValid
+        ? trigger()
+        : setError("content", {
+            message: t("templates.form.validation.templateNotValid"),
+          }),
+    [setError, trigger, t]
+  );
 
   const getTags = (value: string) => {
     let tags = value.split(/,\s?/g);
@@ -94,334 +139,137 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
     }
   };
 
+  const { content: _, ...args } = form.watch();
+
+  // Determine if any settings fields have errors
+  const nonSettingsFields = ["title", "slug", "content"];
+
+  const { errors } = useFormState({ control: form.control });
+  const hasSettingsErrors = Object.keys(errors).some(
+    (error) => !nonSettingsFields.includes(error)
+  );
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-        <div className="flex flex-col-reverse lg:flex-row gap-4 w-full">
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem className="w-full lg:w-4/5 flex-grow">
-                <FormLabel>
-                  {t("pages.form.pageContent")}
-                  <InfoTooltip>
-                    <p>{t("pages.form.pageContentTooltip")}</p>
-                    <p>
-                      <Link
-                        href="https://mdxjs.com/docs/what-is-mdx/"
-                        target="_blank"
-                        variant="primary"
-                      >
-                        {t("pages.form.learnMoreAboutMdx")}
-                      </Link>
-                    </p>
-                  </InfoTooltip>
-                </FormLabel>
-                <FormControl>
-                  <Editor
-                    height="100vh"
-                    language="mdx"
-                    theme="vs-dark"
-                    value={field.value}
-                    onChange={field.onChange}
-                    onValidate={() => form.trigger(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <div className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-col gap-4 justify-between">
+          <Breadcrumbs items={breadcrumbItems} />
+          <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4">
+            {/* <Heading title={t("pages.edit")} description={`/${slug}`} /> */}
+            <div className="flex flex-col gap-2 w-full">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input
+                        className="md:text-xl lg:text-2xl font-bold tracking-tight border-0 w-full"
+                        autoFocus
+                        h={"lg"}
+                        disabled={loading}
+                        placeholder={t("pages.form.titlePlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <InputGroup>
+                        <InputSuffix
+                          className={cn(
+                            InputGroupSuffixClasses({
+                              variant: "prefix",
+                              h: "sm",
+                            }),
+                            "border-0 pt-2.5"
+                          )}
+                        >
+                          <span className="text-sm text-muted-foreground">
+                            /
+                          </span>
+                        </InputSuffix>
+                        <InputGroupInput>
+                          <Input
+                            className={cn(
+                              "text-sm text-muted-foreground",
+                              InputGroupInputClasses({ variant: "prefix" }),
+                              "pl-0.5 border-0"
+                            )}
+                            h="sm"
+                            disabled={loading}
+                            placeholder={t("pages.form.pageSlugPlaceholder")}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setSlugManuallyChanged(true);
+                            }}
+                            value={field.value}
+                          />
+                        </InputGroupInput>
+                      </InputGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-          <div className="flex flex-col w-full lg:w-1/5 gap-2">
+            {initialData?.slug && (
+              <Link
+                button
+                href={`/${initialData.slug}?preview=true`}
+                variant="default"
+                target="_blank"
+              >
+                <Globe className="mr-2 h-4 w-4" /> {t("pages.viewPage")}
+              </Link>
+            )}
+          </div>
+          {/* <Separator /> */}
+        </div>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-8"
+        >
+          <div className="flex flex-col-reverse lg:flex-row gap-4 w-full">
             <FormField
               control={form.control}
-              name="slug"
+              name="content"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("pages.form.pageSlug")}{" "}
-                    <InfoTooltip>
-                      <p>{t("pages.form.pageSlugTooltip")}</p>
-                    </InfoTooltip>
-                  </FormLabel>
+                <FormItem className="w-full lg:w-4/5 flex-grow relative">
                   <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder={t("pages.form.pageSlugPlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="published"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between">
-                  <div className="space-y-0.5">
-                    <FormLabel>
-                      {t("pages.form.published")}{" "}
-                      <InfoTooltip>
-                        {t("pages.form.publishedTooltip")}
-                      </InfoTooltip>
-                    </FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="publishDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("pages.form.publishDate")}
-                    <InfoTooltip>
-                      {t("pages.form.publishDateTooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <DateTimePicker
-                      use12HourFormat={uses12HourFormat}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        field.onBlur();
-                      }}
+                    <PageBuilder
+                      args={args}
                       value={field.value}
-                      className="w-full"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="tags"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("pages.form.tags")}{" "}
-                    <InfoTooltip>{t("pages.form.tagsTooltip")}</InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <TagInput
-                      {...field}
-                      value={field.value}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        field.onBlur();
+                      onIsValidChange={onPageBuilderValidChange}
+                      onChange={(value) => {
+                        field.onChange(value);
                       }}
-                      tagValidator={pageTagSchema}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("pages.form.title")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder={t("pages.form.titlePlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="doNotCombine.title"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between">
-                  <div className="space-y-0.5">
-                    <FormLabel>
-                      {t("pages.form.doNotCombineTitle")}{" "}
-                      <InfoTooltip>
-                        <p>{t("pages.form.doNotCombineTitleTooltip")}</p>
-                        <p>
-                          <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
-                            {"{page title} | {website title}"}
-                          </code>
-                        </p>
-                      </InfoTooltip>
-                    </FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("pages.form.description")}{" "}
-                    <InfoTooltip>
-                      {t("pages.form.descriptionTooltip")}
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      disabled={loading}
-                      autoResize
-                      placeholder={t("pages.form.descriptionPlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="doNotCombine.description"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between">
-                  <div className="space-y-0.5">
-                    <FormLabel>
-                      {t("pages.form.doNotCombineDescription")}{" "}
-                      <InfoTooltip>
-                        <p>{t("pages.form.doNotCombineDescriptionTooltip")}</p>
-                        <p>
-                          <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
-                            {"{website description}"}
-                            <br />
-                            {"{page description}"}
-                          </code>
-                        </p>
-                      </InfoTooltip>
-                    </FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="keywords"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("pages.form.keywords")}{" "}
-                    <InfoTooltip>{t("pages.form.keywordsTooltip")}</InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <TagInput
-                      {...field}
-                      value={getTags(field.value || "")}
-                      onChange={(value) =>
-                        form.setValue("keywords", value.join(", "))
-                      }
-                      tagValidator={z
-                        .string()
-                        .min(2, "Keyword must be at least 2 characters")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="doNotCombine.keywords"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between">
-                  <div className="space-y-0.5">
-                    <FormLabel>
-                      {t("pages.form.doNotCombineKeywords")}{" "}
-                      <InfoTooltip>
-                        <p>{t("pages.form.doNotCombineKeywordsTooltip")}</p>
-                        <p>
-                          <code className="text-xs sm:text-sm inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-2">
-                            {"{website keywords}, {page keywords}"}
-                          </code>
-                        </p>
-                      </InfoTooltip>
-                    </FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="fullWidth"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between">
-                  <div className="space-y-0.5">
-                    <FormLabel>
-                      {t("pages.form.fullWidthPage")}{" "}
-                      <InfoTooltip>
-                        {t("pages.form.fullWidthPageTooltip")}
-                      </InfoTooltip>
-                    </FormLabel>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="language"
-              render={({ field }) => (
-                <FormItem className="mb-2">
-                  <FormLabel>{t("pages.form.language")}</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      values={[
+                      extraTabs={[
                         {
-                          label: t("pages.form.defaultLanguage"),
-                          value: "default",
+                          value: "page-settings",
+                          label: (
+                            <span
+                              className={cn(
+                                hasSettingsErrors && "text-destructive"
+                              )}
+                            >
+                              {t("pages.form.settingsTabLabel")}
+                            </span>
+                          ),
+                          icon: <SettingsIcon size={16} />,
+                          content: (
+                            <PageSettingsPanel form={form} loading={loading} />
+                          ),
                         },
-                        ...languages.map((language) => ({
-                          label: LanguageOptions[language],
-                          value: language,
-                        })),
                       ]}
-                      className="w-full"
-                      value={field.value || "default"}
-                      onItemSelect={(val) => {
-                        field.onChange(val === "default" ? null : val);
-                        field.onBlur();
-                      }}
-                      disabled={loading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -429,9 +277,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               )}
             />
           </div>
-        </div>
-        <SaveButton form={form} />
-      </form>
+          <SaveButton form={form} />
+        </form>
+      </div>
     </Form>
   );
 };

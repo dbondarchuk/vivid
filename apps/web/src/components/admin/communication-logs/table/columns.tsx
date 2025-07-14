@@ -1,5 +1,4 @@
 "use client";
-import { Markdown } from "@/components/web/markdown";
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@vivid/i18n";
 import JsonView from "@uiw/react-json-view";
@@ -18,6 +17,7 @@ import {
   Link,
   tableSortHeader,
   tableSortNoopFunction,
+  Markdown,
 } from "@vivid/ui";
 import { DateTime } from "luxon";
 

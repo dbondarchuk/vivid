@@ -70,7 +70,7 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
               <td>
                 <EditorChildren
                   block={currentBlock}
-                  property="data"
+                  property=""
                   children={children || []}
                   onChange={({ block, blockId, children }) => {
                     dispatchAction({

@@ -26,5 +26,16 @@ export const CoreEditorBlock: React.FC<BlockConfiguration<any>> = ({
   );
 };
 
-export type TEditorBlock<T = any> = { type: string; data: T; id: string };
+export type BlockDisableOptions = {
+  drag?: boolean;
+  delete?: boolean;
+  move?: boolean;
+  clone?: boolean;
+};
+
+export type TEditorBlock<T = any> = {
+  type: string;
+  data: T;
+  id: string;
+};
 export type TEditorConfiguration = TEditorBlock;

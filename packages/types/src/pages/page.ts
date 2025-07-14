@@ -6,7 +6,8 @@ export const pageTagSchema = z.string().min(3, "page.tag.min");
 
 export const pageSchema = z.object({
   title: z.string().min(2, "page.title.required"),
-  content: z.string().min(1, "page.content.required"),
+  // content: z.string().min(1, "page.content.required"),
+  content: z.any().optional(),
   slug: z
     .string()
     .min(1, { message: "page.slug.required" })
@@ -42,4 +43,9 @@ export type PageUpdateModel = z.infer<typeof pageSchema>;
 export type Page = WithDatabaseId<PageUpdateModel> & {
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type PageListModel = Omit<Page, "content">;
+export type PageListModelWithUrl = PageListModel & {
+  url: string;
 };

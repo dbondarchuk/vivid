@@ -18,6 +18,7 @@ export type PlateEditorProps = {
   disabled?: boolean;
   placeholder?: string;
   singleLine?: boolean;
+  id?: string;
 };
 
 export const PlateEditor: React.FC<PlateEditorProps> = ({
@@ -28,6 +29,7 @@ export const PlateEditor: React.FC<PlateEditorProps> = ({
   disabled,
   placeholder,
   singleLine,
+  id,
 }) => {
   const editor = useCreateEditor(value, { singleLine });
 
@@ -45,6 +47,7 @@ export const PlateEditor: React.FC<PlateEditorProps> = ({
             style={style}
             disabled={disabled}
             placeholder={placeholder}
+            id={id}
           />
         </EditorContainer>
 

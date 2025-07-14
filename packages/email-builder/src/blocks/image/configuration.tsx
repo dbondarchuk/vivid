@@ -27,6 +27,7 @@ export const ImageConfiguration = ({
         label={t("emailBuilder.blocks.image.imageUrl")}
         accept="image/*"
         defaultValue={data.props?.url ?? ""}
+        fullUrl
         onChange={(v) => {
           const url = v.trim().length === 0 ? null : v.trim();
           updateData({ ...data, props: { ...data.props, url } });

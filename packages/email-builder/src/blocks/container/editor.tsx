@@ -18,7 +18,7 @@ export const ContainerEditor = ({ style, props }: ContainerProps) => {
     <BaseContainer style={style}>
       <EditorChildren
         block={currentBlock}
-        property="data.props"
+        property="props"
         children={children || []}
         onChange={({ block, blockId, children }) => {
           dispatchAction({

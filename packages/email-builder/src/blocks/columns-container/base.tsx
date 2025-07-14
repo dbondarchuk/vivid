@@ -1,7 +1,7 @@
 import { CSSProperties, JSX } from "react";
 import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
 import { getPadding } from "../../style-inputs/helpers/styles";
-import type { NestedOmit } from "@vivid/utils";
+import type { NestedOmit } from "@vivid/types";
 
 type TColumn = JSX.Element | JSX.Element[] | null;
 

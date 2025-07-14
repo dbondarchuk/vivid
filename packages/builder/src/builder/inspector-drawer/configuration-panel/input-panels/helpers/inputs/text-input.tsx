@@ -48,6 +48,7 @@ export const TextInput: React.FC<Props> = ({
           className={cn("w-full", isMultiline && "max-h-40")}
           placeholder={placeholder}
           value={value ?? undefined}
+          h="sm"
           onChange={(v) => {
             setValue(v);
             onChange(v);

@@ -38,6 +38,832 @@
     },
     "searchBlocks": "Пошук блоків..."
   },
+  "pageBuilder": {
+    "styles": {
+      "searchPlaceholder": "Пошук стилів...",
+      "generatedCSS": "Згенерований CSS:",
+      "variants": "Варіанти",
+      "addVariant": "Додати варіант",
+      "addStyle": "Додати стиль",
+      "searchStyles": "Пошук стилів...",
+      "noStylesFound": "Стилі не знайдено",
+      "noAvailableStyles": "Немає доступних стилів",
+      "addVariantDescription": "Додайте новий варіант для цього стилю. Ви зможете налаштувати точки зупинки та стани пізніше.",
+      "selectCategory": "Виберіть категорію",
+      "chooseCategory": "Виберіть категорію",
+      "selectStyle": "Виберіть стиль",
+      "chooseStyle": "Виберіть стиль",
+      "activeStyles": "Активні стилі",
+      "addNewStyle": "Додати новий стиль",
+      "addStyleAndVariant": "Додати стиль та варіант",
+      "cancel": "Скасувати",
+      "add": "Додати",
+      "base": "Базовий",
+      "categories": {
+        "typography": "Типографіка",
+        "layout": "Макет",
+        "spacing": "Відступи",
+        "background": "Фон",
+        "colors": "Кольори",
+        "effects": "Ефекти",
+        "border": "Рамка"
+      },
+      "properties": {
+        "color": "Колір тексту",
+        "backgroundColor": "Колір фону",
+        "backgroundImage": "Фонове зображення",
+        "fontSize": "Розмір шрифту",
+        "fontFamily": "Шрифт",
+        "fontWeight": "Товщина шрифту",
+        "textAlign": "Вирівнювання тексту",
+        "textDecoration": "Оформлення тексту",
+        "textTransform": "Трансформація тексту",
+        "letterSpacing": "Міжлітерний інтервал",
+        "wordSpacing": "Міжсловний інтервал",
+        "lineHeight": "Висота рядка",
+        "padding": "Внутрішній відступ",
+        "margin": "Зовнішній відступ",
+        "width": "Ширина",
+        "minWidth": "Мін. ширина",
+        "maxWidth": "Макс. ширина",
+        "height": "Висота",
+        "minHeight": "Мін. висота",
+        "maxHeight": "Макс. висота",
+        "display": "Відображення",
+        "position": "Позиція",
+        "zIndex": "Z-Індекс",
+        "overflow": "Переповнення",
+        "borderWidth": "Товщина рамки",
+        "borderColor": "Колір рамки",
+        "borderStyle": "Стиль рамки",
+        "borderRadius": "Радіус рамки",
+        "boxShadow": "Тінь блоку",
+        "backgroundPosition": "Позиція фону",
+        "backgroundSize": "Розмір фону",
+        "backgroundRepeat": "Повторення фону",
+        "backgroundBlendMode": "Режим змішування фону",
+        "backgroundClip": "Обрізання фону",
+        "opacity": "Прозорість",
+        "backgroundColorOpacity": "Прозорість кольору фону",
+        "cursor": "Курсор",
+        "hide": "Приховати",
+        "gap": "Проміжок",
+        "flexDirection": "Напрямок Flex",
+        "justifyContent": "Вирівнювання по горизонталі",
+        "justifyItems": "Вирівнювання елементів",
+        "alignItems": "Вирівнювання по вертикалі",
+        "flexWrap": "Перенос Flex",
+        "flexBasis": "Базова ширина Flex",
+        "gridTemplateColumns": "Шаблон колонок сітки",
+        "transform": "Трансформація",
+        "transition": "Перехід",
+        "filter": "Фільтр",
+        "objectFit": "Заповнення контейнера",
+        "objectPosition": "Позиція об'єкта",
+        "verticalAlign": "Вертикальне вирівнювання"
+      },
+      "shortcuts": "Швидкі налаштування",
+      "fontWeight": {
+        "normal": "Звичайний",
+        "bold": "Жирний",
+        "100": "100 (Тонкий)",
+        "200": "200 (Дуже легкий)",
+        "300": "300 (Легкий)",
+        "400": "400 (Звичайний)",
+        "500": "500 (Середній)",
+        "600": "600 (Напівжирний)",
+        "700": "700 (Жирний)",
+        "800": "800 (Дуже жирний)",
+        "900": "900 (Чорний)"
+      },
+      "fontFamily": {
+        "default": "За замовчуванням",
+        "inherit": "Успадкувати",
+        "primary": "Основний",
+        "secondary": "Додатковий",
+        "tertiary": "Третіарний"
+      },
+      "display": {
+        "block": "Блок",
+        "inline": "Рядковий",
+        "inline-block": "Рядковий блок",
+        "flex": "Flex",
+        "grid": "Grid",
+        "none": "Немає"
+      },
+      "gridTemplateColumns": "Шаблон колонок сітки",
+      "gridTemplateColumnsDialog": {
+        "title": "Шаблон колонок сітки",
+        "description": "Згенерувати шаблон колонок CSS Grid або ввести власне значення.",
+        "responsive": "Адаптивний (автоматичне припасування)",
+        "responsiveDescription": "Колонки автоматично припасовуються до контенту та переносяться на нові рядки",
+        "fixed": "Фіксовані колонки",
+        "fixedDescription": "Фіксована кількість колонок однакової ширини",
+        "masonry": "Кам'яна кладка (автоматичне заповнення)",
+        "masonryDescription": "Колонки заповнюють доступний простір і створюють макет типу кам'яної кладки",
+        "sidebar": "Макет з бічною панеллю",
+        "sidebarDescription": "Фіксована бічна панель з гнучкою областю основного контенту",
+        "hero": "Головна секція",
+        "heroDescription": "Одна колонка повної ширини для головного контенту",
+        "magazine": "Макет журналу",
+        "magazineDescription": "Основний контент з меншими бічними колонками",
+        "gallery": "Фотогалерея",
+        "galleryDescription": "Оптимізовано для галерей зображень та портфоліо",
+        "dashboard": "Сітка панелі керування",
+        "dashboardDescription": "Компактна сітка для віджетів та карток панелі керування",
+        "custom": "Власний шаблон",
+        "customDescription": "Введіть власний синтаксис шаблону CSS Grid",
+        "minWidth": "Мінімальна ширина колонки (пкс)",
+        "columnCount": "Кількість колонок",
+        "sidebarWidth": "Ширина бічної панелі (пкс)",
+        "customTemplate": "Власний шаблон",
+        "preview": "Попередній перегляд",
+        "cancel": "Скасувати",
+        "applyTemplate": "Застосувати шаблон",
+        "column": "колонка",
+        "columns": "колонок"
+      },
+      "flexDirection": {
+        "row": "Рядок",
+        "row-reverse": "Рядок навпаки",
+        "column": "Колонка",
+        "column-reverse": "Колонка навпаки"
+      },
+      "justifyContent": {
+        "flex-start": "Початок Flex",
+        "flex-end": "Кінець Flex",
+        "center": "По центру",
+        "space-between": "Проміжок між",
+        "space-around": "Проміжок навколо",
+        "space-evenly": "Рівний проміжок"
+      },
+      "justifyItems": {
+        "start": "Початок",
+        "end": "Кінець",
+        "center": "По центру",
+        "stretch": "Розтягнути"
+      },
+      "alignItems": {
+        "flex-start": "Початок Flex",
+        "flex-end": "Кінець Flex",
+        "center": "По центру",
+        "baseline": "Базова лінія",
+        "stretch": "Розтягнути"
+      },
+      "flexWrap": {
+        "nowrap": "Без переносу",
+        "wrap": "Перенос",
+        "wrap-reverse": "Зворотний перенос"
+      },
+      "transform": {
+        "none": "Немає",
+        "scale_0_5": "Масштаб 50%",
+        "scale_0_75": "Масштаб 75%",
+        "scale_1_25": "Масштаб 125%",
+        "scale_1_5": "Масштаб 150%",
+        "scale_2": "Масштаб 200%",
+        "rotate_45deg": "Поворот 45°",
+        "rotate_90deg": "Поворот 90°",
+        "rotate_180deg": "Поворот 180°",
+        "rotate_minus_45deg": "Поворот -45°",
+        "translateX_10px": "Вправо 10px",
+        "translateY_10px": "Вниз 10px",
+        "skewX_10deg": "Нахил X 10°",
+        "skewY_10deg": "Нахил Y 10°"
+      },
+      "transition": {
+        "none": "Немає",
+        "all_0_2s_ease": "Все 0.2с Плавно",
+        "all_0_3s_ease": "Все 0.3с Плавно",
+        "all_0_5s_ease": "Все 0.5с Плавно",
+        "all_0_2s_ease_in": "Все 0.2с Плавно Вхід",
+        "all_0_2s_ease_out": "Все 0.2с Плавно Вихід",
+        "all_0_2s_ease_in_out": "Все 0.2с Плавно Вхід-Вихід",
+        "opacity_0_2s_ease": "Прозорість 0.2с Плавно",
+        "transform_0_2s_ease": "Трансформація 0.2с Плавно",
+        "background_color_0_2s_ease": "Колір фону 0.2с Плавно",
+        "color_0_2s_ease": "Колір 0.2с Плавно",
+        "border_color_0_2s_ease": "Колір рамки 0.2с Плавно",
+        "filter_0_2s_ease": "Фільтр 0.2с Плавно",
+        "filter_0_5s_ease": "Фільтр 0.5с Плавно"
+      },
+      "filter": {
+        "none": "Немає",
+        "blur_1px": "Розмиття 1px",
+        "blur_2px": "Розмиття 2px",
+        "blur_4px": "Розмиття 4px",
+        "brightness_0_5": "Яскравість 50%",
+        "brightness_0_9": "Яскравість 90%",
+        "brightness_1_1": "Яскравість 110%",
+        "brightness_1_5": "Яскравість 150%",
+        "contrast_0_5": "Контраст 50%",
+        "contrast_1_5": "Контраст 150%",
+        "grayscale_100": "Відтінки сірого 100%",
+        "hue_rotate_90deg": "Поворот відтінку 90°",
+        "invert_100": "Інвертування 100%",
+        "saturate_0_5": "Насиченість 50%",
+        "saturate_1_5": "Насиченість 150%",
+        "sepia_100": "Сепія 100%"
+      },
+      "position": {
+        "static": "Статичний",
+        "relative": "Відносний",
+        "absolute": "Абсолютний",
+        "fixed": "Фіксований",
+        "sticky": "Липкий"
+      },
+      "textAlign": {
+        "left": "Ліворуч",
+        "center": "По центру",
+        "right": "Праворуч",
+        "justify": "По ширині"
+      },
+      "breakpoints": {
+        "title": "Розміри",
+        "shortLabel": "{count, plural, =0 {Розмір: всі} =1 {1 Розмір} few {# Розміри} many {# Розмірів} other {# Розмірів}}",
+        "and": " і ",
+        "sm": "SM (≥40rem)",
+        "max-sm": "Макс SM (<40rem)",
+        "md": "MD (≥48rem)",
+        "max-md": "Макс MD (<48rem)",
+        "lg": "LG (≥64rem)",
+        "max-lg": "Макс LG (<64rem)",
+        "xl": "XL (≥80rem)",
+        "max-xl": "Макс XL (<80rem)",
+        "2xl": "2XL (≥96rem)",
+        "max-2xl": "Макс 2XL (<96rem)"
+      },
+      "states": {
+        "title": "Стани",
+        "shortLabel": "{count, plural, =0 {Стан: звичайний} =1 {1 Стан} few {# Стани} many {# Станів} other {# Станів}}",
+        "hover": "Наведення",
+        "focus": "Фокус",
+        "active": "Активний",
+        "disabled": "Вимкнений"
+      },
+      "textDecoration": {
+        "none": "Немає",
+        "underline": "Підкреслення",
+        "overline": "Надкреслення",
+        "line-through": "Перекреслення"
+      },
+      "textTransform": {
+        "none": "Немає",
+        "capitalize": "Перша літера велика",
+        "uppercase": "Великі літери",
+        "lowercase": "Малі літери",
+        "full-width": "Повна ширина",
+        "full-size-kana": "Повний розмір кана"
+      },
+      "borderStyle": {
+        "solid": "Суцільна",
+        "dashed": "Пунктирна",
+        "dotted": "Крапкова",
+        "double": "Подвійна",
+        "groove": "Жолоб",
+        "ridge": "Гребінь",
+        "inset": "Внутрішня",
+        "outset": "Зовнішня",
+        "none": "Немає",
+        "hidden": "Прихована"
+      },
+      "overflow": {
+        "visible": "Видимий",
+        "hidden": "Прихований",
+        "scroll": "Прокрутка",
+        "auto": "Авто",
+        "clip": "Обрізання"
+      },
+      "cursor": {
+        "auto": "Авто",
+        "default": "За замовчуванням",
+        "pointer": "Вказівник",
+        "text": "Текст",
+        "wait": "Очікування",
+        "move": "Переміщення",
+        "not-allowed": "Не дозволено",
+        "help": "Допомога",
+        "crosshair": "Перехресний",
+        "grab": "Захоплення",
+        "grabbing": "Захоплює"
+      },
+      "boxShadow": {
+        "xOffset": "Зміщення X",
+        "yOffset": "Зміщення Y",
+        "blur": "Розмиття",
+        "spread": "Розширення",
+        "color": "Колір",
+        "inset": "Внутрішня"
+      },
+      "backgroundImage": {
+        "type": "Тип",
+        "none": "Немає",
+        "url": "URL зображення",
+        "gradient": "Градієнт",
+        "imageUrl": "URL зображення",
+        "gradientType": "Тип градієнта",
+        "linear": "Лінійний",
+        "radial": "Радіальний",
+        "direction": "Напрямок",
+        "toRight": "Вправо",
+        "toLeft": "Вліво",
+        "toTop": "Вгору",
+        "toBottom": "Вниз",
+        "toTopRight": "Вгору вправо",
+        "toTopLeft": "Вгору вліво",
+        "toBottomRight": "Вниз вправо",
+        "toBottomLeft": "Вниз вліво",
+        "colors": "Кольори",
+        "addColor": "Додати колір",
+        "removeColor": "Видалити колір"
+      },
+      "colors": {
+        "default": "За замовчуванням",
+        "custom": "Власний колір",
+        "background": "Фон",
+        "foreground": "Текст",
+        "card": "Картка",
+        "card-foreground": "Текст картки",
+        "popover": "Спливаюче вікно",
+        "popover-foreground": "Текст спливаючого вікна",
+        "primary": "Основний",
+        "primary-foreground": "Основний текст",
+        "secondary": "Додатковий",
+        "secondary-foreground": "Додатковий текст",
+        "muted": "Приглушений",
+        "muted-foreground": "Приглушений текст",
+        "accent": "Акцент",
+        "accent-foreground": "Акцентний текст",
+        "destructive": "Руйнівний",
+        "destructive-foreground": "Руйнівний текст"
+      },
+      "backgroundPosition": {
+        "center": "Центр",
+        "top": "Вгору",
+        "bottom": "Вниз",
+        "left": "Ліворуч",
+        "right": "Праворуч",
+        "topLeft": "Вгору ліворуч",
+        "topRight": "Вгору праворуч",
+        "bottomLeft": "Вниз ліворуч",
+        "bottomRight": "Вниз праворуч",
+        "initial": "Початковий",
+        "inherit": "Успадкувати",
+        "custom": "Власний",
+        "xPosition": "Позиція X",
+        "yPosition": "Позиція Y",
+        "mode": "Режим",
+        "predefined": "Попередньо визначений",
+        "customValues": "Власні значення"
+      },
+      "backgroundSize": {
+        "auto": "Авто",
+        "cover": "Покрити",
+        "contain": "Містити",
+        "initial": "Початковий",
+        "inherit": "Успадкувати"
+      },
+      "backgroundRepeat": {
+        "repeat": "Повторювати",
+        "no-repeat": "Не повторювати",
+        "repeat-x": "Повторювати X",
+        "repeat-y": "Повторювати Y",
+        "space": "Простір",
+        "round": "Кругло",
+        "initial": "Початковий",
+        "inherit": "Успадкувати"
+      },
+      "backgroundBlendMode": {
+        "normal": "Звичайний",
+        "multiply": "Множення",
+        "screen": "Екран",
+        "overlay": "Накладання",
+        "darken": "Затемнення",
+        "lighten": "Освітлення",
+        "color-dodge": "Ухилення кольору",
+        "color-burn": "Випалення кольору",
+        "hard-light": "Жорстке світло",
+        "soft-light": "М'яке світло",
+        "difference": "Різниця",
+        "exclusion": "Виключення",
+        "hue": "Відтінок",
+        "saturation": "Насиченість",
+        "color": "Колір",
+        "luminosity": "Яскравість",
+        "initial": "Початковий",
+        "inherit": "Успадкувати"
+      },
+      "backgroundClip": {
+        "border-box": "Рамка",
+        "padding-box": "Внутрішній відступ",
+        "content-box": "Контент",
+        "text": "Текст",
+        "initial": "Початковий",
+        "inherit": "Успадкувати"
+      },
+      "objectFit": {
+        "fill": "Заповнити",
+        "contain": "Містити",
+        "cover": "Покрити",
+        "none": "Немає",
+        "scale-down": "Зменшити"
+      },
+      "verticalAlign": {
+        "baseline": "Базова лінія",
+        "sub": "Підрядковий",
+        "super": "Надрядковий",
+        "text-top": "Верх тексту",
+        "text-bottom": "Низ тексту",
+        "middle": "По центру",
+        "top": "Вгорі",
+        "bottom": "Внизу"
+      },
+      "keywords": {
+        "maxContent": "Максимальний контент",
+        "minContent": "Мінімальний контент",
+        "fitContent": "Підібраний контент",
+        "fill": "Заповнити",
+        "content": "Контент",
+        "inherit": "Успадкувати",
+        "auto": "Авто",
+        "initial": "Початковий",
+        "none": "Немає",
+        "unset": "Не встановлено",
+        "custom": "Власний"
+      },
+      "borderRadius": {
+        "none": "Немає",
+        "small": "Малий",
+        "medium": "Середній",
+        "large": "Великий",
+        "full": "Повний"
+      }
+    },
+    "blocks": {
+      "categories": {
+        "text": "Текст",
+        "layout": "Макет",
+        "buttons": "Кнопки",
+        "objects": "Об'єкти",
+        "booking": "Форма бронювання"
+      },
+      "heading": {
+        "displayName": "Заголовок",
+        "content": "Контент",
+        "level": "Рівень",
+        "levels": {
+          "h1": "H1",
+          "h2": "H2",
+          "h3": "H3",
+          "h4": "H4",
+          "h5": "H5",
+          "h6": "H6"
+        },
+        "style": "Стиль",
+        "styles": {
+          "display": "Відображення",
+          "title": "Заголовок",
+          "subtitle": "Підзаголовок",
+          "caption": "Підпис"
+        }
+      },
+      "pageLayout": {
+        "displayName": "Макет",
+        "backgroundColor": "Колір фону",
+        "textColor": "Колір тексту",
+        "fullWidth": "Повна ширина"
+      },
+      "text": {
+        "displayName": "Текст",
+        "shortcuts": {
+          "size": "Розмір тексту",
+          "weight": "Товщина шрифту",
+          "alignment": "Вирівнювання тексту",
+          "style": "Стиль тексту",
+          "spacing": "Відступи"
+        },
+        "sizes": {
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий"
+        },
+        "weights": {
+          "light": "Легкий",
+          "normal": "Звичайний",
+          "medium": "Середній",
+          "bold": "Жирний"
+        },
+        "alignments": {
+          "left": "Ліворуч",
+          "center": "По центру",
+          "right": "Праворуч",
+          "justify": "По ширині"
+        },
+        "styles": {
+          "body": "Основний текст",
+          "lead": "Вступний абзац",
+          "caption": "Підпис",
+          "quote": "Цитата"
+        },
+        "spacings": {
+          "compact": "Компактний",
+          "comfortable": "Комфортний",
+          "loose": "Вільний"
+        }
+      },
+      "button": {
+        "displayName": "Кнопка",
+        "text": "Текст",
+        "url": "URL",
+        "width": "Ширина",
+        "size": "Розмір",
+        "style": "Стиль",
+        "target": "Ціль",
+        "widths": {
+          "auto": "Авто",
+          "full": "Повна ширина"
+        },
+        "sizes": {
+          "x-small": "Дуже малий",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий"
+        },
+        "styles": {
+          "rectangle": "Прямокутник",
+          "rounded": "Закруглений",
+          "pill": "Пілюля"
+        },
+        "targets": {
+          "_self": "Поточна вкладка",
+          "_blank": "Нова вкладка"
+        },
+        "alignment": "Вирівнювання",
+        "alignments": {
+          "left": "Ліворуч",
+          "center": "По центру"
+        },
+        "errors": {
+          "text": "Текст є обов'язковим"
+        },
+        "variant": "Варіант",
+        "disabled": "Вимкнено",
+        "borderRadius": "Радіус рамки"
+      },
+      "image": {
+        "displayName": "Зображення",
+        "imageUrl": "URL зображення",
+        "altText": "Альтернативний текст",
+        "clickThroughUrl": "URL для переходу",
+        "size": "Розмір",
+        "sizes": {
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "full": "Повна ширина",
+          "avatar": "Аватар"
+        },
+        "fit": "Вміщення",
+        "fits": {
+          "cover": "Покрити",
+          "contain": "Вмістити",
+          "fill": "Заповнити",
+          "none": "Нічого"
+        },
+        "position": "Позиція",
+        "positions": {
+          "center": "По центру",
+          "top": "Вгорі",
+          "bottom": "Внизу",
+          "left": "Ліворуч",
+          "right": "Праворуч",
+          "top-left": "Вгорі ліворуч",
+          "top-right": "Вгорі праворуч",
+          "bottom-left": "Внизу ліворуч",
+          "bottom-right": "Внизу праворуч"
+        },
+        "alignment": "Вирівнювання",
+        "alignments": {
+          "standard": "Стандартний",
+          "center": "По центру"
+        }
+      },
+      "carousel": {
+        "displayName": "Карусель",
+        "items": "Кількість елементів на екрані",
+        "itemsSm": "Кількість елементів на екрані (sm)",
+        "itemsMd": "Кількість елементів на екрані (md)",
+        "itemsLg": "Кількість елементів на екрані (lg)",
+        "itemsXl": "Кількість елементів на екрані (xl)",
+        "items2Xl": "Кількість елементів на екрані (2xl)",
+        "loop": "Зациклити",
+        "autoPlay": "Автоматичне відтворення",
+        "autoPlaySeconds": "с",
+        "itemPosition": {
+          "label": "Розміщення елементу",
+          "start": "Початок",
+          "center": "По центру",
+          "end": "Кінець",
+          "stretch": "Розтягнути"
+        }
+      },
+      "container": {
+        "displayName": "Контейнер",
+        "fullWidth": "Повна ширина",
+        "gap": "Проміжок",
+        "shortcuts": {
+          "padding": "Внутрішній відступ",
+          "gap": "Проміжок",
+          "flexDirection": "Напрямок Flex",
+          "flexWrap": "Перенос Flex",
+          "justifyContent": "Вирівнювання по горизонталі",
+          "alignItems": "Вирівнювання по вертикалі",
+          "style": "Стиль",
+          "width": "Ширина"
+        },
+        "paddings": {
+          "none": "Немає",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий"
+        },
+        "gaps": {
+          "none": "Немає",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий"
+        },
+        "styles": {
+          "plain": "Простий",
+          "card": "Картка",
+          "paper": "Папір",
+          "rounded": "Закруглений",
+          "bordered": "З рамкою"
+        },
+        "widths": {
+          "contained": "Обмежений",
+          "full": "Повна ширина"
+        },
+        "flexDirections": {
+          "row": "Рядок",
+          "column": "Колонка",
+          "rowReverse": "Рядок навпаки",
+          "columnReverse": "Колонка навпаки"
+        },
+        "flexWraps": {
+          "nowrap": "Без переносу",
+          "wrap": "Перенос",
+          "wrapReverse": "Зворотний перенос"
+        },
+        "justifyContents": {
+          "start": "Початок",
+          "center": "По центру",
+          "end": "Кінець",
+          "spaceBetween": "Проміжок між",
+          "spaceAround": "Проміжок навколо",
+          "spaceEvenly": "Рівний проміжок"
+        },
+        "alignItemses": {
+          "start": "Початок",
+          "center": "По центру",
+          "end": "Кінець",
+          "stretch": "Розтягнути",
+          "baseline": "Базова лінія"
+        }
+      },
+      "spacer": {
+        "displayName": "Відступ",
+        "shortcuts": {
+          "height": "Висота"
+        },
+        "heights": {
+          "tiny": "Крихітний",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий",
+          "huge": "Огромний"
+        },
+        "backgroundColors": {
+          "none": "Немає",
+          "muted": "Вимкнений",
+          "accent": "Акцент",
+          "foreground": "Текст",
+          "primary": "Основний",
+          "secondary": "Додатковий"
+        }
+      },
+      "conditionalContainer": {
+        "displayName": "Умовний контейнер",
+        "condition": "Умова",
+        "ifConditionIsCorrectFormat": "Якщо умова <condition></condition> правильна, тоді",
+        "otherwise": "Інакше",
+        "value": "значення"
+      },
+      "foreachContainer": {
+        "displayName": "Контейнер циклу",
+        "forEachItemInValueFormat": "Для кожного <item></item> в <value></value>",
+        "value": "Значення",
+        "errors": {
+          "value": "Значення є обов'язковим"
+        }
+      },
+      "gridContainer": {
+        "displayName": "Сітковий контейнер",
+        "fullWidth": "Повна ширина",
+        "gap": "Проміжок",
+        "shortcuts": {
+          "padding": "Внутрішній відступ",
+          "gap": "Проміжок",
+          "gridTemplateColumns": "Шаблон колонок сітки",
+          "justifyContent": "Вирівнювання по горизонталі",
+          "alignItems": "Вирівнювання по вертикалі",
+          "style": "Стиль"
+        },
+        "paddings": {
+          "none": "Немає",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий"
+        },
+        "gaps": {
+          "none": "Немає",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий"
+        },
+        "gridTemplates": {
+          "autoFit": "Автоматичне припасування",
+          "autoFill": "Автоматичне заповнення",
+          "twoColumns": "Дві колонки",
+          "threeColumns": "Три колонки",
+          "fourColumns": "Чотири колонки",
+          "sidebar": "Макет з бічною панеллю",
+          "hero": "Головна секція",
+          "magazine": "Макет журналу",
+          "gallery": "Фотогалерея",
+          "dashboard": "Сітка панелі керування",
+          "asymmetric": "Асиметричний (1:2:1)",
+          "mixed": "Змішані ширини",
+          "threeColumnWide": "Три колонки (широка центральна)",
+          "fiveColumns": "П'ять колонок",
+          "sixColumns": "Шість колонок",
+          "twelveColumns": "Дванадцять колонок"
+        },
+        "styles": {
+          "plain": "Простий",
+          "card": "Картка",
+          "paper": "Папір",
+          "rounded": "Закруглений",
+          "bordered": "З рамкою"
+        },
+        "justifyContents": {
+          "start": "Початок",
+          "center": "По центру",
+          "end": "Кінець",
+          "spaceBetween": "Проміжок між",
+          "spaceAround": "Проміжок навколо",
+          "spaceEvenly": "Рівний проміжок"
+        },
+        "alignItemses": {
+          "start": "Початок",
+          "center": "По центру",
+          "end": "Кінець",
+          "stretch": "Розтягнути",
+          "baseline": "Базова лінія"
+        }
+      },
+      "pageHero": {
+        "displayName": "Hero секція"
+      },
+      "booking": {
+        "displayName": "Форма бронювання"
+      }
+    },
+    "shortcuts": {
+      "backgroundColor": "Колір фону",
+      "backgroundImage": "Фонове зображення",
+      "color": "Колір тексту",
+      "fontFamily": "Шрифт"
+    },
+    "styleInputs": {
+      "color": {
+        "unknownType": "Невідомий тип кольору",
+        "presets": "Пресети"
+      },
+      "unit": {
+        "unknownType": "Невідомий тип одиниці"
+      },
+      "fontFamily": {
+        "unknownType": "Невідомий тип сімейства шрифтів"
+      }
+    }
+  },
   "emailBuilder": {
     "common": {
       "validation": {
@@ -49,7 +875,7 @@
         "borderColor": "Колір рамки",
         "borderRadius": "Радіус рамки",
         "color": "Колір тексту",
-        "fontFamily": "Сімейство шрифтів",
+        "fontFamily": "Шрифт",
         "fontSize": "Розмір шрифту",
         "fontWeight": "Товщина шрифту",
         "padding": "Внутрішній відступ",
@@ -63,8 +889,11 @@
           "bottom": "Внизу"
         },
         "fontFamily": {
-          "label": "Сімейство шрифтів",
-          "inherit": "Успадкувати"
+          "label": "Шрифт",
+          "inherit": "Успадкувати",
+          "primary": "Основний",
+          "secondary": "Додатковий",
+          "tertiary": "Третіарний"
         },
         "fontSize": {
           "label": "Розмір шрифту"
@@ -96,13 +925,33 @@
         "shape": "Форма",
         "imageUrl": "URL зображення",
         "alt": "Альтернативний текст",
+        "shortcuts": {
+          "size": "Розмір",
+          "shape": "Форма",
+          "alignment": "Вирівнювання",
+          "padding": "Внутрішній відступ"
+        },
+        "sizes": {
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "x-large": "Дуже великий"
+        },
         "shapes": {
           "circle": "Коло",
           "square": "Квадрат",
           "rounded": "Закруглений"
         },
-        "validation": {
-          "size": "Розмір повинен бути цілим числом і більше 0"
+        "alignments": {
+          "left": "Ліворуч",
+          "center": "По центру",
+          "right": "Праворуч"
+        },
+        "paddings": {
+          "none": "Немає",
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий"
         }
       },
       "button": {
@@ -184,7 +1033,7 @@
         "canvasBorderRadius": "Радіус рамки полотна",
         "textColor": "Колір тексту",
         "previewText": "Текст попереднього перегляду",
-        "fontFamily": "Сімейство шрифтів",
+        "fontFamily": "Шрифт",
         "borderColor": "Колір рамки",
         "inherit": "Успадкувати"
       },

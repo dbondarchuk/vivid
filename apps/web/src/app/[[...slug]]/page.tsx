@@ -7,6 +7,8 @@ import { Metadata, ResolvingMetadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { headers } from "next/headers";
+import { PageReader } from "@vivid/page-builder/reader";
+import { Styling } from "@vivid/page-builder";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -181,6 +183,11 @@ export default async function Page(props: Props) {
     const searchParams = await props.searchParams;
     const params = await props.params;
 
+    const styling =
+      await ServicesContainer.ConfigurationService().getConfiguration(
+        "styling"
+      );
+
     logger.debug(
       {
         slug: params.slug,
@@ -228,7 +235,9 @@ export default async function Page(props: Props) {
           page.fullWidth ? "w-full" : "container mx-auto"
         )}
       >
-        <MdxContent source={page.content} />
+        <Styling styling={styling} />
+        {/* <MdxContent source={page.content} /> */}
+        <PageReader document={page.content} />
       </div>
     );
   } catch (error: any) {

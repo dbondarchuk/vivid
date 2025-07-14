@@ -52,19 +52,19 @@ export default function ColumnsContainerEditor({
       columns={[
         <EditorChildren
           block={currentBlock}
-          property="data.props.columns.0"
+          property="props.columns.0"
           children={columns?.[0]?.children}
           onChange={(change) => updateColumn(0, change)}
         />,
         <EditorChildren
           block={currentBlock}
-          property="data.props.columns.1"
+          property="props.columns.1"
           children={columns?.[1]?.children}
           onChange={(change) => updateColumn(1, change)}
         />,
         <EditorChildren
           block={currentBlock}
-          property="data.props.columns.2"
+          property="props.columns.2"
           children={columns?.[2]?.children}
           onChange={(change) => updateColumn(2, change)}
         />,

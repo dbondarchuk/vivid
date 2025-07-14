@@ -1,6 +1,6 @@
 import { globalCssColors } from "@/app/tailwind-colors";
 import PageContainer from "@/components/admin/layout/page-container";
-// import { Editor } from "@vivid/page-builder";
+import { PageBuilder, Styling } from "@vivid/page-builder";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { getLoggerFactory } from "@vivid/logger";
@@ -27,6 +27,7 @@ export default async function Page() {
 
   return (
     <PageContainer scrollable={true}>
+      <Styling styling={styling} />
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
@@ -35,7 +36,7 @@ export default async function Page() {
           </div>
           {/* <Separator /> */}
         </div>
-        {/* <Editor styling={styling} globalCss={globalCssColors} /> */}
+        <PageBuilder />
       </div>
     </PageContainer>
   );

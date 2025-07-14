@@ -1,6 +1,7 @@
 "use client";
 
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 import z from "zod";
 
 import {
@@ -8,11 +9,16 @@ import {
   FC,
   PropsWithChildren,
   useContext,
+  useMemo,
   useRef,
 } from "react";
 import { findBlock, validateBlocks } from "../helpers/blocks";
 import { BuilderSchema, EditorDocumentBlocksDictionary } from "../types";
-import { TEditorBlock, TEditorConfiguration } from "./core";
+import {
+  BlockDisableOptions,
+  TEditorBlock,
+  TEditorConfiguration,
+} from "./core";
 import { EditorHistory, EditorHistoryEntry } from "./history";
 import { editorHistoryReducer } from "./reducers";
 
@@ -45,7 +51,9 @@ type EditorState = {
   activeDragBlock: {
     block: TEditorBlock;
     parentBlockId: string;
+    parentProperty: string;
   } | null;
+  blockDisableOptions: Record<string, BlockDisableOptions | undefined>;
 };
 
 const createEditorStateStore = ({
@@ -84,6 +92,7 @@ const createEditorStateStore = ({
     inspectorDrawerOpen: true,
     activeDragBlock: null,
     activeOverBlock: null,
+    blockDisableOptions: {},
   }));
 };
 
@@ -158,7 +167,13 @@ export function useSelectedBlockId() {
 export const useSelectedBlock = () => {
   const selectedBlockId = useSelectedBlockId()!;
   const document = useDocument();
-  return findBlock(document, selectedBlockId)!;
+
+  const block = useMemo(
+    () => findBlock(document, selectedBlockId)!,
+    [document, selectedBlockId]
+  );
+
+  return block;
 };
 
 export function useSelectedScreenSize() {
@@ -173,9 +188,35 @@ export function useActiveDragBlock() {
   return useEditorStateStore((s) => s.activeDragBlock);
 }
 
+export function useBlockDisableOptions(
+  blockId: string | undefined
+): BlockDisableOptions | undefined {
+  return useEditorStateStore(
+    useShallow((s) => (blockId ? s.blockDisableOptions[blockId] : undefined))
+  );
+}
+
+export function useSetBlockDisableOptions() {
+  const store = getEditorStateStore();
+  return (blockId: string, options: BlockDisableOptions | undefined) =>
+    setEditorStateStore(store, (prev) => ({
+      ...prev,
+      blockDisableOptions: {
+        ...prev.blockDisableOptions,
+        [blockId]: options,
+      },
+    }));
+}
+
 export function useSetActiveDragBlock() {
   const store = getEditorStateStore();
-  return (active: { block: TEditorBlock; parentBlockId: string } | null) =>
+  return (
+    active: {
+      block: TEditorBlock;
+      parentBlockId: string;
+      parentProperty: string;
+    } | null
+  ) =>
     setEditorStateStore(store, {
       activeDragBlock: active,
     });
@@ -248,6 +289,16 @@ export function useDispatchAction() {
   const { history, document, selectedBlockId, schemas, onChange } = store(
     (s) => s
   );
+
+  if (
+    history.entries.length > 0 &&
+    history.index === 0 &&
+    history.entries[0].type === "document" &&
+    history.entries[0].value.document !== document
+  ) {
+    history.entries[0].value.document = document;
+  }
+
   return (action: EditorHistoryEntry) => {
     const result = editorHistoryReducer(document, selectedBlockId, action);
 

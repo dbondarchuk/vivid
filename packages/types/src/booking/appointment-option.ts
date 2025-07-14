@@ -2,6 +2,7 @@ import { z } from "zod";
 import { WithDatabaseId } from "../database";
 import { asOptinalNumberField, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
+import { FieldSchema } from "./field";
 
 export const isPaymentRequiredForOptionTypes = [
   "inherit",
@@ -156,3 +157,10 @@ export type AppointmentChoice = Prettify<
     addons: AppointmentAddon[];
   }
 >;
+
+export type GetAppointmentOptionsResponse = {
+  options: AppointmentChoice[];
+  fieldsSchema: Record<string, FieldSchema>;
+  timeZone: string;
+  showPromoCode: boolean;
+};

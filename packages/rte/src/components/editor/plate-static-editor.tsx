@@ -107,6 +107,7 @@ export type PlateStaticEditorProps = {
   value?: Value;
   style?: React.CSSProperties;
   className?: string;
+  id?: string;
 };
 
 export const createPlateStaticEditor = (
@@ -223,6 +224,7 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
   value,
   style,
   className,
+  id,
 }) => {
   const editorStatic = createPlateStaticEditor(value);
 
@@ -275,6 +277,7 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
       components={components}
       style={style}
       className={className}
+      id={id}
     />
   );
 };

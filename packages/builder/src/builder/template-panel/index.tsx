@@ -10,6 +10,7 @@ import {
 } from "../../documents/editor/context";
 
 import {
+  closestCenter,
   CollisionDetection,
   DndContext,
   MouseSensor,
@@ -82,10 +83,13 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
   const onDragStart = (event: DragStartEvent) => {
     const blockId = event.active.id as string;
     const block = findBlock(document, blockId);
-    const parentBlockId = findParentBlock(document, blockId)?.id;
-    if (!parentBlockId || !block) return;
+    const parent = findParentBlock(document, blockId);
+    if (!parent || !block) return;
 
-    setActiveDragBlock({ block, parentBlockId });
+    const parentBlockId = parent.block.id;
+    const parentProperty = parent.property;
+
+    setActiveDragBlock({ block, parentBlockId, parentProperty });
   };
 
   const onDragOver = (event: DragOverEvent) => {
@@ -111,9 +115,9 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
     const activeParent = findParentBlock(document, activeId);
     if (!activeParent) return;
 
-    let overId = over.id as string;
+    const overId = over.id as string;
     if (!overId.startsWith("block")) {
-      overId = over.data.current?.contextId as string;
+      const overId = over.data.current?.contextId as string;
       if (!overId) return;
 
       const [overBlockId, property] = overId.split("/", 2);
@@ -125,31 +129,40 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
 
       // setDocument(document);
 
+      // const index = (over.data.current?.sortable?.index as number) || 0;
+
       dispatchAction({
         type: "move-block",
         value: {
           blockId: activeId,
           parentBlockId: overParent.id,
           parentBlockProperty: property,
-          index: 0,
+          index: "last",
         },
       });
 
       return;
     }
 
-    const [overBlockId, property] = overId.split("/", 2);
-    const overParent = findParentBlock(document, overBlockId);
+    let [overBlockId, overProperty] = overId.split("/", 2);
 
-    if (!activeParent || !overParent) return;
+    const overParent = findParentBlock(document, overBlockId);
+    const dropTarget = overProperty
+      ? findBlock(document, overBlockId)
+      : overParent?.block;
+
+    const dropTargetProperty = overProperty || overParent?.property;
+
+    if (!activeParent || !dropTarget) return;
+
     let activeContainerId = active?.data?.current?.sortable
       ?.containerId as string;
 
     const activeContainerProperty = activeContainerId?.split("/", 2)?.[1];
 
     if (
-      activeParent.id === overParent.id &&
-      activeContainerProperty === property
+      activeParent.block.id === dropTarget.id &&
+      activeContainerProperty === dropTargetProperty
     ) {
       // swapBlockInLevel(activeParent, activeId, overBlockId);
       // setDocument(document);
@@ -161,8 +174,8 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
         },
       });
     } else {
-      const index = over.data.current?.sortable?.index as number;
-      if (typeof index === "undefined") return;
+      const index = (over.data.current?.sortable?.index as number) || 0;
+      // if (typeof index === "undefined") return;
 
       // const block = deleteBlockInLevel(activeParent, activeId);
       // insertBlockInLevel(overParent, block!, property, index);
@@ -172,8 +185,8 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
         type: "move-block",
         value: {
           blockId: activeId,
-          parentBlockId: overParent.id,
-          parentBlockProperty: property,
+          parentBlockId: dropTarget.id,
+          parentBlockProperty: dropTargetProperty,
           index,
         },
       });

@@ -1,5 +1,4 @@
 "use client";
-import { Markdown } from "@/components/web/markdown";
 import { AvailableApps } from "@vivid/app-store";
 import { useI18n } from "@vivid/i18n";
 import { App } from "@vivid/types";
@@ -16,6 +15,7 @@ import {
   Heading,
   Input,
   Link,
+  Markdown,
 } from "@vivid/ui";
 import React from "react";
 
@@ -28,7 +28,7 @@ const AppCard: React.FC<{ app: App }> = ({ app }) => {
       <CardContent className="flex flex-col gap-4 h-full">
         <ConnectedAppNameAndLogo app={{ name: app.name }} t={t} />
         <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
-          <Markdown markdown={t(app.description.text)} notProse />
+          <Markdown markdown={t(app.description.text)} prose="none" />
         </div>
         <Link
           href={`/admin/dashboard/apps/store/${app.name}`}

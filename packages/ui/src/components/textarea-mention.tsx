@@ -274,8 +274,9 @@ type Props = {
   | (Omit<TextareaProps, "onChange"> & {
       asInput?: boolean;
     })
-  | (Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> & {
+  | (Omit<React.ComponentProps<typeof Input>, "onChange" | "value"> & {
       asInput: true;
+      // asContentEditable?: boolean;
     })
 );
 
@@ -345,8 +346,15 @@ export const TextareaMentions = React.forwardRef<
     }, []);
 
     const onTextValueChange = useCallback(
-      (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        const text = e.target.value;
+      (
+        e: React.ChangeEvent<
+          HTMLTextAreaElement | HTMLInputElement | HTMLSpanElement
+        >
+      ) => {
+        const text =
+          e.target instanceof HTMLSpanElement
+            ? e.target.innerText
+            : e.target.value;
         const textarea = textareaRef.current;
         const dropdown = dropdownRef.current;
 
@@ -400,7 +408,6 @@ export const TextareaMentions = React.forwardRef<
         const dropdown = dropdownRef.current;
         if (textarea && dropdown) {
           const currentWord = getCurrentWord(textarea, trigger);
-          console.log(currentWord);
           if (!currentWord.startsWith(trigger) && commandValue !== "") {
             setCommandValue("");
             dropdown.classList.add("hidden");
@@ -429,6 +436,20 @@ export const TextareaMentions = React.forwardRef<
     return (
       <div className="relative w-full">
         {asInput ? (
+          // "asContentEditable" in rest && rest.asContentEditable ? (
+          //   <span
+          //     ref={mergeRefs(
+          //       ref as React.RefObject<HTMLInputElement | null>,
+          //       textareaRef as React.RefObject<HTMLInputElement | null>
+          //     )}
+          //     contentEditable={true}
+          //     className={className}
+          //     onInput={onTextValueChange}
+          //     {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
+          //   >
+          //     {textValue}
+          //   </span>
+          // ) : (
           <Input
             ref={mergeRefs(
               ref as React.RefObject<HTMLInputElement | null>,
@@ -440,6 +461,7 @@ export const TextareaMentions = React.forwardRef<
             {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
           />
         ) : (
+          // )
           <Textarea
             ref={mergeRefs(
               ref as React.RefObject<HTMLTextAreaElement | null>,

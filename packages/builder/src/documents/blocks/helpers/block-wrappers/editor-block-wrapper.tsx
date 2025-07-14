@@ -3,10 +3,12 @@ import React from "react";
 import { cva } from "class-variance-authority";
 
 import {
+  useCurrentBlock,
   useCurrentBlockId,
   useCurrentBlockIsOverlay,
 } from "../../../editor/block";
 import {
+  useBlockDisableOptions,
   useSelectedBlockId,
   useSetSelectedBlockId,
 } from "../../../editor/context";
@@ -30,6 +32,8 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
   const blockId = useCurrentBlockId();
   const isOverlay = useCurrentBlockIsOverlay();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const disable = useBlockDisableOptions(blockId);
+
   const t = useI18n("ui");
 
   const {
@@ -40,6 +44,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
     transform,
     transition,
     isSorting,
+    isOver,
   } = useSortable({
     id: blockId,
   });
@@ -51,7 +56,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
 
     return (
       <div
-        className="absolute top-0 -left-14 rounded-2xl px-1 py-2 z-30 bg-transparent"
+        className="absolute top-0 -left-10 rounded-2xl px-1 py-2 z-30 bg-transparent"
         onClick={(ev) => ev.stopPropagation()}
       >
         <div className="flex flex-col gap-2">
@@ -82,7 +87,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
       return null;
     }
 
-    return <NavMenu blockId={blockId} />;
+    return <NavMenu blockId={blockId} disable={disable} />;
   };
 
   const style = {
@@ -98,7 +103,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
         false: "!opacity-100",
       },
       over: {
-        true: "bg-blue-400/40",
+        true: "bg-blue-800/40 bg-opacity-50",
       },
       sorting: {
         true: "outline-1 outline-dashed outline-blue-400",
@@ -114,17 +119,21 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
 
   return (
     <div
-      ref={setNodeRef}
+      ref={disable?.drag ? undefined : setNodeRef}
       className={variants({
-        dragging: isOverlay ? "overlay" : isDragging ? "over" : false,
-        // over: isOver,
-        sorting: isSorting,
         outline:
           selectedBlockId === blockId
             ? "selected"
             : mouseInside
               ? "hover"
               : undefined,
+        ...(disable?.drag
+          ? {}
+          : {
+              dragging: isOverlay ? "overlay" : isDragging ? "over" : false,
+              over: isOver,
+              sorting: isSorting,
+            }),
       })}
       onMouseEnter={(ev) => {
         setMouseInside(true);
@@ -141,7 +150,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
       style={style}
     >
       {!isOverlay && renderNav()}
-      {!isOverlay && renderHandler()}
+      {!isOverlay && !disable?.drag && renderHandler()}
       {children}
     </div>
   );

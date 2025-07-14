@@ -1,10 +1,16 @@
-import { Fragment } from "react";
+"use client";
+
+import { Fragment, useMemo } from "react";
 
 import { EditorBlock } from "../../../editor/block";
 import { TEditorBlock } from "../../../editor/core";
 
-import { SortableContext, rectSwappingStrategy } from "@dnd-kit/sortable";
-import { DragOverlay } from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSwappingStrategy,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { DragOverlay, useDroppable } from "@dnd-kit/core";
 import { cn } from "@vivid/ui";
 import {
   useActiveDragBlock,
@@ -14,6 +20,8 @@ import {
 } from "../../../editor/context";
 import { AddBlockButton } from "./add-block-menu";
 import { createPortal } from "react-dom";
+import { BaseZodDictionary } from "../../../types";
+import { Plus } from "lucide-react";
 
 export type EditorChildrenChange = {
   blockId: string;
@@ -21,11 +29,26 @@ export type EditorChildrenChange = {
   children: TEditorBlock[];
 };
 
-export type EditorChildrenProps = {
+export type EditorChildrenProps<T extends BaseZodDictionary = any> = {
   block: TEditorBlock;
   children?: TEditorBlock[];
   property: string;
+  hidePrefixAddBlockButton?: boolean;
+  maxChildren?: number;
+  allowOnly?: keyof T | keyof T[];
   onChange: (val: EditorChildrenChange) => void;
+  id?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  disabledDroppable?: boolean;
+  childWrapper?: (props: { children: React.ReactNode }) => React.ReactNode;
+  childrenWrapper?: (props: {
+    children: React.ReactNode;
+    className?: string;
+    style?: React.CSSProperties;
+    ref?: React.Ref<HTMLDivElement>;
+    id?: string;
+  }) => React.ReactNode;
 };
 
 // const Placeholder = ({ contextId }: { contextId: string }) => {
@@ -42,14 +65,24 @@ export type EditorChildrenProps = {
 //   );
 // };
 
-export const EditorChildren: React.FC<EditorChildrenProps> = ({
+export const EditorChildren = <T extends BaseZodDictionary = any>({
   children,
   onChange,
   property,
   block,
-}) => {
+  hidePrefixAddBlockButton,
+  maxChildren,
+  allowOnly,
+  id,
+  className,
+  style,
+  disabledDroppable: propDisabledDroppable,
+  childWrapper,
+  childrenWrapper,
+}: EditorChildrenProps<T>) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const draggingBlock = useActiveDragBlock();
 
   const appendBlock = (block: TEditorBlock) => {
     setTimeout(() => setSelectedBlockId(block.id), 200);
@@ -74,9 +107,32 @@ export const EditorChildren: React.FC<EditorChildrenProps> = ({
     });
   };
 
-  // const { isOver, setNodeRef } = useDroppable({ id: block.id, data: block });
+  const contextId = `${block.id}/${property}`;
+
   const activeOverBlock = useActiveOverBlock();
   const activeDragBlock = useActiveDragBlock();
+
+  const activeDragBlockType = activeDragBlock?.block.type;
+  const isChildActiveDragBlock =
+    activeDragBlock && activeDragBlock.parentBlockId === block.id;
+
+  const disabledDroppable =
+    propDisabledDroppable ||
+    (!isChildActiveDragBlock &&
+      ((allowOnly &&
+        (Array.isArray(allowOnly)
+          ? !allowOnly.includes(activeDragBlockType)
+          : activeDragBlockType !== allowOnly)) ||
+        (!!children?.length &&
+          !!maxChildren &&
+          children.length >= maxChildren)));
+
+  const { isOver: isOverDroppable, setNodeRef } = useDroppable({
+    id: contextId,
+    data: block,
+    disabled: disabledDroppable,
+  });
+
   const isOver =
     activeOverBlock?.blockId === block.id &&
     activeOverBlock?.property === property;
@@ -84,39 +140,91 @@ export const EditorChildren: React.FC<EditorChildrenProps> = ({
   const ids =
     children?.filter((block) => !!block).map((block) => block.id) || [];
 
-  const isChildActiveDragBlock =
-    activeDragBlock && activeDragBlock.parentBlockId === block.id;
-
-  const contextId = `${block.id}/${property}`;
+  const Wrapper = childrenWrapper ?? "div";
+  const ChildWrapper = childWrapper ?? Fragment;
 
   return (
-    <div
-      // ref={setNodeRef}
-      className={cn("w-full relative")}
+    <Wrapper
+      ref={setNodeRef}
+      className={cn("relative", className)}
+      id={id}
+      style={style}
     >
+      {/* <> */}
       <SortableContext
         items={ids}
         id={contextId}
-        strategy={rectSwappingStrategy}
+        strategy={verticalListSortingStrategy}
+        disabled={{
+          droppable: disabledDroppable,
+        }}
       >
-        {!children || children.length === 0 ? (
-          <AddBlockButton
-            placeholder
-            onSelect={appendBlock}
-            contextId={contextId}
-          />
-        ) : (
+        {!children || children.length === 0 ? // // activeDragBlockType ? (
+        // !disabledDroppable ? (
+        //   <div
+        //     className={cn(
+        //       "w-full h-full min-h-40 flex items-center justify-center relative",
+        //       isOverDroppable &&
+        //         " border-2 border-dashed border-blue-400 bg-blue-400/10"
+        //     )}
+        //   >
+        //     <AddBlockButton
+        //       placeholder
+        //       onSelect={appendBlock}
+        //       contextId={contextId}
+        //       allowOnly={allowOnly}
+        //     />
+        //   </div>
+        // ) : (
+        // ) : null
+        // activeDragBlockType ? (
+        //   <div
+        //     className={cn(
+        //       "w-full h-full min-h-20 flex items-center justify-center relative",
+        //       isOverDroppable &&
+        //         " border-2 border-dashed border-blue-400 bg-blue-800 bg-opacity-50"
+        //     )}
+        //   >
+        //     <AddBlockButton
+        //       placeholder
+        //       onSelect={appendBlock}
+        //       contextId={contextId}
+        //       allowOnly={allowOnly}
+        //     />
+        //   </div>
+        // ) : (
+        // <ChildWrapper>
+        //   <AddBlockButton
+        //     placeholder
+        //     onSelect={appendBlock}
+        //     contextId={contextId}
+        //     allowOnly={allowOnly}
+        //     isOver={isOverDroppable}
+        //   />
+        // </ChildWrapper>
+        null : (
+          // )
+          // )
           <>
             {children
               .filter((block) => !!block)
               .map((child, i) => (
                 <Fragment key={child.id}>
-                  <AddBlockButton onSelect={(block) => insertBlock(block, i)} />
-                  <EditorBlock block={child} />
+                  {!hidePrefixAddBlockButton &&
+                    (!maxChildren || children.length < maxChildren) &&
+                    !draggingBlock && (
+                      <AddBlockButton
+                        onSelect={(block) => insertBlock(block, i)}
+                        allowOnly={allowOnly}
+                      />
+                    )}
+                  <ChildWrapper>
+                    <EditorBlock block={child} />
+                  </ChildWrapper>
                 </Fragment>
               ))}
-            {window &&
-              "document" in window &&
+            {globalThis.window &&
+              "document" in globalThis.window &&
               createPortal(
                 <DragOverlay
                   dropAnimation={{
@@ -125,19 +233,54 @@ export const EditorChildren: React.FC<EditorChildrenProps> = ({
                   }}
                 >
                   {isChildActiveDragBlock ? (
-                    <EditorBlock block={activeDragBlock.block} isOverlay />
+                    childWrapper ? (
+                      childWrapper({
+                        children: (
+                          <EditorBlock
+                            block={activeDragBlock.block}
+                            isOverlay
+                          />
+                        ),
+                      })
+                    ) : (
+                      <EditorBlock block={activeDragBlock.block} isOverlay />
+                    )
                   ) : null}
                   {/* </DragOverlay> */}
                 </DragOverlay>,
-                window.document.body
+                globalThis.window.document.body
               )}
-            <AddBlockButton onSelect={appendBlock} />
+            {/* {(!maxChildren || children.length < maxChildren) &&
+              !draggingBlock && (
+                <AddBlockButton onSelect={appendBlock} allowOnly={allowOnly} />
+              )} */}
           </>
         )}
       </SortableContext>
-      {isOver && block.id !== document.id && (
-        <div className="absolute z-1 top-0 left-0 bottom-0 right-0 bg-blue-400/40" />
+      {(!maxChildren || !children || children.length < maxChildren) && (
+        <ChildWrapper>
+          <AddBlockButton
+            placeholder
+            onSelect={appendBlock}
+            contextId={contextId}
+            allowOnly={allowOnly}
+            isOver={isOverDroppable}
+            className="w-auto"
+          />
+        </ChildWrapper>
       )}
-    </div>
+      {isOverDroppable && block.id !== document.id && (
+        // <div className="w-full h-full min-h-20 border-2 border-dashed border-blue-800 bg-blue-800/10 flex items-center justify-center relative">
+        //   <AddBlockButton
+        //     placeholder
+        //     onSelect={appendBlock}
+        //     contextId={contextId}
+        //     allowOnly={allowOnly}
+        //   />
+        // </div>
+        <div className="absolute z-1 top-0 left-0 bottom-0 right-0 bg-blue-800 bg-opacity-50" />
+      )}
+    </Wrapper>
+    // </>
   );
 };

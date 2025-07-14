@@ -5,11 +5,12 @@ import {
   CustomerListModel,
   CustomerSearchField,
   CustomerUpdateModel,
+  Leaves,
   Query,
   WithTotal,
   type ICustomersService,
 } from "@vivid/types";
-import { buildSearchQuery, escapeRegex, Leaves } from "@vivid/utils";
+import { buildSearchQuery, escapeRegex } from "@vivid/utils";
 import { Filter, ObjectId, Sort } from "mongodb";
 import { getDbConnection } from "./database";
 import { APPOINTMENTS_COLLECTION_NAME } from "./events.service";

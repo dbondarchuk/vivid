@@ -16,12 +16,14 @@ import {
 } from "../../../editor/context";
 import { findBlockHierarchy } from "../../../helpers/blocks";
 import { useI18n } from "@vivid/i18n";
+import { BlockDisableOptions } from "../../../editor/core";
 
 type Props = {
   blockId: string;
+  disable?: BlockDisableOptions;
 };
 
-export const NavMenu: React.FC<Props> = ({ blockId }) => {
+export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
   const dispatchAction = useDispatchAction();
@@ -88,34 +90,42 @@ export const NavMenu: React.FC<Props> = ({ blockId }) => {
         aria-label="breadcrumb"
         className="bg-background shadow p-1 absolute -top-9 -left-0.5 w-max flex-wrap"
       >
-        <ToolbarGroup>
-          <ToolbarButton
-            tooltip={t("baseBuilder.navMenu.moveUp")}
-            onClick={() => handleMoveClick("up")}
-          >
-            <ArrowUp fontSize="small" />
-          </ToolbarButton>
-          <ToolbarButton
-            onClick={() => handleMoveClick("down")}
-            tooltip={t("baseBuilder.navMenu.moveDown")}
-          >
-            <ArrowDown fontSize="small" />
-          </ToolbarButton>
-        </ToolbarGroup>
-        <ToolbarGroup>
-          <ToolbarButton
-            onClick={handleCloneClick}
-            tooltip={t("baseBuilder.navMenu.clone")}
-          >
-            <Copy fontSize="small" />
-          </ToolbarButton>
-          <ToolbarButton
-            onClick={handleDeleteClick}
-            tooltip={t("baseBuilder.navMenu.delete")}
-          >
-            <Trash fontSize="small" />
-          </ToolbarButton>
-        </ToolbarGroup>
+        {!disable?.move && (
+          <ToolbarGroup>
+            <ToolbarButton
+              tooltip={t("baseBuilder.navMenu.moveUp")}
+              onClick={() => handleMoveClick("up")}
+            >
+              <ArrowUp fontSize="small" />
+            </ToolbarButton>
+            <ToolbarButton
+              onClick={() => handleMoveClick("down")}
+              tooltip={t("baseBuilder.navMenu.moveDown")}
+            >
+              <ArrowDown fontSize="small" />
+            </ToolbarButton>
+          </ToolbarGroup>
+        )}
+        {(!disable?.delete || !disable?.clone) && (
+          <ToolbarGroup>
+            {!disable?.clone && (
+              <ToolbarButton
+                onClick={handleCloneClick}
+                tooltip={t("baseBuilder.navMenu.clone")}
+              >
+                <Copy fontSize="small" />
+              </ToolbarButton>
+            )}
+            {!disable?.delete && (
+              <ToolbarButton
+                onClick={handleDeleteClick}
+                tooltip={t("baseBuilder.navMenu.delete")}
+              >
+                <Trash fontSize="small" />
+              </ToolbarButton>
+            )}
+          </ToolbarGroup>
+        )}
         {/* <ToolbarGroup>
           {BlockToolbar && (
             <BlockToolbar data={block.data} setData={setBlockData} />

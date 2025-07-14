@@ -43,6 +43,9 @@
     "title": "Вибрати ресурс",
     "upload": "Завантажити"
   },
+  "pageSelector": {
+    "title": "Вибрати сторінку"
+  },
   "promoCodeSelector": {
     "placeholder": "Вибрати промо-код",
     "notActive": "Не активний",

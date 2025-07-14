@@ -2,6 +2,7 @@ import { getLoggerFactory } from "@vivid/logger";
 import {
   IPagesService,
   Page,
+  PageListModel,
   PageUpdateModel,
   Query,
   WithTotal,
@@ -78,7 +79,7 @@ export class PagesService implements IPagesService {
       maxPublishDate?: Date;
       tags?: string[];
     }
-  ): Promise<WithTotal<Page>> {
+  ): Promise<WithTotal<PageListModel>> {
     const logger = this.loggerFactory("getPages");
     logger.debug({ query }, "Getting pages");
 
@@ -119,7 +120,6 @@ export class PagesService implements IPagesService {
         "slug",
         "keywords",
         "title",
-        "content",
         "description"
       );
 
@@ -134,6 +134,11 @@ export class PagesService implements IPagesService {
         },
         {
           $match: filter,
+        },
+        {
+          $project: {
+            content: 0,
+          },
         },
         {
           $facet: {

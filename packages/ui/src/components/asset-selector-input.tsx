@@ -4,7 +4,7 @@ import { UploadedFile } from "@vivid/types";
 import React from "react";
 import { AssetSelectorDialog } from "./assets-selector-dialog";
 import { Button } from "./button";
-import { Input } from "./input";
+import { Input, inputVariants } from "./input";
 import {
   InputGroup,
   InputGroupInput,
@@ -12,6 +12,7 @@ import {
   InputGroupSuffixClasses,
 } from "./input-group";
 import { useI18n } from "@vivid/i18n";
+import { VariantProps } from "class-variance-authority";
 
 export type AssetSelectorInputProps = {
   value?: string | null;
@@ -22,7 +23,7 @@ export type AssetSelectorInputProps = {
   disabled?: boolean;
   placeholder?: string;
   className?: string;
-};
+} & VariantProps<typeof inputVariants>;
 
 export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
   value,
@@ -33,6 +34,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
   disabled,
   fullUrl,
   className,
+  ...rest
 }) => {
   const t = useI18n("ui");
   const [open, setIsOpen] = React.useState(false);
@@ -58,6 +60,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
         <Input
           disabled={disabled}
           placeholder={placeholder}
+          {...rest}
           className={InputGroupInputClasses()}
           value={value ?? undefined}
           onChange={(e) => onChange?.(e.target.value)}
@@ -70,6 +73,7 @@ export const AssetSelectorInput: React.FC<AssetSelectorInputProps> = ({
         disabled={disabled}
         className={InputGroupSuffixClasses()}
         onClick={openDialog}
+        size={rest.h}
       >
         {t("form.select")}
       </Button>

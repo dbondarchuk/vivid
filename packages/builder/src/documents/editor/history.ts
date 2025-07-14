@@ -42,7 +42,7 @@ export type EditorHistoryEntry =
         blockId: string;
         parentBlockId: string;
         parentBlockProperty?: string;
-        index?: number;
+        index?: number | "last";
       };
     }
   | {

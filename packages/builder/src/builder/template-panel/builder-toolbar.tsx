@@ -46,6 +46,7 @@ import React, { Fragment } from "react";
 import {
   canRedoHistory,
   canUndoHistory,
+  useBlockDisableOptions,
   useBlocks,
   useDispatchAction,
   useDocument,
@@ -87,6 +88,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   const { resolvedTheme } = useTheme();
   const { toggleSidebar } = useSidebar();
   const selectedBlock = useSelectedBlock();
+  const disable = useBlockDisableOptions(selectedBlock?.id);
   const canDoBlockActions = selectedBlock && selectedBlock.id !== document.id;
 
   const dispatchAction = useDispatchAction();
@@ -173,7 +175,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         <ToolbarGroup>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.moveUp")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.move}
             onClick={() =>
               dispatchAction({
                 type: "move-block-up",
@@ -187,7 +189,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
           </ToolbarButton>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.moveDown")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.move}
             onClick={() =>
               dispatchAction({
                 type: "move-block-down",
@@ -203,7 +205,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         <ToolbarGroup>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.clone")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.clone}
             onClick={() =>
               dispatchAction({
                 type: "clone-block",
@@ -217,7 +219,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
           </ToolbarButton>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.delete")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.delete}
             onClick={() => {
               dispatchAction({
                 type: "delete-block",
@@ -281,9 +283,14 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
                           >
                             <AlertTriangle />{" "}
                             <em>
-                              {displayName}.{property}:
+                              {t.has(displayName)
+                                ? t(displayName)
+                                : displayName}
+                              .{property}:
                             </em>{" "}
-                            {t(error as BuilderKeys)}
+                            {t.has(error as BuilderKeys)
+                              ? t(error as BuilderKeys)
+                              : error}
                           </div>
                           {index < flattendErrors.length - 1 && <Separator />}
                         </Fragment>

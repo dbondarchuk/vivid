@@ -35,7 +35,7 @@ export const ConditionalContainerEditor = ({
       </div>
       <EditorChildren
         block={currentBlock}
-        property="data.props.then"
+        property="props.then"
         children={thenChildren}
         onChange={({ block, blockId, children }) => {
           dispatchAction({

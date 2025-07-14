@@ -13,7 +13,7 @@ import {
   EditorDocumentBlocksDictionary,
   ReaderDocumentBlocksDictionary,
 } from "../documents/types";
-import { InspectorDrawer } from "./inspector-drawer";
+import { InspectorDrawer, SidebarTab } from "./inspector-drawer";
 import { TemplatePanel } from "./template-panel";
 import { useEffect } from "react";
 
@@ -27,6 +27,8 @@ export type BuilderProps<T extends BaseZodDictionary> = {
   readerBlocks: ReaderDocumentBlocksDictionary<T>;
   rootBlock: TEditorBlock;
   key?: string;
+  extraTabs?: SidebarTab[];
+  sidebarWidth?: number;
 };
 
 const BuilderInternal = ({
@@ -36,7 +38,11 @@ const BuilderInternal = ({
   readerBlocks,
   args,
   key,
-}: Omit<BuilderProps<any>, "editorBlocks" | "rootBlock" | "schemas">) => {
+  extraTabs = [],
+  sidebarWidth = 18,
+}: Omit<BuilderProps<any>, "editorBlocks" | "rootBlock" | "schemas"> & {
+  extraTabs?: SidebarTab[];
+}) => {
   const resetDocument = useResetDocument();
   const errors = useEditorStateStore((s) => s.errors) || {};
   const isValid = Object.keys(errors).length === 0;
@@ -48,11 +54,18 @@ const BuilderInternal = ({
   useEffect(() => resetDocument(defaultValue, onChange), [key]);
 
   return (
-    <SidebarProvider className="!bg-transparent h-full min-h-full">
+    <SidebarProvider
+      className="!bg-transparent h-full min-h-full"
+      style={
+        {
+          "--sidebar-width": `${sidebarWidth}rem`,
+        } as React.CSSProperties
+      }
+    >
       <SidebarInset className="flex flex-col w-full h-full min-h-full" asDiv>
         <TemplatePanel args={args} readerBlocks={readerBlocks} />
       </SidebarInset>
-      <InspectorDrawer />
+      <InspectorDrawer extraTabs={extraTabs} />
     </SidebarProvider>
   );
 };
@@ -63,6 +76,7 @@ export const Builder = <T extends BaseZodDictionary>({
   editorBlocks,
   rootBlock,
   schemas,
+  extraTabs = [],
   ...rest
 }: BuilderProps<T>) => {
   return (
@@ -73,7 +87,12 @@ export const Builder = <T extends BaseZodDictionary>({
       schemas={schemas}
     >
       <EditorArgsContext.Provider value={args || {}}>
-        <BuilderInternal args={args} defaultValue={defaultValue} {...rest} />
+        <BuilderInternal
+          args={args}
+          defaultValue={defaultValue}
+          extraTabs={extraTabs}
+          {...rest}
+        />
       </EditorArgsContext.Provider>
     </EditorStateProvider>
   );

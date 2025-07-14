@@ -30,7 +30,7 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
       </div>
       <EditorChildren
         block={currentBlock}
-        property="data.props"
+        property="props"
         children={children || []}
         onChange={({ block, blockId, children }) => {
           dispatchAction({

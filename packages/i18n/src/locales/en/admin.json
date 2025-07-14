@@ -545,7 +545,7 @@
       "title": "Title",
       "titlePlaceholder": "Page title",
       "doNotCombineTitle": "Do not combine title",
-      "doNotCombineTitleTooltip": "Should the page title be combined with website title for SEO like 'Page Title - Website Name'",
+      "doNotCombineTitleTooltip": "Should the page title be combined with website title for SEO like 'Page Title | Website Name'",
       "description": "Description",
       "descriptionPlaceholder": "Page description",
       "descriptionTooltip": "It is also used by page list component (a.k.a blog list) for showing preview",
@@ -558,7 +558,8 @@
       "fullWidthPage": "Full width page",
       "fullWidthPageTooltip": "If enabled, page will not be wrapped in Container element",
       "language": "Language",
-      "defaultLanguage": "Default"
+      "defaultLanguage": "Default",
+      "settingsTabLabel": "Settings"
     },
     "table": {
       "columns": {
