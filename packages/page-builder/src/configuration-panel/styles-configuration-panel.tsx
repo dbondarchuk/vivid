@@ -12,6 +12,8 @@ import {
 } from "../style/types";
 import { CSSPreview, SearchBar, StyleCategoryComponent } from "./components";
 import { Shortcuts } from "../shortcuts";
+import { BaseBlockProps as BaseBlockPropsType } from "@vivid/builder";
+import { BaseBlockProps } from "./components/base-block-props";
 
 interface StylesConfigurationPanelProps<T extends BaseStyleDictionary> {
   styles: StyleValue<T>;
@@ -19,6 +21,10 @@ interface StylesConfigurationPanelProps<T extends BaseStyleDictionary> {
   availableStyles: StyleDictionary<T>;
   defaultProperties?: DefaultCSSProperties<T>;
   shortcuts?: Shortcut<T>[];
+  props?: any;
+  onPropsChange?: (props: any) => void;
+  base?: BaseBlockPropsType;
+  onBaseChange?: (base: BaseBlockPropsType) => void;
   children?: React.ReactNode;
 }
 
@@ -28,7 +34,11 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
   availableStyles,
   defaultProperties,
   shortcuts,
+  props,
+  onPropsChange,
   children,
+  base,
+  onBaseChange,
 }: StylesConfigurationPanelProps<T>) => {
   const t = useI18n("builder");
   const [searchTerm, setSearchTerm] = useState("");
@@ -187,12 +197,19 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
     <div className="grid grid-cols-1 gap-4">
       {children}
 
+      {/* Base */}
+      {!!onBaseChange && (
+        <BaseBlockProps base={base || {}} onBaseChange={onBaseChange} />
+      )}
+
       {/* Shortcuts */}
       {shortcuts && shortcuts.length > 0 && (
         <Shortcuts
           shortcuts={shortcuts}
           styles={styles}
           onStylesChange={onStylesChange}
+          props={props}
+          onPropsChange={onPropsChange}
         />
       )}
 

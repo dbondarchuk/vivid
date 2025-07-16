@@ -252,6 +252,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
                 document={document}
                 args={args || {}}
                 blocks={readerBlocks}
+                isEditor
               />
             </TabsContent>
           </div>

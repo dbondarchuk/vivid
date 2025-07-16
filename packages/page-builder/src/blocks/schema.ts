@@ -9,8 +9,11 @@ import { HeadingPropsSchema } from "./heading/schema";
 import { ImagePropsSchema } from "./image/schema";
 import { PageHeroPropsSchema } from "./page-hero/schema";
 import { PageLayoutPropsSchema } from "./page-layout/schema";
+import { PopupPropsSchema } from "./popup/schema";
+import { SimpleTextPropsSchema } from "./simple-text/schema";
 import { SpacerPropsSchema } from "./spacer/schema";
 import { TextPropsSchema } from "./text/schema";
+import { VideoPropsSchema } from "./video/schema";
 
 export const EditorBlocksSchema = {
   Image: ImagePropsSchema,
@@ -27,6 +30,9 @@ export const EditorBlocksSchema = {
   ForeachContainer: ForeachContainerPropsSchema,
   Booking: BookingPropsSchema,
   Carousel: CarouselPropsSchema,
+  Video: VideoPropsSchema,
+  Popup: PopupPropsSchema,
+  SimpleText: SimpleTextPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -41,4 +47,7 @@ export const EditorBlocksSchema = {
   ForeachContainer: typeof ForeachContainerPropsSchema;
   Booking: typeof BookingPropsSchema;
   Carousel: typeof CarouselPropsSchema;
+  Video: typeof VideoPropsSchema;
+  Popup: typeof PopupPropsSchema;
+  SimpleText: typeof SimpleTextPropsSchema;
 };

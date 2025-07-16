@@ -23,7 +23,7 @@ export const createToggleToolbarItem = <T extends BaseStyleDictionary>(
     shortcut: Shortcut<T>,
     data: any
   ): string | undefined => {
-    return getShortcutCurrentValue(shortcut, data.style);
+    return getShortcutCurrentValue(shortcut, data.style, data.props);
   };
 
   const applyShortcut = (
@@ -41,6 +41,7 @@ export const createToggleToolbarItem = <T extends BaseStyleDictionary>(
       styles: data.style,
       setData,
       data,
+      props: data.props,
     });
   };
 

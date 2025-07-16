@@ -1,3 +1,4 @@
+import { BaseReaderBlockProps } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
 import z from "zod";
 import { zStyles } from "./styles";
@@ -13,6 +14,7 @@ export const TextPropsSchema = z.object({
 });
 
 export type TextProps = Prettify<z.infer<typeof TextPropsSchema>>;
+export type TextReaderProps = BaseReaderBlockProps<any> & TextProps;
 
 export const TextPropsDefaults = {
   props: {

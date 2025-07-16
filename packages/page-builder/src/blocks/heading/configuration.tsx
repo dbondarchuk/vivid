@@ -1,22 +1,17 @@
 "use client";
 
-import {
-  ConfigurationProps,
-  RadioGroupInput,
-  RadioGroupInputItem,
-  SelectInput,
-  TextInput,
-} from "@vivid/builder";
+import { ConfigurationProps, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { HeadingProps, HeadingPropsDefaults } from "./schema";
-import { styles } from "./styles";
 import { headingShortcuts } from "./shortcuts";
-import { Combobox } from "@vivid/ui";
+import { styles } from "./styles";
 
 export const HeadingConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<HeadingProps>) => {
   const updateData = (d: unknown) => setData(d as HeadingProps);
   const t = useI18n("builder");
@@ -27,6 +22,8 @@ export const HeadingConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={headingShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     >
       {/* <TextInput
         label={t("pageBuilder.blocks.heading.content")}

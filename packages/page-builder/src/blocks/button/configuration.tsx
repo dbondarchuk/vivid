@@ -11,6 +11,8 @@ import { buttonShortcuts } from "./shortcuts";
 export const ButtonConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<ButtonProps>) => {
   const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as ButtonProps);
@@ -25,6 +27,8 @@ export const ButtonConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={buttonShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     >
       <>
         {/* <TextInput

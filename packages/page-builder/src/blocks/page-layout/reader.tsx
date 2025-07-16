@@ -36,6 +36,7 @@ export const PageLayoutReader = ({
               block={child}
               args={args}
               document={document}
+              isEditor={props.isEditor}
             />
           ))}
         </div>

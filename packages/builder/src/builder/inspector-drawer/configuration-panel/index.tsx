@@ -6,6 +6,7 @@ import {
 } from "../../../documents/editor/context";
 import { TEditorBlock } from "../../../documents/editor/core";
 import BaseSidebarPanel from "./input-panels/helpers/base-sidebar-panel";
+import { BaseBlockProps } from "../../../documents/types";
 
 function renderMessage(val: string) {
   return (
@@ -35,12 +36,25 @@ export const ConfigurationPanel: React.FC = () => {
     });
   };
 
-  const { data, type, id } = selectedBlock;
+  const setBase = (base: BaseBlockProps) => {
+    dispatchAction({
+      type: "set-block-base",
+      value: { blockId: selectedBlock.id, base },
+    });
+  };
+
+  const { data, type, id, base } = selectedBlock;
   const Panel = blocks[type].Configuration;
 
   return (
     <BaseSidebarPanel title={blocks[selectedBlock.type].displayName}>
-      <Panel data={data} setData={setBlock} key={id} />
+      <Panel
+        data={data}
+        setData={setBlock}
+        key={id}
+        base={base}
+        onBaseChange={setBase}
+      />
     </BaseSidebarPanel>
   );
 };

@@ -1,3 +1,4 @@
+import { BaseReaderBlockProps } from "@vivid/builder";
 import z from "zod";
 import { zStyles } from "./styles";
 
@@ -7,6 +8,7 @@ export const SpacerPropsSchema = z.object({
 });
 
 export type SpacerProps = z.infer<typeof SpacerPropsSchema>;
+export type SpacerReaderProps = BaseReaderBlockProps<any> & SpacerProps;
 
 export const SpacerPropsDefaults = {
   props: {

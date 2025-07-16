@@ -27,6 +27,7 @@ export type ScheduleProps = {
   timeZone: string;
   showPromoCode?: boolean;
   className?: string;
+  id?: string;
 };
 
 export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
@@ -297,7 +298,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   }, [step]);
 
   return (
-    <div className="relative">
+    <div className="relative" id={props.id}>
       <div ref={topRef} />
       <ScheduleContext.Provider
         value={{

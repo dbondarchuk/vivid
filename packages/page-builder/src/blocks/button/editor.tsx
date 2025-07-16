@@ -22,6 +22,7 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const value = currentBlock?.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const base = currentBlock.base;
 
   const sanitizeConf = {
     allowedTags: [],
@@ -72,12 +73,14 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         element="a"
         className={cn(
           "border-0 bg-transparent focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
-          className
+          className,
+          base?.className
         )}
         value={value ?? "Button"}
         placeholder="Button"
         onChange={onChange}
         onKeyDown={handleKeyPress}
+        id={base?.id}
         style={{
           // @ts-expect-error - TODO: remove this once we have a proper solution for this
           fieldSizing: "content",

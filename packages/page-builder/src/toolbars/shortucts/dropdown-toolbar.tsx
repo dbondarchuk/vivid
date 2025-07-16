@@ -31,7 +31,7 @@ export const getCurrentValue = <T extends BaseStyleDictionary>(
   shortcut: Extract<Shortcut<T>, { options: ShortcutOption<T>[] }>,
   data: any
 ): string | undefined => {
-  return getShortcutCurrentValue(shortcut, data.style);
+  return getShortcutCurrentValue(shortcut, data.style, data.props);
 };
 
 // Apply shortcut option
@@ -50,6 +50,7 @@ export const applyShortcut = <T extends BaseStyleDictionary>(
     styles: data.style,
     setData,
     data,
+    props: data.props,
   });
 };
 

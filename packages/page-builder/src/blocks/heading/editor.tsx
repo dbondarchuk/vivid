@@ -63,6 +63,7 @@ export function HeadingEditor({ props, style }: HeadingProps) {
 
   const className = generateClassName();
   const defaults = getDefaults({ props, style }, true);
+  const base = currentBlock.base;
 
   // return isSelected ? (
   return (
@@ -79,7 +80,8 @@ export function HeadingEditor({ props, style }: HeadingProps) {
         args={args}
         className={cn(
           "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
-          className
+          className,
+          base?.className
         )}
         value={value ?? "Heading"}
         onChange={onChange}
@@ -93,6 +95,7 @@ export function HeadingEditor({ props, style }: HeadingProps) {
             // fieldSizing: "content",
           }
         }
+        id={base?.id}
       />
     </>
   );

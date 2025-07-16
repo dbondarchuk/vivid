@@ -1,15 +1,11 @@
 "use client";
 
-import {
-  BlockDisableOptions,
-  EditorBlock,
-  useCurrentBlock,
-} from "@vivid/builder";
+import { EditorBlock, useCurrentBlock } from "@vivid/builder";
+import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { PageHeroProps } from "./schema";
 import { styles } from "./styles";
-import { useMemo } from "react";
 
 const disable = {
   disableMove: true,
@@ -25,11 +21,12 @@ export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
   const subtitle = currentBlock.data?.props?.subtitle?.children?.[0];
   const buttons = currentBlock.data?.props?.buttons?.children?.[0];
   const className = generateClassName();
+  const base = currentBlock.base;
 
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
-      <section className={className}>
+      <section className={cn(className, base?.className)} id={base?.id}>
         {/* <EditorChildren
           block={currentBlock}
           property="props.title"

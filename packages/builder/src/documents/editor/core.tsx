@@ -1,7 +1,7 @@
 import React from "react";
 import { EditorBlockWrapper } from "../blocks/helpers/block-wrappers/editor-block-wrapper";
 import { templateProps } from "../helpers/template-props";
-import { BlockConfiguration } from "../types";
+import { BaseBlockProps, BlockConfiguration } from "../types";
 import { useBlocks, useEditorArgs, useRootBlock } from "./context";
 
 export const templatePropsFromContext = (props: any) => {
@@ -37,5 +37,7 @@ export type TEditorBlock<T = any> = {
   type: string;
   data: T;
   id: string;
+  base?: BaseBlockProps;
 };
+
 export type TEditorConfiguration = TEditorBlock;

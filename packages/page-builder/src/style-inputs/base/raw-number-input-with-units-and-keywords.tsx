@@ -52,6 +52,8 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
 }: RawNumberInputWithUnitsAndKeywordsProps<T>) => {
   const hasKeywords = keywords && keywords.length > 0;
 
+  const defaultUnit = rest.forceUnit ?? "px";
+
   const [isCustomValue, setIsCustomValue] = useState(() => {
     if (value === null || value === undefined) return false;
     if (typeof value === "string") {
@@ -73,7 +75,7 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
       if (typeof value === "object" && value !== null) {
         onChange(value as any);
       } else {
-        onChange("auto" as any);
+        onChange({ value: 0, unit: defaultUnit });
       }
     } else {
       setIsCustomValue(false);
@@ -82,7 +84,7 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
   };
 
   const handleCustomValueChange = (newValue: NumberValueWithUnit | null) => {
-    onChange((newValue ?? { value: 0, unit: "px" }) as any);
+    onChange((newValue ?? { value: 0, unit: defaultUnit }) as any);
   };
 
   // Create options list
@@ -159,7 +161,7 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
           defaultValue={
             typeof value === "object" && value !== null
               ? value
-              : { value: 0, unit: "px" }
+              : { value: 0, unit: defaultUnit }
           }
           onChange={handleCustomValueChange}
           nullable={false}

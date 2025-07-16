@@ -12,7 +12,7 @@ export const ColumnsContainerReader = ({
   if (columns) {
     cols = columns.map((col) =>
       col.children.map((child: TReaderBlock) => (
-        <ReaderBlock key={child.id} block={child} {...rest} />
+        <ReaderBlock key={child.id} {...rest} block={child} />
       ))
     );
   }

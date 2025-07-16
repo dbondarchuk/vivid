@@ -36,12 +36,16 @@ interface ShortcutsProps<T extends BaseStyleDictionary> {
   shortcuts: Shortcut<T>[];
   styles: StyleValue<T>;
   onStylesChange: (styles: StyleValue<T>) => void;
+  props?: any;
+  onPropsChange?: (props: any) => void;
 }
 
 export const Shortcuts = <T extends BaseStyleDictionary>({
   shortcuts,
   styles,
   onStylesChange,
+  props,
+  onPropsChange,
 }: ShortcutsProps<T>) => {
   const t = useI18n("builder");
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
@@ -50,11 +54,13 @@ export const Shortcuts = <T extends BaseStyleDictionary>({
     applyShortcutOption(option, {
       styles,
       onStylesChange,
+      props,
+      onPropsChange,
     });
   };
 
   const getCurrentValue = (shortcut: Shortcut<T>): string | undefined => {
-    return getShortcutCurrentValue(shortcut, styles);
+    return getShortcutCurrentValue(shortcut, styles, props);
   };
 
   const renderInputComponent = (shortcut: Shortcut<T>) => {

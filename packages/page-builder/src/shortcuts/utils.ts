@@ -6,6 +6,8 @@ export interface ApplyShortcutOptions {
   onStylesChange?: (styles: any) => void;
   setData?: (data: any) => void;
   data?: any;
+  props?: any;
+  onPropsChange?: (props: any) => void;
 }
 
 /**
@@ -26,8 +28,10 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
   option: ShortcutOption<T>,
   options: ApplyShortcutOptions
 ) => {
-  const { styles, onStylesChange, setData, data } = options;
+  const { styles, onStylesChange, setData, data, props, onPropsChange } =
+    options;
   const newStyles = { ...styles };
+  const newProps = props ? { ...props } : undefined;
 
   // Apply each target style
   Object.keys(option.targetStyles).forEach((styleName: keyof T) => {
@@ -200,12 +204,26 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
     }
   });
 
-  // Handle different update patterns
-  if (onStylesChange) {
-    onStylesChange(newStyles);
-  } else if (setData && data) {
+  // Apply target props if they exist
+  if (option.targetProps && newProps) {
+    Object.assign(newProps, option.targetProps);
+  }
+
+  if (setData && data) {
     const newData = { ...data, style: newStyles };
+    if (newProps) {
+      newData.props = newProps;
+    }
     setData(newData);
+  } else {
+    // Handle different update patterns
+    if (onStylesChange) {
+      onStylesChange(newStyles);
+    }
+
+    if (onPropsChange && newProps) {
+      onPropsChange(newProps);
+    }
   }
 
   return newStyles;
@@ -236,9 +254,10 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
  */
 export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
   shortcut: Shortcut<T>,
-  styles: any
+  styles: any,
+  props?: any
 ): string | undefined => {
-  if (!styles) return undefined;
+  if (!styles && !props) return undefined;
 
   // Handle number-with-unit type separately
   if (shortcut.inputType === "number-with-unit") {
@@ -375,12 +394,51 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
       }
     });
 
-    // Calculate average score for this option
-    const averageScore = totalChecks > 0 ? totalScore / totalChecks : 0;
+    // Consider props matching if props exist and option has targetProps
+    if (props && option.targetProps) {
+      let propsScore = 0;
+      let propsChecks = 0;
 
-    // Update best match if this option has a higher score
-    if (!bestMatch || averageScore > bestMatch.score) {
-      bestMatch = { option, score: averageScore };
+      Object.keys(option.targetProps).forEach((propName) => {
+        const targetPropValue = option.targetProps![propName];
+        const currentPropValue = props[propName];
+        propsChecks++;
+
+        if (
+          JSON.stringify(currentPropValue) === JSON.stringify(targetPropValue)
+        ) {
+          propsScore += 1; // Perfect match
+        } else if (
+          currentPropValue === undefined &&
+          targetPropValue === false
+        ) {
+          // Handle boolean props that default to false
+          propsScore += 0.8;
+        } else if (currentPropValue === undefined && targetPropValue === true) {
+          // Handle boolean props that default to true
+          propsScore += 0.2;
+        }
+      });
+
+      // Combine styles and props scores
+      const propsAverageScore = propsChecks > 0 ? propsScore / propsChecks : 0;
+      const combinedScore =
+        totalChecks > 0
+          ? (totalScore / totalChecks + propsAverageScore) / 2
+          : propsAverageScore;
+
+      // Update best match if this option has a higher score
+      if (!bestMatch || combinedScore > bestMatch.score) {
+        bestMatch = { option, score: combinedScore };
+      }
+    } else {
+      // Calculate average score for this option (styles only)
+      const averageScore = totalChecks > 0 ? totalScore / totalChecks : 0;
+
+      // Update best match if this option has a higher score
+      if (!bestMatch || averageScore > bestMatch.score) {
+        bestMatch = { option, score: averageScore };
+      }
     }
   }
 

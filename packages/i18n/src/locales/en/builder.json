@@ -499,6 +499,11 @@
         "full": "Full"
       }
     },
+    "base": {
+      "title": "Basic Properties",
+      "id": "ID",
+      "className": "CSS Classes"
+    },
     "blocks": {
       "categories": {
         "text": "Text",
@@ -647,6 +652,46 @@
         "alignments": {
           "standard": "Standard",
           "center": "Center"
+        }
+      },
+      "video": {
+        "displayName": "Video",
+        "videoUrl": "Video URL",
+        "posterUrl": "Poster Image URL",
+        "controls": "Show Controls",
+        "autoplay": "Autoplay",
+        "loop": "Loop",
+        "muted": "Muted",
+        "preload": "Preload",
+        "preloadOptions": {
+          "none": "None",
+          "metadata": "Metadata",
+          "auto": "Auto"
+        },
+        "size": "Size",
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "full": "Full Width",
+          "wide": "Wide (16:9)"
+        },
+        "alignment": "Alignment",
+        "alignments": {
+          "standard": "Standard",
+          "center": "Center"
+        },
+        "playback": "Playback",
+        "playbackOptions": {
+          "standard": "Standard",
+          "autoplay": "Autoplay",
+          "loop": "Loop",
+          "background": "Background"
+        },
+        "audio": "Audio",
+        "audioOptions": {
+          "withSound": "With Sound",
+          "muted": "Muted"
         }
       },
       "container": {
@@ -859,6 +904,29 @@
       "booking": {
         "displayName": "Booking form",
         "confirmationPage": "Confirmation Page"
+      },
+      "popup": {
+        "displayName": "Popup",
+        "open": "Open",
+        "show": {
+          "label": "Show",
+          "always": "Always",
+          "one-time": "One time"
+        },
+        "shortcuts": {
+          "maxWidth": {
+            "label": "Width",
+            "variants": {
+              "small": "Small",
+              "medium": "Medium",
+              "large": "Large",
+              "full": "Full"
+            }
+          }
+        }
+      },
+      "simpleText": {
+        "displayName": "Simple text"
       }
     },
     "shortcuts": {

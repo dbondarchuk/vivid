@@ -35,6 +35,22 @@ export interface ShortcutOption<T extends BaseStyleDictionary> {
       | ShortcutTargetStyleVariants<T, K>
       | ShortcutTargetValue<T, K>;
   };
+  /**
+   * Optional props to apply when this shortcut option is selected.
+   * This allows shortcuts to modify both styles and component properties.
+   *
+   * @example
+   * {
+   *   label: "pageBuilder.blocks.video.playbackOptions.autoplay",
+   *   value: "autoplay",
+   *   targetProps: {
+   *     controls: true,
+   *     autoplay: true,
+   *     muted: true
+   *   }
+   * }
+   */
+  targetProps?: Record<string, any>;
 }
 
 export type ShortcutInputType =

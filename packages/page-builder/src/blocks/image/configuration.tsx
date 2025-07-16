@@ -15,6 +15,8 @@ import { useI18n } from "@vivid/i18n";
 export const ImageConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<ImageProps>) => {
   const updateData = (d: unknown) => setData(d as ImageProps);
 
@@ -26,6 +28,8 @@ export const ImageConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={imageShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     >
       <FileInput
         label={t("pageBuilder.blocks.image.imageUrl")}

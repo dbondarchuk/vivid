@@ -5,7 +5,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { getDefaults, styles } from "./styles";
 import { ImageProps } from "./schema";
 import { BlockStyle } from "../../helpers/styling";
-import { useEditorArgs } from "@vivid/builder";
+import { BaseBlockProps, useEditorArgs } from "@vivid/builder";
 import { template } from "@vivid/utils";
 import { generateClassName } from "../../helpers/class-name-generator";
 // import Image from "next/image";
@@ -19,6 +19,7 @@ type ResizableImageProps = {
   minWidth?: number;
   minHeight?: number;
   className?: string;
+  base?: BaseBlockProps;
   onDimensionsChange: (width: number, height: number) => void;
   onPositionChange: (x: number, y: number) => void;
 };
@@ -34,6 +35,7 @@ export const ResizableImage = ({
   className,
   onDimensionsChange,
   onPositionChange,
+  base,
 }: ResizableImageProps) => {
   const { src, alt } = props.props ?? {
     src: "/assets/placeholder/400x200.jpg",
@@ -310,9 +312,11 @@ export const ResizableImage = ({
         className={cn(
           "relative group block w-full h-full",
           resizing ? "select-none" : "",
-          className
+          className,
+          base?.className
         )}
         style={{}}
+        id={base?.id}
       >
         <div className="relative w-full h-full overflow-hidden inline-block">
           <img

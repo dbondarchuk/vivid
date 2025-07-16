@@ -5,7 +5,11 @@ import { Appointments } from "./appointments";
 import { Skeleton } from "@vivid/ui";
 import { BookingProps } from "./types";
 
-export const Booking: React.FC<BookingProps> = ({ successPage, className }) => {
+export const Booking: React.FC<BookingProps & { id?: string }> = ({
+  successPage,
+  className,
+  id,
+}) => {
   const [response, setResponse] =
     React.useState<GetAppointmentOptionsResponse | null>(null);
 
@@ -21,7 +25,7 @@ export const Booking: React.FC<BookingProps> = ({ successPage, className }) => {
 
   if (!response)
     return (
-      <div className={className}>
+      <div className={className} id={id}>
         <Skeleton className="w-full h-48" />
         <Skeleton className="w-full h-48" />
         <Skeleton className="w-full h-48" />
@@ -30,6 +34,7 @@ export const Booking: React.FC<BookingProps> = ({ successPage, className }) => {
 
   return (
     <Appointments
+      id={id}
       className={className}
       options={response.options}
       successPage={successPage ?? undefined}

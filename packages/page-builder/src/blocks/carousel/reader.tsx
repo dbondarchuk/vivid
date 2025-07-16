@@ -9,15 +9,18 @@ import {
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { CarouselReaderProps, styles } from "./schema";
+import { cn } from "@vivid/ui";
 
 export const CarouselReader = ({
   style,
   props,
+  block,
   ...rest
 }: CarouselReaderProps) => {
   const children = props?.children ?? [];
 
   const className = generateClassName();
+  const base = block.base;
 
   return (
     <>
@@ -28,11 +31,12 @@ export const CarouselReader = ({
           align: "start",
         }}
         autoPlay={props.autoPlay ? props.autoPlay * 1000 : undefined}
+        id={base?.id}
       >
-        <CarouselContent className={className}>
+        <CarouselContent className={cn(className, base?.className)}>
           {children.map((child) => (
             <CarouselItem key={child.id} className="carousel-item pl-4">
-              <ReaderBlock key={child.id} block={child} {...rest} />
+              <ReaderBlock key={child.id} {...rest} block={child} />
             </CarouselItem>
           ))}
         </CarouselContent>

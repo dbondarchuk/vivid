@@ -4,14 +4,7 @@ import {
   useDispatchAction,
   useSetSelectedBlockId,
 } from "@vivid/builder";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@vivid/ui";
-import React, { useCallback } from "react";
+import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { CarouselProps, styles } from "./schema";
@@ -23,36 +16,37 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
 
   const children = currentBlock.data?.props?.children;
   const className = generateClassName();
+  const base = currentBlock.base;
 
-  const childWrapper = useCallback(
-    ({ children }: { children: React.ReactNode }) => (
-      <CarouselItem className="carousel-item">{children}</CarouselItem>
-    ),
-    []
-  );
+  // const childWrapper = useCallback(
+  //   ({ children }: { children: React.ReactNode }) => (
+  //     <CarouselItem className="carousel-item">{children}</CarouselItem>
+  //   ),
+  //   []
+  // );
 
-  const childrenWrapper = useCallback(
-    ({
-      children,
-      className,
-      style,
-      id,
-      ref,
-    }: {
-      children: React.ReactNode;
-      className?: string;
-      style?: React.CSSProperties;
-      id?: string;
-      ref?: React.Ref<HTMLDivElement>;
-    }) => (
-      <Carousel className={className} style={style} id={id} ref={ref}>
-        <CarouselContent className="relative">{children}</CarouselContent>
-        <CarouselPrevious className="left-0" />
-        <CarouselNext className="right-0" />
-      </Carousel>
-    ),
-    []
-  );
+  // const childrenWrapper = useCallback(
+  //   ({
+  //     children,
+  //     className,
+  //     style,
+  //     id,
+  //     ref,
+  //   }: {
+  //     children: React.ReactNode;
+  //     className?: string;
+  //     style?: React.CSSProperties;
+  //     id?: string;
+  //     ref?: React.Ref<HTMLDivElement>;
+  //   }) => (
+  //     <Carousel className={className} style={style} id={id} ref={ref}>
+  //       <CarouselContent className="relative">{children}</CarouselContent>
+  //       <CarouselPrevious className="left-0" />
+  //       <CarouselNext className="right-0" />
+  //     </Carousel>
+  //   ),
+  //   []
+  // );
 
   const newStyle: typeof style = {
     ...style,
@@ -70,7 +64,8 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
       />
       <EditorChildren
         block={currentBlock}
-        className={className}
+        className={cn(className, base?.className)}
+        id={base?.id}
         property="props"
         children={children || []}
         // childWrapper={childWrapper}

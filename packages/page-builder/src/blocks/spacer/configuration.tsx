@@ -9,6 +9,8 @@ import { spacerShortcuts } from "./shortcuts";
 export const SpacerConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<SpacerProps>) => {
   const updateData = (d: unknown) => setData(d as SpacerProps);
 
@@ -18,6 +20,8 @@ export const SpacerConfiguration = ({
       styles={data.style ?? {}}
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
+      base={base}
+      onBaseChange={onBaseChange}
     />
   );
 };

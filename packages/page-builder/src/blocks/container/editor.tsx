@@ -8,6 +8,7 @@ import { useId } from "react";
 import { BlockStyle } from "../../helpers/styling";
 import { ContainerProps, styles } from "./schema";
 import { generateClassName } from "../../helpers/class-name-generator";
+import { cn } from "@vivid/ui";
 
 export const ContainerEditor = ({ style, props }: ContainerProps) => {
   const currentBlock = useCurrentBlock<ContainerProps>();
@@ -16,7 +17,7 @@ export const ContainerEditor = ({ style, props }: ContainerProps) => {
 
   const children = currentBlock.data?.props?.children;
   const className = generateClassName();
-
+  const base = currentBlock.base;
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
@@ -24,7 +25,8 @@ export const ContainerEditor = ({ style, props }: ContainerProps) => {
         block={currentBlock}
         property="props"
         children={children || []}
-        className={className}
+        className={cn(className, base?.className)}
+        id={base?.id}
         onChange={({ block, blockId, children }) => {
           dispatchAction({
             type: "set-block-data",

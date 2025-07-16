@@ -1,18 +1,21 @@
 import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
+import { BookingReader } from "./booking/reader";
 import { Button } from "./button/reader";
+import { CarouselReader } from "./carousel/reader";
 import { ConditionalContainerReader } from "./conditional-container/reader";
 import { ContainerReader } from "./container/reader";
 import { ForeachContainerReader } from "./foreach-container/reader";
 import { GridContainerReader } from "./grid-container/reader";
-import { PageLayoutReader } from "./page-layout/reader";
 import { Heading } from "./heading/reader";
 import { Image } from "./image/reader";
+import { PageHeroReader } from "./page-hero/reader";
+import { PageLayoutReader } from "./page-layout/reader";
+import { PopupReader } from "./popup/reader";
 import { EditorBlocksSchema } from "./schema";
 import { Spacer } from "./spacer/reader";
 import { TextReader } from "./text/reader";
-import { PageHeroReader } from "./page-hero/reader";
-import { BookingReader } from "./booking/reader";
-import { CarouselReader } from "./carousel/reader";
+import { Video } from "./video";
+import { SimpleText } from "./simple-text/reader";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -61,5 +64,14 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   Carousel: {
     Reader: CarouselReader,
+  },
+  Video: {
+    Reader: Video,
+  },
+  Popup: {
+    Reader: PopupReader,
+  },
+  SimpleText: {
+    Reader: SimpleText,
   },
 };

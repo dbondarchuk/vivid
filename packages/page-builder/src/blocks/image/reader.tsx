@@ -1,14 +1,25 @@
+import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
-import { ImageProps } from "./schema";
+import { ImageReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
-export const Image = ({ style, props }: ImageProps) => {
+export const Image = ({
+  style,
+  props,
+  block,
+}: Pick<ImageReaderProps, "style" | "props" | "block">) => {
   const linkHref = props?.linkHref;
 
   const className = generateClassName();
+  const base = block.base;
   const imageElement = (
-    <img alt={props?.alt ?? ""} src={props?.src ?? ""} className={className} />
+    <img
+      alt={props?.alt ?? ""}
+      src={props?.src ?? ""}
+      className={cn(className, base?.className)}
+      id={base?.id}
+    />
   );
 
   const element = !linkHref ? (

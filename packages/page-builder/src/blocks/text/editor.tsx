@@ -38,6 +38,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
 
   const className = generateClassName();
   const defaults = getDefaults({ props, style }, true);
+  const base = currentBlock.base;
 
   return (
     <>
@@ -53,8 +54,10 @@ export const TextEditor = ({ props, style }: TextProps) => {
         onChange={onChange}
         className={cn(
           "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
-          className
+          className,
+          base?.className
         )}
+        id={base?.id}
       />
     </>
   );

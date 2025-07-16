@@ -1,6 +1,7 @@
 import { Prettify } from "@vivid/types";
 import z from "zod";
 import { zStyles } from "./styles";
+import { BaseReaderBlockProps } from "@vivid/builder";
 
 export const ImagePropsSchema = z.object({
   style: zStyles.optional().nullable(),
@@ -15,6 +16,7 @@ export const ImagePropsSchema = z.object({
 });
 
 export type ImageProps = Prettify<z.infer<typeof ImagePropsSchema>>;
+export type ImageReaderProps = BaseReaderBlockProps<any> & ImageProps;
 
 export const ImagePropsDefaults = {
   props: {

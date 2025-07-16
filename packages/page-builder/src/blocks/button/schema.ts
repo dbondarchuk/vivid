@@ -1,3 +1,4 @@
+import { BaseReaderBlockProps } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
 import z from "zod";
 import { COLORS } from "../../style";
@@ -20,6 +21,7 @@ export const ButtonPropsSchema = z.object({
 });
 
 export type ButtonProps = Prettify<z.infer<typeof ButtonPropsSchema>>;
+export type ButtonReaderProps = BaseReaderBlockProps<any> & ButtonProps;
 
 export const ButtonPropsDefaults = {
   props: {

@@ -9,12 +9,20 @@ export type BaseZodDictionary = {
 export type ConfigurationProps<T> = {
   data: T;
   setData: (data: T) => void;
+  base: BaseBlockProps | undefined;
+  onBaseChange: (base: BaseBlockProps) => void;
+};
+
+export type BaseBlockProps = {
+  id?: string;
+  className?: string;
 };
 
 export type EditorProps<T> = T;
 export type ReaderProps<T> = T & {
   document: TReaderBlock;
   args: Record<string, any>;
+  block: TReaderBlock;
 };
 
 export type BuilderSchema = BaseZodDictionary;
@@ -28,6 +36,7 @@ export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
     Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     defaultValue: z.infer<T[K]>;
     category: BuilderKeys;
+    allowedIn?: (keyof T)[];
   };
 };
 

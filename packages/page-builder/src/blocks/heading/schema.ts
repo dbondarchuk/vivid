@@ -1,3 +1,4 @@
+import { BaseReaderBlockProps } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
 import z from "zod";
 import { zStyles } from "./styles";
@@ -14,6 +15,7 @@ export const HeadingPropsSchema = z.object({
 });
 
 export type HeadingProps = Prettify<z.infer<typeof HeadingPropsSchema>>;
+export type HeadingReaderProps = BaseReaderBlockProps<any> & HeadingProps;
 
 export const HeadingPropsDefaults = {
   props: {

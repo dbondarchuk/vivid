@@ -5,19 +5,19 @@ import {
 } from "@vivid/builder";
 import {
   Calendar,
-  CircleUserRound,
   Columns3,
   CopyPlus,
+  Film,
   GalleryHorizontalEnd,
   Heading,
   Image,
-  Images,
   Layout,
+  LetterText,
   RectangleHorizontal,
   Repeat2,
   ShieldQuestion,
   SquareMousePointer,
-  SquareSplitVertical,
+  SquareSquare,
   Text,
   Zap,
 } from "lucide-react";
@@ -28,6 +28,18 @@ import {
   ButtonToolbar,
 } from "./button";
 
+import {
+  BookingConfiguration,
+  BookingEditor,
+  BookingPropsDefaults,
+  BookingToolbar,
+} from "./booking";
+import {
+  CarouselConfiguration,
+  CarouselEditor,
+  CarouselPropsDefaults,
+  CarouselToolbar,
+} from "./carousel";
 import {
   ConditionalContainerConfiguration,
   ConditionalContainerEditor,
@@ -40,28 +52,16 @@ import {
   ContainerToolbar,
 } from "./container";
 import {
+  ForeachContainerConfiguration,
+  ForeachContainerEditor,
+  ForeachContainerPropsDefaults,
+} from "./foreach-container";
+import {
   GridContainerConfiguration,
   GridContainerEditor,
   GridContainerPropsDefaults,
   GridContainerToolbar,
 } from "./grid-container";
-import {
-  PageLayoutConfiguration,
-  PageLayoutEditor,
-  PageLayoutToolbar,
-} from "./page-layout";
-import { PageLayoutDefaultProps, PageLayoutProps } from "./page-layout/schema";
-import {
-  PageHeroConfiguration,
-  PageHeroEditor,
-  PageHeroPropsDefaults,
-  PageHeroToolbar,
-} from "./page-hero";
-import {
-  ForeachContainerConfiguration,
-  ForeachContainerEditor,
-  ForeachContainerPropsDefaults,
-} from "./foreach-container";
 import {
   HeadingConfiguration,
   HeadingEditor,
@@ -74,6 +74,31 @@ import {
   ImagePropsDefaults,
   ImageToolbar,
 } from "./image";
+import {
+  PageHeroConfiguration,
+  PageHeroEditor,
+  PageHeroPropsDefaults,
+  PageHeroToolbar,
+} from "./page-hero";
+import {
+  PageLayoutConfiguration,
+  PageLayoutEditor,
+  PageLayoutDefaultProps,
+  PageLayoutProps,
+  PageLayoutToolbar,
+} from "./page-layout";
+import {
+  PopupConfiguration,
+  PopupEditor,
+  PopupPropsDefaults,
+  PopupToolbar,
+} from "./popup";
+import {
+  SimpleTextConfiguration,
+  SimpleTextEditor,
+  SimpleTextPropsDefaults,
+  SimpleTextToolbar,
+} from "./simple-text";
 import { EditorBlocksSchema } from "./schema";
 import {
   Spacer,
@@ -81,15 +106,19 @@ import {
   SpacerPropsDefaults,
   SpacerToolbar,
 } from "./spacer";
-import { TextConfiguration, TextEditor, TextToolbar } from "./text";
-import { TextPropsDefaults } from "./text/schema";
-import { BookingEditor } from "./booking/editor";
-import { BookingConfiguration } from "./booking/configuration";
-import { BookingPropsDefaults } from "./booking/schema";
-import { BookingToolbar } from "./booking/toolbar";
-import { CarouselEditor } from "./carousel/editor";
-import { CarouselPropsDefaults } from "./carousel/schema";
-import { CarouselConfiguration, CarouselToolbar } from "./carousel";
+import {
+  TextConfiguration,
+  TextEditor,
+  TextPropsDefaults,
+  TextToolbar,
+} from "./text";
+import {
+  VideoConfiguration,
+  VideoEditor,
+  VideoPropsDefaults,
+  VideoToolbar,
+} from "./video";
+import { SpacerEditor } from "./spacer/editor";
 
 export const EditorBlocks: EditorDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -123,7 +152,7 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
   },
   Text: {
     displayName: "pageBuilder.blocks.text.displayName",
-    icon: <Text />,
+    icon: <LetterText />,
     Editor: TextEditor,
     Configuration: TextConfiguration,
     Toolbar: TextToolbar,
@@ -142,7 +171,7 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
   Spacer: {
     displayName: "pageBuilder.blocks.spacer.displayName",
     icon: <RectangleHorizontal />,
-    Editor: Spacer,
+    Editor: SpacerEditor,
     Configuration: SpacerConfiguration,
     Toolbar: SpacerToolbar,
     defaultValue: SpacerPropsDefaults,
@@ -226,6 +255,34 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: CarouselToolbar,
     defaultValue: CarouselPropsDefaults,
     category: "pageBuilder.blocks.categories.layout",
+  },
+  Video: {
+    displayName: "pageBuilder.blocks.video.displayName",
+    icon: <Film />,
+    Editor: VideoEditor,
+    Configuration: VideoConfiguration,
+    Toolbar: VideoToolbar,
+    defaultValue: VideoPropsDefaults,
+    category: "pageBuilder.blocks.categories.objects",
+  },
+  Popup: {
+    displayName: "pageBuilder.blocks.popup.displayName",
+    icon: <SquareSquare />,
+    Editor: PopupEditor,
+    Configuration: PopupConfiguration,
+    Toolbar: PopupToolbar,
+    defaultValue: PopupPropsDefaults,
+    category: "pageBuilder.blocks.categories.objects",
+    allowedIn: ["PageLayout"],
+  },
+  SimpleText: {
+    displayName: "pageBuilder.blocks.simpleText.displayName",
+    icon: <Text />,
+    Editor: SimpleTextEditor,
+    Configuration: SimpleTextConfiguration,
+    Toolbar: SimpleTextToolbar,
+    defaultValue: SimpleTextPropsDefaults,
+    category: "pageBuilder.blocks.categories.text",
   },
 };
 

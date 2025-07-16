@@ -9,6 +9,8 @@ import { styles } from "./styles";
 export const TextConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<TextProps>) => {
   const updateData = (d: unknown) => setData(d as TextProps);
 
@@ -17,6 +19,8 @@ export const TextConfiguration = ({
       styles={data.style ?? {}}
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
+      base={base}
+      onBaseChange={onBaseChange}
     />
   );
 };

@@ -11,6 +11,8 @@ import { carouselShortcuts } from "./shortcuts";
 export const CarouselConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<CarouselProps>) => {
   const updateData = (d: unknown) => setData(d as CarouselProps);
   const t = useI18n("builder");
@@ -21,6 +23,8 @@ export const CarouselConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={carouselShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     >
       <div className="flex items-center gap-2 flex-1">
         <Checkbox

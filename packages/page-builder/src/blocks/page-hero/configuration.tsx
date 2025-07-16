@@ -9,6 +9,8 @@ import { styles } from "./styles";
 export const PageHeroConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<PageHeroProps>) => {
   const updateData = (d: unknown) => setData(d as PageHeroProps);
 
@@ -18,6 +20,8 @@ export const PageHeroConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={pageHeroShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     />
   );
 };

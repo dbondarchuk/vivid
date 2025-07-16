@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
 
 import { TEditorBlock } from "../../../../editor/core";
 
@@ -23,8 +23,10 @@ import { BaseZodDictionary } from "../../../../types";
 type Props<T extends BaseZodDictionary = any> = {
   onSelect: (block: TEditorBlock) => void;
   allowOnly?: keyof T | keyof T[];
+  currentBlock: keyof T;
 } & (
   | {
+      disabledDroppable?: boolean;
       placeholder: true;
       contextId: string;
       isOver?: boolean;
@@ -38,6 +40,7 @@ type Props<T extends BaseZodDictionary = any> = {
 export const AddBlockButton = <T extends BaseZodDictionary = any>({
   onSelect,
   allowOnly,
+  currentBlock,
   ...rest
 }: Props<T>) => {
   const [open, setOpen] = React.useState(false);
@@ -56,6 +59,35 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
   };
 
   type block = (typeof blocks)[string] & { name: string };
+  const filteredBlocks = useMemo(() => {
+    return Object.entries(
+      Object.entries(blocks)
+        .filter(
+          ([type]) =>
+            (allowOnly
+              ? Array.isArray(allowOnly)
+                ? allowOnly.includes(type as keyof T)
+                : type === allowOnly
+              : rootBlock.type !== type) &&
+            (!blocks[type].allowedIn ||
+              blocks[type].allowedIn.includes(currentBlock))
+        )
+        .reduce(
+          (map, [name, value]) => ({
+            ...map,
+            [value.category]: [
+              ...(map[value.category] || []),
+              {
+                ...value,
+                name,
+              },
+            ],
+          }),
+          {} as Record<string, block[]>
+        )
+    );
+  }, [blocks, allowOnly, currentBlock, rootBlock]);
+
   return (
     <Popover modal open={open} onOpenChange={setOpen}>
       {rest.placeholder ? (
@@ -63,6 +95,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
           contextId={rest.contextId}
           isOver={rest.isOver}
           className={rest.className}
+          disabledDroppable={rest.disabledDroppable}
         />
       ) : (
         <DividerButton />
@@ -72,29 +105,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
           <CommandInput placeholder={t("baseBuilder.searchBlocks")} />
           <CommandList>
             <CommandEmpty>{tUi("common.noResults")}</CommandEmpty>
-            {Object.entries(
-              Object.entries(blocks)
-                .filter(([type]) =>
-                  allowOnly
-                    ? Array.isArray(allowOnly)
-                      ? allowOnly.includes(type as keyof T)
-                      : type === allowOnly
-                    : rootBlock.type !== type
-                )
-                .reduce(
-                  (map, [name, value]) => ({
-                    ...map,
-                    [value.category]: [
-                      ...(map[value.category] || []),
-                      {
-                        ...value,
-                        name,
-                      },
-                    ],
-                  }),
-                  {} as Record<string, block[]>
-                )
-            ).map(([category, values], i, array) => (
+            {filteredBlocks.map(([category, values], i, array) => (
               // <BlockTypeButton
               //   key={name}
               //   label={v.displayName}

@@ -1,3 +1,5 @@
+import { BaseBlockProps } from "../types";
+
 export type EditorHistoryEntry =
   | {
       type: "document";
@@ -50,6 +52,13 @@ export type EditorHistoryEntry =
       value: {
         blockId: string;
         data: any;
+      };
+    }
+  | {
+      type: "set-block-base";
+      value: {
+        blockId: string;
+        base: BaseBlockProps;
       };
     };
 

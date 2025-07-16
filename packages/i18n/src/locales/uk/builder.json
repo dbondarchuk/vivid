@@ -499,6 +499,11 @@
         "full": "Повний"
       }
     },
+    "base": {
+      "title": "Базові властивості",
+      "id": "ID",
+      "className": "CSS класи"
+    },
     "blocks": {
       "categories": {
         "text": "Текст",
@@ -647,6 +652,46 @@
         "alignments": {
           "standard": "Стандартний",
           "center": "По центру"
+        }
+      },
+      "video": {
+        "displayName": "Відео",
+        "videoUrl": "URL відео",
+        "posterUrl": "URL зображення-постера",
+        "controls": "Показати елементи керування",
+        "autoplay": "Автовідтворення",
+        "loop": "Зациклити",
+        "muted": "Без звуку",
+        "preload": "Попереднє завантаження",
+        "preloadOptions": {
+          "none": "Нічого",
+          "metadata": "Метадані",
+          "auto": "Автоматично"
+        },
+        "size": "Розмір",
+        "sizes": {
+          "small": "Малий",
+          "medium": "Середній",
+          "large": "Великий",
+          "full": "Повна ширина",
+          "wide": "Широкий (16:9)"
+        },
+        "alignment": "Вирівнювання",
+        "alignments": {
+          "standard": "Стандартний",
+          "center": "По центру"
+        },
+        "playback": "Відтворення",
+        "playbackOptions": {
+          "standard": "Стандартний",
+          "autoplay": "Автовідтворення",
+          "loop": "Зациклити",
+          "background": "Фоновий"
+        },
+        "audio": "Аудіо",
+        "audioOptions": {
+          "withSound": "Зі звуком",
+          "muted": "Без звуку"
         }
       },
       "carousel": {
@@ -867,6 +912,29 @@
       "booking": {
         "displayName": "Форма бронювання",
         "confirmationPage": "Сторінка підтвердження"
+      },
+      "popup": {
+        "displayName": "Попап",
+        "open": "Відкрити",
+        "show": {
+          "label": "Показувати",
+          "always": "Завжди",
+          "one-time": "Одноразово"
+        },
+        "shortcuts": {
+          "maxWidth": {
+            "label": "Ширина",
+            "variants": {
+              "small": "Малий",
+              "medium": "Середній",
+              "large": "Великий",
+              "full": "Повна"
+            }
+          }
+        }
+      },
+      "simpleText": {
+        "displayName": "Простий текст"
       }
     },
     "shortcuts": {

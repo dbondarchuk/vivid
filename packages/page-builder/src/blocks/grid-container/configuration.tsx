@@ -8,6 +8,8 @@ import { gridContainerShortcuts } from "./shortcuts";
 export const GridContainerConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<GridContainerProps>) => {
   const updateData = (d: unknown) => setData(d as GridContainerProps);
 
@@ -17,6 +19,8 @@ export const GridContainerConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={gridContainerShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     />
   );
 };

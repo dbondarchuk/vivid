@@ -86,6 +86,13 @@ export const editorHistoryReducer = (
 
       break;
     }
+
+    case "set-block-base": {
+      const block = findBlock(document, value.blockId);
+      if (block) block.base = value.base;
+
+      break;
+    }
   }
 
   return { document, selectedBlockId: newSelectedBlockId };

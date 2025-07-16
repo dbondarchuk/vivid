@@ -10,6 +10,8 @@ import { styles } from "./styles";
 export const BookingConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<BookingProps>) => {
   const updateData = (d: unknown) => setData(d as BookingProps);
   const t = useI18n("builder");
@@ -19,6 +21,8 @@ export const BookingConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={bookingShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     >
       <PageInput
         label={t("pageBuilder.blocks.booking.confirmationPage")}

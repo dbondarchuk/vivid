@@ -15,6 +15,7 @@ export type AppointmentsProps = {
   timeZone: string;
   showPromoCode?: boolean;
   className?: string;
+  id?: string;
 };
 
 export const Appointments: React.FC<AppointmentsProps> = ({
@@ -25,6 +26,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
   timeZone,
   showPromoCode,
   className,
+  id,
 }) => {
   const fromQuery = useSearchParams().get("option");
   const [option, setOption] = React.useState<string | null>(fromQuery);
@@ -37,6 +39,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
           options={options}
           onSelect={setOption}
           className={cn(className, optionsClassName)}
+          id={id}
         />
       ) : (
         <Schedule
@@ -47,6 +50,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
           fieldsSchema={fieldsSchema}
           timeZone={timeZone}
           showPromoCode={showPromoCode}
+          id={id}
         />
       )}
     </>

@@ -8,21 +8,29 @@ export const PlaceholderButton: React.FC<{
   contextId: string;
   isOver?: boolean;
   className?: string;
-}> = ({ contextId, isOver, className }) => {
+  disabledDroppable?: boolean;
+}> = ({ contextId, isOver: isOverProp, className, disabledDroppable }) => {
   const id = React.useId();
   const draggingBlock = useActiveDragBlock();
 
   const { setNodeRef, isOver: isOverSortable } = useSortable({
     id,
     data: { contextId },
+    disabled: {
+      droppable: disabledDroppable,
+      draggable: true,
+    },
   });
+
+  const isOver = isOverProp || (isOverSortable && !disabledDroppable);
+
   return (
     <div
       className={cn(
         "flex content-center justify-center items-center w-full",
         !!draggingBlock &&
           "border-2 border-dashed border-blue-400 min-h-20 min-w-36 max-w-full",
-        (isOver || isOverSortable) && " bg-blue-800 bg-opacity-50",
+        isOver && " bg-blue-800 bg-opacity-50",
         className
       )}
       ref={setNodeRef}

@@ -15,6 +15,7 @@ import { cn } from "@vivid/ui";
 import {
   useActiveDragBlock,
   useActiveOverBlock,
+  useBlocks,
   useDocument,
   useSetSelectedBlockId,
 } from "../../../editor/context";
@@ -83,6 +84,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
   const draggingBlock = useActiveDragBlock();
+  const blocks = useBlocks();
 
   const appendBlock = (block: TEditorBlock) => {
     setTimeout(() => setSelectedBlockId(block.id), 200);
@@ -116,6 +118,9 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
   const isChildActiveDragBlock =
     activeDragBlock && activeDragBlock.parentBlockId === block.id;
 
+  const activeDragBlockAllowedIn =
+    !!activeDragBlockType && blocks[activeDragBlockType]?.allowedIn;
+
   const disabledDroppable =
     propDisabledDroppable ||
     (!isChildActiveDragBlock &&
@@ -125,7 +130,9 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
           : activeDragBlockType !== allowOnly)) ||
         (!!children?.length &&
           !!maxChildren &&
-          children.length >= maxChildren)));
+          children.length >= maxChildren))) ||
+    (activeDragBlockAllowedIn &&
+      !activeDragBlockAllowedIn.includes(block.type));
 
   const { isOver: isOverDroppable, setNodeRef } = useDroppable({
     id: contextId,
@@ -133,9 +140,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
     disabled: disabledDroppable,
   });
 
-  const isOver =
-    activeOverBlock?.blockId === block.id &&
-    activeOverBlock?.property === property;
+  const isOver = isOverDroppable && !disabledDroppable;
 
   const ids =
     children?.filter((block) => !!block).map((block) => block.id) || [];
@@ -159,15 +164,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
           droppable: disabledDroppable,
         }}
       >
-        {!children || children.length === 0 ? // // activeDragBlockType ? (
-        // !disabledDroppable ? (
-        //   <div
-        //     className={cn(
-        //       "w-full h-full min-h-40 flex items-center justify-center relative",
-        //       isOverDroppable &&
-        //         " border-2 border-dashed border-blue-400 bg-blue-400/10"
-        //     )}
-        //   >
+        {!children || children.length === 0 ? //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
         //     <AddBlockButton
         //       placeholder
         //       onSelect={appendBlock}
@@ -216,6 +213,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
                       <AddBlockButton
                         onSelect={(block) => insertBlock(block, i)}
                         allowOnly={allowOnly}
+                        currentBlock={block.type}
                       />
                     )}
                   <ChildWrapper>
@@ -264,12 +262,14 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
             onSelect={appendBlock}
             contextId={contextId}
             allowOnly={allowOnly}
-            isOver={isOverDroppable}
+            isOver={isOver}
             className="w-auto"
+            currentBlock={block.type}
+            disabledDroppable={disabledDroppable}
           />
         </ChildWrapper>
       )}
-      {isOverDroppable && block.id !== document.id && (
+      {isOver && block.id !== document.id && (
         // <div className="w-full h-full min-h-20 border-2 border-dashed border-blue-800 bg-blue-800/10 flex items-center justify-center relative">
         //   <AddBlockButton
         //     placeholder

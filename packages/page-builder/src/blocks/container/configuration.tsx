@@ -8,6 +8,8 @@ import { containerShortcuts } from "./shortcuts";
 export const ContainerConfiguration = ({
   data,
   setData,
+  base,
+  onBaseChange,
 }: ConfigurationProps<ContainerProps>) => {
   const updateData = (d: unknown) => setData(d as ContainerProps);
 
@@ -17,6 +19,8 @@ export const ContainerConfiguration = ({
       onStylesChange={(style) => updateData({ ...data, style })}
       availableStyles={styles}
       shortcuts={containerShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
     />
   );
 };
