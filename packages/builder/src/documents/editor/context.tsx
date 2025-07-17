@@ -22,6 +22,14 @@ import {
 import { EditorHistory, EditorHistoryEntry } from "./history";
 import { editorHistoryReducer } from "./reducers";
 
+export type ViewportSize =
+  | "original"
+  | "desktop"
+  | "laptop"
+  | "tablet"
+  | "mobile"
+  | "mobileLandscape";
+
 type EditorState = {
   blocks: EditorDocumentBlocksDictionary<any>;
   rootBlock: TEditorBlock;
@@ -41,7 +49,7 @@ type EditorState = {
 
   selectedBlockId: string | null;
   selectedSidebarTab: "block-configuration" | "styles";
-  selectedScreenSize: "desktop" | "mobile";
+  selectedScreenSize: ViewportSize;
 
   inspectorDrawerOpen: boolean;
   activeOverBlock: {
@@ -87,7 +95,7 @@ const createEditorStateStore = ({
     },
     selectedBlockId: null,
     selectedSidebarTab: "styles",
-    selectedScreenSize: "desktop",
+    selectedScreenSize: "original",
 
     inspectorDrawerOpen: true,
     activeDragBlock: null,

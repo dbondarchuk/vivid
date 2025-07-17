@@ -23,6 +23,7 @@ import { AddBlockButton } from "./add-block-menu";
 import { createPortal } from "react-dom";
 import { BaseZodDictionary } from "../../../types";
 import { Plus } from "lucide-react";
+import { usePortalContext } from "../block-wrappers/portal-context";
 
 export type EditorChildrenChange = {
   blockId: string;
@@ -85,6 +86,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
   const setSelectedBlockId = useSetSelectedBlockId();
   const draggingBlock = useActiveDragBlock();
   const blocks = useBlocks();
+  const { body } = usePortalContext();
 
   const appendBlock = (block: TEditorBlock) => {
     setTimeout(() => setSelectedBlockId(block.id), 200);
@@ -164,10 +166,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
           droppable: disabledDroppable,
         }}
       >
-        {!children || children.length === 0 ? //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
-        //     <AddBlockButton
-        //       placeholder
-        //       onSelect={appendBlock}
+        {!children || children.length === 0 ? //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
         //       contextId={contextId}
         //       allowOnly={allowOnly}
         //     />
@@ -224,29 +223,33 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
             {globalThis.window &&
               "document" in globalThis.window &&
               createPortal(
-                <DragOverlay
-                  dropAnimation={{
-                    duration: 500,
-                    easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
-                  }}
-                >
-                  {isChildActiveDragBlock ? (
-                    childWrapper ? (
-                      childWrapper({
-                        children: (
-                          <EditorBlock
-                            block={activeDragBlock.block}
-                            isOverlay
-                          />
-                        ),
-                      })
-                    ) : (
-                      <EditorBlock block={activeDragBlock.block} isOverlay />
-                    )
-                  ) : null}
-                  {/* </DragOverlay> */}
-                </DragOverlay>,
-                globalThis.window.document.body
+                createPortal(
+                  <DragOverlay
+                    dropAnimation={{
+                      duration: 500,
+                      easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+                    }}
+                    transition="transform 250ms ease"
+                  >
+                    {isChildActiveDragBlock ? (
+                      childWrapper ? (
+                        childWrapper({
+                          children: (
+                            <EditorBlock
+                              block={activeDragBlock.block}
+                              isOverlay
+                            />
+                          ),
+                        })
+                      ) : (
+                        <EditorBlock block={activeDragBlock.block} isOverlay />
+                      )
+                    ) : null}
+                    {/* </DragOverlay> */}
+                  </DragOverlay>,
+                  body
+                ),
+                body
               )}
             {/* {(!maxChildren || children.length < maxChildren) &&
               !draggingBlock && (

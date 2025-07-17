@@ -11,6 +11,12 @@ import {
   DialogFooter,
   DialogTitle,
   DialogTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -34,10 +40,13 @@ import {
   ClipboardCopy,
   Copy,
   Eye,
+  Laptop,
   Monitor,
+  MonitorSmartphone,
   PanelRight,
   Redo2,
   Smartphone,
+  Tablet,
   Trash,
   TriangleAlert,
   Undo2,
@@ -59,8 +68,43 @@ import {
   useSetSelectedBlockId,
   useSetSelectedScreenSize,
   useUndoHistory,
+  ViewportSize,
 } from "../../documents/editor/context";
 import { isUndoRedo } from "../../documents/helpers/is-undo-redo";
+
+type ViewportSizeConfig = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  className?: string;
+};
+
+const VIEWPORT_SIZES: Record<string, ViewportSizeConfig> = {
+  original: {
+    icon: MonitorSmartphone,
+    label: "baseBuilder.builderToolbar.view.original",
+  },
+  desktop: {
+    icon: Monitor,
+    label: "baseBuilder.builderToolbar.view.desktop",
+  },
+  laptop: {
+    icon: Laptop,
+    label: "baseBuilder.builderToolbar.view.laptop",
+  },
+  tablet: {
+    icon: Tablet,
+    label: "baseBuilder.builderToolbar.view.tablet",
+  },
+  mobile: {
+    icon: Smartphone,
+    label: "baseBuilder.builderToolbar.view.mobile",
+  },
+  mobileLandscape: {
+    icon: Smartphone,
+    label: "baseBuilder.builderToolbar.view.mobileLandscape",
+    className: "rotate-90",
+  },
+};
 
 export type ViewType = "editor" | "preview";
 
@@ -118,15 +162,8 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
     };
   });
 
-  const handleScreenSizeChange = (value: string) => {
-    switch (value) {
-      case "mobile":
-      case "desktop":
-        setSelectedScreenSize(value);
-        return;
-      default:
-        setSelectedScreenSize("desktop");
-    }
+  const handleScreenSizeChange = (value: ViewportSize) => {
+    setSelectedScreenSize(value);
   };
 
   const errors = Object.entries(useEditorStateErrors() || {});
@@ -152,6 +189,8 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   };
 
   const blockData = selectedBlock?.data ?? document.data;
+
+  const ViewportIcon = VIEWPORT_SIZES[selectedScreenSize].icon;
 
   return (
     <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-start pb-4 w-full border-b border-secondary bg-background sticky top-0 z-[45] p-1">
@@ -236,27 +275,61 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         </ToolbarGroup>
         <ToolbarGroup>
           {BlockToolbar && (
-            <BlockToolbar data={blockData} setData={setBlockData} />
+            <BlockToolbar
+              data={blockData}
+              setData={setBlockData}
+              base={selectedBlock?.base}
+              onBaseChange={(base) => {
+                dispatchAction({
+                  type: "set-block-base",
+                  value: { blockId: selectedBlock.id, base },
+                });
+              }}
+            />
           )}
         </ToolbarGroup>
       </Toolbar>
       {/* <div className="grow" /> */}
       <Toolbar className="has-[button]:flex-wrap">
         <ToolbarGroup>
-          <ToolbarButton
-            tooltip={t("baseBuilder.builderToolbar.desktopView")}
-            pressed={selectedScreenSize === "desktop"}
-            onClick={() => handleScreenSizeChange("desktop")}
-          >
-            <Monitor />
-          </ToolbarButton>
-          <ToolbarButton
-            tooltip={t("baseBuilder.builderToolbar.mobileView")}
-            pressed={selectedScreenSize === "mobile"}
-            onClick={() => handleScreenSizeChange("mobile")}
-          >
-            <Smartphone />
-          </ToolbarButton>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <ToolbarButton
+                tooltip={t("baseBuilder.builderToolbar.view.title")}
+                isDropdown
+                className="text-xs px-2"
+              >
+                <ViewportIcon
+                  className={cn(
+                    "size-4",
+                    VIEWPORT_SIZES[selectedScreenSize].className
+                  )}
+                />
+              </ToolbarButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-0">
+              <DropdownMenuRadioGroup
+                value={selectedScreenSize}
+                onValueChange={(value) =>
+                  handleScreenSizeChange(value as ViewportSize)
+                }
+              >
+                {Object.entries(VIEWPORT_SIZES).map(([size, config]) => {
+                  const Icon = config.icon;
+                  return (
+                    <DropdownMenuRadioItem
+                      key={size}
+                      value={size}
+                      className="min-w-[220px]"
+                    >
+                      <Icon className={cn("size-4", config.className)} />
+                      {t(config.label as any)}
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </ToolbarGroup>
         <ToolbarGroup>
           {hasErrors ? (

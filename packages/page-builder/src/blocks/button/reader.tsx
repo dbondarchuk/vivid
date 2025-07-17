@@ -22,7 +22,7 @@ export const Button = ({ props, style, block }: ButtonReaderProps) => {
       />
       <a
         href={url}
-        target={props?.target ?? "_self"}
+        target={props?.target ?? undefined}
         className={cn(className, base?.className)}
         id={base?.id}
       >

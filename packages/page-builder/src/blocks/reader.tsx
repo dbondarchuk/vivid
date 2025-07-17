@@ -16,6 +16,7 @@ import { Spacer } from "./spacer/reader";
 import { TextReader } from "./text/reader";
 import { Video } from "./video";
 import { SimpleText } from "./simple-text/reader";
+import { YouTubeVideoReader } from "./youtube-video/reader";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -73,5 +74,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   SimpleText: {
     Reader: SimpleText,
+  },
+  YouTubeVideo: {
+    Reader: YouTubeVideoReader,
   },
 };

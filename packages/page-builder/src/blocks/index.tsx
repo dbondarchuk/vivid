@@ -118,6 +118,12 @@ import {
   VideoPropsDefaults,
   VideoToolbar,
 } from "./video";
+import {
+  YouTubeVideoConfiguration,
+  YouTubeVideoEditor,
+  YouTubeVideoPropsDefaults,
+  YouTubeVideoToolbar,
+} from "./youtube-video";
 import { SpacerEditor } from "./spacer/editor";
 
 export const EditorBlocks: EditorDocumentBlocksDictionary<
@@ -263,6 +269,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Configuration: VideoConfiguration,
     Toolbar: VideoToolbar,
     defaultValue: VideoPropsDefaults,
+    category: "pageBuilder.blocks.categories.objects",
+  },
+  YouTubeVideo: {
+    displayName: "pageBuilder.blocks.youtubeVideo.displayName",
+    icon: <Film />,
+    Editor: YouTubeVideoEditor,
+    Configuration: YouTubeVideoConfiguration,
+    Toolbar: YouTubeVideoToolbar,
+    defaultValue: YouTubeVideoPropsDefaults,
     category: "pageBuilder.blocks.categories.objects",
   },
   Popup: {

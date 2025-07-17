@@ -18,8 +18,15 @@
       "moveDown": "Move selected block down",
       "clone": "Clone selected block",
       "delete": "Delete selected block",
-      "desktopView": "Desktop view",
-      "mobileView": "Mobile view",
+      "view": {
+        "title": "Viewport size",
+        "original": "Original",
+        "desktop": "Desktop",
+        "laptop": "Laptop",
+        "tablet": "Tablet",
+        "mobile": "Mobile",
+        "mobileLandscape": "Mobile landscape"
+      },
       "errors": "There are {count, plural, =1 {1 issue} other {# issues}} in the document",
       "noErrors": "Awesome! No issues found!",
       "preview": "Preview",
@@ -693,6 +700,26 @@
           "withSound": "With Sound",
           "muted": "Muted"
         }
+      },
+      "youtubeVideo": {
+        "displayName": "YouTube Video",
+        "url": "YouTube URL or Embed Code",
+        "customAspectRatio": "Custom Aspect Ratio",
+        "privacy": "Privacy Enhanced Mode",
+        "autoplay": "Autoplay",
+        "controls": "Show Controls",
+        "loop": "Loop",
+        "muted": "Muted",
+        "modestbranding": "Modest Branding",
+        "showInfo": "Show Video Info",
+        "rel": "Show Related Videos",
+        "start": "Start Time (seconds)",
+        "end": "End Time (seconds)",
+        "invalidUrl": "Invalid YouTube URL",
+        "aspectRatio": "Aspect Ratio",
+        "alignment": "Alignment",
+        "playback": "Playback",
+        "audio": "Audio"
       },
       "container": {
         "displayName": "Container",

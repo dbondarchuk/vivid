@@ -3,6 +3,7 @@ import { Clock } from "lucide-react";
 import React from "react";
 import { Input, InputProps } from "./input";
 import { useI18n } from "@vivid/i18n";
+import { cn } from "../utils/cn";
 
 export type DurationInputProps = Omit<
   InputProps,
@@ -13,6 +14,14 @@ export type DurationInputProps = Omit<
   inputClassName?: string;
   placeholderHours?: string;
   placeholderMinutes?: string;
+  type?: "hours-minutes" | "minutes-seconds";
+};
+
+const sizes: Record<NonNullable<InputProps["h"]>, string> = {
+  lg: "text-base py-2",
+  md: "text-sm py-2",
+  sm: "text-xs py-1.5",
+  xs: "text-xs py-1",
 };
 
 export const DurationInput: React.FC<DurationInputProps> = ({
@@ -23,6 +32,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
   placeholderHours,
   placeholderMinutes,
   name,
+  type = "hours-minutes",
   itemRef: _,
   ...rest
 }) => {
@@ -155,6 +165,19 @@ export const DurationInput: React.FC<DurationInputProps> = ({
     }
   };
 
+  const firstPartName = type === "hours-minutes" ? "hours" : "minutes";
+  const secondPartName = type === "hours-minutes" ? "minutes" : "seconds";
+  const firstPartLabel =
+    type === "hours-minutes" ? t("common.hours") : t("common.minutes");
+  const firstPartShortLabel =
+    type === "hours-minutes" ? t("durationInput.hr") : t("durationInput.min");
+  const secondPartLabel =
+    type === "hours-minutes" ? t("common.minutes") : t("common.seconds");
+  const secondPartShortLabel =
+    type === "hours-minutes" ? t("durationInput.min") : t("durationInput.sec");
+
+  const size = rest.h ? sizes[rest.h] : sizes.md;
+
   return (
     <div className="flex items-center bg-background border rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
       <div className="flex items-center pl-3 text-muted-foreground">
@@ -170,16 +193,16 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           onChange={handleHoursChange}
           variant="ghost"
           className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
-          aria-label={t("common.hours")}
-          name={name ? `${name}.hours` : "hours"}
+          aria-label={firstPartLabel}
+          name={name ? `${name}.${firstPartName}` : firstPartName}
           onKeyDown={(e) => handleKeyDown(e, "hours")}
           {...rest}
           ref={hoursRef}
         />
-        <span className="pr-3 text-sm text-muted-foreground">
-          {t("durationInput.hr")}
+        <span className={cn("pr-3 text-muted-foreground", size)}>
+          {firstPartShortLabel}
         </span>
-        <span className="text-lg font-medium px-0.5">:</span>
+        <span className={cn("font-medium px-0.5", size)}>:</span>
         <Input
           type="text"
           inputMode="numeric"
@@ -191,13 +214,13 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           max={59}
           variant="ghost"
           className="w-12 border-0 bg-transparent p-2 text-center focus:outline-none focus:ring-0"
-          aria-label={t("common.minutes")}
-          name={name ? `${name}.minutes` : "minutes"}
+          aria-label={secondPartLabel}
+          name={name ? `${name}.${secondPartName}` : secondPartName}
           {...rest}
           ref={minutesRef}
         />
-        <span className="pr-3 text-sm text-muted-foreground">
-          {t("durationInput.min")}
+        <span className={cn("pr-3 text-muted-foreground", size)}>
+          {secondPartShortLabel}
         </span>
       </div>
     </div>

@@ -1,38 +1,36 @@
 "use client";
 
-import { EditorBlock } from "../../documents/editor/block";
+import { useState } from "react";
 import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragStartEvent,
+} from "@dnd-kit/core";
+import { MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { pointerWithin, rectIntersection } from "@dnd-kit/core";
+import type { CollisionDetection } from "@dnd-kit/core";
+import { Tabs, TabsContent } from "@vivid/ui";
+import { cn } from "@vivid/ui";
+import { EditorBlock } from "../../documents/editor/block";
+import { Reader } from "../../documents/reader/block";
+import { ReaderDocumentBlocksDictionary } from "../../documents/types";
+import {
+  findBlock,
+  findBlockHierarchy,
+  findParentBlock,
+} from "../../documents/helpers/blocks";
+import {
+  useActiveDragBlock,
+  useActiveOverBlock,
   useDispatchAction,
   useDocument,
   useSelectedScreenSize,
   useSetActiveDragBlock,
   useSetActiveOverBlock,
 } from "../../documents/editor/context";
-
-import {
-  closestCenter,
-  CollisionDetection,
-  DndContext,
-  MouseSensor,
-  pointerWithin,
-  rectIntersection,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-} from "@dnd-kit/core";
-import { cn, Tabs, TabsContent } from "@vivid/ui";
-import React, { useState } from "react";
-import {
-  findBlock,
-  findParentBlock,
-  findBlockHierarchy,
-} from "../../documents/helpers/blocks";
-import { Reader } from "../../documents/reader/block";
-import { ReaderDocumentBlocksDictionary } from "../../documents/types";
 import { BuilderToolbar, ViewType } from "./builder-toolbar";
+import { ViewportEmulator } from "./viewport-emulator";
 
 type TemplatePanelProps = {
   args?: Record<string, any>;
@@ -52,20 +50,6 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
   const selectedScreenSize = useSelectedScreenSize();
 
   const [selectedView, setSelectedView] = useState<ViewType>("editor");
-
-  let mainBoxSx: any = {
-    height: "100%",
-  };
-  if (selectedScreenSize === "mobile") {
-    mainBoxSx = {
-      ...mainBoxSx,
-      margin: "32px auto",
-      width: 370,
-      height: 800,
-      boxShadow:
-        "rgba(33, 36, 67, 0.04) 0px 10px 20px, rgba(33, 36, 67, 0.04) 0px 2px 6px, rgba(33, 36, 67, 0.04) 0px 0px 1px",
-    };
-  }
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -134,13 +118,6 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
         return;
       }
 
-      // const block = deleteBlockInLevel(activeParent, activeId);
-      // insertBlockInLevel(overParent, block!, property, 0);
-
-      // setDocument(document);
-
-      // const index = (over.data.current?.sortable?.index as number) || 0;
-
       dispatchAction({
         type: "move-block",
         value: {
@@ -174,8 +151,6 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
       activeParent.block.id === dropTarget.id &&
       activeContainerProperty === dropTargetProperty
     ) {
-      // swapBlockInLevel(activeParent, activeId, overBlockId);
-      // setDocument(document);
       dispatchAction({
         type: "swap-block",
         value: {
@@ -185,12 +160,6 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
       });
     } else {
       const index = (over.data.current?.sortable?.index as number) || 0;
-      // if (typeof index === "undefined") return;
-
-      // const block = deleteBlockInLevel(activeParent, activeId);
-      // insertBlockInLevel(overParent, block!, property, index);
-
-      // setDocument(document);
 
       const hierarchy = findBlockHierarchy(document, dropTarget.id);
       if (hierarchy && hierarchy.find((block) => block.id === activeId)) {
@@ -232,11 +201,9 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
           args={args}
         />
 
-        <div className="flex justify-center w-full">
-          <div
-            className={cn(selectedScreenSize === "mobile" ? "w-96" : "w-full")}
-          >
-            <TabsContent value="editor">
+        <div className="flex justify-center w-full mt-2">
+          <ViewportEmulator viewportSize={selectedScreenSize}>
+            <TabsContent value="editor" className="mt-0">
               <DndContext
                 sensors={sensors}
                 onDragStart={onDragStart}
@@ -247,7 +214,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
                 <EditorBlock block={document} />
               </DndContext>
             </TabsContent>
-            <TabsContent value="preview">
+            <TabsContent value="preview" className="mt-0">
               <Reader
                 document={document}
                 args={args || {}}
@@ -255,7 +222,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
                 isEditor
               />
             </TabsContent>
-          </div>
+          </ViewportEmulator>
         </div>
       </Tabs>
     </>

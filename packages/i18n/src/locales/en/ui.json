@@ -13,7 +13,8 @@
     "cancel": "Cancel",
     "placeholder": "Select option",
     "hours": "Hours",
-    "minutes": "Minutes"
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "actions": {
     "delete": "Delete",
@@ -120,7 +121,8 @@
   },
   "durationInput": {
     "hr": "hr",
-    "min": "min"
+    "min": "min",
+    "sec": "sec"
   },
   "dataTable": {
     "searchPlaceholder": "Search {searchKey}...",

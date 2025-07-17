@@ -72,11 +72,11 @@ export const PageHeroPropsDefaults = {
         value: "overlay",
       },
     ],
-    borderRadius: [
-      {
-        value: { value: 0.5, unit: "rem" },
-      },
-    ],
+    // borderRadius: [
+    //   {
+    //     value: { value: 0.5, unit: "rem" },
+    //   },
+    // ],
     display: [
       {
         value: "flex",

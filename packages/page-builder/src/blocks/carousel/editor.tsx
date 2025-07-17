@@ -64,7 +64,7 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
       />
       <EditorChildren
         block={currentBlock}
-        className={cn(className, base?.className)}
+        className={cn("items-center", className, base?.className)}
         id={base?.id}
         property="props"
         children={children || []}

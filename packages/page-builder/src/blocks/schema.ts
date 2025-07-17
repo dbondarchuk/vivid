@@ -14,6 +14,7 @@ import { SimpleTextPropsSchema } from "./simple-text/schema";
 import { SpacerPropsSchema } from "./spacer/schema";
 import { TextPropsSchema } from "./text/schema";
 import { VideoPropsSchema } from "./video/schema";
+import { YouTubeVideoPropsSchema } from "./youtube-video/schema";
 
 export const EditorBlocksSchema = {
   Image: ImagePropsSchema,
@@ -31,6 +32,7 @@ export const EditorBlocksSchema = {
   Booking: BookingPropsSchema,
   Carousel: CarouselPropsSchema,
   Video: VideoPropsSchema,
+  YouTubeVideo: YouTubeVideoPropsSchema,
   Popup: PopupPropsSchema,
   SimpleText: SimpleTextPropsSchema,
 } as {
@@ -48,6 +50,7 @@ export const EditorBlocksSchema = {
   Booking: typeof BookingPropsSchema;
   Carousel: typeof CarouselPropsSchema;
   Video: typeof VideoPropsSchema;
+  YouTubeVideo: typeof YouTubeVideoPropsSchema;
   Popup: typeof PopupPropsSchema;
   SimpleText: typeof SimpleTextPropsSchema;
 };

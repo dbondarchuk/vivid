@@ -190,6 +190,14 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
             value: typeof value === "function" ? value(variant.value) : value,
           }));
           newStyles[styleName] = updatedVariants;
+        } else {
+          newStyles[styleName] = [
+            {
+              breakpoint: [],
+              state: [],
+              value: typeof value === "function" ? value() : value,
+            },
+          ];
         }
       } else {
         // Create new style variant

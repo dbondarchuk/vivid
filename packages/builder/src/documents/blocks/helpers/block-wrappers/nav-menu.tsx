@@ -88,7 +88,7 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
       <Toolbar
         role="presentation"
         aria-label="breadcrumb"
-        className="bg-background shadow p-1 absolute -top-9 -left-0.5 w-max flex-wrap"
+        className="bg-background shadow p-1 w-max flex-wrap"
       >
         {!disable?.move && (
           <ToolbarGroup>
