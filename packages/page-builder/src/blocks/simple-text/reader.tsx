@@ -10,7 +10,7 @@ export const SimpleText = ({ props, style, block }: SimpleTextReaderProps) => {
   const base = block.base;
 
   const className = generateClassName();
-  const Element = "span";
+  const Element = props?.url ? "a" : "span";
 
   return (
     <>
@@ -20,7 +20,11 @@ export const SimpleText = ({ props, style, block }: SimpleTextReaderProps) => {
         styles={style}
         defaults={defaults}
       />
-      <Element className={cn(className, base?.className)} id={base?.id}>
+      <Element
+        className={cn(className, base?.className)}
+        id={base?.id}
+        href={props?.url ?? undefined}
+      >
         {text}
       </Element>
     </>

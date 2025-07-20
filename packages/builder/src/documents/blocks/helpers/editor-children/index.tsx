@@ -51,6 +51,7 @@ export type EditorChildrenProps<T extends BaseZodDictionary = any> = {
     ref?: React.Ref<HTMLDivElement>;
     id?: string;
   }) => React.ReactNode;
+  additionalProps?: Record<string, any>;
 };
 
 // const Placeholder = ({ contextId }: { contextId: string }) => {
@@ -81,6 +82,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
   disabledDroppable: propDisabledDroppable,
   childWrapper,
   childrenWrapper,
+  additionalProps,
 }: EditorChildrenProps<T>) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
@@ -166,10 +168,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
           droppable: disabledDroppable,
         }}
       >
-        {!children || children.length === 0 ? //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
-        //       contextId={contextId}
-        //       allowOnly={allowOnly}
-        //     />
+        {!children || children.length === 0 ? //     /> //       allowOnly={allowOnly} //       contextId={contextId} //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
         //   </div>
         // ) : (
         // ) : null
@@ -216,7 +215,10 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
                       />
                     )}
                   <ChildWrapper>
-                    <EditorBlock block={child} />
+                    <EditorBlock
+                      block={child}
+                      additionalProps={additionalProps}
+                    />
                   </ChildWrapper>
                 </Fragment>
               ))}
@@ -238,6 +240,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
                             <EditorBlock
                               block={activeDragBlock.block}
                               isOverlay
+                              additionalProps={additionalProps}
                             />
                           ),
                         })

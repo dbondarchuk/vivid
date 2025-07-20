@@ -1,4 +1,6 @@
 import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
+import { Accordion } from "./accordion/reader";
+import { AccordionItem } from "./accordion-item/reader";
 import { BookingReader } from "./booking/reader";
 import { Button } from "./button/reader";
 import { CarouselReader } from "./carousel/reader";
@@ -77,5 +79,11 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   YouTubeVideo: {
     Reader: YouTubeVideoReader,
+  },
+  Accordion: {
+    Reader: Accordion,
+  },
+  AccordionItem: {
+    Reader: AccordionItem,
   },
 };

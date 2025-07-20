@@ -18,19 +18,19 @@ export const getDefaults = (
   color: "var(--foreground)",
   padding: {
     top: {
-      value: 1,
+      value: 0,
       unit: "rem",
     },
     bottom: {
-      value: 1,
+      value: 0,
       unit: "rem",
     },
     left: {
-      value: 1.5,
+      value: 0,
       unit: "rem",
     },
     right: {
-      value: 1.5,
+      value: 0,
       unit: "rem",
     },
   },

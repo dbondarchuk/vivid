@@ -104,7 +104,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       >
                         <SidebarMenuItem>
                           <CollapsibleTrigger asChild>
-                            <SidebarMenuButton tooltip={item.title}>
+                            <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
                                 <NavIcon className={`size-5`}>
                                   {item.icon}
@@ -138,7 +138,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       <SidebarMenuItem>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <SidebarMenuButton tooltip={item.title}>
+                            <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
                                 <NavIcon className={`size-5`}>
                                   {item.icon}

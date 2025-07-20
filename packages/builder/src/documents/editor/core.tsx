@@ -9,10 +9,9 @@ export const templatePropsFromContext = (props: any) => {
   return templateProps(props, args);
 };
 
-export const CoreEditorBlock: React.FC<BlockConfiguration<any>> = ({
-  type,
-  data,
-}) => {
+export const CoreEditorBlock: React.FC<
+  BlockConfiguration<any> & { additionalProps?: Record<string, any> }
+> = ({ type, data, additionalProps }) => {
   const blocks = useBlocks();
   const rootBlock = useRootBlock();
 
@@ -21,7 +20,7 @@ export const CoreEditorBlock: React.FC<BlockConfiguration<any>> = ({
 
   return (
     <EditorBlockWrapper>
-      <Component {...data} />
+      <Component {...data} {...additionalProps} />
     </EditorBlockWrapper>
   );
 };

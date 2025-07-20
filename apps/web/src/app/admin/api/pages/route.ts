@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       total: response.total,
       count: response.items.length,
     },
-    "Successfully retrieved assets"
+    "Successfully retrieved pages"
   );
 
   const items = response.items.map(

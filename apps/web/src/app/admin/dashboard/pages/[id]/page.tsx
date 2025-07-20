@@ -42,8 +42,12 @@ export default async function EditPagesPage(props: Props) {
   );
 
   const page = await getPage(params.id);
-  const styling =
-    await ServicesContainer.ConfigurationService().getConfiguration("styling");
+  const { styling, general, social } =
+    await ServicesContainer.ConfigurationService().getConfigurations(
+      "styling",
+      "general",
+      "social"
+    );
 
   if (!page) {
     logger.warn({ pageId: params.id }, "Page not found");
@@ -64,7 +68,7 @@ export default async function EditPagesPage(props: Props) {
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-4">
         <Styling styling={styling} />
-        <PageForm initialData={page} />
+        <PageForm initialData={page} config={{ general, social }} />
       </div>
     </PageContainer>
   );

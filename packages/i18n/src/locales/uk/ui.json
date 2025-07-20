@@ -125,7 +125,7 @@
     "sec": "сек"
   },
   "dataTable": {
-    "searchPlaceholder": "Пошук {searchKey}...",
+    "searchPlaceholder": "Пошук...",
     "selectedRows": "Вибрано {selected} з {total} рядка(ів).",
     "previous": "Попередній",
     "next": "Наступний",

@@ -95,7 +95,8 @@ const createEditorStateStore = ({
     },
     selectedBlockId: null,
     selectedSidebarTab: "styles",
-    selectedScreenSize: "original",
+    // selectedScreenSize: "original",
+    selectedScreenSize: "laptop",
 
     inspectorDrawerOpen: true,
     activeDragBlock: null,

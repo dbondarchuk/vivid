@@ -26,10 +26,12 @@ export const pageSchema = z.object({
     })
     .optional(),
   fullWidth: z.coerce.boolean().optional(),
+  headerId: z.string().optional(),
+  footerId: z.string().optional(),
 });
 
 export const getPageSchemaWithUniqueCheck = (
-  uniqueSlugCheckFn: (name: string, id?: string) => Promise<boolean>,
+  uniqueSlugCheckFn: (slug: string, id?: string) => Promise<boolean>,
   message: string
 ) => {
   return z.object({

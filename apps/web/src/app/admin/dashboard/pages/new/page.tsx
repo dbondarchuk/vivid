@@ -20,13 +20,17 @@ export default async function NewPagesPage() {
 
   logger.debug("Loading new page creation page");
 
-  const styling =
-    await ServicesContainer.ConfigurationService().getConfiguration("styling");
+  const { styling, general, social } =
+    await ServicesContainer.ConfigurationService().getConfigurations(
+      "styling",
+      "general",
+      "social"
+    );
 
   return (
     <PageContainer scrollable={true}>
       <Styling styling={styling} />
-      <PageForm />
+      <PageForm config={{ general, social }} />
     </PageContainer>
   );
 }

@@ -1,3 +1,5 @@
+import { AccordionItemPropsSchema } from "./accordion-item/schema";
+import { AccordionPropsSchema } from "./accordion/schema";
 import { BookingPropsSchema } from "./booking/schema";
 import { ButtonPropsSchema } from "./button/schema";
 import { CarouselPropsSchema } from "./carousel/schema";
@@ -35,6 +37,8 @@ export const EditorBlocksSchema = {
   YouTubeVideo: YouTubeVideoPropsSchema,
   Popup: PopupPropsSchema,
   SimpleText: SimpleTextPropsSchema,
+  Accordion: AccordionPropsSchema,
+  AccordionItem: AccordionItemPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -53,4 +57,6 @@ export const EditorBlocksSchema = {
   YouTubeVideo: typeof YouTubeVideoPropsSchema;
   Popup: typeof PopupPropsSchema;
   SimpleText: typeof SimpleTextPropsSchema;
+  Accordion: typeof AccordionPropsSchema;
+  AccordionItem: typeof AccordionItemPropsSchema;
 };

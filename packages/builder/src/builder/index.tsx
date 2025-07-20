@@ -29,6 +29,8 @@ export type BuilderProps<T extends BaseZodDictionary> = {
   key?: string;
   extraTabs?: SidebarTab[];
   sidebarWidth?: number;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 };
 
 const BuilderInternal = ({
@@ -40,9 +42,9 @@ const BuilderInternal = ({
   key,
   extraTabs = [],
   sidebarWidth = 18,
-}: Omit<BuilderProps<any>, "editorBlocks" | "rootBlock" | "schemas"> & {
-  extraTabs?: SidebarTab[];
-}) => {
+  header,
+  footer,
+}: Omit<BuilderProps<any>, "editorBlocks" | "rootBlock" | "schemas">) => {
   const resetDocument = useResetDocument();
   const errors = useEditorStateStore((s) => s.errors) || {};
   const isValid = Object.keys(errors).length === 0;
@@ -63,7 +65,12 @@ const BuilderInternal = ({
       }
     >
       <SidebarInset className="flex flex-col w-full h-full min-h-full" asDiv>
-        <TemplatePanel args={args} readerBlocks={readerBlocks} />
+        <TemplatePanel
+          args={args}
+          readerBlocks={readerBlocks}
+          header={header}
+          footer={footer}
+        />
       </SidebarInset>
       <InspectorDrawer extraTabs={extraTabs} />
     </SidebarProvider>
@@ -76,7 +83,6 @@ export const Builder = <T extends BaseZodDictionary>({
   editorBlocks,
   rootBlock,
   schemas,
-  extraTabs = [],
   ...rest
 }: BuilderProps<T>) => {
   return (
@@ -87,12 +93,7 @@ export const Builder = <T extends BaseZodDictionary>({
       schemas={schemas}
     >
       <EditorArgsContext.Provider value={args || {}}>
-        <BuilderInternal
-          args={args}
-          defaultValue={defaultValue}
-          extraTabs={extraTabs}
-          {...rest}
-        />
+        <BuilderInternal args={args} defaultValue={defaultValue} {...rest} />
       </EditorArgsContext.Provider>
     </EditorStateProvider>
   );

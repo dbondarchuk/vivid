@@ -16,6 +16,8 @@ import {
   use12HourFormat,
 } from "@vivid/ui";
 import { z } from "zod";
+import { FooterSelector } from "./footer-selector";
+import { HeaderSelector } from "./header-selector";
 
 export function PageSettingsPanel({
   form,
@@ -34,6 +36,47 @@ export function PageSettingsPanel({
 
   return (
     <div className="flex flex-col gap-2">
+      <FormField
+        control={form.control}
+        name="headerId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t("pages.form.header")}</FormLabel>
+            <FormControl>
+              <HeaderSelector
+                value={field.value}
+                onItemSelect={field.onChange}
+                allowClear
+                onValueChange={(header) => {
+                  field.onChange(header?._id);
+                  field.onBlur();
+                }}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="footerId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t("pages.form.footer")}</FormLabel>
+            <FormControl>
+              <FooterSelector
+                value={field.value}
+                onItemSelect={field.onChange}
+                allowClear
+                onValueChange={(footer) => {
+                  field.onChange(footer?._id);
+                  field.onBlur();
+                }}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
       <FormField
         control={form.control}
         name="published"

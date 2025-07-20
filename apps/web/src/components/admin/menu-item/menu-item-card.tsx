@@ -61,18 +61,6 @@ export interface MenuItemDragData {
   item: MenuItemWithId | MenuItemWithSubMenu;
 }
 
-const itemTypesLabels: Record<MenuItemType, string> = {
-  icon: "Icon",
-  link: "Link",
-  button: "Button",
-  submenu: "Submenu",
-};
-
-const itemTypesValues = Object.keys(menuItemTypes.Values).map((value) => ({
-  value: value as MenuItemType,
-  label: itemTypesLabels[value as MenuItemType],
-}));
-
 export function MenuItemCard({
   item,
   form,
@@ -116,8 +104,8 @@ export function MenuItemCard({
     },
   });
 
-  const itemType = item.type;
-  const itemLabel = form.getValues(`${name}.label`);
+  const itemType = item.type as MenuItemType;
+  const itemLabel = form.watch(`${name}.label`);
 
   const changeType = (value: typeof itemType) => {
     const newValue = {
@@ -149,10 +137,10 @@ export function MenuItemCard({
           <span className="sr-only">{t("menuItem.card.moveMenuItem")}</span>
           <GripVertical />
         </Button>
-        <span
-          className={cn(!itemTypesLabels[itemType] ? "text-destructive" : "")}
-        >
-          {itemLabel || itemTypesLabels[itemType] || t("menuItem.card.invalid")}
+        <span className={cn(!itemType ? "text-destructive" : "")}>
+          {itemLabel ||
+            t(`menuItem.labels.${itemType}`) ||
+            t("menuItem.card.invalid")}
         </span>
         <Button
           disabled={disabled}
@@ -177,9 +165,12 @@ export function MenuItemCard({
                 <Combobox
                   disabled={disabled}
                   className="flex w-full font-normal text-base"
-                  values={itemTypesValues.filter(
-                    (x) => !!supportsSubmenus || x.value !== "submenu"
-                  )}
+                  values={menuItemTypes
+                    .filter((x) => !!supportsSubmenus || x !== "submenu")
+                    .map((x) => ({
+                      value: x,
+                      label: t(`menuItem.labels.${x}`),
+                    }))}
                   searchLabel={t("menuItem.card.selectType")}
                   value={field.value}
                   onItemSelect={(value) => {

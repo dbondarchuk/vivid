@@ -2,7 +2,7 @@ import { FormControl, FormField, FormItem } from "@vivid/ui";
 import React from "react";
 
 import { FieldValues } from "react-hook-form";
-import { getFieldName, IFormFieldProps } from "./form-fiel.types";
+import { getFieldName, IFormFieldProps } from "./form-field.types";
 
 import { WithLabelFieldData } from "@vivid/types";
 import { PhoneInput } from "@vivid/ui";

@@ -14,7 +14,7 @@ interface ViewportEmulatorProps {
 }
 
 const VIEWPORT_SIZES = {
-  original: { width: 0, height: 0, name: "Original" },
+  original: { width: 1440, height: 900, name: "Original" },
   laptop: { width: 1280, height: 800, name: "Laptop" },
   desktop: { width: 1440, height: 900, name: "Desktop" },
   tablet: { width: 768, height: 1024, name: "Tablet" },
@@ -144,22 +144,29 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
 
     const prevSize = prevViewportSizeRef.current;
 
-    if (prevSize === "original" && viewportSize !== "original") {
-      setIframeReady(false);
-      // Use a timeout to ensure iframe is ready
-      prevViewportSizeRef.current = viewportSize;
+    // if (prevSize === "original" && viewportSize !== "original") {
+    //   setIframeReady(false);
+    //   // Use a timeout to ensure iframe is ready
+    //   prevViewportSizeRef.current = viewportSize;
 
-      const timer = setTimeout(copyStylesToIframe, 100);
-      return () => clearTimeout(timer);
-    } else {
-      prevViewportSizeRef.current = viewportSize;
-    }
-  }, [viewportSize]);
+    //   const timer = setTimeout(copyStylesToIframe, 100);
+    //   return () => clearTimeout(timer);
+    // } else {
+    //   prevViewportSizeRef.current = viewportSize;
+    // }
+
+    setIframeReady(false);
+    // Use a timeout to ensure iframe is ready
+    prevViewportSizeRef.current = viewportSize;
+
+    const timer = setTimeout(copyStylesToIframe, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // If viewport size is "original", render children directly without iframe
-  if (viewportSize === "original") {
-    return <>{children}</>;
-  }
+  // if (viewportSize === "original") {
+  //   return <>{children}</>;
+  // }
 
   return (
     <>
@@ -167,14 +174,14 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
         <div className={cn("viewport-emulator")}>
           {/* Device frame */}
           <div className="device-frame">
-            <div className="device-header">
+            {/* <div className="device-header">
               <span className="device-name">
                 {t(`baseBuilder.builderToolbar.view.${viewportSize}`)}
               </span>
               <span className="device-dimensions">
                 {currentSize.width} × {currentSize.height}
               </span>
-            </div>
+            </div> */}
 
             {/* Iframe container */}
             <div

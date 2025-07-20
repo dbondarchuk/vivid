@@ -73,7 +73,8 @@
         "background": "Background",
         "colors": "Colors",
         "effects": "Effects",
-        "border": "Border"
+        "border": "Border",
+        "content": "Content"
       },
       "properties": {
         "color": "Text Color",
@@ -517,7 +518,8 @@
         "layout": "Layout",
         "buttons": "Buttons",
         "objects": "Objects",
-        "booking": "Booking"
+        "booking": "Booking",
+        "content": "Content"
       },
       "heading": {
         "displayName": "Heading",
@@ -953,7 +955,75 @@
         }
       },
       "simpleText": {
-        "displayName": "Simple text"
+        "displayName": "Simple text",
+        "url": "Link URL"
+      },
+      "accordion": {
+        "displayName": "Accordion",
+        "allowMultipleOpen": "Allow Multiple Items Open",
+        "defaultOpenFirst": "Open First Item by Default",
+        "animation": "Animation Type",
+        "iconPosition": "Icon Position",
+        "iconStyle": "Icon Style",
+        "animations": {
+          "slide": "Slide",
+          "fade": "Fade",
+          "none": "None"
+        },
+        "iconPositions": {
+          "left": "Left",
+          "right": "Right"
+        },
+        "iconStyles": {
+          "plus": "Plus/Minus",
+          "arrow": "Arrow",
+          "chevron": "Chevron"
+        }
+      },
+      "accordionItem": {
+        "displayName": "Accordion Item",
+        "title": "Title",
+        "content": "Content"
+      },
+      "faq": {
+        "displayName": "FAQ",
+        "title": "Title",
+        "description": "Description",
+        "items": "FAQ Items",
+        "question": "Question",
+        "answer": "Answer",
+        "category": "Category",
+        "showSearch": "Show Search Bar",
+        "showCategories": "Show Category Filter",
+        "allowMultipleOpen": "Allow Multiple Items Open",
+        "defaultOpenFirst": "Open First Item by Default",
+        "animation": "Animation Type",
+        "iconPosition": "Icon Position",
+        "iconStyle": "Icon Style",
+        "animations": {
+          "slide": "Slide",
+          "fade": "Fade",
+          "none": "None"
+        },
+        "iconPositions": {
+          "left": "Left",
+          "right": "Right"
+        },
+        "iconStyles": {
+          "plus": "Plus/Minus",
+          "arrow": "Arrow",
+          "chevron": "Chevron"
+        },
+        "searchPlaceholder": "Search questions...",
+        "allCategories": "All Categories",
+        "noResults": "No questions found matching your search.",
+        "addItem": "Add Item",
+        "editItem": "Edit",
+        "saveItem": "Save",
+        "cancelEdit": "Cancel",
+        "deleteItem": "Delete",
+        "untitledQuestion": "Untitled Question",
+        "noAnswerProvided": "No answer provided"
       }
     },
     "shortcuts": {

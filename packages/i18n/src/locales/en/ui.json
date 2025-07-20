@@ -125,7 +125,7 @@
     "sec": "sec"
   },
   "dataTable": {
-    "searchPlaceholder": "Search {searchKey}...",
+    "searchPlaceholder": "Search...",
     "selectedRows": "{selected} of {total} row(s) selected.",
     "previous": "Previous",
     "next": "Next",

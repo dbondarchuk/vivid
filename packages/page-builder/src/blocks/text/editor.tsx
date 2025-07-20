@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 
 import {
   useCurrentBlock,
@@ -17,7 +17,7 @@ import { cn } from "@vivid/ui";
 export const TextEditor = ({ props, style }: TextProps) => {
   const args = useEditorArgs();
   const currentBlock = useCurrentBlock<TextProps>();
-  const value = currentBlock.data?.props?.value;
+  const value = currentBlock?.data?.props?.value;
   const dispatchAction = useDispatchAction();
 
   const onChange = (value: any) => {
@@ -36,9 +36,9 @@ export const TextEditor = ({ props, style }: TextProps) => {
     });
   };
 
-  const className = generateClassName();
+  const className = useMemo(() => generateClassName(), []);
   const defaults = getDefaults({ props, style }, true);
-  const base = currentBlock.base;
+  const base = currentBlock?.base;
 
   return (
     <>

@@ -54,7 +54,7 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
   return (
     <Sidebar
       side="right"
-      className="absolute h-full group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1.2)] pt-0 [&>[data-sidebar=sidebar]]:sticky [&>[data-sidebar=sidebar]]:top-0 [&>[data-sidebar=sidebar]]:h-fit"
+      className="absolute z-[45] h-full group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1.2)] pt-0 [&>[data-sidebar=sidebar]]:sticky [&>[data-sidebar=sidebar]]:top-0 [&>[data-sidebar=sidebar]]:h-fit"
       variant="inset"
     >
       <SidebarContent className="w-full border-b border-secondary bg-background relative h-full overflow-hidden">

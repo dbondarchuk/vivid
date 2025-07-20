@@ -20,7 +20,20 @@ import {
   SquareSquare,
   Text,
   Zap,
+  ChevronDown,
 } from "lucide-react";
+import {
+  AccordionConfiguration,
+  AccordionEditor,
+  AccordionPropsDefaults,
+  AccordionToolbar,
+} from "./accordion";
+import {
+  AccordionItemConfiguration,
+  AccordionItemEditor,
+  AccordionItemPropsDefaults,
+  AccordionItemToolbar,
+} from "./accordion-item";
 import {
   ButtonConfiguration,
   ButtonEditor,
@@ -298,6 +311,25 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: SimpleTextToolbar,
     defaultValue: SimpleTextPropsDefaults,
     category: "pageBuilder.blocks.categories.text",
+  },
+  Accordion: {
+    displayName: "pageBuilder.blocks.accordion.displayName",
+    icon: <ChevronDown />,
+    Editor: AccordionEditor,
+    Configuration: AccordionConfiguration,
+    Toolbar: AccordionToolbar,
+    defaultValue: AccordionPropsDefaults,
+    category: "pageBuilder.blocks.categories.layout",
+  },
+  AccordionItem: {
+    displayName: "pageBuilder.blocks.accordionItem.displayName",
+    icon: <ChevronDown />,
+    Editor: AccordionItemEditor,
+    Configuration: AccordionItemConfiguration,
+    Toolbar: AccordionItemToolbar,
+    defaultValue: AccordionItemPropsDefaults,
+    category: "pageBuilder.blocks.categories.layout",
+    allowedIn: ["Accordion"],
   },
 };
 

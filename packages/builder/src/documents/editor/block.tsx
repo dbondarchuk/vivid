@@ -37,6 +37,7 @@ type EditorBlockProps = {
   disableDelete?: boolean;
   disableClone?: boolean;
   disableDrag?: boolean;
+  additionalProps?: Record<string, any>;
 };
 
 export const EditorBlock = ({
@@ -46,6 +47,7 @@ export const EditorBlock = ({
   disableDelete,
   disableClone,
   disableDrag,
+  additionalProps,
 }: EditorBlockProps) => {
   const setBlockDisableOptions = useSetBlockDisableOptions();
 
@@ -62,7 +64,7 @@ export const EditorBlock = ({
     <EditorBlockContext.Provider
       value={{ blockId: block.id, isOverlay: !!isOverlay }}
     >
-      <CoreEditorBlock {...block} />
+      <CoreEditorBlock {...block} additionalProps={additionalProps} />
     </EditorBlockContext.Provider>
   );
 };

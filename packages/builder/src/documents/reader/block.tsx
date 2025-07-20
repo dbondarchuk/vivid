@@ -4,6 +4,8 @@ import { BaseReaderBlockProps, TReaderBlock } from "./core";
 
 export type TReaderBlockProps = BaseReaderBlockProps<any> & {
   block: TReaderBlock;
+} & {
+  [x: string]: any;
 };
 
 export function ReaderBlock({ block, ...rest }: TReaderBlockProps) {

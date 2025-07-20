@@ -517,7 +517,8 @@
         "layout": "Макет",
         "buttons": "Кнопки",
         "objects": "Об'єкти",
-        "booking": "Форма бронювання"
+        "booking": "Форма бронювання",
+        "content": "Контент"
       },
       "heading": {
         "displayName": "Заголовок",
@@ -961,7 +962,75 @@
         }
       },
       "simpleText": {
-        "displayName": "Простий текст"
+        "displayName": "Простий текст",
+        "url": "URL посилання"
+      },
+      "accordion": {
+        "displayName": "Акордеон",
+        "allowMultipleOpen": "Дозволити кілька відкритих елементів",
+        "defaultOpenFirst": "Відкрити перший елемент за замовчуванням",
+        "animation": "Тип анімації",
+        "iconPosition": "Позиція іконки",
+        "iconStyle": "Стиль іконки",
+        "animations": {
+          "slide": "Слайд",
+          "fade": "Згасання",
+          "none": "Немає"
+        },
+        "iconPositions": {
+          "left": "Ліворуч",
+          "right": "Праворуч"
+        },
+        "iconStyles": {
+          "plus": "Плюс/Мінус",
+          "arrow": "Стрілка",
+          "chevron": "Шеврон"
+        }
+      },
+      "accordionItem": {
+        "displayName": "Елемент акордеону",
+        "title": "Заголовок",
+        "content": "Контент"
+      },
+      "faq": {
+        "displayName": "FAQ",
+        "title": "Заголовок",
+        "description": "Опис",
+        "items": "Елементи FAQ",
+        "question": "Питання",
+        "answer": "Відповідь",
+        "category": "Категорія",
+        "showSearch": "Показати панель пошуку",
+        "showCategories": "Показати фільтр категорій",
+        "allowMultipleOpen": "Дозволити кілька відкритих елементів",
+        "defaultOpenFirst": "Відкрити перший елемент за замовчуванням",
+        "animation": "Тип анімації",
+        "iconPosition": "Позиція іконки",
+        "iconStyle": "Стиль іконки",
+        "animations": {
+          "slide": "Слайд",
+          "fade": "Згасання",
+          "none": "Немає"
+        },
+        "iconPositions": {
+          "left": "Ліворуч",
+          "right": "Праворуч"
+        },
+        "iconStyles": {
+          "plus": "Плюс/Мінус",
+          "arrow": "Стрілка",
+          "chevron": "Шеврон"
+        },
+        "searchPlaceholder": "Пошук питань...",
+        "allCategories": "Всі категорії",
+        "noResults": "Питання не знайдено за вашим пошуком.",
+        "addItem": "Додати елемент",
+        "editItem": "Редагувати",
+        "saveItem": "Зберегти",
+        "cancelEdit": "Скасувати",
+        "deleteItem": "Видалити",
+        "untitledQuestion": "Без назви",
+        "noAnswerProvided": "Відповідь не надано"
       }
     },
     "shortcuts": {

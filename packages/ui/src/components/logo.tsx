@@ -8,7 +8,7 @@ export const Logo: React.FC<{
   name: string;
   className?: string;
   imageClassName?: string;
-}> = async ({ logo, showLogo, name, className, imageClassName }) => {
+}> = ({ logo, showLogo, name, className, imageClassName }) => {
   return (
     <Link
       href="/"

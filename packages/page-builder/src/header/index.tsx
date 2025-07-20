@@ -1,9 +1,9 @@
-import { ServicesContainer } from "@vivid/services";
+import { I18nFn } from "@vivid/i18n";
 import {
   ButtonMenuItem,
-  HeaderConfiguration,
   LinkMenuItem,
   MenuItem,
+  PageHeader,
 } from "@vivid/types";
 import {
   Accordion,
@@ -28,12 +28,13 @@ import {
 import { ChevronDown, icons, Menu, X } from "lucide-react";
 import React from "react";
 import { HeaderWithScrollShadow } from "./with-scroll-shadow";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 export type HeaderProps = {
   name: string;
   logo?: string;
-  config: HeaderConfiguration;
+  config: PageHeader;
+  t: I18nFn<"translation">;
+  className?: string;
 };
 
 const LinkRender: React.FC<{
@@ -58,8 +59,13 @@ const LinkRender: React.FC<{
   </>
 );
 
-const HeaderBase: React.FC<HeaderProps> = async ({ name, logo, config }) => {
-  const t = await getI18nAsync("translation");
+const HeaderBase: React.FC<HeaderProps> = ({
+  name,
+  logo,
+  config,
+  t,
+  className,
+}) => {
   const getLink = (item: MenuItem, isSidebar: boolean) => {
     switch (item.type) {
       case "icon":
@@ -89,10 +95,7 @@ const HeaderBase: React.FC<HeaderProps> = async ({ name, logo, config }) => {
             font={item.font}
             fontSize={item.fontSize}
             fontWeight={item.fontWeight}
-            className={cn(
-              "bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base inline-flex items-center gap-1",
-              item.className
-            )}
+            className={cn("", item.className)}
           >
             <LinkRender item={item} />
           </Link>
@@ -123,43 +126,16 @@ const HeaderBase: React.FC<HeaderProps> = async ({ name, logo, config }) => {
   return (
     <header
       className={cn(
-        "text-black font-primary w-full bg-background font-light z-50 transition-all duration-300",
+        "font-light text-[hsl(var(--value-foreground-color))] font-[family-name:--font-primary-value] w-full bg-[hsl(var(--value-background-color))] z-40 transition-all duration-300",
         config?.sticky && "sticky top-0",
-        config?.shadow === "static" && "drop-shadow-md"
+        config?.shadow === "static" && "drop-shadow-md",
+        className
       )}
     >
       <div className="container mx-auto flex flex-wrap p-5 flex-row items-center gap-4">
         <Logo name={name} logo={logo} showLogo={config?.showLogo} />
         <div className="hidden ml-auto md:flex flex-wrap gap-2 items-center text-base justify-center">
           <nav className="flex flex-row gap-6 items-center">
-            {/* <NavigationMenu>
-              <NavigationMenuList>
-                {config?.menu?.map((item, index) => (
-                  <NavigationMenuItem key={index}>
-                    {item.type !== "submenu" ? (
-                      <NavigationMenuLink asChild>
-                        {getLink(item, false)}
-                      </NavigationMenuLink>
-                    ) : (
-                      <>
-                        <NavigationMenuTrigger>
-                          <LinkRender item={item} />
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <div className="p-6">
-                            {item.children.map((subItem, jndex) => (
-                              <NavigationMenuLink key={jndex}>
-                                {getLink(subItem, false)}
-                              </NavigationMenuLink>
-                            ))}
-                          </div>
-                        </NavigationMenuContent>
-                      </>
-                    )}
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu> */}
             {config?.menu?.map((item, index) => (
               <React.Fragment key={index}>
                 {item.type !== "submenu" ? (
@@ -241,18 +217,10 @@ const HeaderBase: React.FC<HeaderProps> = async ({ name, logo, config }) => {
   );
 };
 
-export const Header: React.FC = async () => {
-  const { header, general } =
-    await ServicesContainer.ConfigurationService().getConfigurations(
-      "header",
-      "general"
-    );
+export const Header: React.FC<HeaderProps> = (props) => {
+  const baseHeader = <HeaderBase {...props} />;
 
-  const baseHeader = (
-    <HeaderBase name={general.name} logo={general.logo} config={header} />
-  );
-
-  if (header?.shadow === "on-scroll") {
+  if (props.config?.shadow === "on-scroll") {
     return <HeaderWithScrollShadow>{baseHeader}</HeaderWithScrollShadow>;
   }
 

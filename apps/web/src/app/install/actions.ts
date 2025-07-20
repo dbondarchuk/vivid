@@ -72,15 +72,15 @@ export async function install(data: InstallFormData) {
       }
     );
 
-    logger.info("Setting footer configuration");
-    await ServicesContainer.ConfigurationService().setConfiguration("footer", {
-      isCustom: false,
-    });
+    // logger.info("Setting footer configuration");
+    // await ServicesContainer.ConfigurationService().setConfiguration("footer", {
+    //   isCustom: false,
+    // });
 
-    logger.info("Setting header configuration");
-    await ServicesContainer.ConfigurationService().setConfiguration("header", {
-      menu: [],
-    });
+    // logger.info("Setting header configuration");
+    // await ServicesContainer.ConfigurationService().setConfiguration("header", {
+    //   menu: [],
+    // });
 
     logger.info("Setting social and styling configurations");
     await ServicesContainer.ConfigurationService().setConfiguration(

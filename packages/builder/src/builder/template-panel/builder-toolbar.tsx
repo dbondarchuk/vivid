@@ -79,10 +79,10 @@ type ViewportSizeConfig = {
 };
 
 const VIEWPORT_SIZES: Record<string, ViewportSizeConfig> = {
-  original: {
-    icon: MonitorSmartphone,
-    label: "baseBuilder.builderToolbar.view.original",
-  },
+  // original: {
+  //   icon: MonitorSmartphone,
+  //   label: "baseBuilder.builderToolbar.view.original",
+  // },
   desktop: {
     icon: Monitor,
     label: "baseBuilder.builderToolbar.view.desktop",
@@ -193,7 +193,7 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   const ViewportIcon = VIEWPORT_SIZES[selectedScreenSize].icon;
 
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-start pb-4 w-full border-b border-secondary bg-background sticky top-0 z-[45] p-1">
+    <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-start  w-full border-b border-secondary bg-background sticky top-0 z-[45] p-1">
       <Toolbar className="flex-1 has-[button]:flex-wrap">
         <ToolbarGroup>
           <ToolbarButton

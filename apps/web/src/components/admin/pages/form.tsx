@@ -3,7 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Language, useI18n } from "@vivid/i18n";
 import { PageBuilder } from "@vivid/page-builder";
-import { getPageSchemaWithUniqueCheck, Page } from "@vivid/types";
+import {
+  GeneralConfiguration,
+  getPageSchemaWithUniqueCheck,
+  Page,
+  PageFooter,
+  PageHeader,
+  SocialConfiguration,
+} from "@vivid/types";
 import {
   Breadcrumbs,
   cn,
@@ -21,17 +28,17 @@ import {
   Link,
   SaveButton,
   toastPromise,
-  use12HourFormat,
   useDebounceCacheFn,
   useDemoArguments,
 } from "@vivid/ui";
 import { Globe, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { cache, useEffect } from "react";
+import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
 import { PageSettingsPanel } from "./page-settings-panel";
+import { PageReader } from "@vivid/page-builder/reader";
 
 // Helper function to generate slug from title
 const generateSlug = (title: string): string => {
@@ -44,18 +51,27 @@ const generateSlug = (title: string): string => {
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 };
 
-export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
+export const PageForm: React.FC<{
+  initialData?: Page;
+  config: {
+    general: GeneralConfiguration;
+    social: SocialConfiguration;
+  };
+}> = ({ initialData, config }) => {
   const t = useI18n("admin");
-  const uses12HourFormat = use12HourFormat();
 
   const cachedUniqueSlugCheck = useDebounceCacheFn(checkUniqueSlug, 300);
 
   const formSchema = getPageSchemaWithUniqueCheck(
     (slug) => cachedUniqueSlugCheck(slug, initialData?._id),
-    "pages.slugMustBeUnique"
+    "page.slug.unique"
   );
 
   type PageFormValues = z.infer<typeof formSchema>;
+  // Remove old style content
+  if (typeof initialData?.content === "string") {
+    initialData.content = undefined;
+  }
 
   const [loading, setLoading] = React.useState(false);
   const [slugManuallyChanged, setSlugManuallyChanged] = React.useState(false);
@@ -107,13 +123,6 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
     [setError, trigger, t]
   );
 
-  const getTags = (value: string) => {
-    let tags = value.split(/,\s?/g);
-    if (tags.length === 1 && !tags[0]) tags = [];
-
-    return tags;
-  };
-
   const onSubmit = async (data: PageFormValues) => {
     try {
       setLoading(true);
@@ -146,7 +155,15 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
 
   const { content: _, ...restFields } = form.watch();
   const demoAppointment = useDemoArguments();
-  const args = { ...restFields, appointment: demoAppointment };
+  const args = {
+    ...restFields,
+    appointment: demoAppointment,
+    social: config.social,
+    general: config.general,
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    day: new Date().getDate(),
+  };
 
   // Determine if any settings fields have errors
   const nonSettingsFields = ["title", "slug", "content"];
@@ -155,6 +172,39 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
   const hasSettingsErrors = Object.keys(errors).some(
     (error) => !nonSettingsFields.includes(error)
   );
+
+  const headerId = form.watch("headerId");
+  const footerId = form.watch("footerId");
+
+  const [header, setHeader] = React.useState<PageHeader | null>(null);
+  React.useEffect(() => {
+    const fetchHeader = async () => {
+      const response = await fetch(`/admin/api/pages/headers/${headerId}`);
+      const data = await response.json();
+      setHeader(data);
+    };
+
+    if (headerId) {
+      fetchHeader();
+    } else {
+      setHeader(null);
+    }
+  }, [headerId]);
+
+  const [footer, setFooter] = React.useState<PageFooter | null>(null);
+  React.useEffect(() => {
+    const fetchFooter = async () => {
+      const response = await fetch(`/admin/api/pages/footers/${footerId}`);
+      const data = await response.json();
+      setFooter(data);
+    };
+
+    if (footerId) {
+      fetchFooter();
+    } else {
+      setFooter(null);
+    }
+  }, [footerId]);
 
   return (
     <Form {...form}>
@@ -211,7 +261,9 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                               "pl-0.5 border-0"
                             )}
                             h="sm"
-                            disabled={loading}
+                            disabled={
+                              loading || (!isNewPage && slug === "home")
+                            }
                             placeholder={t("pages.form.pageSlugPlaceholder")}
                             onChange={(e) => {
                               field.onChange(e);
@@ -250,7 +302,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               control={form.control}
               name="content"
               render={({ field }) => (
-                <FormItem className="w-full lg:w-4/5 flex-grow relative">
+                <FormItem className="w-full flex-grow relative">
                   <FormControl>
                     <PageBuilder
                       args={args}
@@ -259,6 +311,20 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
                       onChange={(value) => {
                         field.onChange(value);
                       }}
+                      header={
+                        header
+                          ? {
+                              config: header,
+                              name: config.general.name,
+                              logo: config.general.logo,
+                            }
+                          : undefined
+                      }
+                      footer={
+                        footer?.content ? (
+                          <PageReader document={footer.content} args={args} />
+                        ) : undefined
+                      }
                       extraTabs={[
                         {
                           value: "page-settings",
@@ -284,7 +350,7 @@ export const PageForm: React.FC<{ initialData?: Page }> = ({ initialData }) => {
               )}
             />
           </div>
-          <SaveButton form={form} />
+          <SaveButton form={form} ignoreDirty />
         </form>
       </div>
     </Form>

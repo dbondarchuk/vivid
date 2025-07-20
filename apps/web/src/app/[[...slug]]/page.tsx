@@ -1,16 +1,15 @@
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import { MdxContent } from "@/components/web/mdx/mdx-content";
+import { Styling } from "@vivid/page-builder";
+import { Header, PageReader } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
 import { cn } from "@vivid/ui";
 import { setPageData } from "@vivid/utils";
+import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
+import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
-import { headers } from "next/headers";
-import { PageReader } from "@vivid/page-builder/reader";
-import { Styling } from "@vivid/page-builder";
-import { cookies } from "next/headers";
-import { DateTime } from "luxon";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -185,9 +184,10 @@ export default async function Page(props: Props) {
     const searchParams = await props.searchParams;
     const params = await props.params;
 
-    const styling =
-      await ServicesContainer.ConfigurationService().getConfiguration(
-        "styling"
+    const { styling, social } =
+      await ServicesContainer.ConfigurationService().getConfigurations(
+        "styling",
+        "social"
       );
 
     logger.debug(
@@ -231,7 +231,16 @@ export default async function Page(props: Props) {
     );
 
     const { content, ...rest } = page;
-    const args: Record<string, any> = { page: rest, isPage: true };
+    const args: Record<string, any> = {
+      page: rest,
+      isPage: true,
+      general: settings,
+      social: social,
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: new Date().getDate(),
+    };
+
     const cookieStore = await cookies();
     const appointmentId = cookieStore.get("appointment_id")?.value;
     if (appointmentId) {
@@ -248,17 +257,33 @@ export default async function Page(props: Props) {
       }
     }
 
+    const header = page.headerId
+      ? await ServicesContainer.PagesService().getPageHeader(page.headerId)
+      : undefined;
+
+    const footer = page.footerId
+      ? await ServicesContainer.PagesService().getPageFooter(page.footerId)
+      : undefined;
+
+    const t = await getI18nAsync("translation");
+
     return (
-      <div
-        className={cn(
-          "flex flex-col gap-5",
-          page.fullWidth ? "w-full" : "container mx-auto"
-        )}
-      >
+      <>
         <Styling styling={styling} />
+        {header && (
+          <Header
+            name={settings.name}
+            logo={settings.logo}
+            config={header}
+            t={t}
+          />
+        )}
         {/* <MdxContent source={page.content} /> */}
         <PageReader document={content} args={args} />
-      </div>
+        {footer?.content && (
+          <PageReader document={footer.content} args={args} />
+        )}
+      </>
     );
   } catch (error: any) {
     const loggerFn =

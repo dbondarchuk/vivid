@@ -1,45 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import type { CollisionDetection } from "@dnd-kit/core";
 import {
   DndContext,
   DragEndEvent,
   DragOverEvent,
   DragStartEvent,
+  MouseSensor,
+  pointerWithin,
+  rectIntersection,
+  TouchSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
-import { MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { pointerWithin, rectIntersection } from "@dnd-kit/core";
-import type { CollisionDetection } from "@dnd-kit/core";
 import { Tabs, TabsContent } from "@vivid/ui";
-import { cn } from "@vivid/ui";
+import { useState } from "react";
 import { EditorBlock } from "../../documents/editor/block";
-import { Reader } from "../../documents/reader/block";
-import { ReaderDocumentBlocksDictionary } from "../../documents/types";
 import {
-  findBlock,
-  findBlockHierarchy,
-  findParentBlock,
-} from "../../documents/helpers/blocks";
-import {
-  useActiveDragBlock,
-  useActiveOverBlock,
   useDispatchAction,
   useDocument,
   useSelectedScreenSize,
   useSetActiveDragBlock,
   useSetActiveOverBlock,
 } from "../../documents/editor/context";
+import {
+  findBlock,
+  findBlockHierarchy,
+  findParentBlock,
+} from "../../documents/helpers/blocks";
+import { Reader } from "../../documents/reader/block";
+import { ReaderDocumentBlocksDictionary } from "../../documents/types";
 import { BuilderToolbar, ViewType } from "./builder-toolbar";
 import { ViewportEmulator } from "./viewport-emulator";
 
 type TemplatePanelProps = {
   args?: Record<string, any>;
   readerBlocks: ReaderDocumentBlocksDictionary<any>;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 };
 
 export const TemplatePanel: React.FC<TemplatePanelProps> = ({
   args,
   readerBlocks,
+  header,
+  footer,
 }) => {
   const document = useDocument();
 
@@ -201,27 +206,31 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
           args={args}
         />
 
-        <div className="flex justify-center w-full mt-2">
+        <div className="flex flex-col justify-center w-full mt-2">
           <ViewportEmulator viewportSize={selectedScreenSize}>
-            <TabsContent value="editor" className="mt-0">
-              <DndContext
-                sensors={sensors}
-                onDragStart={onDragStart}
-                onDragEnd={onDragEnd}
-                onDragOver={onDragOver}
-                collisionDetection={customCollisionDetectionAlgorithm}
-              >
-                <EditorBlock block={document} />
-              </DndContext>
-            </TabsContent>
-            <TabsContent value="preview" className="mt-0">
-              <Reader
-                document={document}
-                args={args || {}}
-                blocks={readerBlocks}
-                isEditor
-              />
-            </TabsContent>
+            <div className="relative">
+              {header}
+              <TabsContent value="editor" className="mt-0">
+                <DndContext
+                  sensors={sensors}
+                  onDragStart={onDragStart}
+                  onDragEnd={onDragEnd}
+                  onDragOver={onDragOver}
+                  collisionDetection={customCollisionDetectionAlgorithm}
+                >
+                  <EditorBlock block={document} />
+                </DndContext>
+              </TabsContent>
+              <TabsContent value="preview" className="mt-0">
+                <Reader
+                  document={document}
+                  args={args || {}}
+                  blocks={readerBlocks}
+                  isEditor
+                />
+              </TabsContent>
+              {footer}
+            </div>
           </ViewportEmulator>
         </div>
       </Tabs>
