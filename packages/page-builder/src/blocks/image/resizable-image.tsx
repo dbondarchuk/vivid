@@ -5,7 +5,11 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { getDefaults, styles } from "./styles";
 import { ImageProps } from "./schema";
 import { BlockStyle } from "../../helpers/styling";
-import { BaseBlockProps, useEditorArgs } from "@vivid/builder";
+import {
+  BaseBlockProps,
+  useEditorArgs,
+  usePortalContext,
+} from "@vivid/builder";
 import { template } from "@vivid/utils";
 import { generateClassName } from "../../helpers/class-name-generator";
 // import Image from "next/image";
@@ -41,6 +45,9 @@ export const ResizableImage = ({
     src: "/assets/placeholder/400x200.jpg",
     alt: "Sample image",
   };
+
+  const { document: portalDocument } = usePortalContext();
+  const documentOrPortal = portalDocument ?? document;
 
   // Add a new state to track if the image has loaded
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -175,19 +182,19 @@ export const ResizableImage = ({
 
     setResizing(false);
     setActiveHandle(null);
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
+    documentOrPortal.removeEventListener("mousemove", handleMouseMove);
+    documentOrPortal.removeEventListener("mouseup", handleMouseUp);
   };
 
   // Clean up event listeners on unmount
   useEffect(() => {
     // Add event listeners for mouse move and mouse up
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    documentOrPortal.addEventListener("mousemove", handleMouseMove);
+    documentOrPortal.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      documentOrPortal.removeEventListener("mousemove", handleMouseMove);
+      documentOrPortal.removeEventListener("mouseup", handleMouseUp);
     };
   }, [
     resizing,
@@ -198,12 +205,12 @@ export const ResizableImage = ({
   ]);
 
   useEffect(() => {
-    // document.addEventListener("mousemove", handleMouseMove);
-    // document.addEventListener("mouseup", handleMouseUp);
+    // documentOrBody.addEventListener("mousemove", handleMouseMove);
+    // documentOrBody.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      documentOrPortal.removeEventListener("mousemove", handleMouseMove);
+      documentOrPortal.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
 
@@ -238,7 +245,7 @@ export const ResizableImage = ({
     dragStartObjectPosRef.current = { ...objectPosition };
 
     // Change cursor style
-    document.body.style.cursor = "move";
+    documentOrPortal.body.style.cursor = "move";
   };
 
   const handleImageMouseMove = useCallback(
@@ -277,20 +284,20 @@ export const ResizableImage = ({
   const handleImageMouseUp = useCallback(() => {
     if (isDraggingImage) {
       setIsDraggingImage(false);
-      document.body.style.cursor = "default";
+      documentOrPortal.body.style.cursor = "default";
     }
   }, [isDraggingImage]);
 
   // Add event listeners for image dragging
   useEffect(() => {
     if (isDraggingImage) {
-      document.addEventListener("mousemove", handleImageMouseMove);
-      document.addEventListener("mouseup", handleImageMouseUp);
+      documentOrPortal.addEventListener("mousemove", handleImageMouseMove);
+      documentOrPortal.addEventListener("mouseup", handleImageMouseUp);
     }
 
     return () => {
-      document.removeEventListener("mousemove", handleImageMouseMove);
-      document.removeEventListener("mouseup", handleImageMouseUp);
+      documentOrPortal.removeEventListener("mousemove", handleImageMouseMove);
+      documentOrPortal.removeEventListener("mouseup", handleImageMouseUp);
     };
   }, [isDraggingImage, handleImageMouseMove, handleImageMouseUp]);
 
