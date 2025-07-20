@@ -157,7 +157,7 @@ export default async function RootLayout({
             <CssRenderer resource={resource} id={index} key={index} />
           ))}
         </head>
-        <TwLoad />
+        {/* <TwLoad /> */}
         <body className="font-primary">
           <NextIntlClientProvider>
             <main className="min-h-screen max-w-none">{children}</main>

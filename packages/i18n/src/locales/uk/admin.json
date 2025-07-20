@@ -1135,7 +1135,34 @@
         "cancel": "Скасувати",
         "delete": "Видалити",
         "type": "Тип",
-        "selectColorOverrideType": "Вибрати тип перевизначення кольору"
+        "selectColorOverrideType": "Вибрати тип перевизначення кольору",
+        "color": "Колір",
+        "colorTooltip": "Колір в CSS форматі (HEX, rgb, rgba, hsl)",
+        "additionalCss": "Додатковий CSS",
+        "toasts": {
+          "changesSaved": "Ваші зміни були збережені.",
+          "requestError": "Виникла проблема з вашим запитом."
+        }
+      },
+      "colors": {
+        "default": "За замовчуванням",
+        "custom": "Власний колір",
+        "background": "Фон",
+        "foreground": "Текст",
+        "card": "Картка",
+        "card-foreground": "Текст картки",
+        "popover": "Спливаюче вікно",
+        "popover-foreground": "Текст спливаючого вікна",
+        "primary": "Основний",
+        "primary-foreground": "Основний текст",
+        "secondary": "Додатковий",
+        "secondary-foreground": "Додатковий текст",
+        "muted": "Приглушений",
+        "muted-foreground": "Приглушений текст",
+        "accent": "Акцент",
+        "accent-foreground": "Акцентний текст",
+        "destructive": "Руйнівний",
+        "destructive-foreground": "Руйнівний текст"
       }
     },
     "footer": {

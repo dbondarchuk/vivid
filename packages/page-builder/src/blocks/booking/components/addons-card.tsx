@@ -44,7 +44,7 @@ export const AddonsCard: React.FC = () => {
   return (
     <div className="flex flex-col gap-2">
       <div className="text-center">
-        <h2>{i18n("select_addons_label")}</h2>
+        <h2 className="text-xl">{i18n("select_addons_label")}</h2>
       </div>
       <div className={className}>
         {(appointmentOption.addons || []).map((addon) => {
@@ -58,7 +58,7 @@ export const AddonsCard: React.FC = () => {
                 className="flex flex-row w-full"
                 id={`addon-${addon._id}`}
               >
-                <div className="flex flex-col grow">
+                <div className="flex flex-col grow gap-2">
                   <CardTitle className="mt-0">{addon.name}</CardTitle>
                   <CardDescription className="flex flex-col gap-2">
                     {addon.duration && (
@@ -97,7 +97,7 @@ export const AddonsCard: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <Markdown markdown={addon.description} />
+                <Markdown markdown={addon.description} prose="simple" />
               </CardContent>
             </Card>
           );

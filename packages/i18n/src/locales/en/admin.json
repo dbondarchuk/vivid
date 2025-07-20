@@ -1142,6 +1142,26 @@
           "changesSaved": "Your changes were saved.",
           "requestError": "There was a problem with your request."
         }
+      },
+      "colors": {
+        "default": "Default",
+        "custom": "Custom Color",
+        "background": "Background",
+        "foreground": "Text",
+        "card": "Card",
+        "card-foreground": "Card Text",
+        "popover": "Popover",
+        "popover-foreground": "Popover Text",
+        "primary": "Primary",
+        "primary-foreground": "Primary Text",
+        "secondary": "Secondary",
+        "secondary-foreground": "Secondary Text",
+        "muted": "Muted",
+        "muted-foreground": "Muted Text",
+        "accent": "Accent",
+        "accent-foreground": "Accent Text",
+        "destructive": "Destructive",
+        "destructive-foreground": "Destructive Text"
       }
     },
     "footer": {

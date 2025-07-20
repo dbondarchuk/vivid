@@ -143,49 +143,51 @@ export const FormCard: React.FC = () => {
     <Form {...form}>
       <form onSubmit={() => {}} className="space-y-8">
         <CardWithAppointmentInformation title="form_title_label">
-          {fields.map((field) => (
-            <React.Fragment key={field.name}>
-              {fieldsComponentMap()[field.type](field, form.control)}
-            </React.Fragment>
-          ))}
+          <div className="flex flex-col gap-2">
+            {fields.map((field) => (
+              <React.Fragment key={field.name}>
+                {fieldsComponentMap()[field.type](field, form.control)}
+              </React.Fragment>
+            ))}
 
-          {showPromoCode && (
-            <FormItem>
-              <Label htmlFor="promo-code">{i18n("form_promo_code")}</Label>
-              <div className="flex flex-row gap-2">
-                <Input
-                  className="w-full flex-1"
-                  value={promoCode}
-                  onChange={(e) => {
-                    setPromoCode(e.target.value);
-                    setPromoCodeError(undefined);
+            {showPromoCode && (
+              <FormItem>
+                <Label htmlFor="promo-code">{i18n("form_promo_code")}</Label>
+                <div className="flex flex-row gap-2">
+                  <Input
+                    className="w-full flex-1"
+                    value={promoCode}
+                    onChange={(e) => {
+                      setPromoCode(e.target.value);
+                      setPromoCodeError(undefined);
 
-                    setDiscount(undefined);
-                  }}
-                />
-                <Button
-                  variant="outline"
-                  onClick={() => applyPromoCode()}
-                  disabled={!promoCode}
+                      setDiscount(undefined);
+                    }}
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => applyPromoCode()}
+                    disabled={!promoCode}
+                  >
+                    {isLoading && <Spinner />} {i18n("apply")}
+                  </Button>
+                </div>
+                <p
+                  className={cn(
+                    "text-sm font-medium",
+                    promoCodeError ? "text-destructive" : "text-green-700"
+                  )}
                 >
-                  {isLoading && <Spinner />} {i18n("apply")}
-                </Button>
-              </div>
-              <p
-                className={cn(
-                  "text-sm font-medium",
-                  promoCodeError ? "text-destructive" : "text-green-700"
-                )}
-              >
-                {!!promoCodeError && i18n(promoCodeError)}
-                {discount &&
-                  i18n("promo_code_success", {
-                    code: discount.code,
-                    discount: formatAmountString(discountAmount),
-                  })}
-              </p>
-            </FormItem>
-          )}
+                  {!!promoCodeError && i18n(promoCodeError)}
+                  {discount &&
+                    i18n("promo_code_success", {
+                      code: discount.code,
+                      discount: formatAmountString(discountAmount),
+                    })}
+                </p>
+              </FormItem>
+            )}
+          </div>
         </CardWithAppointmentInformation>
       </form>
     </Form>

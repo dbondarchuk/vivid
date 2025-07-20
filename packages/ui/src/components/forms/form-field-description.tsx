@@ -7,7 +7,7 @@ export const FormFieldDescription: React.FC<{
 }> = ({ description, className }) => {
   return description ? (
     <FormDescription className={className}>
-      <Markdown markdown={description} />
+      <Markdown markdown={description} prose="none" />
     </FormDescription>
   ) : null;
 };

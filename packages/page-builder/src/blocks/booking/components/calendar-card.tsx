@@ -154,7 +154,7 @@ export const CalendarCard: React.FC = () => {
   return (
     <div className="relative text-center">
       <div className="mb-3">
-        <h2>{i18n("select_date_time_label")}</h2>
+        <h2 className="text-xl">{i18n("select_date_time_label")}</h2>
       </div>
       <div className="mb-3 flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4 md:gap-10 not-prose">

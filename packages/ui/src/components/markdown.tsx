@@ -16,6 +16,7 @@ export const Markdown: React.FC<MarkdownProps> = ({
   return (
     <div
       className={cn(
+        "text-foreground text-[var(--value-foreground-color)]",
         prose === "prose" &&
           "[&_p]:py-4 [&_li]:list-inside [&_li]:pl-8 [&_ul_li]:list-disc prose prose-slate",
         prose === "simple" && "prose prose-slate",

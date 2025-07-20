@@ -51,39 +51,41 @@ export const AppointmentsCard: React.FC<AppointmentsCardProps> = ({
             role="button"
           >
             <CardHeader id={`option-${option._id}`}>
-              <CardTitle>{option.name}</CardTitle>
-              <CardDescription className="flex flex-col gap-2">
-                <div
-                  className="flex flex-row items-center"
-                  aria-label={
-                    option.duration
-                      ? i18n(
-                          "form_duration_hour_minutes_label_format",
-                          durationToTime(option.duration)
-                        )
-                      : i18n("custom_duration_label_format")
-                  }
-                >
-                  <Timer className="mr-1" />
-                  {option.duration
-                    ? i18n(
-                        "duration_hour_min_format",
-                        durationToTime(option.duration)
-                      )
-                    : i18n("duration_custom")}
-                </div>
-                {!!option.price && (
+              <div className="flex flex-col grow gap-2">
+                <CardTitle>{option.name}</CardTitle>
+                <CardDescription className="flex flex-col gap-2">
                   <div
                     className="flex flex-row items-center"
-                    aria-label={i18n("form_price_label_format", {
-                      price: option.price.toFixed(2).replace(/\.00$/, ""),
-                    })}
+                    aria-label={
+                      option.duration
+                        ? i18n(
+                            "form_duration_hour_minutes_label_format",
+                            durationToTime(option.duration)
+                          )
+                        : i18n("custom_duration_label_format")
+                    }
                   >
-                    <DollarSign className="mr-1" aria-label="" />
-                    {option.price.toFixed(2).replace(/\.00$/, "")}
+                    <Timer className="mr-1" />
+                    {option.duration
+                      ? i18n(
+                          "duration_hour_min_format",
+                          durationToTime(option.duration)
+                        )
+                      : i18n("duration_custom")}
                   </div>
-                )}
-              </CardDescription>
+                  {!!option.price && (
+                    <div
+                      className="flex flex-row items-center"
+                      aria-label={i18n("form_price_label_format", {
+                        price: option.price.toFixed(2).replace(/\.00$/, ""),
+                      })}
+                    >
+                      <DollarSign className="mr-1" aria-label="" />
+                      {option.price.toFixed(2).replace(/\.00$/, "")}
+                    </div>
+                  )}
+                </CardDescription>
+              </div>
             </CardHeader>
             <CardContent>
               <Markdown markdown={option.description} prose="simple" />

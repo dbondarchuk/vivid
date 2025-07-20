@@ -15,7 +15,7 @@ export const getDefaults = (
     value: 1,
     unit: "rem",
   },
-  color: "var(--foreground)",
+  color: "var(--value-foreground-color)",
   padding: {
     top: {
       value: 0,

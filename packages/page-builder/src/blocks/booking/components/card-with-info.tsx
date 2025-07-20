@@ -48,7 +48,7 @@ export const CardWithAppointmentInformation: React.FC<
 
   return (
     <div className="py-4 not-prose">
-      <div className="mb-3 grid md:grid-cols-3 gap-2 ">
+      <div className="mb-3 grid md:grid-cols-3 gap-4 md:gap-2 ">
         <div className="grid md:col-span-1 md:pr-5 md:flex gap-3 md:flex-col">
           <div className="flex items-center">
             <Calendar className="mr-1" />
@@ -88,7 +88,7 @@ export const CardWithAppointmentInformation: React.FC<
         </div>
         <div className="md:col-span-2 md:pr-2 sm:mb-3">
           <div className="mb-3">
-            <h2 className="mt-0">{i18n(title)}</h2>
+            <h2 className="mt-0 text-xl">{i18n(title)}</h2>
           </div>
 
           {children}
