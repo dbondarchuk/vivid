@@ -1,4 +1,3 @@
-import { Footer } from "@/components/web/footer";
 import { SonnerToaster, Toaster } from "@vivid/ui";
 
 import { Resource } from "@vivid/types";
