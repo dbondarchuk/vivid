@@ -1,12 +1,12 @@
 "use client";
 
-import { ConfigurationProps, PageInput, TextInput } from "@vivid/builder";
+import { ConfigurationProps, PageInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Combobox, Label } from "@vivid/ui";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
-import { ButtonProps, ButtonPropsDefaults } from "./schema";
-import { styles } from "./styles";
+import { ButtonDefaultTarget, ButtonDefaultUrl, ButtonProps } from "./schema";
 import { buttonShortcuts } from "./shortcuts";
+import { styles } from "./styles";
 
 export const ButtonConfiguration = ({
   data,
@@ -17,9 +17,20 @@ export const ButtonConfiguration = ({
   const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as ButtonProps);
 
-  const text = data.props?.text ?? ButtonPropsDefaults.props.text;
-  const url = data.props?.url ?? ButtonPropsDefaults.props.url;
-  const target = data.props?.target ?? ButtonPropsDefaults.props.target;
+  const url = data.props?.url ?? ButtonDefaultUrl;
+  const target = data.props?.target ?? ButtonDefaultTarget;
+
+  // // Create icon options for the combobox
+  // const iconOptions = Object.keys(icons).map((iconName) => ({
+  //   value: iconName,
+  //   label: (
+  //     <div className="flex flex-row gap-2 items-center">
+  //       {/* @ts-expect-error - icons is a dynamic object */}
+  //       {createElement(icons[iconName], { size: 16 })}
+  //       <span>{iconName}</span>
+  //     </div>
+  //   ),
+  // }));
 
   return (
     <StylesConfigurationPanel
@@ -61,8 +72,32 @@ export const ButtonConfiguration = ({
             value={target}
             size="sm"
             className="w-full"
+            onItemSelect={(value) =>
+              updateData({ ...data, props: { ...data.props, target: value } })
+            }
           />
         </div>
+        {/* <div className="flex flex-col gap-2">
+          <Label>{t("pageBuilder.blocks.button.prefixIcon")}</Label>
+          <Combobox
+            values={[
+              { value: "", label: t("pageBuilder.blocks.button.noIcon") },
+              ...iconOptions,
+            ]}
+            value={prefixIcon ?? ""}
+            size="sm"
+            className="w-full"
+            onItemSelect={(value) =>
+              updateData({
+                ...data,
+                props: {
+                  ...data.props,
+                  prefixIcon: value === "" ? null : value,
+                },
+              })
+            }
+          />
+        </div> */}
       </>
     </StylesConfigurationPanel>
   );

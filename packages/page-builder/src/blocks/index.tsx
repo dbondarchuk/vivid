@@ -1,3 +1,4 @@
+"use client";
 import {
   EditorDocumentBlocksDictionary,
   generateId,
@@ -13,6 +14,7 @@ import {
   Image,
   Layout,
   LetterText,
+  Link,
   RectangleHorizontal,
   Repeat2,
   ShieldQuestion,
@@ -21,6 +23,8 @@ import {
   Text,
   Zap,
   ChevronDown,
+  Copy,
+  Star,
 } from "lucide-react";
 import {
   AccordionConfiguration,
@@ -40,6 +44,12 @@ import {
   ButtonPropsDefaults,
   ButtonToolbar,
 } from "./button";
+import {
+  LinkConfiguration,
+  LinkEditor,
+  LinkPropsDefaults,
+  LinkToolbar,
+} from "./link";
 
 import {
   BookingConfiguration,
@@ -81,6 +91,12 @@ import {
   HeadingPropsDefaults,
   HeadingToolbar,
 } from "./heading";
+import {
+  IconConfiguration,
+  IconEditor,
+  IconPropsDefaults,
+  IconToolbar,
+} from "./icon";
 import {
   ImageConfiguration,
   ImageEditor,
@@ -138,6 +154,10 @@ import {
   YouTubeVideoToolbar,
 } from "./youtube-video";
 import { SpacerEditor } from "./spacer/editor";
+import { SimpleContainerEditor } from "./simple-container/editor";
+import { SimpleContainerConfiguration } from "./simple-container/configuration";
+import { SimpleContainerToolbar } from "./simple-container/toolbar";
+import { SimpleContainerPropsDefaults } from "./simple-container/schema";
 
 export const EditorBlocks: EditorDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -160,6 +180,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: ButtonPropsDefaults,
     category: "pageBuilder.blocks.categories.buttons",
   },
+  Link: {
+    displayName: "pageBuilder.blocks.link.displayName",
+    icon: <Link />,
+    Editor: LinkEditor,
+    Configuration: LinkConfiguration,
+    Toolbar: LinkToolbar,
+    defaultValue: LinkPropsDefaults,
+    category: "pageBuilder.blocks.categories.buttons",
+  },
   Heading: {
     displayName: "pageBuilder.blocks.heading.displayName",
     icon: <Heading />,
@@ -177,6 +206,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: TextToolbar,
     defaultValue: TextPropsDefaults,
     category: "pageBuilder.blocks.categories.text",
+  },
+  Icon: {
+    displayName: "pageBuilder.blocks.icon.displayName",
+    icon: <Star />,
+    Editor: IconEditor,
+    Configuration: IconConfiguration,
+    Toolbar: IconToolbar,
+    defaultValue: IconPropsDefaults,
+    category: "pageBuilder.blocks.categories.objects",
   },
   // Divider: {
   //   displayName: "Divider",
@@ -330,6 +368,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     defaultValue: AccordionItemPropsDefaults,
     category: "pageBuilder.blocks.categories.layout",
     allowedIn: ["Accordion"],
+  },
+  SimpleContainer: {
+    displayName: "pageBuilder.blocks.simpleContainer.displayName",
+    icon: <Copy />,
+    Editor: SimpleContainerEditor,
+    Configuration: SimpleContainerConfiguration,
+    Toolbar: SimpleContainerToolbar,
+    defaultValue: SimpleContainerPropsDefaults,
+    category: "pageBuilder.blocks.categories.layout",
   },
 };
 

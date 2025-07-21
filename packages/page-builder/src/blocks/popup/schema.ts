@@ -2,6 +2,7 @@ import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import z from "zod";
 import { COLORS } from "../../style";
 import { ButtonPropsDefaults } from "../button";
+import { SimpleContainerPropsDefaults } from "../simple-container/schema";
 import { zStyles } from "./styles";
 
 export const showPopupType = ["always", "one-time"] as const;
@@ -28,200 +29,219 @@ export const PopupPropsSchema = z.object({
 export type PopupProps = z.infer<typeof PopupPropsSchema>;
 export type PopupReaderProps = BaseReaderBlockProps<any> & PopupProps;
 
-export const PopupPropsDefaults = {
-  style: {
-    padding: [
-      {
-        value: {
-          top: { value: 1, unit: "rem" },
-          right: { value: 1.5, unit: "rem" },
-          bottom: { value: 1, unit: "rem" },
-          left: { value: 1.5, unit: "rem" },
-        },
-      },
-    ],
-    maxWidth: [
-      {
-        value: {
-          value: 30,
-          unit: "rem",
-        },
-      },
-    ],
-    width: [
-      {
-        value: {
-          value: 100,
-          unit: "%",
-        },
-      },
-    ],
-    backgroundColor: [
-      {
-        value: COLORS.background.value,
-      },
-    ],
-    borderRadius: [
-      {
-        value: { value: 0.5, unit: "rem" },
-      },
-    ],
-    gap: [
-      {
-        value: {
-          value: 0.5,
-          unit: "rem",
-        },
-      },
-    ],
-  },
-  props: {
-    show: "always",
-    title: {
-      children: [
+export const PopupPropsDefaults = () =>
+  ({
+    style: {
+      padding: [
         {
-          type: "SimpleText",
-          data: {
-            props: {
-              text: "Popup title",
-            },
-            style: {},
+          value: {
+            top: { value: 1, unit: "rem" },
+            right: { value: 1.5, unit: "rem" },
+            bottom: { value: 1, unit: "rem" },
+            left: { value: 1.5, unit: "rem" },
           },
-          id: generateId(),
+        },
+      ],
+      maxWidth: [
+        {
+          value: {
+            value: 30,
+            unit: "rem",
+          },
+        },
+      ],
+      width: [
+        {
+          value: {
+            value: 100,
+            unit: "%",
+          },
+        },
+      ],
+      backgroundColor: [
+        {
+          value: COLORS.background.value,
+        },
+      ],
+      borderRadius: [
+        {
+          value: { value: 0.5, unit: "rem" },
+        },
+      ],
+      gap: [
+        {
+          value: {
+            value: 0.5,
+            unit: "rem",
+          },
         },
       ],
     },
-    content: {
-      children: [
-        {
-          type: "Container",
-          data: {
-            props: {
-              children: [
-                // {
-                //   type: "Text",
-                //   data: {
-                //     props: {
-                //       value: "Popup content",
-                //     },
-                //     style: {
-                //       fontFamily: [
-                //         {
-                //           value: "PRIMARY",
-                //         },
-                //       ],
-                //       fontSize: [
-                //         {
-                //           value: { value: 0.8, unit: "rem" },
-                //         },
-                //       ],
-                //     },
-                //     id: generateId(),
-                //   },
-                // },
-              ],
-            },
-            style: {
-              display: [
-                {
-                  value: "flex",
-                },
-              ],
-              flexDirection: [
-                {
-                  value: "column",
-                },
-              ],
-              justifyContent: [
-                {
-                  value: "flex-start",
-                },
-              ],
-              alignItems: [
-                {
-                  value: "flex-start",
-                },
-              ],
+    props: {
+      show: "always",
+      title: {
+        children: [
+          {
+            type: "SimpleText",
+            data: {
+              props: {
+                text: "Popup title",
+              },
+              style: {},
             },
             id: generateId(),
           },
-          id: generateId(),
-        },
-      ],
-    },
-    subtitle: {
-      children: [
-        {
-          type: "SimpleText",
-          data: {
-            props: {
-              text: "Popup subtitle",
+        ],
+      },
+      content: {
+        children: [
+          {
+            type: "Container",
+            data: {
+              props: {
+                children: [
+                  // {
+                  //   type: "Text",
+                  //   data: {
+                  //     props: {
+                  //       value: "Popup content",
+                  //     },
+                  //     style: {
+                  //       fontFamily: [
+                  //         {
+                  //           value: "PRIMARY",
+                  //         },
+                  //       ],
+                  //       fontSize: [
+                  //         {
+                  //           value: { value: 0.8, unit: "rem" },
+                  //         },
+                  //       ],
+                  //     },
+                  //     id: generateId(),
+                  //   },
+                  // },
+                ],
+              },
+              style: {
+                display: [
+                  {
+                    value: "flex",
+                  },
+                ],
+                flexDirection: [
+                  {
+                    value: "column",
+                  },
+                ],
+                justifyContent: [
+                  {
+                    value: "flex-start",
+                  },
+                ],
+                alignItems: [
+                  {
+                    value: "flex-start",
+                  },
+                ],
+              },
+              id: generateId(),
             },
-            style: {},
+            id: generateId(),
           },
-          id: generateId(),
-        },
-      ],
-    },
-    buttons: {
-      children: [
-        {
-          type: "Container",
-          data: {
-            props: {
-              children: [
-                {
-                  type: "Button",
-                  data: {
-                    props: {
-                      text: "Click me",
-                      url: "/",
+        ],
+      },
+      subtitle: {
+        children: [
+          {
+            type: "SimpleText",
+            data: {
+              props: {
+                text: "Popup subtitle",
+              },
+              style: {},
+            },
+            id: generateId(),
+          },
+        ],
+      },
+      buttons: {
+        children: [
+          {
+            type: "Container",
+            data: {
+              props: {
+                children: [
+                  {
+                    type: "Button",
+                    data: {
+                      props: {
+                        children: [
+                          {
+                            type: "SimpleContainer",
+                            id: generateId(),
+                            data: {
+                              style: SimpleContainerPropsDefaults.style,
+                              props: {
+                                children: [
+                                  {
+                                    type: "SimpleText",
+                                    id: generateId(),
+                                    data: {
+                                      props: { text: "Click me" },
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                      style: ButtonPropsDefaults().style,
                     },
-                    style: ButtonPropsDefaults.style,
+                    id: generateId(),
                   },
-                  id: generateId(),
-                },
-              ],
-            },
-            style: {
-              display: [
-                {
-                  value: "flex",
-                },
-              ],
-              flexDirection: [
-                {
-                  value: "column",
-                },
-                {
-                  value: "row",
-                  breakpoint: ["sm"],
-                },
-              ],
-              justifyContent: [
-                {
-                  value: "center",
-                },
-              ],
-              alignItems: [
-                {
-                  value: "center",
-                },
-              ],
-              gap: [
-                {
-                  value: {
-                    value: 1,
-                    unit: "rem",
+                ],
+              },
+              style: {
+                display: [
+                  {
+                    value: "flex",
                   },
-                },
-              ],
+                ],
+                flexDirection: [
+                  {
+                    value: "column",
+                  },
+                  {
+                    value: "row",
+                    breakpoint: ["sm"],
+                  },
+                ],
+                justifyContent: [
+                  {
+                    value: "center",
+                  },
+                ],
+                alignItems: [
+                  {
+                    value: "center",
+                  },
+                ],
+                gap: [
+                  {
+                    value: {
+                      value: 1,
+                      unit: "rem",
+                    },
+                  },
+                ],
+              },
+              id: generateId(),
             },
             id: generateId(),
           },
-          id: generateId(),
-        },
-      ],
+        ],
+      },
     },
-  },
-} as const satisfies PopupProps;
+  }) as const satisfies PopupProps;

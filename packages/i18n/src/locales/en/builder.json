@@ -22,6 +22,7 @@
         "title": "Viewport size",
         "original": "Original",
         "desktop": "Desktop",
+        "largeDesktop": "Large Desktop",
         "laptop": "Laptop",
         "tablet": "Tablet",
         "mobile": "Mobile",
@@ -30,6 +31,7 @@
       "errors": "There are {count, plural, =1 {1 issue} other {# issues}} in the document",
       "noErrors": "Awesome! No issues found!",
       "preview": "Preview",
+      "fullScreen": "Full screen",
       "context": "View context",
       "contextValues": "Context values",
       "contextValuesDescription": "The context values are the values that are available to the template. They are the values that are passed to the template when it is rendered.",
@@ -149,6 +151,7 @@
         "inline": "Inline",
         "inline-block": "Inline Block",
         "flex": "Flex",
+        "inline-flex": "Inline Flex",
         "grid": "Grid",
         "none": "None"
       },
@@ -619,11 +622,30 @@
           "center": "Center"
         },
         "errors": {
-          "text": "Text is required"
+          "text": "Text is required",
+          "icon": "Icon is required"
         },
+        "prefixIcon": "Prefix Icon",
+        "suffixIcon": "Suffix Icon",
+        "noIcon": "No Icon",
         "variant": "Variant",
         "disabled": "Disabled",
         "borderRadius": "Border Radius"
+      },
+      "link": {
+        "displayName": "Link",
+        "url": "URL",
+        "target": "Target",
+        "targets": {
+          "_self": "Current tab",
+          "_blank": "New tab"
+        },
+        "style": "Style",
+        "styles": {
+          "default": "Default",
+          "button": "Button Style",
+          "minimal": "Minimal"
+        }
       },
       "image": {
         "displayName": "Image",
@@ -792,14 +814,31 @@
           "baseline": "Baseline"
         }
       },
+      "simpleContainer": {
+        "displayName": "Simple Container"
+      },
+      "icon": {
+        "displayName": "Icon",
+        "size": "Size",
+        "width": "Width",
+        "height": "Height",
+        "icon": "Icon",
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "xlarge": "Extra Large",
+          "xxlarge": "2X Large"
+        }
+      },
       "carousel": {
         "displayName": "Carousel",
-        "items": "Items per screen",
-        "itemsSm": "Items per screen (sm)",
-        "itemsMd": "Items per screen (md)",
-        "itemsLg": "Items per screen (lg)",
-        "itemsXl": "Items per screen (xl)",
-        "items2Xl": "Items per screen (2xl)",
+        "orientation": {
+          "label": "Orientation",
+          "horizontal": "Horizontal",
+          "vertical": "Vertical"
+        },
+        "navigation": "Navigation",
         "loop": "Loop",
         "autoPlay": "Auto play",
         "autoPlaySpeed": "Auto Play Speed",

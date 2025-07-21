@@ -19,14 +19,17 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         label: "pageBuilder.blocks.button.widths.auto",
         value: "auto",
         targetStyles: {
-          width: "min-content",
+          width: "max-content",
         },
       },
       {
         label: "pageBuilder.blocks.button.widths.full",
         value: "full",
         targetStyles: {
-          width: "fill",
+          width: {
+            value: 100,
+            unit: "%",
+          },
         },
       },
     ],
@@ -129,7 +132,7 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
         label: "pageBuilder.blocks.button.alignments.left",
         value: "left",
         targetStyles: {
-          display: "inline-block",
+          display: "inline",
           margin: (prev) => ({
             top: prev?.top ?? "auto",
             right: {

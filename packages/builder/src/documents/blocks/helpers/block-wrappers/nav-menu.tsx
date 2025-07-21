@@ -23,6 +23,8 @@ type Props = {
   disable?: BlockDisableOptions;
 };
 
+const MAX_DISPLAY_LAST_ELEMENTS = 3;
+
 export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
@@ -94,12 +96,18 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
           <ToolbarGroup>
             <ToolbarButton
               tooltip={t("baseBuilder.navMenu.moveUp")}
-              onClick={() => handleMoveClick("up")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleMoveClick("up");
+              }}
             >
               <ArrowUp fontSize="small" />
             </ToolbarButton>
             <ToolbarButton
-              onClick={() => handleMoveClick("down")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleMoveClick("down");
+              }}
               tooltip={t("baseBuilder.navMenu.moveDown")}
             >
               <ArrowDown fontSize="small" />
@@ -110,7 +118,10 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
           <ToolbarGroup>
             {!disable?.clone && (
               <ToolbarButton
-                onClick={handleCloneClick}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCloneClick();
+                }}
                 tooltip={t("baseBuilder.navMenu.clone")}
               >
                 <Copy fontSize="small" />
@@ -118,7 +129,10 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
             )}
             {!disable?.delete && (
               <ToolbarButton
-                onClick={handleDeleteClick}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick();
+                }}
                 tooltip={t("baseBuilder.navMenu.delete")}
               >
                 <Trash fontSize="small" />
@@ -134,18 +148,42 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
         <Breadcrumb aria-label="breadcrumb">
           <BreadcrumbList className="gap-0.5 sm:gap-0.5 text-xs text-foreground">
             {hierarchy?.map(({ id, displayName }, index) => {
+              // Show first element, last two elements, and "..." for middle elements
+              const shouldShow =
+                index === 0 ||
+                index >= hierarchy.length - MAX_DISPLAY_LAST_ELEMENTS;
+              const isMiddleElement =
+                !shouldShow &&
+                index > 0 &&
+                index < hierarchy.length - MAX_DISPLAY_LAST_ELEMENTS;
+              const isLastMiddleElement =
+                isMiddleElement &&
+                index === hierarchy.length - (MAX_DISPLAY_LAST_ELEMENTS + 1);
+
+              if (isMiddleElement && !isLastMiddleElement) {
+                return null; // Skip middle elements except the last one
+              }
+
               return (
                 <React.Fragment key={index}>
-                  <span
-                    className="hover:underline cursor-pointer "
-                    role="link"
-                    onClick={(event) => handleBlockIdClick(event, id)}
-                    key={id}
-                  >
-                    {t(displayName)}
-                  </span>
-                  {index < hierarchy.length - 1 && (
-                    <BreadcrumbSeparator className="hidden md:block  [&>svg]:size-3">
+                  {isLastMiddleElement ? (
+                    <>
+                      <span className="text-muted-foreground">...</span>
+                      <BreadcrumbSeparator className="hidden md:block [&>svg]:size-3">
+                        <Slash />
+                      </BreadcrumbSeparator>
+                    </>
+                  ) : (
+                    <span
+                      className="hover:underline cursor-pointer"
+                      role="link"
+                      onClick={(event) => handleBlockIdClick(event, id)}
+                    >
+                      {t(displayName)}
+                    </span>
+                  )}
+                  {index < hierarchy.length - 1 && shouldShow && (
+                    <BreadcrumbSeparator className="hidden md:block [&>svg]:size-3">
                       <Slash />
                     </BreadcrumbSeparator>
                   )}

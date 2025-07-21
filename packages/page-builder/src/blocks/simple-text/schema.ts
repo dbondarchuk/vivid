@@ -7,7 +7,7 @@ export const SimpleTextPropsSchema = z.object({
   props: z
     .object({
       text: z.string().optional().nullable(),
-      url: z.string().optional().nullable(),
+      // url: z.string().optional().nullable(),
     })
     .optional()
     .nullable(),

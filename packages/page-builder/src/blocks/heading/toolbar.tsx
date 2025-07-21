@@ -9,7 +9,11 @@ import {
   Heading6,
 } from "lucide-react";
 import { ShortcutsToolbar } from "../../toolbars/shortucts";
-import { HeadingProps, HeadingPropsDefaults } from "./schema";
+import {
+  DefaultHeadingLevel,
+  HeadingProps,
+  HeadingPropsDefaults,
+} from "./schema";
 import { headingShortcuts } from "./shortcuts";
 
 export const HeadingToolbar = (props: ConfigurationProps<HeadingProps>) => {
@@ -52,7 +56,7 @@ export const HeadingToolbar = (props: ConfigurationProps<HeadingProps>) => {
     <>
       <ToolbarDropdownMenu
         items={levelItems}
-        defaultValue={HeadingPropsDefaults.props.level}
+        defaultValue={DefaultHeadingLevel}
         property="props.level"
         tooltip={t("pageBuilder.blocks.heading.level")}
         {...props}

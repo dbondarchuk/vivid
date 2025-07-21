@@ -4,55 +4,31 @@ import React, { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
 import {
+  EditorBlock,
   useCurrentBlock,
   useDispatchAction,
   useEditorArgs,
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { ArgumentsAutocomplete, cn } from "@vivid/ui";
+import { icons } from "lucide-react";
 import { BlockStyle } from "../../helpers/styling";
 import { ButtonProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 import { generateClassName } from "../../helpers/class-name-generator";
+import { EditorChildren } from "@vivid/builder";
+
+const disable = {
+  disableMove: true,
+  disableDelete: true,
+  disableClone: true,
+  disableDrag: true,
+};
 
 export const ButtonEditor = ({ props, style }: ButtonProps) => {
-  const ref = useRef<HTMLInputElement>(null);
-  const args = useEditorArgs();
   const currentBlock = useCurrentBlock<ButtonProps>();
-  const value = currentBlock?.data?.props?.text;
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
+  const content = currentBlock?.data?.props?.children?.[0];
   const base = currentBlock.base;
-
-  const sanitizeConf = {
-    allowedTags: [],
-    allowedAttributes: {},
-  };
-
-  const onChange = (value: string) => {
-    dispatchAction({
-      type: "set-block-data",
-      value: {
-        blockId: currentBlock.id,
-        data: {
-          ...currentBlock.data,
-          props: {
-            ...currentBlock.data?.props,
-            text: sanitizeHtml(value, sanitizeConf),
-          },
-        },
-      },
-    });
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    const { key } = e;
-    if (key === "Enter") {
-      e.preventDefault();
-      ref?.current?.blur();
-      setSelectedBlockId(null);
-    }
-  };
 
   const className = generateClassName();
   const defaults = getDefaults({ props, style }, true);
@@ -66,27 +42,11 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         defaults={defaults}
         isEditor
       />
-      <ArgumentsAutocomplete
-        ref={ref}
-        args={args}
-        asContentEditable
-        element="a"
-        className={cn(
-          "border-0 bg-transparent focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
-          className,
-          base?.className
+      <span className={cn(className, base?.className)} id={base?.id}>
+        {content && (
+          <EditorBlock key={content?.id} block={content} {...disable} />
         )}
-        value={value ?? "Button"}
-        placeholder="Button"
-        onChange={onChange}
-        onKeyDown={handleKeyPress}
-        id={base?.id}
-        style={{
-          // @ts-expect-error - TODO: remove this once we have a proper solution for this
-          fieldSizing: "content",
-        }}
-        // asContentEditable
-      />
+      </span>
     </>
   );
 };

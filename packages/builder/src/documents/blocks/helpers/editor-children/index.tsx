@@ -37,13 +37,20 @@ export type EditorChildrenProps<T extends BaseZodDictionary = any> = {
   property: string;
   hidePrefixAddBlockButton?: boolean;
   maxChildren?: number;
-  allowOnly?: keyof T | keyof T[];
+  allowOnly?: keyof T | (keyof T)[];
   onChange: (val: EditorChildrenChange) => void;
   id?: string;
   className?: string;
   style?: React.CSSProperties;
   disabledDroppable?: boolean;
-  childWrapper?: (props: { children: React.ReactNode }) => React.ReactNode;
+  addButtonSize?: "small" | "default";
+  childWrapper?: (props: {
+    children: React.ReactNode;
+    className?: string;
+    style?: React.CSSProperties;
+    ref?: React.Ref<HTMLDivElement>;
+    id?: string;
+  }) => React.ReactNode;
   childrenWrapper?: (props: {
     children: React.ReactNode;
     className?: string;
@@ -75,7 +82,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
   block,
   hidePrefixAddBlockButton,
   maxChildren,
-  allowOnly,
+  allowOnly: propAllowOnly,
   id,
   className,
   style,
@@ -83,12 +90,23 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
   childWrapper,
   childrenWrapper,
   additionalProps,
+  addButtonSize,
 }: EditorChildrenProps<T>) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
   const draggingBlock = useActiveDragBlock();
   const blocks = useBlocks();
   const { body } = usePortalContext();
+
+  const allowOnly = useMemo(
+    () =>
+      propAllowOnly
+        ? Array.isArray(propAllowOnly)
+          ? propAllowOnly
+          : [propAllowOnly]
+        : undefined,
+    [propAllowOnly]
+  );
 
   const appendBlock = (block: TEditorBlock) => {
     setTimeout(() => setSelectedBlockId(block.id), 200);
@@ -129,9 +147,8 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
     propDisabledDroppable ||
     (!isChildActiveDragBlock &&
       ((allowOnly &&
-        (Array.isArray(allowOnly)
-          ? !allowOnly.includes(activeDragBlockType)
-          : activeDragBlockType !== allowOnly)) ||
+        activeDragBlockType &&
+        !allowOnly.includes(activeDragBlockType)) ||
         (!!children?.length &&
           !!maxChildren &&
           children.length >= maxChildren))) ||
@@ -168,12 +185,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
           droppable: disabledDroppable,
         }}
       >
-        {!children || children.length === 0 ? //     /> //       allowOnly={allowOnly} //       contextId={contextId} //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
-        //   </div>
-        // ) : (
-        // ) : null
-        // activeDragBlockType ? (
-        //   <div
+        {!children || children.length === 0 ? //   <div // activeDragBlockType ? ( // ) : null // ) : ( //   </div> //     /> //       allowOnly={allowOnly} //       contextId={contextId} //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
         //     className={cn(
         //       "w-full h-full min-h-20 flex items-center justify-center relative",
         //       isOverDroppable &&
@@ -212,6 +224,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
                         onSelect={(block) => insertBlock(block, i)}
                         allowOnly={allowOnly}
                         currentBlock={block.type}
+                        size={addButtonSize}
                       />
                     )}
                   <ChildWrapper>
@@ -225,33 +238,30 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
             {globalThis.window &&
               "document" in globalThis.window &&
               createPortal(
-                createPortal(
-                  <DragOverlay
-                    dropAnimation={{
-                      duration: 500,
-                      easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
-                    }}
-                    transition="transform 250ms ease"
-                  >
-                    {isChildActiveDragBlock ? (
-                      childWrapper ? (
-                        childWrapper({
-                          children: (
-                            <EditorBlock
-                              block={activeDragBlock.block}
-                              isOverlay
-                              additionalProps={additionalProps}
-                            />
-                          ),
-                        })
-                      ) : (
-                        <EditorBlock block={activeDragBlock.block} isOverlay />
-                      )
-                    ) : null}
-                    {/* </DragOverlay> */}
-                  </DragOverlay>,
-                  body
-                ),
+                <DragOverlay
+                  dropAnimation={{
+                    duration: 500,
+                    easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+                  }}
+                  transition="transform 250ms ease"
+                >
+                  {isChildActiveDragBlock ? (
+                    childWrapper ? (
+                      childWrapper({
+                        children: (
+                          <EditorBlock
+                            block={activeDragBlock.block}
+                            isOverlay
+                            additionalProps={additionalProps}
+                          />
+                        ),
+                      })
+                    ) : (
+                      <EditorBlock block={activeDragBlock.block} isOverlay />
+                    )
+                  ) : null}
+                  {/* </DragOverlay> */}
+                </DragOverlay>,
                 body
               )}
             {/* {(!maxChildren || children.length < maxChildren) &&
@@ -272,6 +282,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
             className="w-auto"
             currentBlock={block.type}
             disabledDroppable={disabledDroppable}
+            size={addButtonSize}
           />
         </ChildWrapper>
       )}

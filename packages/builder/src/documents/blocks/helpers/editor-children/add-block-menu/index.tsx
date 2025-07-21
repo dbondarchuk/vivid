@@ -22,8 +22,9 @@ import { BaseZodDictionary } from "../../../../types";
 
 type Props<T extends BaseZodDictionary = any> = {
   onSelect: (block: TEditorBlock) => void;
-  allowOnly?: keyof T | keyof T[];
+  allowOnly?: (keyof T)[];
   currentBlock: keyof T;
+  size?: "small" | "default";
 } & (
   | {
       disabledDroppable?: boolean;
@@ -41,6 +42,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
   onSelect,
   allowOnly,
   currentBlock,
+  size,
   ...rest
 }: Props<T>) => {
   const [open, setOpen] = React.useState(false);
@@ -96,9 +98,10 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
           isOver={rest.isOver}
           className={rest.className}
           disabledDroppable={rest.disabledDroppable}
+          size={size}
         />
       ) : (
-        <DividerButton />
+        <DividerButton size={size} />
       )}
       <PopoverContent className="sm:w-fit">
         <Command>
@@ -126,7 +129,10 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
                       onSelect={() =>
                         onItemSelect({
                           type: name,
-                          data: defaultValue,
+                          data:
+                            typeof defaultValue === "function"
+                              ? defaultValue()
+                              : defaultValue,
                         })
                       }
                     >

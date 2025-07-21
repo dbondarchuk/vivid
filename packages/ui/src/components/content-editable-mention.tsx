@@ -21,9 +21,9 @@ import { mergeRefs } from "../utils/merge-refs";
 
 const isBrowser = typeof window !== "undefined";
 
-function getCaretPosition(element: HTMLElement) {
+function getCaretPosition(element: HTMLElement, documentElement: Document) {
   if (!isBrowser) return 0;
-  let _range = document.getSelection()?.getRangeAt(0);
+  let _range = documentElement.getSelection()?.getRangeAt(0);
   if (!_range) return 0;
   let range = _range.cloneRange();
   range.selectNodeContents(element);
@@ -31,11 +31,15 @@ function getCaretPosition(element: HTMLElement) {
   return range.toString().length;
 }
 
-function setCaretPosition(element: HTMLElement, position: number) {
+function setCaretPosition(
+  element: HTMLElement,
+  position: number,
+  documentElement: Document
+) {
   if (!isBrowser) return;
 
   const selection = window.getSelection();
-  const range = document.createRange();
+  const range = documentElement.createRange();
 
   let currentPos = 0;
   let found = false;
@@ -68,9 +72,13 @@ function setCaretPosition(element: HTMLElement, position: number) {
   }
 }
 
-function getCurrentWordPos(element: HTMLElement, trigger: string) {
+function getCurrentWordPos(
+  element: HTMLElement,
+  trigger: string,
+  documentElement: Document
+) {
   const text = element.innerText || "";
-  const caretStartIndex = getCaretPosition(element);
+  const caretStartIndex = getCaretPosition(element, documentElement);
 
   // Find the start position of the word
   let start = caretStartIndex;
@@ -91,23 +99,37 @@ function getCurrentWordPos(element: HTMLElement, trigger: string) {
   return { start, end, text };
 }
 
-function getCurrentWord(element: HTMLElement, trigger: string) {
-  const { start, end, text } = getCurrentWordPos(element, trigger);
+function getCurrentWord(
+  element: HTMLElement,
+  trigger: string,
+  documentElement: Document
+) {
+  const { start, end, text } = getCurrentWordPos(
+    element,
+    trigger,
+    documentElement
+  );
   const w = text.substring(start, end);
 
   return w;
 }
 
-function replaceWord(element: HTMLElement, value: string, trigger: string) {
+function replaceWord(
+  element: HTMLElement,
+  value: string,
+  trigger: string,
+  documentElement: Document
+) {
   const { start: startIndex, end: endIndex } = getCurrentWordPos(
     element,
-    trigger
+    trigger,
+    documentElement
   );
 
   // Replace the word with a new word using document.execCommand
   if (startIndex !== undefined && endIndex !== undefined) {
-    const selection = document.getSelection();
-    const range = document.createRange();
+    const selection = documentElement.getSelection();
+    const range = documentElement.createRange();
 
     let currentPos = 0;
     let startNode: Node | null = null;
@@ -152,18 +174,18 @@ function replaceWord(element: HTMLElement, value: string, trigger: string) {
       selection.addRange(range);
 
       // Execute the command to replace the selected text with the new word
-      document.execCommand("insertText", false, value);
+      documentElement.execCommand("insertText", false, value);
     }
   }
 }
 
-function getCaretCoordinates(element: HTMLElement) {
+function getCaretCoordinates(element: HTMLElement, documentElement: Document) {
   let top = 0,
     left = 0,
     height = 0;
-  const isSupported = typeof window.getSelection !== "undefined";
+  const isSupported = typeof documentElement.getSelection !== "undefined";
   if (isSupported) {
-    const selection = window.getSelection();
+    const selection = documentElement.getSelection();
     if (!!selection?.rangeCount) {
       const range = selection.getRangeAt(0).cloneRange();
       range.collapse(true);
@@ -198,6 +220,7 @@ type Props = {
   style?: CSSProperties;
   id?: string;
   placeholder?: string;
+  documentElement?: Document;
 };
 
 export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
@@ -212,6 +235,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
       className,
       element: Tag,
       placeholder,
+      documentElement = document,
       ...rest
     },
     ref
@@ -238,7 +262,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
       const input = inputRef.current;
       const dropdown = dropdownRef.current;
       if (textarea && input && dropdown) {
-        const currentWord = getCurrentWord(textarea, trigger);
+        const currentWord = getCurrentWord(textarea, trigger, documentElement);
         const isDropdownHidden =
           dropdown.classList.contains("hidden") || dropdown.offsetHeight < 10;
         if (currentWord.startsWith(trigger) && !isDropdownHidden) {
@@ -267,15 +291,22 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
 
         // Store cursor position before updating content
         if (htmlElement) {
-          lastCursorPosition.current = getCaretPosition(htmlElement);
+          lastCursorPosition.current = getCaretPosition(
+            htmlElement,
+            documentElement
+          );
         }
 
         // Don't update textContent here - let React handle it
         setTextValue?.(text);
 
         if (htmlElement && dropdown) {
-          const caret = getCaretCoordinates(htmlElement);
-          const currentWord = getCurrentWord(htmlElement, trigger);
+          const caret = getCaretCoordinates(htmlElement, documentElement);
+          const currentWord = getCurrentWord(
+            htmlElement,
+            trigger,
+            documentElement
+          );
           if (currentWord.startsWith(trigger)) {
             setCommandValue(currentWord.substring(trigger.length));
             dropdown.style.left = caret.left + "px";
@@ -300,7 +331,8 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
         replaceWord(
           textarea,
           insertTransform ? insertTransform(value) : `${value.id}`,
-          trigger
+          trigger,
+          documentElement
         );
 
         setCommandValue("");
@@ -319,7 +351,11 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
         const textarea = elementRef.current;
         const dropdown = dropdownRef.current;
         if (textarea && dropdown) {
-          const currentWord = getCurrentWord(textarea, trigger);
+          const currentWord = getCurrentWord(
+            textarea,
+            trigger,
+            documentElement
+          );
           if (!currentWord.startsWith(trigger) && commandValue !== "") {
             setCommandValue("");
             dropdown.classList.add("hidden");
@@ -340,20 +376,23 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
       const dropdown = dropdownRef.current;
       const keyDownHandler = (e: Event) => handleKeyDown(e as KeyboardEvent);
 
-      document.addEventListener("click", toggleInside);
-      document.addEventListener("keyup", toggleInside);
+      documentElement.addEventListener("click", toggleInside);
+      documentElement.addEventListener("keyup", toggleInside);
 
       textarea?.addEventListener("keydown", keyDownHandler);
       textarea?.addEventListener("blur", handleBlur);
-      document?.addEventListener("selectionchange", handleSectionChange);
+      documentElement?.addEventListener("selectionchange", handleSectionChange);
       dropdown?.addEventListener("mousedown", handleMouseDown);
       return () => {
-        document.removeEventListener("click", toggleInside);
-        document.removeEventListener("keyup", toggleInside);
+        documentElement.removeEventListener("click", toggleInside);
+        documentElement.removeEventListener("keyup", toggleInside);
 
         textarea?.removeEventListener("keydown", keyDownHandler);
         textarea?.removeEventListener("blur", handleBlur);
-        document?.removeEventListener("selectionchange", handleSectionChange);
+        documentElement?.removeEventListener(
+          "selectionchange",
+          handleSectionChange
+        );
         dropdown?.removeEventListener("mousedown", handleMouseDown);
       };
     }, [handleBlur, handleKeyDown, handleMouseDown, handleSectionChange]);
@@ -369,7 +408,8 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
           if (lastCursorPosition.current > 0) {
             setCaretPosition(
               elementRef.current,
-              Math.min(lastCursorPosition.current, textValue.length)
+              Math.min(lastCursorPosition.current, textValue.length),
+              documentElement
             );
           }
           isUpdatingContent.current = false;
@@ -382,7 +422,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
         <Tag
           // @ts-ignore ignore
           ref={mergeRefs(ref, elementRef)}
-          contentEditable={true}
+          contentEditable="plaintext-only"
           suppressContentEditableWarning
           className={className}
           placeholder={placeholder}
@@ -401,7 +441,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
             <CommandInput ref={inputRef} value={commandValue} />
           </div>
           <CommandList>
-            <CommandGroup className="max-w-min ">
+            <CommandGroup className="max-w-min font-normal text-left font-primary">
               {data.map((item) => {
                 return (
                   <CommandItem

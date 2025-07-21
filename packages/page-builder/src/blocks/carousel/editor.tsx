@@ -64,7 +64,12 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
       />
       <EditorChildren
         block={currentBlock}
-        className={cn("items-center", className, base?.className)}
+        className={cn(
+          "items-center",
+          props.orientation === "vertical" && "flex-col",
+          className,
+          base?.className
+        )}
         id={base?.id}
         property="props"
         children={children || []}

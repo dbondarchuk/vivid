@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigurationProps, SliderInput } from "@vivid/builder";
+import { ConfigurationProps, SelectInput, SliderInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Checkbox, Label } from "@vivid/ui";
 import { Repeat1 } from "lucide-react";
@@ -26,6 +26,36 @@ export const CarouselConfiguration = ({
       base={base}
       onBaseChange={onBaseChange}
     >
+      {/* TODO: fix support for vertical orientation */}
+      {/* <SelectInput
+        label={t("pageBuilder.blocks.carousel.orientation.label")}
+        options={[
+          {
+            value: "horizontal",
+            label: t("pageBuilder.blocks.carousel.orientation.horizontal"),
+          },
+          {
+            value: "vertical",
+            label: t("pageBuilder.blocks.carousel.orientation.vertical"),
+          },
+        ]}
+        defaultValue={data.props.orientation ?? "horizontal"}
+        onChange={(orientation) =>
+          updateData({ ...data, props: { ...data.props, orientation } })
+        }
+      /> */}
+      <div className="flex items-center gap-2 flex-1">
+        <Checkbox
+          id="navigation"
+          checked={!!data.props.navigation}
+          onCheckedChange={(navigation) =>
+            updateData({ ...data, props: { ...data.props, navigation } })
+          }
+        />
+        <Label htmlFor="navigation">
+          {t("pageBuilder.blocks.carousel.navigation")}
+        </Label>
+      </div>
       <div className="flex items-center gap-2 flex-1">
         <Checkbox
           id="loop"

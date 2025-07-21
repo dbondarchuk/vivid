@@ -2,44 +2,34 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
+import { PageBuilder } from "@vivid/page-builder";
 import {
   getPageFooterSchemaWithUniqueNameCheck,
-  getPageHeaderSchemaWithUniqueNameCheck,
-  LinkMenuItem,
   PageFooter,
-  PageHeader,
-  pageHeaderShadowType,
 } from "@vivid/types";
 import {
   Breadcrumbs,
-  Checkbox,
-  Combobox,
-  Heading,
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  Heading,
   Input,
   SaveButton,
-  Sortable,
-  Switch,
   toastPromise,
-  use12HourFormat,
   useDebounceCacheFn,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import {
   checkUniquePageFooterName,
   createPageFooter,
   updatePageFooter,
 } from "./actions";
-import { PageBuilder } from "@vivid/page-builder";
 
 export const PageFooterForm: React.FC<{
   initialData?: PageFooter;
@@ -47,14 +37,18 @@ export const PageFooterForm: React.FC<{
 }> = ({ initialData, args }) => {
   const t = useI18n("admin");
 
-  const cachedUniqueSlugCheck = useDebounceCacheFn(
+  const cachedUniqueNameCheck = useDebounceCacheFn(
     checkUniquePageFooterName,
     300
   );
 
-  const formSchema = getPageFooterSchemaWithUniqueNameCheck(
-    (slug) => cachedUniqueSlugCheck(slug, initialData?._id),
-    "pages.footers.name.unique"
+  const formSchema = useMemo(
+    () =>
+      getPageFooterSchemaWithUniqueNameCheck(
+        (name) => cachedUniqueNameCheck(name, initialData?._id),
+        "pages.footers.name.unique"
+      ),
+    [cachedUniqueNameCheck, initialData?._id]
   );
 
   type PageFormValues = z.infer<typeof formSchema>;
@@ -68,17 +62,23 @@ export const PageFooterForm: React.FC<{
     defaultValues: initialData || {},
   });
 
-  const breadcrumbItems = [
-    { title: t("assets.dashboard"), link: "/admin/dashboard" },
-    { title: t("pages.title"), link: "/admin/dashboard/pages" },
-    { title: t("pages.footers.title"), link: "/admin/dashboard/pages/footers" },
-    {
-      title: initialData?.name || t("pages.footers.new"),
-      link: initialData?._id
-        ? `/admin/dashboard/pages/footers/${initialData._id}`
-        : "/admin/dashboard/pages/footers/new",
-    },
-  ];
+  const breadcrumbItems = React.useMemo(
+    () => [
+      { title: t("assets.dashboard"), link: "/admin/dashboard" },
+      { title: t("pages.title"), link: "/admin/dashboard/pages" },
+      {
+        title: t("pages.footers.title"),
+        link: "/admin/dashboard/pages/footers",
+      },
+      {
+        title: initialData?.name || t("pages.footers.new"),
+        link: initialData?._id
+          ? `/admin/dashboard/pages/footers/${initialData._id}`
+          : "/admin/dashboard/pages/footers/new",
+      },
+    ],
+    [initialData, t]
+  );
 
   const { setError, trigger } = form;
   const onPageBuilderValidChange = React.useCallback(
@@ -89,6 +89,14 @@ export const PageFooterForm: React.FC<{
             message: t("templates.form.validation.templateNotValid"),
           }),
     [setError, trigger, t]
+  );
+
+  const onChange = React.useCallback(
+    async (value: any) => {
+      form.setValue("content", value);
+      form.trigger("content");
+    },
+    [form]
   );
 
   const onSubmit = async (data: PageFormValues) => {
@@ -115,28 +123,6 @@ export const PageFooterForm: React.FC<{
     } finally {
       setLoading(false);
     }
-  };
-
-  const { fields, append, remove, swap, update } = useFieldArray({
-    control: form.control,
-    name: "menu",
-  });
-
-  const ids = useMemo(() => fields.map((x) => x.id), [fields]);
-
-  const sort = (activeId: string, overId: string) => {
-    const activeIndex = fields.findIndex((x) => x.id === activeId);
-    const overIndex = fields.findIndex((x) => x.id === overId);
-
-    if (activeIndex < 0 || overIndex < 0) return;
-
-    swap(activeIndex, overIndex);
-  };
-
-  const addNew = () => {
-    append({
-      type: "link",
-    } as Partial<LinkMenuItem> as LinkMenuItem);
   };
 
   return (
@@ -185,9 +171,7 @@ export const PageFooterForm: React.FC<{
                     notAllowedBlocks={["Booking", "Popup"]}
                     value={field.value}
                     onIsValidChange={onPageBuilderValidChange}
-                    onChange={(value) => {
-                      field.onChange(value);
-                    }}
+                    onChange={onChange}
                   />
                 </FormControl>
                 <FormMessage />

@@ -30,6 +30,7 @@ export const CarouselReader = ({
           loop: !!props.loop,
           align: "start",
         }}
+        orientation={props.orientation ?? undefined}
         autoPlay={props.autoPlay ? props.autoPlay * 1000 : undefined}
         id={base?.id}
       >
@@ -40,8 +41,12 @@ export const CarouselReader = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-0" />
-        <CarouselNext className="right-0" />
+        {props.navigation && (
+          <>
+            <CarouselPrevious className="left-0" />
+            <CarouselNext className="right-0" />
+          </>
+        )}
       </Carousel>
     </>
   );

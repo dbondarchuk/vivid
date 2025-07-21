@@ -9,6 +9,7 @@ const displayKeys = [
   "inline",
   "inline-block",
   "flex",
+  "inline-flex",
   "grid",
   "none",
 ] as const;

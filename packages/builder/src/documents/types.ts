@@ -34,7 +34,7 @@ export type EditorDocumentBlocksDictionary<T extends BuilderSchema = any> = {
     Editor: React.ComponentType<EditorProps<z.infer<T[K]>>>;
     Configuration: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
     Toolbar?: React.ComponentType<ConfigurationProps<z.infer<T[K]>>>;
-    defaultValue: z.infer<T[K]>;
+    defaultValue: z.infer<T[K]> | (() => z.infer<T[K]>);
     category: BuilderKeys;
     allowedIn?: (keyof T)[];
   };

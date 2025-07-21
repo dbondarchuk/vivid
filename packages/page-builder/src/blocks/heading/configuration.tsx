@@ -3,7 +3,11 @@
 import { ConfigurationProps, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
-import { HeadingProps, HeadingPropsDefaults } from "./schema";
+import {
+  DefaultHeadingLevel,
+  HeadingProps,
+  HeadingPropsDefaults,
+} from "./schema";
 import { headingShortcuts } from "./shortcuts";
 import { styles } from "./styles";
 
@@ -25,17 +29,9 @@ export const HeadingConfiguration = ({
       base={base}
       onBaseChange={onBaseChange}
     >
-      {/* <TextInput
-        label={t("pageBuilder.blocks.heading.content")}
-        rows={3}
-        defaultValue={data.props?.text ?? HeadingPropsDefaults.props.text}
-        onChange={(text) => {
-          updateData({ ...data, props: { ...data.props, text } });
-        }}
-      /> */}
       <SelectInput
         label={t("pageBuilder.blocks.heading.level")}
-        defaultValue={data.props?.level ?? HeadingPropsDefaults.props.level}
+        defaultValue={data.props?.level ?? DefaultHeadingLevel}
         onChange={(level) => {
           updateData({ ...data, props: { ...data.props, level } });
         }}

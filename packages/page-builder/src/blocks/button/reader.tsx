@@ -1,12 +1,13 @@
+import { ReaderBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
-import { ButtonPropsDefaults, ButtonReaderProps } from "./schema";
+import { ButtonDefaultUrl, ButtonReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
-export const Button = ({ props, style, block }: ButtonReaderProps) => {
-  const text = props?.text ?? ButtonPropsDefaults.props.text;
-  const url = props?.url ?? ButtonPropsDefaults.props.url;
+export const Button = ({ props, style, block, ...rest }: ButtonReaderProps) => {
+  const url = props?.url ?? ButtonDefaultUrl;
+  const content = props?.children?.[0];
   const defaults = getDefaults({ props, style }, false);
 
   const className = generateClassName();
@@ -26,7 +27,7 @@ export const Button = ({ props, style, block }: ButtonReaderProps) => {
         className={cn(className, base?.className)}
         id={base?.id}
       >
-        <span>{text}</span>
+        {content && <ReaderBlock key={content.id} {...rest} block={content} />}
       </a>
     </>
   );

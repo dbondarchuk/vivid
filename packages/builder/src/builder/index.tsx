@@ -1,10 +1,11 @@
 "use client";
 
-import { SidebarInset, SidebarProvider } from "@vivid/ui";
+import { cn, SidebarInset, SidebarProvider } from "@vivid/ui";
 import {
   EditorArgsContext,
   EditorStateProvider,
   useEditorStateStore,
+  useFullScreen,
   useResetDocument,
 } from "../documents/editor/context";
 import { TEditorBlock, TEditorConfiguration } from "../documents/editor/core";
@@ -48,6 +49,7 @@ const BuilderInternal = ({
   const resetDocument = useResetDocument();
   const errors = useEditorStateStore((s) => s.errors) || {};
   const isValid = Object.keys(errors).length === 0;
+  const fullScreen = useFullScreen();
 
   useEffect(() => {
     onIsValidChange?.(isValid);
@@ -57,7 +59,10 @@ const BuilderInternal = ({
 
   return (
     <SidebarProvider
-      className="!bg-transparent h-full min-h-full"
+      className={cn(
+        "!bg-transparent h-full min-h-full",
+        fullScreen && "fixed inset-0 z-20"
+      )}
       style={
         {
           "--sidebar-width": `${sidebarWidth}rem`,

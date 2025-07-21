@@ -42,7 +42,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
     isLoading: formIsLoading,
     errors,
     isSubmitted,
-  } = useFormState(form);
+  } = form.formState;
 
   const classes = cva([
     "flex flex-row gap-2 items-center ml-auto self-end fixed bottom-4 right-4 z-50",

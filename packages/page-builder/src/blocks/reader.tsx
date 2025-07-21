@@ -9,6 +9,7 @@ import { ContainerReader } from "./container/reader";
 import { ForeachContainerReader } from "./foreach-container/reader";
 import { GridContainerReader } from "./grid-container/reader";
 import { Heading } from "./heading/reader";
+import { Icon } from "./icon/reader";
 import { Image } from "./image/reader";
 import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
@@ -19,6 +20,8 @@ import { TextReader } from "./text/reader";
 import { Video } from "./video";
 import { SimpleText } from "./simple-text/reader";
 import { YouTubeVideoReader } from "./youtube-video/reader";
+import { SimpleContainerReader } from "./simple-container/reader";
+import { Link } from "./link/reader";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -29,8 +32,14 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   Button: {
     Reader: Button,
   },
+  Link: {
+    Reader: Link,
+  },
   Text: {
     Reader: TextReader,
+  },
+  Icon: {
+    Reader: Icon,
   },
   // Divider: {
   //   Reader: Divider,
@@ -85,5 +94,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   AccordionItem: {
     Reader: AccordionItem,
+  },
+  SimpleContainer: {
+    Reader: SimpleContainerReader,
   },
 };

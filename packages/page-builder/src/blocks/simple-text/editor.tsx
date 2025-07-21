@@ -7,6 +7,7 @@ import {
   useCurrentBlock,
   useDispatchAction,
   useEditorArgs,
+  usePortalContext,
   useSelectedBlockId,
   useSetSelectedBlockId,
 } from "@vivid/builder";
@@ -23,6 +24,8 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
   const value = currentBlock?.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
+
+  const { document } = usePortalContext();
 
   const selectedBlockId = useSelectedBlockId();
   const isSelected = selectedBlockId === currentBlock?.id;
@@ -77,7 +80,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         ref={ref}
         args={args}
         className={cn(
-          "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
+          "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal",
           className,
           base?.className
         )}
@@ -85,8 +88,9 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         onChange={onChange}
         onKeyDown={handleKeyPress}
         asContentEditable
-        element={"div"}
+        element={"span"}
         placeholder="Simple text"
+        documentElement={document}
         style={
           {
             //// @ts-expect-error - TODO: remove this once we have a proper solution for this

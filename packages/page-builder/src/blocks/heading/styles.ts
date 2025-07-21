@@ -1,4 +1,4 @@
-import { HeadingPropsDefaults, type HeadingProps } from "./schema";
+import { DefaultHeadingLevel, type HeadingProps } from "./schema";
 
 import { DefaultCSSProperties } from "../../style/css-renderer";
 import { ALL_STYLES, AllStylesSchemas } from "../../style/styles";
@@ -33,7 +33,7 @@ export const getDefaults = (
   fontWeight: "bold",
   textAlign: "center",
   fontSize: {
-    value: getFontSize(props?.level || HeadingPropsDefaults.props.level),
+    value: getFontSize(props?.level || DefaultHeadingLevel),
     unit: "rem",
   },
 });

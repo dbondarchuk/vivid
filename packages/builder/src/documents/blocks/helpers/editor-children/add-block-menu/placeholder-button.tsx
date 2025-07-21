@@ -9,7 +9,14 @@ export const PlaceholderButton: React.FC<{
   isOver?: boolean;
   className?: string;
   disabledDroppable?: boolean;
-}> = ({ contextId, isOver: isOverProp, className, disabledDroppable }) => {
+  size?: "small" | "default";
+}> = ({
+  contextId,
+  isOver: isOverProp,
+  className,
+  disabledDroppable,
+  size = "default",
+}) => {
   const id = React.useId();
   const draggingBlock = useActiveDragBlock();
 
@@ -39,7 +46,10 @@ export const PlaceholderButton: React.FC<{
         <Button
           size="icon"
           variant="outline"
-          className="text-secondary-foreground"
+          className={cn(
+            "text-secondary-foreground",
+            size === "small" && "w-4 h-4"
+          )}
         >
           <Plus size={16} />
         </Button>

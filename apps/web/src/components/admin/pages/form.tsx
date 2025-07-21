@@ -62,9 +62,13 @@ export const PageForm: React.FC<{
 
   const cachedUniqueSlugCheck = useDebounceCacheFn(checkUniqueSlug, 300);
 
-  const formSchema = getPageSchemaWithUniqueCheck(
-    (slug) => cachedUniqueSlugCheck(slug, initialData?._id),
-    "page.slug.unique"
+  const formSchema = React.useMemo(
+    () =>
+      getPageSchemaWithUniqueCheck(
+        (slug) => cachedUniqueSlugCheck(slug, initialData?._id),
+        "page.slug.unique"
+      ),
+    [cachedUniqueSlugCheck, initialData?._id]
   );
 
   type PageFormValues = z.infer<typeof formSchema>;

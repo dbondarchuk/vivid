@@ -9,6 +9,7 @@ export type ArgumentsAutocompleteProps = {
   args?: Record<string, any>;
   value?: string;
   onChange?: (value: string) => void;
+  documentElement?: Document;
 } & (
   | (Omit<TextareaProps, "onChange"> & {
       asInput?: false;
@@ -34,7 +35,7 @@ export type ArgumentsAutocompleteProps = {
 export const ArgumentsAutocomplete = React.forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   ArgumentsAutocompleteProps
->(({ args, asInput, value, onChange, ...rest }, ref) => {
+>(({ args, asInput, value, onChange, asContentEditable, ...rest }, ref) => {
   const argsJson = JSON.stringify(args);
 
   const argsData = React.useMemo(
@@ -60,7 +61,8 @@ export const ArgumentsAutocomplete = React.forwardRef<
     []
   );
 
-  return "asContentEditable" in rest && rest.asContentEditable ? (
+  return !!asContentEditable ? (
+    // @ts-expect-error ignore props spread
     <ContentEditableMentions
       ref={ref}
       trigger="{{"

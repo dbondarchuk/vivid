@@ -1,0 +1,95 @@
+"use client";
+
+import { ConfigurationProps } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
+import { Combobox, ComboboxAsync, IComboboxItem, Label } from "@vivid/ui";
+import { icons } from "lucide-react";
+import { createElement, useCallback } from "react";
+import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
+import { IconProps, IconPropsDefaults } from "./schema";
+import { iconShortcuts } from "./shortcuts";
+import { styles } from "./styles";
+
+const allIconNames = Object.keys(icons);
+
+export const IconConfiguration = ({
+  data,
+  setData,
+  base,
+  onBaseChange,
+}: ConfigurationProps<IconProps>) => {
+  const t = useI18n("builder");
+  const updateData = (d: unknown) => setData(d as IconProps);
+
+  const icon = (data.props as any)?.icon ?? IconPropsDefaults.props.icon;
+
+  const getIcons = useCallback(
+    async (page: number, search?: string) => {
+      const limit = 20;
+      let iconNames = [...allIconNames];
+      const valueIndex = iconNames.indexOf(icon);
+      if (valueIndex !== -1) {
+        const currentIcon = iconNames[valueIndex];
+        iconNames.splice(valueIndex, 1);
+        iconNames.unshift(currentIcon);
+      }
+
+      if (search) {
+        iconNames = iconNames.filter((iconName) =>
+          iconName.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+
+      const items: IComboboxItem[] = iconNames
+        .slice((page - 1) * limit, page * limit)
+        .map((iconName) => ({
+          value: iconName as string,
+          label: (
+            <div className="flex flex-row gap-2 items-center">
+              {createElement(icons[iconName as keyof typeof icons], {
+                size: 16,
+              })}
+              <span>{iconName}</span>
+            </div>
+          ),
+        }));
+
+      return {
+        items: items,
+        hasMore: page * limit < iconNames.length,
+      };
+    },
+    [icon]
+  );
+
+  return (
+    <StylesConfigurationPanel
+      styles={data.style ?? {}}
+      onStylesChange={(style) => updateData({ ...data, style })}
+      availableStyles={styles}
+      shortcuts={iconShortcuts}
+      base={base}
+      onBaseChange={onBaseChange}
+    >
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="icon">{t("pageBuilder.blocks.icon.icon")}</Label>
+        <ComboboxAsync
+          id="icon"
+          fetchItems={getIcons}
+          value={icon ?? ""}
+          size="sm"
+          className="w-full"
+          onChange={(value) =>
+            updateData({
+              ...data,
+              props: {
+                ...(data.props || {}),
+                icon: value,
+              },
+            })
+          }
+        />
+      </div>
+    </StylesConfigurationPanel>
+  );
+};

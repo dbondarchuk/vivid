@@ -23,8 +23,9 @@ import { EditorHistory, EditorHistoryEntry } from "./history";
 import { editorHistoryReducer } from "./reducers";
 
 export type ViewportSize =
-  | "original"
+  // | "original"
   | "desktop"
+  | "largeDesktop"
   | "laptop"
   | "tablet"
   | "mobile"
@@ -50,6 +51,7 @@ type EditorState = {
   selectedBlockId: string | null;
   selectedSidebarTab: "block-configuration" | "styles";
   selectedScreenSize: ViewportSize;
+  fullScreen: boolean;
 
   inspectorDrawerOpen: boolean;
   activeOverBlock: {
@@ -97,6 +99,7 @@ const createEditorStateStore = ({
     selectedSidebarTab: "styles",
     // selectedScreenSize: "original",
     selectedScreenSize: "laptop",
+    fullScreen: false,
 
     inspectorDrawerOpen: true,
     activeDragBlock: null,
@@ -191,6 +194,10 @@ export function useSelectedScreenSize() {
 
 export function useSelectedSidebarTab() {
   return useEditorStateStore((s) => s.selectedSidebarTab);
+}
+
+export function useFullScreen() {
+  return useEditorStateStore((s) => s.fullScreen);
 }
 
 export function useActiveDragBlock() {
@@ -426,6 +433,12 @@ export function useSetSelectedScreenSize() {
   const store = getEditorStateStore();
   return (selectedScreenSize: EditorState["selectedScreenSize"]) =>
     setEditorStateStore(store, { selectedScreenSize });
+}
+
+export function useToggleFullScreen() {
+  const store = getEditorStateStore();
+  const fullScreen = !store((s) => s.fullScreen);
+  return () => setEditorStateStore(store, { fullScreen });
 }
 
 export const EditorArgsContext = createContext<Record<string, any>>({});

@@ -41,6 +41,7 @@ import {
   Copy,
   Eye,
   Laptop,
+  Maximize,
   Monitor,
   MonitorSmartphone,
   PanelRight,
@@ -49,6 +50,7 @@ import {
   Tablet,
   Trash,
   TriangleAlert,
+  Tv,
   Undo2,
 } from "lucide-react";
 import React, { Fragment } from "react";
@@ -60,6 +62,7 @@ import {
   useDispatchAction,
   useDocument,
   useEditorStateErrors,
+  useFullScreen,
   useEditorStateStore,
   useRedoHistory,
   useRootBlock,
@@ -67,6 +70,7 @@ import {
   useSelectedScreenSize,
   useSetSelectedBlockId,
   useSetSelectedScreenSize,
+  useToggleFullScreen,
   useUndoHistory,
   ViewportSize,
 } from "../../documents/editor/context";
@@ -78,7 +82,7 @@ type ViewportSizeConfig = {
   className?: string;
 };
 
-const VIEWPORT_SIZES: Record<string, ViewportSizeConfig> = {
+const VIEWPORT_SIZES: Record<ViewportSize, ViewportSizeConfig> = {
   // original: {
   //   icon: MonitorSmartphone,
   //   label: "baseBuilder.builderToolbar.view.original",
@@ -86,6 +90,10 @@ const VIEWPORT_SIZES: Record<string, ViewportSizeConfig> = {
   desktop: {
     icon: Monitor,
     label: "baseBuilder.builderToolbar.view.desktop",
+  },
+  largeDesktop: {
+    icon: Tv,
+    label: "baseBuilder.builderToolbar.view.largeDesktop",
   },
   laptop: {
     icon: Laptop,
@@ -129,6 +137,8 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   const selectedScreenSize = useSelectedScreenSize();
   const setSelectedScreenSize = useSetSelectedScreenSize();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const fullScreen = useFullScreen();
+  const toggleFullScreen = useToggleFullScreen();
   const { resolvedTheme } = useTheme();
   const { toggleSidebar } = useSidebar();
   const selectedBlock = useSelectedBlock();
@@ -382,13 +392,21 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         <ToolbarGroup>
           <ToolbarButton
             pressed={selectedView === "preview"}
+            tooltip={t("baseBuilder.builderToolbar.preview")}
             onClick={() =>
               setSelectedView((prev) =>
                 prev === "editor" ? "preview" : "editor"
               )
             }
           >
-            <Eye /> {t("baseBuilder.builderToolbar.preview")}
+            <Eye />
+          </ToolbarButton>
+          <ToolbarButton
+            pressed={fullScreen}
+            onClick={toggleFullScreen}
+            tooltip={t("baseBuilder.builderToolbar.fullScreen")}
+          >
+            <Maximize />
           </ToolbarButton>
         </ToolbarGroup>
         <ToolbarGroup>

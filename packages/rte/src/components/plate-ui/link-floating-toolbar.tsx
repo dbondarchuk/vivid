@@ -104,7 +104,7 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
 
       return {
         x: x,
-        y: rect.top - editorRect.top + editorContainer.scrollTop + 40,
+        y: rect.top - editorRect.top + editorContainer.scrollTop + 20,
       };
     } catch (error) {
       return;

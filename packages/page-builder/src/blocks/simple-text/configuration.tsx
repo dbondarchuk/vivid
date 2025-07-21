@@ -25,13 +25,13 @@ export const SimpleTextConfiguration = ({
       base={base}
       onBaseChange={onBaseChange}
     >
-      <TextInput
+      {/* <TextInput
         label={t("pageBuilder.blocks.simpleText.url")}
         defaultValue={data.props?.url ?? ""}
         onChange={(value) =>
           updateData({ ...data, props: { ...data.props, url: value } })
         }
-      />
+      /> */}
     </StylesConfigurationPanel>
   );
 };

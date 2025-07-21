@@ -17,6 +17,7 @@ const VIEWPORT_SIZES = {
   original: { width: 1440, height: 900, name: "Original" },
   laptop: { width: 1280, height: 800, name: "Laptop" },
   desktop: { width: 1440, height: 900, name: "Desktop" },
+  largeDesktop: { width: 1920, height: 1080, name: "Large Desktop" },
   tablet: { width: 768, height: 1024, name: "Tablet" },
   mobile: { width: 375, height: 667, name: "Mobile" },
   mobileLandscape: { width: 667, height: 375, name: "Mobile Landscape" },
@@ -300,10 +301,16 @@ const IframePortal: React.FC<IframePortalProps> = ({ document, children }) => {
           border: 2px solid #e5e7eb;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
+        :root {
+          --font-primary: 'Inter', sans-serif;
+        }
+
         body {
           background: #f8f9fa;
           padding: 2rem;
         }
+
       `}</style>
       {children}
     </PortalProvider>,
