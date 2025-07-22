@@ -1,9 +1,4 @@
-import {
-  EditorChildren,
-  useCurrentBlock,
-  useDispatchAction,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
+import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import React from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
@@ -23,8 +18,6 @@ export const SimpleContainerEditor = ({
   props,
 }: SimpleContainerProps) => {
   const currentBlock = useCurrentBlock<SimpleContainerProps>();
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
 
   const children = currentBlock.data?.props?.children;
   const className = generateClassName();
@@ -33,7 +26,11 @@ export const SimpleContainerEditor = ({
 
   return (
     <>
-      <BlockStyle name={className} styleDefinitions={styles} styles={style} />
+      <BlockStyle
+        name={className}
+        styleDefinitions={styles}
+        styles={currentBlock.data?.style}
+      />
       <EditorChildren
         block={currentBlock}
         property="props"
@@ -44,23 +41,6 @@ export const SimpleContainerEditor = ({
         id={base?.id}
         addButtonSize="small"
         allowOnly={allowOnly}
-        onChange={({ block, blockId, children }) => {
-          dispatchAction({
-            type: "set-block-data",
-            value: {
-              blockId: currentBlock.id,
-              data: {
-                ...currentBlock.data,
-                props: {
-                  ...currentBlock.data?.props,
-                  children,
-                },
-              },
-            },
-          });
-
-          setSelectedBlockId(blockId);
-        }}
       />
     </>
   );

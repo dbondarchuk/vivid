@@ -1,9 +1,4 @@
-import {
-  EditorChildren,
-  useCurrentBlock,
-  useDispatchAction,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
+import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
@@ -11,8 +6,6 @@ import { CarouselProps, styles } from "./schema";
 
 export const CarouselEditor = ({ style, props }: CarouselProps) => {
   const currentBlock = useCurrentBlock<CarouselProps>();
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
 
   const children = currentBlock.data?.props?.children;
   const className = generateClassName();
@@ -48,8 +41,8 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
   //   []
   // );
 
-  const newStyle: typeof style = {
-    ...style,
+  const newStyle: CarouselProps["style"] = {
+    ...currentBlock.data?.style,
     display: [{ value: "flex" }],
     flexDirection: [{ value: "row" }],
     flexWrap: [{ value: "wrap" }],
@@ -66,7 +59,7 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
         block={currentBlock}
         className={cn(
           "items-center",
-          props.orientation === "vertical" && "flex-col",
+          currentBlock.data?.props?.orientation === "vertical" && "flex-col",
           className,
           base?.className
         )}
@@ -75,23 +68,6 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
         children={children || []}
         // childWrapper={childWrapper}
         // childrenWrapper={childrenWrapper}
-        onChange={({ block, blockId, children }) => {
-          dispatchAction({
-            type: "set-block-data",
-            value: {
-              blockId: currentBlock.id,
-              data: {
-                ...currentBlock.data,
-                props: {
-                  ...currentBlock.data?.props,
-                  children,
-                },
-              },
-            },
-          });
-
-          setSelectedBlockId(blockId);
-        }}
       />
     </>
   );

@@ -1,9 +1,4 @@
-import {
-  EditorChildren,
-  useCurrentBlock,
-  useDispatchAction,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
+import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
@@ -11,8 +6,6 @@ import { GridContainerProps, styles } from "./schema";
 
 export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
   const currentBlock = useCurrentBlock<GridContainerProps>();
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
 
   const children = currentBlock.data?.props?.children;
   const className = generateClassName();
@@ -20,7 +13,11 @@ export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
 
   return (
     <>
-      <BlockStyle name={className} styleDefinitions={styles} styles={style} />
+      <BlockStyle
+        name={className}
+        styleDefinitions={styles}
+        styles={currentBlock.data?.style}
+      />
       <EditorChildren
         block={currentBlock}
         property="props"
@@ -28,23 +25,6 @@ export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
         hidePrefixAddBlockButton
         className={cn(className, base?.className)}
         id={base?.id}
-        onChange={({ block, blockId, children }) => {
-          dispatchAction({
-            type: "set-block-data",
-            value: {
-              blockId: currentBlock.id,
-              data: {
-                ...currentBlock.data,
-                props: {
-                  ...currentBlock.data?.props,
-                  children,
-                },
-              },
-            },
-          });
-
-          setSelectedBlockId(blockId);
-        }}
       />
     </>
   );

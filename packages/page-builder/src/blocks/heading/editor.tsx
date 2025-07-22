@@ -1,14 +1,11 @@
 "use client";
 
-import React from "react";
-
-import { EditorBlock, useCurrentBlock, useEditorArgs } from "@vivid/builder";
+import { EditorBlock, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
+import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { HeadingProps } from "./schema";
 import { getDefaults, styles } from "./styles";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { EditorChildren } from "@vivid/builder";
 
 const disable = {
   disableMove: true,
@@ -23,7 +20,7 @@ export function HeadingEditor({ props, style }: HeadingProps) {
   const base = currentBlock.base;
 
   const className = generateClassName();
-  const defaults = getDefaults({ props, style }, true);
+  const defaults = getDefaults(currentBlock.data || {}, true);
 
   const Element = currentBlock?.data?.props?.level || "h2";
 

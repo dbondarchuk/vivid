@@ -18,6 +18,8 @@ export const CoreEditorBlock: React.FC<
   const Component = blocks[type].Editor;
   if (rootBlock.type === type) return <Component {...data} />;
 
+  // console.log("CoreEditorBlock - rerender", type, data);
+
   return (
     <EditorBlockWrapper>
       <Component {...data} {...additionalProps} />

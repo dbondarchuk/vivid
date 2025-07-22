@@ -42,6 +42,22 @@ export const editorHistoryReducer = (
       break;
     }
 
+    case "add-block": {
+      const parent = findBlock(document, value.parentBlockId);
+      if (parent) {
+        insertBlockInLevel(
+          parent,
+          value.block,
+          value.parentBlockProperty,
+          value.index || "last"
+        );
+
+        newSelectedBlockId = value.block.id;
+      }
+
+      break;
+    }
+
     case "move-block-up": {
       const parent = findParentBlock(document, value.blockId);
       if (parent) moveBlockInLevel(parent.block, value.blockId, "up");

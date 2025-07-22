@@ -1,26 +1,26 @@
 "use client";
 
 import {
+  EditorBlock,
   EditorChildren,
   useCurrentBlock,
   useDispatchAction,
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
+import {
+  ArrowDown,
+  ArrowRight,
+  ChevronDown,
+  ChevronRight,
+  Minus,
+  Plus,
+} from "lucide-react";
+import { useState } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { AccordionItemProps } from "./schema";
 import { styles } from "./styles";
-import { EditorBlock } from "@vivid/builder";
-import { useState } from "react";
-import {
-  ChevronDown,
-  ChevronRight,
-  Plus,
-  Minus,
-  ArrowDown,
-  ArrowRight,
-} from "lucide-react";
 
 const disable = {
   disableMove: true,
@@ -39,8 +39,6 @@ export const AccordionItemEditor = ({
   iconStyle?: "plus" | "arrow" | "chevron";
 }) => {
   const currentBlock = useCurrentBlock<AccordionItemProps>();
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
 
   const title = currentBlock.data?.props?.title?.children?.[0];
   const content = currentBlock.data?.props?.content?.children || [];
@@ -53,7 +51,9 @@ export const AccordionItemEditor = ({
   const iconStyle = additionalProps.iconStyle ?? "chevron";
 
   // Use local state for accordion item open/close
-  const [isOpen, setIsOpen] = useState(props.isOpen ?? false);
+  const [isOpen, setIsOpen] = useState(
+    currentBlock.data?.props?.isOpen ?? false
+  );
 
   // Get the appropriate icon based on iconStyle and state
   const getIcon = () => {
@@ -128,26 +128,6 @@ export const AccordionItemEditor = ({
               block={currentBlock}
               property="props.content"
               children={content}
-              onChange={({ block, blockId, children }) => {
-                dispatchAction({
-                  type: "set-block-data",
-                  value: {
-                    blockId: currentBlock.id,
-                    data: {
-                      ...currentBlock.data,
-                      props: {
-                        ...currentBlock.data?.props,
-                        content: {
-                          ...currentBlock.data?.props?.content,
-                          children,
-                        },
-                      },
-                    },
-                  },
-                });
-
-                setSelectedBlockId(blockId);
-              }}
             />
           </div>
         </div>

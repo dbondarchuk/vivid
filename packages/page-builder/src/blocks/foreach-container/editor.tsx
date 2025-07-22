@@ -1,18 +1,11 @@
-import {
-  EditorChildren,
-  useCurrentBlock,
-  useDispatchAction,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
+import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { ForeachContainerProps } from "./schema";
 
 export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
-  const value = props?.value || "";
   const t = useI18n("builder");
   const currentBlock = useCurrentBlock<ForeachContainerProps>();
-  const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
+  const value = currentBlock.data?.props?.value || "";
 
   const children = currentBlock.data?.props?.children;
 
@@ -31,23 +24,6 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
         block={currentBlock}
         property="props"
         children={children || []}
-        onChange={({ block, blockId, children }) => {
-          dispatchAction({
-            type: "set-block-data",
-            value: {
-              blockId: currentBlock.id,
-              data: {
-                ...currentBlock.data,
-                props: {
-                  ...currentBlock.data?.props,
-                  children,
-                },
-              },
-            },
-          });
-
-          setSelectedBlockId(blockId);
-        }}
       />
     </div>
   );

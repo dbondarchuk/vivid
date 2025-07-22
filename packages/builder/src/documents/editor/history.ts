@@ -1,4 +1,5 @@
 import { BaseBlockProps } from "../types";
+import { TEditorBlock } from "./core";
 
 export type EditorHistoryEntry =
   | {
@@ -17,6 +18,15 @@ export type EditorHistoryEntry =
       type: "clone-block";
       value: {
         blockId: string;
+      };
+    }
+  | {
+      type: "add-block";
+      value: {
+        block: TEditorBlock;
+        parentBlockId: string;
+        parentBlockProperty?: string;
+        index?: number | "last";
       };
     }
   | {
