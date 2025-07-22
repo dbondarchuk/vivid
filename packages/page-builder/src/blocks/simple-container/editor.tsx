@@ -1,6 +1,10 @@
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorChildren,
+  useCurrentBlock,
+  useSelectedBlockId,
+} from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import React from "react";
+import React, { useMemo } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { SimpleContainerProps, styles } from "./schema";
@@ -20,9 +24,11 @@ export const SimpleContainerEditor = ({
   const currentBlock = useCurrentBlock<SimpleContainerProps>();
 
   const children = currentBlock.data?.props?.children;
-  const className = generateClassName();
+  const className = useMemo(() => generateClassName(), []);
   const base = currentBlock.base;
   const allowOnly = React.useMemo(() => ["SimpleText", "Icon", "Link"], []);
+
+  const isSelected = useSelectedBlockId() === currentBlock.id;
 
   return (
     <>
@@ -37,7 +43,7 @@ export const SimpleContainerEditor = ({
         children={children || []}
         className={cn(className, base?.className)}
         childWrapper={ChildWrapper}
-        hidePrefixAddBlockButton
+        hidePrefixAddBlockButton={!isSelected}
         id={base?.id}
         addButtonSize="small"
         allowOnly={allowOnly}

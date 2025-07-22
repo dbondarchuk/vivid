@@ -1,11 +1,11 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
+import { cn, ScrollArea, ScrollBar } from "@vivid/ui";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { cn, ScrollArea, ScrollBar } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
+import { usePortalContext } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 import { ViewportSize } from "../../documents/editor/context";
-import { PortalProvider } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 
 interface ViewportEmulatorProps {
   children: React.ReactNode;
@@ -283,6 +283,12 @@ interface IframePortalProps {
 const IframePortal: React.FC<IframePortalProps> = ({ document, children }) => {
   const [rootElement, setRootElement] = useState<HTMLElement | null>(null);
 
+  const { setDocument } = usePortalContext();
+
+  useEffect(() => {
+    setDocument(document);
+  }, [document]);
+
   useEffect(() => {
     const root = document.getElementById("root");
     if (root) {
@@ -295,7 +301,7 @@ const IframePortal: React.FC<IframePortalProps> = ({ document, children }) => {
   }
 
   return createPortal(
-    <PortalProvider document={document}>
+    <>
       <style>{`
         #root {
           border: 2px solid #e5e7eb;
@@ -313,7 +319,7 @@ const IframePortal: React.FC<IframePortalProps> = ({ document, children }) => {
 
       `}</style>
       {children}
-    </PortalProvider>,
+    </>,
     rootElement
   );
 };

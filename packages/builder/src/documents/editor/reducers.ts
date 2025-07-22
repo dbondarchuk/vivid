@@ -49,7 +49,7 @@ export const editorHistoryReducer = (
           parent,
           value.block,
           value.parentBlockProperty,
-          value.index || "last"
+          value.index ?? "last"
         );
 
         newSelectedBlockId = value.block.id;

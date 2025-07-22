@@ -15,6 +15,7 @@ import {
 } from "@dnd-kit/core";
 import { Tabs, TabsContent } from "@vivid/ui";
 import { useState } from "react";
+import { PortalProvider } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 import { EditorBlock } from "../../documents/editor/block";
 import {
   useDispatchAction,
@@ -198,7 +199,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
   };
 
   return (
-    <>
+    <PortalProvider>
       <Tabs value={selectedView}>
         <BuilderToolbar
           selectedView={selectedView}
@@ -234,6 +235,6 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
           </ViewportEmulator>
         </div>
       </Tabs>
-    </>
+    </PortalProvider>
   );
 };

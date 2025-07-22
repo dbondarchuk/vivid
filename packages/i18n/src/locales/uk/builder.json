@@ -1002,6 +1002,7 @@
       },
       "simpleText": {
         "displayName": "Простий текст",
+        "placeholder": "Текст тут",
         "url": "URL посилання"
       },
       "accordion": {

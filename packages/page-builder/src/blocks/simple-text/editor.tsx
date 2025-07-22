@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
 import {
@@ -11,6 +11,7 @@ import {
   useSelectedBlockId,
   useSetSelectedBlockId,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { ArgumentsAutocomplete, cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
@@ -18,6 +19,7 @@ import { SimpleTextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
 export function SimpleTextEditor({ props, style }: SimpleTextProps) {
+  const t = useI18n("builder");
   const ref = useRef<HTMLInputElement>(null);
   const args = useEditorArgs();
   const currentBlock = useCurrentBlock<SimpleTextProps>();
@@ -63,7 +65,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
     }
   }, []);
 
-  const className = generateClassName();
+  const className = useMemo(() => generateClassName(), []);
   const defaults = getDefaults({ props, style }, true);
   const base = currentBlock.base;
 
@@ -81,6 +83,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         args={args}
         className={cn(
           "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal",
+          isSelected && "px-1",
           className,
           base?.className
         )}
@@ -89,7 +92,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         onKeyDown={handleKeyPress}
         asContentEditable
         element={"span"}
-        placeholder="Simple text"
+        placeholder={t("pageBuilder.blocks.simpleText.placeholder")}
         documentElement={document}
         style={
           {

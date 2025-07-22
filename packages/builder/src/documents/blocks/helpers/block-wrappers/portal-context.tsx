@@ -1,34 +1,31 @@
 "use client";
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 interface PortalContextType {
   document: Document;
   body: HTMLElement;
+  setDocument: (document: Document) => void;
 }
 
 const PortalContext = createContext<PortalContextType>({
   document: typeof document !== "undefined" ? document : ({} as Document),
   body: typeof document !== "undefined" ? document.body : ({} as HTMLElement),
+  setDocument: () => {},
 });
 
 export const usePortalContext = () => useContext(PortalContext);
 
 interface PortalProviderProps {
   children: React.ReactNode;
-  document?: Document;
 }
 
-export const PortalProvider: React.FC<PortalProviderProps> = ({
-  children,
-  document: customDocument,
-}) => {
-  const defaultDocument =
-    typeof document !== "undefined" ? document : ({} as Document);
-  const doc = customDocument || defaultDocument;
+export const PortalProvider: React.FC<PortalProviderProps> = ({ children }) => {
+  const [stateDocument, setDocument] = useState<Document>(document);
 
   const value: PortalContextType = {
-    document: doc,
-    body: doc.body || ({} as HTMLElement),
+    document: stateDocument,
+    body: stateDocument.body || ({} as HTMLElement),
+    setDocument,
   };
 
   return (

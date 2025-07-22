@@ -1,5 +1,10 @@
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorChildren,
+  useCurrentBlock,
+  useSelectedBlockId,
+} from "@vivid/builder";
 import { cn } from "@vivid/ui";
+import { useMemo } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { GridContainerProps, styles } from "./schema";
@@ -8,8 +13,10 @@ export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
   const currentBlock = useCurrentBlock<GridContainerProps>();
 
   const children = currentBlock.data?.props?.children;
-  const className = generateClassName();
+  const className = useMemo(() => generateClassName(), []);
   const base = currentBlock.base;
+
+  const isSelected = useSelectedBlockId() === currentBlock.id;
 
   return (
     <>
@@ -22,7 +29,7 @@ export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
         block={currentBlock}
         property="props"
         children={children || []}
-        hidePrefixAddBlockButton
+        hidePrefixAddBlockButton={!isSelected}
         className={cn(className, base?.className)}
         id={base?.id}
       />

@@ -124,9 +124,6 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
   };
 
   const insertBlock = (block: TEditorBlock, index: number) => {
-    const newChildren = [...(children || [])];
-    newChildren.splice(index, 0, block);
-
     setTimeout(() => setSelectedBlockId(block.id), 200);
 
     return dispatchAction({
@@ -142,7 +139,6 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
 
   const contextId = `${currentBlock.id}/${property}`;
 
-  const activeOverBlock = useActiveOverBlock();
   const activeDragBlock = useActiveDragBlock();
 
   const activeDragBlockType = activeDragBlock?.block.type;
@@ -196,9 +192,7 @@ export const EditorChildren = <T extends BaseZodDictionary = any>({
       >
         {!children ||
         children.length ===
-          0 ? //       "w-full h-full min-h-20 flex items-center justify-center relative", //     className={cn( //   <div // activeDragBlockType ? ( // ) : null // ) : ( //   </div> //     /> //       allowOnly={allowOnly} //       contextId={contextId} //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
-        //       isOverDroppable &&
-        //         " border-2 border-dashed border-blue-400 bg-blue-800 bg-opacity-50"
+          0 ? //         " border-2 border-dashed border-blue-400 bg-blue-800 bg-opacity-50" //       isOverDroppable && //       "w-full h-full min-h-20 flex items-center justify-center relative", //     className={cn( //   <div // activeDragBlockType ? ( // ) : null // ) : ( //   </div> //     /> //       allowOnly={allowOnly} //       contextId={contextId} //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
         //     )}
         //   >
         //     <AddBlockButton

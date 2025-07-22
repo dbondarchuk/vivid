@@ -995,6 +995,7 @@
       },
       "simpleText": {
         "displayName": "Simple text",
+        "placeholder": "Text here",
         "url": "Link URL"
       },
       "accordion": {
