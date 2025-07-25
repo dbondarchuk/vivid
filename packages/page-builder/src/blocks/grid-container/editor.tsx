@@ -4,16 +4,15 @@ import {
   useSelectedBlockId,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import { useMemo } from "react";
-import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { GridContainerProps, styles } from "./schema";
 
 export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
   const currentBlock = useCurrentBlock<GridContainerProps>();
 
   const children = currentBlock.data?.props?.children;
-  const className = useMemo(() => generateClassName(), []);
+  const className = useClassName();
   const base = currentBlock.base;
 
   const isSelected = useSelectedBlockId() === currentBlock.id;

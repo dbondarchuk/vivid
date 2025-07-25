@@ -24,7 +24,7 @@ import {
 } from "@vivid/ui";
 
 import { TranslationKeys, useI18n } from "@vivid/i18n";
-import { formatAmountString } from "@vivid/utils";
+import { deepEqual, formatAmountString } from "@vivid/utils";
 import { DateTime as Luxon } from "luxon";
 import { fieldSchemaMapper, fieldsComponentMap } from "@vivid/ui";
 import { CardWithAppointmentInformation } from "./card-with-info";
@@ -74,7 +74,7 @@ export const FormCard: React.FC = () => {
   const values = form.watch();
   const previousValues = usePrevious(values, values);
   React.useEffect(() => {
-    if (JSON.stringify(values) !== JSON.stringify(previousValues)) {
+    if (!deepEqual(values, previousValues)) {
       setFields(values as AppointmentFields);
     }
   }, [values]);

@@ -591,6 +591,8 @@
       "button": {
         "displayName": "Кнопка",
         "text": "Текст",
+        "type": "Тип",
+        "action": "Дія",
         "url": "URL",
         "width": "Ширина",
         "size": "Розмір",
@@ -599,6 +601,20 @@
         "widths": {
           "auto": "Авто",
           "full": "Повна ширина"
+        },
+        "actions": {
+          "openPopup": {
+            "label": "Відкрити попап",
+            "popupId": "ID попапа",
+            "helperText": "Використовуйте базовий ID блоку попапа"
+          },
+          "closeCurrentPopup": {
+            "label": "Закрити поточний попап"
+          }
+        },
+        "types": {
+          "link": "Посилання",
+          "action": "Дія"
         },
         "sizes": {
           "x-small": "Дуже малий",
@@ -621,8 +637,7 @@
           "center": "По центру"
         },
         "errors": {
-          "text": "Текст є обов'язковим",
-          "icon": "Іконка є обов'язковою"
+          "action": "Дія є обов'язковою"
         },
         "prefixIcon": "Префікс іконка",
         "suffixIcon": "Суфікс іконка",
@@ -986,7 +1001,8 @@
         "show": {
           "label": "Показувати",
           "always": "Завжди",
-          "one-time": "Одноразово"
+          "one-time": "Одноразово",
+          "on-click": "При кліку"
         },
         "shortcuts": {
           "maxWidth": {

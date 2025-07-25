@@ -13,7 +13,12 @@ const PortalContext = createContext<PortalContextType>({
   setDocument: () => {},
 });
 
-export const usePortalContext = () => useContext(PortalContext);
+export const usePortalContext = () =>
+  useContext(PortalContext) ?? {
+    document: typeof document !== "undefined" ? document : ({} as Document),
+    body: typeof document !== "undefined" ? document.body : ({} as HTMLElement),
+    setDocument: () => {},
+  };
 
 interface PortalProviderProps {
   children: React.ReactNode;

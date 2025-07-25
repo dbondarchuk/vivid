@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useMemo } from "react";
-
 import {
   useCurrentBlock,
   useDispatchAction,
   useEditorArgs,
+  usePortalContext,
 } from "@vivid/builder";
 import { PlateEditor } from "@vivid/rte";
+import { cn, useDebounceCallback } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { TextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { cn } from "@vivid/ui";
 
 export const TextEditor = ({ props, style }: TextProps) => {
   const args = useEditorArgs();
@@ -20,23 +19,28 @@ export const TextEditor = ({ props, style }: TextProps) => {
   const value = currentBlock?.data?.props?.value;
   const dispatchAction = useDispatchAction();
 
-  const onChange = (value: any) => {
-    dispatchAction({
-      type: "set-block-data",
-      value: {
-        blockId: currentBlock.id,
-        data: {
-          ...currentBlock.data,
-          props: {
-            ...currentBlock.data?.props,
-            value,
+  const onChange = useDebounceCallback(
+    (value: any) => {
+      dispatchAction({
+        type: "set-block-data",
+        value: {
+          blockId: currentBlock.id,
+          data: {
+            ...currentBlock.data,
+            props: {
+              ...currentBlock.data?.props,
+              value,
+            },
           },
         },
-      },
-    });
-  };
+      });
+    },
+    [dispatchAction, currentBlock],
+    300
+  );
 
-  const className = useMemo(() => generateClassName(), []);
+  const className = useClassName();
+  const { document } = usePortalContext();
   const defaults = getDefaults({ props, style }, true);
   const base = currentBlock?.base;
 
@@ -58,6 +62,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
           base?.className
         )}
         id={base?.id}
+        document={document}
       />
     </>
   );

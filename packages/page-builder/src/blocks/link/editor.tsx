@@ -1,13 +1,11 @@
 "use client";
 
-import React from "react";
-
-import { EditorBlock, useCurrentBlock, useEditorArgs } from "@vivid/builder";
+import { EditorBlock, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { LinkProps } from "./schema";
 import { getDefaults, styles } from "./styles";
-import { generateClassName } from "../../helpers/class-name-generator";
 
 const disable = {
   disableMove: true,
@@ -21,7 +19,7 @@ export const LinkEditor = ({ props, style }: LinkProps) => {
   const content = (currentBlock?.data?.props as any)?.children?.[0];
   const base = currentBlock.base;
 
-  const className = generateClassName();
+  const className = useClassName();
   const defaults = getDefaults({ props, style }, true);
 
   return (

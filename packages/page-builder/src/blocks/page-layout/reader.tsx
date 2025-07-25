@@ -3,6 +3,7 @@ import { COLORS, getColorStyle } from "../../style/helpers/colors";
 import { getFontFamily } from "../../style-inputs/helpers/styles";
 import { PageLayoutReaderProps } from "./schema";
 import { cn } from "@vivid/ui";
+import { ReaderProvider } from "../../context/readerContext";
 
 export const PageLayoutReader = ({
   args,
@@ -11,7 +12,7 @@ export const PageLayoutReader = ({
 }: ReaderProps<PageLayoutReaderProps>) => {
   const children = props.children ?? [];
   return (
-    <>
+    <ReaderProvider>
       <div
         style={{
           backgroundColor: getColorStyle(
@@ -41,6 +42,6 @@ export const PageLayoutReader = ({
           ))}
         </div>
       </div>
-    </>
+    </ReaderProvider>
   );
 };

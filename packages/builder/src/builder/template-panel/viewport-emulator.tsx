@@ -18,9 +18,9 @@ const VIEWPORT_SIZES = {
   laptop: { width: 1280, height: 800, name: "Laptop" },
   desktop: { width: 1440, height: 900, name: "Desktop" },
   largeDesktop: { width: 1920, height: 1080, name: "Large Desktop" },
-  tablet: { width: 768, height: 1024, name: "Tablet" },
-  mobile: { width: 375, height: 667, name: "Mobile" },
-  mobileLandscape: { width: 667, height: 375, name: "Mobile Landscape" },
+  tablet: { width: 820, height: 1180, name: "Tablet" },
+  mobile: { width: 430, height: 932, name: "Mobile" },
+  mobileLandscape: { width: 932, height: 430, name: "Mobile Landscape" },
 } as const;
 
 export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({

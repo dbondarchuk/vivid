@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  EditorBlock,
-  EditorChildren,
-  useCurrentBlock,
-  useDispatchAction,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
+import { EditorBlock, EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import {
   ArrowDown,
@@ -17,8 +11,8 @@ import {
   Plus,
 } from "lucide-react";
 import { useState } from "react";
-import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { AccordionItemProps } from "./schema";
 import { styles } from "./styles";
 
@@ -42,7 +36,7 @@ export const AccordionItemEditor = ({
 
   const title = currentBlock.data?.props?.title?.children?.[0];
   const content = currentBlock.data?.props?.content?.children || [];
-  const className = generateClassName();
+  const className = useClassName();
   const base = currentBlock.base;
 
   // Extract animation properties from additionalProps

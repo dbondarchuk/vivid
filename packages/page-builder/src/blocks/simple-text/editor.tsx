@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
 import {
@@ -12,9 +12,9 @@ import {
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
-import { ArgumentsAutocomplete, cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
+import { ArgumentsAutocomplete, cn, useDebounceCallback } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { SimpleTextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
@@ -37,7 +37,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
     allowedAttributes: {},
   };
 
-  const onChange = useCallback(
+  const onChange = useDebounceCallback(
     (value: string) => {
       dispatchAction({
         type: "set-block-data",
@@ -65,7 +65,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
     }
   }, []);
 
-  const className = useMemo(() => generateClassName(), []);
+  const className = useClassName();
   const defaults = getDefaults({ props, style }, true);
   const base = currentBlock.base;
 

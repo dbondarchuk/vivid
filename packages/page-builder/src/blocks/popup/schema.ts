@@ -5,7 +5,7 @@ import { ButtonPropsDefaults } from "../button";
 import { SimpleContainerPropsDefaults } from "../simple-container/schema";
 import { zStyles } from "./styles";
 
-export const showPopupType = ["always", "one-time"] as const;
+export const showPopupType = ["always", "one-time", "on-click"] as const;
 
 export const PopupPropsSchema = z.object({
   style: zStyles,
@@ -176,6 +176,8 @@ export const PopupPropsDefaults = () =>
                     type: "Button",
                     data: {
                       props: {
+                        type: "action",
+                        action: "close-current-popup",
                         children: [
                           {
                             type: "SimpleContainer",
@@ -188,7 +190,7 @@ export const PopupPropsDefaults = () =>
                                     type: "SimpleText",
                                     id: generateId(),
                                     data: {
-                                      props: { text: "Click me" },
+                                      props: { text: "Close" },
                                     },
                                   },
                                 ],

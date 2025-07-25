@@ -1,5 +1,6 @@
 import { StylingConfiguration } from "@vivid/types";
-import { getColorsCss } from "@vivid/utils";
+import { genericMemo } from "@vivid/ui";
+import { deepEqual, getColorsCss } from "@vivid/utils";
 import React from "react";
 import {
   BaseStyleDictionary,
@@ -83,33 +84,44 @@ export const Styling: React.FC<Props> = ({ styling: propsStyling }) => {
   );
 };
 
-export const BlockStyle = <T extends BaseStyleDictionary>({
-  name,
-  styles,
-  defaults,
-  styleDefinitions,
-  isEditor,
-}: {
-  name: string;
-  styleDefinitions: StyleDictionary<T>;
-  styles?: StyleValue<T> | null;
-  defaults?: DefaultCSSProperties<T>;
-  isEditor?: boolean;
-}) => {
-  // renderStylesToCSS now handles the .className wrapper internally
-  const css = renderStylesToCSS(
-    styleDefinitions,
+export const BlockStyle = genericMemo(
+  <T extends BaseStyleDictionary>({
+    name,
     styles,
     defaults,
+    styleDefinitions,
     isEditor,
-    name
-  );
+  }: {
+    name: string;
+    styleDefinitions: StyleDictionary<T>;
+    styles?: StyleValue<T> | null;
+    defaults?: DefaultCSSProperties<T>;
+    isEditor?: boolean;
+  }) => {
+    // renderStylesToCSS now handles the .className wrapper internally
+    const css = renderStylesToCSS(
+      styleDefinitions,
+      styles,
+      defaults,
+      isEditor,
+      name
+    );
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: css,
-      }}
-    />
-  );
-};
+    return (
+      <style
+        dangerouslySetInnerHTML={{
+          __html: css,
+        }}
+      />
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.name === nextProps.name &&
+      deepEqual(prevProps.styles, nextProps.styles) &&
+      deepEqual(prevProps.defaults, nextProps.defaults) &&
+      deepEqual(prevProps.styleDefinitions, nextProps.styleDefinitions) &&
+      prevProps.isEditor === nextProps.isEditor
+    );
+  }
+);

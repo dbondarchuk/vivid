@@ -12,8 +12,6 @@ import { useCallback } from "react";
 import { Image } from "./reader";
 import { ResizableImage } from "./resizable-image";
 import { ImageProps } from "./schema";
-import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
 
 export const ImageEditor = ({ props, style }: ImageProps) => {
   const currentBlock = useCurrentBlock<ImageProps>();

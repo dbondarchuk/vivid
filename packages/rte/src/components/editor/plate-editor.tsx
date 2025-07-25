@@ -18,6 +18,7 @@ export type PlateEditorProps = {
   disabled?: boolean;
   placeholder?: string;
   singleLine?: boolean;
+  document?: Document;
   id?: string;
 };
 
@@ -30,6 +31,7 @@ export const PlateEditor: React.FC<PlateEditorProps> = ({
   placeholder,
   singleLine,
   id,
+  document,
 }) => {
   const editor = useCreateEditor(value, { singleLine });
 
@@ -38,9 +40,9 @@ export const PlateEditor: React.FC<PlateEditorProps> = ({
   }, [editor]);
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={HTML5Backend} context={document?.defaultView}>
       <Plate editor={editor} onChange={({ value }) => onChange?.(value)}>
-        <EditorContainer>
+        <EditorContainer context={document?.defaultView}>
           <Editor
             variant="fullWidth"
             className={className}

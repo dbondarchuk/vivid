@@ -2,8 +2,8 @@
 
 import { EditorBlock, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { PageHeroProps } from "./schema";
 import { styles } from "./styles";
 
@@ -20,7 +20,7 @@ export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
   const title = currentBlock.data?.props?.title?.children?.[0];
   const subtitle = currentBlock.data?.props?.subtitle?.children?.[0];
   const buttons = currentBlock.data?.props?.buttons?.children?.[0];
-  const className = generateClassName();
+  const className = useClassName();
   const base = currentBlock?.base;
 
   return (

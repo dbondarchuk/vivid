@@ -1,5 +1,6 @@
 "use client";
 
+import { usePortalContext } from "@vivid/builder";
 import { cn, useDebounce } from "@vivid/ui";
 import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 // import Image from "next/image";
@@ -60,6 +61,7 @@ export const ResizableImage = ({
   const imageRef = useRef<HTMLImageElement>(null);
   const startPosRef = useRef({ x: 0, y: 0 });
   const startDimensionsRef = useRef({ width: 0, height: 0 });
+  const { document } = usePortalContext();
 
   const [newDimensions, setNewDimensions] = useState<
     { width: number; height: number } | undefined

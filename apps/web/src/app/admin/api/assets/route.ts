@@ -63,11 +63,14 @@ export async function GET(request: NextRequest) {
     "Successfully retrieved assets"
   );
 
+  const { url } =
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
+
   const items = response.items.map(
     (asset) =>
       ({
         ...asset,
-        url: `${request.nextUrl.origin}/assets/${asset.filename}`,
+        url: `${url}/assets/${asset.filename}`,
       }) satisfies UploadedFile
   );
 
@@ -132,12 +135,12 @@ export async function POST(request: NextRequest) {
     "Successfully uploaded asset"
   );
 
-  // const { url } =
-  //   await ServicesContainer.ConfigurationService().getConfiguration("general");
+  const { url } =
+    await ServicesContainer.ConfigurationService().getConfiguration("general");
 
   const uploadedFile: UploadedFile = {
     ...asset,
-    url: `${request.nextUrl.origin}/assets/${asset.filename}`,
+    url: `${url}/assets/${asset.filename}`,
   };
 
   return NextResponse.json(uploadedFile);

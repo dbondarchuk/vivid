@@ -65,7 +65,13 @@
       "close": "Закрити"
     },
     "optional": "Опціонально",
-    "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}"
+    "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
+    "navigationGuard": {
+      "title": "Ви впевнені, що хочете покинути цю сторінку?",
+      "description": "У вас є незбережені зміни. Ви впевнені, що хочете покинути цю сторінку?",
+      "cancel": "Скасувати",
+      "leave": "Покинути"
+    }
   },
   "navigation": {
     "overview": "Огляд",

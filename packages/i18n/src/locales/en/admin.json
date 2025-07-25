@@ -65,7 +65,13 @@
       "close": "Close"
     },
     "optional": "Optional",
-    "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}"
+    "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
+    "navigationGuard": {
+      "title": "Are you sure you want to leave this page?",
+      "description": "You have unsaved changes. Are you sure you want to leave this page?",
+      "cancel": "Cancel",
+      "leave": "Leave"
+    }
   },
   "navigation": {
     "overview": "Overview",

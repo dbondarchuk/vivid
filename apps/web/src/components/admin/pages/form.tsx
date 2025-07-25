@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Language, useI18n } from "@vivid/i18n";
 import { PageBuilder } from "@vivid/page-builder";
+import { PageReader } from "@vivid/page-builder/reader";
 import {
   GeneralConfiguration,
   getPageSchemaWithUniqueCheck,
@@ -32,13 +33,14 @@ import {
   useDemoArguments,
 } from "@vivid/ui";
 import { Globe, Settings as SettingsIcon } from "lucide-react";
+import { useNavigationGuard } from "next-navigation-guard";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
+import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
 import { PageSettingsPanel } from "./page-settings-panel";
-import { PageReader } from "@vivid/page-builder/reader";
 
 // Helper function to generate slug from title
 const generateSlug = (title: string): string => {
@@ -59,6 +61,8 @@ export const PageForm: React.FC<{
   };
 }> = ({ initialData, config }) => {
   const t = useI18n("admin");
+
+  const isDirty = React.useRef(false);
 
   const cachedUniqueSlugCheck = useDebounceCacheFn(checkUniqueSlug, 300);
 
@@ -127,6 +131,8 @@ export const PageForm: React.FC<{
     [setError, trigger, t]
   );
 
+  const { isFormDirty, onFormSubmit } = useIsDirty(form);
+
   const onSubmit = async (data: PageFormValues) => {
     try {
       setLoading(true);
@@ -138,11 +144,18 @@ export const PageForm: React.FC<{
 
         if (!initialData) {
           const { _id } = await createPage(data);
-          router.push(`/admin/dashboard/pages/${_id}`);
+          onFormSubmit();
+
+          setTimeout(() => {
+            router.push(`/admin/dashboard/pages/${_id}`);
+          }, 100);
         } else {
           await updatePage(initialData._id, data);
+          onFormSubmit();
 
-          router.refresh();
+          setTimeout(() => {
+            router.refresh();
+          }, 100);
         }
       };
 
@@ -212,6 +225,7 @@ export const PageForm: React.FC<{
 
   return (
     <Form {...form}>
+      <NavigationGuardDialog isDirty={isFormDirty} />
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />

@@ -57,7 +57,7 @@ export const StyleCategoryComponent = <T extends BaseStyleDictionary>({
 }: StyleCategoryProps<T>) => {
   const t = useI18n("builder");
   const [isOpen, setIsOpen] = useState(false);
-  const previousActiveCountRef = useRef(0);
+  const previousActiveCountRef = useRef(categoryStyles.length);
 
   // Helper function to safely translate categories
   const getCategoryLabel = (category: StyleCategory) => {
@@ -87,7 +87,7 @@ export const StyleCategoryComponent = <T extends BaseStyleDictionary>({
   // Auto-expand category when new styles are added
   useEffect(() => {
     const previousCount = previousActiveCountRef.current;
-    if (activeStylesCount > previousCount && previousCount > 0) {
+    if (activeStylesCount > previousCount) {
       setIsOpen(true);
     }
     previousActiveCountRef.current = activeStylesCount;

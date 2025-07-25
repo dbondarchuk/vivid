@@ -16,6 +16,7 @@ import {
   DrawerClose,
   DrawerContent,
   DrawerHeader,
+  DrawerTitle,
   DrawerTrigger,
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +29,8 @@ import {
 import { ChevronDown, icons, Menu, X } from "lucide-react";
 import React from "react";
 import { HeaderWithScrollShadow } from "./with-scroll-shadow";
+import { ReplaceOriginalColors } from "../helpers/replace-original-colors";
+import { PortalDrawerContent } from "./drawer-content";
 
 export type HeaderProps = {
   name: string;
@@ -132,6 +135,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
         className
       )}
     >
+      <ReplaceOriginalColors />
       <div className="container mx-auto flex flex-wrap p-5 flex-row items-center gap-4">
         <Logo name={name} logo={logo} showLogo={config?.showLogo} />
         <div className="hidden ml-auto md:flex flex-wrap gap-2 items-center text-base justify-center">
@@ -173,11 +177,16 @@ const HeaderBase: React.FC<HeaderProps> = ({
                 <Menu />
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="bg-white flex flex-col  h-full min-w-[100px] max-w-fit mt-24 fixed bottom-0 right-0 left-auto rounded-none">
-              <DrawerHeader>
+            <PortalDrawerContent className="bg-background flex flex-col  h-full min-w-[100px] max-w-fit mt-24 fixed bottom-0 right-0 left-auto rounded-none">
+              <ReplaceOriginalColors />
+              <DrawerHeader className="flex flex-row gap-2 items-center">
+                <DrawerTitle className="text-base">
+                  {t("header.menu")}
+                </DrawerTitle>
                 <DrawerClose asChild className="">
                   <Button
                     variant="ghost"
+                    size="icon"
                     className="w-fit ml-auto"
                     aria-label={t("header.close")}
                   >
@@ -209,7 +218,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
                   )}
                 </nav>
               </div>
-            </DrawerContent>
+            </PortalDrawerContent>
           </Drawer>
         </div>
       </div>

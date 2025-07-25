@@ -1,10 +1,20 @@
 "use client";
 
-import { ConfigurationProps, PageInput } from "@vivid/builder";
+import {
+  ConfigurationProps,
+  PageInput,
+  SelectInput,
+  TextInput,
+} from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Combobox, Label } from "@vivid/ui";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
-import { ButtonDefaultTarget, ButtonDefaultUrl, ButtonProps } from "./schema";
+import {
+  ButtonDefaultAction,
+  ButtonDefaultTarget,
+  ButtonDefaultUrl,
+  ButtonProps,
+} from "./schema";
 import { buttonShortcuts } from "./shortcuts";
 import { styles } from "./styles";
 
@@ -17,20 +27,22 @@ export const ButtonConfiguration = ({
   const t = useI18n("builder");
   const updateData = (d: unknown) => setData(d as ButtonProps);
 
-  const url = data.props?.url ?? ButtonDefaultUrl;
-  const target = data.props?.target ?? ButtonDefaultTarget;
+  const url =
+    data.props?.type === "link"
+      ? (data.props.url ?? ButtonDefaultUrl)
+      : undefined;
+  const target =
+    data.props?.type === "link"
+      ? (data.props.target ?? ButtonDefaultTarget)
+      : undefined;
 
-  // // Create icon options for the combobox
-  // const iconOptions = Object.keys(icons).map((iconName) => ({
-  //   value: iconName,
-  //   label: (
-  //     <div className="flex flex-row gap-2 items-center">
-  //       {/* @ts-expect-error - icons is a dynamic object */}
-  //       {createElement(icons[iconName], { size: 16 })}
-  //       <span>{iconName}</span>
-  //     </div>
-  //   ),
-  // }));
+  const type = data.props?.type ?? "link";
+  const action =
+    data.props?.type === "action"
+      ? (data.props.action ?? ButtonDefaultAction)
+      : undefined;
+  const actionData =
+    data.props?.type === "action" ? data.props.actionData : undefined;
 
   return (
     <StylesConfigurationPanel
@@ -42,62 +54,101 @@ export const ButtonConfiguration = ({
       onBaseChange={onBaseChange}
     >
       <>
-        {/* <TextInput
-          label={t("pageBuilder.blocks.button.text")}
-          defaultValue={text}
-          onChange={(text) =>
-            updateData({ ...data, props: { ...data.props, text } })
-          }
-        /> */}
-        <PageInput
-          label={t("pageBuilder.blocks.button.url")}
-          defaultValue={url}
-          onChange={(url) =>
-            updateData({ ...data, props: { ...data.props, url } })
+        <SelectInput
+          label={t("pageBuilder.blocks.button.type")}
+          options={[
+            { value: "link", label: t("pageBuilder.blocks.button.types.link") },
+            {
+              value: "action",
+              label: t("pageBuilder.blocks.button.types.action"),
+            },
+          ]}
+          defaultValue={type}
+          onChange={(type) =>
+            updateData({
+              ...data,
+              props: {
+                ...data.props,
+                type,
+                action: type === "action" ? ButtonDefaultAction : undefined,
+                actionData: undefined,
+              },
+            })
           }
         />
-        <div className="flex flex-col gap-2">
-          <Label>{t("pageBuilder.blocks.button.target")}</Label>
-          <Combobox
-            values={[
-              {
-                value: "_self",
-                label: t("pageBuilder.blocks.button.targets._self"),
-              },
-              {
-                value: "_blank",
-                label: t("pageBuilder.blocks.button.targets._blank"),
-              },
-            ]}
-            value={target}
-            size="sm"
-            className="w-full"
-            onItemSelect={(value) =>
-              updateData({ ...data, props: { ...data.props, target: value } })
-            }
-          />
-        </div>
-        {/* <div className="flex flex-col gap-2">
-          <Label>{t("pageBuilder.blocks.button.prefixIcon")}</Label>
-          <Combobox
-            values={[
-              { value: "", label: t("pageBuilder.blocks.button.noIcon") },
-              ...iconOptions,
-            ]}
-            value={prefixIcon ?? ""}
-            size="sm"
-            className="w-full"
-            onItemSelect={(value) =>
-              updateData({
-                ...data,
-                props: {
-                  ...data.props,
-                  prefixIcon: value === "" ? null : value,
+        {type === "link" && (
+          <>
+            <PageInput
+              label={t("pageBuilder.blocks.button.url")}
+              defaultValue={url ?? ButtonDefaultUrl}
+              onChange={(url) =>
+                updateData({ ...data, props: { ...data.props, url } })
+              }
+            />
+            <div className="flex flex-col gap-2">
+              <Label>{t("pageBuilder.blocks.button.target")}</Label>
+              <Combobox
+                values={[
+                  {
+                    value: "_self",
+                    label: t("pageBuilder.blocks.button.targets._self"),
+                  },
+                  {
+                    value: "_blank",
+                    label: t("pageBuilder.blocks.button.targets._blank"),
+                  },
+                ]}
+                value={target ?? ButtonDefaultTarget}
+                size="sm"
+                className="w-full"
+                onItemSelect={(value) =>
+                  updateData({
+                    ...data,
+                    props: { ...data.props, target: value },
+                  })
+                }
+              />
+            </div>
+          </>
+        )}
+        {type === "action" && (
+          <>
+            <SelectInput
+              label={t("pageBuilder.blocks.button.action")}
+              options={[
+                {
+                  value: "open-popup",
+                  label: t("pageBuilder.blocks.button.actions.openPopup.label"),
                 },
-              })
-            }
-          />
-        </div> */}
+                {
+                  value: "close-current-popup",
+                  label: t(
+                    "pageBuilder.blocks.button.actions.closeCurrentPopup.label"
+                  ),
+                },
+              ]}
+              defaultValue={action ?? ButtonDefaultAction}
+              onChange={(action) =>
+                updateData({ ...data, props: { ...data.props, action } })
+              }
+            />
+            {action === "open-popup" && (
+              <TextInput
+                label={t("pageBuilder.blocks.button.actions.openPopup.popupId")}
+                defaultValue={actionData?.popupId}
+                helperText={t(
+                  "pageBuilder.blocks.button.actions.openPopup.helperText"
+                )}
+                onChange={(popupId) =>
+                  updateData({
+                    ...data,
+                    props: { ...data.props, actionData: { popupId } },
+                  })
+                }
+              />
+            )}
+          </>
+        )}
       </>
     </StylesConfigurationPanel>
   );

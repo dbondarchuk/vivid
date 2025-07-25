@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 
 import {
   Select,
@@ -118,31 +118,37 @@ export const RawNumberInputWithUnit: React.FC<RawNumberInputWithUnitsProps> = ({
       baseUnitConfigs.options.base),
   ];
 
-  const handleValueChange = (value: number | null) => {
-    const val: NumberValueWithUnit | null =
-      value === null
-        ? null
-        : {
-            unit,
-            value,
-          };
+  const handleValueChange = useCallback(
+    (value: number | null) => {
+      const val: NumberValueWithUnit | null =
+        value === null
+          ? null
+          : {
+              unit,
+              value,
+            };
 
-    setValue(value);
-    onChange(val as NumberValueWithUnit);
-  };
+      setValue(value);
+      onChange(val as NumberValueWithUnit);
+    },
+    [onChange, unit]
+  );
 
-  const handleUnitChange = (unit: Unit) => {
-    const val: NumberValueWithUnit | null =
-      value === null
-        ? null
-        : {
-            unit,
-            value,
-          };
+  const handleUnitChange = useCallback(
+    (unit: Unit) => {
+      const val: NumberValueWithUnit | null =
+        value === null
+          ? null
+          : {
+              unit,
+              value,
+            };
 
-    setUnit(unit);
-    onChange(val as NumberValueWithUnit);
-  };
+      setUnit(unit);
+      onChange(val as NumberValueWithUnit);
+    },
+    [onChange, value]
+  );
 
   return (
     <div className="flex flex-row gap-1 w-full justify-between">

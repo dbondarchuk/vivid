@@ -1,3 +1,4 @@
+import { deepEqual } from "@vivid/utils";
 import { BaseStyleDictionary } from "../style/types";
 import { Shortcut, ShortcutOption } from "./types";
 
@@ -95,8 +96,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
             // Find existing variant to get previous value for function calls
             const existingVariant = currentVariants.find(
               (v: any) =>
-                JSON.stringify(v.breakpoint) === JSON.stringify(breakpoint) &&
-                JSON.stringify(v.state) === JSON.stringify(state)
+                deepEqual(v.breakpoint, breakpoint) && deepEqual(v.state, state)
             );
 
             const previousValue = existingVariant?.value;
@@ -124,9 +124,8 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
           // Remove the specific variant that matches the breakpoint and state
           const filteredVariants = newStyles[styleName].filter(
             (variant: any) =>
-              JSON.stringify(variant.breakpoint) !==
-                JSON.stringify(breakpoint) ||
-              JSON.stringify(variant.state) !== JSON.stringify(state)
+              !deepEqual(variant.breakpoint, breakpoint) ||
+              !deepEqual(variant.state, state)
           );
 
           // If no variants remain, remove the entire style property
@@ -143,8 +142,8 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
         // Check if variant already exists
         const existingVariantIndex = newStyles[styleName]?.findIndex(
           (variant: any) =>
-            JSON.stringify(variant.breakpoint) === JSON.stringify(breakpoint) &&
-            JSON.stringify(variant.state) === JSON.stringify(state)
+            deepEqual(variant.breakpoint, breakpoint) &&
+            deepEqual(variant.state, state)
         );
 
         if (existingVariantIndex !== undefined && existingVariantIndex >= 0) {
@@ -326,10 +325,8 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
           for (const targetVariant of targetVariants) {
             const matchingCurrentVariant = currentVariants.find(
               (cv: any) =>
-                JSON.stringify(cv.breakpoint) ===
-                  JSON.stringify(targetVariant.breakpoint || []) &&
-                JSON.stringify(cv.state) ===
-                  JSON.stringify(targetVariant.state || [])
+                deepEqual(cv.breakpoint, targetVariant.breakpoint || []) &&
+                deepEqual(cv.state, targetVariant.state || [])
             );
 
             if (matchingCurrentVariant) {
@@ -339,10 +336,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
                   ? targetVariant.value(matchingCurrentVariant.value)
                   : targetVariant.value;
 
-              if (
-                JSON.stringify(matchingCurrentVariant.value) ===
-                JSON.stringify(target)
-              ) {
+              if (deepEqual(matchingCurrentVariant.value, target)) {
                 variantMatches++;
               }
             }
@@ -380,7 +374,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
               : targetValue;
 
           const currentValue = currentStyle.value;
-          if (JSON.stringify(currentValue) === JSON.stringify(target)) {
+          if (deepEqual(currentValue, target)) {
             totalScore += 1; // Perfect match
           } else {
             // Check if values are similar (for numeric values, etc.)
@@ -412,9 +406,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
         const currentPropValue = props[propName];
         propsChecks++;
 
-        if (
-          JSON.stringify(currentPropValue) === JSON.stringify(targetPropValue)
-        ) {
+        if (deepEqual(currentPropValue, targetPropValue)) {
           propsScore += 1; // Perfect match
         } else if (
           currentPropValue === undefined &&

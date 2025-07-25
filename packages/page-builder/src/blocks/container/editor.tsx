@@ -1,14 +1,14 @@
 import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { ContainerProps, styles } from "./schema";
 
 export const ContainerEditor = ({ style, props }: ContainerProps) => {
   const currentBlock = useCurrentBlock<ContainerProps>();
 
   const children = currentBlock.data?.props?.children;
-  const className = generateClassName();
+  const className = useClassName();
   const base = currentBlock.base;
   return (
     <>

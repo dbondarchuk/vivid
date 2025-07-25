@@ -1,6 +1,7 @@
 export * from "./assets";
 export * from "./colors";
 export * from "./currency";
+export * from "./deep-equal";
 export * from "./email";
 export * from "./file";
 export * from "./fixtures";

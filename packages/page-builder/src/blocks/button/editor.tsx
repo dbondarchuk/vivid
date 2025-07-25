@@ -1,22 +1,11 @@
 "use client";
 
-import React, { useRef } from "react";
-import sanitizeHtml from "sanitize-html";
-
-import {
-  EditorBlock,
-  useCurrentBlock,
-  useDispatchAction,
-  useEditorArgs,
-  useSetSelectedBlockId,
-} from "@vivid/builder";
-import { ArgumentsAutocomplete, cn } from "@vivid/ui";
-import { icons } from "lucide-react";
+import { EditorBlock, useCurrentBlock } from "@vivid/builder";
+import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { ButtonProps } from "./schema";
 import { getDefaults, styles } from "./styles";
-import { generateClassName } from "../../helpers/class-name-generator";
-import { EditorChildren } from "@vivid/builder";
 
 const disable = {
   disableMove: true,
@@ -30,7 +19,7 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const content = currentBlock?.data?.props?.children?.[0];
   const base = currentBlock.base;
 
-  const className = generateClassName();
+  const className = useClassName();
   const defaults = getDefaults({ props, style }, true);
 
   return (

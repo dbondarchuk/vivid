@@ -1,20 +1,20 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
+  cn,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@vivid/ui";
-import { Plus, ChevronRight } from "lucide-react";
-import React, { useState } from "react";
-import { cn } from "@vivid/ui";
+import { ChevronRight, Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
-import { StyleVariantComponent } from "./style-variant";
 import {
   BaseStyleDictionary,
   StyleDefinition,
   StyleVariant,
 } from "../../style/types";
+import { StyleVariantComponent } from "./style-variant";
 
 interface StyleCategoryStyleProps<T extends BaseStyleDictionary> {
   style: StyleDefinition<T[keyof T]>;
@@ -45,7 +45,10 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
 }: StyleCategoryStyleProps<T>) => {
   const t = useI18n("builder");
   const [isStyleOpen, setIsStyleOpen] = useState(searchTerm ? true : false);
-  React.useEffect(() => {
+  const previousVariantsCountRef = useRef(styleVariants.length);
+
+  // Auto-expand when searching
+  useEffect(() => {
     if (searchTerm) {
       setIsStyleOpen(true);
     } else {
@@ -53,22 +56,14 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
     }
   }, [searchTerm]);
 
-  // Helper function to format style value for display
-  const formatStyleValue = (value: any): string => {
-    if (typeof value === "string") return value;
-    if (typeof value === "number") return value.toString();
-    if (typeof value === "object" && value !== null) {
-      if (value.value !== undefined) {
-        const unit = value.unit ? ` ${value.unit}` : "";
-        return `${value.value}${unit}`;
-      }
-      if (value.x !== undefined && value.y !== undefined) {
-        return `${value.x}%, ${value.y}%`;
-      }
-      return JSON.stringify(value);
+  // Auto-expand style when new variants are added
+  useEffect(() => {
+    const previousCount = previousVariantsCountRef.current;
+    if (styleVariants.length > previousCount) {
+      setIsStyleOpen(true);
     }
-    return "—";
-  };
+    previousVariantsCountRef.current = styleVariants.length;
+  }, [styleVariants.length]);
 
   return (
     <Collapsible open={isStyleOpen} onOpenChange={setIsStyleOpen}>

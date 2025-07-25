@@ -2,7 +2,7 @@
 
 import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
+import { useClassName } from "../../helpers/use-class-name";
 import { BlockStyle } from "../../helpers/styling";
 import { AccordionProps } from "./schema";
 import { styles } from "./styles";
@@ -11,7 +11,7 @@ export const AccordionEditor = ({ props, style }: AccordionProps) => {
   const currentBlock = useCurrentBlock<AccordionProps>();
 
   const children = currentBlock.data?.props?.children || [];
-  const className = generateClassName();
+  const className = useClassName();
   const base = currentBlock.base;
 
   // Pass animation properties to accordion items

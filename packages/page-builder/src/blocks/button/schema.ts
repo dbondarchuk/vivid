@@ -5,13 +5,26 @@ import { COLORS } from "../../style";
 import { SimpleContainerPropsDefaults } from "../simple-container";
 import { zStyles } from "./styles";
 
+export const ButtonType = z.enum(["action", "link"]);
+
 export const ButtonPropsSchema = z.object({
   props: z
-    .object({
-      children: z.array(z.any()).length(1),
-      url: z.string().optional().nullable(),
-      target: z.enum(["_self", "_blank"]).optional().nullable(),
-    })
+    .discriminatedUnion("type", [
+      z.object({
+        type: z.literal("action"),
+        action: z.string({
+          required_error: "pageBuilder.blocks.button.errors.action",
+        }),
+        actionData: z.any().optional().nullable(),
+        children: z.array(z.any()).length(1),
+      }),
+      z.object({
+        type: z.literal("link").optional().nullable(),
+        children: z.array(z.any()).length(1),
+        url: z.string().optional().nullable(),
+        target: z.enum(["_self", "_blank"]).optional().nullable(),
+      }),
+    ])
     .optional()
     .nullable(),
   style: zStyles,
@@ -22,6 +35,7 @@ export type ButtonReaderProps = BaseReaderBlockProps<any> & ButtonProps;
 
 export const ButtonDefaultUrl = "/";
 export const ButtonDefaultTarget = "_self";
+export const ButtonDefaultAction = "open-popup";
 
 export const ButtonPropsDefaults = () =>
   ({

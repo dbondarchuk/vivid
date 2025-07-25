@@ -20,8 +20,8 @@ export const FontSizeInput: React.FC<Props> = ({ defaultValue, onChange }) => {
       icon={<CaseSensitive size={16} />}
       defaultValue={defaultValue}
       onChange={onChange}
-      step={{ px: 1, rem: 0.2 }}
-      min={{ px: 8, rem: 1 }}
+      step={{ px: 1, rem: 0.1 }}
+      min={{ px: 4, rem: 0 }}
       max={{ px: 100, rem: 100 }}
       options={{ px: pxOptions, rem: remOptions, base: otherOptions }}
     />

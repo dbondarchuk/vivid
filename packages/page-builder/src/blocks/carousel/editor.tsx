@@ -1,14 +1,14 @@
 import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { CarouselProps, styles } from "./schema";
 
 export const CarouselEditor = ({ style, props }: CarouselProps) => {
   const currentBlock = useCurrentBlock<CarouselProps>();
 
   const children = currentBlock.data?.props?.children;
-  const className = generateClassName();
+  const className = useClassName();
   const base = currentBlock.base;
 
   // const childWrapper = useCallback(

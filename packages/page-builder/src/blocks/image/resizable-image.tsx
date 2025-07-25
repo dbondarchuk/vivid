@@ -1,17 +1,17 @@
 "use client";
 
-import { cn, useDebounce } from "@vivid/ui";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { getDefaults, styles } from "./styles";
-import { ImageProps } from "./schema";
-import { BlockStyle } from "../../helpers/styling";
 import {
   BaseBlockProps,
   useEditorArgs,
   usePortalContext,
 } from "@vivid/builder";
+import { cn, useDebounce } from "@vivid/ui";
 import { template } from "@vivid/utils";
-import { generateClassName } from "../../helpers/class-name-generator";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
+import { ImageProps } from "./schema";
+import { getDefaults, styles } from "./styles";
 // import Image from "next/image";
 
 type ResizableImageProps = {
@@ -114,62 +114,74 @@ export const ResizableImage = ({
   };
 
   // Handle mouse move during resize
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!resizing) return;
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!resizing) return;
 
-    const deltaX = e.clientX - startPosRef.current.x;
-    const deltaY = e.clientY - startPosRef.current.y;
+      const deltaX = e.clientX - startPosRef.current.x;
+      const deltaY = e.clientY - startPosRef.current.y;
 
-    let newWidth = startDimensionsRef.current.width;
-    let newHeight = startDimensionsRef.current.height;
+      let newWidth = startDimensionsRef.current.width;
+      let newHeight = startDimensionsRef.current.height;
 
-    // Adjust dimensions based on which handle is being dragged
-    switch (activeHandle) {
-      case "bottom-right":
-        newWidth = Math.max(
-          minWidth,
-          startDimensionsRef.current.width + deltaX
-        );
-        newHeight = Math.max(
-          minHeight,
-          startDimensionsRef.current.height + deltaY
-        );
-        break;
-      case "bottom-left":
-        newWidth = Math.max(
-          minWidth,
-          startDimensionsRef.current.width - deltaX
-        );
-        newHeight = Math.max(
-          minHeight,
-          startDimensionsRef.current.height + deltaY
-        );
-        break;
-      case "top-right":
-        newWidth = Math.max(
-          minWidth,
-          startDimensionsRef.current.width + deltaX
-        );
-        newHeight = Math.max(
-          minHeight,
-          startDimensionsRef.current.height - deltaY
-        );
-        break;
-      case "top-left":
-        newWidth = Math.max(
-          minWidth,
-          startDimensionsRef.current.width - deltaX
-        );
-        newHeight = Math.max(
-          minHeight,
-          startDimensionsRef.current.height - deltaY
-        );
-        break;
-    }
+      // Adjust dimensions based on which handle is being dragged
+      switch (activeHandle) {
+        case "bottom-right":
+          newWidth = Math.max(
+            minWidth,
+            startDimensionsRef.current.width + deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startDimensionsRef.current.height + deltaY
+          );
+          break;
+        case "bottom-left":
+          newWidth = Math.max(
+            minWidth,
+            startDimensionsRef.current.width - deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startDimensionsRef.current.height + deltaY
+          );
+          break;
+        case "top-right":
+          newWidth = Math.max(
+            minWidth,
+            startDimensionsRef.current.width + deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startDimensionsRef.current.height - deltaY
+          );
+          break;
+        case "top-left":
+          newWidth = Math.max(
+            minWidth,
+            startDimensionsRef.current.width - deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startDimensionsRef.current.height - deltaY
+          );
+          break;
+      }
 
-    setDimensions(() => ({ width: newWidth, height: newHeight }));
-    setNewDimensions(() => ({ width: newWidth, height: newHeight }));
-  };
+      setDimensions(() => ({ width: newWidth, height: newHeight }));
+      setNewDimensions(() => ({ width: newWidth, height: newHeight }));
+    },
+    [
+      resizing,
+      minWidth,
+      minHeight,
+      startDimensionsRef.current.width,
+      startDimensionsRef.current.height,
+      startPosRef.current.x,
+      startPosRef.current.y,
+      activeHandle,
+    ]
+  );
 
   useEffect(() => {
     if (!newDimensions) return;
@@ -177,14 +189,14 @@ export const ResizableImage = ({
   }, [debouncedNewDimensions]);
 
   // Handle mouse up to stop resizing
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     if (!resizing) return;
 
     setResizing(false);
     setActiveHandle(null);
     documentOrPortal.removeEventListener("mousemove", handleMouseMove);
     documentOrPortal.removeEventListener("mouseup", handleMouseUp);
-  };
+  }, [resizing]);
 
   // Clean up event listeners on unmount
   useEffect(() => {
@@ -235,18 +247,21 @@ export const ResizableImage = ({
     setImageLoaded(true);
   };
 
-  const handleImageMouseDown = (e: React.MouseEvent) => {
-    // Only allow dragging if not resizing
-    if (resizing) return;
+  const handleImageMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      // Only allow dragging if not resizing
+      if (resizing) return;
 
-    e.stopPropagation();
-    setIsDraggingImage(true);
-    dragStartPosRef.current = { x: e.clientX, y: e.clientY };
-    dragStartObjectPosRef.current = { ...objectPosition };
+      e.stopPropagation();
+      setIsDraggingImage(true);
+      dragStartPosRef.current = { x: e.clientX, y: e.clientY };
+      dragStartObjectPosRef.current = { ...objectPosition };
 
-    // Change cursor style
-    documentOrPortal.body.style.cursor = "move";
-  };
+      // Change cursor style
+      documentOrPortal.body.style.cursor = "move";
+    },
+    [resizing, objectPosition]
+  );
 
   const handleImageMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -301,7 +316,7 @@ export const ResizableImage = ({
     };
   }, [isDraggingImage, handleImageMouseMove, handleImageMouseUp]);
 
-  const imgClassName = generateClassName();
+  const imgClassName = useClassName();
   const defaults = getDefaults(props, false);
 
   const args = useEditorArgs();

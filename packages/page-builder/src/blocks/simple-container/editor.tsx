@@ -4,9 +4,9 @@ import {
   useSelectedBlockId,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import React, { useMemo } from "react";
-import { generateClassName } from "../../helpers/class-name-generator";
+import React from "react";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { SimpleContainerProps, styles } from "./schema";
 
 const ChildWrapper = ({
@@ -24,7 +24,7 @@ export const SimpleContainerEditor = ({
   const currentBlock = useCurrentBlock<SimpleContainerProps>();
 
   const children = currentBlock.data?.props?.children;
-  const className = useMemo(() => generateClassName(), []);
+  const className = useClassName();
   const base = currentBlock.base;
   const allowOnly = React.useMemo(() => ["SimpleText", "Icon", "Link"], []);
 

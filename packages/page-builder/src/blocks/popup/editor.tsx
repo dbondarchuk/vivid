@@ -1,23 +1,13 @@
 "use client";
 
 import { EditorBlock, useCurrentBlock } from "@vivid/builder";
-import {
-  Button,
-  cn,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
+import { useI18n } from "@vivid/i18n";
+import { cn, DialogFooter, DialogHeader } from "@vivid/ui";
+import { X } from "lucide-react";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { PopupProps } from "./schema";
 import { styles } from "./styles";
-import { useI18n } from "@vivid/i18n";
-import { X } from "lucide-react";
 
 const disable = {
   disableMove: true,
@@ -33,10 +23,8 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
   const subtitle = currentBlock.data?.props?.subtitle?.children?.[0];
   const content = currentBlock.data?.props?.content?.children?.[0];
   const buttons = currentBlock.data?.props?.buttons?.children?.[0];
-  const className = generateClassName();
+  const className = useClassName();
   const base = currentBlock.base;
-
-  const t = useI18n("builder");
 
   return (
     <>

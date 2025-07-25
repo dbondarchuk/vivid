@@ -592,6 +592,18 @@
       "button": {
         "displayName": "Button",
         "text": "Text",
+        "type": "Type",
+        "action": "Action",
+        "actions": {
+          "openPopup": {
+            "label": "Open Popup",
+            "popupId": "Popup ID",
+            "helperText": "Use base ID of popup block"
+          },
+          "closeCurrentPopup": {
+            "label": "Close Current Popup"
+          }
+        },
         "url": "URL",
         "width": "Width",
         "size": "Size",
@@ -600,6 +612,10 @@
         "widths": {
           "auto": "Auto",
           "full": "Full width"
+        },
+        "types": {
+          "link": "Link",
+          "action": "Action"
         },
         "sizes": {
           "x-small": "X-Small",
@@ -622,8 +638,7 @@
           "center": "Center"
         },
         "errors": {
-          "text": "Text is required",
-          "icon": "Icon is required"
+          "action": "Action is required"
         },
         "prefixIcon": "Prefix Icon",
         "suffixIcon": "Suffix Icon",
@@ -979,7 +994,8 @@
         "show": {
           "label": "Show",
           "always": "Always",
-          "one-time": "One time"
+          "one-time": "One time",
+          "on-click": "On click"
         },
         "shortcuts": {
           "maxWidth": {

@@ -2,9 +2,11 @@
 
 import { createContext, useContext, useEffect, useMemo } from "react";
 
+import { genericMemo } from "@vivid/ui";
+import { deepEqual } from "@vivid/utils";
 import { findBlock } from "../helpers/blocks";
 import { useDocument, useSetBlockDisableOptions } from "./context";
-import { BlockDisableOptions, CoreEditorBlock, TEditorBlock } from "./core";
+import { CoreEditorBlock, TEditorBlock } from "./core";
 
 const EditorBlockContext = createContext<{
   blockId: string;
@@ -40,31 +42,36 @@ type EditorBlockProps = {
   additionalProps?: Record<string, any>;
 };
 
-export const EditorBlock = ({
-  block,
-  isOverlay,
-  disableMove,
-  disableDelete,
-  disableClone,
-  disableDrag,
-  additionalProps,
-}: EditorBlockProps) => {
-  const setBlockDisableOptions = useSetBlockDisableOptions();
+export const EditorBlock = genericMemo(
+  ({
+    block,
+    isOverlay,
+    disableMove,
+    disableDelete,
+    disableClone,
+    disableDrag,
+    additionalProps,
+  }: EditorBlockProps) => {
+    const setBlockDisableOptions = useSetBlockDisableOptions();
 
-  useEffect(() => {
-    setBlockDisableOptions(block.id, {
-      move: disableMove,
-      delete: disableDelete,
-      clone: disableClone,
-      drag: disableDrag,
-    });
-  }, [block.id, disableMove, disableDelete, disableClone, disableDrag]);
+    useEffect(() => {
+      setBlockDisableOptions(block.id, {
+        move: disableMove,
+        delete: disableDelete,
+        clone: disableClone,
+        drag: disableDrag,
+      });
+    }, [block.id, disableMove, disableDelete, disableClone, disableDrag]);
 
-  return (
-    <EditorBlockContext.Provider
-      value={{ blockId: block.id, isOverlay: !!isOverlay }}
-    >
-      <CoreEditorBlock {...block} additionalProps={additionalProps} />
-    </EditorBlockContext.Provider>
-  );
-};
+    return (
+      <EditorBlockContext.Provider
+        value={{ blockId: block.id, isOverlay: !!isOverlay }}
+      >
+        <CoreEditorBlock {...block} additionalProps={additionalProps} />
+      </EditorBlockContext.Provider>
+    );
+  },
+  (prevProps, nextProps) => {
+    return deepEqual(prevProps, nextProps);
+  }
+);

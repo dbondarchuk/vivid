@@ -1,4 +1,11 @@
-import { Button, cn, Popover, PopoverContent, PopoverTrigger } from "@vivid/ui";
+import {
+  Button,
+  cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  useDebounceCallback,
+} from "@vivid/ui";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
 
@@ -38,19 +45,23 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
   disabled,
 }) => {
   const [isFocused, setIsFocused] = React.useState(false);
-  const handleInputChange = (value: number | null) => {
-    if (value === null && !nullable) return;
-    if (
-      value !== null &&
-      ((typeof min !== "undefined" && value < min) ||
-        (typeof max !== "undefined" && value > max))
-    ) {
-      if (nullable) setValue(null);
-      return;
-    }
+  const handleInputChange = useDebounceCallback(
+    (value: number | null) => {
+      if (value === null && !nullable) return;
+      if (
+        value !== null &&
+        ((typeof min !== "undefined" && value < min) ||
+          (typeof max !== "undefined" && value > max))
+      ) {
+        if (nullable) setValue(null);
+        return;
+      }
 
-    setValue(value as number);
-  };
+      setValue(value as number);
+    },
+    [setValue, nullable, min, max],
+    50
+  );
 
   const parseFn = (val: string) =>
     val.length === 0 ? null : float ? parseFloat(val) : parseInt(val);

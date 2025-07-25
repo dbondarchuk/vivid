@@ -2,8 +2,8 @@
 
 import { EditorBlock, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { HeadingProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
@@ -19,7 +19,7 @@ export function HeadingEditor({ props, style }: HeadingProps) {
   const content = currentBlock?.data?.props?.children?.[0];
   const base = currentBlock.base;
 
-  const className = generateClassName();
+  const className = useClassName();
   const defaults = getDefaults(currentBlock.data || {}, true);
 
   const Element = currentBlock?.data?.props?.level || "h2";

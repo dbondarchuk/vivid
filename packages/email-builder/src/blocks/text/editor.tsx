@@ -2,6 +2,7 @@ import {
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
+  usePortalContext,
   useSelectedBlockId,
 } from "@vivid/builder";
 import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
@@ -15,6 +16,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
 
   const currentBlockId = useCurrentBlockId();
   const selectedBlockId = useSelectedBlockId();
+  const { document } = usePortalContext();
   const isSelected = selectedBlockId === currentBlockId;
 
   const onChange = (value: any) => {
@@ -38,6 +40,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
       value={currentBlock?.data?.props?.value}
       onChange={onChange}
       style={styles}
+      document={document}
     />
   ) : (
     <PlateStaticEditor value={props?.value} style={styles} />

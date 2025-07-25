@@ -1,19 +1,17 @@
 "use client";
+import { BuilderKeys, useI18n } from "@vivid/i18n";
 import { cn, Combobox } from "@vivid/ui";
-import React, { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   NumberValueWithUnit,
-  NumberValueWithUnitOrKeyword,
   NumberValueWithUnitOrGlobalKeyword,
-  Unit,
+  NumberValueWithUnitOrKeyword,
 } from "../../style/zod";
 import {
   RawNumberInputWithUnit,
   RawNumberInputWithUnitsProps,
 } from "./raw-number-input-with-units";
-import { BuilderKeys, useI18n } from "@vivid/i18n";
 import { CSSValueOption } from "./types";
-import { renderRawNumberWithUnitCss } from "../../style/utils";
 
 type BaseRawNumberInputWithUnitsAndKeywordsProps = Pick<
   RawNumberInputWithUnitsProps,
@@ -41,6 +39,30 @@ interface RawNumberInputWithUnitsAndKeywordsPropsWithoutKeywords
 type RawNumberInputWithUnitsAndKeywordsProps<T extends string> =
   | RawNumberInputWithUnitsAndKeywordsPropsWithKeywords<T>
   | RawNumberInputWithUnitsAndKeywordsPropsWithoutKeywords;
+
+// Create options list
+const globalKeywords = [
+  {
+    value: "auto",
+    label: "pageBuilder.styles.keywords.auto",
+    isKeyword: false,
+  },
+  {
+    value: "inherit",
+    label: "pageBuilder.styles.keywords.inherit",
+    isKeyword: false,
+  },
+  {
+    value: "initial",
+    label: "pageBuilder.styles.keywords.initial",
+    isKeyword: false,
+  },
+  {
+    value: "unset",
+    label: "pageBuilder.styles.keywords.unset",
+    isKeyword: false,
+  },
+] as const satisfies CSSValueOption<string>[];
 
 export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
   value,
@@ -83,33 +105,12 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
     }
   };
 
-  const handleCustomValueChange = (newValue: NumberValueWithUnit | null) => {
-    onChange((newValue ?? { value: 0, unit: defaultUnit }) as any);
-  };
-
-  // Create options list
-  const globalKeywords = [
-    {
-      value: "auto",
-      label: "pageBuilder.styles.keywords.auto",
-      isKeyword: false,
+  const handleCustomValueChange = useCallback(
+    (newValue: NumberValueWithUnit | null) => {
+      onChange((newValue ?? { value: 0, unit: defaultUnit }) as any);
     },
-    {
-      value: "inherit",
-      label: "pageBuilder.styles.keywords.inherit",
-      isKeyword: false,
-    },
-    {
-      value: "initial",
-      label: "pageBuilder.styles.keywords.initial",
-      isKeyword: false,
-    },
-    {
-      value: "unset",
-      label: "pageBuilder.styles.keywords.unset",
-      isKeyword: false,
-    },
-  ] as const satisfies CSSValueOption<string>[];
+    [onChange, defaultUnit]
+  );
 
   const t = useI18n("builder");
 
@@ -133,11 +134,11 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
       ];
 
   // Find the current keyword value
-  const currentKeyword = isCustomValue
-    ? "custom"
-    : typeof value === "string"
-      ? value
-      : undefined;
+  const currentKeyword = useMemo(
+    () =>
+      isCustomValue ? "custom" : typeof value === "string" ? value : undefined,
+    [isCustomValue, value]
+  );
 
   return (
     <div className={cn("flex flex-col gap-2 w-full", className)}>

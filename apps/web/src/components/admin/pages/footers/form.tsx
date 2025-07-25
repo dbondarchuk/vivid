@@ -20,6 +20,7 @@ import {
   SaveButton,
   toastPromise,
   useDebounceCacheFn,
+  useUnsavedChangesPrompt,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
@@ -30,6 +31,11 @@ import {
   createPageFooter,
   updatePageFooter,
 } from "./actions";
+import { useNavigationGuard } from "next-navigation-guard";
+import {
+  NavigationGuardDialog,
+  useIsDirty,
+} from "../../navigation-guard/dialog";
 
 export const PageFooterForm: React.FC<{
   initialData?: PageFooter;
@@ -60,6 +66,11 @@ export const PageFooterForm: React.FC<{
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {},
+  });
+
+  // Enable unsaved changes prompt
+  const navGuard = useNavigationGuard({
+    enabled: form.formState.isDirty,
   });
 
   const breadcrumbItems = React.useMemo(
@@ -99,6 +110,7 @@ export const PageFooterForm: React.FC<{
     [form]
   );
 
+  const { isFormDirty, onFormSubmit } = useIsDirty(form);
   const onSubmit = async (data: PageFormValues) => {
     try {
       setLoading(true);
@@ -106,11 +118,19 @@ export const PageFooterForm: React.FC<{
       const fn = async () => {
         if (!initialData) {
           const { _id } = await createPageFooter(data);
-          router.push(`/admin/dashboard/pages/footers/${_id}`);
+
+          onFormSubmit();
+
+          setTimeout(() => {
+            router.push(`/admin/dashboard/pages/footers/${_id}`);
+          }, 100);
         } else {
           await updatePageFooter(initialData._id, data);
+          onFormSubmit();
 
-          router.refresh();
+          setTimeout(() => {
+            router.refresh();
+          }, 100);
         }
       };
 
@@ -127,6 +147,7 @@ export const PageFooterForm: React.FC<{
 
   return (
     <Form {...form}>
+      <NavigationGuardDialog isDirty={isFormDirty} />
       <Breadcrumbs items={breadcrumbItems} />
       <form
         onSubmit={form.handleSubmit(onSubmit)}

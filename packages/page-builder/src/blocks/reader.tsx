@@ -2,7 +2,7 @@ import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
 import { Accordion } from "./accordion/reader";
 import { AccordionItem } from "./accordion-item/reader";
 import { BookingReader } from "./booking/reader";
-import { Button } from "./button/reader";
+import { ButtonReader } from "./button/reader";
 import { CarouselReader } from "./carousel/reader";
 import { ConditionalContainerReader } from "./conditional-container/reader";
 import { ContainerReader } from "./container/reader";
@@ -30,7 +30,7 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
     Reader: Image,
   },
   Button: {
-    Reader: Button,
+    Reader: ButtonReader,
   },
   Link: {
     Reader: Link,

@@ -23,11 +23,12 @@ import {
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
+import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
 import { createTemplate, updateTemplate } from "./actions";
-import { TextMessageBuilder } from "./text-message-builder";
 import { TemplatesTemplate } from "./templates/type";
+import { TextMessageBuilder } from "./text-message-builder";
 
 const checkUniqueName = async (name: string, id?: string) => {
   const url = `/admin/api/templates/check?name=${encodeURIComponent(name)}${id ? `&id=${encodeURIComponent(id)}` : ""}`;
@@ -81,6 +82,8 @@ export const TemplateForm: React.FC<
     },
   });
 
+  const { isFormDirty, onFormSubmit } = useIsDirty(form);
+
   const onSubmit = async (data: TemplateFormValues) => {
     try {
       setLoading(true);
@@ -88,11 +91,18 @@ export const TemplateForm: React.FC<
       const fn = async () => {
         if (!initialData) {
           const { _id } = await createTemplate(data);
-          router.push(`/admin/dashboard/templates/${_id}`);
+          onFormSubmit();
+
+          setTimeout(() => {
+            router.push(`/admin/dashboard/templates/${_id}`);
+          }, 100);
         } else {
           await updateTemplate(initialData._id, data);
+          onFormSubmit();
 
-          router.refresh();
+          setTimeout(() => {
+            router.refresh();
+          }, 100);
         }
       };
 
@@ -120,6 +130,7 @@ export const TemplateForm: React.FC<
 
   return (
     <Form {...form}>
+      <NavigationGuardDialog isDirty={isFormDirty} />
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full h-full space-y-8"

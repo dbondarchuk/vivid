@@ -33,7 +33,14 @@ export const LinkPropsDefaults = () =>
           type: "SimpleContainer",
           id: generateId(),
           data: {
-            style: SimpleContainerPropsDefaults.style,
+            style: {
+              ...SimpleContainerPropsDefaults.style,
+              textDecoration: [
+                {
+                  value: "underline",
+                },
+              ],
+            },
             props: {
               children: [
                 {
@@ -55,11 +62,6 @@ export const LinkPropsDefaults = () =>
       color: [
         {
           value: COLORS["primary"].value,
-        },
-      ],
-      textDecoration: [
-        {
-          value: "underline",
         },
       ],
       fontSize: [
