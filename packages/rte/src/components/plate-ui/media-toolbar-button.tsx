@@ -108,6 +108,7 @@ export function MediaToolbarButton({
         nodeType === FilePlugin.key ? asset.url.split("/").pop() : undefined,
       type: nodeType,
       url: asset.url,
+      isUpload: true,
     });
   };
 

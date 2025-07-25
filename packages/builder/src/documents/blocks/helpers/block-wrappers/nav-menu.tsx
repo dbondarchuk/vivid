@@ -16,12 +16,16 @@ import {
 } from "../../../editor/context";
 import { findBlockHierarchy } from "../../../helpers/blocks";
 import { useI18n } from "@vivid/i18n";
+import { BlockDisableOptions } from "../../../editor/core";
 
 type Props = {
   blockId: string;
+  disable?: BlockDisableOptions;
 };
 
-export const NavMenu: React.FC<Props> = ({ blockId }) => {
+const MAX_DISPLAY_LAST_ELEMENTS = 3;
+
+export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
   const dispatchAction = useDispatchAction();
@@ -86,36 +90,56 @@ export const NavMenu: React.FC<Props> = ({ blockId }) => {
       <Toolbar
         role="presentation"
         aria-label="breadcrumb"
-        className="bg-background shadow p-1 absolute -top-9 -left-0.5 w-max flex-wrap"
+        className="bg-background shadow p-1 w-max flex-wrap"
       >
-        <ToolbarGroup>
-          <ToolbarButton
-            tooltip={t("baseBuilder.navMenu.moveUp")}
-            onClick={() => handleMoveClick("up")}
-          >
-            <ArrowUp fontSize="small" />
-          </ToolbarButton>
-          <ToolbarButton
-            onClick={() => handleMoveClick("down")}
-            tooltip={t("baseBuilder.navMenu.moveDown")}
-          >
-            <ArrowDown fontSize="small" />
-          </ToolbarButton>
-        </ToolbarGroup>
-        <ToolbarGroup>
-          <ToolbarButton
-            onClick={handleCloneClick}
-            tooltip={t("baseBuilder.navMenu.clone")}
-          >
-            <Copy fontSize="small" />
-          </ToolbarButton>
-          <ToolbarButton
-            onClick={handleDeleteClick}
-            tooltip={t("baseBuilder.navMenu.delete")}
-          >
-            <Trash fontSize="small" />
-          </ToolbarButton>
-        </ToolbarGroup>
+        {!disable?.move && (
+          <ToolbarGroup>
+            <ToolbarButton
+              tooltip={t("baseBuilder.navMenu.moveUp")}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleMoveClick("up");
+              }}
+            >
+              <ArrowUp fontSize="small" />
+            </ToolbarButton>
+            <ToolbarButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handleMoveClick("down");
+              }}
+              tooltip={t("baseBuilder.navMenu.moveDown")}
+            >
+              <ArrowDown fontSize="small" />
+            </ToolbarButton>
+          </ToolbarGroup>
+        )}
+        {(!disable?.delete || !disable?.clone) && (
+          <ToolbarGroup>
+            {!disable?.clone && (
+              <ToolbarButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCloneClick();
+                }}
+                tooltip={t("baseBuilder.navMenu.clone")}
+              >
+                <Copy fontSize="small" />
+              </ToolbarButton>
+            )}
+            {!disable?.delete && (
+              <ToolbarButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick();
+                }}
+                tooltip={t("baseBuilder.navMenu.delete")}
+              >
+                <Trash fontSize="small" />
+              </ToolbarButton>
+            )}
+          </ToolbarGroup>
+        )}
         {/* <ToolbarGroup>
           {BlockToolbar && (
             <BlockToolbar data={block.data} setData={setBlockData} />
@@ -124,18 +148,42 @@ export const NavMenu: React.FC<Props> = ({ blockId }) => {
         <Breadcrumb aria-label="breadcrumb">
           <BreadcrumbList className="gap-0.5 sm:gap-0.5 text-xs text-foreground">
             {hierarchy?.map(({ id, displayName }, index) => {
+              // Show first element, last two elements, and "..." for middle elements
+              const shouldShow =
+                index === 0 ||
+                index >= hierarchy.length - MAX_DISPLAY_LAST_ELEMENTS;
+              const isMiddleElement =
+                !shouldShow &&
+                index > 0 &&
+                index < hierarchy.length - MAX_DISPLAY_LAST_ELEMENTS;
+              const isLastMiddleElement =
+                isMiddleElement &&
+                index === hierarchy.length - (MAX_DISPLAY_LAST_ELEMENTS + 1);
+
+              if (isMiddleElement && !isLastMiddleElement) {
+                return null; // Skip middle elements except the last one
+              }
+
               return (
                 <React.Fragment key={index}>
-                  <span
-                    className="hover:underline cursor-pointer "
-                    role="link"
-                    onClick={(event) => handleBlockIdClick(event, id)}
-                    key={id}
-                  >
-                    {t(displayName)}
-                  </span>
-                  {index < hierarchy.length - 1 && (
-                    <BreadcrumbSeparator className="hidden md:block  [&>svg]:size-3">
+                  {isLastMiddleElement ? (
+                    <>
+                      <span className="text-muted-foreground">...</span>
+                      <BreadcrumbSeparator className="hidden md:block [&>svg]:size-3">
+                        <Slash />
+                      </BreadcrumbSeparator>
+                    </>
+                  ) : (
+                    <span
+                      className="hover:underline cursor-pointer"
+                      role="link"
+                      onClick={(event) => handleBlockIdClick(event, id)}
+                    >
+                      {t(displayName)}
+                    </span>
+                  )}
+                  {index < hierarchy.length - 1 && shouldShow && (
+                    <BreadcrumbSeparator className="hidden md:block [&>svg]:size-3">
                       <Slash />
                     </BreadcrumbSeparator>
                   )}

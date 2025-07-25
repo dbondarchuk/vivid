@@ -4,11 +4,7 @@ import { GeneralConfiguration } from "./general";
 import { ScheduleConfiguration } from "./schedule";
 import { ScriptsConfiguration } from "./scripts";
 import { SocialConfiguration } from "./social";
-import {
-  FooterConfiguration,
-  HeaderConfiguration,
-  StylingConfiguration,
-} from "./styling";
+import { StylingConfiguration } from "./styling";
 
 export * from "./apps";
 export * from "./booking";
@@ -22,8 +18,6 @@ export * from "./styling";
 export type Configuration = {
   general: GeneralConfiguration;
   social: SocialConfiguration;
-  header: HeaderConfiguration;
-  footer: FooterConfiguration;
   booking: BookingConfiguration;
   defaultApps: DefaultAppsConfiguration;
   scripts: ScriptsConfiguration;

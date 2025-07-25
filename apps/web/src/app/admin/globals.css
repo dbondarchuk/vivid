@@ -199,3 +199,10 @@
   --alpha-pointer-background-color: #6a6a6a !important;
   --alpha-pointer-box-shadow: rgb(0 0 0 / 37%) 0px 1px 4px 0px !important;
 }
+
+[contenteditable]:empty:before,
+[contenteditable]:has(> br:only-child):before {
+  content: attr(placeholder);
+  opacity: 0.6;
+  cursor: text;
+}

@@ -4,8 +4,9 @@ import {
   useEditorStateStore,
   useSelectedBlock,
 } from "../../../documents/editor/context";
-import { TEditorBlock } from "../../../documents/editor/core";
+import { BaseBlockProps } from "../../../documents/types";
 import BaseSidebarPanel from "./input-panels/helpers/base-sidebar-panel";
+import { useCallback } from "react";
 
 function renderMessage(val: string) {
   return (
@@ -16,11 +17,33 @@ function renderMessage(val: string) {
 }
 
 export const ConfigurationPanel: React.FC = () => {
-  const selectedBlock: TEditorBlock = useSelectedBlock();
+  const selectedBlock = useSelectedBlock();
   const dispatchAction = useDispatchAction();
 
   const blocks = useEditorStateStore((s) => s.blocks);
   const t = useI18n("builder");
+
+  const setBlock = useCallback(
+    (data: any) => {
+      if (!selectedBlock) return;
+      dispatchAction({
+        type: "set-block-data",
+        value: { blockId: selectedBlock.id, data },
+      });
+    },
+    [dispatchAction, selectedBlock?.id]
+  );
+
+  const setBase = useCallback(
+    (base: BaseBlockProps) => {
+      if (!selectedBlock) return;
+      dispatchAction({
+        type: "set-block-base",
+        value: { blockId: selectedBlock.id, base },
+      });
+    },
+    [dispatchAction, selectedBlock?.id]
+  );
 
   if (!selectedBlock) {
     return renderMessage(
@@ -28,19 +51,18 @@ export const ConfigurationPanel: React.FC = () => {
     );
   }
 
-  const setBlock = (data: any) => {
-    dispatchAction({
-      type: "set-block-data",
-      value: { blockId: selectedBlock.id, data },
-    });
-  };
-
-  const { data, type, id } = selectedBlock;
+  const { data, type, id, base } = selectedBlock;
   const Panel = blocks[type].Configuration;
 
   return (
     <BaseSidebarPanel title={blocks[selectedBlock.type].displayName}>
-      <Panel data={data} setData={setBlock} key={id} />
+      <Panel
+        data={data}
+        setData={setBlock}
+        key={id}
+        base={base}
+        onBaseChange={setBase}
+      />
     </BaseSidebarPanel>
   );
 };

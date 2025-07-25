@@ -12,6 +12,7 @@ import {
   useEditorRef,
 } from "@udecode/plate/react";
 import { cva } from "class-variance-authority";
+import { WindowContext } from "./window-context";
 
 const editorContainerVariants = cva(
   "relative w-full cursor-text overflow-y-auto caret-primary select-text selection:bg-brand/25 focus-visible:outline-none [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border [&_.slate-selection-area]:border-brand/25 [&_.slate-selection-area]:bg-brand/15",
@@ -35,23 +36,28 @@ const editorContainerVariants = cva(
 export const EditorContainer = ({
   className,
   variant,
+  context,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof editorContainerVariants>) => {
+  VariantProps<typeof editorContainerVariants> & {
+    context?: Window | null;
+  }) => {
   const editor = useEditorRef();
   const containerRef = useEditorContainerRef();
 
   return (
-    <div
-      id={editor.uid}
-      ref={containerRef}
-      className={cn(
-        "ignore-click-outside/toolbar",
-        editorContainerVariants({ variant }),
-        className
-      )}
-      {...props}
-    />
+    <WindowContext.Provider value={context}>
+      <div
+        id={editor.uid}
+        ref={containerRef}
+        className={cn(
+          "ignore-click-outside/toolbar",
+          editorContainerVariants({ variant }),
+          className
+        )}
+        {...props}
+      />
+    </WindowContext.Provider>
   );
 };
 

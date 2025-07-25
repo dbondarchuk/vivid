@@ -108,11 +108,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   useOpenState,
+  ToolbarButton,
 } from "@vivid/ui";
 import { EditorStatic } from "./editor-static";
 import { EquationElementStatic } from "./equation-element-static";
 import { InlineEquationElementStatic } from "./inline-equation-element-static";
-import { ToolbarButton } from "./toolbar";
 
 const siteUrl = "https://platejs.org";
 

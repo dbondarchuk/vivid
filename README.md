@@ -12,7 +12,7 @@ Vivid is a comprehensive appointment booking and business management platform bu
 - **Payment Processing** - Integrated payment solutions with refund capabilities
 - **Asset Management** - File storage and management system
 - **Template System** - Customizable email and SMS templates
-- **Visual builder** - Visual drag-n-drop for pages (_in progress_) email templates
+- **Visual builder** - Visual drag-n-drop for pages and email templates
 - **Admin Dashboard** - Comprehensive business management interface
 
 ### Technical Features
@@ -54,6 +54,7 @@ vivid/
 - **@vivid/logger** - Structured logging with module and function context
 - **@vivid/builder** - Visual builder
 - **@vivid/email-builder** - Drag-and-drop email template builder
+- **@vivid/page-builder** - Drag-and-drop page builder
 
 ## 🛠️ Technology Stack
 

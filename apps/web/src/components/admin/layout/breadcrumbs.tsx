@@ -61,7 +61,7 @@ export const BreadcrumbsRender = () => {
               )}
               {index < items.length - 1 && (
                 <BreadcrumbSeparator className="hidden md:block">
-                  <Slash />
+                  {/* <Slash /> */}
                 </BreadcrumbSeparator>
               )}
               {index === items.length - 1 && (

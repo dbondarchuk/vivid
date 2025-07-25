@@ -2,7 +2,7 @@ import { FormItem, FormControl, FormField } from "@vivid/ui";
 
 import { FieldValues } from "react-hook-form";
 import { FormFieldLabel } from "./form-field-label";
-import { getFieldName, IFormFieldProps } from "./form-fiel.types";
+import { getFieldName, IFormFieldProps } from "./form-field.types";
 import { FieldOptionsData, WithLabelFieldData } from "@vivid/types";
 import {
   Select,

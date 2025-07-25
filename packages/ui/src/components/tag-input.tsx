@@ -11,6 +11,7 @@ import { Badge } from "./badge";
 import { Button } from "./button";
 import type { InputProps } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { cva } from "class-variance-authority";
 
 const parseTagOpt = (params: {
   tags: string[];
@@ -30,6 +31,23 @@ const parseTagOpt = (params: {
 
   return Option.none();
 };
+
+const tagInputVariant = cva(
+  "has-[:focus-visible]:ring-ring flex w-full flex-wrap gap-2 rounded-md border border-input bg-background text-base ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2",
+  {
+    variants: {
+      h: {
+        xs: "min-h-7 px-1.5 py-1 text-xs",
+        sm: "min-h-8 px-2 py-1 text-xs",
+        md: "min-h-9 px-3 py-2 text-sm",
+        lg: "min-h-10 px-4 py-3 text-base",
+      },
+    },
+    defaultVariants: {
+      h: "md",
+    },
+  }
+);
 
 type TagInputProps = Omit<InputProps, "value" | "onChange"> & {
   value?: ReadonlyArray<string>;
@@ -119,7 +137,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>((props, ref) => {
     <div
       className={cn(
         // caveat: :has() variant requires tailwind v3.4 or above: https://tailwindcss.com/blog/tailwindcss-v3-4#new-has-variant
-        "has-[:focus-visible]:ring-ring flex min-h-9 w-full flex-wrap gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2",
+        tagInputVariant({ h: props.h ?? undefined }),
         className
       )}
     >

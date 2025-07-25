@@ -1,4 +1,3 @@
-import { Markdown } from "@/components/web/markdown";
 import { AvailableApps } from "@vivid/app-store";
 import {
   Button,
@@ -10,6 +9,7 @@ import {
   ConnectedAppNameAndLogo,
   Heading,
   Link,
+  Markdown,
 } from "@vivid/ui";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";

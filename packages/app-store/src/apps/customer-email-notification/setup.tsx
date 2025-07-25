@@ -196,12 +196,14 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                         {isDataLoading ? (
                           <Skeleton className="w-full h-10" />
                         ) : (
-                          <Input
+                          <ArgumentsAutocomplete
                             disabled={isLoading}
                             placeholder={t(
                               `customerEmailNotification.form.calendarEventTemplate.summary.placeholder`
                             )}
                             {...field}
+                            asInput
+                            args={demoArguments}
                           />
                         )}
                       </FormControl>

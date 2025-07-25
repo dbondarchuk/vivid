@@ -239,9 +239,6 @@
     "emailAlreadyExists": "There is already a customer with one or more of the emails",
     "phoneAlreadyExists": "There is already a customer with one or more of the phones"
   },
-  "pages": {
-    "slugMustBeUnique": "Page slug must be unique"
-  },
   "templates": {
     "nameMustBeUnique": "Template name must be unique"
   },
@@ -628,7 +625,8 @@
     },
     "slug": {
       "required": "Page slug is required",
-      "invalid": "Page slug must contain only latin lower case letters, digits, slash, and hyphens"
+      "invalid": "Page slug must contain only latin lower case letters, digits, slash, and hyphens",
+      "unique": "Page slug must be unique"
     },
     "description": {
       "required": "Page description is required"
@@ -641,6 +639,20 @@
     },
     "tag": {
       "min": "Tag should be at least 3 characters long"
+    },
+    "headers": {
+      "name": {
+        "required": "Page header name is required",
+        "min": "Page header name must be at least 2 characters long",
+        "unique": "Page header name must be unique"
+      }
+    },
+    "footers": {
+      "name": {
+        "required": "Page footer name is required",
+        "min": "Page footer name must be at least 2 characters long",
+        "unique": "Page footer name must be unique"
+      }
     }
   },
   "template": {

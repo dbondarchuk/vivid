@@ -65,7 +65,13 @@
       "close": "Закрити"
     },
     "optional": "Опціонально",
-    "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}"
+    "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
+    "navigationGuard": {
+      "title": "Ви впевнені, що хочете покинути цю сторінку?",
+      "description": "У вас є незбережені зміни. Ви впевнені, що хочете покинути цю сторінку?",
+      "cancel": "Скасувати",
+      "leave": "Покинути"
+    }
   },
   "navigation": {
     "overview": "Огляд",
@@ -81,6 +87,8 @@
     "customers": "Клієнти",
     "website": "Веб-сайт",
     "pages": "Сторінки",
+    "pageHeaders": "Заголовки",
+    "pageFooters": "Підвали",
     "assets": "Ресурси",
     "appearance": "Зовнішній вигляд",
     "styling": "Стилізація",
@@ -545,7 +553,7 @@
       "title": "Заголовок",
       "titlePlaceholder": "Заголовок сторінки",
       "doNotCombineTitle": "Не об'єднувати заголовок",
-      "doNotCombineTitleTooltip": "Чи повинен заголовок сторінки об'єднуватися з заголовком веб-сайту для SEO як 'Заголовок сторінки - Назва веб-сайту'",
+      "doNotCombineTitleTooltip": "Чи повинен заголовок сторінки об'єднуватися з заголовком веб-сайту для SEO як 'Заголовок сторінки | Назва веб-сайту'",
       "description": "Опис",
       "descriptionPlaceholder": "Опис сторінки",
       "descriptionTooltip": "Також використовується компонентом списку сторінок (тобто списком блогу) для показу попереднього перегляду",
@@ -558,7 +566,10 @@
       "fullWidthPage": "Сторінка на всю ширину",
       "fullWidthPageTooltip": "Якщо увімкнено, сторінка не буде обгорнута в елемент Container",
       "language": "Мова",
-      "defaultLanguage": "За замовчуванням"
+      "defaultLanguage": "За замовчуванням",
+      "settingsTabLabel": "Налаштування",
+      "header": "Заголовок",
+      "footer": "Підвал"
     },
     "table": {
       "columns": {
@@ -605,6 +616,116 @@
       "pageDeleted": "Сторінку '{title}' було видалено.",
       "relativeUrlCopied": "Відносний url сторінки '{url}' скопійовано в буфер обміну.",
       "absoluteUrlCopied": "Абсолютний url сторінки '{url}' скопійовано в буфер обміну."
+    },
+    "headers": {
+      "title": "Заголовки сторінок",
+      "managePageHeaders": "Керувати заголовками сторінок",
+      "managePageHeader": "Керувати заголовком сторінки",
+      "addNewPageHeader": "Додати новий заголовок сторінки",
+      "new": "Новий заголовок",
+      "newPageHeader": "Новий заголовок сторінки",
+      "addNew": "Додати новий",
+      "edit": "Редагувати заголовок",
+      "delete": "Видалити заголовок",
+      "view": "Переглянути заголовок",
+      "table": {
+        "columns": {
+          "name": "Назва",
+          "usedCount": "Використано у сторінках",
+          "updatedAt": "Оновлено",
+          "actions": "Дії"
+        },
+        "actions": {
+          "selectAll": "Вибрати все",
+          "selectRow": "Вибрати рядок",
+          "openMenu": "Відкрити меню",
+          "actions": "Дії",
+          "edit": "Редагувати",
+          "delete": "Видалити"
+        },
+        "delete": {
+          "title": "Ви абсолютно впевнені?",
+          "description": "Цю дію неможливо скасувати. Це видалить вибрані заголовки",
+          "confirm": "Видалити вибрані",
+          "cancel": "Скасувати",
+          "selectedCount": "Видалити {count, plural, =1 {вибраний заголовок} few {вибрані # заголовки} many {вибрані # заголовки} other {вибрані # заголовки}}",
+          "success": "Вибрані заголовки були видалені",
+          "error": "Виникла проблема з вашим запитом."
+        }
+      },
+      "form": {
+        "name": "Назва",
+        "namePlaceholder": "Назва заголовка",
+        "nameTooltip": "Унікальна назва заголовка",
+        "menuTooltip": "Елементи меню для заголовка",
+        "showLogoTooltip": "Чи повинен показуватися логотип в заголовку",
+        "sticky": "Закріплений",
+        "stickyTooltip": "Чи повинен заголовок рухатися з прокруткою сторінки",
+        "stickyHeader": "Закріплений заголовок",
+        "stickyHeaderDescription": "Чи повинен заголовок рухатися з прокруткою сторінки",
+        "showLogo": "Показати логотип",
+        "showLogoDescription": "Чи повинен логотип показуватися в заголовку",
+        "headerShadow": "Тінь заголовка",
+        "selectShadowType": "Вибрати тип тіні",
+        "menu": "Меню"
+      },
+      "shadowType": {
+        "none": "Немає",
+        "static": "Статичний",
+        "on-scroll": "При прокрутці"
+      },
+      "toasts": {
+        "pageHeaderDeleted": "Заголовок сторінки '{name}' було видалено.",
+        "changesSaved": "Ваші зміни були збережені.",
+        "requestError": "Виникла проблема з вашим запитом."
+      },
+      "usedOnPages": "Використано у {count, plural, =1 {сторінці} other {# сторінках}}"
+    },
+    "footers": {
+      "title": "Підвали сторінок",
+      "new": "Новий підвал",
+      "edit": "Редагувати підвал",
+      "addNew": "Додати новий",
+      "addNewPageFooter": "Додати новий підвал сторінки",
+      "managePageFooters": "Керувати підвалами сторінок",
+      "managePageFooter": "Керувати підвалом сторінки",
+      "usedOnPages": "Використано у {count, plural, =1 {сторінці} other {# сторінках}}",
+      "form": {
+        "name": "Назва",
+        "namePlaceholder": "Назва підвалу",
+        "nameTooltip": "Унікальна назва підвалу",
+        "content": "Вміст"
+      },
+      "toasts": {
+        "pageFooterDeleted": "Підвал сторінки '{name}' було видалено.",
+        "changesSaved": "Ваші зміни були збережені.",
+        "requestError": "Виникла проблема з вашим запитом."
+      },
+      "table": {
+        "columns": {
+          "name": "Назва",
+          "usedCount": "Використано у сторінках",
+          "updatedAt": "Оновлено",
+          "actions": "Дії"
+        },
+        "delete": {
+          "title": "Ви абсолютно впевнені?",
+          "description": "Цю дію неможливо скасувати. Це видалить вибрані підвали",
+          "confirm": "Видалити вибрані",
+          "cancel": "Скасувати",
+          "selectedCount": "Видалити {count, plural, =1 {вибраний підвал} few {вибрані # підвали} many {вибрані # підвали} other {вибрані # підвали}}",
+          "success": "Вибрані підвали були видалені",
+          "error": "Виникла проблема з вашим запитом."
+        },
+        "actions": {
+          "selectAll": "Вибрати все",
+          "selectRow": "Вибрати рядок",
+          "openMenu": "Відкрити меню",
+          "actions": "Дії",
+          "edit": "Редагувати",
+          "delete": "Видалити"
+        }
+      }
     }
   },
   "services": {
@@ -1020,24 +1141,34 @@
         "cancel": "Скасувати",
         "delete": "Видалити",
         "type": "Тип",
-        "selectColorOverrideType": "Вибрати тип перевизначення кольору"
-      }
-    },
-    "header": {
-      "title": "Меню заголовка",
-      "description": "Налаштувати посилання та стиль заголовка",
-      "form": {
-        "showLogo": "Показати логотип",
-        "showLogoDescription": "Чи повинен логотип показуватися в заголовку",
-        "stickyHeader": "Закріплений заголовок",
-        "stickyHeaderDescription": "Чи повинен заголовок рухатися з прокруткою сторінки",
-        "headerShadow": "Тінь заголовка",
-        "selectShadowType": "Вибрати тип тіні",
-        "menu": "Меню",
+        "selectColorOverrideType": "Вибрати тип перевизначення кольору",
+        "color": "Колір",
+        "colorTooltip": "Колір в CSS форматі (HEX, rgb, rgba, hsl)",
+        "additionalCss": "Додатковий CSS",
         "toasts": {
           "changesSaved": "Ваші зміни були збережені.",
           "requestError": "Виникла проблема з вашим запитом."
         }
+      },
+      "colors": {
+        "default": "За замовчуванням",
+        "custom": "Власний колір",
+        "background": "Фон",
+        "foreground": "Текст",
+        "card": "Картка",
+        "card-foreground": "Текст картки",
+        "popover": "Спливаюче вікно",
+        "popover-foreground": "Текст спливаючого вікна",
+        "primary": "Основний",
+        "primary-foreground": "Основний текст",
+        "secondary": "Додатковий",
+        "secondary-foreground": "Додатковий текст",
+        "muted": "Приглушений",
+        "muted-foreground": "Приглушений текст",
+        "accent": "Акцент",
+        "accent-foreground": "Акцентний текст",
+        "destructive": "Руйнівний",
+        "destructive-foreground": "Руйнівний текст"
       }
     },
     "footer": {
@@ -1446,11 +1577,17 @@
     "quoteAuthor": "Олеся Бондарчук"
   },
   "menuItem": {
+    "labels": {
+      "icon": "Іконка",
+      "link": "Посилання",
+      "button": "Кнопка",
+      "submenu": "Підменю"
+    },
     "fields": {
       "url": "Url",
       "urlPlaceholder": "Посилання",
-      "label": "Мітка",
-      "labelPlaceholder": "Мітка",
+      "label": "Текст",
+      "labelPlaceholder": "Текст",
       "icon": "Іконка",
       "variant": "Варіант",
       "selectVariant": "Вибрати варіант посилання",

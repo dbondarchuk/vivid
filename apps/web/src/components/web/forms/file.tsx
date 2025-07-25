@@ -5,7 +5,7 @@ import { FieldValues } from "react-hook-form";
 import { FormFieldDescription } from "./form-field-description";
 import { FormFieldErrorMessage } from "./form-field-error-message";
 import { FormFieldLabel } from "./form-field-label";
-import { getFieldName, IFormFieldProps } from "./form-fiel.types";
+import { getFieldName, IFormFieldProps } from "./form-field.types";
 
 export const FileField: <T extends FieldValues>(
   p: IFormFieldProps<T, WithLabelFieldData & FieldFileData>

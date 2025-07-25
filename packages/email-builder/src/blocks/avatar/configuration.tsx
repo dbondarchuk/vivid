@@ -60,6 +60,7 @@ export const AvatarConfiguration = ({
         label={t("emailBuilder.blocks.avatar.imageUrl")}
         accept="image/*"
         defaultValue={imageUrl ?? ""}
+        fullUrl
         onChange={(v) => {
           const url = v.trim().length === 0 ? null : v.trim();
           updateData({ ...data, props: { ...data.props, imageUrl: url } });

@@ -1,13 +1,14 @@
-import { Button } from "@vivid/ui";
+import { Button, ButtonProps } from "@vivid/ui";
 import { X } from "lucide-react";
 
 export const ResetButton: React.FC<{
   onClick: (value: null) => void;
-}> = ({ onClick }) => {
+  size?: ButtonProps["size"];
+}> = ({ onClick, size = "icon" }) => {
   return (
     <Button
       variant="ghost"
-      size="icon"
+      size={size}
       onClick={() => {
         onClick(null);
         onClick(null);
