@@ -38,5 +38,17 @@ export const Button = ({ children, type, ...props }: Props) => {
     );
   }
 
-  return <a {...props}>{children}</a>;
+  const {
+    url: href,
+    target,
+    ...rest
+  } = props as ButtonProps["props"] & {
+    type: "link";
+  };
+
+  return (
+    <a href={href || "/"} target={target ?? undefined} {...rest}>
+      {children}
+    </a>
+  );
 };

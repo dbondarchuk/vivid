@@ -5,7 +5,7 @@ import {
   useSelectedBlock,
 } from "../../../documents/editor/context";
 import { BaseBlockProps } from "../../../documents/types";
-import BaseSidebarPanel from "./input-panels/helpers/base-sidebar-panel";
+import { BaseSidebarPanel } from "./input-panels/helpers/base-sidebar-panel";
 import { useCallback } from "react";
 
 function renderMessage(val: string) {
@@ -55,7 +55,7 @@ export const ConfigurationPanel: React.FC = () => {
   const Panel = blocks[type].Configuration;
 
   return (
-    <BaseSidebarPanel title={blocks[selectedBlock.type].displayName}>
+    <BaseSidebarPanel title={t(blocks[selectedBlock.type].displayName)}>
       <Panel
         data={data}
         setData={setBlock}

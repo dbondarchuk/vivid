@@ -101,7 +101,10 @@ export const AccordionItemEditor = ({
         id={base?.id}
       >
         <div
-          className="p-4 border-b cursor-pointer hover:bg-gray-50 flex items-center justify-between"
+          className={cn(
+            "p-4 cursor-pointer hover:bg-secondary hover:text-secondary-foreground flex items-center justify-between",
+            isOpen && "border-b"
+          )}
           onClick={toggleAccordion}
         >
           <div className="flex-1">

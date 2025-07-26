@@ -4,7 +4,7 @@ import {
   useDispatchAction,
   useDocument,
 } from "../../documents/editor/context";
-import BaseSidebarPanel from "./configuration-panel/input-panels/helpers/base-sidebar-panel";
+import { BaseSidebarPanel } from "./configuration-panel/input-panels/helpers/base-sidebar-panel";
 import { BaseBlockProps } from "../../documents/types";
 
 export const StylesPanel: React.FC = () => {
@@ -35,7 +35,7 @@ export const StylesPanel: React.FC = () => {
   };
 
   return (
-    <BaseSidebarPanel title={blocks[type].displayName}>
+    <BaseSidebarPanel title={t(blocks[type].displayName)}>
       <Panel
         key="root"
         data={data}

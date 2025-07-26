@@ -1,6 +1,7 @@
 import { LanguageOptions } from "@/constants/texts";
 import { languages, useI18n } from "@vivid/i18n";
 import { pageTagSchema } from "@vivid/types";
+import { BaseSidebarPanel } from "@vivid/builder";
 import {
   Checkbox,
   Combobox,
@@ -35,7 +36,7 @@ export function PageSettingsPanel({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <BaseSidebarPanel title={t("pages.form.settingsTabLabel")}>
       <FormField
         control={form.control}
         name="headerId"
@@ -303,6 +304,6 @@ export function PageSettingsPanel({
           </FormItem>
         )}
       />
-    </div>
+    </BaseSidebarPanel>
   );
 }

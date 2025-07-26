@@ -74,14 +74,17 @@ export const AccordionItemInternal: React.FC<AccordionItemInternalProps> = ({
   return (
     <>
       <button
-        className="w-full p-4 border-b flex items-center justify-between transition-colors hover:bg-gray-50 cursor-pointer"
+        className={cn(
+          "w-full p-4 flex items-center justify-between transition-colors hover:bg-secondary hover:text-secondary-foreground cursor-pointer",
+          isOpen && "border-b"
+        )}
         onClick={() => setIsOpen(!isOpen)}
         type="button"
       >
         <div
           className={cn(
             "flex items-center justify-between w-full",
-            iconPosition === "left" ? "flex-row" : "flex-row-reverse"
+            iconPosition === "left" ? "flex-row-reverse" : "flex-row"
           )}
         >
           <div className="flex-1 text-left">{title}</div>

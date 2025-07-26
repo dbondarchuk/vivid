@@ -25,7 +25,9 @@ interface PortalProviderProps {
 }
 
 export const PortalProvider: React.FC<PortalProviderProps> = ({ children }) => {
-  const [stateDocument, setDocument] = useState<Document>(document);
+  const [stateDocument, setDocument] = useState<Document>(
+    typeof document !== "undefined" ? document : ({} as Document)
+  );
 
   const value: PortalContextType = {
     document: stateDocument,

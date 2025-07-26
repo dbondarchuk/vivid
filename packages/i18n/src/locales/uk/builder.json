@@ -389,6 +389,7 @@
       },
       "colors": {
         "default": "За замовчуванням",
+        "transparent": "Прозорий",
         "custom": "Власний колір",
         "background": "Фон",
         "foreground": "Текст",
@@ -643,6 +644,13 @@
         "suffixIcon": "Суфікс іконка",
         "noIcon": "Без іконки",
         "variant": "Варіант",
+        "variants": {
+          "primary": "Основний",
+          "secondary": "Додатковий",
+          "destructive": "Руйнівний",
+          "muted": "Приглушений",
+          "ghost": "Привид"
+        },
         "disabled": "Вимкнено",
         "borderRadius": "Радіус рамки"
       },

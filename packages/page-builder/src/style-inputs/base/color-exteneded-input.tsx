@@ -8,11 +8,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@vivid/ui";
 import { Plus } from "lucide-react";
 import React from "react";
@@ -30,7 +25,7 @@ export const ColorExtendedInput: React.FC<Props> = ({
   const getSelectValue = (value?: string | null) =>
     !value && nullable
       ? "default"
-      : value?.startsWith("var")
+      : value?.startsWith("var") || value === "transparent"
         ? value
         : "custom";
 

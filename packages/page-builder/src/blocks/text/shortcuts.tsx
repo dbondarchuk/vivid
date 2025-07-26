@@ -1,7 +1,14 @@
 import { BuilderKeys } from "@vivid/i18n";
 import { Shortcut } from "../../shortcuts";
-import { AllStylesSchemas } from "../../style";
-import { AlignLeft, Bold, CaseSensitive, Space, Type } from "lucide-react";
+import { AllStylesSchemas, COLORS } from "../../style";
+import {
+  AlignLeft,
+  Bold,
+  CaseSensitive,
+  Space,
+  Type,
+  TypeOutline,
+} from "lucide-react";
 import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
 import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
 import { colorShortcut } from "../../shortcuts/common/color";
@@ -111,7 +118,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
   },
   {
     label: "pageBuilder.blocks.text.shortcuts.style",
-    icon: ({ className }) => <Type className={className} />,
+    icon: ({ className }) => <TypeOutline className={className} />,
     options: [
       {
         label: "pageBuilder.blocks.text.styles.body",
@@ -120,7 +127,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
           fontSize: { value: 1, unit: "rem" },
           fontWeight: "normal",
           lineHeight: { value: 1.6, unit: "rem" },
-          color: "var(--foreground)",
+          color: COLORS["foreground"].value,
         },
       },
       {
@@ -130,7 +137,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
           fontSize: { value: 1.125, unit: "rem" },
           fontWeight: "normal",
           lineHeight: { value: 1.7, unit: "rem" },
-          color: "var(--muted-foreground)",
+          color: COLORS["muted-foreground"].value,
         },
       },
       {
@@ -140,7 +147,7 @@ export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
           fontSize: { value: 0.875, unit: "rem" },
           fontWeight: "normal",
           lineHeight: { value: 1.4, unit: "rem" },
-          color: "var(--muted-foreground)",
+          color: COLORS["muted-foreground"].value,
           textTransform: "uppercase",
           letterSpacing: { value: 0.05, unit: "rem" },
         },

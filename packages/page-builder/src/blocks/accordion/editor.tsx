@@ -30,7 +30,7 @@ export const AccordionEditor = ({ props, style }: AccordionProps) => {
       />
       <EditorChildren
         block={currentBlock}
-        property="props.children"
+        property="props"
         children={children}
         className={cn(className, base?.className)}
         id={base?.id}

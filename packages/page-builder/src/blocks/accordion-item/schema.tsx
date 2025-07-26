@@ -2,6 +2,7 @@ import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import z from "zod";
 import { zStyles } from "./styles";
 import { AccordionProps } from "../accordion/schema";
+import { SimpleContainerPropsDefaults } from "../simple-container/schema";
 
 export const AccordionItemPropsSchema = z.object({
   style: zStyles,
@@ -29,14 +30,24 @@ export const AccordionItemPropsDefaults = {
     title: {
       children: [
         {
-          type: "SimpleText",
-          data: {
-            props: {
-              text: "Accordion Item Title",
-            },
-            style: {},
-          },
+          type: "SimpleContainer",
           id: generateId(),
+          data: {
+            style: SimpleContainerPropsDefaults.style,
+            props: {
+              children: [
+                {
+                  type: "SimpleText",
+                  id: generateId(),
+                  data: {
+                    props: {
+                      text: "Accordion Item Title",
+                    },
+                  },
+                },
+              ],
+            },
+          },
         },
       ],
     },

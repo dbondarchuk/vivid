@@ -8,6 +8,7 @@ export const zColorCustom = z
   .regex(/^(\d+)\s+([\d.]+)%\s+([\d.]+)%$/, {
     message: "pageBuilder.styleInputs.color.unknownType",
   });
+export const zTransparentColor = z.literal("transparent");
 const colorPresetVars = COLOR_NAMES.map((c) => `var(--value-${c}-color)`);
 const [zColorPresetVarsFirst, ...zColorPresetVars] = colorPresetVars;
 export const zColorPreset = z.enum(
@@ -17,7 +18,7 @@ export const zColorPreset = z.enum(
   }
 );
 
-export const zColor = z.union([zColorCustom, zColorPreset], {
+export const zColor = z.union([zColorCustom, zColorPreset, zTransparentColor], {
   message: "pageBuilder.styleInputs.color.unknownType",
 });
 export const zColorNullable = zColor.optional().nullable();

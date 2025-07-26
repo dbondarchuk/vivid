@@ -3,14 +3,126 @@ import {
   MoveDiagonal2,
   MoveHorizontal,
   SquareRoundCorner,
+  Palette,
 } from "lucide-react";
 import { Shortcut } from "../../shortcuts";
-import { AllStylesSchemas } from "../../style";
+import { AllStylesSchemas, COLORS } from "../../style";
 import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
 import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
 import { colorShortcut } from "../../shortcuts/common/color";
 
 export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
+  {
+    label: "pageBuilder.blocks.button.variant",
+    icon: ({ className }) => <Palette className={className} />,
+    options: [
+      {
+        label: "pageBuilder.blocks.button.variants.primary",
+        value: "primary",
+        targetStyles: {
+          backgroundColor: COLORS["primary"].value,
+          color: COLORS["primary-foreground"].value,
+          borderStyle: "none",
+          filter: {
+            variants: [
+              {
+                value: "brightness(0.9)",
+                state: ["hover"],
+              },
+            ],
+          },
+        },
+      },
+      {
+        label: "pageBuilder.blocks.button.variants.secondary",
+        value: "secondary",
+        targetStyles: {
+          backgroundColor: COLORS["secondary"].value,
+          color: COLORS["secondary-foreground"].value,
+          borderStyle: "none",
+          filter: {
+            variants: [
+              {
+                value: "brightness(0.9)",
+                state: ["hover"],
+              },
+            ],
+          },
+        },
+      },
+      {
+        label: "pageBuilder.blocks.button.variants.destructive",
+        value: "destructive",
+        targetStyles: {
+          backgroundColor: COLORS["destructive"].value,
+          color: COLORS["destructive-foreground"].value,
+          borderStyle: "none",
+          filter: {
+            variants: [
+              {
+                value: "brightness(0.9)",
+                state: ["hover"],
+              },
+            ],
+          },
+        },
+      },
+      {
+        label: "pageBuilder.blocks.button.variants.muted",
+        value: "muted",
+        targetStyles: {
+          backgroundColor: COLORS["muted"].value,
+          color: COLORS["muted-foreground"].value,
+          borderStyle: "none",
+          filter: {
+            variants: [
+              {
+                value: "brightness(0.9)",
+                state: ["hover"],
+              },
+            ],
+          },
+        },
+      },
+      {
+        label: "pageBuilder.blocks.button.variants.ghost",
+        value: "ghost",
+        targetStyles: {
+          backgroundColor: {
+            variants: [
+              {
+                value: "transparent",
+              },
+              {
+                value: COLORS["secondary"].value,
+                state: ["hover", "active", "focus"],
+              },
+            ],
+          },
+          filter: {
+            variants: [
+              {
+                value: "none",
+                state: ["hover", "active", "focus"],
+              },
+            ],
+          },
+          color: {
+            variants: [
+              {
+                value: COLORS["primary-foreground"].value,
+              },
+              {
+                value: COLORS["secondary-foreground"].value,
+                state: ["hover", "active", "focus"],
+              },
+            ],
+          },
+          borderStyle: "none",
+        },
+      },
+    ],
+  },
   {
     label: "pageBuilder.blocks.button.width",
     icon: ({ className }) => <MoveHorizontal className={className} />,

@@ -390,6 +390,7 @@
       },
       "colors": {
         "default": "Default",
+        "transparent": "Transparent",
         "custom": "Custom Color",
         "background": "Background",
         "foreground": "Text",
@@ -644,6 +645,13 @@
         "suffixIcon": "Suffix Icon",
         "noIcon": "No Icon",
         "variant": "Variant",
+        "variants": {
+          "primary": "Primary",
+          "secondary": "Secondary",
+          "destructive": "Destructive",
+          "muted": "Muted",
+          "ghost": "Ghost"
+        },
         "disabled": "Disabled",
         "borderRadius": "Border Radius"
       },

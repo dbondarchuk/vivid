@@ -15,15 +15,24 @@ export const COLORS: Record<(typeof COLOR_NAMES)[number], ValueLabel> =
     {} as Record<(typeof COLOR_NAMES)[number], ValueLabel>
   );
 
-export const COLORS_LIST = Object.entries(COLORS).map(([key, value]) => ({
-  key,
-  ...value,
-}));
+export const COLORS_LIST = [
+  ...Object.entries(COLORS).map(([key, value]) => ({
+    key,
+    ...value,
+  })),
+  {
+    key: "transparent",
+    label: "pageBuilder.styles.colors.transparent",
+    value: "transparent",
+  },
+];
 
 export const getColorStyle = (
   color: string | undefined | null,
   opacityVar?: string | null | undefined
 ) =>
   color
-    ? `hsl(${color}${opacityVar ? `/var(${opacityVar},1)` : ""})`
+    ? color === "transparent"
+      ? "transparent"
+      : `hsl(${color}${opacityVar ? `/var(${opacityVar},1)` : ""})`
     : undefined;

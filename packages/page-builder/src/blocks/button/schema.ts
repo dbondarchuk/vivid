@@ -94,7 +94,7 @@ export const ButtonPropsDefaults = () =>
       ],
       transition: [
         {
-          value: "filter 0.2s ease",
+          value: "all 0.3s ease",
         },
       ],
       fontSize: [

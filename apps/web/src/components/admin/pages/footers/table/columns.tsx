@@ -14,7 +14,7 @@ import { CellAction } from "./cell-action";
 export const columns: ColumnDef<PageFooterListModel>[] = [
   {
     id: "select",
-    footer: ({ table }) => {
+    header: ({ table }) => {
       const t = useI18n("admin");
       return (
         <Checkbox
@@ -50,7 +50,7 @@ export const columns: ColumnDef<PageFooterListModel>[] = [
       );
     },
     id: "name",
-    footer: tableSortHeader(
+    header: tableSortHeader(
       "pages.footers.table.columns.name",
       "string",
       "admin"
@@ -66,7 +66,7 @@ export const columns: ColumnDef<PageFooterListModel>[] = [
       );
     },
     id: "updatedAt",
-    footer: tableSortHeader(
+    header: tableSortHeader(
       "pages.footers.table.columns.updatedAt",
       "date",
       "admin"
@@ -78,7 +78,7 @@ export const columns: ColumnDef<PageFooterListModel>[] = [
       return row.original.usedCount || 0;
     },
     id: "usedCount",
-    footer: tableSortHeader(
+    header: tableSortHeader(
       "pages.footers.table.columns.usedCount",
       "number",
       "admin"
