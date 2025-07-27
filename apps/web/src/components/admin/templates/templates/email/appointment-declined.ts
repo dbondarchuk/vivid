@@ -98,7 +98,7 @@ export const appointmentDeclinedEmailTemplate = {
                   align: "start",
                   children: [
                     {
-                      text: "Unfortunately, we can not confirm your appointment for {{option.name}} on {{dateTime}} at this moment.",
+                      text: "Unfortunately, we can not confirm your appointment for {{option.name}} on {{dateTime.full}} at this moment.",
                       fontSize: "14px",
                     },
                   ],

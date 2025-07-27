@@ -5,6 +5,7 @@ export * from "./deep-equal";
 export * from "./email";
 export * from "./file";
 export * from "./fixtures";
+export * from "./format-arguments";
 export * from "./get-arguments";
 export * from "./ics-uid";
 export * from "./incoming-message";

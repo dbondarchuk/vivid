@@ -2,7 +2,6 @@ import type { Language } from "@vivid/i18n";
 
 import {
   Appointment,
-  AppointmentDiscount,
   AppointmentStatus,
   AssetEntity,
   BookingConfiguration,
@@ -13,8 +12,7 @@ import {
   SocialLinkType,
   socialType,
 } from "@vivid/types";
-import { DateTime } from "luxon";
-import { formatAmountString } from "./currency";
+import { formatArguments, FormattedArguments } from "./format-arguments";
 import { durationToTime } from "./time";
 
 const AppointmentStatusTexts: Record<
@@ -52,31 +50,19 @@ type Props<
 };
 
 type ArgsProps = {
-  totalPriceFormatted?: string;
-  payments?: (Omit<Payment, "paidAt" | "refundedAt" | "updatedAt"> & {
-    amountFormatted: string;
-    paidAt?: string;
-    refundedAt?: string;
-    updatedAt?: string;
-  })[];
-  totalAmountPaid?: number;
-  totalAmountPaidFormatted?: string;
-  discount?: AppointmentDiscount & {
-    discountAmountFormatted: string;
-  };
-  dateTime?: string;
-  endAt?: string;
-  restFields: {
-    name: string;
-    value: any;
-    label: string;
-  }[];
-  files: AssetEntity[];
   images: (AssetEntity & { cid: string })[];
   statusText?: string;
   confirmed: boolean;
   declined: boolean;
   pending: boolean;
+  totalAmountPaid?: number;
+  payments?: Payment[];
+  files: AssetEntity[];
+  restFields: {
+    name: string;
+    value: any;
+    label: string;
+  }[];
   duration?: {
     hours: number;
     minutes: number;
@@ -97,9 +83,11 @@ type BaseArgs<TAppointment extends Appointment | null | undefined> =
 export type Args<
   TAppointment extends Appointment | null | undefined,
   TAdditional extends Record<string | number, any> | undefined,
-> = TAdditional extends undefined
-  ? BaseArgs<TAppointment>
-  : BaseArgs<TAppointment> & TAdditional;
+> = FormattedArguments<
+  TAdditional extends undefined
+    ? BaseArgs<TAppointment>
+    : BaseArgs<TAppointment> & TAdditional
+>;
 
 export const getArguments = <
   TAppointment extends Appointment | null | undefined,
@@ -111,83 +99,18 @@ export const getArguments = <
   locale = config.general.language,
   useAppointmentTimezone = false,
   additionalProperties,
-}: Props<TAppointment, TAdditional>): Args<TAppointment, TAdditional> => {
+}: Props<TAppointment, TAdditional>): FormattedArguments<
+  Args<TAppointment, TAdditional>
+> => {
   const { name, email, phone, ...restFields } = appointment?.fields || {};
-  const payments: ArgsProps["payments"] =
-    appointment?.payments
-      ?.filter((payment) => payment.status === "paid")
-      .map((payment) => ({
-        ...payment,
-        amountFormatted: formatAmountString(payment.amount),
-        paidAt: payment.paidAt
-          ? DateTime.fromJSDate(payment.paidAt)
-              .setZone(
-                useAppointmentTimezone
-                  ? appointment.timeZone
-                  : config?.general?.timeZone
-              )
-              .toLocaleString(DateTime.DATETIME_FULL, { locale })
-          : undefined,
-        refundedAt: payment.refundedAt
-          ? DateTime.fromJSDate(payment.refundedAt)
-              .setZone(
-                useAppointmentTimezone
-                  ? appointment.timeZone
-                  : config?.general?.timeZone
-              )
-              .toLocaleString(DateTime.DATETIME_FULL, { locale })
-          : undefined,
-        updatedAt: payment.updatedAt
-          ? DateTime.fromJSDate(payment.updatedAt)
-              .setZone(
-                useAppointmentTimezone
-                  ? appointment.timeZone
-                  : config?.general?.timeZone
-              )
-              .toLocaleString(DateTime.DATETIME_FULL, { locale })
-          : undefined,
-      })) || [];
 
-  const totalAmountPaid = payments?.reduce(
-    (sum, payment) => sum + payment.amount,
-    0
-  );
+  const totalAmountPaid = appointment?.payments
+    ?.filter((payment) => payment.status === "paid")
+    .reduce((sum, payment) => sum + payment.amount, 0);
 
   const extendedArgs: ArgsProps = {
-    totalPriceFormatted: appointment?.totalPrice
-      ? formatAmountString(appointment?.totalPrice)
-      : undefined,
-    payments,
+    payments: appointment?.payments || [],
     totalAmountPaid,
-    totalAmountPaidFormatted: totalAmountPaid
-      ? formatAmountString(totalAmountPaid)
-      : undefined,
-    discount: appointment?.discount
-      ? {
-          ...appointment.discount,
-          discountAmountFormatted: formatAmountString(
-            appointment.discount.discountAmount
-          ),
-        }
-      : undefined,
-    dateTime: appointment
-      ? DateTime.fromJSDate(appointment.dateTime)
-          .setZone(
-            useAppointmentTimezone
-              ? appointment.timeZone
-              : config?.general?.timeZone
-          )
-          .toLocaleString(DateTime.DATETIME_FULL, { locale })
-      : undefined,
-    endAt: appointment
-      ? DateTime.fromJSDate(appointment.endAt)
-          .setZone(
-            useAppointmentTimezone
-              ? appointment.timeZone
-              : config?.general?.timeZone
-          )
-          .toLocaleString(DateTime.DATETIME_FULL, { locale })
-      : undefined,
     restFields: Object.entries(restFields).map(([name, value]) => ({
       name,
       value,
@@ -236,10 +159,18 @@ export const getArguments = <
     customer: customer || appointment?.customer,
   };
 
-  const args = {
-    ...baseArgs,
-    ...(additionalProperties || {}),
-  } as Args<TAppointment, TAdditional>;
+  const args = formatArguments(
+    {
+      ...baseArgs,
+      ...(additionalProperties || {}),
+    },
+    config.general.language,
+    useAppointmentTimezone ? appointment?.timeZone : config.general.timeZone
+  ) as FormattedArguments<
+    TAdditional extends undefined
+      ? BaseArgs<TAppointment>
+      : BaseArgs<TAppointment> & TAdditional
+  >;
 
   return args;
 };

@@ -20,22 +20,20 @@ import {
   SaveButton,
   toastPromise,
   useDebounceCacheFn,
-  useUnsavedChangesPrompt,
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
-import { useForm, useFormState } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  NavigationGuardDialog,
+  useIsDirty,
+} from "../../navigation-guard/dialog";
 import {
   checkUniquePageFooterName,
   createPageFooter,
   updatePageFooter,
 } from "./actions";
-import { useNavigationGuard } from "next-navigation-guard";
-import {
-  NavigationGuardDialog,
-  useIsDirty,
-} from "../../navigation-guard/dialog";
 
 export const PageFooterForm: React.FC<{
   initialData?: PageFooter;
@@ -66,11 +64,6 @@ export const PageFooterForm: React.FC<{
     mode: "all",
     reValidateMode: "onChange",
     defaultValues: initialData || {},
-  });
-
-  // Enable unsaved changes prompt
-  const navGuard = useNavigationGuard({
-    enabled: form.formState.isDirty,
   });
 
   const breadcrumbItems = React.useMemo(

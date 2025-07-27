@@ -3,7 +3,6 @@
 import {
   useCurrentBlock,
   useDispatchAction,
-  useEditorArgs,
   usePortalContext,
 } from "@vivid/builder";
 import { PlateEditor } from "@vivid/rte";
@@ -14,7 +13,6 @@ import { TextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
 export const TextEditor = ({ props, style }: TextProps) => {
-  const args = useEditorArgs();
   const currentBlock = useCurrentBlock<TextProps>();
   const value = currentBlock?.data?.props?.value;
   const dispatchAction = useDispatchAction();

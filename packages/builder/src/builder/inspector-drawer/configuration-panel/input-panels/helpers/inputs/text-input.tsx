@@ -1,12 +1,6 @@
 import { JSX, useCallback, useId } from "react";
 
-import {
-  ArgumentsAutocomplete,
-  cn,
-  FormDescription,
-  Label,
-  useDebounceCallback,
-} from "@vivid/ui";
+import { ArgumentsAutocomplete, cn, FormDescription, Label } from "@vivid/ui";
 import React from "react";
 import { useEditorArgs } from "../../../../../../documents/editor/context";
 import { ResetButton } from "./reset-button";
@@ -46,13 +40,12 @@ export const TextInput: React.FC<Props> = ({
   const isMultiline = typeof rows === "number" && rows > 1;
   const id = useId();
 
-  const onChangeDebounced = useDebounceCallback(
+  const onChangeCallback = useCallback(
     (value: string) => {
       setValue(value);
       onChange(value);
     },
-    [onChange],
-    300
+    [onChange]
   );
 
   return (
@@ -68,7 +61,7 @@ export const TextInput: React.FC<Props> = ({
           value={value ?? undefined}
           h="sm"
           id={id}
-          onChange={onChangeDebounced}
+          onChange={onChangeCallback}
         />
         {nullable && (
           <ResetButton

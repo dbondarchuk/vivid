@@ -57,9 +57,7 @@ export const TemplateFormPage: React.FC<
     },
     { title: t("navigation.templates"), link: "/admin/dashboard/templates" },
     {
-      title: t("templates.formPage.typeTemplates", {
-        type: t(`common.labels.channel.${type}`),
-      }),
+      title: t(`common.labels.channel.${type}`),
       link: `/admin/dashboard/templates?type=${encodeURIComponent(type)}`,
     },
   ];

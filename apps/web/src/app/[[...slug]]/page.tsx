@@ -4,7 +4,7 @@ import { Styling } from "@vivid/page-builder";
 import { Header, PageReader } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
 import { cn } from "@vivid/ui";
-import { setPageData } from "@vivid/utils";
+import { formatArguments, setPageData } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
 import { cookies, headers } from "next/headers";
@@ -236,9 +236,7 @@ export default async function Page(props: Props) {
       isPage: true,
       general: settings,
       social: social,
-      year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
-      day: new Date().getDate(),
+      now: new Date(),
     };
 
     const cookieStore = await cookies();
@@ -266,6 +264,7 @@ export default async function Page(props: Props) {
       : undefined;
 
     const t = await getI18nAsync("translation");
+    const formattedArgs = formatArguments(args, settings.language);
 
     return (
       <>
@@ -278,10 +277,9 @@ export default async function Page(props: Props) {
             t={t}
           />
         )}
-        {/* <MdxContent source={page.content} /> */}
-        <PageReader document={content} args={args} />
+        <PageReader document={content} args={formattedArgs} />
         {footer?.content && (
-          <PageReader document={footer.content} args={args} />
+          <PageReader document={footer.content} args={formattedArgs} />
         )}
       </>
     );

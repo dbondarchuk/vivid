@@ -2,6 +2,7 @@
 
 import { useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
+import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
 import { Booking } from "./components/booking";
@@ -17,6 +18,7 @@ export const BookingEditor = ({ props, style }: BookingProps) => {
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
+      <ReplaceOriginalColors />
       <Booking
         className={cn(className, base?.className)}
         id={base?.id}

@@ -5,6 +5,7 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Metadata } from "next";
+import { formatArguments } from "@vivid/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getI18nAsync("admin");
@@ -25,13 +26,14 @@ export default async function NewPageFooterPage() {
       "styling"
     );
 
-  const args = {
-    general,
-    social,
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    day: new Date().getDate(),
-  };
+  const args = formatArguments(
+    {
+      general,
+      social,
+      now: new Date(),
+    },
+    general.language
+  );
 
   return (
     <PageContainer scrollable={true}>

@@ -5,6 +5,7 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Styling } from "@vivid/page-builder";
 import { ServicesContainer } from "@vivid/services";
+import { formatArguments } from "@vivid/utils";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
@@ -59,13 +60,14 @@ export default async function EditPageFooterPage(props: Props) {
       "styling"
     );
 
-  const args = {
-    general,
-    social,
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    day: new Date().getDate(),
-  };
+  const args = formatArguments(
+    {
+      general,
+      social,
+      now: new Date(),
+    },
+    general.language
+  );
 
   return (
     <PageContainer scrollable={true}>

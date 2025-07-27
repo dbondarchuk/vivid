@@ -41,6 +41,7 @@ import { z } from "zod";
 import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
 import { PageSettingsPanel } from "./page-settings-panel";
+import { formatArguments } from "@vivid/utils";
 
 // Helper function to generate slug from title
 const generateSlug = (title: string): string => {
@@ -96,6 +97,7 @@ export const PageForm: React.FC<{
 
   const slug = form.watch("slug");
   const title = form.watch("title");
+  const language = form.watch("language");
   const isNewPage = !initialData;
 
   // Auto-generate slug when title changes (only for new pages and when slug hasn't been manually changed)
@@ -172,15 +174,16 @@ export const PageForm: React.FC<{
 
   const { content: _, ...restFields } = form.watch();
   const demoAppointment = useDemoArguments();
-  const args = {
-    ...restFields,
-    appointment: demoAppointment,
-    social: config.social,
-    general: config.general,
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    day: new Date().getDate(),
-  };
+  const args = formatArguments(
+    {
+      ...restFields,
+      appointment: demoAppointment,
+      social: config.social,
+      general: config.general,
+      now: new Date(),
+    },
+    language || config.general.language
+  );
 
   // Determine if any settings fields have errors
   const nonSettingsFields = ["title", "slug", "content"];

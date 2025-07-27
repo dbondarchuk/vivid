@@ -5,6 +5,7 @@ import {
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
+  useIsMobile,
 } from "@vivid/ui";
 import { ArrowDown, ArrowUp, Copy, Slash, Trash } from "lucide-react";
 import React from "react";
@@ -17,6 +18,7 @@ import {
 import { findBlockHierarchy } from "../../../helpers/blocks";
 import { useI18n } from "@vivid/i18n";
 import { BlockDisableOptions } from "../../../editor/core";
+import { usePortalContext } from "./portal-context";
 
 type Props = {
   blockId: string;
@@ -24,6 +26,7 @@ type Props = {
 };
 
 const MAX_DISPLAY_LAST_ELEMENTS = 3;
+const MOBILE_DISPLAY_LAST_ELEMENTS = 2;
 
 export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
   const document = useDocument();
@@ -31,6 +34,9 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
   const dispatchAction = useDispatchAction();
   const t = useI18n("builder");
   const blocks = useBlocks();
+
+  const { document: documentElement } = usePortalContext();
+  const isMobile = useIsMobile(documentElement?.defaultView);
 
   // const block = findBlock(document, blockId);
   // const BlockToolbar = block?.type && blocks[block.type].Toolbar;
@@ -148,17 +154,38 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
         <Breadcrumb aria-label="breadcrumb">
           <BreadcrumbList className="gap-0.5 sm:gap-0.5 text-xs text-foreground">
             {hierarchy?.map(({ id, displayName }, index) => {
-              // Show first element, last two elements, and "..." for middle elements
-              const shouldShow =
-                index === 0 ||
-                index >= hierarchy.length - MAX_DISPLAY_LAST_ELEMENTS;
+              // On mobile: show only last elements with "..." at the beginning
+              // On desktop: show first element, last elements, and "..." for middle elements
+              const maxDisplayElements = isMobile
+                ? MOBILE_DISPLAY_LAST_ELEMENTS
+                : MAX_DISPLAY_LAST_ELEMENTS;
+              const shouldShow = isMobile
+                ? index >= hierarchy.length - maxDisplayElements
+                : index === 0 || index >= hierarchy.length - maxDisplayElements;
               const isMiddleElement =
                 !shouldShow &&
                 index > 0 &&
-                index < hierarchy.length - MAX_DISPLAY_LAST_ELEMENTS;
+                index < hierarchy.length - maxDisplayElements;
               const isLastMiddleElement =
                 isMiddleElement &&
-                index === hierarchy.length - (MAX_DISPLAY_LAST_ELEMENTS + 1);
+                !isMobile &&
+                index === hierarchy.length - (maxDisplayElements + 1);
+
+              // On mobile, show "..." at the beginning if there are more than 2 elements
+              if (
+                isMobile &&
+                hierarchy.length > maxDisplayElements &&
+                index === 0
+              ) {
+                return (
+                  <React.Fragment key="mobile-ellipsis">
+                    <span className="text-muted-foreground">...</span>
+                    <BreadcrumbSeparator className="[&>svg]:size-3">
+                      <Slash />
+                    </BreadcrumbSeparator>
+                  </React.Fragment>
+                );
+              }
 
               if (isMiddleElement && !isLastMiddleElement) {
                 return null; // Skip middle elements except the last one
@@ -169,7 +196,7 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
                   {isLastMiddleElement ? (
                     <>
                       <span className="text-muted-foreground">...</span>
-                      <BreadcrumbSeparator className="hidden md:block [&>svg]:size-3">
+                      <BreadcrumbSeparator className="[&>svg]:size-3">
                         <Slash />
                       </BreadcrumbSeparator>
                     </>
@@ -183,7 +210,7 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
                     </span>
                   )}
                   {index < hierarchy.length - 1 && shouldShow && (
-                    <BreadcrumbSeparator className="hidden md:block [&>svg]:size-3">
+                    <BreadcrumbSeparator className="[&>svg]:size-3">
                       <Slash />
                     </BreadcrumbSeparator>
                   )}

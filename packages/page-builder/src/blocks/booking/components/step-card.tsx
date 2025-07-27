@@ -46,11 +46,11 @@ export const StepCard: React.FC = () => {
   const StepContent = ScheduleSteps[stepType].Content;
 
   return (
-    <Card className="sm:min-w-min md:w-full">
+    <Card className="sm:min-w-min md:w-full bg-transparent text-foreground">
       <CardHeader className="text-center flex flex-col gap-2">
         <CardTitle>{appointmentOption.name}</CardTitle>
         {(!!duration || !!price) && (
-          <CardDescription className="flex flex-row gap-2 justify-center place-items-center">
+          <CardDescription className="flex flex-row gap-2 justify-center place-items-center text-foreground">
             {duration && (
               <div className="flex flex-row items-center">
                 <Timer className="mr-1" />

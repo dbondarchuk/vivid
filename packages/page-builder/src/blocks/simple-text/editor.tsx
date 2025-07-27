@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef } from "react";
+import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
 import {
@@ -9,7 +9,6 @@ import {
   useEditorArgs,
   usePortalContext,
   useSelectedBlockId,
-  useSetSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { ArgumentsAutocomplete, cn, useDebounceCallback } from "@vivid/ui";
@@ -25,7 +24,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
   const currentBlock = useCurrentBlock<SimpleTextProps>();
   const value = currentBlock?.data?.props?.text;
   const dispatchAction = useDispatchAction();
-  const setSelectedBlockId = useSetSelectedBlockId();
+  // const setSelectedBlockId = useSetSelectedBlockId();
 
   const { document } = usePortalContext();
 
@@ -53,17 +52,18 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         },
       });
     },
-    [currentBlock]
+    [currentBlock, dispatchAction],
+    300
   );
 
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    const { key } = e;
-    if (key === "Enter") {
-      e.preventDefault();
-      ref?.current?.blur();
-      setSelectedBlockId(null);
-    }
-  }, []);
+  // const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+  //   const { key } = e;
+  //   if (key === "Enter") {
+  //     e.preventDefault();
+  //     ref?.current?.blur();
+  //     setSelectedBlockId(null);
+  //   }
+  // }, []);
 
   const className = useClassName();
   const defaults = getDefaults({ props, style }, true);
@@ -89,7 +89,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         )}
         value={value ?? "Simple text"}
         onChange={onChange}
-        onKeyDown={handleKeyPress}
+        // onKeyDown={handleKeyPress}
         asContentEditable
         element={"span"}
         placeholder={t("pageBuilder.blocks.simpleText.placeholder")}
