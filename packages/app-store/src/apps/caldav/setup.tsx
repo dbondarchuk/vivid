@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -25,9 +26,8 @@ import React from "react";
 import { processStaticRequest } from "../../actions";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CaldavApp } from "./app";
-import { CaldavCalendarSource, caldavCalendarSourceSchema } from "./models";
 import { CALDAV_APP_NAME } from "./const";
-import { useI18n } from "@vivid/i18n";
+import { CaldavCalendarSource, caldavCalendarSourceSchema } from "./models";
 
 export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -192,12 +192,17 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("calDav.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo app={{ name: CaldavApp.name }} t={t} />
+              <ConnectedAppNameAndLogo appName={CaldavApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

@@ -1,20 +1,17 @@
+"use client";
 import { appStatusTextClasses, AvailableApps } from "@vivid/app-store";
-import { I18nFn } from "@vivid/i18n";
+import { useI18n } from "@vivid/i18n";
 import { ConnectedApp } from "@vivid/types";
 import { cn } from "@vivid/ui";
 
-export type ConnectedAppPropertiesProps<T extends keyof ConnectedApp> = {
+export const ConnectedAppAccount: React.FC<{
+  account: ConnectedApp["account"];
   className?: string;
-  app: Pick<ConnectedApp, T>;
-};
-
-export const ConnectedAppAccount: React.FC<
-  ConnectedAppPropertiesProps<"account">
-> = ({ app, className }) => {
+}> = ({ account, className }) => {
   const parts = [
-    (app?.account as any)?.serverUrl,
-    app?.account?.username,
-    app?.account?.additional,
+    (account as any)?.serverUrl,
+    account?.username,
+    account?.additional,
   ].filter((p) => !!p);
 
   return parts.length > 0 ? (
@@ -26,30 +23,33 @@ export const ConnectedAppAccount: React.FC<
   );
 };
 
-export const ConnectedAppStatusMessage: React.FC<
-  ConnectedAppPropertiesProps<"status" | "statusText"> & {
-    t: I18nFn<"apps">;
-  }
-> = ({ app, className, t }) => (
-  <div className={cn("break-all", appStatusTextClasses[app.status], className)}>
-    {t("common.statusMessage", {
-      status: t(`status.${app.status}`),
-      statusText:
-        typeof app.statusText === "string"
-          ? t(app.statusText)
-          : t(app.statusText.key, app.statusText.args),
-    })}
-  </div>
-);
+export const ConnectedAppStatusMessage: React.FC<{
+  status: ConnectedApp["status"];
+  statusText: ConnectedApp["statusText"];
+  className?: string;
+}> = ({ status, statusText, className }) => {
+  const t = useI18n("apps");
+  return (
+    <div className={cn("break-all", appStatusTextClasses[status], className)}>
+      {t("common.statusMessage", {
+        status: t(`status.${status}`),
+        statusText:
+          typeof statusText === "string"
+            ? t(statusText)
+            : t(statusText.key, statusText.args),
+      })}
+    </div>
+  );
+};
 
-export const ConnectedAppNameAndLogo: React.FC<
-  ConnectedAppPropertiesProps<"name"> & {
-    logoClassName?: string;
-    nameClassName?: string;
-    t: I18nFn<"apps">;
-  }
-> = ({ app, className, logoClassName, nameClassName, t }) => {
-  const App = AvailableApps[app.name];
+export const ConnectedAppNameAndLogo: React.FC<{
+  appName: ConnectedApp["name"];
+  className?: string;
+  logoClassName?: string;
+  nameClassName?: string;
+}> = ({ appName, className, logoClassName, nameClassName }) => {
+  const App = AvailableApps[appName];
+  const t = useI18n("apps");
   return (
     <div className={cn("inline-flex items-center gap-2", className)}>
       <App.Logo className={cn("w-6 y-6", logoClassName)} />

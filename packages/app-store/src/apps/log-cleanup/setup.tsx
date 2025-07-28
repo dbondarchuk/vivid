@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -13,7 +14,6 @@ import {
   FormMessage,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { LogCleanupApp } from "./app";
 import {
   CleanUpIntervalType,
@@ -126,15 +126,17 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                   ? t("logCleanup.form.update")
                   : t("logCleanup.form.add")}
               </span>
-              <ConnectedAppNameAndLogo
-                app={{ name: LogCleanupApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={LogCleanupApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

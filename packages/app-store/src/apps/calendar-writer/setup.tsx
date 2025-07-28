@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   AppSelector,
@@ -13,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  Input,
   Spinner,
 } from "@vivid/ui";
 import React from "react";
@@ -23,7 +23,6 @@ import {
   CalendarWriterConfiguration,
   calendarWriterConfigurationSchema,
 } from "./models";
-import { useI18n } from "@vivid/i18n";
 
 export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -85,15 +84,17 @@ export const CalendarWriterAppSetup: React.FC<AppSetupProps> = ({
                   ? t("calendarWriter.form.update")
                   : t("calendarWriter.form.add")}
               </span>
-              <ConnectedAppNameAndLogo
-                app={{ name: CalendarWriterApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={CalendarWriterApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

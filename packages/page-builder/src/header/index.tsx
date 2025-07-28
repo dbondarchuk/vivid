@@ -1,4 +1,4 @@
-import { I18nFn } from "@vivid/i18n";
+import { useI18n } from "@vivid/i18n";
 import {
   ButtonMenuItem,
   LinkMenuItem,
@@ -14,7 +14,6 @@ import {
   cn,
   Drawer,
   DrawerClose,
-  DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -28,15 +27,14 @@ import {
 } from "@vivid/ui";
 import { ChevronDown, icons, Menu, X } from "lucide-react";
 import React from "react";
-import { HeaderWithScrollShadow } from "./with-scroll-shadow";
 import { ReplaceOriginalColors } from "../helpers/replace-original-colors";
 import { PortalDrawerContent } from "./drawer-content";
+import { HeaderWithScrollShadow } from "./with-scroll-shadow";
 
 export type HeaderProps = {
   name: string;
   logo?: string;
   config: PageHeader;
-  t: I18nFn<"translation">;
   className?: string;
 };
 
@@ -66,9 +64,9 @@ const HeaderBase: React.FC<HeaderProps> = ({
   name,
   logo,
   config,
-  t,
   className,
 }) => {
+  const t = useI18n("translation");
   const getLink = (item: MenuItem, isSidebar: boolean) => {
     switch (item.type) {
       case "icon":

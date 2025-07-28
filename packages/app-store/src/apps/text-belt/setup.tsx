@@ -1,7 +1,7 @@
 "use client";
 
-import { AppSetupProps } from "@vivid/types";
 import { useI18n } from "@vivid/i18n";
+import { AppSetupProps } from "@vivid/types";
 import {
   AppSelector,
   Button,
@@ -97,12 +97,17 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("textBelt.form.connect")}</span>
-              <ConnectedAppNameAndLogo app={{ name: TextBeltApp.name }} t={t} />
+              <ConnectedAppNameAndLogo appName={TextBeltApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

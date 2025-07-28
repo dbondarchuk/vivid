@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -16,7 +17,6 @@ import {
   TemplateSelector,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageAutoReplyApp } from "./app";
 import {
@@ -79,15 +79,17 @@ export const TextMessageAutoReplyAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("textMessageAutoReply.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo
-                app={{ name: TextMessageAutoReplyApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={TextMessageAutoReplyApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

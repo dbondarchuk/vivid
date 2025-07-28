@@ -185,15 +185,17 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("s3AssetsStorage.form.connect")}</span>
-              <ConnectedAppNameAndLogo
-                app={{ name: S3AssetsStorageApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={S3AssetsStorageApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

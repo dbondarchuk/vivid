@@ -3,7 +3,17 @@ import * as React from "react";
 const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile(context?: Window | null) {
-  const windowContext = context || window;
+  const windowContext =
+    context ||
+    (typeof window !== "undefined"
+      ? window
+      : ({
+          matchMedia: () => ({
+            addEventListener: () => {},
+            removeEventListener: () => {},
+          }),
+          innerWidth: 0,
+        } as unknown as Window));
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
     undefined
   );

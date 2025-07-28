@@ -251,13 +251,13 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
                 )}
               />
             </div>
-            <div className="flex flex-grow flex-col gap-4">
-              <Sortable
-                title={t("pages.headers.form.menu")}
-                ids={ids}
-                onSort={sort}
-                onAdd={addNew}
-              >
+            <Sortable
+              title={t("pages.headers.form.menu")}
+              ids={ids}
+              onSort={sort}
+              onAdd={addNew}
+            >
+              <div className="flex flex-grow flex-col gap-4">
                 {fields.map((item, index) => {
                   return (
                     <MenuItemCard
@@ -272,8 +272,8 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
                     />
                   );
                 })}
-              </Sortable>
-            </div>
+              </div>
+            </Sortable>
           </div>
         </div>
         <SaveButton form={form} disabled={loading} ignoreDirty />

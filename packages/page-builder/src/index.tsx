@@ -40,13 +40,11 @@ export const PageBuilder = ({
   footer,
   notAllowedBlocks,
 }: PageBuilderProps) => {
-  const tTranslation = useI18n("translation");
   const headerComponent = header ? (
     <Header
       name={header.name}
       logo={header.logo}
       config={header.config}
-      t={tTranslation}
       className="-top-8"
     />
   ) : null;

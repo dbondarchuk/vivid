@@ -164,7 +164,12 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

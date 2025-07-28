@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -16,7 +17,6 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { EmailNotificationApp } from "./app";
 import {
@@ -82,15 +82,17 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
                   ? t("emailNotification.form.update")
                   : t("emailNotification.form.add")}
               </span>
-              <ConnectedAppNameAndLogo
-                app={{ name: EmailNotificationApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={EmailNotificationApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

@@ -270,12 +270,7 @@ export default async function Page(props: Props) {
       <>
         <Styling styling={styling} />
         {header && (
-          <Header
-            name={settings.name}
-            logo={settings.logo}
-            config={header}
-            t={t}
-          />
+          <Header name={settings.name} logo={settings.logo} config={header} />
         )}
         <PageReader document={content} args={formattedArgs} />
         {footer?.content && (

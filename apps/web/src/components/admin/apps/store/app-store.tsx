@@ -26,7 +26,7 @@ const AppCard: React.FC<{ app: App }> = ({ app }) => {
   return (
     <Card className="pt-4 h-full">
       <CardContent className="flex flex-col gap-4 h-full">
-        <ConnectedAppNameAndLogo app={{ name: app.name }} t={t} />
+        <ConnectedAppNameAndLogo appName={app.name} />
         <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
           <Markdown markdown={t(app.description.text)} prose="none" />
         </div>
