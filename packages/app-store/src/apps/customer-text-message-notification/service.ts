@@ -200,10 +200,16 @@ export default class CustomerTextMessageNotificationConnectedApp
       "Appointment rescheduled, sending customer text message notification"
     );
 
+    const newAppointment: Appointment = {
+      ...appointment,
+      dateTime: newTime,
+      totalDuration: newDuration,
+    };
+
     try {
       await this.sendNotification(
         appData,
-        appointment,
+        newAppointment,
         "rescheduled",
         "rescheduled"
       );

@@ -1,10 +1,4 @@
-import {
-  CheckoutPaymentIntent,
-  Client,
-  Environment,
-  OrdersController,
-  PaymentsController,
-} from "@paypal/paypal-server-sdk";
+import { Client, Environment } from "@paypal/paypal-server-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
@@ -17,7 +11,7 @@ import {
   IPaymentProcessor,
   Payment,
 } from "@vivid/types";
-import { formatAmountString, maskify } from "@vivid/utils";
+import { maskify } from "@vivid/utils";
 import { PaypalClient } from "./client";
 import { PAYPAL_APP_NAME } from "./const";
 import {
@@ -276,35 +270,41 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         "Retrieved payment intent, creating PayPal order"
       );
 
-      const client = this.getClient(appData);
-      const ordersController = new OrdersController(client);
-      const { result: order, ...httpResponse } =
-        await ordersController.createOrder({
-          body: {
-            intent: CheckoutPaymentIntent.Capture,
-            purchaseUnits: [
-              {
-                amount: {
-                  currencyCode: "USD",
-                  value: formatAmountString(intent.amount),
-                },
-              },
-            ],
-          },
-        });
+      const client = await this.getSimplifiedClient(appData);
+      // const ordersController = new OrdersController(client);
+      // const { result: order, ...httpResponse } =
+      //   await ordersController.createOrder({
+      //     body: {
+      //       intent: CheckoutPaymentIntent.Capture,
+      //       purchaseUnits: [
+      //         {
+      //           amount: {
+      //             currencyCode: "USD",
+      //             value: formatAmountString(intent.amount),
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   });
 
-      if (httpResponse.statusCode >= 400) {
+      const { order, error } = await client.createOrder({
+        amount: intent.amount,
+        currency: "USD",
+        intent: "CAPTURE",
+      });
+
+      if (error) {
         logger.error(
           {
             appId: appData._id,
             paymentIntentId: request.paymentIntentId,
-            statusCode: httpResponse.statusCode,
+            statusCode: error.statusCode,
           },
           "Failed to create PayPal order"
         );
         return Response.json(
           { error: "create_order_failed" },
-          { status: httpResponse.statusCode }
+          { status: error.statusCode || 500 }
         );
       }
 
@@ -393,19 +393,21 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         "Retrieved payment intent, capturing PayPal order"
       );
 
-      const client = this.getClient(appData);
-      const ordersController = new OrdersController(client);
-      const { result: order, ...httpResponse } =
-        await ordersController.captureOrder({
-          id: request.orderId,
-        });
+      const client = await this.getSimplifiedClient(appData);
+      // const ordersController = new OrdersController(client);
+      // const { result: order, ...httpResponse } =
+      //   await ordersController.captureOrder({
+      //     id: request.orderId,
+      //   });
 
-      if (httpResponse.statusCode >= 400) {
+      const { order, error } = await client.captureOrder(request.orderId);
+
+      if (error) {
         logger.error(
           {
             appId: appData._id,
             orderId: request.orderId,
-            statusCode: httpResponse.statusCode,
+            statusCode: error.statusCode,
           },
           "Failed to capture PayPal order"
         );
@@ -416,7 +418,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
         return Response.json(
           { error: "capture_order_failed" },
-          { status: httpResponse.statusCode }
+          { status: error.statusCode || 500 }
         );
       }
 
@@ -495,30 +497,32 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         "Retrieving PayPal order for refund"
       );
 
-      const client = this.getClient(appData);
-      const ordersController = new OrdersController(client);
-      const { result: order, ...httpResponse } =
-        await ordersController.getOrder({
-          id: externalId,
-        });
+      const client = await this.getSimplifiedClient(appData);
+      // const ordersController = new OrdersController(client);
+      // const { result: order, ...httpResponse } =
+      //   await ordersController.getOrder({
+      //     id: externalId,
+      //   });
 
-      if (httpResponse.statusCode >= 400) {
+      const { order, error } = await client.getOrder(externalId);
+
+      if (error) {
         logger.error(
           {
             appId: appData._id,
             paymentId: payment._id,
             externalId,
-            statusCode: httpResponse.statusCode,
+            statusCode: error.statusCode,
           },
           "Failed to retrieve PayPal order for refund"
         );
         return {
           success: false,
-          error: httpResponse.body.toString(),
+          error: JSON.stringify(error),
         };
       }
 
-      const captureId = order?.purchaseUnits?.[0].payments?.captures?.[0].id;
+      const captureId = order?.purchase_units?.[0].payments?.captures?.[0].id;
       if (!captureId) {
         logger.error(
           { appId: appData._id, paymentId: payment._id, externalId },
@@ -532,23 +536,27 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         "Processing PayPal refund with capture ID"
       );
 
-      const paymentsController = new PaymentsController(client);
-      const { result, ...refundHttpResponse } =
-        await paymentsController.refundCapturedPayment({ captureId });
+      // const clientRefund = this.getClient(appData);
+      // const paymentsController = new PaymentsController(clientRefund);
+      // const { result, ...refundHttpResponse } =
+      //   await paymentsController.refundCapturedPayment({ captureId });
 
-      if (refundHttpResponse.statusCode >= 400) {
+      const { ok: refundOk, error: refundError } =
+        await client.refundPayment(captureId);
+
+      if (!refundOk || refundError) {
         logger.error(
           {
             appId: appData._id,
             paymentId: payment._id,
             captureId,
-            statusCode: refundHttpResponse.statusCode,
+            statusCode: refundError.statusCode,
           },
           "Failed to refund PayPal payment"
         );
         return {
           success: false,
-          error: refundHttpResponse.body.toString(),
+          error: JSON.stringify(refundError),
         };
       }
 
@@ -579,8 +587,12 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
     "data" | "token"
   >): Promise<PaypalClient> {
     const logger = this.loggerFactory("getSimplifiedClient");
+    const environment = this.environment;
     logger.debug(
-      { clientId: data?.clientId ? maskify(data.clientId) : undefined },
+      {
+        clientId: data?.clientId ? maskify(data.clientId) : undefined,
+        environment,
+      },
       "Creating simplified PayPal client"
     );
 
@@ -590,16 +602,20 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
     }
 
     try {
-      const { url } = await this.props.services
-        .ConfigurationService()
-        .getConfiguration("general");
+      // const { url } = await this.props.services
+      //   .ConfigurationService()
+      //   .getConfiguration("general");
 
       logger.debug(
-        { clientId: maskify(data.clientId), url },
+        { clientId: maskify(data.clientId) },
         "Created simplified PayPal client"
       );
 
-      return new PaypalClient(data.clientId, data.secretKey, url);
+      return new PaypalClient(
+        data.clientId,
+        data.secretKey,
+        environment === Environment.Production
+      );
     } catch (error: any) {
       logger.error(
         {
