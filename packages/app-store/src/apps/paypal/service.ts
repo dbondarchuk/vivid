@@ -692,7 +692,8 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   protected get environment() {
     return process.env.PAYPAL_ENV === "production"
       ? Environment.Production
-      : process.env.NODE_ENV === "development"
+      : process.env.NODE_ENV === "development" ||
+          process.env.PAYPAL_ENVIRONMENT?.toLocaleLowerCase() === "sandbox"
         ? Environment.Sandbox
         : Environment.Production;
   }
