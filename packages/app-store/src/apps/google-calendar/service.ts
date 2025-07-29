@@ -22,6 +22,7 @@ import {
   auth as googleAuth,
   calendar as googleCalendar,
 } from "@googleapis/calendar";
+import { decrypt, encrypt } from "@vivid/utils";
 import { Credentials, OAuth2Client } from "google-auth-library";
 import {
   CalendarListItem,
@@ -278,7 +279,11 @@ class GoogleCalendarConnectedApp
 
       return {
         appId,
-        token: tokens,
+        token: {
+          ...tokens,
+          access_token: encrypt(tokens.access_token),
+          refresh_token: encrypt(tokens.refresh_token),
+        },
         account: {
           username: email,
         },
@@ -808,7 +813,10 @@ class GoogleCalendarConnectedApp
         throw new Error("App is not authorized");
       }
 
-      client.setCredentials(appData.data);
+      credentials.access_token = decrypt(credentials.access_token);
+      credentials.refresh_token = decrypt(credentials.refresh_token);
+
+      client.setCredentials(credentials);
       client.on("tokens", async (tokens) => {
         logger.debug(
           { appId: appData._id },
@@ -817,8 +825,9 @@ class GoogleCalendarConnectedApp
         await this.props.update({
           token: {
             ...credentials,
-            access_token: tokens.access_token,
-            expiry_date: tokens.expiry_date,
+            ...tokens,
+            access_token: encrypt(tokens.access_token),
+            refresh_token: encrypt(tokens.refresh_token),
           } as Credentials,
         });
       });

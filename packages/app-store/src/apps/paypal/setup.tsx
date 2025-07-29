@@ -63,6 +63,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                   <FormControl>
                     <Input
                       placeholder={t("paypal.form.clientId.placeholder")}
+                      autoComplete="off"
                       {...field}
                       type="password"
                     />
@@ -80,6 +81,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                   <FormControl>
                     <Input
                       placeholder={t("paypal.form.secretKey.placeholder")}
+                      autoComplete="off"
                       {...field}
                       type="password"
                     />

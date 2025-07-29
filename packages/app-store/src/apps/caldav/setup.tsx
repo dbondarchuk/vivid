@@ -23,7 +23,7 @@ import {
   toast,
 } from "@vivid/ui";
 import React from "react";
-import { processStaticRequest } from "../../actions";
+import { processRequest, processStaticRequest } from "../../actions";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CaldavApp } from "./app";
 import { CALDAV_APP_NAME } from "./const";
@@ -41,6 +41,10 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
       schema: caldavCalendarSourceSchema,
       onSuccess,
       onError,
+      processDataForSubmit: (data) => ({
+        type: "save",
+        data,
+      }),
     });
 
   const t = useI18n("apps");
@@ -58,10 +62,15 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   const fetchCalendars = async () => {
     setFetchingCalendars(true);
     try {
-      const result = await processStaticRequest(CALDAV_APP_NAME, {
-        ...form.getValues(),
-        fetchCalendars: true,
-      });
+      const result = existingAppId
+        ? await processRequest(existingAppId, {
+            type: "fetchCalendars",
+            data: form.getValues(),
+          })
+        : await processStaticRequest(CALDAV_APP_NAME, {
+            ...form.getValues(),
+            fetchCalendars: true,
+          });
 
       setCalendars(result);
     } catch (error: any) {

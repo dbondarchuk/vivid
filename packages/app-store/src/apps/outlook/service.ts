@@ -32,6 +32,7 @@ import {
   IMailSender,
   IOAuthConnectedApp,
 } from "@vivid/types";
+import { decrypt, encrypt } from "@vivid/utils";
 import { createEvent } from "ics";
 import { DateTime } from "luxon";
 import { env } from "process";
@@ -160,7 +161,15 @@ export class OutlookConnectedApp
 
         return {
           appId,
-          token: tokens,
+          token: {
+            ...tokens,
+            accessToken: tokens.accessToken
+              ? encrypt(tokens.accessToken)
+              : undefined,
+            refreshToken: tokens.refreshToken
+              ? encrypt(tokens.refreshToken)
+              : undefined,
+          },
           account: {
             username,
           },
@@ -819,33 +828,25 @@ export class OutlookConnectedApp
     appId: string,
     currentTokens: ConnectedOauthAppTokens
   ): Promise<string> {
+    const logger = this.loggerFactory("getOrRefreshAuthToken");
     if (!currentTokens.expiresOn || currentTokens.expiresOn >= new Date()) {
-      this.loggerFactory("getOrRefreshAuthToken").debug(
-        { appId },
-        "Using existing access token"
-      );
-      return currentTokens.accessToken;
+      logger.debug({ appId }, "Using existing access token");
+      return decrypt(currentTokens.accessToken);
     }
 
-    this.loggerFactory("getOrRefreshAuthToken").debug(
-      { appId },
-      "Access token expired, refreshing"
-    );
+    logger.debug({ appId }, "Access token expired, refreshing");
 
     const client = this.getMsalClient();
 
     const tokenRequest = {
       ...(await this.getAuthParams(appId)),
-      refreshToken: currentTokens.refreshToken,
+      refreshToken: decrypt(currentTokens.refreshToken),
     };
 
     try {
       const result = await client.acquireTokenByRefreshToken(tokenRequest);
       if (!result) {
-        this.loggerFactory("getOrRefreshAuthToken").error(
-          { appId },
-          "Failed to refresh access token"
-        );
+        logger.error({ appId }, "Failed to refresh access token");
         throw new ConnectedAppError(
           "outlook.statusText.error_refreshing_access_token"
         );
@@ -858,17 +859,15 @@ export class OutlookConnectedApp
         },
         token: {
           ...tokens,
-          refreshToken: currentTokens.refreshToken,
+          accessToken: encrypt(tokens.accessToken!),
+          refreshToken: encrypt(currentTokens.refreshToken),
         },
       });
 
-      this.loggerFactory("getOrRefreshAuthToken").debug(
-        { appId, username },
-        "Successfully refreshed access token"
-      );
+      logger.debug({ appId, username }, "Successfully refreshed access token");
       return tokens.accessToken!;
     } catch (e: any) {
-      this.loggerFactory("getOrRefreshAuthToken").error(
+      logger.error(
         { appId, error: e?.message || e?.toString() },
         "Failed to refresh access token"
       );

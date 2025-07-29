@@ -57,6 +57,8 @@ export const TextBeltAppSetup: React.FC<AppSetupProps> = ({
                   </FormLabel>
                   <FormControl>
                     <Input
+                      type="password"
+                      autoComplete="off"
                       placeholder={t("textBelt.form.apiKey.placeholder")}
                       {...field}
                     />

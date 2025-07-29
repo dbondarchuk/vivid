@@ -1,4 +1,4 @@
-import { Client, Environment } from "@paypal/paypal-server-sdk";
+import { Environment } from "@paypal/paypal-server-sdk";
 import { getLoggerFactory } from "@vivid/logger";
 import {
   ApiRequest,
@@ -11,7 +11,7 @@ import {
   IPaymentProcessor,
   Payment,
 } from "@vivid/types";
-import { maskify } from "@vivid/utils";
+import { decrypt, encrypt, maskify } from "@vivid/utils";
 import { PaypalClient } from "./client";
 import { PAYPAL_APP_NAME } from "./const";
 import {
@@ -24,10 +24,24 @@ import {
   PaypalFormProps,
 } from "./models";
 
-class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
+export const MASKED_SECRET_KEY = "this-is-a-masked-secret-key";
+
+class PaypalConnectedApp
+  implements IConnectedApp<PaypalConfiguration>, IPaymentProcessor
+{
   protected readonly loggerFactory = getLoggerFactory("PaypalConnectedApp");
 
   public constructor(protected readonly props: IConnectedAppProps) {}
+
+  public async processAppData(
+    appData: PaypalConfiguration
+  ): Promise<PaypalConfiguration> {
+    return {
+      ...appData,
+      secretKey: appData.secretKey ? MASKED_SECRET_KEY : "",
+      clientId: appData.clientId ? MASKED_SECRET_KEY : "",
+    };
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -35,9 +49,21 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
-      { appId: appData._id, clientId: maskify(data.clientId) },
+      { appId: appData._id },
       "Processing PayPal configuration request"
     );
+
+    if (data.secretKey === MASKED_SECRET_KEY && appData?.data?.secretKey) {
+      data.secretKey = appData.data.secretKey;
+    } else if (data.secretKey) {
+      data.secretKey = encrypt(data.secretKey);
+    }
+
+    if (data.clientId === MASKED_SECRET_KEY && appData?.data?.clientId) {
+      data.clientId = appData.data.clientId;
+    } else if (data.clientId) {
+      data.clientId = encrypt(data.clientId);
+    }
 
     try {
       if (!paypalConfigurationSchema.safeParse(data).success) {
@@ -65,16 +91,18 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         statusText: "paypal.statusText.successfully_connected",
       };
 
+      const decryptedClientId = decrypt(data.clientId);
+
       this.props.update({
         account: {
-          username: maskify(data.clientId),
+          username: maskify(decryptedClientId),
         },
         data,
         ...status,
       });
 
       logger.info(
-        { appId: appData._id, clientId: maskify(data.clientId) },
+        { appId: appData._id, clientId: maskify(decryptedClientId) },
         "Successfully connected to PayPal account"
       );
 
@@ -230,10 +258,11 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   ): PaypalFormProps {
     if (!appData.data)
       throw new ConnectedAppError("paypal.statusText.app_not_configured");
-    const { secretKey, ...rest } = appData.data;
+    const { secretKey, clientId, ...rest } = appData.data;
 
     return {
       ...rest,
+      clientId: decrypt(clientId),
       isSandbox: this.environment === Environment.Sandbox,
     };
   }
@@ -588,15 +617,19 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
   >): Promise<PaypalClient> {
     const logger = this.loggerFactory("getSimplifiedClient");
     const environment = this.environment;
+
+    const clientId = data?.clientId ? decrypt(data.clientId) : undefined;
+    const secretKey = data?.secretKey ? decrypt(data.secretKey) : undefined;
+
     logger.debug(
       {
-        clientId: data?.clientId ? maskify(data.clientId) : undefined,
+        clientId: clientId ? maskify(clientId) : undefined,
         environment,
       },
       "Creating simplified PayPal client"
     );
 
-    if (!data) {
+    if (!data || !clientId || !secretKey) {
       logger.error("No PayPal configuration data provided");
       throw new ConnectedAppError("paypal.statusText.no_data");
     }
@@ -607,19 +640,19 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
       //   .getConfiguration("general");
 
       logger.debug(
-        { clientId: maskify(data.clientId) },
+        { clientId: maskify(clientId) },
         "Created simplified PayPal client"
       );
 
       return new PaypalClient(
-        data.clientId,
-        data.secretKey,
+        clientId,
+        secretKey,
         environment === Environment.Production
       );
     } catch (error: any) {
       logger.error(
         {
-          clientId: maskify(data.clientId),
+          clientId: maskify(clientId),
           error: error?.message || error?.toString(),
         },
         "Error creating simplified PayPal client"
@@ -628,66 +661,70 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
     }
   }
 
-  protected getClient({
-    data,
-    token: dbToken,
-  }: Pick<ConnectedAppData<PaypalConfiguration>, "data" | "token">) {
-    const logger = this.loggerFactory("getClient");
-    logger.debug(
-      {
-        clientId: data?.clientId ? maskify(data.clientId) : undefined,
-        environment: this.environment,
-      },
-      "Creating PayPal client"
-    );
+  // protected getClient({
+  //   data,
+  //   token: dbToken,
+  // }: Pick<ConnectedAppData<PaypalConfiguration>, "data" | "token">) {
+  //   const logger = this.loggerFactory("getClient");
 
-    if (!data) {
-      logger.error("No PayPal configuration data provided");
-      throw new ConnectedAppError("paypal.statusText.no_data");
-    }
+  //   const clientId = data?.clientId ? decrypt(data.clientId) : undefined;
+  //   const secretKey = data?.secretKey ? decrypt(data.secretKey) : undefined;
 
-    logger.debug(
-      { clientId: maskify(data.clientId), environment: this.environment },
-      "Created PayPal client"
-    );
+  //   logger.debug(
+  //     {
+  //       clientId: clientId ? maskify(clientId) : undefined,
+  //       environment: this.environment,
+  //     },
+  //     "Creating PayPal client"
+  //   );
 
-    return new Client({
-      environment: this.environment,
-      clientCredentialsAuthCredentials: {
-        oAuthClientId: data.clientId,
-        oAuthClientSecret: data.secretKey,
-        oAuthOnTokenUpdate: async (token) => {
-          logger.debug(
-            { clientId: maskify(data.clientId) },
-            "Updating PayPal OAuth token"
-          );
-          await this.props.update({
-            token,
-          });
-        },
-        oAuthTokenProvider: (lastOAuthToken, authManager) => {
-          logger.debug(
-            { clientId: maskify(data.clientId), hasExistingToken: !!dbToken },
-            "Providing PayPal OAuth token"
-          );
-          const oAuthToken = dbToken;
-          if (oAuthToken != null && !authManager.isExpired(oAuthToken)) {
-            logger.debug(
-              { clientId: maskify(data.clientId) },
-              "Using existing PayPal OAuth token"
-            );
-            return oAuthToken;
-          }
+  //   if (!data || !clientId || !secretKey) {
+  //     logger.error("No PayPal configuration data provided");
+  //     throw new ConnectedAppError("paypal.statusText.no_data");
+  //   }
 
-          logger.debug(
-            { clientId: maskify(data.clientId) },
-            "Fetching new PayPal OAuth token"
-          );
-          return authManager.fetchToken();
-        },
-      },
-    });
-  }
+  //   logger.debug(
+  //     { clientId: maskify(clientId), environment: this.environment },
+  //     "Created PayPal client"
+  //   );
+
+  //   return new Client({
+  //     environment: this.environment,
+  //     clientCredentialsAuthCredentials: {
+  //       oAuthClientId: clientId,
+  //       oAuthClientSecret: secretKey,
+  //       oAuthOnTokenUpdate: async (token) => {
+  //         logger.debug(
+  //           { clientId: maskify(clientId) },
+  //           "Updating PayPal OAuth token"
+  //         );
+  //         await this.props.update({
+  //           token,
+  //         });
+  //       },
+  //       oAuthTokenProvider: (lastOAuthToken, authManager) => {
+  //         logger.debug(
+  //           { clientId: maskify(clientId), hasExistingToken: !!dbToken },
+  //           "Providing PayPal OAuth token"
+  //         );
+  //         const oAuthToken = dbToken;
+  //         if (oAuthToken != null && !authManager.isExpired(oAuthToken)) {
+  //           logger.debug(
+  //             { clientId: maskify(clientId) },
+  //             "Using existing PayPal OAuth token"
+  //           );
+  //           return oAuthToken;
+  //         }
+
+  //         logger.debug(
+  //           { clientId: maskify(clientId) },
+  //           "Fetching new PayPal OAuth token"
+  //         );
+  //         return authManager.fetchToken();
+  //       },
+  //     },
+  //   });
+  // }
 
   protected get environment() {
     return process.env.PAYPAL_ENV === "production"

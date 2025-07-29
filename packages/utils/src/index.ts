@@ -3,6 +3,7 @@ export * from "./colors";
 export * from "./currency";
 export * from "./deep-equal";
 export * from "./email";
+export * from "./encryption";
 export * from "./file";
 export * from "./fixtures";
 export * from "./format-arguments";
