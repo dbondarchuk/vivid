@@ -1,4 +1,3 @@
-import { useI18n } from "@vivid/i18n";
 import {
   ButtonMenuItem,
   LinkMenuItem,
@@ -10,13 +9,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  Button,
   cn,
   Drawer,
-  DrawerClose,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -25,10 +19,14 @@ import {
   Link,
   Logo,
 } from "@vivid/ui";
-import { ChevronDown, icons, Menu, X } from "lucide-react";
+import { ChevronDown, icons } from "lucide-react";
 import React from "react";
 import { ReplaceOriginalColors } from "../helpers/replace-original-colors";
-import { PortalDrawerContent } from "./drawer-content";
+import {
+  HeaderDrawerHeader,
+  HeaderDrawerTrigger,
+  PortalDrawerContent,
+} from "./drawer-content";
 import { HeaderWithScrollShadow } from "./with-scroll-shadow";
 
 export type HeaderProps = {
@@ -66,7 +64,6 @@ const HeaderBase: React.FC<HeaderProps> = ({
   config,
   className,
 }) => {
-  const t = useI18n("translation");
   const getLink = (item: MenuItem, isSidebar: boolean) => {
     switch (item.type) {
       case "icon":
@@ -170,28 +167,10 @@ const HeaderBase: React.FC<HeaderProps> = ({
         </div>
         <div className="flex ml-auto md:hidden">
           <Drawer direction="right">
-            <DrawerTrigger asChild>
-              <Button variant="outline" aria-label={t("header.menu")}>
-                <Menu />
-              </Button>
-            </DrawerTrigger>
+            <HeaderDrawerTrigger />
             <PortalDrawerContent className="bg-background flex flex-col  h-full min-w-[100px] max-w-fit mt-24 fixed bottom-0 right-0 left-auto rounded-none">
               <ReplaceOriginalColors />
-              <DrawerHeader className="flex flex-row gap-2 items-center">
-                <DrawerTitle className="text-base">
-                  {t("header.menu")}
-                </DrawerTitle>
-                <DrawerClose asChild className="">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-fit ml-auto"
-                    aria-label={t("header.close")}
-                  >
-                    <X />
-                  </Button>
-                </DrawerClose>
-              </DrawerHeader>
+              <HeaderDrawerHeader />
               <div className="w-full py-6 px-4">
                 <nav className="flex flex-col gap-3 items-end">
                   {config?.menu?.map((item, index) =>

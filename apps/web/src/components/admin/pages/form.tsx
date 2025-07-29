@@ -329,9 +329,7 @@ export const PageForm: React.FC<{
                       args={args}
                       value={field.value}
                       onIsValidChange={onPageBuilderValidChange}
-                      onChange={(value) => {
-                        field.onChange(value);
-                      }}
+                      onChange={field.onChange}
                       header={
                         header
                           ? {

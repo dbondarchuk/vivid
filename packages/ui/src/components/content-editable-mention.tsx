@@ -278,6 +278,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
             e.keyCode === 27
           ) {
             e.preventDefault();
+            e.stopPropagation();
             input.dispatchEvent(new KeyboardEvent("keydown", e));
           }
         }

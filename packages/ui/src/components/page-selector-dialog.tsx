@@ -1,26 +1,15 @@
 "use client";
 
-import { useInView } from "react-intersection-observer";
-import { PageListModel, PageListModelWithUrl, WithTotal } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
+import { PageListModelWithUrl, WithTotal } from "@vivid/types";
 import React from "react";
-import { Accept } from "react-dropzone";
-import {
-  DndFileInput,
-  RadioGroup,
-  RadioGroupItem,
-  ScrollArea,
-  Skeleton,
-  toast,
-} from ".";
-import { useDebounce, useUploadFile } from "../hooks";
+import { useInView } from "react-intersection-observer";
+import { RadioGroup, RadioGroupItem, ScrollArea, Skeleton, toast } from ".";
+import { useDebounce } from "../hooks";
 import { cn } from "../utils";
-import { AssetPreview } from "./asset-preview";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Modal } from "./modal";
-import { Progress } from "./progress";
-import { Spinner } from "./spinner";
-import { useI18n } from "@vivid/i18n";
 
 export type PageSelectorProps = {
   onSelected: (page: PageListModelWithUrl) => void;

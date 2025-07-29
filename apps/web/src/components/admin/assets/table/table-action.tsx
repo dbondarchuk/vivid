@@ -20,7 +20,8 @@ import { Settings2 } from "lucide-react";
 export const AssetsTableAction: React.FC<{
   showCustomerFilter?: boolean;
   className?: string;
-}> = ({ showCustomerFilter, className }) => {
+  onDelete?: () => void;
+}> = ({ showCustomerFilter, className, onDelete }) => {
   const {
     isAnyFilterActive,
     resetFilters,
@@ -85,7 +86,10 @@ export const AssetsTableAction: React.FC<{
         />
       </div>
       <div className="flex flex-wrap items-center gap-4">
-        <DeleteSelectedAssetsButton selected={rowSelection} />
+        <DeleteSelectedAssetsButton
+          selected={rowSelection}
+          onDelete={onDelete}
+        />
       </div>
     </div>
   );

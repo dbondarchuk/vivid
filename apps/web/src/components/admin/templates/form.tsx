@@ -23,7 +23,7 @@ import {
 } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm, useFormState } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
 import { createTemplate, updateTemplate } from "./actions";
@@ -168,9 +168,7 @@ export const TemplateForm: React.FC<
                         args={args}
                         value={field.value}
                         onIsValidChange={onEmailBuilderValidChange}
-                        onChange={(value) => {
-                          field.onChange(value);
-                        }}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />

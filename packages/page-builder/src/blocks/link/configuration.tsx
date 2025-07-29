@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigurationProps, SelectInput, TextInput } from "@vivid/builder";
+import { ConfigurationProps, PageInput, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { LinkDefaultTarget, LinkDefaultUrl, LinkProps } from "./schema";
@@ -25,7 +25,7 @@ export const LinkConfiguration = ({
       base={base}
       onBaseChange={onBaseChange}
     >
-      <TextInput
+      <PageInput
         label={t("pageBuilder.blocks.link.url")}
         defaultValue={data.props?.url ?? LinkDefaultUrl}
         onChange={(url) => {

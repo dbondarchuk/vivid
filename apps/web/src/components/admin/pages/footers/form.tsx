@@ -95,14 +95,6 @@ export const PageFooterForm: React.FC<{
     [setError, trigger, t]
   );
 
-  const onChange = React.useCallback(
-    async (value: any) => {
-      form.setValue("content", value);
-      form.trigger("content");
-    },
-    [form]
-  );
-
   const { isFormDirty, onFormSubmit } = useIsDirty(form);
   const onSubmit = async (data: PageFormValues) => {
     try {
@@ -185,7 +177,7 @@ export const PageFooterForm: React.FC<{
                     notAllowedBlocks={["Booking", "Popup"]}
                     value={field.value}
                     onIsValidChange={onPageBuilderValidChange}
-                    onChange={onChange}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

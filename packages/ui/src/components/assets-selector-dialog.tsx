@@ -168,22 +168,23 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
     }
   }, [isOpen]);
 
-  const [fileToUpload, setFileToUpload] = React.useState<File | undefined>();
+  const [fileToUpload, setFileToUpload] = React.useState<File[]>([]);
   const { isUploading, progress, uploadFile } = useUploadFile({
-    onUploadComplete: (file) => {
-      setAssets((old) => [file, ...old]);
-      setSelected(file);
+    onUploadComplete: (files) => {
+      setAssets((old) => [...files, ...old]);
+      setSelected(files[0]);
     },
     appointmentId: addTo?.appointmentId,
     customerId: addTo?.customerId,
-    description: addTo?.description,
   });
 
   const onSubmit = async () => {
     if (!fileToUpload) return;
 
-    await uploadFile(fileToUpload);
-    setFileToUpload(undefined);
+    await uploadFile(
+      fileToUpload.map((file) => ({ file, description: addTo?.description }))
+    );
+    setFileToUpload([]);
   };
 
   const disabled = loading || isUploading;
@@ -212,6 +213,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
               value={fileToUpload}
               onChange={setFileToUpload}
               disabled={disabled}
+              maxFiles={10}
               accept={accept?.reduce(
                 (map, cur) => ({
                   ...map,

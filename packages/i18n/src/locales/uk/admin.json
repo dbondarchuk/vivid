@@ -62,7 +62,8 @@
     "buttons": {
       "delete": "Видалити",
       "cancel": "Скасувати",
-      "close": "Закрити"
+      "close": "Закрити",
+      "addNew": "Додати новий"
     },
     "optional": "Опціонально",
     "timeDuration": "{hours, plural, =0 {{minutes} хв} other {# год, {minutes} хв}}",
@@ -520,6 +521,12 @@
       "filters": {
         "filters": "Фільтри"
       }
+    },
+    "uploadFiles": {
+      "title": "Завантажити файли",
+      "description": "Завантажте файли для вашого клієнта",
+      "descriptionPlaceholder": "Опис файлу",
+      "upload": "Завантажити"
     },
     "toasts": {
       "changesSaved": "Ваші зміни були збережені.",

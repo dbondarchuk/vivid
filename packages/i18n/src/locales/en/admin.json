@@ -62,7 +62,8 @@
     "buttons": {
       "delete": "Delete",
       "cancel": "Cancel",
-      "close": "Close"
+      "close": "Close",
+      "addNew": "Add new"
     },
     "optional": "Optional",
     "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
@@ -474,6 +475,12 @@
       "remove": "Remove",
       "changePhoto": "Change photo",
       "customerPhotoAlt": "Customer photo"
+    },
+    "uploadFiles": {
+      "title": "Upload files",
+      "description": "Upload files for your customer",
+      "descriptionPlaceholder": "File description",
+      "upload": "Upload"
     },
     "table": {
       "columns": {

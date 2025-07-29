@@ -25,9 +25,11 @@ import {
   useSelectedRowsStore,
   useUploadFile,
 } from "@vivid/ui";
-import React from "react";
+import React, { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
+import { useI18n } from "@vivid/i18n";
+import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 
 const AssetItem: React.FC<{ asset: Asset }> = ({ asset }) => {
   const { rowSelection, setRowSelection } = useSelectedRowsStore();
@@ -95,9 +97,19 @@ const Loaders = () => (
   </>
 );
 
+export const CustomerFilesTableAction: React.FC<{}> = () => {
+  const router = useRouter();
+  const onDelete = useCallback(() => {
+    router.replace(`?key=${new Date().getTime()}`);
+  }, [router]);
+
+  return <AssetsTableAction className="flex-1" onDelete={onDelete} />;
+};
+
 export const CustomerFileUpload: React.FC<{
   customerId: string;
 }> = ({ customerId }) => {
+  const t = useI18n("admin");
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const onUpload = () => {
@@ -108,48 +120,53 @@ export const CustomerFileUpload: React.FC<{
   };
 
   const [description, setDescription] = React.useState<string>();
-  const [fileToUpload, setFileToUpload] = React.useState<File | undefined>();
+  const [filesToUpload, setFilesToUpload] = React.useState<File[]>([]);
   const [disabled, setDisabled] = React.useState(false);
   const { isUploading, progress, uploadFile } = useUploadFile({
-    onUploadComplete: (file) => {
+    onUploadComplete: () => {
       onUpload();
     },
     onUploadError: () => {
       setDisabled(false);
     },
     customerId,
-    description,
   });
 
   const onSubmit = async () => {
-    if (!fileToUpload) return;
+    if (!filesToUpload?.length) return;
 
-    await uploadFile(fileToUpload);
-    setFileToUpload(undefined);
+    setDisabled(true);
+
+    await uploadFile(filesToUpload.map((file) => ({ file, description })));
+    setFilesToUpload([]);
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default">
-          <Upload /> Add new
+          <Upload /> {t("common.buttons.addNew")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Upload new file</DialogTitle>
-          <DialogDescription>Add new file to the customer</DialogDescription>
+          <DialogTitle>{t("customers.uploadFiles.title")}</DialogTitle>
+          <DialogDescription>
+            {t("customers.uploadFiles.description")}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="w-full flex flex-col gap-2 relative">
           <DndFileInput
-            value={fileToUpload}
-            onChange={setFileToUpload}
+            value={filesToUpload}
+            onChange={setFilesToUpload}
             disabled={disabled}
+            maxFiles={10}
           />
           <Textarea
             className="w-full"
             autoResize
-            placeholder="Description"
+            placeholder={t("customers.uploadFiles.descriptionPlaceholder")}
             value={description ?? ""}
             onChange={(e) => setDescription(e.currentTarget.value)}
           />
@@ -168,15 +185,15 @@ export const CustomerFileUpload: React.FC<{
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="secondary" disabled={disabled}>
-              Close
+              {t("common.buttons.close")}
             </Button>
           </DialogClose>
           <Button
             variant="default"
-            disabled={disabled || !fileToUpload}
+            disabled={disabled || !filesToUpload?.length || isUploading}
             onClick={onSubmit}
           >
-            Upload
+            {t("customers.uploadFiles.upload")}
           </Button>
         </DialogFooter>
       </DialogContent>
