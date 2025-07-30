@@ -127,6 +127,17 @@
         "gridTemplateColumns": "Grid Template Columns",
         "transform": "Transform",
         "transition": "Transition",
+        "animation": "Animation",
+        "animationName": "Animation Name",
+        "animationDuration": "Animation Duration",
+        "animationIterationCount": "Animation Iteration Count",
+        "animationDirection": "Animation Direction",
+        "animationTimingFunction": "Animation Timing Function",
+        "animationDelay": "Animation Delay",
+        "transitionProperties": "Transition Properties",
+        "transitionDuration": "Transition Duration",
+        "transitionTimingFunction": "Transition Timing Function",
+        "selectTransitionProperties": "Select transition properties...",
         "filter": "Filter",
         "objectFit": "Object Fit",
         "objectPosition": "Object Position",
@@ -256,7 +267,106 @@
         "color_0_2s_ease": "Color 0.2s Ease",
         "border_color_0_2s_ease": "Border Color 0.2s Ease",
         "filter_0_2s_ease": "Filter 0.2s Ease",
-        "filter_0_5s_ease": "Filter 0.5s Ease"
+        "filter_0_5s_ease": "Filter 0.5s Ease",
+        "custom": "Custom"
+      },
+      "transitionProperties": {
+        "all": "All",
+        "none": "None",
+        "opacity": "Opacity",
+        "transform": "Transform",
+        "background_color": "Background Color",
+        "color": "Color",
+        "border_color": "Border Color",
+        "filter": "Filter",
+        "width": "Width",
+        "height": "Height",
+        "padding": "Padding",
+        "margin": "Margin",
+        "border_width": "Border Width",
+        "border_radius": "Border Radius",
+        "box_shadow": "Box Shadow",
+        "font_size": "Font Size",
+        "font_weight": "Font Weight",
+        "letter_spacing": "Letter Spacing",
+        "line_height": "Line Height"
+      },
+      "transitionDuration": {
+        "0s": "0s",
+        "0_1s": "0.1s",
+        "0_2s": "0.2s",
+        "0_3s": "0.3s",
+        "0_5s": "0.5s",
+        "0_7s": "0.7s",
+        "1s": "1s",
+        "1_5s": "1.5s",
+        "2s": "2s",
+        "3s": "3s",
+        "5s": "5s"
+      },
+      "transitionTimingFunction": {
+        "ease": "Ease",
+        "linear": "Linear",
+        "ease_in": "Ease In",
+        "ease_out": "Ease Out",
+        "ease_in_out": "Ease In Out",
+        "step_start": "Step Start",
+        "step_end": "Step End"
+      },
+      "animation": {
+        "none": "None",
+        "fadeIn": "Fade In",
+        "fadeOut": "Fade Out",
+        "slideInLeft": "Slide In Left",
+        "slideInRight": "Slide In Right",
+        "slideInUp": "Slide In Up",
+        "slideInDown": "Slide In Down",
+        "slideOutLeft": "Slide Out Left",
+        "slideOutRight": "Slide Out Right",
+        "slideOutUp": "Slide Out Up",
+        "slideOutDown": "Slide Out Down",
+        "scaleIn": "Scale In",
+        "scaleOut": "Scale Out",
+        "bounceIn": "Bounce In",
+        "bounceOut": "Bounce Out",
+        "rotateIn": "Rotate In",
+        "rotateOut": "Rotate Out",
+        "flipInX": "Flip In X",
+        "flipOutX": "Flip Out X",
+        "flipInY": "Flip In Y",
+        "flipOutY": "Flip Out Y",
+        "zoomIn": "Zoom In",
+        "zoomOut": "Zoom Out",
+        "pulse": "Pulse",
+        "shake": "Shake",
+        "wiggle": "Wiggle",
+        "tada": "Tada",
+        "swing": "Swing",
+        "rubberBand": "Rubber Band",
+        "lightSpeedIn": "Light Speed In",
+        "lightSpeedOut": "Light Speed Out",
+        "hinge": "Hinge",
+        "rollIn": "Roll In",
+        "rollOut": "Roll Out"
+      },
+      "animationKeywords": {
+        "infinite": "Infinite",
+        "custom": "Custom"
+      },
+      "animationDirection": {
+        "normal": "Normal",
+        "reverse": "Reverse",
+        "alternate": "Alternate",
+        "alternate_reverse": "Alternate Reverse"
+      },
+      "animationTimingFunction": {
+        "ease": "Ease",
+        "linear": "Linear",
+        "ease_in": "Ease In",
+        "ease_out": "Ease Out",
+        "ease_in_out": "Ease In Out",
+        "step_start": "Step Start",
+        "step_end": "Step End"
       },
       "filter": {
         "none": "None",
@@ -1112,6 +1222,9 @@
       "fontFamily": {
         "unknownType": "Unknown font family"
       }
+    },
+    "common": {
+      "secondsShort": "s"
     }
   },
   "emailBuilder": {

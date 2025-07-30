@@ -126,6 +126,17 @@
         "gridTemplateColumns": "Шаблон колонок сітки",
         "transform": "Трансформація",
         "transition": "Перехід",
+        "animation": "Анімація",
+        "animationName": "Назва анімації",
+        "animationDuration": "Тривалість анімації",
+        "animationIterationCount": "Кількість повторень анімації",
+        "animationDirection": "Напрямок анімації",
+        "animationTimingFunction": "Функція часу анімації",
+        "animationDelay": "Затримка анімації",
+        "transitionProperties": "Властивості переходу",
+        "transitionDuration": "Тривалість переходу",
+        "transitionTimingFunction": "Функція часу переходу",
+        "selectTransitionProperties": "Виберіть властивості переходу...",
         "filter": "Фільтр",
         "objectFit": "Заповнення контейнера",
         "objectPosition": "Позиція об'єкта",
@@ -255,7 +266,106 @@
         "color_0_2s_ease": "Колір 0.2с Плавно",
         "border_color_0_2s_ease": "Колір рамки 0.2с Плавно",
         "filter_0_2s_ease": "Фільтр 0.2с Плавно",
-        "filter_0_5s_ease": "Фільтр 0.5с Плавно"
+        "filter_0_5s_ease": "Фільтр 0.5с Плавно",
+        "custom": "Власне"
+      },
+      "transitionProperties": {
+        "all": "Всі",
+        "none": "Немає",
+        "opacity": "Прозорість",
+        "transform": "Трансформація",
+        "background_color": "Колір фону",
+        "color": "Колір",
+        "border_color": "Колір рамки",
+        "filter": "Фільтр",
+        "width": "Ширина",
+        "height": "Висота",
+        "padding": "Внутрішній відступ",
+        "margin": "Зовнішній відступ",
+        "border_width": "Ширина рамки",
+        "border_radius": "Радіус рамки",
+        "box_shadow": "Тінь блоку",
+        "font_size": "Розмір шрифту",
+        "font_weight": "Товщина шрифту",
+        "letter_spacing": "Відстань між літерами",
+        "line_height": "Висота рядка"
+      },
+      "transitionDuration": {
+        "0s": "0с",
+        "0_1s": "0.1с",
+        "0_2s": "0.2с",
+        "0_3s": "0.3с",
+        "0_5s": "0.5с",
+        "0_7s": "0.7с",
+        "1s": "1с",
+        "1_5s": "1.5с",
+        "2s": "2с",
+        "3s": "3с",
+        "5s": "5с"
+      },
+      "transitionTimingFunction": {
+        "ease": "Плавно",
+        "linear": "Лінійно",
+        "ease_in": "Плавно вхід",
+        "ease_out": "Плавно вихід",
+        "ease_in_out": "Плавно вхід-вихід",
+        "step_start": "Крок початок",
+        "step_end": "Крок кінець"
+      },
+      "animation": {
+        "none": "Немає",
+        "fadeIn": "Поява",
+        "fadeOut": "Зникнення",
+        "slideInLeft": "Ковзання зліва",
+        "slideInRight": "Ковзання справа",
+        "slideInUp": "Ковзання знизу",
+        "slideInDown": "Ковзання зверху",
+        "slideOutLeft": "Ковзання вліво",
+        "slideOutRight": "Ковзання вправо",
+        "slideOutUp": "Ковзання вгору",
+        "slideOutDown": "Ковзання вниз",
+        "scaleIn": "Масштабування в",
+        "scaleOut": "Масштабування з",
+        "bounceIn": "Стрибок в",
+        "bounceOut": "Стрибок з",
+        "rotateIn": "Обертання в",
+        "rotateOut": "Обертання з",
+        "flipInX": "Перевертання по осі X",
+        "flipOutX": "Перевертання по осі X",
+        "flipInY": "Перевертання по осі Y",
+        "flipOutY": "Перевертання по осі Y",
+        "zoomIn": "Збільшення",
+        "zoomOut": "Зменшення",
+        "pulse": "Пульсація",
+        "shake": "Трясіння",
+        "wiggle": "Покручування",
+        "tada": "Тада",
+        "swing": "Гойдалка",
+        "rubberBand": "Гумова стрічка",
+        "lightSpeedIn": "Швидкість світла вхід",
+        "lightSpeedOut": "Швидкість світла вихід",
+        "hinge": "Петля",
+        "rollIn": "Котіння в",
+        "rollOut": "Котіння з"
+      },
+      "animationKeywords": {
+        "infinite": "Нескінченно",
+        "custom": "Власне"
+      },
+      "animationDirection": {
+        "normal": "Звичайний",
+        "reverse": "Зворотний",
+        "alternate": "Чергування",
+        "alternate_reverse": "Зворотне чергування"
+      },
+      "animationTimingFunction": {
+        "ease": "Плавно",
+        "linear": "Лінійно",
+        "ease_in": "Плавно вхід",
+        "ease_out": "Плавно вихід",
+        "ease_in_out": "Плавно вхід-вихід",
+        "step_start": "Крок початок",
+        "step_end": "Крок кінець"
       },
       "filter": {
         "none": "Немає",
@@ -1119,6 +1229,9 @@
       "fontFamily": {
         "unknownType": "Невідомий тип сімейства шрифтів"
       }
+    },
+    "common": {
+      "secondsShort": "с"
     }
   },
   "emailBuilder": {

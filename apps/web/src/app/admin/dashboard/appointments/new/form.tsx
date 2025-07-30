@@ -556,9 +556,7 @@ export const AppointmentScheduleForm: React.FC<
                         placeholder={t("appointments.form.selectAddons")}
                         selected={field.value?.map((x) => x.id) || []}
                         onChange={(value) =>
-                          field.onChange(
-                            (value as string[]).map((id) => ({ id }))
-                          )
+                          field.onChange(value.map((id) => ({ id })))
                         }
                         options={
                           selectedOption?.addons.map((addon) => ({

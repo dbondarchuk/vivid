@@ -5,7 +5,7 @@ import { cn } from "../utils";
 import { useI18n } from "@vivid/i18n";
 
 import { Check, X, ChevronsUpDown } from "lucide-react";
-import { Button } from "./button";
+import { Button, ButtonProps } from "./button";
 import {
   Command,
   CommandEmpty,
@@ -25,10 +25,11 @@ export type OptionType = {
 interface MultiSelectProps {
   options: OptionType[];
   selected: string[];
-  onChange?: React.Dispatch<React.SetStateAction<string[]>>;
+  onChange?: (value: string[]) => void;
   className?: string;
   placeholder?: string;
   disabled?: boolean;
+  size?: ButtonProps["size"];
 }
 
 function MultiSelect({
@@ -38,6 +39,7 @@ function MultiSelect({
   className,
   placeholder,
   disabled,
+  size,
   ...props
 }: MultiSelectProps) {
   const t = useI18n("ui");
@@ -54,9 +56,8 @@ function MultiSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`w-full justify-between ${
-            selected.length > 1 ? "h-full" : "h-9"
-          }`}
+          size={size}
+          className={cn("w-full justify-between")}
           onClick={() => setOpen(!open)}
           disabled={disabled}
         >

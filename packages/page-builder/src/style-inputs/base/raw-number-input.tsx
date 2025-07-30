@@ -11,6 +11,7 @@ type RawNumberInputProps = {
   float?: boolean;
   id?: string;
   disabled?: boolean;
+  suffix?: React.ReactNode;
 } & (
   | {
       nullable?: false;
@@ -36,6 +37,7 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
   float,
   id: propId,
   disabled,
+  suffix,
 }) => {
   const [isFocused, setIsFocused] = React.useState(false);
   const handleInputChange = React.useCallback(
@@ -142,6 +144,11 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
           <Plus className="" />
         </Button>
       </div>
+      {suffix && (
+        <label className="min-w-6 shrink-0 cursor-pointer" htmlFor={inputId}>
+          {suffix}
+        </label>
+      )}
     </div>
   );
 };

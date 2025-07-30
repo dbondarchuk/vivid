@@ -1,3 +1,4 @@
+import { animationStyle } from "./animation";
 import { boxShadowStyle } from "./box-shadow";
 import { cursorStyle } from "./cursor";
 import { filterStyle } from "./filter";
@@ -8,6 +9,7 @@ import { transformStyle } from "./transform";
 import { transitionStyle } from "./transition";
 import { zIndexStyle } from "./z-index";
 
+export * from "./animation";
 export * from "./box-shadow";
 export * from "./cursor";
 export * from "./filter";
@@ -19,6 +21,7 @@ export * from "./transition";
 export * from "./z-index";
 
 export const effectsStyles = [
+  animationStyle,
   boxShadowStyle,
   cursorStyle,
   hideStyle,
