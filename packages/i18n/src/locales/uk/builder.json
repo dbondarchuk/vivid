@@ -1012,6 +1012,11 @@
           "one-time": "Одноразово",
           "on-click": "При кліку"
         },
+        "overlay": {
+          "label": "Тип підкладки",
+          "blur": "Розмиття",
+          "default": "Типовий"
+        },
         "shortcuts": {
           "maxWidth": {
             "label": "Ширина",

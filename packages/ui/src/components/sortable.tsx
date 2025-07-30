@@ -42,7 +42,7 @@ export function Sortable({
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const variants = cva(
-    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center w-full",
+    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col snap-center w-full",
     {
       variants: {
         dragging: {

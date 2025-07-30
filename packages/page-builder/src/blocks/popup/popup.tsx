@@ -6,18 +6,19 @@ import { DateTime } from "luxon";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { PopupProvider } from "../../context/popupContext";
-import { showPopupType } from "./schema";
+import { overlayType, showPopupType } from "./schema";
 
 const shownCookieValue = "shown";
 
 export const Popup: React.FC<{
   blockId: string;
   show: (typeof showPopupType)[number];
+  overlay: (typeof overlayType)[number];
   isEditor?: boolean;
   id?: string;
   className?: string;
   children: React.ReactNode;
-}> = ({ blockId, show, isEditor, id, className, children }) => {
+}> = ({ blockId, show, overlay, isEditor, id, className, children }) => {
   const popupId = id || blockId;
   const COOKIE_NAME = `popup-shown-${popupId}`;
 
@@ -47,7 +48,12 @@ export const Popup: React.FC<{
   return (
     <PopupProvider id={popupId} isOpen={isOpen} setIsOpen={onOpenChange}>
       <Dialog open={isOpen} modal onOpenChange={onOpenChange}>
-        <DialogContent container={body} id={id} className={className}>
+        <DialogContent
+          container={body}
+          id={id}
+          className={className}
+          overlayVariant={overlay}
+        >
           {children}
         </DialogContent>
       </Dialog>

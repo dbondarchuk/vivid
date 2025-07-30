@@ -1589,6 +1589,51 @@
       "button": "Button",
       "submenu": "Submenu"
     },
+    "linkVariants": {
+      "default": "Default",
+      "underline": "Underline",
+      "standalone": "Standalone",
+      "dashed": "Dashed"
+    },
+    "buttonVariants": {
+      "default": "Default",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "link": "Link",
+      "link-underline": "Link underline",
+      "link-dashed": "Link dashed"
+    },
+    "sizes": {
+      "none": "None",
+      "icon": "Icon",
+      "xs": "Extra small",
+      "default": "Default",
+      "sm": "Small",
+      "md": "Medium",
+      "lg": "Large",
+      "xl": "Extra large"
+    },
+    "weights": {
+      "default": "Default",
+      "light": "Light",
+      "thin": "Thin",
+      "normal": "Normal",
+      "medium": "Medium",
+      "semibold": "Semi-bold",
+      "bold": "Bold",
+      "extrabold": "Extra-bold",
+      "black": "Black",
+      "extralight": "Extra-light"
+    },
+    "fonts": {
+      "default": "Default",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "tertiary": "Tertiary"
+    },
     "fields": {
       "url": "Url",
       "urlPlaceholder": "Link",

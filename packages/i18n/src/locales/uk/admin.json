@@ -1590,6 +1590,51 @@
       "button": "Кнопка",
       "submenu": "Підменю"
     },
+    "linkVariants": {
+      "default": "Типовий",
+      "underline": "Підкреслення",
+      "standalone": "Стандартний",
+      "dashed": "Пунктирний"
+    },
+    "buttonVariants": {
+      "default": "Типовий",
+      "primary": "Основний",
+      "secondary": "Допоміжний",
+      "destructive": "Деструктивний",
+      "outline": "Контурний",
+      "ghost": "Прихований",
+      "link": "Посилання",
+      "link-underline": "Посилання з підкресленням",
+      "link-dashed": "Посилання з пунктирним підкресленням"
+    },
+    "sizes": {
+      "none": "Немає",
+      "icon": "Іконка",
+      "xs": "Дуже маленький",
+      "default": "Типовий",
+      "sm": "Маленький",
+      "md": "Середній",
+      "lg": "Великий",
+      "xl": "Дуже великий"
+    },
+    "weights": {
+      "default": "Типовий",
+      "light": "Легкий",
+      "thin": "Дуже легкий",
+      "normal": "Нормальний",
+      "medium": "Середній",
+      "semibold": "Напівжирний",
+      "bold": "Жирний",
+      "extrabold": "Дуже жирний",
+      "black": "Чорний",
+      "extralight": "Дуже легкий"
+    },
+    "fonts": {
+      "default": "Типовий",
+      "primary": "Основний",
+      "secondary": "Допоміжний",
+      "tertiary": "Третійний"
+    },
     "fields": {
       "url": "Url",
       "urlPlaceholder": "Посилання",

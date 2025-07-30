@@ -1005,6 +1005,11 @@
           "one-time": "One time",
           "on-click": "On click"
         },
+        "overlay": {
+          "label": "Overlay",
+          "blur": "Blur",
+          "default": "Default"
+        },
         "shortcuts": {
           "maxWidth": {
             "label": "Width",

@@ -4,9 +4,10 @@ import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 
 const fonts = {
-  default: "",
-  body: "font-primary",
-  header: "font-secondary",
+  default: "font-primary",
+  primary: "font-primary",
+  secondary: "font-secondary",
+  tertiary: "font-tertiary",
 };
 
 const textSizes = {

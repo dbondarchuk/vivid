@@ -6,11 +6,13 @@ import { SimpleContainerPropsDefaults } from "../simple-container/schema";
 import { zStyles } from "./styles";
 
 export const showPopupType = ["always", "one-time", "on-click"] as const;
+export const overlayType = ["blur", "default"] as const;
 
 export const PopupPropsSchema = z.object({
   style: zStyles,
   props: z.object({
     show: z.enum(showPopupType),
+    overlay: z.enum(overlayType),
     title: z.object({
       children: z.array(z.any()).max(1),
     }),
@@ -79,6 +81,7 @@ export const PopupPropsDefaults = () =>
     },
     props: {
       show: "always",
+      overlay: "default",
       title: {
         children: [
           {

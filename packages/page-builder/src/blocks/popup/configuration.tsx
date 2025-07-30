@@ -3,7 +3,7 @@
 import { ConfigurationProps, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
-import { PopupProps, showPopupType } from "./schema";
+import { overlayType, PopupProps, showPopupType } from "./schema";
 import { popupShortcuts } from "./shortcuts";
 import { styles } from "./styles";
 
@@ -35,6 +35,17 @@ export const PopupConfiguration = ({
         options={showPopupType.map((show) => ({
           value: show,
           label: t(`pageBuilder.blocks.popup.show.${show}`),
+        }))}
+      />
+      <SelectInput
+        label={t("pageBuilder.blocks.popup.overlay.label")}
+        defaultValue={data.props.overlay}
+        onChange={(overlay) =>
+          updateData({ ...data, props: { ...data.props, overlay } })
+        }
+        options={overlayType.map((overlay) => ({
+          value: overlay,
+          label: t(`pageBuilder.blocks.popup.overlay.${overlay}`),
         }))}
       />
     </StylesConfigurationPanel>

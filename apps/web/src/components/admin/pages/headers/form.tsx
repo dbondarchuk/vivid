@@ -167,7 +167,7 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
             )}
           />
           <div className="flex gap-4 flex-col md:flex-row-reverse">
-            <div className="gap-2 flex flex-col flex-1">
+            <div className="gap-2 flex flex-col flex-grow-1">
               <FormField
                 control={form.control}
                 name="showLogo"

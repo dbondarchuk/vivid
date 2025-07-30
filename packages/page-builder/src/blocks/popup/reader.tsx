@@ -25,6 +25,7 @@ export const PopupReader = ({
   const subtitle = props?.subtitle?.children || [];
   const buttons = props?.buttons?.children || [];
   const content = props?.content?.children || [];
+  const overlay = props?.overlay;
   const className = generateClassName();
   const base = block.base;
 
@@ -37,6 +38,7 @@ export const PopupReader = ({
         isEditor={isEditor}
         id={base?.id}
         className={cn(className, base?.className)}
+        overlay={overlay}
       >
         <ReplaceOriginalColors />
         <DialogHeader>
