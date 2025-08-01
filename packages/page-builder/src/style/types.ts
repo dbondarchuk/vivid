@@ -1,7 +1,7 @@
 import { BuilderKeys } from "@vivid/i18n";
 import { z } from "zod";
 import { AllStylesNames } from "./styles";
-import { Breakpoint, State } from "./zod";
+import { Breakpoint, StateWithParent } from "./zod";
 
 // Style category union type
 export type StyleCategory =
@@ -39,7 +39,7 @@ export interface StyleDefinition<T extends z.ZodTypeAny> {
 // Style variant interface
 export interface StyleVariant<T extends z.ZodTypeAny> {
   breakpoint?: Breakpoint[] | null;
-  state?: State[] | null;
+  state?: StateWithParent[] | null;
   value: z.infer<T>;
 }
 

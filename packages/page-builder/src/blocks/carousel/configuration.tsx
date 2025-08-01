@@ -1,33 +1,42 @@
 "use client";
 
-import { ConfigurationProps, SelectInput, SliderInput } from "@vivid/builder";
+import { ConfigurationProps, SliderInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
-import { Checkbox, Label } from "@vivid/ui";
+import { Checkbox, deepMemo, Label } from "@vivid/ui";
 import { Repeat1 } from "lucide-react";
+import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { CarouselProps, styles } from "./schema";
 import { carouselShortcuts } from "./shortcuts";
 
-export const CarouselConfiguration = ({
-  data,
-  setData,
-  base,
-  onBaseChange,
-}: ConfigurationProps<CarouselProps>) => {
-  const updateData = (d: unknown) => setData(d as CarouselProps);
-  const t = useI18n("builder");
+export const CarouselConfiguration = deepMemo(
+  ({
+    data,
+    setData,
+    base,
+    onBaseChange,
+  }: ConfigurationProps<CarouselProps>) => {
+    const updateProps = useCallback(
+      (p: unknown) => setData({ ...data, props: p as CarouselProps["props"] }),
+      [setData, data]
+    );
+    const updateStyle = useCallback(
+      (s: unknown) => setData({ ...data, style: s as CarouselProps["style"] }),
+      [setData, data]
+    );
+    const t = useI18n("builder");
 
-  return (
-    <StylesConfigurationPanel
-      styles={data.style ?? {}}
-      onStylesChange={(style) => updateData({ ...data, style })}
-      availableStyles={styles}
-      shortcuts={carouselShortcuts}
-      base={base}
-      onBaseChange={onBaseChange}
-    >
-      {/* TODO: fix support for vertical orientation */}
-      {/* <SelectInput
+    return (
+      <StylesConfigurationPanel
+        styles={data.style ?? {}}
+        onStylesChange={updateStyle}
+        availableStyles={styles}
+        shortcuts={carouselShortcuts}
+        base={base}
+        onBaseChange={onBaseChange}
+      >
+        {/* TODO: fix support for vertical orientation */}
+        {/* <SelectInput
         label={t("pageBuilder.blocks.carousel.orientation.label")}
         options={[
           {
@@ -44,63 +53,53 @@ export const CarouselConfiguration = ({
           updateData({ ...data, props: { ...data.props, orientation } })
         }
       /> */}
-      <div className="flex items-center gap-2 flex-1">
-        <Checkbox
-          id="navigation"
-          checked={!!data.props.navigation}
-          onCheckedChange={(navigation) =>
-            updateData({ ...data, props: { ...data.props, navigation } })
-          }
-        />
-        <Label htmlFor="navigation">
-          {t("pageBuilder.blocks.carousel.navigation")}
-        </Label>
-      </div>
-      <div className="flex items-center gap-2 flex-1">
-        <Checkbox
-          id="loop"
-          checked={!!data.props.loop}
-          onCheckedChange={(loop) =>
-            updateData({ ...data, props: { ...data.props, loop } })
-          }
-        />
-        <Label htmlFor="loop">{t("pageBuilder.blocks.carousel.loop")}</Label>
-      </div>
-      <div className="flex items-center gap-2 flex-1">
-        <Checkbox
-          id="autoPlay"
-          checked={!!data.props.autoPlay}
-          onCheckedChange={(checked) =>
-            updateData({
-              ...data,
-              props: {
-                ...data.props,
-                autoPlay: checked ? 5 : null,
-              },
-            })
-          }
-        />
-        <Label htmlFor="autoPlay">
-          {t("pageBuilder.blocks.carousel.autoPlay")}
-        </Label>
-      </div>
-      {data.props.autoPlay && (
-        <SliderInput
-          defaultValue={data.props.autoPlay}
-          onChange={(value) =>
-            updateData({
-              ...data,
-              props: { ...data.props, autoPlay: value },
-            })
-          }
-          label={t("pageBuilder.blocks.carousel.autoPlaySpeed")}
-          iconLabel={<Repeat1 />}
-          units={t("pageBuilder.blocks.carousel.autoPlaySeconds")}
-          min={1}
-          max={30}
-          step={1}
-        />
-      )}
-    </StylesConfigurationPanel>
-  );
-};
+        <div className="flex items-center gap-2 flex-1">
+          <Checkbox
+            id="navigation"
+            checked={!!data.props.navigation}
+            onCheckedChange={(navigation) =>
+              updateProps({ ...data.props, navigation })
+            }
+          />
+          <Label htmlFor="navigation">
+            {t("pageBuilder.blocks.carousel.navigation")}
+          </Label>
+        </div>
+        <div className="flex items-center gap-2 flex-1">
+          <Checkbox
+            id="loop"
+            checked={!!data.props.loop}
+            onCheckedChange={(loop) => updateProps({ ...data.props, loop })}
+          />
+          <Label htmlFor="loop">{t("pageBuilder.blocks.carousel.loop")}</Label>
+        </div>
+        <div className="flex items-center gap-2 flex-1">
+          <Checkbox
+            id="autoPlay"
+            checked={!!data.props.autoPlay}
+            onCheckedChange={(checked) =>
+              updateProps({ ...data.props, autoPlay: checked ? 5 : null })
+            }
+          />
+          <Label htmlFor="autoPlay">
+            {t("pageBuilder.blocks.carousel.autoPlay")}
+          </Label>
+        </div>
+        {data.props.autoPlay && (
+          <SliderInput
+            defaultValue={data.props.autoPlay}
+            onChange={(value) =>
+              updateProps({ ...data.props, autoPlay: value })
+            }
+            label={t("pageBuilder.blocks.carousel.autoPlaySpeed")}
+            iconLabel={<Repeat1 />}
+            units={t("pageBuilder.blocks.carousel.autoPlaySeconds")}
+            min={1}
+            max={30}
+            step={1}
+          />
+        )}
+      </StylesConfigurationPanel>
+    );
+  }
+);

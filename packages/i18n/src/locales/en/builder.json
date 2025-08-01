@@ -132,6 +132,7 @@
         "animationDuration": "Animation Duration",
         "animationIterationCount": "Animation Iteration Count",
         "animationDirection": "Animation Direction",
+        "animationFillMode": "Animation Fill Mode",
         "animationTimingFunction": "Animation Timing Function",
         "animationDelay": "Animation Delay",
         "transitionProperties": "Transition Properties",
@@ -368,6 +369,12 @@
         "step_start": "Step Start",
         "step_end": "Step End"
       },
+      "animationFillMode": {
+        "none": "None",
+        "forwards": "Forwards",
+        "backwards": "Backwards",
+        "both": "Both"
+      },
       "filter": {
         "none": "None",
         "blur_1px": "Blur 1px",
@@ -417,10 +424,28 @@
       "states": {
         "title": "States",
         "shortLabel": "{count, plural, =0 {State: default} =1 {1 State} other {# States}}",
+        "selectedStates": "Selected States",
+        "addNewState": "Add New State",
+        "parentLevels": {
+          "self": "Self",
+          "parent": "Parent",
+          "grandparent": "Grandparent",
+          "greatGrandparent": "Great-grandparent",
+          "fourthParent": "4th Parent",
+          "fifthParent": "5th Parent",
+          "sixthParent": "6th Parent",
+          "seventhParent": "7th Parent",
+          "eighthParent": "8th Parent",
+          "ninthParent": "9th Parent",
+          "tenthParent": "10th Parent"
+        },
         "hover": "Hover",
         "focus": "Focus",
         "active": "Active",
-        "disabled": "Disabled"
+        "disabled": "Disabled",
+        "inView": "In View",
+        "firstTimeInView": "First Time In View",
+        "notInView": "Not In View"
       },
       "textDecoration": {
         "none": "None",

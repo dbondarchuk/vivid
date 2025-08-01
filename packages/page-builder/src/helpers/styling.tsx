@@ -5,10 +5,13 @@ import React from "react";
 import {
   BaseStyleDictionary,
   DefaultCSSProperties,
+  isViewState,
   renderStylesToCSS,
+  StateWithParent,
   StyleDictionary,
   StyleValue,
 } from "../style";
+import { StateManager } from "./state-manager";
 
 type Props = {
   styling?: StylingConfiguration;
@@ -107,12 +110,17 @@ export const BlockStyle = genericMemo(
       name
     );
 
+    const states = extractParentStates(styles);
+
     return (
-      <style
-        dangerouslySetInnerHTML={{
-          __html: css,
-        }}
-      />
+      <>
+        <StateManager className={name} states={states} />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: css,
+          }}
+        />
+      </>
     );
   },
   (prevProps, nextProps) => {
@@ -125,3 +133,30 @@ export const BlockStyle = genericMemo(
     );
   }
 );
+
+function extractParentStates<T extends BaseStyleDictionary>(
+  styles?: StyleValue<T> | null
+): StateWithParent[] {
+  const parentStates: StateWithParent[] = [];
+
+  if (!styles) return parentStates;
+
+  Object.values(styles).forEach((styleValue) => {
+    if (styleValue && Array.isArray(styleValue)) {
+      styleValue.forEach((variant) => {
+        if (variant.state && Array.isArray(variant.state)) {
+          variant.state.forEach((state: StateWithParent) => {
+            if (
+              (state.parentLevel && state.parentLevel > 0) ||
+              isViewState(state.state)
+            ) {
+              parentStates.push(state);
+            }
+          });
+        }
+      });
+    }
+  });
+
+  return parentStates;
+}

@@ -89,7 +89,11 @@ export const ButtonPropsDefaults = () =>
       filter: [
         {
           value: "brightness(1.1)",
-          state: ["hover", "focus", "active"],
+          state: [
+            { state: "hover", parentLevel: 0 },
+            { state: "focus", parentLevel: 0 },
+            { state: "active", parentLevel: 0 },
+          ],
         },
       ],
       transition: [

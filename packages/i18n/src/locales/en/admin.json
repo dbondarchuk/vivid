@@ -119,6 +119,12 @@
     "weeklySchedule": "Weekly schedule",
     "viewWebsite": "View website"
   },
+  "themeToggle": {
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "appointments": {
     "title": "Appointments",
     "scheduleAppointment": "Schedule appointment",

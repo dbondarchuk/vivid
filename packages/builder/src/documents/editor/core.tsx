@@ -10,7 +10,9 @@ export const templatePropsFromContext = (props: any) => {
 };
 
 export const CoreEditorBlock: React.FC<
-  BlockConfiguration<any> & { additionalProps?: Record<string, any> }
+  BlockConfiguration<any> & {
+    additionalProps?: Record<string, any>;
+  }
 > = ({ type, data, additionalProps }) => {
   const blocks = useBlocks();
   const rootBlock = useRootBlock();

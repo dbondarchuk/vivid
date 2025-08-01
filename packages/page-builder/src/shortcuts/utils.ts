@@ -1,5 +1,6 @@
 import { deepEqual } from "@vivid/utils";
 import { BaseStyleDictionary } from "../style/types";
+import { StateWithParent } from "../style/zod";
 import { Shortcut, ShortcutOption } from "./types";
 
 export interface ApplyShortcutOptions {
@@ -52,12 +53,12 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
     ): targetStyle is {
       value: any;
       breakpoint?: string[];
-      state?: string[];
+      state?: StateWithParent[];
     } => {
       return (
         typeof targetStyle === "object" &&
         "value" in targetStyle &&
-        "breakpoint" in targetStyle
+        ("breakpoint" in targetStyle || "state" in targetStyle)
       );
     };
 
@@ -83,7 +84,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
           (variant: {
             value: any;
             breakpoint?: string[];
-            state?: string[];
+            state?: StateWithParent[];
           }) => {
             const breakpoint = variant.breakpoint || [];
             const state = variant.state || [];
@@ -299,7 +300,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
         variants: Array<{
           value: any;
           breakpoint?: string[];
-          state?: string[];
+          state?: StateWithParent[];
         }>;
       } => {
         return (

@@ -1,4 +1,5 @@
 import { useI18n } from "@vivid/i18n";
+import { useCallback, useMemo } from "react";
 import {
   useDispatchAction,
   useEditorStateStore,
@@ -6,7 +7,6 @@ import {
 } from "../../../documents/editor/context";
 import { BaseBlockProps } from "../../../documents/types";
 import { BaseSidebarPanel } from "./input-panels/helpers/base-sidebar-panel";
-import { useCallback } from "react";
 
 function renderMessage(val: string) {
   return (
@@ -45,14 +45,19 @@ export const ConfigurationPanel: React.FC = () => {
     [dispatchAction, selectedBlock?.id]
   );
 
-  if (!selectedBlock) {
+  const selectedBlockType = selectedBlock?.type;
+  const Panel = useMemo(
+    () => (selectedBlockType ? blocks[selectedBlockType].Configuration : null),
+    [blocks, selectedBlockType]
+  );
+
+  if (!selectedBlock || !Panel) {
     return renderMessage(
       t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect")
     );
   }
 
-  const { data, type, id, base } = selectedBlock;
-  const Panel = blocks[type].Configuration;
+  const { data, id, base } = selectedBlock;
 
   return (
     <BaseSidebarPanel title={t(blocks[selectedBlock.type].displayName)}>

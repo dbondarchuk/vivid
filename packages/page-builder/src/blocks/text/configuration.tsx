@@ -3,24 +3,26 @@
 import { ConfigurationProps } from "@vivid/builder";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 
+import { deepMemo } from "@vivid/ui";
 import { TextProps } from "./schema";
 import { styles } from "./styles";
+import { useCallback } from "react";
 
-export const TextConfiguration = ({
-  data,
-  setData,
-  base,
-  onBaseChange,
-}: ConfigurationProps<TextProps>) => {
-  const updateData = (d: unknown) => setData(d as TextProps);
+export const TextConfiguration = deepMemo(
+  ({ data, setData, base, onBaseChange }: ConfigurationProps<TextProps>) => {
+    const updateStyle = useCallback(
+      (s: unknown) => setData({ ...data, style: s as TextProps["style"] }),
+      [setData, data]
+    );
 
-  return (
-    <StylesConfigurationPanel
-      styles={data.style ?? {}}
-      onStylesChange={(style) => updateData({ ...data, style })}
-      availableStyles={styles}
-      base={base}
-      onBaseChange={onBaseChange}
-    />
-  );
-};
+    return (
+      <StylesConfigurationPanel
+        styles={data.style ?? {}}
+        onStylesChange={updateStyle}
+        availableStyles={styles}
+        base={base}
+        onBaseChange={onBaseChange}
+      />
+    );
+  }
+);

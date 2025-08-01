@@ -111,6 +111,21 @@ export const animationTimingFunctionKeyMap = {
   "step-end": "step_end",
 } as const;
 
+// Animation fill mode options
+export const animationFillModeKeys = [
+  "none",
+  "forwards",
+  "backwards",
+  "both",
+] as const;
+
+export const animationFillModeKeyMap = {
+  none: "none",
+  forwards: "forwards",
+  backwards: "backwards",
+  both: "both",
+} as const;
+
 // Animation iteration count options
 export const animationIterationCountKeys = ["infinite", "custom"] as const;
 
@@ -129,6 +144,7 @@ export const AnimationSchema = z.object({
   ]),
   direction: z.enum(animationDirectionKeys),
   timingFunction: z.enum(animationTimingFunctionKeys),
+  fillMode: z.enum(animationFillModeKeys),
   delay: z.number().min(0).max(10).step(0.1),
 });
 

@@ -50,6 +50,7 @@ import {
   TriangleAlert,
   Tv,
   Undo2,
+  Blocks,
 } from "lucide-react";
 import React, { Fragment, useCallback, useMemo } from "react";
 import {
@@ -119,12 +120,16 @@ type BuilderToolbarProps = {
   selectedView: ViewType;
   setSelectedView: (fn: (prev: ViewType) => ViewType) => void;
   args?: Record<string, any>;
+  showBlocksPanel?: boolean;
+  onToggleBlocksPanel?: () => void;
 };
 
 export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   selectedView,
   setSelectedView,
   args,
+  showBlocksPanel,
+  onToggleBlocksPanel,
 }) => {
   const document = useDocument();
   const blocks = useBlocks();
@@ -434,18 +439,11 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         </ToolbarGroup>
         <ToolbarGroup>
           <Dialog>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DialogTrigger asChild>
-                  <ToolbarButton>
-                    <Braces />
-                  </ToolbarButton>
-                </DialogTrigger>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                {t("baseBuilder.builderToolbar.context")}
-              </TooltipContent>
-            </Tooltip>
+            <DialogTrigger asChild>
+              <ToolbarButton tooltip={t("baseBuilder.builderToolbar.context")}>
+                <Braces />
+              </ToolbarButton>
+            </DialogTrigger>
             <DialogContent className="md:max-w-3/5">
               <DialogTitle>
                 {t("baseBuilder.builderToolbar.contextValues")}
@@ -504,16 +502,25 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
-              <ToolbarButton onClick={toggleSidebar}>
-                <PanelRight />
+              <ToolbarButton
+                pressed={showBlocksPanel}
+                onClick={onToggleBlocksPanel}
+              >
+                <Blocks />
               </ToolbarButton>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               {t("baseBuilder.builderToolbar.toggleSidebar")}
             </TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
+          <ToolbarButton
+            onClick={toggleSidebar}
+            tooltip={t("baseBuilder.builderToolbar.toggleSidebar")}
+          >
+            <PanelRight />
+          </ToolbarButton>
         </ToolbarGroup>
       </Toolbar>
     </div>

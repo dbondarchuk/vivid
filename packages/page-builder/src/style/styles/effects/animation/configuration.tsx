@@ -10,6 +10,8 @@ import {
   AnimationStyleConfiguration,
   animationDirectionKeyMap,
   animationDirectionKeys,
+  animationFillModeKeyMap,
+  animationFillModeKeys,
   animationIterationCountKeyMap,
   animationIterationCountKeys,
   animationNameKeyMap,
@@ -71,6 +73,13 @@ export const AnimationConfiguration = ({
       timingFunction: timingFunction as z.infer<
         typeof AnimationSchema
       >["timingFunction"],
+    });
+  };
+
+  const handleFillModeChange = (fillMode: string) => {
+    onChange({
+      ...value,
+      fillMode: fillMode as z.infer<typeof AnimationSchema>["fillMode"],
     });
   };
 
@@ -189,6 +198,25 @@ export const AnimationConfiguration = ({
           }))}
           value={value?.timingFunction || "ease"}
           onItemSelect={handleTimingFunctionChange}
+          className="w-full"
+          size="sm"
+        />
+      </div>
+
+      {/* Fill Mode */}
+      <div className="flex flex-col gap-1">
+        <label className="text-xs font-medium text-muted-foreground">
+          {t("pageBuilder.styles.properties.animationFillMode")}
+        </label>
+        <Combobox
+          values={animationFillModeKeys.map((fillMode) => ({
+            value: fillMode,
+            label: t(
+              `pageBuilder.styles.animationFillMode.${animationFillModeKeyMap[fillMode]}`
+            ),
+          }))}
+          value={value?.fillMode || "none"}
+          onItemSelect={handleFillModeChange}
           className="w-full"
           size="sm"
         />

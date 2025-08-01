@@ -131,6 +131,7 @@
         "animationDuration": "Тривалість анімації",
         "animationIterationCount": "Кількість повторень анімації",
         "animationDirection": "Напрямок анімації",
+        "animationFillMode": "Режим заповнення анімації",
         "animationTimingFunction": "Функція часу анімації",
         "animationDelay": "Затримка анімації",
         "transitionProperties": "Властивості переходу",
@@ -330,10 +331,10 @@
         "bounceOut": "Стрибок з",
         "rotateIn": "Обертання в",
         "rotateOut": "Обертання з",
-        "flipInX": "Перевертання по осі X",
-        "flipOutX": "Перевертання по осі X",
-        "flipInY": "Перевертання по осі Y",
-        "flipOutY": "Перевертання по осі Y",
+        "flipInX": "Перевертання по осі X в",
+        "flipOutX": "Перевертання по осі X з",
+        "flipInY": "Перевертання по осі Y в",
+        "flipOutY": "Перевертання по осі Y з",
         "zoomIn": "Збільшення",
         "zoomOut": "Зменшення",
         "pulse": "Пульсація",
@@ -366,6 +367,12 @@
         "ease_in_out": "Плавно вхід-вихід",
         "step_start": "Крок початок",
         "step_end": "Крок кінець"
+      },
+      "animationFillMode": {
+        "none": "Немає",
+        "forwards": "Вперед",
+        "backwards": "Назад",
+        "both": "Обидва"
       },
       "filter": {
         "none": "Немає",
@@ -416,10 +423,28 @@
       "states": {
         "title": "Стани",
         "shortLabel": "{count, plural, =0 {Стан: звичайний} =1 {1 Стан} few {# Стани} many {# Станів} other {# Станів}}",
+        "selectedStates": "Вибрані стани",
+        "addNewState": "Додати новий стан",
+        "parentLevels": {
+          "self": "Сам",
+          "parent": "Батьківський",
+          "grandparent": "Дід",
+          "greatGrandparent": "Прадід",
+          "fourthParent": "4-й батьківський",
+          "fifthParent": "5-й батьківський",
+          "sixthParent": "6-й батьківський",
+          "seventhParent": "7-й батьківський",
+          "eighthParent": "8-й батьківський",
+          "ninthParent": "9-й батьківський",
+          "tenthParent": "10-й батьківський"
+        },
         "hover": "Наведення",
         "focus": "Фокус",
         "active": "Активний",
-        "disabled": "Вимкнений"
+        "disabled": "Вимкнений",
+        "inView": "У видимості",
+        "notInView": "Не у видимості",
+        "firstTimeInView": "Перший раз у видимості"
       },
       "textDecoration": {
         "none": "Немає",

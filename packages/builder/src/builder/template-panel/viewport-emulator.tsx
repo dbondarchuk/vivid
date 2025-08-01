@@ -186,7 +186,7 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
 
             {/* Iframe container */}
             <div
-              className="iframe-container"
+              className="iframe-container transition-all duration-300"
               style={{
                 width: currentSize.width,
                 height: currentSize.height,
@@ -202,6 +202,7 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
                   border: "none",
                   backgroundColor: "#fff",
                 }}
+                className="transition-all duration-300"
                 title={`${currentSize.name} Viewport`}
                 onLoad={() => {
                   // Iframe loaded, styles will be copied via the effect

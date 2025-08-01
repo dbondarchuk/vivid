@@ -1,13 +1,17 @@
 import { z } from "zod";
 import { backgroundColorOpacityStyle } from "./styles";
 import { BaseStyleDictionary, StyleDictionary } from "./types";
-import { Breakpoint, State } from "./zod";
+import {
+  Breakpoint,
+  StateWithParent,
+  generateParentStateSelector,
+} from "./zod";
 
 export type StyleValue<T extends BaseStyleDictionary> = {
   [styleName in keyof T]?:
     | Array<{
         breakpoint?: Breakpoint[] | null;
-        state?: State[] | null;
+        state?: StateWithParent[] | null;
         value: z.infer<T[styleName]>;
       }>
     | undefined
@@ -70,11 +74,12 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
           if (!variantsByBreakpoint[breakpointKey]) {
             variantsByBreakpoint[breakpointKey] = {};
           }
-          variant.state!.forEach((state: string) => {
-            if (!variantsByBreakpoint[breakpointKey][state]) {
-              variantsByBreakpoint[breakpointKey][state] = [];
+          variant.state!.forEach((stateWithParent: StateWithParent) => {
+            const stateSelector = generateParentStateSelector(stateWithParent);
+            if (!variantsByBreakpoint[breakpointKey][stateSelector]) {
+              variantsByBreakpoint[breakpointKey][stateSelector] = [];
             }
-            variantsByBreakpoint[breakpointKey][state].push(variantCSS);
+            variantsByBreakpoint[breakpointKey][stateSelector].push(variantCSS);
           });
         }
         // If only breakpoints are provided (no states)
@@ -91,11 +96,12 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
         }
         // If only states are provided (no breakpoints)
         else if (variant.state?.length) {
-          variant.state.forEach((state: string) => {
-            if (!variantsByState[state]) {
-              variantsByState[state] = [];
+          variant.state.forEach((stateWithParent: StateWithParent) => {
+            const stateSelector = generateParentStateSelector(stateWithParent);
+            if (!variantsByState[stateSelector]) {
+              variantsByState[stateSelector] = [];
             }
-            variantsByState[state].push(variantCSS);
+            variantsByState[stateSelector].push(variantCSS);
           });
         }
       });
@@ -103,9 +109,9 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
   );
 
   // Add state variants (no breakpoint)
-  Object.entries(variantsByState).forEach(([state, cssRules]) => {
+  Object.entries(variantsByState).forEach(([stateSelector, cssRules]) => {
     if (cssRules.length > 0) {
-      css += `&:${state} {\n`;
+      css += `&${stateSelector} {\n`;
       cssRules.forEach((rule) => {
         css += `  ${rule}\n`;
       });
@@ -125,15 +131,15 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
 
       css += `@media ${combinedMediaQuery} {\n`;
 
-      Object.entries(stateGroups).forEach(([state, cssRules]) => {
-        if (state === "base") {
+      Object.entries(stateGroups).forEach(([stateSelector, cssRules]) => {
+        if (stateSelector === "base") {
           // Base styles within breakpoint
           cssRules.forEach((rule) => {
             css += `  ${rule}\n`;
           });
         } else {
           // State styles within breakpoint
-          css += `  &:${state} {\n`;
+          css += `  &${stateSelector} {\n`;
           cssRules.forEach((rule) => {
             css += `    ${rule}\n`;
           });

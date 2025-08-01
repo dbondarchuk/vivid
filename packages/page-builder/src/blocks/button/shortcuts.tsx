@@ -27,7 +27,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
             variants: [
               {
                 value: "brightness(0.9)",
-                state: ["hover"],
+                state: [
+                  { state: "hover", parentLevel: 0 },
+                  { state: "focus", parentLevel: 0 },
+                  { state: "active", parentLevel: 0 },
+                ],
               },
             ],
           },
@@ -44,7 +48,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
             variants: [
               {
                 value: "brightness(0.9)",
-                state: ["hover"],
+                state: [
+                  { state: "hover", parentLevel: 0 },
+                  { state: "focus", parentLevel: 0 },
+                  { state: "active", parentLevel: 0 },
+                ],
               },
             ],
           },
@@ -61,7 +69,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
             variants: [
               {
                 value: "brightness(0.9)",
-                state: ["hover"],
+                state: [
+                  { state: "hover", parentLevel: 0 },
+                  { state: "focus", parentLevel: 0 },
+                  { state: "active", parentLevel: 0 },
+                ],
               },
             ],
           },
@@ -78,7 +90,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
             variants: [
               {
                 value: "brightness(0.9)",
-                state: ["hover"],
+                state: [
+                  { state: "hover", parentLevel: 0 },
+                  { state: "focus", parentLevel: 0 },
+                  { state: "active", parentLevel: 0 },
+                ],
               },
             ],
           },
@@ -95,7 +111,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               },
               {
                 value: COLORS["secondary"].value,
-                state: ["hover", "active", "focus"],
+                state: [
+                  { state: "hover", parentLevel: 0 },
+                  { state: "focus", parentLevel: 0 },
+                  { state: "active", parentLevel: 0 },
+                ],
               },
             ],
           },
@@ -103,7 +123,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
             variants: [
               {
                 value: "none",
-                state: ["hover", "active", "focus"],
+                state: [
+                  { state: "hover", parentLevel: 0 },
+                  { state: "focus", parentLevel: 0 },
+                  { state: "active", parentLevel: 0 },
+                ],
               },
             ],
           },
@@ -114,7 +138,11 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               },
               {
                 value: COLORS["secondary-foreground"].value,
-                state: ["hover", "active", "focus"],
+                state: [
+                  { state: "hover", parentLevel: 0 },
+                  { state: "focus", parentLevel: 0 },
+                  { state: "active", parentLevel: 0 },
+                ],
               },
             ],
           },

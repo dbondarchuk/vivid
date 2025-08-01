@@ -5,18 +5,28 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Badge,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@vivid/ui";
-import React from "react";
-import { State } from "../../style/zod";
+import { Plus } from "lucide-react";
+import React, { useState } from "react";
+import {
+  parentLevelKeys,
+  State,
+  states,
+  StateWithParent,
+} from "../../style/zod";
 
 interface StateSelectorProps {
-  states: State[];
-  onStatesChange: (states: State[]) => void;
+  states: StateWithParent[];
+  onStatesChange: (states: StateWithParent[]) => void;
   styleName: string;
   variantIndex: number;
 }
-
-const availableStates: State[] = ["hover", "focus", "active", "disabled"];
 
 export const StateSelector: React.FC<StateSelectorProps> = ({
   states: currentStates,
@@ -25,9 +35,53 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
   variantIndex,
 }) => {
   const t = useI18n("builder");
+  const [isOpen, setIsOpen] = useState(false);
+  const [newState, setNewState] = useState<State>("hover");
+  const [newParentLevel, setNewParentLevel] = useState<number>(0);
+
+  const addNewState = () => {
+    const stateWithParent: StateWithParent = {
+      state: newState,
+      parentLevel: newParentLevel,
+    };
+
+    // Check if this combination already exists
+    const exists = currentStates?.some(
+      (s) => s.state === newState && s.parentLevel === newParentLevel
+    );
+
+    if (!exists) {
+      const newStates = [...(currentStates || []), stateWithParent];
+      onStatesChange(newStates);
+    }
+
+    // Reset form
+    setNewState("hover");
+    setNewParentLevel(0);
+  };
+
+  const removeState = (state: State, parentLevel: number) => {
+    const newStates =
+      currentStates?.filter(
+        (s) => !(s.state === state && s.parentLevel === parentLevel)
+      ) || [];
+    onStatesChange(newStates);
+  };
+
+  const getStateLabel = (stateWithParent: StateWithParent) => {
+    const stateLabel = t(
+      `pageBuilder.styles.states.${stateWithParent.state}` as BuilderKeys
+    );
+    const parentLevel = stateWithParent.parentLevel || 0;
+    const parentKey = parentLevelKeys[parentLevel];
+    const parentLabel = parentKey
+      ? t(`pageBuilder.styles.states.parentLevels.${parentKey}` as BuilderKeys)
+      : "";
+    return parentLevel === 0 ? stateLabel : `${parentLabel}:${stateLabel}`;
+  };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="xs" className="w-full h-6 text-xs">
           {t("pageBuilder.styles.states.shortLabel", {
@@ -35,35 +89,86 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
           })}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-48">
-        <div className="space-y-2">
-          <Label className="text-xs">
-            {t("pageBuilder.styles.states.title")}
-          </Label>
-          {availableStates.map((state) => (
-            <div key={state} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id={`${styleName}-${variantIndex}-state-${state}`}
-                checked={currentStates?.includes(state) || false}
-                onChange={(e) => {
-                  const current = currentStates || [];
-                  const newStates = e.target.checked
-                    ? [...current, state]
-                    : current.filter((s) => s !== state);
-                  onStatesChange(newStates.length > 0 ? newStates : []);
-                }}
-                className="h-3 w-3"
-              />
-              <Label
-                htmlFor={`${styleName}-${variantIndex}-state-${state}`}
-                className="text-xs cursor-pointer"
-              >
-                {t(`pageBuilder.styles.states.${state}` as BuilderKeys)}{" "}
-                <span className="text-muted-foreground">:{state}</span>
+      <PopoverContent className="w-80">
+        <div className="space-y-4">
+          {/* Selected States Display */}
+          {currentStates && currentStates.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-xs font-medium">
+                {t("pageBuilder.styles.states.selectedStates")}
               </Label>
+              <div className="flex flex-wrap gap-1">
+                {currentStates.map((stateWithParent, index) => (
+                  <Badge
+                    key={`${stateWithParent.state}-${stateWithParent.parentLevel}-${index}`}
+                    variant="secondary"
+                    className="text-xs cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                    onClick={() =>
+                      removeState(
+                        stateWithParent.state,
+                        stateWithParent.parentLevel || 0
+                      )
+                    }
+                  >
+                    {getStateLabel(stateWithParent)}
+                    <span className="ml-1">×</span>
+                  </Badge>
+                ))}
+              </div>
             </div>
-          ))}
+          )}
+
+          {/* Add New State */}
+          <div className="space-y-2 w-full">
+            <Label className="text-xs font-medium">
+              {t("pageBuilder.styles.states.addNewState")}
+            </Label>
+            <div className="flex flex-row items-center gap-1 w-full">
+              <Select
+                value={newParentLevel.toString()}
+                onValueChange={(value) => setNewParentLevel(parseInt(value))}
+              >
+                <SelectTrigger size="xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {parentLevelKeys.map((key, index) => (
+                    <SelectItem key={index} value={index.toString()}>
+                      {t(`pageBuilder.styles.states.parentLevels.${key}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={newState}
+                onValueChange={(value) => setNewState(value as State)}
+              >
+                <SelectTrigger size="xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {states.map((state) => (
+                    <SelectItem key={state} value={state}>
+                      {t(`pageBuilder.styles.states.${state}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button
+                size="xs"
+                onClick={addNewState}
+                disabled={currentStates?.some(
+                  (s) =>
+                    s.state === newState && s.parentLevel === newParentLevel
+                )}
+                variant="ghost"
+              >
+                <Plus className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
         </div>
       </PopoverContent>
     </Popover>

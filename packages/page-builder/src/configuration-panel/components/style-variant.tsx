@@ -10,6 +10,7 @@ import {
   StyleDefinition,
   StyleVariant,
 } from "../../style/types";
+import { parentLevelKeys, StateWithParent } from "../../style/zod";
 
 interface StyleVariantProps<T extends BaseStyleDictionary> {
   variant: StyleVariant<T[keyof T]>;
@@ -44,20 +45,31 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
     const parts = [];
     if (variant.breakpoint?.length) {
       const breakpointLabels = variant.breakpoint.map((bp) =>
-        t(`pageBuilder.styles.breakpoints.${bp}` as BuilderKeys)
+        t(`pageBuilder.styles.breakpoints.${bp}`)
       );
       parts.push(
         breakpointLabels.join(t("pageBuilder.styles.breakpoints.and"))
       );
     }
-    if (variant.state?.length)
-      parts.push(
-        variant.state
-          .map((state) =>
-            t(`pageBuilder.styles.states.${state}` as BuilderKeys)
-          )
-          .join(", ")
+    if (variant.state?.length) {
+      const stateLabels = (variant.state as StateWithParent[]).map(
+        (stateWithParent) => {
+          const stateLabel = t(
+            `pageBuilder.styles.states.${stateWithParent.state}`
+          );
+          const parentLevel =
+            parentLevelKeys[stateWithParent.parentLevel || 0] || "self";
+          const parentLabel = t(
+            `pageBuilder.styles.states.parentLevels.${parentLevel}`
+          );
+
+          return parentLevel === "self"
+            ? stateLabel
+            : `${parentLabel}:${stateLabel}`;
+        }
       );
+      parts.push(stateLabels.join(", "));
+    }
     return parts.length > 0 ? parts.join(" - ") : t("pageBuilder.styles.base");
   };
 
@@ -92,7 +104,7 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
 
           {/* State selector */}
           <StateSelector
-            states={variant.state || []}
+            states={(variant.state || []) as StateWithParent[]}
             onStatesChange={(states) =>
               onUpdateVariant(styleName, variantIndex, { state: states })
             }
@@ -103,7 +115,10 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
       </div>
 
       {/* Style component */}
-      <div className="">
+      <div className="flex flex-col gap-2">
+        <Label className="text-xs font-medium">
+          {t(`pageBuilder.styles.properties.${style.name}` as BuilderKeys)}
+        </Label>
         <style.component
           value={variant.value}
           onChange={(value) => onUpdateStyle(styleName, variantIndex, value)}

@@ -5,23 +5,30 @@ import { StylesConfigurationPanel } from "../../configuration-panel/styles-confi
 import { PageHeroProps } from "./schema";
 import { pageHeroShortcuts } from "./shortcuts";
 import { styles } from "./styles";
+import { deepMemo } from "@vivid/ui";
+import { useCallback } from "react";
 
-export const PageHeroConfiguration = ({
-  data,
-  setData,
-  base,
-  onBaseChange,
-}: ConfigurationProps<PageHeroProps>) => {
-  const updateData = (d: unknown) => setData(d as PageHeroProps);
+export const PageHeroConfiguration = deepMemo(
+  ({
+    data,
+    setData,
+    base,
+    onBaseChange,
+  }: ConfigurationProps<PageHeroProps>) => {
+    const updateStyle = useCallback(
+      (s: unknown) => setData({ ...data, style: s as PageHeroProps["style"] }),
+      [setData, data]
+    );
 
-  return (
-    <StylesConfigurationPanel
-      styles={data.style ?? {}}
-      onStylesChange={(style) => updateData({ ...data, style })}
-      availableStyles={styles}
-      shortcuts={pageHeroShortcuts}
-      base={base}
-      onBaseChange={onBaseChange}
-    />
-  );
-};
+    return (
+      <StylesConfigurationPanel
+        styles={data.style ?? {}}
+        onStylesChange={updateStyle}
+        availableStyles={styles}
+        shortcuts={pageHeroShortcuts}
+        base={base}
+        onBaseChange={onBaseChange}
+      />
+    );
+  }
+);

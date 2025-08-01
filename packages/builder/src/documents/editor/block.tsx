@@ -2,11 +2,10 @@
 
 import { createContext, useContext, useEffect, useMemo } from "react";
 
-import { genericMemo } from "@vivid/ui";
-import { deepEqual } from "@vivid/utils";
 import { findBlock } from "../helpers/blocks";
 import { useDocument, useSetBlockDisableOptions } from "./context";
 import { CoreEditorBlock, TEditorBlock } from "./core";
+import { deepMemo } from "@vivid/ui";
 
 const EditorBlockContext = createContext<{
   blockId: string;
@@ -42,7 +41,7 @@ type EditorBlockProps = {
   additionalProps?: Record<string, any>;
 };
 
-export const EditorBlock = genericMemo(
+export const EditorBlock = deepMemo(
   ({
     block,
     isOverlay,
@@ -63,15 +62,15 @@ export const EditorBlock = genericMemo(
       });
     }, [block.id, disableMove, disableDelete, disableClone, disableDrag]);
 
+    const blockContext = useMemo(
+      () => ({ blockId: block.id, isOverlay: !!isOverlay }),
+      [block.id, isOverlay]
+    );
+
     return (
-      <EditorBlockContext.Provider
-        value={{ blockId: block.id, isOverlay: !!isOverlay }}
-      >
+      <EditorBlockContext.Provider value={blockContext}>
         <CoreEditorBlock {...block} additionalProps={additionalProps} />
       </EditorBlockContext.Provider>
     );
-  },
-  (prevProps, nextProps) => {
-    return deepEqual(prevProps, nextProps);
   }
 );

@@ -119,6 +119,12 @@
     "weeklySchedule": "Тижневий розклад",
     "viewWebsite": "Переглянути сайт"
   },
+  "themeToggle": {
+    "toggleTheme": "Переключити тему",
+    "light": "Світла",
+    "dark": "Темна",
+    "system": "Системна"
+  },
   "appointments": {
     "title": "Записи",
     "scheduleAppointment": "Запланувати запис",

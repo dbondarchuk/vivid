@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 
 interface PortalContextType {
   document: Document;
@@ -29,11 +29,14 @@ export const PortalProvider: React.FC<PortalProviderProps> = ({ children }) => {
     typeof document !== "undefined" ? document : ({} as Document)
   );
 
-  const value: PortalContextType = {
-    document: stateDocument,
-    body: stateDocument.body || ({} as HTMLElement),
-    setDocument,
-  };
+  const value: PortalContextType = useMemo(
+    () => ({
+      document: stateDocument,
+      body: stateDocument.body || ({} as HTMLElement),
+      setDocument,
+    }),
+    [stateDocument, setDocument]
+  );
 
   return (
     <PortalContext.Provider value={value}>{children}</PortalContext.Provider>

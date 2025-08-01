@@ -105,6 +105,69 @@ export const breakpoints = [
 export const zBreakpoint = z.enum(breakpoints);
 export type Breakpoint = z.infer<typeof zBreakpoint>;
 
-export const states = ["hover", "focus", "active", "disabled"] as const;
+export const viewStates = ["inView", "notInView", "firstTimeInView"] as const;
+export type ViewState = (typeof viewStates)[number];
+
+export const states = [
+  "hover",
+  "focus",
+  "active",
+  "disabled",
+  ...viewStates,
+] as const;
 export const zState = z.enum(states);
 export type State = z.infer<typeof zState>;
+
+export const isViewState = (state: State): state is ViewState =>
+  viewStates.includes(state as ViewState);
+
+export const parentLevelKeys = [
+  "self",
+  "parent",
+  "grandparent",
+  "greatGrandparent",
+  "fourthParent",
+  "fifthParent",
+  "sixthParent",
+  "seventhParent",
+  "eighthParent",
+  "ninthParent",
+  "tenthParent",
+] as const;
+
+// Enhanced state system with parent selectors using CSS custom properties
+export const zStateWithParent = z.object({
+  state: zState,
+  parentLevel: z.number().int().min(0).max(10).optional().default(0), // 0 = self, 1 = parent, 2 = grandparent, etc.
+});
+
+export type StateWithParent = z.infer<typeof zStateWithParent>;
+
+// Helper function to generate CSS selector for parent states using CSS custom properties
+export function generateParentStateSelector(state: StateWithParent): string {
+  if (
+    (state.parentLevel === 0 || !state.parentLevel) &&
+    !isViewState(state.state)
+  ) {
+    return `:${state.state}`;
+  }
+
+  // Use CSS custom properties for parent state detection
+  // This will be handled by JavaScript to set data attributes on parent elements
+  return `[data-parent-${state.parentLevel}-${state.state}="true"]`;
+}
+
+// Helper function to check if a state has parent selector
+export function hasParentSelector(state: StateWithParent): boolean {
+  return (state.parentLevel || 0) > 0;
+}
+
+// Helper function to generate the data attribute name for parent state
+export function generateParentStateDataAttribute(
+  state: StateWithParent
+): string {
+  // if (state.parentLevel === 0 || !state.parentLevel) {
+  //   return null;
+  // }
+  return `data-parent-${state.parentLevel}-${state.state}`;
+}

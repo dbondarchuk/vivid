@@ -8,7 +8,7 @@ import {
   useIsMobile,
 } from "@vivid/ui";
 import { ArrowDown, ArrowUp, Copy, Slash, Trash } from "lucide-react";
-import React from "react";
+import React, { memo, useCallback } from "react";
 import {
   useBlocks,
   useDispatchAction,
@@ -28,7 +28,7 @@ type Props = {
 const MAX_DISPLAY_LAST_ELEMENTS = 3;
 const MOBILE_DISPLAY_LAST_ELEMENTS = 2;
 
-export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
+export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
   const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
   const dispatchAction = useDispatchAction();
@@ -56,13 +56,16 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
     [document, blockId]
   );
 
-  const handleBlockIdClick = (ev: React.MouseEvent, id: string) => {
-    setSelectedBlockId(id);
-    ev.stopPropagation();
-    ev.preventDefault();
-  };
+  const handleBlockIdClick = useCallback(
+    (ev: React.MouseEvent, id: string) => {
+      setSelectedBlockId(id);
+      ev.stopPropagation();
+      ev.preventDefault();
+    },
+    [setSelectedBlockId]
+  );
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = useCallback(() => {
     dispatchAction({
       type: "delete-block",
       value: {
@@ -71,25 +74,28 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
     });
 
     setSelectedBlockId(null);
-  };
+  }, [blockId, dispatchAction, setSelectedBlockId]);
 
-  const handleMoveClick = (direction: "up" | "down") => {
-    dispatchAction({
-      type: direction === "up" ? "move-block-up" : "move-block-down",
-      value: {
-        blockId: blockId,
-      },
-    });
-  };
+  const handleMoveClick = useCallback(
+    (direction: "up" | "down") => {
+      dispatchAction({
+        type: direction === "up" ? "move-block-up" : "move-block-down",
+        value: {
+          blockId: blockId,
+        },
+      });
+    },
+    [blockId, dispatchAction]
+  );
 
-  const handleCloneClick = () => {
+  const handleCloneClick = useCallback(() => {
     dispatchAction({
       type: "clone-block",
       value: {
         blockId: blockId,
       },
     });
-  };
+  }, [blockId, dispatchAction]);
 
   return (
     <>
@@ -222,4 +228,4 @@ export const NavMenu: React.FC<Props> = ({ blockId, disable }) => {
       </Toolbar>
     </>
   );
-};
+});

@@ -15,6 +15,7 @@ export const animationStyle = {
     iterationCount: "infinite",
     direction: "normal",
     timingFunction: "ease",
+    fillMode: "none",
     delay: 0,
   },
   renderToCSS: (value) => {
@@ -26,6 +27,7 @@ export const animationStyle = {
     parts.push(`animation-iteration-count: ${value.iterationCount}`);
     parts.push(`animation-direction: ${value.direction}`);
     parts.push(`animation-timing-function: ${value.timingFunction}`);
+    parts.push(`animation-fill-mode: ${value.fillMode}`);
     if (value.delay > 0) {
       parts.push(`animation-delay: ${value.delay}s`);
     }

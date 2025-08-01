@@ -1,5 +1,6 @@
 import { useI18n } from "@vivid/i18n";
-import React from "react";
+import React, { useMemo } from "react";
+import { renderStylesToCSS } from "../../style/css-renderer";
 import { BaseStyleDictionary, StyleDictionary } from "../../style/types";
 import { DefaultCSSProperties, StyleValue } from "../../style/css-renderer";
 
@@ -16,16 +17,17 @@ export const CSSPreview = <T extends BaseStyleDictionary>({
 }: CSSPreviewProps<T>) => {
   const t = useI18n("builder");
 
-  // Import the renderStylesToCSS function dynamically to avoid circular dependencies
-  const { renderStylesToCSS } = require("../../style/css-renderer");
+  const css = useMemo(() => {
+    return renderStylesToCSS(availableStyles, styles, defaultProperties);
+  }, [availableStyles, styles, defaultProperties]);
 
   return (
-    <div className="mt-4 p-4 bg-gray-100 rounded-md">
+    <div className="mt-4 p-4 bg-secondary rounded-md">
       <h3 className="text-sm font-medium mb-2">
         {t("pageBuilder.styles.generatedCSS")}
       </h3>
-      <pre className="text-xs bg-white p-2 rounded border overflow-auto max-h-40">
-        {renderStylesToCSS(availableStyles, styles, defaultProperties)}
+      <pre className="text-xs bg-background p-2 rounded border overflow-auto max-h-40">
+        {css}
       </pre>
     </div>
   );
