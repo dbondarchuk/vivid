@@ -35,7 +35,9 @@ export const ConnectedAppStatusMessage: React.FC<{
         status: t(`status.${status}`),
         statusText:
           typeof statusText === "string"
-            ? t(statusText)
+            ? t.has(statusText)
+              ? t(statusText)
+              : statusText
             : t(statusText.key, statusText.args),
       })}
     </div>

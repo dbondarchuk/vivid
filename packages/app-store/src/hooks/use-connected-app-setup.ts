@@ -104,7 +104,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
 
       onSuccess?.();
     } catch (e: any) {
-      onError?.(e?.message);
+      onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 import { EditorBlock } from "../../../editor/block";
 import { TEditorBlock } from "../../../editor/core";
@@ -111,33 +111,39 @@ export const EditorChildren = genericMemo(
       [propAllowOnly]
     );
 
-    const appendBlock = (block: TEditorBlock) => {
-      setTimeout(() => setSelectedBlockId(block.id), 200);
+    const appendBlock = useCallback(
+      (block: TEditorBlock) => {
+        setTimeout(() => setSelectedBlockId(block.id), 200);
 
-      return dispatchAction({
-        type: "add-block",
-        value: {
-          block,
-          parentBlockId: currentBlock.id,
-          parentBlockProperty: property,
-          index: "last",
-        },
-      });
-    };
+        return dispatchAction({
+          type: "add-block",
+          value: {
+            block,
+            parentBlockId: currentBlock.id,
+            parentBlockProperty: property,
+            index: "last",
+          },
+        });
+      },
+      [currentBlock.id, property, dispatchAction]
+    );
 
-    const insertBlock = (block: TEditorBlock, index: number) => {
-      setTimeout(() => setSelectedBlockId(block.id), 200);
+    const insertBlock = useCallback(
+      (block: TEditorBlock, index: number) => {
+        setTimeout(() => setSelectedBlockId(block.id), 200);
 
-      return dispatchAction({
-        type: "add-block",
-        value: {
-          block,
-          parentBlockId: currentBlock.id,
-          parentBlockProperty: property,
-          index,
-        },
-      });
-    };
+        return dispatchAction({
+          type: "add-block",
+          value: {
+            block,
+            parentBlockId: currentBlock.id,
+            parentBlockProperty: property,
+            index,
+          },
+        });
+      },
+      [currentBlock.id, property, dispatchAction]
+    );
 
     const contextId = `${currentBlock.id}/${property}`;
 
@@ -192,8 +198,7 @@ export const EditorChildren = genericMemo(
             droppable: disabledDroppable,
           }}
         >
-          {!children || children.length === 0 ? //     )} //         " border-2 border-dashed border-blue-400 bg-blue-800 bg-opacity-50" //       isOverDroppable && //       "w-full h-full min-h-20 flex items-center justify-center relative", //     className={cn( //   <div // activeDragBlockType ? ( // ) : null // ) : ( //   </div> //     /> //       allowOnly={allowOnly} //       contextId={contextId} //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
-          //   >
+          {!children || children.length === 0 ? //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-800 bg-opacity-50" //       isOverDroppable && //       "w-full h-full min-h-20 flex items-center justify-center relative", //     className={cn( //   <div // activeDragBlockType ? ( // ) : null // ) : ( //   </div> //     /> //       allowOnly={allowOnly} //       contextId={contextId} //       onSelect={appendBlock} //       placeholder //     <AddBlockButton //   > //     )} //         " border-2 border-dashed border-blue-400 bg-blue-400/10" //       isOverDroppable && //       "w-full h-full min-h-40 flex items-center justify-center relative", //     className={cn( //   <div // !disabledDroppable ? ( // // activeDragBlockType ? (
           //     <AddBlockButton
           //       placeholder
           //       onSelect={appendBlock}
