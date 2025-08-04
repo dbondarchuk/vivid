@@ -214,7 +214,7 @@ export const CalendarCard: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 flex-1">
             {!date ? (
               <h4>{i18n("select_date_first_label")}</h4>
             ) : (
@@ -224,7 +224,7 @@ export const CalendarCard: React.FC = () => {
                     .setLocale(locale)
                     .toLocaleString(DateTime.DATE_HUGE)}
                 </h4>
-                <div className="flex flex-row gap-2 justify-around flex-wrap">
+                <div className="flex flex-row gap-2 justify-start flex-wrap">
                   {(times[formatDate(date)] || []).map((t) => (
                     <div className="" key={formatTimeLocale(t, locale)}>
                       <Button
