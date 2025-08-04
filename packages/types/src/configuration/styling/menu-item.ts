@@ -17,8 +17,9 @@ const iconsEnum = z.enum([firstIcon, ...restIcons], {
   required_error: "configuration.styling.menuItem.icon.required",
 });
 
-export const menuItemTypes = z.enum(["icon", "link", "button", "submenu"]);
-export type MenuItemType = z.infer<typeof menuItemTypes>;
+export const menuItemTypes = ["icon", "link", "button", "submenu"] as const;
+export const menuItemTypesEnum = z.enum(menuItemTypes);
+export type MenuItemType = (typeof menuItemTypes)[number];
 
 const [firstLinkVariant, ...restLinkVariants] = LinkVariants;
 const [firstLinkSize, ...restLinkSizes] = LinkSizes;
@@ -29,8 +30,12 @@ const [firstTextSize, ...restTextSizes] = TextSizes;
 const [firstTextWeight, ...restTextWeights] = TextWeights;
 
 export const baseMenuItemSchema = z.object({
-  url: z.string().min(1, "common.url.invalid"),
-  label: z.string().min(1, "configuration.styling.menuItem.label.required"),
+  url: z
+    .string({ required_error: "common.url.invalid" })
+    .min(1, "common.url.invalid"),
+  label: z
+    .string({ required_error: "configuration.styling.menuItem.label.required" })
+    .min(1, "configuration.styling.menuItem.label.required"),
   className: z.string().optional(),
 });
 
@@ -39,7 +44,7 @@ export type BaseMenuItem = z.infer<typeof baseMenuItemSchema>;
 export const iconMenuItemSchema = baseMenuItemSchema.merge(
   z.object({
     icon: iconsEnum,
-    type: menuItemTypes.extract(["icon"]),
+    type: menuItemTypesEnum.extract(["icon"]),
   })
 );
 
@@ -76,7 +81,7 @@ export const linkMenuItemSchema = textStyleSchema.merge(
       .enum([firstLinkSize, ...restLinkSizes])
       .nullable()
       .optional(),
-    type: menuItemTypes.extract(["link"]),
+    type: menuItemTypesEnum.extract(["link"]),
   })
 );
 
@@ -92,7 +97,7 @@ export const buttonMenuItemSchema = linkMenuItemSchema.merge(
       .enum([firstButtonSize, ...restButtonSizes])
       .nullable()
       .optional(),
-    type: menuItemTypes.extract(["button"]),
+    type: menuItemTypesEnum.extract(["button"]),
   })
 );
 
@@ -109,7 +114,7 @@ export const subMenuMenuItemSchema = linkMenuItemSchema
       children: subMenuItemSchema
         .array()
         .min(1, "configuration.styling.menuItem.submenu.min"),
-      type: menuItemTypes.extract(["submenu"]),
+      type: menuItemTypesEnum.extract(["submenu"]),
     })
   );
 

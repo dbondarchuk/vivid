@@ -1,7 +1,7 @@
 "use client";
 
 import { AvailableApps } from "@vivid/app-store";
-import { I18nFn } from "@vivid/i18n";
+import { useI18n } from "@vivid/i18n";
 import { Button, toastPromise } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -10,10 +10,10 @@ import { installComplexApp, setAppStatus } from "./actions";
 export const InstallComplexAppButton: React.FC<{
   appName: string;
   installed: number;
-  t: I18nFn<"apps">;
-}> = ({ appName, installed, t }) => {
+}> = ({ appName, installed }) => {
   const app = React.useMemo(() => AvailableApps[appName], [appName]);
   const router = useRouter();
+  const t = useI18n("apps");
 
   const installComplex = async () => {
     if (app.type !== "complex" && app.type !== "system") return;

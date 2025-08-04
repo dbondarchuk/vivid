@@ -1,4 +1,4 @@
-import { Leaves } from "./types";
+import { Leaves } from "@vivid/types";
 
 export const buildSearchQuery = <T extends {}>(
   filter: any,

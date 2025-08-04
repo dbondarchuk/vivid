@@ -10,6 +10,7 @@ import { Globe } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { cache } from "react";
+import { Styling } from "@vivid/page-builder";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -41,6 +42,12 @@ export default async function EditPagesPage(props: Props) {
   );
 
   const page = await getPage(params.id);
+  const { styling, general, social } =
+    await ServicesContainer.ConfigurationService().getConfigurations(
+      "styling",
+      "general",
+      "social"
+    );
 
   if (!page) {
     logger.warn({ pageId: params.id }, "Page not found");
@@ -57,32 +64,11 @@ export default async function EditPagesPage(props: Props) {
     "Page edit page loaded"
   );
 
-  const breadcrumbItems = [
-    { title: t("assets.dashboard"), link: "/admin/dashboard" },
-    { title: t("pages.title"), link: "/admin/dashboard/pages" },
-    { title: `/${page.slug}`, link: `/admin/dashboard/pages/${params.id}` },
-  ];
-
   return (
     <PageContainer scrollable={true}>
       <div className="flex flex-1 flex-col gap-4">
-        <div className="flex flex-col gap-4 justify-between">
-          <Breadcrumbs items={breadcrumbItems} />
-          <div className="flex items-center justify-between">
-            <Heading title={t("pages.edit")} description={`/${page.slug}`} />
-
-            <Link
-              button
-              href={`/${page.slug}?preview=true`}
-              variant="default"
-              target="_blank"
-            >
-              <Globe className="mr-2 h-4 w-4" /> {t("pages.viewPage")}
-            </Link>
-          </div>
-          {/* <Separator /> */}
-        </div>
-        <PageForm initialData={page} />
+        <Styling styling={styling} />
+        <PageForm initialData={page} config={{ general, social }} />
       </div>
     </PageContainer>
   );

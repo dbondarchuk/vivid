@@ -31,8 +31,8 @@ export const ForeachContainerReader = ({
           {children.map((child) => (
             <ReaderBlock
               key={child.id}
-              block={child}
               {...rest}
+              block={child}
               args={newCtx(item)}
             />
           ))}

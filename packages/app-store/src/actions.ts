@@ -168,11 +168,21 @@ export const getAppData = async (appId: string) => {
   const actionLogger = logger("getAppData");
   actionLogger.debug({ appId }, "Getting app data");
   try {
-    const result = (
-      await ServicesContainer.ConnectedAppsService().getApp(appId)
-    )?.data;
-    actionLogger.debug({ appId, hasData: !!result }, "App data retrieved");
-    return result;
+    const result =
+      await ServicesContainer.ConnectedAppsService().getAppService(appId);
+
+    let appData = result.app.data;
+    if (result.service.processAppData && appData) {
+      actionLogger.debug(
+        { appId, appName: appData.name },
+        "Processing app data by service"
+      );
+
+      appData = await result.service.processAppData(appData);
+    }
+
+    actionLogger.debug({ appId, hasData: !!appData }, "App data retrieved");
+    return appData;
   } catch (error) {
     actionLogger.error(
       { appId, error: error instanceof Error ? error.message : String(error) },

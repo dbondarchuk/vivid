@@ -22,7 +22,8 @@ import { Asset } from "@vivid/types";
 
 export const DeleteSelectedAssetsButton: React.FC<{
   selected: Asset[];
-}> = ({ selected }) => {
+  onDelete?: () => void;
+}> = ({ selected, onDelete }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -41,6 +42,7 @@ export const DeleteSelectedAssetsButton: React.FC<{
       );
 
       router.refresh();
+      onDelete?.();
       setIsOpen(false);
     } catch (error: any) {
       console.error(error);

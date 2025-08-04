@@ -76,15 +76,17 @@ export const TextMessageResenderAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("textMessageResender.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo
-                app={{ name: TextMessageResenderApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={TextMessageResenderApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

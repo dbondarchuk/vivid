@@ -61,7 +61,10 @@ export const columns: ColumnDef<
   {
     accessorFn: (discount) => discount.codes?.join(", "),
     id: "codes",
-    header: "services.discounts.table.columns.codes",
+    header: () => {
+      const t = useI18n("admin");
+      return t("services.discounts.table.columns.codes");
+    },
     sortingFn: tableSortNoopFunction,
   },
   {

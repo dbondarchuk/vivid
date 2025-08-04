@@ -210,8 +210,7 @@ export class ConnectedAppsService implements IConnectedAppsService {
           $set: {
             status: "connected",
             statusText: "common.statusText.connected",
-            data: result.data,
-            account: result.account,
+            ...result,
           },
         }
       );

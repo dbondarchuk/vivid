@@ -1,3 +1,6 @@
+"use client";
+
+import { useI18n } from "@vivid/i18n";
 import { AppScope, ConnectedApp } from "@vivid/types";
 import { cn, Combobox, IComboboxItem, toast } from "@vivid/ui";
 import React from "react";
@@ -6,14 +9,12 @@ import {
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
 } from "./connected-app-properties";
-import { I18nFn, useI18n } from "@vivid/i18n";
 
 const AppShortLabel: React.FC<{ app: ConnectedApp }> = ({ app }) => {
-  const t = useI18n("apps");
   return (
     <span className="flex flex-row items-center gap-2 shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]">
-      <ConnectedAppNameAndLogo app={app} logoClassName="w-4 h-4" t={t} />
-      <ConnectedAppAccount app={app} />
+      <ConnectedAppNameAndLogo appName={app.name} logoClassName="w-4 h-4" />
+      <ConnectedAppAccount account={app.account} />
     </span>
   );
 };
@@ -114,7 +115,10 @@ export const AppSelector: React.FC<AppSelectorProps> = ({
           label: (
             <div className="flex flex-col gap-2">
               <AppShortLabel app={app} />
-              <ConnectedAppStatusMessage app={app} t={t} />
+              <ConnectedAppStatusMessage
+                status={app.status}
+                statusText={app.statusText}
+              />
             </div>
           ),
         };

@@ -5,21 +5,22 @@ import {
   useCurrentBlockId,
   useDispatchAction,
   useEditorArgs,
+  usePortalContext,
   useSelectedBlockId,
   useSetSelectedBlockId,
 } from "@vivid/builder";
-import { ArgumentsAutocomplete, cn } from "@vivid/ui";
 import { useI18n } from "@vivid/i18n";
+import { ArgumentsAutocomplete, cn } from "@vivid/ui";
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
+import { Button } from "./reader";
 import { ButtonProps } from "./schema";
 import { getLinkStyles, getWrapperStyles } from "./styles";
-import { Button } from "./reader";
 
 export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const t = useI18n("builder");
   const ref = useRef<HTMLInputElement>(null);
-
+  const { document } = usePortalContext();
   const wrapperStyles = getWrapperStyles({ style });
   const linkStyles = getLinkStyles({ props, style });
 
@@ -77,6 +78,7 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         value={value ?? t("emailBuilder.blocks.button.text")}
         onChange={onChange}
         onKeyDown={handleKeyPress}
+        documentElement={document}
       />
     </div>
   ) : (

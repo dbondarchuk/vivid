@@ -61,10 +61,15 @@ export const MediaPlaceholderElement = withHOC(
 
       const { api } = useEditorPlugin(PlaceholderPlugin);
 
-      const { isUploading, progress, uploadedFile, uploadFile, uploadingFile } =
-        useUploadFile();
+      const {
+        isUploading,
+        progress,
+        uploadedFiles,
+        uploadFile,
+        uploadingFiles,
+      } = useUploadFile();
 
-      const loading = isUploading && uploadingFile;
+      const loading = isUploading && uploadingFiles.length > 0;
 
       const currentContent = CONTENT[element.mediaType];
 
@@ -87,14 +92,14 @@ export const MediaPlaceholderElement = withHOC(
 
       const replaceCurrentPlaceholder = useCallback(
         (file: File) => {
-          void uploadFile(file);
+          void uploadFile([{ file }]);
           api.placeholder.addUploadingFile(element.id as string, file);
         },
         [api.placeholder, element.id, uploadFile]
       );
 
       useEffect(() => {
-        if (!uploadedFile) return;
+        if (!uploadedFiles.length) return;
 
         const path = editor.api.findPath(element);
 
@@ -107,10 +112,12 @@ export const MediaPlaceholderElement = withHOC(
             initialWidth: imageRef.current?.width,
             isUpload: true,
             name:
-              element.mediaType === FilePlugin.key ? uploadedFile.filename : "",
+              element.mediaType === FilePlugin.key
+                ? uploadedFiles[0].filename
+                : "",
             placeholderId: element.id as string,
             type: element.mediaType!,
-            url: uploadedFile.url,
+            url: uploadedFiles[0].url,
           };
 
           editor.tf.insertNodes(node, { at: path });
@@ -120,7 +127,7 @@ export const MediaPlaceholderElement = withHOC(
 
         api.placeholder.removeUploadingFile(element.id as string);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [uploadedFile, element.id]);
+      }, [uploadedFiles, element.id]);
 
       // React dev mode will call useEffect twice
       const isReplaced = useRef(false);
@@ -156,12 +163,12 @@ export const MediaPlaceholderElement = withHOC(
               </div>
               <div className="text-sm whitespace-nowrap text-muted-foreground">
                 <div>
-                  {loading ? uploadingFile?.name : currentContent.content}
+                  {loading ? uploadingFiles[0]?.name : currentContent.content}
                 </div>
 
                 {loading && !isImage && (
                   <div className="mt-1 flex items-center gap-1.5">
-                    <div>{formatBytes(uploadingFile?.size ?? 0)}</div>
+                    <div>{formatBytes(uploadingFiles[0]?.size ?? 0)}</div>
                     <div>–</div>
                     <div className="flex items-center">
                       <Spinner className="mr-1 size-3.5" />
@@ -175,7 +182,7 @@ export const MediaPlaceholderElement = withHOC(
 
           {isImage && loading && (
             <ImageProgress
-              file={uploadingFile}
+              file={uploadingFiles[0]}
               imageRef={imageRef}
               progress={progress}
             />

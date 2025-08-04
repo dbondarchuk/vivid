@@ -6,7 +6,8 @@ import {
   ToolbarButton,
   useOpenState,
 } from "@vivid/ui";
-import { destructAndReplace, Leaves, resolveProperty } from "@vivid/utils";
+import { destructAndReplace, resolveProperty } from "@vivid/utils";
+import { Leaves } from "@vivid/types";
 import { ReactNode } from "react";
 import { Sketch } from "@uiw/react-color";
 import { ConfigurationProps } from "../../documents/types";

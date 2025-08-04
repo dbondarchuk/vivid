@@ -301,7 +301,9 @@ export const StylingsConfigurationForm: React.FC<{
                                 className="flex w-full font-normal text-base"
                                 values={colorOverrides.map((color) => ({
                                   value: color,
-                                  label: colorsLabels[color],
+                                  label: t(
+                                    `appearance.styling.colors.${color}`
+                                  ),
                                 }))}
                                 searchLabel={t(
                                   "appearance.styling.form.selectColorOverrideType"

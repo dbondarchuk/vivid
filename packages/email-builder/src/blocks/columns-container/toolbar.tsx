@@ -36,11 +36,12 @@ export const ColumnsContainerToolbar = (
         defaultValue={ColumnsContainerPropsDefaults.props.columnsCount.toString()}
         property="props.columnsCount"
         tooltip={t("emailBuilder.blocks.columnsContainer.columns")}
+        {...props}
         data={{
           ...props.data,
           props: {
             ...props.data?.props,
-            columnsCount: props.data?.props?.columnsCount?.toString(),
+            columnsCount: props.data?.props?.columnsCount?.toString() as any,
           },
         }}
         setData={(data) => {

@@ -111,7 +111,8 @@ function getCurrentWord(
 function replaceWord(
   element: HTMLTextAreaElement | HTMLInputElement,
   value: string,
-  trigger: string
+  trigger: string,
+  documentElement: Document
 ) {
   //   const text = element.value;
   //   const caretPos = element.selectionStart;
@@ -146,7 +147,7 @@ function replaceWord(
 
     // REMINDER: Fastest way to include CMD + Z compatibility
     // Execute the command to replace the selected text with the new word
-    document.execCommand("insertText", false, value);
+    documentElement.execCommand("insertText", false, value);
 
     // Restore the original selection range
     element.setSelectionRange(
@@ -159,6 +160,7 @@ function replaceWord(
 function getCaretCoordinates(
   element: HTMLTextAreaElement | HTMLInputElement,
   position: number,
+  documentElement: Document,
   options?: { debug: boolean }
 ) {
   if (!isBrowser) {
@@ -169,19 +171,19 @@ function getCaretCoordinates(
 
   var debug = (options && options.debug) || false;
   if (debug) {
-    var el = document.querySelector(
+    var el = documentElement.querySelector(
       "#input-textarea-caret-position-mirror-div"
     );
     if (el) el?.parentNode?.removeChild(el);
   }
 
   // The mirror div will replicate the textarea's style
-  var div = document.createElement("div");
+  var div = documentElement.createElement("div");
   div.id = "input-textarea-caret-position-mirror-div";
-  document.body.appendChild(div);
+  documentElement.body.appendChild(div);
 
   var style = div.style;
-  var computed = window.getComputedStyle(element);
+  var computed = documentElement.defaultView!.getComputedStyle(element);
   var isInput = element.nodeName === "INPUT";
 
   // Default textarea styles
@@ -233,7 +235,7 @@ function getCaretCoordinates(
   // spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
   if (isInput) div.textContent = div.textContent.replace(/\s/g, "\u00a0");
 
-  var span = document.createElement("span");
+  var span = documentElement.createElement("span");
   // Wrapping must be replicated *exactly*, including when a long word gets
   // onto the next line, with whitespace at the end of the line before (#7).
   // The  *only* reliable way to do that is to copy the *entire* rest of the
@@ -252,7 +254,7 @@ function getCaretCoordinates(
   if (debug) {
     span.style.backgroundColor = "#aaa";
   } else {
-    document.body.removeChild(div);
+    documentElement.body.removeChild(div);
   }
 
   return coordinates;
@@ -270,12 +272,14 @@ type Props = {
   trigger?: string;
   itemRenderer?: (item: MentionData) => React.ReactNode;
   insertTransform?: (item: MentionData) => string;
+  documentElement?: Document;
 } & (
   | (Omit<TextareaProps, "onChange"> & {
       asInput?: boolean;
     })
-  | (Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> & {
+  | (Omit<React.ComponentProps<typeof Input>, "onChange" | "value"> & {
       asInput: true;
+      // asContentEditable?: boolean;
     })
 );
 
@@ -293,6 +297,7 @@ export const TextareaMentions = React.forwardRef<
       insertTransform,
       className,
       asInput,
+      documentElement = document,
       ...rest
     },
     ref
@@ -345,15 +350,23 @@ export const TextareaMentions = React.forwardRef<
     }, []);
 
     const onTextValueChange = useCallback(
-      (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        const text = e.target.value;
+      (
+        e: React.ChangeEvent<
+          HTMLTextAreaElement | HTMLInputElement | HTMLSpanElement
+        >
+      ) => {
+        const text =
+          e.target instanceof HTMLSpanElement
+            ? e.target.innerText
+            : e.target.value;
         const textarea = textareaRef.current;
         const dropdown = dropdownRef.current;
 
         if (textarea && dropdown) {
           const caret = getCaretCoordinates(
             textarea,
-            textarea.selectionEnd || 0
+            textarea.selectionEnd || 0,
+            documentElement
           );
           const currentWord = getCurrentWord(textarea, trigger);
           setTextValue?.(text);
@@ -381,7 +394,8 @@ export const TextareaMentions = React.forwardRef<
         replaceWord(
           textarea,
           insertTransform ? insertTransform(value) : `${value.id}`,
-          trigger
+          trigger,
+          documentElement
         );
 
         setCommandValue("");
@@ -400,7 +414,6 @@ export const TextareaMentions = React.forwardRef<
         const dropdown = dropdownRef.current;
         if (textarea && dropdown) {
           const currentWord = getCurrentWord(textarea, trigger);
-          console.log(currentWord);
           if (!currentWord.startsWith(trigger) && commandValue !== "") {
             setCommandValue("");
             dropdown.classList.add("hidden");
@@ -429,6 +442,20 @@ export const TextareaMentions = React.forwardRef<
     return (
       <div className="relative w-full">
         {asInput ? (
+          // "asContentEditable" in rest && rest.asContentEditable ? (
+          //   <span
+          //     ref={mergeRefs(
+          //       ref as React.RefObject<HTMLInputElement | null>,
+          //       textareaRef as React.RefObject<HTMLInputElement | null>
+          //     )}
+          //     contentEditable={true}
+          //     className={className}
+          //     onInput={onTextValueChange}
+          //     {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
+          //   >
+          //     {textValue}
+          //   </span>
+          // ) : (
           <Input
             ref={mergeRefs(
               ref as React.RefObject<HTMLInputElement | null>,
@@ -440,6 +467,7 @@ export const TextareaMentions = React.forwardRef<
             {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
           />
         ) : (
+          // )
           <Textarea
             ref={mergeRefs(
               ref as React.RefObject<HTMLTextAreaElement | null>,

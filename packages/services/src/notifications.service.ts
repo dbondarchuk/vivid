@@ -150,7 +150,7 @@ export class NotificationService implements INotificationService {
         participant: phone,
         text: body,
         appointmentId,
-
+        customerId,
         data: response,
       });
 

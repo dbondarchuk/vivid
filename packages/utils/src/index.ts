@@ -1,9 +1,12 @@
 export * from "./assets";
 export * from "./colors";
 export * from "./currency";
+export * from "./deep-equal";
 export * from "./email";
+export * from "./encryption";
 export * from "./file";
 export * from "./fixtures";
+export * from "./format-arguments";
 export * from "./get-arguments";
 export * from "./ics-uid";
 export * from "./incoming-message";
@@ -18,4 +21,3 @@ export * from "./strip-object";
 export * from "./time";
 export * from "./time-slot";
 export * from "./time-slot-with-priority";
-export * from "./types";

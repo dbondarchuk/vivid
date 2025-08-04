@@ -40,7 +40,7 @@ Addons selected:
 - None
 {{/addons}}
 
-Time: {{ dateTime }}
+Time: {{ dateTime.full }}
 
 Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}
 
@@ -69,9 +69,9 @@ export const EnEmailTemplates: EmailTemplates = {
     text: getText("The appointment was declined by you."),
   },
   rescheduled: {
-    title: "Appointment was rescheduled for {{dateTime}}",
+    title: "Appointment was rescheduled for {{dateTime.full}}",
     text: getText(
-      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}"
+      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime.full}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}"
     ),
   },
   "auto-confirmed": {
@@ -86,7 +86,8 @@ export const EnEmailTemplates: EmailTemplates = {
       "A new appointment was requested on the website for {{option.name}}."
     ),
   },
-  subject: "Appointment for {{option.name}} by {{fields.name}} at {{dateTime}}",
+  subject:
+    "Appointment for {{option.name}} by {{fields.name}} at {{dateTime.full}}",
   eventTitle: "{{fields.name}} for {{option.name}}",
   buttonTexts: {
     viewAppointment: "View Appointment",

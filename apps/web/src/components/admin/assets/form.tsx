@@ -107,9 +107,9 @@ export const AssetForm: React.FC = () => {
               <FormControl>
                 <DndFileInput
                   disabled={loading}
-                  value={field.value}
+                  value={field.value ? [field.value] : []}
                   onChange={(value) => {
-                    field.onChange(value);
+                    field.onChange(value?.[0]);
                     field.onBlur();
                   }}
                 />

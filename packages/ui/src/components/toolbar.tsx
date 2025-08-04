@@ -31,7 +31,7 @@ export const ToolbarSeparator = withCn(
   "mx-2 my-1 w-px shrink-0 bg-border"
 );
 
-const toolbarButtonVariants = cva(
+export const toolbarButtonVariants = cva(
   cn(
     "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg:not([data-icon])]:size-4"
   ),
