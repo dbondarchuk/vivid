@@ -860,7 +860,6 @@ export class OutlookConnectedApp
         token: {
           ...tokens,
           accessToken: encrypt(tokens.accessToken!),
-          refreshToken: encrypt(currentTokens.refreshToken),
         },
       });
 
