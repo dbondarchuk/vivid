@@ -5,11 +5,20 @@ import React from "react";
 
 import { getTimeZones } from "@vvo/tzdb";
 
-import { Button, Calendar } from "@vivid/ui";
+import { DayButtonProps } from "react-day-picker";
+
+import {
+  Button,
+  Calendar,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@vivid/ui";
 
 import { Combobox, IComboboxItem } from "@vivid/ui";
 import { Globe2Icon } from "lucide-react";
-import { HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
+import { DateTime, HourNumbers, DateTime as Luxon, MinuteNumbers } from "luxon";
 
 import { useI18n, useLocale } from "@vivid/i18n";
 import { areTimesEqual, formatTimeLocale } from "@vivid/utils";
@@ -27,6 +36,28 @@ const timeZones: IComboboxItem[] = getTimeZones().map((zone) => ({
 
 const formatDate = (date: Date): string =>
   `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+
+const DayButton = (props: DayButtonProps) => {
+  const { day, modifiers, ...buttonProps } = props;
+  const isDisabled = modifiers.disabled;
+  const t = useI18n("translation");
+
+  return isDisabled ? (
+    <TooltipProvider>
+      <Tooltip>
+        {/* We need to force tooltip on mobile (long tap) */}
+        <TooltipTrigger>
+          <span>
+            <button {...buttonProps} />
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>{t("no_avaialable_time_slots")}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ) : (
+    <button {...buttonProps} />
+  );
+};
 
 export const CalendarCard: React.FC = () => {
   const i18n = useI18n("translation");
@@ -118,7 +149,11 @@ export const CalendarCard: React.FC = () => {
   const maxDate = React.useMemo(() => dates[dates.length - 1], [dates]);
 
   React.useEffect(() => {
-    if ((!dateTime?.date && !date) || (date && isDisabledDay(date)))
+    if (
+      date &&
+      (isDisabledDay(date) ||
+        Luxon.fromJSDate(date) < Luxon.fromJSDate(minDate))
+    )
       setDate(minDate);
   }, [minDate, dateTime, date, isDisabledDay]);
 
@@ -164,33 +199,47 @@ export const CalendarCard: React.FC = () => {
                 locale={calendarLocale}
                 mode="single"
                 selected={date}
-                startMonth={Luxon.fromJSDate(minDate)
-                  .startOf("month")
-                  .toJSDate()}
+                showOutsideDays={false}
+                // startMonth={Luxon.fromJSDate(minDate)
+                //   .startOf("month")
+                //   .toJSDate()}
+                startMonth={new Date()}
                 endMonth={Luxon.fromJSDate(maxDate).endOf("month").toJSDate()}
                 onSelect={changeDate}
                 className="rounded-md border"
                 disabled={(day: Date) => isDisabledDay(day)}
+                components={{
+                  DayButton,
+                }}
               />
             </div>
           </div>
-          <div className="md:col-span-1">
+          <div className="flex flex-col gap-4">
             {!date ? (
               <h4>{i18n("select_date_first_label")}</h4>
             ) : (
-              <div className="flex flex-row gap-2 justify-around flex-wrap">
-                {(times[formatDate(date)] || []).map((t) => (
-                  <div className="" key={formatTimeLocale(t, locale)}>
-                    <Button
-                      className="w-24"
-                      variant={isTimeSelected(t) ? "default" : "outline"}
-                      onClick={() => setTime(isTimeSelected(t) ? undefined : t)}
-                    >
-                      {formatTimeLocale(t, locale)}
-                    </Button>
-                  </div>
-                ))}
-              </div>
+              <>
+                <h4 className="">
+                  {DateTime.fromJSDate(date, { zone: timeZone })
+                    .setLocale(locale)
+                    .toLocaleString(DateTime.DATE_HUGE)}
+                </h4>
+                <div className="flex flex-row gap-2 justify-around flex-wrap">
+                  {(times[formatDate(date)] || []).map((t) => (
+                    <div className="" key={formatTimeLocale(t, locale)}>
+                      <Button
+                        className="w-24"
+                        variant={isTimeSelected(t) ? "default" : "outline"}
+                        onClick={() =>
+                          setTime(isTimeSelected(t) ? undefined : t)
+                        }
+                      >
+                        {formatTimeLocale(t, locale)}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>
