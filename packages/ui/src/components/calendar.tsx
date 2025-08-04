@@ -74,6 +74,8 @@ function Calendar({
         hidden: "invisible",
         ...classNames,
       }}
+      numberOfMonths={isMobile ? 1 : props.numberOfMonths}
+      {...props}
       components={{
         Dropdown: ({ value, onChange, options }: DropdownProps) => {
           const selected = options?.find((child) => child.value === value);
@@ -114,9 +116,8 @@ function Calendar({
           ) : (
             <ChevronRight {...props} className="h-4 w-4" />
           ),
+        ...props.components,
       }}
-      {...props}
-      numberOfMonths={isMobile ? 1 : props.numberOfMonths}
     />
   );
 }
