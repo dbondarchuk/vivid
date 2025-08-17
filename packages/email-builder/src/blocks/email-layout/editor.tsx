@@ -5,7 +5,6 @@ import { Fragment } from "react";
 import {
   EditorChildren,
   useCurrentBlock,
-  useDispatchAction,
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { getFontFamily } from "../../style-inputs/helpers/styles";
@@ -13,7 +12,6 @@ import { EmailLayoutProps } from "./schema";
 
 export const EmailLayoutEditor = (props: EmailLayoutProps) => {
   const currentBlock = useCurrentBlock<EmailLayoutProps>();
-  const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
 
   const children = currentBlock.data.children || [];
@@ -70,22 +68,8 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
               <td>
                 <EditorChildren
                   block={currentBlock}
-                  property="data"
+                  property=""
                   children={children || []}
-                  onChange={({ block, blockId, children }) => {
-                    dispatchAction({
-                      type: "set-block-data",
-                      value: {
-                        blockId: currentBlock.id,
-                        data: {
-                          ...currentBlock.data,
-                          children,
-                        },
-                      },
-                    });
-
-                    setSelectedBlockId(blockId);
-                  }}
                 />
               </td>
             </tr>

@@ -37,6 +37,6 @@ export interface IConnectedAppsService {
   getAppsData(appIds: string[]): Promise<ConnectedAppData[]>;
   getAppService<T>(
     appId: string
-  ): Promise<{ service: IConnectedApp & T; app: ConnectedApp }>;
+  ): Promise<{ service: IConnectedApp & T; app: ConnectedAppData }>;
   getAppServiceProps(appId: string): IConnectedAppProps;
 }

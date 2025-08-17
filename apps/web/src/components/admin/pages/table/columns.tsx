@@ -41,7 +41,10 @@ export const columns: ColumnDef<Page>[] = [
   {
     cell: ({ row }) => {
       return (
-        <Link href={`/admin/dashboard/pages/${row.original._id}`}>
+        <Link
+          href={`/admin/dashboard/pages/${row.original._id}`}
+          variant="underline"
+        >
           {row.original.title}
         </Link>
       );

@@ -3,20 +3,20 @@ import React from "react";
 import { cva } from "class-variance-authority";
 
 import {
+  useCurrentBlock,
   useCurrentBlockId,
   useCurrentBlockIsOverlay,
 } from "../../../editor/block";
 import {
+  useBlockDisableOptions,
   useSelectedBlockId,
   useSetSelectedBlockId,
 } from "../../../editor/context";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
-import { GripVertical } from "lucide-react";
-import { NavMenu } from "./nav-menu";
-import { useI18n } from "@vivid/i18n";
+import { BlockNavPortal } from "./block-nav-portal";
+import { BlockHandlerPortal } from "./block-handler-portal";
 
 type TEditorBlockWrapperProps = {
   children: React.JSX.Element;
@@ -27,10 +27,13 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
 }) => {
   const selectedBlockId = useSelectedBlockId();
   const [mouseInside, setMouseInside] = React.useState(false);
+  const [blockElement, setBlockElement] = React.useState<HTMLElement | null>(
+    null
+  );
   const blockId = useCurrentBlockId();
   const isOverlay = useCurrentBlockIsOverlay();
   const setSelectedBlockId = useSetSelectedBlockId();
-  const t = useI18n("ui");
+  const disable = useBlockDisableOptions(blockId);
 
   const {
     attributes,
@@ -40,50 +43,10 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
     transform,
     transition,
     isSorting,
+    isOver,
   } = useSortable({
     id: blockId,
   });
-
-  const renderHandler = () => {
-    if (selectedBlockId !== blockId) {
-      return null;
-    }
-
-    return (
-      <div
-        className="absolute top-0 -left-14 rounded-2xl px-1 py-2 z-30 bg-transparent"
-        onClick={(ev) => ev.stopPropagation()}
-      >
-        <div className="flex flex-col gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                {...attributes}
-                {...listeners}
-                className={cn(
-                  "text-secondary-foreground",
-                  isDragging ? "cursor-grabbing" : "cursor-grab"
-                )}
-              >
-                <GripVertical fontSize="small" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">{t("common.move")}</TooltipContent>
-          </Tooltip>
-        </div>
-      </div>
-    );
-  };
-
-  const renderNav = () => {
-    if (selectedBlockId !== blockId) {
-      return null;
-    }
-
-    return <NavMenu blockId={blockId} />;
-  };
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -98,7 +61,7 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
         false: "!opacity-100",
       },
       over: {
-        true: "bg-blue-400/40",
+        true: "bg-blue-800/40 bg-opacity-50",
       },
       sorting: {
         true: "outline-1 outline-dashed outline-blue-400",
@@ -113,36 +76,60 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
   });
 
   return (
-    <div
-      ref={setNodeRef}
-      className={variants({
-        dragging: isOverlay ? "overlay" : isDragging ? "over" : false,
-        // over: isOver,
-        sorting: isSorting,
-        outline:
-          selectedBlockId === blockId
-            ? "selected"
-            : mouseInside
-              ? "hover"
-              : undefined,
-      })}
-      onMouseEnter={(ev) => {
-        setMouseInside(true);
-        ev.stopPropagation();
-      }}
-      onMouseLeave={() => {
-        setMouseInside(false);
-      }}
-      onClick={(ev) => {
-        setSelectedBlockId(blockId);
-        ev.stopPropagation();
-        ev.preventDefault();
-      }}
-      style={style}
-    >
-      {!isOverlay && renderNav()}
-      {!isOverlay && renderHandler()}
-      {children}
-    </div>
+    <>
+      <div
+        ref={(el) => {
+          setBlockElement(el);
+          if (!disable?.drag) {
+            setNodeRef(el);
+          }
+        }}
+        className={variants({
+          outline:
+            selectedBlockId === blockId
+              ? "selected"
+              : mouseInside
+                ? "hover"
+                : undefined,
+          ...(disable?.drag
+            ? {}
+            : {
+                dragging: isOverlay ? "overlay" : isDragging ? "over" : false,
+                over: isOver,
+                sorting: isSorting,
+              }),
+        })}
+        onMouseEnter={(ev) => {
+          setMouseInside(true);
+          ev.stopPropagation();
+        }}
+        onMouseLeave={() => {
+          setMouseInside(false);
+        }}
+        onClick={(ev) => {
+          setSelectedBlockId(blockId);
+          ev.stopPropagation();
+          ev.preventDefault();
+        }}
+        style={style}
+      >
+        {children}
+      </div>
+      {!isOverlay && selectedBlockId === blockId && (
+        <BlockNavPortal
+          blockId={blockId}
+          blockElement={blockElement}
+          disable={disable}
+        />
+      )}
+      {!isOverlay && !disable?.drag && selectedBlockId === blockId && (
+        <BlockHandlerPortal
+          blockElement={blockElement}
+          isDragging={isDragging}
+          attributes={attributes}
+          listeners={listeners}
+        />
+      )}
+    </>
   );
 };

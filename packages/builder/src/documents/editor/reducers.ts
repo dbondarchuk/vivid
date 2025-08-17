@@ -11,11 +11,11 @@ import { TEditorConfiguration } from "./core";
 import { EditorHistoryEntry } from "./history";
 
 export const editorHistoryReducer = (
-  oiriginalDocument: TEditorConfiguration,
+  originalDocument: TEditorConfiguration,
   selectedBlockId: string | null,
   { type, value }: EditorHistoryEntry
 ) => {
-  const document = JSON.parse(JSON.stringify(oiriginalDocument));
+  const document = JSON.parse(JSON.stringify(originalDocument));
   let newSelectedBlockId: string | null = selectedBlockId;
 
   switch (type) {
@@ -25,7 +25,7 @@ export const editorHistoryReducer = (
     case "delete-block": {
       const parent = findParentBlock(document, value.blockId);
       if (parent) {
-        deleteBlockInLevel(parent, value.blockId);
+        deleteBlockInLevel(parent.block, value.blockId);
         if (selectedBlockId === value.blockId) newSelectedBlockId = null;
       }
 
@@ -35,8 +35,24 @@ export const editorHistoryReducer = (
     case "clone-block": {
       const parent = findParentBlock(document, value.blockId);
       if (parent) {
-        const newBlock = cloneBlockInLevel(parent, value.blockId);
+        const newBlock = cloneBlockInLevel(parent.block, value.blockId);
         if (newBlock) newSelectedBlockId = newBlock.id;
+      }
+
+      break;
+    }
+
+    case "add-block": {
+      const parent = findBlock(document, value.parentBlockId);
+      if (parent) {
+        insertBlockInLevel(
+          parent,
+          value.block,
+          value.parentBlockProperty,
+          value.index ?? "last"
+        );
+
+        newSelectedBlockId = value.block.id;
       }
 
       break;
@@ -44,20 +60,20 @@ export const editorHistoryReducer = (
 
     case "move-block-up": {
       const parent = findParentBlock(document, value.blockId);
-      if (parent) moveBlockInLevel(parent, value.blockId, "up");
+      if (parent) moveBlockInLevel(parent.block, value.blockId, "up");
       break;
     }
 
     case "move-block-down": {
       const parent = findParentBlock(document, value.blockId);
-      if (parent) moveBlockInLevel(parent, value.blockId, "down");
+      if (parent) moveBlockInLevel(parent.block, value.blockId, "down");
       break;
     }
 
     case "swap-block": {
       const parent = findParentBlock(document, value.blockId1);
       if (parent) {
-        swapBlockInLevel(parent, value.blockId1, value.blockId2);
+        swapBlockInLevel(parent.block, value.blockId1, value.blockId2);
       }
 
       break;
@@ -68,7 +84,7 @@ export const editorHistoryReducer = (
       const newParent = findBlock(document, value.parentBlockId);
 
       if (parent && newParent) {
-        const block = deleteBlockInLevel(parent, value.blockId);
+        const block = deleteBlockInLevel(parent.block, value.blockId);
         insertBlockInLevel(
           newParent,
           block!,
@@ -83,6 +99,13 @@ export const editorHistoryReducer = (
     case "set-block-data": {
       const block = findBlock(document, value.blockId);
       if (block) block.data = value.data;
+
+      break;
+    }
+
+    case "set-block-base": {
+      const block = findBlock(document, value.blockId);
+      if (block) block.base = value.base;
 
       break;
     }

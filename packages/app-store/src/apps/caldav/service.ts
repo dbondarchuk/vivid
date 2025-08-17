@@ -13,6 +13,7 @@ import {
   IConnectedApp,
   IConnectedAppProps,
 } from "@vivid/types";
+import { decrypt, encrypt } from "@vivid/utils";
 import { DateTime } from "luxon";
 import {
   generateIcsCalendar,
@@ -21,7 +22,7 @@ import {
   IcsStatusType,
 } from "ts-ics";
 import { DAVClient } from "tsdav";
-import { CaldavCalendarSource } from "./models";
+import { CaldavAction, CaldavCalendarSource } from "./models";
 
 const attendeeStatusToPartStatusMap: Record<
   CalendarEventAttendee["status"],
@@ -42,25 +43,58 @@ const evetStatusToIcsEventStatus: Record<
   pending: "TENTATIVE",
 };
 
+const MASKED_PASSWORD = "********";
+
 export default class CaldavConnectedApp
-  implements IConnectedApp, ICalendarBusyTimeProvider, ICalendarWriter
+  implements
+    IConnectedApp<CaldavCalendarSource>,
+    ICalendarBusyTimeProvider,
+    ICalendarWriter
 {
   protected readonly loggerFactory = getLoggerFactory("CaldavConnectedApp");
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
+  public async processAppData(
+    appData: CaldavCalendarSource
+  ): Promise<CaldavCalendarSource> {
+    return {
+      ...appData,
+      password: appData.password ? MASKED_PASSWORD : undefined,
+    };
+  }
+
   public async processRequest(
     appData: ConnectedAppData,
-    data: CaldavCalendarSource
+    action: CaldavAction
   ): Promise<ConnectedAppStatusWithText | string[]> {
     const logger = this.loggerFactory("processRequest");
+    const { type, data } = action;
     logger.debug(
       {
         appId: appData._id,
+        action: type,
         serverUrl: data.serverUrl,
         username: data.username,
       },
       "Processing CalDAV connection request"
+    );
+
+    if (data.password === MASKED_PASSWORD && appData?.data?.password) {
+      data.password = appData.data.password;
+    } else if (data.password) {
+      data.password = encrypt(data.password);
+    }
+
+    if (type === "fetchCalendars") {
+      return await this.fetchCalendars(appData, data);
+    }
+
+    logger.debug(
+      {
+        appId: appData._id,
+      },
+      "Processing CalDAV save request"
     );
 
     try {
@@ -171,9 +205,22 @@ export default class CaldavConnectedApp
       "Processing static request to fetch calendars"
     );
 
-    try {
-      const { fetchCalendars, ...data } = request;
+    request.password = request.password ? encrypt(request.password) : undefined;
 
+    return await this.fetchCalendars(undefined, request);
+  }
+
+  public async fetchCalendars(
+    appData: ConnectedAppData | undefined,
+    data: CaldavCalendarSource
+  ): Promise<string[]> {
+    const logger = this.loggerFactory("fetchCalendars");
+    logger.debug(
+      { serverUrl: data.serverUrl, username: data.username },
+      "Fetching calendars from CalDAV server"
+    );
+
+    try {
       const client = this.getClient(data);
       logger.debug(
         { serverUrl: data.serverUrl },
@@ -201,14 +248,14 @@ export default class CaldavConnectedApp
       return calendarNames;
     } catch (error: any) {
       logger.error(
-        { serverUrl: request.serverUrl, error },
+        { serverUrl: data.serverUrl, error },
         "Failed to fetch calendars"
       );
 
       throw new ConnectedAppError(
         "calDav.statusText.failed_to_fetch_calendars",
         {
-          serverUrl: request.serverUrl,
+          serverUrl: data.serverUrl,
         }
       );
     }
@@ -701,7 +748,7 @@ export default class CaldavConnectedApp
       serverUrl: config.serverUrl,
       credentials: {
         username: config.username,
-        password: config.password,
+        password: config.password ? decrypt(config.password) : undefined,
       },
       authMethod: "Basic",
       defaultAccountType: "caldav",

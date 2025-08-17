@@ -2,10 +2,10 @@ import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
+import { Leaves } from "@vivid/types";
 import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
 import { TextAlign } from "../style-inputs/helpers/zod";
-import { Leaves } from "@vivid/utils";
-import { useI18n } from "@vivid/i18n";
 
 type PropsType = { style?: { textAlign?: TextAlign | null } | null };
 

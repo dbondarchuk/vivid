@@ -1,12 +1,15 @@
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import { MdxContent } from "@/components/web/mdx/mdx-content";
+import { Styling } from "@vivid/page-builder";
+import { Header, PageReader } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
 import { cn } from "@vivid/ui";
-import { setPageData } from "@vivid/utils";
+import { formatArguments, setPageData } from "@vivid/utils";
+import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
+import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
-import { headers } from "next/headers";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -181,6 +184,12 @@ export default async function Page(props: Props) {
     const searchParams = await props.searchParams;
     const params = await props.params;
 
+    const { styling, social } =
+      await ServicesContainer.ConfigurationService().getConfigurations(
+        "styling",
+        "social"
+      );
+
     logger.debug(
       {
         slug: params.slug,
@@ -221,15 +230,53 @@ export default async function Page(props: Props) {
       "Successfully rendered page"
     );
 
+    const { content, ...rest } = page;
+    const args: Record<string, any> = {
+      page: rest,
+      isPage: true,
+      general: settings,
+      social: social,
+      now: new Date(),
+    };
+
+    const cookieStore = await cookies();
+    const appointmentId = cookieStore.get("appointment_id")?.value;
+    if (appointmentId) {
+      const appointment =
+        await ServicesContainer.EventsService().getAppointment(appointmentId);
+      if (
+        appointment &&
+        DateTime.fromJSDate(appointment.createdAt).diffNow().toMillis() <
+          60 * 1000 // 60 seconds
+      ) {
+        args.appointment = appointment;
+      } else {
+        notFound();
+      }
+    }
+
+    const header = page.headerId
+      ? await ServicesContainer.PagesService().getPageHeader(page.headerId)
+      : undefined;
+
+    const footer = page.footerId
+      ? await ServicesContainer.PagesService().getPageFooter(page.footerId)
+      : undefined;
+
+    const t = await getI18nAsync("translation");
+    const formattedArgs = formatArguments(args, settings.language);
+
     return (
-      <div
-        className={cn(
-          "flex flex-col gap-5",
-          page.fullWidth ? "w-full" : "container mx-auto"
+      <>
+        <Styling styling={styling} />
+        {header && (
+          <Header name={settings.name} logo={settings.logo} config={header} />
         )}
-      >
-        <MdxContent source={page.content} />
-      </div>
+        <PageReader document={content} args={formattedArgs} />
+        {footer?.content && (
+          <PageReader document={footer.content} args={formattedArgs} />
+        )}
+      </>
     );
   } catch (error: any) {
     const loggerFn =

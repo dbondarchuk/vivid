@@ -9,15 +9,32 @@ import {
   IConnectedAppProps,
   IMailSender,
 } from "@vivid/types";
+import { decrypt, encrypt } from "@vivid/utils";
 import { createEvent } from "ics";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { SmtpConfiguration } from "./models";
 
-export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
+const MASKED_PASSWORD = "********";
+
+export default class SmtpConnectedApp
+  implements IConnectedApp<SmtpConfiguration>, IMailSender
+{
   protected readonly loggerFactory = getLoggerFactory("SmtpConnectedApp");
 
   public constructor(protected readonly props: IConnectedAppProps) {}
+
+  public async processAppData(
+    appData: SmtpConfiguration
+  ): Promise<SmtpConfiguration> {
+    return {
+      ...appData,
+      auth: {
+        ...appData.auth,
+        pass: appData.auth?.pass ? MASKED_PASSWORD : undefined,
+      },
+    };
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -35,6 +52,18 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
       "Processing SMTP configuration request"
     );
 
+    if (data?.auth?.pass === MASKED_PASSWORD && appData?.data?.auth?.pass) {
+      data.auth = {
+        ...data.auth,
+        pass: appData.data.auth.pass,
+      };
+    } else if (data?.auth?.pass) {
+      data.auth = {
+        ...data.auth,
+        pass: encrypt(data.auth.pass),
+      };
+    }
+
     try {
       const client = this.getClient(data);
 
@@ -50,6 +79,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
           { appId: appData._id, host: data.host, port: data.port },
           "SMTP connection verification failed"
         );
+
         throw new ConnectedAppError(
           "smtp.statusText.connection_verification_failed"
         );
@@ -263,7 +293,9 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
         secure: smtpConfiguration.secure,
         auth: {
           user: smtpConfiguration.auth.user,
-          pass: smtpConfiguration.auth.pass,
+          pass: smtpConfiguration.auth.pass
+            ? decrypt(smtpConfiguration.auth.pass)
+            : undefined,
         },
       });
 

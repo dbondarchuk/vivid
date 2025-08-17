@@ -13,7 +13,8 @@
     "cancel": "Cancel",
     "placeholder": "Select option",
     "hours": "Hours",
-    "minutes": "Minutes"
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "actions": {
     "delete": "Delete",
@@ -42,6 +43,9 @@
   "assetSelector": {
     "title": "Select asset",
     "upload": "Upload"
+  },
+  "pageSelector": {
+    "title": "Select page"
   },
   "promoCodeSelector": {
     "placeholder": "Select promo code",
@@ -117,10 +121,11 @@
   },
   "durationInput": {
     "hr": "hr",
-    "min": "min"
+    "min": "min",
+    "sec": "sec"
   },
   "dataTable": {
-    "searchPlaceholder": "Search {searchKey}...",
+    "searchPlaceholder": "Search...",
     "selectedRows": "{selected} of {total} row(s) selected.",
     "previous": "Previous",
     "next": "Next",

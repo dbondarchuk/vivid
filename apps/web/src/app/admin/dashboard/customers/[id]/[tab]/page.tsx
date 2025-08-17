@@ -37,7 +37,11 @@ import {
   RecentCommunications,
   SendCommunicationButton,
 } from "../../../../../../components/admin/communications/communications";
-import { CustomerFiles, CustomerFileUpload } from "./files";
+import {
+  CustomerFiles,
+  CustomerFilesTableAction,
+  CustomerFileUpload,
+} from "./files";
 import { CalendarClock } from "lucide-react";
 import { Metadata } from "next";
 import { cache } from "react";
@@ -109,6 +113,10 @@ export default async function CustomerPage(props: Props) {
   } else if (activeTab === communicationsTab) {
     const parsed = communicationsSearchParamsCache.parse(searchParams);
     key = communicationsSerialize({ ...parsed });
+  }
+
+  if (searchParams.key) {
+    key = searchParams.key as string;
   }
 
   logger.debug(
@@ -219,7 +227,7 @@ export default async function CustomerPage(props: Props) {
                 className="flex flex-1 flex-col gap-4"
               >
                 <div className="flex flex-col md:flex-row gap-2 w-full">
-                  <AssetsTableAction className="flex-1" />
+                  <CustomerFilesTableAction />
                   <CustomerFileUpload customerId={params.id} />
                 </div>
                 <Suspense

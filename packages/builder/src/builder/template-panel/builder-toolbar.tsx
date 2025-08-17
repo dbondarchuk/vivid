@@ -11,6 +11,11 @@ import {
   DialogFooter,
   DialogTitle,
   DialogTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -34,32 +39,80 @@ import {
   ClipboardCopy,
   Copy,
   Eye,
+  Laptop,
+  Maximize,
   Monitor,
   PanelRight,
   Redo2,
   Smartphone,
+  Tablet,
   Trash,
   TriangleAlert,
+  Tv,
   Undo2,
+  Blocks,
 } from "lucide-react";
-import React, { Fragment } from "react";
+import React, { Fragment, useCallback, useMemo } from "react";
 import {
   canRedoHistory,
   canUndoHistory,
+  useBlockDisableOptions,
   useBlocks,
   useDispatchAction,
   useDocument,
   useEditorStateErrors,
   useEditorStateStore,
+  useFullScreen,
   useRedoHistory,
   useRootBlock,
   useSelectedBlock,
   useSelectedScreenSize,
   useSetSelectedBlockId,
   useSetSelectedScreenSize,
+  useToggleFullScreen,
   useUndoHistory,
+  ViewportSize,
 } from "../../documents/editor/context";
 import { isUndoRedo } from "../../documents/helpers/is-undo-redo";
+import { usePortalContext } from "../../documents/blocks/helpers/block-wrappers/portal-context";
+
+type ViewportSizeConfig = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  className?: string;
+};
+
+const VIEWPORT_SIZES: Record<ViewportSize, ViewportSizeConfig> = {
+  // original: {
+  //   icon: MonitorSmartphone,
+  //   label: "baseBuilder.builderToolbar.view.original",
+  // },
+  desktop: {
+    icon: Monitor,
+    label: "baseBuilder.builderToolbar.view.desktop",
+  },
+  largeDesktop: {
+    icon: Tv,
+    label: "baseBuilder.builderToolbar.view.largeDesktop",
+  },
+  laptop: {
+    icon: Laptop,
+    label: "baseBuilder.builderToolbar.view.laptop",
+  },
+  tablet: {
+    icon: Tablet,
+    label: "baseBuilder.builderToolbar.view.tablet",
+  },
+  mobile: {
+    icon: Smartphone,
+    label: "baseBuilder.builderToolbar.view.mobile",
+  },
+  mobileLandscape: {
+    icon: Smartphone,
+    label: "baseBuilder.builderToolbar.view.mobileLandscape",
+    className: "rotate-90",
+  },
+};
 
 export type ViewType = "editor" | "preview";
 
@@ -67,16 +120,21 @@ type BuilderToolbarProps = {
   selectedView: ViewType;
   setSelectedView: (fn: (prev: ViewType) => ViewType) => void;
   args?: Record<string, any>;
+  showBlocksPanel?: boolean;
+  onToggleBlocksPanel?: () => void;
 };
 
 export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   selectedView,
   setSelectedView,
   args,
+  showBlocksPanel,
+  onToggleBlocksPanel,
 }) => {
   const document = useDocument();
   const blocks = useBlocks();
   const rootBlock = useRootBlock();
+  const { document: portalDocument } = usePortalContext();
   const t = useI18n("builder");
   const tUi = useI18n("ui");
 
@@ -84,9 +142,12 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   const selectedScreenSize = useSelectedScreenSize();
   const setSelectedScreenSize = useSetSelectedScreenSize();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const fullScreen = useFullScreen();
+  const toggleFullScreen = useToggleFullScreen();
   const { resolvedTheme } = useTheme();
   const { toggleSidebar } = useSidebar();
   const selectedBlock = useSelectedBlock();
+  const disable = useBlockDisableOptions(selectedBlock?.id);
   const canDoBlockActions = selectedBlock && selectedBlock.id !== document.id;
 
   const dispatchAction = useDispatchAction();
@@ -97,8 +158,8 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
   const canUndo = canUndoHistory(history);
   const canRedo = canRedoHistory(history);
 
-  React.useEffect(() => {
-    const undoRedo = (e: KeyboardEvent) => {
+  const undoRedo = useCallback(
+    (e: KeyboardEvent) => {
       if (isUndoRedo(e) === "undo" && canUndoHistory(history)) {
         undoHistory();
         e.preventDefault();
@@ -108,51 +169,71 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         e.preventDefault();
         e.stopPropagation();
       }
-    };
+    },
+    [canUndo, canRedo, undoHistory, redoHistory, history]
+  );
 
+  React.useEffect(() => {
     window.addEventListener("keydown", undoRedo);
+    if (portalDocument && portalDocument.defaultView !== window) {
+      portalDocument.defaultView?.addEventListener("keydown", undoRedo);
+    }
     return () => {
       window.removeEventListener("keydown", undoRedo);
+      if (portalDocument && portalDocument.defaultView !== window) {
+        portalDocument.defaultView?.removeEventListener("keydown", undoRedo);
+      }
     };
-  });
+  }, [undoRedo, portalDocument]);
 
-  const handleScreenSizeChange = (value: string) => {
-    switch (value) {
-      case "mobile":
-      case "desktop":
-        setSelectedScreenSize(value);
-        return;
-      default:
-        setSelectedScreenSize("desktop");
-    }
-  };
+  const handleScreenSizeChange = useCallback(
+    (value: ViewportSize) => {
+      setSelectedScreenSize(value);
+    },
+    [setSelectedScreenSize]
+  );
 
-  const errors = Object.entries(useEditorStateErrors() || {});
-  const errorsCount = errors.length;
-  const hasErrors = errorsCount > 0;
+  const editorErrors = useEditorStateErrors();
 
-  const flattendErrors = errors.flatMap(([blockId, { type, error }]) =>
-    error.issues.map((issue) => ({
-      blockId,
-      type,
-      displayName: blocks[type].displayName,
-      error: issue.message,
-      property: issue.path.slice(1).join("."),
-    }))
+  const errors = useMemo(
+    () => Object.entries(editorErrors || {}),
+    [editorErrors]
+  );
+
+  const errorsCount = useMemo(() => errors.length, [errors]);
+  const hasErrors = useMemo(() => errorsCount > 0, [errorsCount]);
+
+  const flattendErrors = useMemo(
+    () =>
+      errors.flatMap(([blockId, { type, error }]) =>
+        error.issues.map((issue) => ({
+          blockId,
+          type,
+          displayName: blocks[type].displayName,
+          error: issue.message,
+          property: issue.path.slice(1).join("."),
+        }))
+      ),
+    [errors, blocks]
   );
 
   const BlockToolbar = blocks[selectedBlock?.type || rootBlock.type].Toolbar;
-  const setBlockData = (data: any) => {
-    dispatchAction({
-      type: "set-block-data",
-      value: { blockId: selectedBlock?.id || document.id, data },
-    });
-  };
+  const setBlockData = useCallback(
+    (data: any) => {
+      dispatchAction({
+        type: "set-block-data",
+        value: { blockId: selectedBlock?.id || document.id, data },
+      });
+    },
+    [dispatchAction, selectedBlock?.id, document.id]
+  );
 
   const blockData = selectedBlock?.data ?? document.data;
 
+  const ViewportIcon = VIEWPORT_SIZES[selectedScreenSize].icon;
+
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-start pb-4 w-full border-b border-secondary bg-background sticky top-0 z-[45] p-1">
+    <div className="flex flex-col-reverse md:flex-row gap-2 justify-between items-start  w-full border-b border-secondary bg-background sticky top-0 z-[45] p-1">
       <Toolbar className="flex-1 has-[button]:flex-wrap">
         <ToolbarGroup>
           <ToolbarButton
@@ -173,12 +254,12 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         <ToolbarGroup>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.moveUp")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.move}
             onClick={() =>
               dispatchAction({
                 type: "move-block-up",
                 value: {
-                  blockId: selectedBlock.id,
+                  blockId: selectedBlock!.id,
                 },
               })
             }
@@ -187,12 +268,12 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
           </ToolbarButton>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.moveDown")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.move || !selectedBlock}
             onClick={() =>
               dispatchAction({
                 type: "move-block-down",
                 value: {
-                  blockId: selectedBlock.id,
+                  blockId: selectedBlock!.id,
                 },
               })
             }
@@ -203,12 +284,12 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         <ToolbarGroup>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.clone")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.clone || !selectedBlock}
             onClick={() =>
               dispatchAction({
                 type: "clone-block",
                 value: {
-                  blockId: selectedBlock.id,
+                  blockId: selectedBlock!.id,
                 },
               })
             }
@@ -217,12 +298,12 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
           </ToolbarButton>
           <ToolbarButton
             tooltip={t("baseBuilder.builderToolbar.delete")}
-            disabled={!canDoBlockActions}
+            disabled={!canDoBlockActions || disable?.delete || !selectedBlock}
             onClick={() => {
               dispatchAction({
                 type: "delete-block",
                 value: {
-                  blockId: selectedBlock.id,
+                  blockId: selectedBlock!.id,
                 },
               });
 
@@ -234,27 +315,59 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         </ToolbarGroup>
         <ToolbarGroup>
           {BlockToolbar && (
-            <BlockToolbar data={blockData} setData={setBlockData} />
+            <BlockToolbar
+              data={blockData}
+              setData={setBlockData}
+              base={selectedBlock?.base}
+              onBaseChange={(base) => {
+                dispatchAction({
+                  type: "set-block-base",
+                  value: { blockId: selectedBlock!.id, base },
+                });
+              }}
+            />
           )}
         </ToolbarGroup>
       </Toolbar>
       {/* <div className="grow" /> */}
       <Toolbar className="has-[button]:flex-wrap">
         <ToolbarGroup>
-          <ToolbarButton
-            tooltip={t("baseBuilder.builderToolbar.desktopView")}
-            pressed={selectedScreenSize === "desktop"}
-            onClick={() => handleScreenSizeChange("desktop")}
-          >
-            <Monitor />
-          </ToolbarButton>
-          <ToolbarButton
-            tooltip={t("baseBuilder.builderToolbar.mobileView")}
-            pressed={selectedScreenSize === "mobile"}
-            onClick={() => handleScreenSizeChange("mobile")}
-          >
-            <Smartphone />
-          </ToolbarButton>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <ToolbarButton
+                tooltip={t("baseBuilder.builderToolbar.view.title")}
+                isDropdown
+                className="text-xs px-2"
+              >
+                <ViewportIcon
+                  className={cn(
+                    "size-4",
+                    VIEWPORT_SIZES[selectedScreenSize].className
+                  )}
+                />
+              </ToolbarButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-0">
+              <DropdownMenuRadioGroup
+                value={selectedScreenSize}
+                onValueChange={handleScreenSizeChange as any}
+              >
+                {Object.entries(VIEWPORT_SIZES).map(([size, config]) => {
+                  const Icon = config.icon;
+                  return (
+                    <DropdownMenuRadioItem
+                      key={size}
+                      value={size}
+                      className="min-w-[220px]"
+                    >
+                      <Icon className={cn("size-4", config.className)} />
+                      {t(config.label as any)}
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </ToolbarGroup>
         <ToolbarGroup>
           {hasErrors ? (
@@ -281,9 +394,14 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
                           >
                             <AlertTriangle />{" "}
                             <em>
-                              {displayName}.{property}:
+                              {t.has(displayName)
+                                ? t(displayName)
+                                : displayName}
+                              .{property}:
                             </em>{" "}
-                            {t(error as BuilderKeys)}
+                            {t.has(error as BuilderKeys)
+                              ? t(error as BuilderKeys)
+                              : error}
                           </div>
                           {index < flattendErrors.length - 1 && <Separator />}
                         </Fragment>
@@ -302,29 +420,30 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
         <ToolbarGroup>
           <ToolbarButton
             pressed={selectedView === "preview"}
+            tooltip={t("baseBuilder.builderToolbar.preview")}
             onClick={() =>
               setSelectedView((prev) =>
                 prev === "editor" ? "preview" : "editor"
               )
             }
           >
-            <Eye /> {t("baseBuilder.builderToolbar.preview")}
+            <Eye />
+          </ToolbarButton>
+          <ToolbarButton
+            pressed={fullScreen}
+            onClick={toggleFullScreen}
+            tooltip={t("baseBuilder.builderToolbar.fullScreen")}
+          >
+            <Maximize />
           </ToolbarButton>
         </ToolbarGroup>
         <ToolbarGroup>
           <Dialog>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DialogTrigger asChild>
-                  <ToolbarButton>
-                    <Braces />
-                  </ToolbarButton>
-                </DialogTrigger>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                {t("baseBuilder.builderToolbar.context")}
-              </TooltipContent>
-            </Tooltip>
+            <DialogTrigger asChild>
+              <ToolbarButton tooltip={t("baseBuilder.builderToolbar.context")}>
+                <Braces />
+              </ToolbarButton>
+            </DialogTrigger>
             <DialogContent className="md:max-w-3/5">
               <DialogTitle>
                 {t("baseBuilder.builderToolbar.contextValues")}
@@ -383,16 +502,25 @@ export const BuilderToolbar: React.FC<BuilderToolbarProps> = ({
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
-              <ToolbarButton onClick={toggleSidebar}>
-                <PanelRight />
+              <ToolbarButton
+                pressed={showBlocksPanel}
+                onClick={onToggleBlocksPanel}
+              >
+                <Blocks />
               </ToolbarButton>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               {t("baseBuilder.builderToolbar.toggleSidebar")}
             </TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
+          <ToolbarButton
+            onClick={toggleSidebar}
+            tooltip={t("baseBuilder.builderToolbar.toggleSidebar")}
+          >
+            <PanelRight />
+          </ToolbarButton>
         </ToolbarGroup>
       </Toolbar>
     </div>

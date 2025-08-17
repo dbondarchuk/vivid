@@ -135,7 +135,7 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
           : t("services.addonSelector.selectAddon")
       }
       selected={value || []}
-      onChange={(value) => onItemSelect?.(value as string[])}
+      onChange={onItemSelect}
     />
   ) : (
     <Combobox

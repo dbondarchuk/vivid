@@ -10,6 +10,8 @@ import { useI18n } from "@vivid/i18n";
 import { cn } from "../utils";
 import { Button } from "./button";
 
+import Autoplay from "embla-carousel-autoplay";
+
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
 type CarouselOptions = UseCarouselParameters[0];
@@ -20,6 +22,7 @@ type CarouselProps = {
   plugins?: CarouselPlugin;
   orientation?: "horizontal" | "vertical";
   setApi?: (api: CarouselApi) => void;
+  autoPlay?: number;
 };
 
 type CarouselContextProps = {
@@ -55,6 +58,7 @@ const Carousel = React.forwardRef<
       plugins,
       className,
       children,
+      autoPlay,
       ...props
     },
     ref
@@ -64,7 +68,16 @@ const Carousel = React.forwardRef<
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
       },
-      plugins
+      [
+        ...(plugins || []),
+        ...(autoPlay
+          ? [
+              Autoplay({
+                delay: autoPlay,
+              }),
+            ]
+          : []),
+      ]
     );
     const [canScrollPrev, setCanScrollPrev] = React.useState(false);
     const [canScrollNext, setCanScrollNext] = React.useState(false);

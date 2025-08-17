@@ -4,6 +4,8 @@ import { BaseReaderBlockProps, TReaderBlock } from "./core";
 
 export type TReaderBlockProps = BaseReaderBlockProps<any> & {
   block: TReaderBlock;
+} & {
+  [x: string]: any;
 };
 
 export function ReaderBlock({ block, ...rest }: TReaderBlockProps) {
@@ -12,17 +14,22 @@ export function ReaderBlock({ block, ...rest }: TReaderBlockProps) {
     <Component
       {...rest}
       {...templateProps(block.data, rest.args)}
+      block={block}
       key={block.id}
     />
   );
 }
 
-export type TReaderProps<T extends BaseZodDictionary> = BaseReaderBlockProps<T>;
+export type TReaderProps<T extends BaseZodDictionary> = Omit<
+  BaseReaderBlockProps<T>,
+  "block"
+>;
 
 export function Reader<T extends BaseZodDictionary>({
   document,
   args,
   blocks,
+  isEditor,
 }: TReaderProps<T>) {
   return (
     <ReaderBlock
@@ -30,6 +37,7 @@ export function Reader<T extends BaseZodDictionary>({
       document={document}
       args={args}
       blocks={blocks}
+      isEditor={isEditor}
     />
   );
 }

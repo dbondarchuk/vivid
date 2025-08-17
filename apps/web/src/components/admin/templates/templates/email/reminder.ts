@@ -54,7 +54,7 @@ export const appointmentReminderEmailTemplate = {
           id: "block-1740076839739",
           data: {
             props: {
-              text: "Reminder about your appointment for {{option.name}} on {{dateTime}}",
+              text: "Reminder about your appointment for {{option.name}} on {{dateTime.full}}",
             },
             style: {
               textAlign: "center",
@@ -86,7 +86,7 @@ export const appointmentReminderEmailTemplate = {
                 {
                   children: [
                     {
-                      text: "This is a friendly reminder about your upcoming appointment on {{dateTime}}.",
+                      text: "This is a friendly reminder about your upcoming appointment on {{dateTime.full}}.",
                       fontSize: "14px",
                     },
                   ],

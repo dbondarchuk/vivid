@@ -107,7 +107,7 @@ export const appointmentCreatedEmailTemplate = {
                   align: "start",
                   children: [
                     {
-                      text: "We will confirm your appointment for {{dateTime}} shortly",
+                      text: "We will confirm your appointment for {{dateTime.full}} shortly",
                       fontSize: "14px",
                     },
                   ],
@@ -193,7 +193,7 @@ export const appointmentCreatedEmailTemplate = {
                   align: "start",
                   children: [
                     {
-                      text: "Time: {{dateTime}}",
+                      text: "Time: {{dateTime.full}}",
                       fontSize: "14px",
                     },
                   ],

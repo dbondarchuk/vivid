@@ -1258,7 +1258,7 @@ export class EventsService implements IEventsService {
     }
 
     logger.debug(
-      { start, end, duration, results },
+      { start, end, duration, results: results.length },
       "Available time slots retrieved"
     );
 

@@ -40,7 +40,7 @@ Email: {{ fields.email }}
 - Жодного
 {{/addons}}
 
-Час: {{ dateTime }}
+Час: {{ dateTime.full}}
 
 Тривалість: {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}
 
@@ -79,9 +79,9 @@ export const UkEmailTemplates: EmailTemplates = {
     text: getText("Запис був відхилений вами."),
   },
   rescheduled: {
-    title: "Запис був перенесений на {{dateTime}}",
+    title: "Запис був перенесений на {{dateTime.full}}",
     text: getText(
-      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}"
+      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime.full}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}"
     ),
   },
   "auto-confirmed": {
@@ -96,7 +96,7 @@ export const UkEmailTemplates: EmailTemplates = {
       "Новий запис був запитаний на веб-сайті для {{option.name}}."
     ),
   },
-  subject: "{{fields.name}} на {{option.name}} на {{dateTime}}",
+  subject: "{{fields.name}} на {{option.name}} на {{dateTime.full}}",
   eventTitle: "{{fields.name}} на {{option.name}}",
   buttonTexts: {
     viewAppointment: "Переглянути запис",

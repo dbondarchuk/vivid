@@ -10,6 +10,7 @@ import {
   useCurrentBlock,
   useDispatchAction,
   useSetSelectedBlockId,
+  usePortalContext,
 } from "@vivid/builder";
 import { HeadingProps } from "./schema";
 
@@ -20,6 +21,8 @@ export function HeadingEditor({ props, style }: HeadingProps) {
   const value = currentBlock.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
+
+  const { document } = usePortalContext();
 
   const styles = getStyles({ props, style });
 
@@ -63,6 +66,7 @@ export function HeadingEditor({ props, style }: HeadingProps) {
       value={value ?? "Heading"}
       onChange={onChange}
       onKeyDown={handleKeyPress}
+      documentElement={document}
     />
   );
 }

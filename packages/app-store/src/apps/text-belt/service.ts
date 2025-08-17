@@ -15,10 +15,12 @@ import {
   TextMessageReply,
   TextMessageResponse,
 } from "@vivid/types";
-import { getArguments, maskify } from "@vivid/utils";
+import { decrypt, encrypt, getArguments, maskify } from "@vivid/utils";
 import crypto from "crypto";
 import { getEmailTemplate } from "./emails/utils";
 import { TextBeltConfiguration } from "./models";
+
+const MASKED_API_KEY = "this-is-a-masked-api-key";
 
 const scrambleKey = (key: string) => {
   if (key.length < 6) {
@@ -80,11 +82,23 @@ type SmsResponse = {
 };
 
 export default class TextBeltConnectedApp
-  implements IConnectedApp, IConnectedAppWithWebhook, ITextMessageSender
+  implements
+    IConnectedApp<TextBeltConfiguration>,
+    IConnectedAppWithWebhook,
+    ITextMessageSender
 {
   protected readonly loggerFactory = getLoggerFactory("TextBeltConnectedApp");
 
   public constructor(protected readonly props: IConnectedAppProps) {}
+
+  public async processAppData(
+    appData: TextBeltConfiguration
+  ): Promise<TextBeltConfiguration> {
+    return {
+      ...appData,
+      apiKey: appData.apiKey ? MASKED_API_KEY : "",
+    };
+  }
 
   public async sendTextMessage(
     app: ConnectedAppData,
@@ -107,9 +121,11 @@ export default class TextBeltConnectedApp
         .ConfigurationService()
         .getConfiguration("general");
 
+      const apiKey = decrypt(app.data.apiKey);
+
       const request: SmsRequest = {
         message: message.message,
-        key: (app.data as TextBeltConfiguration).apiKey,
+        key: apiKey,
         phone: message.phone,
         sender: message.sender,
         replyWebhookUrl: `${config.url}/api/apps/${app._id}/webhook`,
@@ -232,6 +248,8 @@ export default class TextBeltConnectedApp
     try {
       const config = appData.data as TextBeltConfiguration;
 
+      const apiKey = config.apiKey ? decrypt(config.apiKey) : "";
+
       const bodyText = await request.text();
       const timestamp = request.headers.get("X-textbelt-timestamp");
       const signature = request.headers.get("X-textbelt-signature");
@@ -254,7 +272,7 @@ export default class TextBeltConnectedApp
         return Response.json({ success: false }, { status: 400 });
       }
 
-      if (!verify(config?.apiKey, timestamp, signature, bodyText)) {
+      if (!verify(apiKey, timestamp, signature, bodyText)) {
         logger.warn({ appId: appData._id, bodyText }, "Unverified SMS webhook");
 
         return Response.json({ success: false }, { status: 400 });
@@ -353,6 +371,13 @@ export default class TextBeltConnectedApp
     data: TextBeltConfiguration
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
+
+    if (data.apiKey === MASKED_API_KEY && appData?.data?.apiKey) {
+      data.apiKey = appData.data.apiKey;
+    } else if (data.apiKey) {
+      data.apiKey = encrypt(data.apiKey);
+    }
+
     logger.debug(
       {
         appId: appData._id,
@@ -397,7 +422,8 @@ export default class TextBeltConnectedApp
 
       logger.debug({ appId: appData._id }, "Checking TextBelt quota");
 
-      const response = await fetch(`https://textbelt.com/quota/${data.apiKey}`);
+      const apiKey = data?.apiKey ? decrypt(data.apiKey) : "";
+      const response = await fetch(`https://textbelt.com/quota/${apiKey}`);
       if (response.status >= 400) {
         logger.error(
           { appId: appData._id, statusCode: response.status },

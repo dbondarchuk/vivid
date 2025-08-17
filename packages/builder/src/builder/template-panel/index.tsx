@@ -1,5 +1,21 @@
 "use client";
 
+import type { CollisionDetection } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragStartEvent,
+  MouseSensor,
+  pointerWithin,
+  rectIntersection,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { cn, Tabs, TabsContent } from "@vivid/ui";
+import { useCallback, useState } from "react";
+import { PortalProvider } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 import { EditorBlock } from "../../documents/editor/block";
 import {
   useDispatchAction,
@@ -8,35 +24,31 @@ import {
   useSetActiveDragBlock,
   useSetActiveOverBlock,
 } from "../../documents/editor/context";
-
 import {
-  CollisionDetection,
-  DndContext,
-  MouseSensor,
-  pointerWithin,
-  rectIntersection,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-} from "@dnd-kit/core";
-import { cn, Tabs, TabsContent } from "@vivid/ui";
-import React, { useState } from "react";
-import { findBlock, findParentBlock } from "../../documents/helpers/blocks";
+  findBlock,
+  findBlockHierarchy,
+  findParentBlock,
+} from "../../documents/helpers/blocks";
 import { Reader } from "../../documents/reader/block";
 import { ReaderDocumentBlocksDictionary } from "../../documents/types";
 import { BuilderToolbar, ViewType } from "./builder-toolbar";
+import { ViewportEmulator } from "./viewport-emulator";
+import { BlocksPanel } from "../toolbars/blocks-panel";
+import { TEditorBlock } from "../../documents/editor/core";
+import { generateId } from "../../documents/helpers/block-id";
 
 type TemplatePanelProps = {
   args?: Record<string, any>;
   readerBlocks: ReaderDocumentBlocksDictionary<any>;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 };
 
 export const TemplatePanel: React.FC<TemplatePanelProps> = ({
   args,
   readerBlocks,
+  header,
+  footer,
 }) => {
   const document = useDocument();
 
@@ -47,20 +59,7 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
   const selectedScreenSize = useSelectedScreenSize();
 
   const [selectedView, setSelectedView] = useState<ViewType>("editor");
-
-  let mainBoxSx: any = {
-    height: "100%",
-  };
-  if (selectedScreenSize === "mobile") {
-    mainBoxSx = {
-      ...mainBoxSx,
-      margin: "32px auto",
-      width: 370,
-      height: 800,
-      boxShadow:
-        "rgba(33, 36, 67, 0.04) 0px 10px 20px, rgba(33, 36, 67, 0.04) 0px 2px 6px, rgba(33, 36, 67, 0.04) 0px 0px 1px",
-    };
-  }
+  const [showBlocksPanel, setShowBlocksPanel] = useState(false);
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -81,11 +80,41 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
 
   const onDragStart = (event: DragStartEvent) => {
     const blockId = event.active.id as string;
-    const block = findBlock(document, blockId);
-    const parentBlockId = findParentBlock(document, blockId)?.id;
-    if (!parentBlockId || !block) return;
 
-    setActiveDragBlock({ block, parentBlockId });
+    // Handle block template drag (from blocks panel)
+    if (blockId.startsWith("template-")) {
+      const blockType = blockId.replace("template-", "");
+      const blockData = event.active.data.current;
+
+      if (blockData?.type === "block-template") {
+        // Create a new block instance
+        const newBlock: TEditorBlock = {
+          id: blockData.blockConfig.id || `temp-${Date.now()}`,
+          type: blockData.blockType,
+          data:
+            typeof blockData.blockConfig.defaultValue === "function"
+              ? blockData.blockConfig.defaultValue()
+              : blockData.blockConfig.defaultValue,
+        };
+
+        // setActiveDragBlock({
+        //   block: newBlock,
+        //   parentBlockId: document.id,
+        //   parentProperty: "children",
+        // });
+        return;
+      }
+    }
+
+    // Handle existing block drag
+    const block = findBlock(document, blockId);
+    const parent = findParentBlock(document, blockId);
+    if (!parent || !block) return;
+
+    const parentBlockId = parent.block.id;
+    const parentProperty = parent.property;
+
+    setActiveDragBlock({ block, parentBlockId, parentProperty });
   };
 
   const onDragOver = (event: DragOverEvent) => {
@@ -108,22 +137,64 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
     if (!over) return;
 
     const activeId = active.id as string;
+
+    // Handle block template drop
+    if (activeId.startsWith("template-")) {
+      const blockData = active.data.current;
+
+      if (blockData?.type === "block-template") {
+        let overId = over.id as string;
+        if (!overId.startsWith("block")) {
+          overId = over.data.current?.contextId as string;
+        }
+
+        if (!overId) return;
+
+        const [overBlockId, property] = overId.split("/", 2);
+        const overParent = findBlock(document, overBlockId);
+        if (!overParent) return;
+
+        const newBlock: TEditorBlock = {
+          id: generateId(),
+          type: blockData.blockType,
+          data:
+            typeof blockData.blockConfig.defaultValue === "function"
+              ? blockData.blockConfig.defaultValue()
+              : blockData.blockConfig.defaultValue,
+        };
+
+        dispatchAction({
+          type: "add-block",
+          value: {
+            block: newBlock,
+            parentBlockId: overParent.id,
+            parentBlockProperty: property,
+            index: "last",
+          },
+        });
+
+        return;
+      }
+    }
+
+    // Handle existing block drop
     const activeParent = findParentBlock(document, activeId);
     if (!activeParent) return;
 
-    let overId = over.id as string;
+    const overId = over.id as string;
     if (!overId.startsWith("block")) {
-      overId = over.data.current?.contextId as string;
+      const overId = over.data.current?.contextId as string;
       if (!overId) return;
 
       const [overBlockId, property] = overId.split("/", 2);
       const overParent = findBlock(document, overBlockId);
       if (!overParent) return;
 
-      // const block = deleteBlockInLevel(activeParent, activeId);
-      // insertBlockInLevel(overParent, block!, property, 0);
-
-      // setDocument(document);
+      const hierarchy = findBlockHierarchy(document, overBlockId);
+      if (hierarchy && hierarchy.find((block) => block.id === activeId)) {
+        console.log("cannot move block inside itself");
+        return;
+      }
 
       dispatchAction({
         type: "move-block",
@@ -131,28 +202,33 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
           blockId: activeId,
           parentBlockId: overParent.id,
           parentBlockProperty: property,
-          index: 0,
+          index: "last",
         },
       });
 
       return;
     }
 
-    const [overBlockId, property] = overId.split("/", 2);
-    const overParent = findParentBlock(document, overBlockId);
+    let [overBlockId, overProperty] = overId.split("/", 2);
 
-    if (!activeParent || !overParent) return;
+    const overParent = findParentBlock(document, overBlockId);
+    const dropTarget = overProperty
+      ? findBlock(document, overBlockId)
+      : overParent?.block;
+
+    const dropTargetProperty = overProperty || overParent?.property;
+
+    if (!activeParent || !dropTarget) return;
+
     let activeContainerId = active?.data?.current?.sortable
       ?.containerId as string;
 
     const activeContainerProperty = activeContainerId?.split("/", 2)?.[1];
 
     if (
-      activeParent.id === overParent.id &&
-      activeContainerProperty === property
+      activeParent.block.id === dropTarget.id &&
+      activeContainerProperty === dropTargetProperty
     ) {
-      // swapBlockInLevel(activeParent, activeId, overBlockId);
-      // setDocument(document);
       dispatchAction({
         type: "swap-block",
         value: {
@@ -161,19 +237,20 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
         },
       });
     } else {
-      const index = over.data.current?.sortable?.index as number;
-      if (typeof index === "undefined") return;
+      const index = (over.data.current?.sortable?.index as number) || 0;
 
-      // const block = deleteBlockInLevel(activeParent, activeId);
-      // insertBlockInLevel(overParent, block!, property, index);
+      const hierarchy = findBlockHierarchy(document, dropTarget.id);
+      if (hierarchy && hierarchy.find((block) => block.id === activeId)) {
+        console.log("cannot move block inside itself");
+        return;
+      }
 
-      // setDocument(document);
       dispatchAction({
         type: "move-block",
         value: {
           blockId: activeId,
-          parentBlockId: overParent.id,
-          parentBlockProperty: property,
+          parentBlockId: dropTarget.id,
+          parentBlockProperty: dropTargetProperty,
           index,
         },
       });
@@ -193,40 +270,62 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
     return rectIntersection(args);
   };
 
+  const toggleBlocksPanel = useCallback(() => {
+    setShowBlocksPanel(!showBlocksPanel);
+  }, [showBlocksPanel]);
+
   return (
-    <>
+    <PortalProvider>
       <Tabs value={selectedView}>
         <BuilderToolbar
           selectedView={selectedView}
           setSelectedView={setSelectedView}
           args={args}
+          showBlocksPanel={showBlocksPanel}
+          onToggleBlocksPanel={toggleBlocksPanel}
         />
 
-        <div className="flex justify-center w-full">
-          <div
-            className={cn(selectedScreenSize === "mobile" ? "w-96" : "w-full")}
+        <div className="flex flex-col justify-center w-full mt-2">
+          <DndContext
+            sensors={sensors}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDragOver={onDragOver}
+            collisionDetection={customCollisionDetectionAlgorithm}
           >
-            <TabsContent value="editor">
-              <DndContext
-                sensors={sensors}
-                onDragStart={onDragStart}
-                onDragEnd={onDragEnd}
-                onDragOver={onDragOver}
-                collisionDetection={customCollisionDetectionAlgorithm}
-              >
+            <ViewportEmulator viewportSize={selectedScreenSize}>
+              {/* <div className="relative flex h-full">
+                {selectedView === "editor" && (
+                  <div
+                    className={cn(
+                      "w-0 opacity-0 border-r bg-background transition-all",
+                      showBlocksPanel && "w-80 opacity-100"
+                    )}
+                  >
+                    <BlocksPanel className="h-full" />
+                  </div>
+                )}
+                <div className="flex-1"> */}
+              {/* Main Editor Area */}
+              {header}
+              <TabsContent value="editor" className="mt-0">
                 <EditorBlock block={document} />
-              </DndContext>
-            </TabsContent>
-            <TabsContent value="preview">
-              <Reader
-                document={document}
-                args={args || {}}
-                blocks={readerBlocks}
-              />
-            </TabsContent>
-          </div>
+              </TabsContent>
+              <TabsContent value="preview" className="mt-0">
+                <Reader
+                  document={document}
+                  args={args || {}}
+                  blocks={readerBlocks}
+                  isEditor
+                />
+              </TabsContent>
+              {footer}
+              {/* </div>
+              </div> */}
+            </ViewportEmulator>
+          </DndContext>
         </div>
       </Tabs>
-    </>
+    </PortalProvider>
   );
 };

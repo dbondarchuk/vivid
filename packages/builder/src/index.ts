@@ -1,7 +1,10 @@
 export * from "./builder";
+export type { SidebarTab } from "./builder/inspector-drawer";
+export * from "./builder/inspector-drawer/configuration-panel/input-panels/helpers/base-sidebar-panel";
 export * from "./builder/inspector-drawer/configuration-panel/input-panels/helpers/inputs";
 export * from "./builder/toolbars";
 
+export * from "./documents/blocks/helpers/block-wrappers/portal-context";
 export * from "./documents/blocks/helpers/editor-children";
 
 export * from "./documents/editor/block";

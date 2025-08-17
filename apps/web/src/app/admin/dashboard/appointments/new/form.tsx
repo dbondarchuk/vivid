@@ -1,10 +1,6 @@
 "use client";
 
 import { AppointmentCalendar } from "@/components/admin/appointments/appointment-calendar";
-import {
-  fieldSchemaMapper,
-  fieldsComponentMap,
-} from "@/components/web/forms/fields";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
 import {
@@ -29,6 +25,8 @@ import {
   CustomerSelector,
   DateTimePicker,
   DurationInput,
+  fieldSchemaMapper,
+  fieldsComponentMap,
   Form,
   FormControl,
   FormDescription,
@@ -558,9 +556,7 @@ export const AppointmentScheduleForm: React.FC<
                         placeholder={t("appointments.form.selectAddons")}
                         selected={field.value?.map((x) => x.id) || []}
                         onChange={(value) =>
-                          field.onChange(
-                            (value as string[]).map((id) => ({ id }))
-                          )
+                          field.onChange(value.map((id) => ({ id })))
                         }
                         options={
                           selectedOption?.addons.map((addon) => ({

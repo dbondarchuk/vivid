@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import {
   Button,
@@ -6,7 +7,6 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import {
   addNewApp,
   getAppLoginUrl,
@@ -94,10 +94,15 @@ export const OutlookAppSetup: React.FC<AppSetupProps> = ({
         >
           {isLoading && <Spinner />}
           <span>{t("outlook.form.connectWith")}</span>
-          <ConnectedAppNameAndLogo app={{ name: OutlookApp.name }} t={t} />
+          <ConnectedAppNameAndLogo appName={OutlookApp.name} />
         </Button>
       </div>
-      {app && <ConnectedAppStatusMessage app={app} t={t} />}
+      {app && (
+        <ConnectedAppStatusMessage
+          status={app.status}
+          statusText={app.statusText}
+        />
+      )}
     </>
   );
 };

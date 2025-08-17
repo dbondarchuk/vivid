@@ -16,20 +16,30 @@ import {
   IConnectedApp,
   IConnectedAppProps,
 } from "@vivid/types";
-import { maskify } from "@vivid/utils";
+import { decrypt, encrypt, maskify } from "@vivid/utils";
 import { Readable } from "stream";
 import { S3Configuration } from "./models";
 
 const DEFAULT_BUCKET_NAME = "assets";
+const MASKED_SECRET_ACCESS_KEY = "this-is-a-masked-secret-access-key";
 
 export default class S3AssetsStorageConnectedApp
-  implements IConnectedApp, IAssetsStorage
+  implements IConnectedApp<S3Configuration>, IAssetsStorage
 {
   protected readonly loggerFactory = getLoggerFactory(
     "S3AssetsStorageConnectedApp"
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
+
+  public async processAppData(
+    appData: S3Configuration
+  ): Promise<S3Configuration> {
+    return {
+      ...appData,
+      secretAccessKey: appData.secretAccessKey ? MASKED_SECRET_ACCESS_KEY : "",
+    };
+  }
 
   public async processRequest(
     appData: ConnectedAppData,
@@ -46,6 +56,15 @@ export default class S3AssetsStorageConnectedApp
       },
       "Processing S3 configuration request"
     );
+
+    if (
+      data.secretAccessKey === MASKED_SECRET_ACCESS_KEY &&
+      appData?.data?.secretAccessKey
+    ) {
+      data.secretAccessKey = appData.data.secretAccessKey;
+    } else if (data.secretAccessKey) {
+      data.secretAccessKey = encrypt(data.secretAccessKey);
+    }
 
     try {
       const client = this.getClient(data);
@@ -387,6 +406,11 @@ export default class S3AssetsStorageConnectedApp
 
   private getClient(data: S3Configuration) {
     const logger = this.loggerFactory("getClient");
+
+    const secretAccessKey = data?.secretAccessKey
+      ? decrypt(data.secretAccessKey)
+      : undefined;
+
     logger.debug(
       {
         region: data?.region,
@@ -397,7 +421,7 @@ export default class S3AssetsStorageConnectedApp
       "Creating S3 client"
     );
 
-    if (!data || !data.region || !data.accessKeyId || !data.secretAccessKey) {
+    if (!data || !data.region || !data.accessKeyId || !secretAccessKey) {
       logger.error(
         {
           hasRegion: !!data?.region,
@@ -420,7 +444,7 @@ export default class S3AssetsStorageConnectedApp
       region: data.region,
       credentials: {
         accessKeyId: data.accessKeyId,
-        secretAccessKey: data.secretAccessKey,
+        secretAccessKey: secretAccessKey,
       },
       endpoint: data.endpoint,
       forcePathStyle: data.forcePathStyle,

@@ -1,5 +1,3 @@
-import { Footer } from "@/components/web/footer";
-import { Header } from "@/components/web/header";
 import { SonnerToaster, Toaster } from "@vivid/ui";
 
 import { Resource } from "@vivid/types";
@@ -159,14 +157,10 @@ export default async function RootLayout({
             <CssRenderer resource={resource} id={index} key={index} />
           ))}
         </head>
-        <TwLoad />
+        {/* <TwLoad /> */}
         <body className="font-primary">
           <NextIntlClientProvider>
-            <Header />
-            <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
-              {children}
-            </main>
-            <Footer />
+            <main className="min-h-screen max-w-none">{children}</main>
             {scripts?.footer?.map((resource, index) => (
               <ScriptRenderer resource={resource} id={index} key={index} />
             ))}

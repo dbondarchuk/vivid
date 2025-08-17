@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
 
 import { TEditorBlock } from "../../../../editor/core";
 
@@ -18,20 +18,33 @@ import { generateId } from "../../../../helpers/block-id";
 import { DividerButton } from "./divider-button";
 import { PlaceholderButton } from "./placeholder-button";
 import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { BaseZodDictionary } from "../../../../types";
 
-type Props = {
+type Props<T extends BaseZodDictionary = any> = {
   onSelect: (block: TEditorBlock) => void;
+  allowOnly?: (keyof T)[];
+  currentBlock: keyof T;
+  size?: "small" | "default";
 } & (
   | {
+      disabledDroppable?: boolean;
       placeholder: true;
       contextId: string;
+      isOver?: boolean;
+      className?: string;
     }
   | {
       placeholder?: false;
     }
 );
 
-export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
+export const AddBlockButton = <T extends BaseZodDictionary = any>({
+  onSelect,
+  allowOnly,
+  currentBlock,
+  size,
+  ...rest
+}: Props<T>) => {
   const [open, setOpen] = React.useState(false);
   const blocks = useBlocks();
   const rootBlock = useRootBlock();
@@ -48,35 +61,54 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
   };
 
   type block = (typeof blocks)[string] & { name: string };
+  const filteredBlocks = useMemo(() => {
+    return Object.entries(
+      Object.entries(blocks)
+        .filter(
+          ([type]) =>
+            (allowOnly
+              ? Array.isArray(allowOnly)
+                ? allowOnly.includes(type as keyof T)
+                : type === allowOnly
+              : rootBlock.type !== type) &&
+            (!blocks[type].allowedIn ||
+              blocks[type].allowedIn.includes(currentBlock))
+        )
+        .reduce(
+          (map, [name, value]) => ({
+            ...map,
+            [value.category]: [
+              ...(map[value.category] || []),
+              {
+                ...value,
+                name,
+              },
+            ],
+          }),
+          {} as Record<string, block[]>
+        )
+    );
+  }, [blocks, allowOnly, currentBlock, rootBlock]);
+
   return (
     <Popover modal open={open} onOpenChange={setOpen}>
       {rest.placeholder ? (
-        <PlaceholderButton contextId={rest.contextId} />
+        <PlaceholderButton
+          contextId={rest.contextId}
+          isOver={rest.isOver}
+          className={rest.className}
+          disabledDroppable={rest.disabledDroppable}
+          size={size}
+        />
       ) : (
-        <DividerButton />
+        <DividerButton size={size} />
       )}
       <PopoverContent className="sm:w-fit">
         <Command>
           <CommandInput placeholder={t("baseBuilder.searchBlocks")} />
           <CommandList>
             <CommandEmpty>{tUi("common.noResults")}</CommandEmpty>
-            {Object.entries(
-              Object.entries(blocks)
-                .filter(([type]) => rootBlock.type !== type)
-                .reduce(
-                  (map, [name, value]) => ({
-                    ...map,
-                    [value.category]: [
-                      ...(map[value.category] || []),
-                      {
-                        ...value,
-                        name,
-                      },
-                    ],
-                  }),
-                  {} as Record<string, block[]>
-                )
-            ).map(([category, values], i, array) => (
+            {filteredBlocks.map(([category, values], i, array) => (
               // <BlockTypeButton
               //   key={name}
               //   label={v.displayName}
@@ -93,11 +125,14 @@ export const AddBlockButton: React.FC<Props> = ({ onSelect, ...rest }) => {
                   {values.map(({ name, defaultValue, icon, displayName }) => (
                     <CommandItem
                       key={name}
-                      className="gap-2 [&>svg]:size-4"
+                      className="cursor-pointer gap-2 [&>svg]:size-4"
                       onSelect={() =>
                         onItemSelect({
                           type: name,
-                          data: defaultValue,
+                          data:
+                            typeof defaultValue === "function"
+                              ? defaultValue()
+                              : defaultValue,
                         })
                       }
                     >
