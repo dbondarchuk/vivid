@@ -9,22 +9,29 @@ export async function POST(
   const logger = getLoggerFactory("AdminAPI/payment-refund")("POST");
   const { id: paymentId } = await params;
 
+  const body = await request.json();
+  const amount = body.amount;
+
   logger.debug(
     {
       url: request.url,
       method: request.method,
       paymentId,
+      amount,
     },
     "Processing payment refund request"
   );
 
-  const result =
-    await ServicesContainer.PaymentsService().refundPayment(paymentId);
+  const result = await ServicesContainer.PaymentsService().refundPayment(
+    paymentId,
+    amount
+  );
 
   if (!result.success) {
     logger.warn(
       {
         paymentId,
+        amount,
         error: result.error,
         status: result.status,
       },
@@ -53,6 +60,12 @@ export async function POST(
             ? result.updatedPayment.externalId
             : undefined,
       },
+      refundedAmount: amount,
+      totalRefunded:
+        result.updatedPayment.refunds?.reduce(
+          (acc, refund) => acc + refund.amount,
+          0
+        ) || 0,
     },
     appointmentId: result.updatedPayment.appointmentId,
   });

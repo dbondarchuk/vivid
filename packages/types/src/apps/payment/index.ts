@@ -10,7 +10,8 @@ export interface IPaymentProcessor {
   getFormProps: (appData: ConnectedAppData) => Record<string, any>;
   refundPayment?: (
     appDate: ConnectedAppData,
-    payment: Payment
+    payment: Payment,
+    amount: number
   ) => Promise<{ success: boolean; error?: string }>;
 }
 

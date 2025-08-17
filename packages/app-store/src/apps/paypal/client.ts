@@ -196,7 +196,8 @@ export class PaypalClient {
   }
 
   public async refundPayment(
-    captureId: string
+    captureId: string,
+    amount: number
   ): Promise<
     { ok: true; error?: never } | { ok: false; error: { statusCode?: number } }
   > {
@@ -207,6 +208,12 @@ export class PaypalClient {
         `/v2/payments/captures/${captureId}/refund`,
         {
           method: "POST",
+          body: JSON.stringify({
+            amount: {
+              currency_code: "USD",
+              value: formatAmountString(amount),
+            },
+          }),
         }
       );
 

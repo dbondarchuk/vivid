@@ -191,10 +191,11 @@
       "transactionId": "ID транзакції",
       "timePaid": "Час оплати",
       "cancel": "Скасувати",
-      "declineAndRefund": "Відхилити та повернути {count} {payment}",
+      "declineAndRefund": "Відхилити та повернути {count, plural, =1 {платіж} few {# платежі} many {# платежів} other {# платежів}}{amount, plural, =0 {} other { на суму $#}}",
       "decline": "Відхилити",
-      "payment": "платіж",
-      "payments": "платежів",
+      "refunded": "Повернено",
+      "refundableAmount": "Сума, що може бути повернена",
+      "refundAmount": "Сума повернення",
       "refundError": "Один або більше запитів на повернення не вдалися."
     },
     "rescheduleDialog": {
@@ -321,7 +322,9 @@
       "oldStatus": "Старий статус: {oldStatus}",
       "newStatus": "Новий статус: {newStatus}",
       "oldDateTime": "Старий час: {oldDateTime}",
-      "newDateTime": "Новий час: {newDateTime}"
+      "newDateTime": "Новий час: {newDateTime}",
+      "refundedAmount": "Повернено ${amount}",
+      "totalRefunded": "Всього повернено ${amount}"
     }
   },
   "assets": {
@@ -1708,14 +1711,16 @@
       "timeRefunded": "Час повернення",
       "refund": "Повернення",
       "refunded": "Повернено",
+      "amountLeft": "Залишилок",
       "confirmRefund": "Підтвердити повернення",
       "confirmRefundDescription": "Цю дію неможливо скасувати",
       "refundDetails": "Деталі повернення",
       "paymentMethod": "Спосіб оплати",
       "originalAmount": "Початкова сума",
+      "totalRefunded": "Повернена сума",
       "refundAmount": "Сума повернення",
       "cancel": "Скасувати",
-      "confirmRefundButton": "Підтвердити повернення"
+      "confirmRefundButton": "Підтвердити повернення ${amount}"
     },
     "toasts": {
       "refundSuccess": "Оплату повернено",

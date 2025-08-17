@@ -33,6 +33,8 @@ type AppointmentHistoryTypes = {
   };
   paymentRefunded: {
     payment: PaymentHistory;
+    refundedAmount: number;
+    totalRefunded: number;
   };
 };
 

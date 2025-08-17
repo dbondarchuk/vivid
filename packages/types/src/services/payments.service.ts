@@ -28,7 +28,8 @@ export interface IPaymentsService {
   ): Promise<Payment>;
 
   refundPayment(
-    id: string
+    id: string,
+    amount: number
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }

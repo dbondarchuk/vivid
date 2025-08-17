@@ -56,8 +56,13 @@ type ArgsProps = {
   declined: boolean;
   pending: boolean;
   totalAmountPaid?: number;
-  payments?: Payment[];
+  payments?: (Payment & {
+    amountLeft: number;
+    totalRefunded: number;
+  })[];
   files: AssetEntity[];
+  totalAmountLeft?: number;
+  totalRefunded?: number;
   restFields: {
     name: string;
     value: any;
@@ -104,12 +109,38 @@ export const getArguments = <
 > => {
   const { name, email, phone, ...restFields } = appointment?.fields || {};
 
-  const totalAmountPaid = appointment?.payments
-    ?.filter((payment) => payment.status === "paid")
-    .reduce((sum, payment) => sum + payment.amount, 0);
+  const payments = appointment?.payments?.map((payment) => {
+    const totalRefunded =
+      payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0;
+
+    const amountLeft = payment.amount - totalRefunded;
+
+    return {
+      ...payment,
+      amountLeft,
+      totalRefunded,
+    };
+  });
+
+  const totalAmountPaid = payments?.reduce(
+    (sum, payment) => sum + payment.amount,
+    0
+  );
+
+  const totalRefunded = payments?.reduce(
+    (sum, payment) => sum + payment.totalRefunded,
+    0
+  );
+
+  const totalAmountLeft = payments?.reduce(
+    (sum, payment) => sum + payment.amountLeft,
+    0
+  );
 
   const extendedArgs: ArgsProps = {
-    payments: appointment?.payments || [],
+    payments: payments || [],
+    totalAmountLeft,
+    totalRefunded,
     totalAmountPaid,
     restFields: Object.entries(restFields).map(([name, value]) => ({
       name,

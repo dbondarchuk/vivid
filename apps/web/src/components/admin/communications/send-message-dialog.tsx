@@ -190,129 +190,124 @@ export const SendCommunicationDialog: React.FC<
           onClose={() => setIsCloseAlertModalOpen(false)}
           description={t("communications.closeDialogWarning")}
         />
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full relative grid grid-cols-1 gap-2 h-full"
-          >
-            <FormField
-              control={form.control}
-              name="channel"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>{t("communications.channel")}</FormLabel>
-                  <FormControl>
-                    <div className="flex flex-row gap-2">
-                      <Combobox
-                        className="w-full"
-                        values={communicationChannels.map((value) => ({
-                          label: t(`common.labels.channel.${value}`),
-                          value,
-                        }))}
-                        value={field.value}
-                        onItemSelect={(val) => {
-                          field.onChange(val);
-                          field.onBlur();
-                          form.setValue("content", null as any as string);
-                        }}
-                      />
-                      <Dialog
-                        open={isTemplateDialogOpen}
-                        onOpenChange={onOpenChangeTemplateDialog}
-                      >
-                        <DialogTrigger asChild>
-                          <Button variant="primary">
-                            {t("communications.selectTemplate")}
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>
-                              {t("communications.selectTemplate")}
-                            </DialogTitle>
-                            <DialogDescription>
-                              {t("communications.selectExistingTemplate")}
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="flex flex-col gap-2">
-                            <Label>{t("communications.template")}</Label>
-                            <TemplateSelector
-                              type={channel}
-                              value={templateId}
-                              onItemSelect={setTemplateId}
-                              className="w-full"
-                            />
-                            <FormDescription className="text-destructive">
-                              <span className="font-bold">
-                                {t("communications.attention")}!
-                              </span>{" "}
-                              {t("communications.templateReplaceWarning")}
-                            </FormDescription>
-                          </div>
-                          <DialogFooter>
-                            <DialogClose asChild>
-                              <Button variant="secondary">
-                                {t("common.buttons.close")}
-                              </Button>
-                            </DialogClose>
-                            <Button
-                              variant="primary"
-                              disabled={isTemplateLoading || !templateId}
-                              onClick={onTemplateSelect}
-                            >
-                              {isTemplateLoading && <Spinner />}
-                              {t("communications.select")}
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {channel === "email" && (
+        <ScrollArea className={cn("max-h-[55vh]")}>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full relative px-1 grid grid-cols-1 gap-2 h-full"
+            >
               <FormField
                 control={form.control}
-                name="subject"
+                name="channel"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t("communications.emailSubject")}
-                      <InfoTooltip>
-                        <p>{t("communications.emailSubjectDescription")}</p>
-                        <p>{t("communications.usesTemplatedValues")}</p>
-                      </InfoTooltip>
-                    </FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel>{t("communications.channel")}</FormLabel>
                     <FormControl>
-                      <ArgumentsAutocomplete
-                        args={args}
-                        asInput
-                        value={field.value}
-                        onChange={(value) => field.onChange(value)}
-                        disabled={loading}
-                        placeholder={t("communications.subject")}
-                      />
+                      <div className="flex flex-row gap-2">
+                        <Combobox
+                          className="w-full"
+                          values={communicationChannels.map((value) => ({
+                            label: t(`common.labels.channel.${value}`),
+                            value,
+                          }))}
+                          value={field.value}
+                          onItemSelect={(val) => {
+                            field.onChange(val);
+                            field.onBlur();
+                            form.setValue("content", null as any as string);
+                          }}
+                        />
+                        <Dialog
+                          open={isTemplateDialogOpen}
+                          onOpenChange={onOpenChangeTemplateDialog}
+                        >
+                          <DialogTrigger asChild>
+                            <Button variant="primary">
+                              {t("communications.selectTemplate")}
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                {t("communications.selectTemplate")}
+                              </DialogTitle>
+                              <DialogDescription>
+                                {t("communications.selectExistingTemplate")}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="flex flex-col gap-2">
+                              <Label>{t("communications.template")}</Label>
+                              <TemplateSelector
+                                type={channel}
+                                value={templateId}
+                                onItemSelect={setTemplateId}
+                                className="w-full"
+                              />
+                              <FormDescription className="text-destructive">
+                                <span className="font-bold">
+                                  {t("communications.attention")}!
+                                </span>{" "}
+                                {t("communications.templateReplaceWarning")}
+                              </FormDescription>
+                            </div>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="secondary">
+                                  {t("common.buttons.close")}
+                                </Button>
+                              </DialogClose>
+                              <Button
+                                variant="primary"
+                                disabled={isTemplateLoading || !templateId}
+                                onClick={onTemplateSelect}
+                              >
+                                {isTemplateLoading && <Spinner />}
+                                {t("communications.select")}
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            )}
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <>
-                  {channel === "email" && (
-                    <ScrollArea
-                      className={cn(
-                        channel === "email" &&
-                          "h-[55vh] [&>div>div[style]]:!block [&>div>div[style]]:h-full"
-                      )}
-                    >
-                      <FormItem className="w-full flex-grow relative h-full">
+              {channel === "email" && (
+                <FormField
+                  control={form.control}
+                  name="subject"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("communications.emailSubject")}
+                        <InfoTooltip>
+                          <p>{t("communications.emailSubjectDescription")}</p>
+                          <p>{t("communications.usesTemplatedValues")}</p>
+                        </InfoTooltip>
+                      </FormLabel>
+                      <FormControl>
+                        <ArgumentsAutocomplete
+                          args={args}
+                          asInput
+                          value={field.value}
+                          onChange={(value) => field.onChange(value)}
+                          disabled={loading}
+                          placeholder={t("communications.subject")}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <>
+                    {channel === "email" && (
+                      <FormItem className="w-full flex-grow relative h-full  [&>div[style]]:!block [&>div[style]]:h-full">
                         <FormLabel>{t("communications.content")}</FormLabel>
                         <FormControl>
                           <EmailBuilder
@@ -327,16 +322,16 @@ export const SendCommunicationDialog: React.FC<
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    </ScrollArea>
-                  )}
-                  {channel === "text-message" && (
-                    <TextMessageBuilder args={args} field={field} />
-                  )}
-                </>
-              )}
-            />
-          </form>
-        </Form>
+                    )}
+                    {channel === "text-message" && (
+                      <TextMessageBuilder args={args} field={field} />
+                    )}
+                  </>
+                )}
+              />
+            </form>
+          </Form>
+        </ScrollArea>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="secondary">{t("common.buttons.close")}</Button>

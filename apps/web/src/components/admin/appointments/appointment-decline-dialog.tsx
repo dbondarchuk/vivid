@@ -24,6 +24,12 @@ import {
   CardContent,
   Checkbox,
   cn,
+  Input,
+  InputGroup,
+  InputGroupInput,
+  InputGroupInputClasses,
+  InputGroupSuffixClasses,
+  InputSuffix,
   ScrollArea,
   Separator,
   Tooltip,
@@ -31,11 +37,229 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@vivid/ui";
-import { formatAmountString } from "@vivid/utils";
+import { formatAmount, formatAmountString } from "@vivid/utils";
 import { CalendarX2 } from "lucide-react";
 import { DateTime } from "luxon";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AppointmentActionButton } from "./action-button";
+
+const PaymentRefundCard = ({
+  payment,
+  paymentState,
+  setSelected,
+}: {
+  payment: Payment;
+  paymentState?: {
+    amount: number;
+    selected: boolean;
+  };
+  setSelected: (
+    id: string,
+    defaultAmount: number,
+    selected?: boolean,
+    amount?: number
+  ) => void;
+}) => {
+  const t = useI18n();
+  const locale = useLocale();
+
+  const dateTime =
+    typeof payment.paidAt === "string"
+      ? DateTime.fromISO(payment.paidAt)
+      : DateTime.fromJSDate(payment.paidAt);
+
+  const totalRefunded =
+    payment.status === "refunded"
+      ? payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0
+      : 0;
+
+  const isSelected = !!paymentState?.selected;
+
+  const isRefundable =
+    payment.status === "paid" ||
+    (payment.status === "refunded" && totalRefunded < payment.amount);
+
+  const refundableAmount =
+    payment.status === "paid" ? payment.amount : payment.amount - totalRefunded;
+
+  const refundAmount = paymentState?.amount ?? refundableAmount;
+
+  const [value, setValue] = useState(refundAmount.toFixed(2));
+  useEffect(() => {
+    setValue(refundAmount.toFixed(2));
+  }, [refundAmount]);
+
+  const commitValue = useCallback(() => {
+    setSelected(
+      payment._id,
+      refundableAmount,
+      true,
+      Math.min(payment.amount - totalRefunded, formatAmount(parseFloat(value)))
+    );
+  }, [
+    payment._id,
+    refundableAmount,
+    payment.amount,
+    totalRefunded,
+    value,
+    setSelected,
+  ]);
+
+  return (
+    <Card
+      className={cn(
+        "w-full cursor-pointer",
+        paymentState?.selected && "bg-blue-50 dark:bg-sky-600/20"
+      )}
+      key={payment._id}
+      onClick={() => isRefundable && setSelected(payment._id, refundableAmount)}
+    >
+      <CardContent className="p-6 relative">
+        {isRefundable && (
+          <Checkbox
+            id={`payment-${payment._id}`}
+            checked={isSelected}
+            className="absolute top-1 left-1"
+          />
+        )}
+
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            {getPaymentMethodIcon(
+              payment.type,
+              "appName" in payment ? payment.appName : undefined
+            )}
+            <div>
+              <h3 className="font-semibold text-lg">
+                {t(
+                  getPaymentMethod(
+                    payment.type,
+                    "appName" in payment ? payment.appName : undefined
+                  )
+                )}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {t(`admin.${getPaymentDescription(payment.description)}`)}
+              </p>
+            </div>
+          </div>
+          <Badge className={getPaymentStatusColor(payment.status)}>
+            <div className="flex items-center space-x-1">
+              {getPaymentStatusIcon(payment.status)}
+              <span className="capitalize">
+                {t(`admin.common.labels.paymentStatus.${payment.status}`)}
+              </span>
+            </div>
+          </Badge>
+        </div>
+
+        <Separator className="my-4" />
+
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-foreground/80">
+              {t("admin.appointments.declineDialog.amount")}
+            </span>
+            <span className="font-semibold text-lg">
+              ${formatAmountString(payment.amount)}
+            </span>
+          </div>
+          {"externalId" in payment && (
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-foreground/80">
+                {t("admin.appointments.declineDialog.transactionId")}
+              </span>
+              <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                {payment.externalId}
+              </span>
+            </div>
+          )}
+
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-foreground/80">
+              {t("admin.appointments.declineDialog.timePaid")}
+            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
+                    {dateTime.setLocale(locale).toRelative()}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {dateTime.toLocaleString(DateTime.DATETIME_MED, { locale })}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+
+          {payment.status === "refunded" && (
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-foreground/80">
+                {t("admin.appointments.declineDialog.refunded")}
+              </span>
+              <span className="text-foreground/60">
+                ${formatAmountString(totalRefunded)}
+              </span>
+            </div>
+          )}
+          <div
+            className="flex justify-between items-center text-sm"
+            onClick={(e) => isSelected && e.stopPropagation()}
+          >
+            <span className="text-foreground/80">
+              {t(
+                isSelected
+                  ? "admin.appointments.declineDialog.refundAmount"
+                  : "admin.appointments.declineDialog.refundableAmount"
+              )}
+            </span>
+            {isSelected ? (
+              <InputGroup>
+                <InputSuffix
+                  className={InputGroupSuffixClasses({
+                    variant: "prefix",
+                  })}
+                >
+                  $
+                </InputSuffix>
+                <InputGroupInput>
+                  <Input
+                    placeholder={value}
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        commitValue();
+                        e.currentTarget.blur();
+                      }
+                    }}
+                    onBlur={commitValue}
+                    type="number"
+                    min={0}
+                    inputMode="decimal"
+                    step={1}
+                    max={refundableAmount}
+                    className={cn(
+                      InputGroupInputClasses({
+                        variant: "prefix",
+                      }),
+                      "text-right w-24"
+                    )}
+                  />
+                </InputGroupInput>
+              </InputGroup>
+            ) : (
+              <span className="text-foreground/60">
+                ${formatAmountString(refundableAmount)}
+              </span>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export const AppointmentDeclineDialog: React.FC<{
   appointment: Appointment;
@@ -50,25 +274,44 @@ export const AppointmentDeclineDialog: React.FC<{
   const [isLoading, setIsLoading] = React.useState(false);
 
   const onOpenChange = (open: boolean) => {
-    if (!open) onClose?.();
+    if (!open) {
+      setPaymentsIdsSelectionState({});
+      onClose?.();
+    }
   };
 
   const [paymentsIdsSelectionState, setPaymentsIdsSelectionState] =
-    React.useState<Record<string, boolean>>({});
+    React.useState<
+      Record<
+        string,
+        {
+          amount: number;
+          selected: boolean;
+        }
+      >
+    >({});
 
-  React.useEffect(() => {
-    setPaymentsIdsSelectionState({});
-  }, [setPaymentsIdsSelectionState, open]);
+  const selectedPayments = Object.entries(paymentsIdsSelectionState)
+    .filter(([id]) => !!paymentsIdsSelectionState[id]?.selected)
+    .map(([id, { amount }]) => ({ id, amount }));
 
-  const selectedPaymentsIds = Object.keys(paymentsIdsSelectionState).filter(
-    (id) => !!paymentsIdsSelectionState[id]
-  );
-
-  const setSelected = (id: string, selected?: boolean) => {
+  const setSelected = (
+    id: string,
+    defaultAmount: number,
+    selected?: boolean,
+    amount?: number
+  ) => {
     setPaymentsIdsSelectionState((prev) => {
       return {
         ...prev,
-        [id]: typeof selected === "undefined" ? !prev[id] : selected,
+        [id]: {
+          amount:
+            typeof amount === "undefined"
+              ? (prev[id]?.amount ?? defaultAmount)
+              : amount,
+          selected:
+            typeof selected === "undefined" ? !prev[id]?.selected : selected,
+        },
       };
     });
   };
@@ -76,7 +319,14 @@ export const AppointmentDeclineDialog: React.FC<{
   const paymentsAvailableToRefund = React.useMemo(
     () =>
       appointment.payments?.filter(
-        (payment) => payment.type === "online" && payment.status === "paid"
+        (payment) =>
+          payment.type === "online" &&
+          (payment.status === "paid" ||
+            (payment.status === "refunded" &&
+              (payment.refunds?.reduce(
+                (acc, refund) => acc + refund.amount,
+                0
+              ) || 0) < payment.amount))
       ) ?? [],
     [appointment]
   );
@@ -86,9 +336,7 @@ export const AppointmentDeclineDialog: React.FC<{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ids: Object.keys(paymentsIdsSelectionState).filter(
-          (id) => !!paymentsIdsSelectionState[id]
-        ),
+        refunds: selectedPayments,
       }),
     });
 
@@ -109,8 +357,13 @@ export const AppointmentDeclineDialog: React.FC<{
       const payment = appointment.payments?.find((p) => p._id === id);
       if (!payment) continue;
 
+      const totalRefunded =
+        payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0;
+
+      const defaultAmount = payment.amount - totalRefunded;
+
       Object.assign(payment, updated);
-      setSelected(id, false);
+      setSelected(id, defaultAmount, false, defaultAmount);
     }
 
     if (!result.success) {
@@ -179,124 +432,14 @@ export const AppointmentDeclineDialog: React.FC<{
                 </div>
 
                 <div className="flex flex-row flex-wrap gap-2">
-                  {paymentsAvailableToRefund.map((payment) => {
-                    const dateTime =
-                      typeof payment.paidAt === "string"
-                        ? DateTime.fromISO(payment.paidAt)
-                        : DateTime.fromJSDate(payment.paidAt);
-
-                    return (
-                      <Card
-                        className={cn(
-                          "w-full cursor-pointer",
-                          paymentsIdsSelectionState[payment._id] &&
-                            "bg-blue-50 dark:bg-sky-600/20"
-                        )}
-                        key={payment._id}
-                        onClick={() =>
-                          payment.status === "paid" && setSelected(payment._id)
-                        }
-                      >
-                        <CardContent className="p-6 relative">
-                          {payment.status === "paid" && (
-                            <Checkbox
-                              id={`payment-${payment._id}`}
-                              checked={!!paymentsIdsSelectionState[payment._id]}
-                              className="absolute top-1 left-1"
-                            />
-                          )}
-
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center space-x-3">
-                              {getPaymentMethodIcon(
-                                payment.type,
-                                "appName" in payment
-                                  ? payment.appName
-                                  : undefined
-                              )}
-                              <div>
-                                <h3 className="font-semibold text-lg">
-                                  {t(
-                                    getPaymentMethod(
-                                      payment.type,
-                                      "appName" in payment
-                                        ? payment.appName
-                                        : undefined
-                                    )
-                                  )}
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                  {t(
-                                    `admin.${getPaymentDescription(
-                                      payment.description
-                                    )}`
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-                            <Badge
-                              className={getPaymentStatusColor(payment.status)}
-                            >
-                              <div className="flex items-center space-x-1">
-                                {getPaymentStatusIcon(payment.status)}
-                                <span className="capitalize">
-                                  {t(
-                                    `admin.common.labels.paymentStatus.${payment.status}`
-                                  )}
-                                </span>
-                              </div>
-                            </Badge>
-                          </div>
-
-                          <Separator className="my-4" />
-
-                          <div className="space-y-3">
-                            <div className="flex justify-between items-center">
-                              <span className="text-foreground/80">
-                                {t("admin.appointments.declineDialog.amount")}
-                              </span>
-                              <span className="font-semibold text-lg">
-                                ${formatAmountString(payment.amount)}
-                              </span>
-                            </div>
-                            {"externalId" in payment && (
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-foreground/80">
-                                  {t(
-                                    "admin.appointments.declineDialog.transactionId"
-                                  )}
-                                </span>
-                                <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
-                                  {payment.externalId}
-                                </span>
-                              </div>
-                            )}
-
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-foreground/80">
-                                {t("admin.appointments.declineDialog.timePaid")}
-                              </span>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span className="text-sm text-foreground/60 underline decoration-dashed cursor-help">
-                                      {dateTime.setLocale(locale).toRelative()}
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {dateTime.toLocaleString(
-                                      DateTime.DATETIME_MED,
-                                      { locale }
-                                    )}
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                  {paymentsAvailableToRefund.map((payment) => (
+                    <PaymentRefundCard
+                      key={payment._id}
+                      payment={payment}
+                      paymentState={paymentsIdsSelectionState[payment._id]}
+                      setSelected={setSelected}
+                    />
+                  ))}
                 </div>
               </div>
             )}
@@ -311,7 +454,7 @@ export const AppointmentDeclineDialog: React.FC<{
               <AppointmentActionButton
                 _id={appointment._id}
                 status="declined"
-                disabled={!selectedPaymentsIds.length || isLoading}
+                disabled={!selectedPayments.length || isLoading}
                 className="mt-2 sm:mt-0"
                 beforeRequest={() => refundSelected()}
                 setIsLoading={setIsLoading}
@@ -319,11 +462,13 @@ export const AppointmentDeclineDialog: React.FC<{
               >
                 <CalendarX2 size={20} />
                 {t("admin.appointments.declineDialog.declineAndRefund", {
-                  count: selectedPaymentsIds.length,
-                  payment:
-                    selectedPaymentsIds.length !== 1
-                      ? t("admin.appointments.declineDialog.payments")
-                      : t("admin.appointments.declineDialog.payment"),
+                  count: selectedPayments.length,
+                  amount: formatAmountString(
+                    selectedPayments.reduce(
+                      (acc, payment) => acc + payment.amount,
+                      0
+                    )
+                  ),
                 })}
               </AppointmentActionButton>
             </AlertDialogAction>

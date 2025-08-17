@@ -223,7 +223,14 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
           {entry.type === "paymentRefunded" && (
             <>
               <Badge variant="default" className="text-xs">
-                -${formatAmountString(entry.data.payment.amount)}
+                {t("admin.appointments.history.refundedAmount", {
+                  amount: formatAmountString(entry.data.refundedAmount),
+                })}
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {t("admin.appointments.history.totalRefunded", {
+                  amount: formatAmountString(entry.data.totalRefunded),
+                })}
               </Badge>
               <Badge variant="outline" className="text-xs">
                 {entry.data.payment.appName

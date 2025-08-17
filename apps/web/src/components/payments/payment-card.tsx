@@ -14,6 +14,13 @@ import {
   Button,
   Card,
   CardContent,
+  cn,
+  Input,
+  InputGroup,
+  InputGroupInput,
+  InputGroupInputClasses,
+  InputGroupSuffixClasses,
+  InputSuffix,
   Separator,
   Spinner,
   toast,
@@ -21,8 +28,9 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
+  useDebounce,
 } from "@vivid/ui";
-import { formatAmountString } from "@vivid/utils";
+import { formatAmount, formatAmountString } from "@vivid/utils";
 import {
   Check,
   CheckCircle,
@@ -32,7 +40,7 @@ import {
 } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 export type PaymentCardProps = {
   payment: Payment;
@@ -101,17 +109,180 @@ export const getPaymentMethodIcon = (type: PaymentType, appName?: string) => {
   return <Icon className="h-8 w-8" />;
 };
 
+const RefundDialog = ({
+  isRefundInProgress,
+  setIsRefundDialogOpen,
+  isRefundDialogOpen,
+  payment,
+  refund,
+}: {
+  isRefundInProgress: boolean;
+  setIsRefundDialogOpen: (open: boolean) => void;
+  isRefundDialogOpen: boolean;
+  payment: Payment;
+  refund: (amount: number) => void;
+}) => {
+  const t = useI18n();
+  const { type, ...rest } = payment;
+
+  const totalRefunded =
+    payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0;
+
+  const [amount, setAmount] = useState(payment.amount - totalRefunded);
+  const [value, setValue] = useState(amount.toFixed(2));
+
+  useEffect(() => {
+    const amount = payment.amount - totalRefunded;
+    setAmount(amount);
+    setValue(amount.toFixed(2));
+  }, [payment.amount, totalRefunded]);
+
+  const commitValue = useCallback(() => {
+    const newAmount = Math.min(
+      payment.amount - totalRefunded,
+      formatAmount(parseFloat(value))
+    );
+
+    setAmount(newAmount);
+    setValue(newAmount.toFixed(2));
+  }, [value, payment.amount, totalRefunded]);
+
+  const onOpenChange = useCallback(
+    (open: boolean) => {
+      setIsRefundDialogOpen(open);
+      if (open) {
+        const amount = payment.amount - totalRefunded;
+        setAmount(amount);
+        setValue(amount.toFixed(2));
+      }
+    },
+    [setIsRefundDialogOpen, payment.amount, totalRefunded]
+  );
+
+  return (
+    <div className="mt-4">
+      <AlertDialog open={isRefundDialogOpen} onOpenChange={onOpenChange}>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="destructive"
+            className="w-full"
+            disabled={isRefundInProgress}
+          >
+            {isRefundInProgress && <Spinner />} {t("admin.payment.card.refund")}
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("admin.payment.card.confirmRefund")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("admin.payment.card.confirmRefundDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="bg-muted text-foreground font-thin rounded-lg p-4">
+            <h4 className="font-semibold mb-3">
+              {t("admin.payment.card.refundDetails")}
+            </h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="">
+                  {t("admin.payment.card.paymentMethod")}
+                </span>
+                <span className="font-semibold">
+                  {t(
+                    getPaymentMethod(
+                      type,
+                      "appName" in rest ? rest.appName : undefined
+                    )
+                  )}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="">
+                  {t("admin.payment.card.originalAmount")}
+                </span>
+                <span className="font-semibold">
+                  ${formatAmountString(payment.amount)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="">
+                  {t("admin.payment.card.totalRefunded")}
+                </span>
+                <span className="font-semibold">
+                  ${formatAmountString(totalRefunded)}
+                </span>
+              </div>
+              <div className="border-t pt-2 mt-2">
+                <div className="flex justify-between items-center font-semibold">
+                  <span>{t("admin.payment.card.refundAmount")}</span>
+                  <InputGroup>
+                    <InputSuffix
+                      className={InputGroupSuffixClasses({
+                        variant: "prefix",
+                      })}
+                    >
+                      $
+                    </InputSuffix>
+                    <InputGroupInput>
+                      <Input
+                        disabled={isRefundInProgress}
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            commitValue();
+                            e.currentTarget.blur();
+                          }
+                        }}
+                        onBlur={commitValue}
+                        type="number"
+                        min={0}
+                        inputMode="decimal"
+                        step={1}
+                        max={payment.amount - totalRefunded}
+                        className={cn(
+                          InputGroupInputClasses({
+                            variant: "prefix",
+                          }),
+                          "text-right w-24"
+                        )}
+                      />
+                    </InputGroupInput>
+                  </InputGroup>
+                </div>
+              </div>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isRefundInProgress}>
+              {t("admin.payment.card.cancel")}
+            </AlertDialogCancel>
+            <Button
+              variant="destructive"
+              onClick={() => refund(amount)}
+              disabled={
+                isRefundInProgress ||
+                amount <= 0 ||
+                amount > payment.amount - totalRefunded
+              }
+            >
+              {isRefundInProgress && <Spinner />}{" "}
+              {t("admin.payment.card.confirmRefundButton", {
+                amount: formatAmountString(amount),
+              })}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+};
+
 export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
-  const {
-    _id,
-    amount,
-    paidAt,
-    description,
-    status,
-    type,
-    refundedAt,
-    ...rest
-  } = payment;
+  const { _id, amount, paidAt, description, status, type, refunds, ...rest } =
+    payment;
 
   const [isRefundInProgress, setIsRefundInProgress] = React.useState(false);
   const [isRefundDialogOpen, setIsRefundDialogOpen] = React.useState(false);
@@ -125,58 +296,69 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
     typeof paidAt === "string"
       ? DateTime.fromISO(paidAt)
       : DateTime.fromJSDate(paidAt);
-  const refundedDateTime = refundedAt
-    ? typeof refundedAt === "string"
-      ? DateTime.fromISO(refundedAt)
-      : DateTime.fromJSDate(refundedAt)
+  const refundedDateTime = refunds?.[0]?.refundedAt
+    ? typeof refunds[0].refundedAt === "string"
+      ? DateTime.fromISO(refunds[0].refundedAt)
+      : DateTime.fromJSDate(refunds[0].refundedAt)
     : undefined;
 
-  const refund = async () => {
-    try {
-      setIsRefundInProgress(true);
+  const totalRefunded =
+    refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0;
 
-      const response = await fetch(`/admin/api/payments/${_id}/refund`, {
-        method: "POST",
-      });
+  const refund = useCallback(
+    async (amount: number) => {
+      try {
+        if (amount <= 0 || amount > payment.amount - totalRefunded) {
+          throw new Error("Invalid refund amount");
+        }
 
-      if (response.status >= 400) {
-        const text = await response.text();
-        throw new Error(
-          `Refund has failed (status: ${response.status}): ${text}`
-        );
+        setIsRefundInProgress(true);
+
+        const response = await fetch(`/admin/api/payments/${_id}/refund`, {
+          method: "POST",
+          body: JSON.stringify({ amount }),
+        });
+
+        if (response.status >= 400) {
+          const text = await response.text();
+          throw new Error(
+            `Refund has failed (status: ${response.status}): ${text}`
+          );
+        }
+
+        const result = (await response.json()) as
+          | {
+              success: false;
+              error: string;
+            }
+          | {
+              success: true;
+              payment: Payment;
+            };
+
+        if (!result.success) {
+          throw new Error(`Refund has failed: ${result.error}`);
+        }
+
+        toast.success(t("admin.payment.toasts.refundSuccess"), {
+          description: t("admin.payment.toasts.refundSuccessDescription"),
+        });
+
+        Object.assign(payment, result.payment);
+
+        setIsRefundDialogOpen(false);
+        router.refresh();
+      } catch (e) {
+        console.error(e);
+        toast.error(t("admin.payment.toasts.refundError"), {
+          description: t("admin.payment.toasts.refundErrorDescription"),
+        });
+      } finally {
+        setIsRefundInProgress(false);
       }
-
-      const result = (await response.json()) as
-        | {
-            success: false;
-            error: string;
-          }
-        | {
-            success: true;
-            payment: Payment;
-          };
-
-      if (!result.success) {
-        throw new Error(`Refund has failed: ${result.error}`);
-      }
-
-      toast.success(t("admin.payment.toasts.refundSuccess"), {
-        description: t("admin.payment.toasts.refundSuccessDescription"),
-      });
-
-      Object.assign(payment, result.payment);
-
-      setIsRefundDialogOpen(false);
-      router.refresh();
-    } catch (e) {
-      console.error(e);
-      toast.error(t("admin.payment.toasts.refundError"), {
-        description: t("admin.payment.toasts.refundErrorDescription"),
-      });
-    } finally {
-      setIsRefundInProgress(false);
-    }
-  };
+    },
+    [totalRefunded, _id, t]
+  );
 
   return (
     <Card className="w-full max-w-md">
@@ -284,97 +466,41 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
             </div>
           )}
 
-          {status === "paid" && type === "online" && (
-            <div className="mt-4">
-              <AlertDialog
-                open={isRefundDialogOpen}
-                onOpenChange={setIsRefundDialogOpen}
-              >
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    className="w-full"
-                    disabled={isRefundInProgress}
-                  >
-                    {isRefundInProgress && <Spinner />}{" "}
-                    {t("admin.payment.card.refund")}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      {/* <div className="flex flex-row gap-2 items-center">
-                        <div className="w-10 h-10 bg-destructive rounded-full flex items-center justify-center">
-                          <AlertTriangle className="h-5 w-5 text-destructive-foreground" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibol">
-                            Confirm Refund
-                          </h3>
-                          <p className="text-sm text-muted-foreground font-normal">
-                            This action cannot be undone
-                          </p>
-                        </div>
-                      </div> */}
-                      {t("admin.payment.card.confirmRefund")}
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {t("admin.payment.card.confirmRefundDescription")}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <div className="bg-muted text-foreground font-thin rounded-lg p-4">
-                    <h4 className="font-semibold mb-3">
-                      {t("admin.payment.card.refundDetails")}
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="">
-                          {t("admin.payment.card.paymentMethod")}
-                        </span>
-                        <span className="font-semibold">
-                          {t(
-                            getPaymentMethod(
-                              type,
-                              "appName" in rest ? rest.appName : undefined
-                            )
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="">
-                          {t("admin.payment.card.originalAmount")}
-                        </span>
-                        <span className="font-semibold">
-                          ${formatAmountString(payment.amount)}
-                        </span>
-                      </div>
-                      <div className="border-t pt-2 mt-2">
-                        <div className="flex justify-between font-semibold">
-                          <span>{t("admin.payment.card.refundAmount")}</span>
-                          <span>${amount.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isRefundInProgress}>
-                      {t("admin.payment.card.cancel")}
-                    </AlertDialogCancel>
-                    <Button
-                      variant="destructive"
-                      onClick={() => refund()}
-                      disabled={isRefundInProgress}
-                    >
-                      {isRefundInProgress && <Spinner />}{" "}
-                      {t("admin.payment.card.confirmRefundButton")}
-                    </Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
+          {totalRefunded > 0 && (
+            <>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-foreground/80">
+                  {t("admin.payment.card.refunded")}
+                </span>
+                <span className="text-sm text-foreground/60">
+                  ${formatAmountString(totalRefunded)}
+                </span>
+              </div>
+              <Separator className="my-4" />
+              <div className="flex justify-between items-center">
+                <span className="text-foreground/80">
+                  {t("admin.payment.card.amountLeft")}
+                </span>
+                <span className="font-semibold">
+                  ${formatAmountString(amount - totalRefunded)}
+                </span>
+              </div>
+            </>
           )}
 
-          {status === "refunded" && (
+          {(status === "paid" ||
+            (status === "refunded" && totalRefunded < amount)) &&
+            type === "online" && (
+              <RefundDialog
+                isRefundInProgress={isRefundInProgress}
+                setIsRefundDialogOpen={setIsRefundDialogOpen}
+                isRefundDialogOpen={isRefundDialogOpen}
+                payment={payment}
+                refund={refund}
+              />
+            )}
+
+          {status === "refunded" && totalRefunded >= amount && (
             <div className="mt-4">
               <Button variant="destructive" className="w-full" disabled>
                 <Check /> {t("admin.payment.card.refunded")}

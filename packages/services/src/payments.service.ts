@@ -254,7 +254,7 @@ export class PaymentsService implements IPaymentsService {
     const logger = this.loggerFactory("updatePayment");
     logger.debug({ paymentId: id, update }, "Updating payment");
 
-    const { _id: _, refundedAt, ...updateObj } = update as Payment; // Remove fields in case it slips here
+    const { _id: _, ...updateObj } = update as Payment; // Remove fields in case it slips here
     const db = await getDbConnection();
     const payments = db.collection<Payment>(PAYMENTS_COLLECTION_NAME);
 
@@ -262,10 +262,6 @@ export class PaymentsService implements IPaymentsService {
       ...updateObj,
       updatedAt: new Date(),
     };
-
-    if (updateObj.status === "refunded") {
-      $set.refundedAt = new Date();
-    }
 
     await payments.updateOne(
       {
@@ -294,23 +290,24 @@ export class PaymentsService implements IPaymentsService {
   }
 
   public async refundPayment(
-    id: string
+    id: string,
+    amount: number
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }
   > {
     const logger = this.loggerFactory("refundPayment");
-    logger.debug({ paymentId: id }, "Processing payment refund");
+    logger.debug({ paymentId: id, amount }, "Processing payment refund");
 
     const payment = await this.getPayment(id);
     if (!payment) {
-      logger.warn({ paymentId: id }, "Payment not found for refund");
+      logger.warn({ paymentId: id, amount }, "Payment not found for refund");
       return { success: false, error: "payment_not_found", status: 404 };
     }
 
     if (payment.type !== "online") {
       logger.error(
-        { paymentId: id, type: payment.type },
+        { paymentId: id, type: payment.type, amount },
         "Only online payments supported for refund"
       );
 
@@ -321,13 +318,38 @@ export class PaymentsService implements IPaymentsService {
       };
     }
 
-    if (payment.status !== "paid") {
-      logger.error(
-        { paymentId: id, status: payment.status },
-        "Wrong payment status for refund"
-      );
+    // if (payment.status !== "paid") {
+    //   logger.error(
+    //     { paymentId: id, status: payment.status, amount },
+    //     "Wrong payment status for refund"
+    //   );
 
-      return { success: false, error: "wrong_payment_status", status: 405 };
+    //   return { success: false, error: "wrong_payment_status", status: 405 };
+    // }
+
+    const totalRefunded =
+      (payment.refunds || [])?.reduce(
+        (acc, refund) => acc + refund.amount,
+        0
+      ) || 0;
+
+    if (totalRefunded + amount > payment.amount) {
+      logger.error(
+        {
+          paymentId: id,
+          amount,
+          totalRefunded: payment.refunds?.reduce(
+            (acc, refund) => acc + refund.amount,
+            0
+          ),
+        },
+        "Refund amount exceeds payment amount"
+      );
+      return {
+        success: false,
+        error: "refund_amount_exceeds_payment_amount",
+        status: 405,
+      };
     }
 
     try {
@@ -337,21 +359,25 @@ export class PaymentsService implements IPaymentsService {
         );
       if (!service.refundPayment) {
         logger.error(
-          { paymentId: id, appId: payment.appId },
+          { paymentId: id, appId: payment.appId, amount },
           "Refund not supported by payment app"
         );
 
         throw new Error("refund_not_supported");
       }
 
-      const result = await service.refundPayment(app, payment);
+      const result = await service.refundPayment(app, payment, amount);
       if (result.success) {
         const updatedPayment = await this.updatePayment(id, {
           status: "refunded",
+          refunds: [
+            ...(payment.refunds || []),
+            { amount, refundedAt: new Date() },
+          ],
         });
 
         logger.debug(
-          { paymentId: id },
+          { paymentId: id, amount },
           "Successfully processed payment refund"
         );
 
@@ -359,7 +385,7 @@ export class PaymentsService implements IPaymentsService {
       }
 
       logger.error(
-        { paymentId: id, error: result.error },
+        { paymentId: id, error: result.error, amount },
         "Payment app refund failed"
       );
 
@@ -370,7 +396,7 @@ export class PaymentsService implements IPaymentsService {
       };
     } catch (error) {
       logger.error(
-        { paymentId: id, error },
+        { paymentId: id, error, amount },
         "Payment app does not support refund"
       );
 
