@@ -53,14 +53,26 @@ type Props<
 
 type ArgsProps = {
   totalPriceFormatted?: string;
-  payments?: (Omit<Payment, "paidAt" | "refundedAt" | "updatedAt"> & {
+  payments?: (Omit<Payment, "paidAt" | "updatedAt" | "refunds"> & {
     amountFormatted: string;
+    amountLeft: number;
+    amountLeftFormatted: string;
+    totalRefunded: number;
+    totalRefundedFormatted: string;
     paidAt?: string;
-    refundedAt?: string;
     updatedAt?: string;
+    refunds?: {
+      amount: number;
+      amountFormatted: string;
+      refundedAt?: string;
+    }[];
   })[];
   totalAmountPaid?: number;
   totalAmountPaidFormatted?: string;
+  totalAmountLeft?: number;
+  totalAmountLeftFormatted?: string;
+  totalRefunded?: number;
+  totalRefundedFormatted?: string;
   discount?: AppointmentDiscount & {
     discountAmountFormatted: string;
   };
@@ -115,41 +127,73 @@ export const getArguments = <
   const { name, email, phone, ...restFields } = appointment?.fields || {};
   const payments: ArgsProps["payments"] =
     appointment?.payments
-      ?.filter((payment) => payment.status === "paid")
-      .map((payment) => ({
-        ...payment,
-        amountFormatted: formatAmountString(payment.amount),
-        paidAt: payment.paidAt
-          ? DateTime.fromJSDate(payment.paidAt)
-              .setZone(
-                useAppointmentTimezone
-                  ? appointment.timeZone
-                  : config?.general?.timeZone
-              )
-              .toLocaleString(DateTime.DATETIME_FULL, { locale })
-          : undefined,
-        refundedAt: payment.refundedAt
-          ? DateTime.fromJSDate(payment.refundedAt)
-              .setZone(
-                useAppointmentTimezone
-                  ? appointment.timeZone
-                  : config?.general?.timeZone
-              )
-              .toLocaleString(DateTime.DATETIME_FULL, { locale })
-          : undefined,
-        updatedAt: payment.updatedAt
-          ? DateTime.fromJSDate(payment.updatedAt)
-              .setZone(
-                useAppointmentTimezone
-                  ? appointment.timeZone
-                  : config?.general?.timeZone
-              )
-              .toLocaleString(DateTime.DATETIME_FULL, { locale })
-          : undefined,
-      })) || [];
+      // .filter(
+      //     (payment) => payment.status === "paid"
+      //     // allow to show refunded payments if the total refunded amount is less than the original amount
+      //     // ||
+      //     //   (payment.status === "refunded" &&
+      //     //     (payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) ||
+      //     //       0) < payment.amount)
+      //   )
+      ?.map((payment) => {
+        const totalRefunded =
+          payment.refunds?.reduce((acc, refund) => acc + refund.amount, 0) || 0;
+
+        const amountLeft = payment.amount - totalRefunded;
+
+        return {
+          ...payment,
+          amountFormatted: formatAmountString(payment.amount),
+          amountLeft,
+          amountLeftFormatted: formatAmountString(amountLeft),
+          totalRefunded,
+          totalRefundedFormatted: formatAmountString(totalRefunded),
+          paidAt: payment.paidAt
+            ? DateTime.fromJSDate(payment.paidAt)
+                .setZone(
+                  useAppointmentTimezone
+                    ? appointment.timeZone
+                    : config?.general?.timeZone
+                )
+                .toLocaleString(DateTime.DATETIME_FULL, { locale })
+            : undefined,
+          refunds: payment.refunds?.map((refund) => ({
+            amount: refund.amount,
+            amountFormatted: formatAmountString(refund.amount),
+            refundedAt: refund.refundedAt
+              ? DateTime.fromJSDate(refund.refundedAt)
+                  .setZone(
+                    useAppointmentTimezone
+                      ? appointment.timeZone
+                      : config?.general?.timeZone
+                  )
+                  .toLocaleString(DateTime.DATETIME_FULL, { locale })
+              : undefined,
+          })),
+          updatedAt: payment.updatedAt
+            ? DateTime.fromJSDate(payment.updatedAt)
+                .setZone(
+                  useAppointmentTimezone
+                    ? appointment.timeZone
+                    : config?.general?.timeZone
+                )
+                .toLocaleString(DateTime.DATETIME_FULL, { locale })
+            : undefined,
+        };
+      }) || [];
 
   const totalAmountPaid = payments?.reduce(
     (sum, payment) => sum + payment.amount,
+    0
+  );
+
+  const totalRefunded = payments?.reduce(
+    (sum, payment) => sum + payment.totalRefunded,
+    0
+  );
+
+  const totalAmountLeft = payments?.reduce(
+    (sum, payment) => sum + payment.amountLeft,
     0
   );
 
@@ -161,6 +205,14 @@ export const getArguments = <
     totalAmountPaid,
     totalAmountPaidFormatted: totalAmountPaid
       ? formatAmountString(totalAmountPaid)
+      : undefined,
+    totalAmountLeft,
+    totalAmountLeftFormatted: totalAmountLeft
+      ? formatAmountString(totalAmountLeft)
+      : undefined,
+    totalRefunded,
+    totalRefundedFormatted: totalRefunded
+      ? formatAmountString(totalRefunded)
       : undefined,
     discount: appointment?.discount
       ? {

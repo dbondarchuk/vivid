@@ -176,10 +176,11 @@
       "transactionId": "Transaction ID",
       "timePaid": "Time paid",
       "cancel": "Cancel",
-      "declineAndRefund": "Decline and refund {count} {payment}",
+      "declineAndRefund": "Decline and refund {count, plural, =1 {payment} other {# payments}}{amount, plural, =0 {} other { for $#}}",
       "decline": "Decline",
-      "payment": "payment",
-      "payments": "payments",
+      "refunded": "Refunded",
+      "refundableAmount": "Refundable amount",
+      "refundAmount": "Refund amount",
       "refundError": "One or more refund requests have failed."
     },
     "rescheduleDialog": {
@@ -268,7 +269,9 @@
       "oldStatus": "Old status: {oldStatus}",
       "newStatus": "New status: {newStatus}",
       "oldDateTime": "Old date and time: {oldDateTime}",
-      "newDateTime": "New date and time: {newDateTime}"
+      "newDateTime": "New date and time: {newDateTime}",
+      "refundedAmount": "Refunded ${amount}",
+      "totalRefunded": "Total refunded ${amount}"
     },
     "form": {
       "dateTimeRequired": "Date and time are required",
@@ -1518,6 +1521,7 @@
       "transactionId": "Transaction ID",
       "timePaid": "Time paid",
       "timeRefunded": "Time refunded",
+      "amountLeft": "Amount left",
       "refund": "Refund",
       "refunded": "Refunded",
       "confirmRefund": "Confirm Refund",
@@ -1525,9 +1529,10 @@
       "refundDetails": "Refund Details",
       "paymentMethod": "Payment Method",
       "originalAmount": "Original Amount",
+      "totalRefunded": "Total Refunded",
       "refundAmount": "Refund Amount",
       "cancel": "Cancel",
-      "confirmRefundButton": "Confirm refund"
+      "confirmRefundButton": "Confirm refund ${amount}"
     },
     "toasts": {
       "refundSuccess": "Payment was refunded",

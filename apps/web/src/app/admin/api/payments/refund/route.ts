@@ -6,7 +6,15 @@ import pLimit from "p-limit";
 import z from "zod";
 
 const refundPaymentsSchema = z.object({
-  ids: zUniqueArray(z.array(z.string().min(1)), (s) => s),
+  refunds: zUniqueArray(
+    z.array(
+      z.object({
+        id: z.string().min(1),
+        amount: z.number().min(0.01),
+      })
+    ),
+    (s) => s.id
+  ),
 });
 
 export async function POST(request: NextRequest) {
@@ -34,17 +42,20 @@ export async function POST(request: NextRequest) {
   const errors: Record<string, string> = {};
 
   try {
-    const promises = data.ids.map(async (paymentId) => {
+    const promises = data.refunds.map(async ({ id: paymentId, amount }) => {
       try {
         logger.debug(
           {
             paymentId,
+            amount,
           },
           "Refunding payment"
         );
 
-        const result =
-          await ServicesContainer.PaymentsService().refundPayment(paymentId);
+        const result = await ServicesContainer.PaymentsService().refundPayment(
+          paymentId,
+          amount
+        );
 
         if (result.success) {
           successes[paymentId] = result.updatedPayment;
@@ -66,6 +77,12 @@ export async function POST(request: NextRequest) {
                     ? result.updatedPayment.externalId
                     : undefined,
               },
+              refundedAmount: amount,
+              totalRefunded:
+                result.updatedPayment.refunds?.reduce(
+                  (acc, refund) => acc + refund.amount,
+                  0
+                ) || 0,
             },
             appointmentId: result.updatedPayment.appointmentId,
           });
@@ -76,6 +93,7 @@ export async function POST(request: NextRequest) {
         logger.debug(
           {
             paymentId,
+            amount,
             success: result.success,
           },
           `Refunding payment ${paymentId}: ${result.success ? "success" : "error"}`
@@ -84,6 +102,7 @@ export async function POST(request: NextRequest) {
         logger.error(
           {
             paymentId,
+            amount,
             error: e?.message || e?.toString(),
           },
           "Error refunding payment"
@@ -97,7 +116,7 @@ export async function POST(request: NextRequest) {
     await Promise.all(promises.map((p) => limit(() => p)));
     return NextResponse.json(
       {
-        success: Object.keys(successes).length === data.ids.length,
+        success: Object.keys(successes).length === data.refunds.length,
         updatedPayments: successes,
         errors,
       },

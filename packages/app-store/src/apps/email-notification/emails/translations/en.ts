@@ -54,9 +54,18 @@ Price: \${{.}}
 
 {{/totalPriceFormatted}} 
 
+{{#totalAmountLeft}}
+Payments:
+
 {{#payments}}
-Amount paid: \${{amountFormatted}} via {{appName}} on {{paidAt}}
+ 1. {{appName}} on {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
 {{/payments}}
+{{^payments}}
+- None
+{{/payments}}
+
+Total amount currently paid: \${{totalAmountLeftFormatted}}
+{{/totalAmountLeft}}
 `;
 
 export const EnEmailTemplates: EmailTemplates = {
@@ -86,7 +95,7 @@ export const EnEmailTemplates: EmailTemplates = {
       "A new appointment was requested on the website for {{option.name}}."
     ),
   },
-  subject: "Appointment for {{option.name}} by {{fields.name}} at {{dateTime}}",
+  subject: "{{fields.name}} for {{option.name}} at {{dateTime}}",
   eventTitle: "{{fields.name}} for {{option.name}}",
   buttonTexts: {
     viewAppointment: "View Appointment",

@@ -54,9 +54,19 @@ Email: {{ fields.email }}
 
 {{/totalPriceFormatted}} 
 
+{{#totalAmountLeft}}
+
+Платежі:
+
 {{#payments}}
-Сплачено: \${{amountFormatted}} через {{appName}} {{paidAt}}
+ 1. {{appName}} {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
 {{/payments}}
+{{^payments}}
+- Жодного
+{{/payments}}
+
+Зараз сплачено: \${{totalAmountLeftFormatted}}
+{{/totalAmountLeft}}
 `;
 
 export const UkEmailTemplates: EmailTemplates = {
@@ -86,7 +96,7 @@ export const UkEmailTemplates: EmailTemplates = {
       "Новий запис був запитаний на веб-сайті для {{option.name}}."
     ),
   },
-  subject: "Запис на {{option.name}} від {{fields.name}} на {{dateTime}}",
+  subject: "{{fields.name}} на {{option.name}} на {{dateTime}}",
   eventTitle: "{{fields.name}} на {{option.name}}",
   buttonTexts: {
     viewAppointment: "Переглянути запис",

@@ -11,6 +11,7 @@ const proxyHandler = {
 };
 
 const appointmentId = "hjsjrlklfsdnx";
+const customerId = "customer-1234";
 export const demoAppointment: Appointment = {
   _id: appointmentId,
   createdAt: new Date(2024, 10, 20, 9, 0, 0),
@@ -92,9 +93,9 @@ export const demoAppointment: Appointment = {
     proxyHandler
   ) as AppointmentFields,
   fieldsLabels: new Proxy({}, proxyHandler),
-  customerId: "customer-1234",
+  customerId,
   customer: {
-    _id: "customer-1234",
+    _id: customerId,
     name: "John Smith",
     email: "john.smith@example.com",
     phone: "+1 (555)555-5555",
@@ -109,4 +110,40 @@ export const demoAppointment: Appointment = {
     discountAmount: 5.5,
     name: "Demo Discount",
   },
+  payments: [
+    {
+      _id: "payment-1234",
+      amount: 100,
+      status: "paid",
+      paidAt: new Date(),
+      appointmentId,
+      customerId,
+      description: "Demo payment",
+      type: "online",
+      intentId: "intent-1234",
+      appName: "Demo app",
+      appId: "app-1234",
+      updatedAt: new Date(),
+    },
+    {
+      _id: "payment-1235",
+      amount: 100,
+      status: "refunded",
+      paidAt: new Date(),
+      appointmentId,
+      customerId,
+      description: "Demo payment",
+      type: "online",
+      intentId: "intent-1235",
+      appName: "Demo app",
+      appId: "app-1234",
+      updatedAt: new Date(),
+      refunds: [
+        {
+          amount: 100,
+          refundedAt: new Date(),
+        },
+      ],
+    },
+  ],
 };

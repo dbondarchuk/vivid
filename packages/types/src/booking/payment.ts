@@ -42,6 +42,10 @@ export type PaymentUpdateModel = {
   appointmentId: string;
   customerId: string;
   description: string;
+  refunds?: {
+    amount: number;
+    refundedAt: Date;
+  }[];
 } & (
   | {
       type: InPersonPaymentType;
@@ -58,7 +62,6 @@ export type PaymentUpdateModel = {
 export type Payment = Prettify<
   WithDatabaseId<
     PaymentUpdateModel & {
-      refundedAt?: Date;
       updatedAt: Date;
     }
   >

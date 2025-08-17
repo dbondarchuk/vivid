@@ -461,7 +461,8 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
 
   public async refundPayment(
     appData: ConnectedAppData,
-    payment: Payment
+    payment: Payment,
+    amount: number
   ): Promise<{ success: boolean; error?: string }> {
     const logger = this.loggerFactory("refundPayment");
     logger.debug(
@@ -469,6 +470,7 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
         appId: appData._id,
         paymentId: payment._id,
         paymentType: payment.type,
+        amount,
         ...(payment.type === "online" && {
           appName: (payment as any).appName,
           externalId: (payment as any).externalId,
@@ -541,8 +543,10 @@ class PaypalConnectedApp implements IConnectedApp, IPaymentProcessor {
       // const { result, ...refundHttpResponse } =
       //   await paymentsController.refundCapturedPayment({ captureId });
 
-      const { ok: refundOk, error: refundError } =
-        await client.refundPayment(captureId);
+      const { ok: refundOk, error: refundError } = await client.refundPayment(
+        captureId,
+        amount
+      );
 
       if (!refundOk || refundError) {
         logger.error(
