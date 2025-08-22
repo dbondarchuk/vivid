@@ -83,10 +83,10 @@ export const ScheduleSteps: Record<StepType, Step> = {
           const payment = await ctx.fetchPaymentInformation();
           ctx.setPaymentInformation(payment);
 
-          if (payment) {
-            ctx.setStep("payment");
-          } else {
+          if (!payment || payment.intent?.status === "paid") {
             ctx.onSubmit();
+          } else {
+            ctx.setStep("payment");
           }
         } catch (e) {
           console.error(e);

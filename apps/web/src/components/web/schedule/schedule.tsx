@@ -209,7 +209,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
       if (response.status >= 400) {
         throw new Error(
-          `Failed to payment information: ${response.status}: ${await response.text()}`
+          `Failed to get payment information: ${response.status}: ${await response.text()}`
         );
       }
 
