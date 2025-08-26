@@ -26,6 +26,7 @@ import { cn } from "@vivid/ui";
 import { DndContext } from "../../../../types/dndContext";
 import { BlockHandlerPortal } from "./block-handler-portal";
 import { BlockNavPortal } from "./block-nav-portal";
+import { createDynamicCollisionDetector } from "../../../../builder/dnd/collision/dynamic";
 
 type TEditorBlockWrapperProps = {
   children: React.JSX.Element;
@@ -87,7 +88,7 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
 
     // Auto-scroll to block when it becomes selected
     useEffect(() => {
-      if (isSelected) {
+      if (isSelected && !isOverlay) {
         const element = ref?.current ?? blockElement;
         if (element) {
           // Use a small delay to ensure the selection state is fully applied
@@ -102,7 +103,7 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
           return () => clearTimeout(timeoutId);
         }
       }
-    }, [isSelected, ref, blockElement]);
+    }, [isSelected, ref, blockElement, isOverlay]);
 
     const Element = ref?.current ? (
       <>{children}</>
@@ -174,7 +175,7 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
 
     // Auto-scroll to block when it becomes selected
     useEffect(() => {
-      if (isSelected) {
+      if (isSelected && !isOverlay) {
         const element = ref?.current ?? blockElement;
         if (element) {
           // Use a small delay to ensure the selection state is fully applied
@@ -225,6 +226,7 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
       },
       // collisionDetector: closestCenter,
       collisionDetector: directionBiased,
+      // collisionDetector: createDynamicCollisionDetector("dynamic"),
       data: {
         context: {
           parentBlockId,

@@ -118,14 +118,23 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
           return;
         }
 
-        const position =
-          dragOperation.shape?.current.center ?? dragOperation.position.current;
-        const target = event.operation.target;
+        let modifier = 0;
 
-        const isBelowTarget =
-          target?.shape &&
-          Math.round(position.y) > Math.round(target.shape.center.y);
-        const modifier = isBelowTarget ? 1 : 0;
+        const collisionData = manager.collisionObserver.collisions[0]?.data;
+        if (collisionData) {
+          const collisionPosition =
+            collisionData?.direction === "up" ? "before" : "after";
+          modifier = collisionPosition === "after" ? 1 : 0;
+        } else {
+          const position =
+            dragOperation.shape?.current.center ??
+            dragOperation.position.current;
+          const target = event.operation.target;
+          const isBelowTarget =
+            target?.shape &&
+            Math.round(position.y) > Math.round(target.shape.center.y);
+          modifier = isBelowTarget ? 1 : 0;
+        }
 
         const index = targetContext.index + modifier;
 
@@ -143,7 +152,8 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
     );
 
   const onDragEnd: ComponentProps<typeof DragDropProvider>["onDragEnd"] = (
-    event
+    event,
+    manager
   ) => {
     setActiveDragBlock(null);
     setActiveOverBlock(null);
@@ -163,13 +173,22 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = ({
     const target = event.operation.target;
     if (!targetContext || !sourceManager || !target) return;
 
-    const { dragOperation } = sourceManager;
-    const position =
-      dragOperation.shape?.current.center ?? dragOperation.position.current;
-    const isBelowTarget =
-      target.shape &&
-      Math.round(position.y) > Math.round(target.shape.center.y);
-    const modifier = isBelowTarget ? 1 : 0;
+    let modifier = 0;
+
+    const collisionData = manager.collisionObserver.collisions[0]?.data;
+    if (collisionData) {
+      const collisionPosition =
+        collisionData?.direction === "up" ? "before" : "after";
+      modifier = collisionPosition === "after" ? 1 : 0;
+    } else {
+      const { dragOperation } = sourceManager;
+      const position =
+        dragOperation.shape?.current.center ?? dragOperation.position.current;
+      const isBelowTarget =
+        target.shape &&
+        Math.round(position.y) > Math.round(target.shape.center.y);
+      modifier = isBelowTarget ? 1 : 0;
+    }
 
     let index = targetContext.index + modifier;
 
