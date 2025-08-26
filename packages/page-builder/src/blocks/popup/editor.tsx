@@ -1,6 +1,10 @@
 "use client";
 
-import { EditorBlock, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorBlock,
+  useBlockChildrenBlockIds,
+  useCurrentBlock,
+} from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { cn, DialogFooter, DialogHeader } from "@vivid/ui";
 import { X } from "lucide-react";
@@ -19,10 +23,19 @@ const disable = {
 export const PopupEditor = ({ props, style }: PopupProps) => {
   const currentBlock = useCurrentBlock<PopupProps>();
 
-  const title = currentBlock.data?.props?.title?.children?.[0];
-  const subtitle = currentBlock.data?.props?.subtitle?.children?.[0];
-  const content = currentBlock.data?.props?.content?.children?.[0];
-  const buttons = currentBlock.data?.props?.buttons?.children?.[0];
+  const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
+  const subtitleId = useBlockChildrenBlockIds(
+    currentBlock.id,
+    "props.subtitle"
+  )?.[0];
+  const contentId = useBlockChildrenBlockIds(
+    currentBlock.id,
+    "props.content"
+  )?.[0];
+  const buttonsId = useBlockChildrenBlockIds(
+    currentBlock.id,
+    "props.buttons"
+  )?.[0];
   const className = useClassName();
   const base = currentBlock.base;
 
@@ -49,15 +62,49 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
           </div>
           <DialogHeader>
             <div className="text-lg font-semibold leading-none tracking-tight">
-              {title && <EditorBlock block={title} {...disable} />}
+              {!!titleId && (
+                <EditorBlock
+                  blockId={titleId}
+                  {...disable}
+                  index={0}
+                  parentBlockId={currentBlock.id}
+                  parentProperty="title"
+                  allowedTypes="SimpleContainer"
+                />
+              )}
             </div>
             <div className="text-sm text-muted-foreground">
-              {subtitle && <EditorBlock block={subtitle} {...disable} />}
+              {!!subtitleId && (
+                <EditorBlock
+                  blockId={subtitleId}
+                  {...disable}
+                  index={0}
+                  parentBlockId={currentBlock.id}
+                  parentProperty="subtitle"
+                  allowedTypes="SimpleContainer"
+                />
+              )}
             </div>
           </DialogHeader>
-          {content && <EditorBlock block={content} {...disable} />}
+          {!!contentId && (
+            <EditorBlock
+              blockId={contentId}
+              {...disable}
+              index={0}
+              parentBlockId={currentBlock.id}
+              parentProperty="content"
+            />
+          )}
           <DialogFooter>
-            {buttons && <EditorBlock block={buttons} {...disable} />}
+            {!!buttonsId && (
+              <EditorBlock
+                blockId={buttonsId}
+                {...disable}
+                index={0}
+                parentBlockId={currentBlock.id}
+                parentProperty="buttons"
+              />
+            )}
           </DialogFooter>
         </div>
         {/* </Dialog> */}

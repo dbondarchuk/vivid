@@ -1,62 +1,66 @@
 import { EditorChildren, useCurrentBlock } from "@vivid/builder";
-import { cn } from "@vivid/ui";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  cn,
+} from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
 import { CarouselProps, styles } from "./schema";
+import { memo, useCallback } from "react";
+
+const CarouselItemWrapper = memo(
+  ({ children }: { children: React.ReactNode }) => (
+    <CarouselItem className="carousel-item">{children}</CarouselItem>
+  )
+);
+const CarouselItemsWrapper = memo(
+  ({
+    children,
+    className,
+    style,
+    id,
+    ref,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+    style?: React.CSSProperties;
+    id?: string;
+    ref?: React.Ref<HTMLDivElement>;
+  }) => (
+    <Carousel className={className} style={style} id={id} ref={ref}>
+      <CarouselContent className="relative">{children}</CarouselContent>
+      <CarouselPrevious className="left-0" />
+      <CarouselNext className="right-0" />
+    </Carousel>
+  )
+);
 
 export const CarouselEditor = ({ style, props }: CarouselProps) => {
   const currentBlock = useCurrentBlock<CarouselProps>();
 
-  const children = currentBlock.data?.props?.children;
   const className = useClassName();
   const base = currentBlock.base;
 
-  // const childWrapper = useCallback(
-  //   ({ children }: { children: React.ReactNode }) => (
-  //     <CarouselItem className="carousel-item">{children}</CarouselItem>
-  //   ),
-  //   []
-  // );
-
-  // const childrenWrapper = useCallback(
-  //   ({
-  //     children,
-  //     className,
-  //     style,
-  //     id,
-  //     ref,
-  //   }: {
-  //     children: React.ReactNode;
-  //     className?: string;
-  //     style?: React.CSSProperties;
-  //     id?: string;
-  //     ref?: React.Ref<HTMLDivElement>;
-  //   }) => (
-  //     <Carousel className={className} style={style} id={id} ref={ref}>
-  //       <CarouselContent className="relative">{children}</CarouselContent>
-  //       <CarouselPrevious className="left-0" />
-  //       <CarouselNext className="right-0" />
-  //     </Carousel>
-  //   ),
-  //   []
-  // );
-
-  const newStyle: CarouselProps["style"] = {
-    ...currentBlock.data?.style,
-    display: [{ value: "flex" }],
-    flexDirection: [{ value: "row" }],
-    flexWrap: [{ value: "wrap" }],
-  };
+  // const newStyle: CarouselProps["style"] = {
+  //   ...currentBlock.data?.style,
+  //   display: [{ value: "flex" }],
+  //   flexDirection: [{ value: "row" }],
+  //   flexWrap: [{ value: "wrap" }],
+  // };
 
   return (
     <>
       <BlockStyle
         name={className}
         styleDefinitions={styles}
-        styles={newStyle}
+        styles={currentBlock.data?.style}
       />
       <EditorChildren
-        block={currentBlock}
+        blockId={currentBlock.id}
         className={cn(
           "items-center",
           currentBlock.data?.props?.orientation === "vertical" && "flex-col",
@@ -65,9 +69,8 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
         )}
         id={base?.id}
         property="props"
-        children={children || []}
-        // childWrapper={childWrapper}
-        // childrenWrapper={childrenWrapper}
+        childWrapper={CarouselItemWrapper}
+        childrenWrapper={CarouselItemsWrapper}
       />
     </>
   );

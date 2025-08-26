@@ -27,9 +27,16 @@ export const PageLayoutReader = ({
           margin: "0",
           width: "100%",
           minHeight: "100%",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <div className={cn("w-full", !props.fullWidth && "container mx-auto")}>
+        <div
+          className={cn(
+            "w-full flex flex-col",
+            !props.fullWidth && "container mx-auto"
+          )}
+        >
           {children.map((child) => (
             <ReaderBlock
               blocks={props.blocks}

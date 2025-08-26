@@ -67,22 +67,24 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
 
   return (
     <Collapsible open={isStyleOpen} onOpenChange={setIsStyleOpen}>
-      <CollapsibleTrigger className="flex items-center justify-between w-full gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-        <div className="flex items-center gap-2">
-          <ChevronRight
-            className={cn(
-              "size-3 transition-transform",
-              isStyleOpen && "rotate-90"
-            )}
-          />
-          <style.icon className="size-4" />
-          <span className="text-left">{t(style.label)}</span>
-          {/* {!isStyleOpen && styleVariants.length > 0 && (
+      <div className="flex flex-row gap-2 justify-between w-full">
+        <CollapsibleTrigger className="flex items-center justify-between w-full gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <div className="flex items-center gap-2">
+            <ChevronRight
+              className={cn(
+                "size-3 transition-transform",
+                isStyleOpen && "rotate-90"
+              )}
+            />
+            <style.icon className="size-4" />
+            <span className="text-left">{t(style.label)}</span>
+            {/* {!isStyleOpen && styleVariants.length > 0 && (
             <span className="text-xs text-muted-foreground">
               ({formatStyleValue(styleVariants[0].value)})
             </span>
           )} */}
-        </div>
+          </div>
+        </CollapsibleTrigger>
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
@@ -95,7 +97,7 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
             <Plus size={14} />
           </Button>
         </div>
-      </CollapsibleTrigger>
+      </div>
 
       <CollapsibleContent className="space-y-2 pt-2 pl-2">
         {/* Style variants */}

@@ -4,6 +4,7 @@ import { cn, SidebarInset, SidebarProvider } from "@vivid/ui";
 import {
   EditorArgsContext,
   EditorStateProvider,
+  useEditorStateErrors,
   useEditorStateStore,
   useFullScreen,
   useResetDocument,
@@ -47,7 +48,7 @@ const BuilderInternal = ({
   footer,
 }: Omit<BuilderProps<any>, "editorBlocks" | "rootBlock" | "schemas">) => {
   const resetDocument = useResetDocument();
-  const errors = useEditorStateStore((s) => s.errors) || {};
+  const errors = useEditorStateErrors();
   const isValid = Object.keys(errors).length === 0;
   const fullScreen = useFullScreen();
 
@@ -93,6 +94,7 @@ export const Builder = <T extends BaseZodDictionary>({
   return (
     <EditorStateProvider
       blocks={editorBlocks}
+      readerBlocks={rest.readerBlocks}
       rootBlock={rootBlock}
       document={defaultValue}
       schemas={schemas}

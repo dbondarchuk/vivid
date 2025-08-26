@@ -1,14 +1,14 @@
 import { cn } from "@vivid/ui";
+import { forwardRef } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { ImageReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
-export const Image = ({
-  style,
-  props,
-  block,
-}: Pick<ImageReaderProps, "style" | "props" | "block">) => {
+export const Image = forwardRef<
+  HTMLImageElement | HTMLAnchorElement,
+  Pick<ImageReaderProps, "style" | "props" | "block">
+>(({ style, props, block }, ref) => {
   const linkHref = props?.linkHref;
 
   const className = generateClassName();
@@ -19,13 +19,18 @@ export const Image = ({
       src={props?.src ?? ""}
       className={cn(className, base?.className)}
       id={base?.id}
+      ref={!linkHref ? (ref as any) : undefined}
     />
   );
 
   const element = !linkHref ? (
     imageElement
   ) : (
-    <a href={linkHref} style={{ textDecoration: "none", display: "block" }}>
+    <a
+      href={linkHref}
+      style={{ textDecoration: "none", display: "block" }}
+      ref={ref as any}
+    >
       {imageElement}
     </a>
   );
@@ -44,4 +49,4 @@ export const Image = ({
       {element}
     </>
   );
-};
+});

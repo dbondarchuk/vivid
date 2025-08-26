@@ -2,7 +2,7 @@
 
 import { useI18n } from "@vivid/i18n";
 import { cn, ScrollArea, ScrollBar } from "@vivid/ui";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePortalContext } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 import { ViewportSize } from "../../documents/editor/context";
@@ -23,56 +23,53 @@ const VIEWPORT_SIZES = {
   mobileLandscape: { width: 932, height: 430, name: "Mobile Landscape" },
 } as const;
 
-export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
-  children,
-  viewportSize,
-  className,
-}) => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [iframeReady, setIframeReady] = useState(false);
-  const prevViewportSizeRef = useRef<ViewportSize>(viewportSize);
+export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
+  ({ children, viewportSize, className }) => {
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [iframeReady, setIframeReady] = useState(false);
+    const prevViewportSizeRef = useRef<ViewportSize>(viewportSize);
 
-  const currentSize = VIEWPORT_SIZES[viewportSize];
+    const currentSize = VIEWPORT_SIZES[viewportSize];
 
-  const t = useI18n("builder");
+    const t = useI18n("builder");
 
-  //   // Reset iframe ready state only when switching from original to other viewport sizes
-  //   useEffect(() => {
+    //   // Reset iframe ready state only when switching from original to other viewport sizes
+    //   useEffect(() => {
 
-  //   }, [viewportSize]);
+    //   }, [viewportSize]);
 
-  // Copy styles from parent window to iframe only when switching from original to other viewport sizes
-  useEffect(() => {
-    const copyStylesToIframe = () => {
-      if (!iframeRef.current?.contentDocument) return;
+    // Copy styles from parent window to iframe only when switching from original to other viewport sizes
+    useEffect(() => {
+      const copyStylesToIframe = () => {
+        if (!iframeRef.current?.contentDocument) return;
 
-      const iframeDoc = iframeRef.current.contentDocument;
-      const iframeHead = iframeDoc.head;
-      const iframeBody = iframeDoc.body;
+        const iframeDoc = iframeRef.current.contentDocument;
+        const iframeHead = iframeDoc.head;
+        const iframeBody = iframeDoc.body;
 
-      // Clear existing content
-      iframeHead.innerHTML = "";
-      iframeBody.innerHTML = "";
+        // Clear existing content
+        iframeHead.innerHTML = "";
+        iframeBody.innerHTML = "";
 
-      // Copy all stylesheets from parent document
-      const parentStylesheets = document.querySelectorAll(
-        'link[rel="stylesheet"], style'
-      );
-      parentStylesheets.forEach((stylesheet) => {
-        if (stylesheet.tagName === "LINK") {
-          const link = iframeDoc.createElement("link");
-          link.rel = "stylesheet";
-          link.href = (stylesheet as HTMLLinkElement).href;
-          iframeHead.appendChild(link);
-        } else if (stylesheet.tagName === "STYLE") {
-          const style = iframeDoc.createElement("style");
-          style.textContent = (stylesheet as HTMLStyleElement).textContent;
-          iframeHead.appendChild(style);
-        }
-      });
+        // Copy all stylesheets from parent document
+        const parentStylesheets = document.querySelectorAll(
+          'link[rel="stylesheet"], style'
+        );
+        parentStylesheets.forEach((stylesheet) => {
+          if (stylesheet.tagName === "LINK") {
+            const link = iframeDoc.createElement("link");
+            link.rel = "stylesheet";
+            link.href = (stylesheet as HTMLLinkElement).href;
+            iframeHead.appendChild(link);
+          } else if (stylesheet.tagName === "STYLE") {
+            const style = iframeDoc.createElement("style");
+            style.textContent = (stylesheet as HTMLStyleElement).textContent;
+            iframeHead.appendChild(style);
+          }
+        });
 
-      // Copy computed styles for common elements
-      const baseStyles = `
+        // Copy computed styles for common elements
+        const baseStyles = `
         * {
           margin: 0;
           padding: 0;
@@ -98,84 +95,84 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
         }
       `;
 
-      const baseStyleElement = iframeDoc.createElement("style");
-      baseStyleElement.textContent = baseStyles;
-      iframeHead.appendChild(baseStyleElement);
+        const baseStyleElement = iframeDoc.createElement("style");
+        baseStyleElement.textContent = baseStyles;
+        iframeHead.appendChild(baseStyleElement);
 
-      // Copy CSS custom properties from parent
-      const parentComputedStyle = getComputedStyle(document.documentElement);
-      const cssVars = [];
-      for (let i = 0; i < parentComputedStyle.length; i++) {
-        const property = parentComputedStyle[i];
-        if (property.startsWith("--")) {
-          const value = parentComputedStyle.getPropertyValue(property);
-          cssVars.push(`${property}: ${value};`);
+        // Copy CSS custom properties from parent
+        const parentComputedStyle = getComputedStyle(document.documentElement);
+        const cssVars = [];
+        for (let i = 0; i < parentComputedStyle.length; i++) {
+          const property = parentComputedStyle[i];
+          if (property.startsWith("--")) {
+            const value = parentComputedStyle.getPropertyValue(property);
+            cssVars.push(`${property}: ${value};`);
+          }
         }
-      }
 
-      if (cssVars.length > 0) {
-        const cssVarsStyle = iframeDoc.createElement("style");
-        cssVarsStyle.textContent = `
+        if (cssVars.length > 0) {
+          const cssVarsStyle = iframeDoc.createElement("style");
+          cssVarsStyle.textContent = `
           :root {
             ${cssVars.join("\n")}
           }
         `;
-        iframeHead.appendChild(cssVarsStyle);
-      }
+          iframeHead.appendChild(cssVarsStyle);
+        }
 
-      // Copy Tailwind CSS if it exists in parent
-      const tailwindScript = document.querySelector(
-        'script[src*="tailwindcss"]'
-      );
-      if (tailwindScript) {
-        const script = iframeDoc.createElement("script");
-        script.src = (tailwindScript as HTMLScriptElement).src;
-        iframeHead.appendChild(script);
-      }
+        // Copy Tailwind CSS if it exists in parent
+        const tailwindScript = document.querySelector(
+          'script[src*="tailwindcss"]'
+        );
+        if (tailwindScript) {
+          const script = iframeDoc.createElement("script");
+          script.src = (tailwindScript as HTMLScriptElement).src;
+          iframeHead.appendChild(script);
+        }
 
-      // Create root element if it doesn't exist
-      if (!iframeDoc.getElementById("root")) {
-        const root = iframeDoc.createElement("div");
-        root.id = "root";
-        iframeBody.appendChild(root);
-      }
+        // Create root element if it doesn't exist
+        if (!iframeDoc.getElementById("root")) {
+          const root = iframeDoc.createElement("div");
+          root.id = "root";
+          iframeBody.appendChild(root);
+        }
 
-      setIframeReady(true);
-    };
+        setIframeReady(true);
+      };
 
-    const prevSize = prevViewportSizeRef.current;
+      const prevSize = prevViewportSizeRef.current;
 
-    // if (prevSize === "original" && viewportSize !== "original") {
-    //   setIframeReady(false);
-    //   // Use a timeout to ensure iframe is ready
-    //   prevViewportSizeRef.current = viewportSize;
+      // if (prevSize === "original" && viewportSize !== "original") {
+      //   setIframeReady(false);
+      //   // Use a timeout to ensure iframe is ready
+      //   prevViewportSizeRef.current = viewportSize;
 
-    //   const timer = setTimeout(copyStylesToIframe, 100);
-    //   return () => clearTimeout(timer);
-    // } else {
-    //   prevViewportSizeRef.current = viewportSize;
+      //   const timer = setTimeout(copyStylesToIframe, 100);
+      //   return () => clearTimeout(timer);
+      // } else {
+      //   prevViewportSizeRef.current = viewportSize;
+      // }
+
+      setIframeReady(false);
+      // Use a timeout to ensure iframe is ready
+      prevViewportSizeRef.current = viewportSize;
+
+      const timer = setTimeout(copyStylesToIframe, 100);
+      return () => clearTimeout(timer);
+    }, []);
+
+    // If viewport size is "original", render children directly without iframe
+    // if (viewportSize === "original") {
+    //   return <>{children}</>;
     // }
 
-    setIframeReady(false);
-    // Use a timeout to ensure iframe is ready
-    prevViewportSizeRef.current = viewportSize;
-
-    const timer = setTimeout(copyStylesToIframe, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // If viewport size is "original", render children directly without iframe
-  // if (viewportSize === "original") {
-  //   return <>{children}</>;
-  // }
-
-  return (
-    <>
-      <ScrollArea className={cn("viewport-emulator-scroll", className)}>
-        <div className={cn("viewport-emulator")}>
-          {/* Device frame */}
-          <div className="device-frame">
-            {/* <div className="device-header">
+    return (
+      <>
+        <ScrollArea className={cn("viewport-emulator-scroll", className)}>
+          <div className={cn("viewport-emulator")}>
+            {/* Device frame */}
+            <div className="device-frame">
+              {/* <div className="device-header">
               <span className="device-name">
                 {t(`baseBuilder.builderToolbar.view.${viewportSize}`)}
               </span>
@@ -184,42 +181,42 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
               </span>
             </div> */}
 
-            {/* Iframe container */}
-            <div
-              className="iframe-container transition-all duration-300"
-              style={{
-                width: currentSize.width,
-                height: currentSize.height,
-                maxWidth: "100%",
-                maxHeight: "80vh",
-              }}
-            >
-              <iframe
-                ref={iframeRef}
+              {/* Iframe container */}
+              <div
+                className="iframe-container transition-all duration-300"
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  border: "none",
-                  backgroundColor: "#fff",
+                  width: currentSize.width,
+                  height: currentSize.height,
+                  maxWidth: "100%",
+                  maxHeight: "80vh",
                 }}
-                className="transition-all duration-300"
-                title={`${currentSize.name} Viewport`}
-                onLoad={() => {
-                  // Iframe loaded, styles will be copied via the effect
-                }}
-              />
-              {iframeReady && iframeRef.current?.contentDocument?.body && (
-                <IframePortal document={iframeRef.current.contentDocument}>
-                  {children}
-                </IframePortal>
-              )}
+              >
+                <iframe
+                  ref={iframeRef}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                    backgroundColor: "#fff",
+                  }}
+                  className="transition-all duration-300"
+                  title={`${currentSize.name} Viewport`}
+                  onLoad={() => {
+                    // Iframe loaded, styles will be copied via the effect
+                  }}
+                />
+                {iframeReady && iframeRef.current?.contentDocument?.body && (
+                  <IframePortal document={iframeRef.current.contentDocument}>
+                    {children}
+                  </IframePortal>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
 
-      <style>{`
+        <style>{`
         .viewport-emulator-scroll {
           width: 100%;
           overflow-x: auto;
@@ -271,9 +268,10 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = ({
           position: relative;
         }
       `}</style>
-    </>
-  );
-};
+      </>
+    );
+  }
+);
 
 // Component to render React content into iframe
 interface IframePortalProps {

@@ -1,20 +1,10 @@
-import { useCurrentBlock } from "@vivid/builder";
+import { useCurrentBlock, useSetCurrentBlockRef } from "@vivid/builder";
 import { YouTubeVideoReader } from "./reader";
 import { YouTubeVideoProps } from "./schema";
 
 export const YouTubeVideoEditor: React.FC<YouTubeVideoProps> = (props) => {
   const currentBlock = useCurrentBlock<YouTubeVideoProps>();
+  const ref = useSetCurrentBlockRef();
 
-  return (
-    <div
-      className="relative"
-      style={{
-        pointerEvents: "none",
-      }}
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={(e) => e.preventDefault()}
-    >
-      <YouTubeVideoReader {...props} block={currentBlock} />
-    </div>
-  );
+  return <YouTubeVideoReader {...props} block={currentBlock} ref={ref} />;
 };

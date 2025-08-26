@@ -37,7 +37,7 @@ export const deleteBlockInLevel = (block: TEditorBlock, blockId: string) => {
   for (const prop of childrenProps) {
     for (let i = 0; i < prop.children.length; i++) {
       const child = prop.children[i] as TEditorBlock;
-      if (child.id === blockId) {
+      if (child?.id === blockId) {
         toRemove = i;
         break;
       }
@@ -62,7 +62,7 @@ export const insertBlockInLevel = (
   if (!prop) return;
 
   if (!prop.children) prop.children = [];
-  if (index === "last") {
+  if (index === "last" || index >= (prop.children as any[]).length) {
     (prop.children as any[]).push(newBlock);
   } else {
     (prop.children as any[]).splice(index, 0, newBlock);
@@ -79,7 +79,7 @@ export const moveBlockInLevel = (
   for (const prop of childrenProps) {
     for (let i = 0; i < prop.children.length; i++) {
       const child = prop.children[i] as TEditorBlock;
-      if (child.id === blockId) {
+      if (child?.id === blockId) {
         index = i;
         break;
       }
@@ -112,11 +112,11 @@ export const swapBlockInLevel = (
   for (const prop of childrenProps) {
     for (let i = 0; i < prop.children.length; i++) {
       const child = prop.children[i] as TEditorBlock;
-      if (child.id === blockId1) {
+      if (child?.id === blockId1) {
         index1 = i;
       }
 
-      if (child.id === blockId2) {
+      if (child?.id === blockId2) {
         index2 = i;
       }
 
@@ -127,6 +127,40 @@ export const swapBlockInLevel = (
       const value = prop.children[index1];
       prop.children[index1] = prop.children[index2];
       prop.children[index2] = value;
+
+      break;
+    }
+  }
+};
+
+export const moveBlockToIndexInLevel = (
+  block: TEditorBlock,
+  blockId: string,
+  newIndex: number | "last"
+) => {
+  const childrenProps = findChildrenProp(block.data);
+  let index = -1;
+  for (const prop of childrenProps) {
+    for (let i = 0; i < prop.children.length; i++) {
+      const child = prop.children[i] as TEditorBlock;
+      if (child?.id === blockId) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index >= 0 && index !== newIndex) {
+      const value = prop.children[index];
+      const newIndexValue =
+        newIndex === "last" ? prop.children.length : newIndex;
+      const toIndex = newIndexValue > index ? newIndexValue - 1 : newIndexValue;
+      prop.children.splice(index, 1);
+
+      if (toIndex >= (prop.children as any[]).length) {
+        (prop.children as any[]).push(value);
+      } else {
+        (prop.children as any[]).splice(toIndex, 0, value);
+      }
 
       break;
     }

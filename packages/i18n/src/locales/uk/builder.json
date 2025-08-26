@@ -32,10 +32,13 @@
       "noErrors": "Чудово! Проблем не знайденоз!",
       "preview": "Попередній перегляд",
       "fullScreen": "Повноекранний режим",
+      "disableAnimation": "Вимкнути анімацію",
+      "enableAnimation": "Увімкнути анімацію",
       "context": "Переглянути контекст",
       "contextValues": "Значення контексту",
       "contextValuesDescription": "Значення контексту - це значення, які доступні для шаблону. Це значення, які передаються в шаблон при його відображенні.",
       "toggleSidebar": "Перемкнути панель бічної панелі",
+      "toggleBlocksPanel": "Перемкнути панель блоків",
       "copied": "Скопійовано",
       "copyPath": "Скопіювати шлях"
     },
@@ -45,12 +48,26 @@
       "clone": "Клонувати",
       "delete": "Видалити"
     },
-    "searchBlocks": "Пошук блоків..."
+    "blocks": {
+      "search": "Пошук блоків...",
+      "noResultsFound": "Блоки не знайдено за вашим пошуком",
+      "noBlocksAvailable": "Немає доступних блоків",
+      "panel": {
+        "title": "Блоки",
+        "subtitle": "Додати новий блок"
+      },
+      "outline": {
+        "title": "Структура документа",
+        "subtitle": "Ієрархія блоків",
+        "noBlocks": "Документ порожній",
+        "selectBlock": "Клікніть для вибору блоку"
+      }
+    }
   },
   "pageBuilder": {
     "styles": {
       "searchPlaceholder": "Пошук стилів...",
-      "generatedCSS": "Згенерований CSS:",
+      "generatedCSS": "Згенерований CSS",
       "variants": "Варіанти",
       "addVariant": "Додати варіант",
       "addStyle": "Додати стиль",
@@ -75,9 +92,11 @@
         "background": "Фон",
         "colors": "Кольори",
         "effects": "Ефекти",
-        "border": "Рамка"
+        "border": "Рамка",
+        "misc": "Різноманітне"
       },
       "properties": {
+        "customCss": "Власний CSS",
         "color": "Колір тексту",
         "backgroundColor": "Колір фону",
         "backgroundImage": "Фонове зображення",
@@ -424,20 +443,29 @@
         "title": "Стани",
         "shortLabel": "{count, plural, =0 {Стан: звичайний} =1 {1 Стан} few {# Стани} many {# Станів} other {# Станів}}",
         "selectedStates": "Вибрані стани",
+        "add": "Додати",
         "addNewState": "Додати новий стан",
-        "parentLevels": {
-          "self": "Сам",
-          "parent": "Батьківський",
-          "grandparent": "Дід",
-          "greatGrandparent": "Прадід",
-          "fourthParent": "4-й батьківський",
-          "fifthParent": "5-й батьківський",
-          "sixthParent": "6-й батьківський",
-          "seventhParent": "7-й батьківський",
-          "eighthParent": "8-й батьківський",
-          "ninthParent": "9-й батьківський",
-          "tenthParent": "10-й батьківський"
+        "selector": {
+          "title": "Селектор",
+          "block": "Стан блоку",
+          "selector": "Стан селектора",
+          "placeholder": "Введіть CSS селектор (наприклад, .my-class, #my-id)"
         },
+        "self": "Сам",
+        "parent": "Батьківський",
+        "parentLevels": {
+          "1": "Батьківський",
+          "2": "Дід",
+          "3": "Прадід",
+          "4": "4-й батьківський",
+          "5": "5-й батьківський",
+          "6": "6-й батьківський",
+          "7": "7-й батьківський",
+          "8": "8-й батьківський",
+          "9": "9-й батьківський",
+          "10": "10-й батьківський"
+        },
+        "default": "Звичайний",
         "hover": "Наведення",
         "focus": "Фокус",
         "active": "Активний",
@@ -1196,45 +1224,12 @@
         "title": "Заголовок",
         "content": "Контент"
       },
-      "faq": {
-        "displayName": "FAQ",
-        "title": "Заголовок",
-        "description": "Опис",
-        "items": "Елементи FAQ",
-        "question": "Питання",
-        "answer": "Відповідь",
-        "category": "Категорія",
-        "showSearch": "Показати панель пошуку",
-        "showCategories": "Показати фільтр категорій",
-        "allowMultipleOpen": "Дозволити кілька відкритих елементів",
-        "defaultOpenFirst": "Відкрити перший елемент за замовчуванням",
-        "animation": "Тип анімації",
-        "iconPosition": "Позиція іконки",
-        "iconStyle": "Стиль іконки",
-        "animations": {
-          "slide": "Слайд",
-          "fade": "Згасання",
-          "none": "Немає"
-        },
-        "iconPositions": {
-          "left": "Ліворуч",
-          "right": "Праворуч"
-        },
-        "iconStyles": {
-          "plus": "Плюс/Мінус",
-          "arrow": "Стрілка",
-          "chevron": "Шеврон"
-        },
-        "searchPlaceholder": "Пошук питань...",
-        "allCategories": "Всі категорії",
-        "noResults": "Питання не знайдено за вашим пошуком.",
-        "addItem": "Додати елемент",
-        "editItem": "Редагувати",
-        "saveItem": "Зберегти",
-        "cancelEdit": "Скасувати",
-        "deleteItem": "Видалити",
-        "untitledQuestion": "Без назви",
-        "noAnswerProvided": "Відповідь не надано"
+      "customHtml": {
+        "displayName": "Власний HTML",
+        "html": "HTML",
+        "errors": {
+          "required": "HTML є обов'язковим"
+        }
       }
     },
     "shortcuts": {
@@ -1401,6 +1396,13 @@
         "ifConditionIsCorrectFormat": "Якщо умова {condition} правильна, тоді",
         "otherwise": "Інакше",
         "value": "значення"
+      },
+      "customHtml": {
+        "displayName": "Власний HTML",
+        "html": "HTML",
+        "errors": {
+          "required": "HTML є обов'язковим"
+        }
       },
       "container": {
         "displayName": "Контейнер",

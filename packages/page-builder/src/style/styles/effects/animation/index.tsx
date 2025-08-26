@@ -32,7 +32,10 @@ export const animationStyle = {
       parts.push(`animation-delay: ${value.delay}s`);
     }
 
-    return parts.join("; ");
+    // For last ; to join
+    parts.push("");
+
+    return parts.join(";\n");
   },
   component: ({ value, onChange }) => {
     return <AnimationConfiguration value={value} onChange={onChange} />;

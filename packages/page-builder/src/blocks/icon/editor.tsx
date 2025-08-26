@@ -28,6 +28,7 @@ export const IconEditor = ({ props, style }: IconProps) => {
         defaults={defaults}
         isEditor
       />
+
       <IconComponent className={cn(className, base?.className)} />
     </>
   );

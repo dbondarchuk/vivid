@@ -32,3 +32,9 @@ export type NestedOmit<
 export type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
   : never;
+
+export type DeepOmit<T, K extends keyof any> = {
+  [P in keyof T as P extends K ? never : P]: T[P] extends object
+    ? DeepOmit<T[P], K>
+    : T[P];
+};

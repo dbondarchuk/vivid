@@ -71,6 +71,8 @@ export type ScheduleContextProps = {
   fetchPaymentInformation: () => Promise<CollectPayment | null>;
 
   className?: string;
+
+  isEditor?: boolean;
 };
 
 export const ScheduleContext = createContext<ScheduleContextProps>(null as any);

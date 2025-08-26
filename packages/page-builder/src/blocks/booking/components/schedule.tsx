@@ -28,6 +28,7 @@ export type ScheduleProps = {
   showPromoCode?: boolean;
   className?: string;
   id?: string;
+  isEditor?: boolean;
 };
 
 export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
@@ -328,6 +329,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           isFormValid,
           setIsFormValid,
           className: props.className,
+          isEditor: props.isEditor,
         }}
       >
         <StepCard />

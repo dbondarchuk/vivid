@@ -13,6 +13,7 @@ import { EditorBlocks, RootBlock } from "./blocks";
 import { ReaderBlocks } from "./blocks/reader";
 import { EditorBlocksSchema } from "./blocks/schema";
 import { Header } from "./header";
+import { deepMemo } from "@vivid/ui";
 export { Styling } from "./helpers/styling";
 
 type PageBuilderProps = {
@@ -30,55 +31,57 @@ type PageBuilderProps = {
   notAllowedBlocks?: (keyof typeof EditorBlocks)[];
 };
 
-export const PageBuilder = ({
-  args,
-  value,
-  onChange,
-  onIsValidChange,
-  extraTabs,
-  header,
-  footer,
-  notAllowedBlocks,
-}: PageBuilderProps) => {
-  const headerComponent = header ? (
-    <Header
-      name={header.name}
-      logo={header.logo}
-      config={header.config}
-      className="-top-8"
-    />
-  ) : null;
+export const PageBuilder = deepMemo(
+  ({
+    args,
+    value,
+    onChange,
+    onIsValidChange,
+    extraTabs,
+    header,
+    footer,
+    notAllowedBlocks,
+  }: PageBuilderProps) => {
+    const headerComponent = header ? (
+      <Header
+        name={header.name}
+        logo={header.logo}
+        config={header.config}
+        className="-top-8"
+      />
+    ) : null;
 
-  const editorBlocks = useMemo(() => {
-    if (notAllowedBlocks) {
-      return Object.fromEntries(
-        Object.entries(EditorBlocks).filter(
-          ([key]) =>
-            !notAllowedBlocks.includes(key as keyof typeof EditorBlocks)
-        )
-      );
-    }
-    return EditorBlocks;
-  }, [notAllowedBlocks]);
-
-  return (
-    <Builder
-      defaultValue={value}
-      onChange={onChange}
-      onIsValidChange={onIsValidChange}
-      args={args}
-      schemas={EditorBlocksSchema}
-      editorBlocks={
-        editorBlocks as EditorDocumentBlocksDictionary<
-          typeof EditorBlocksSchema
-        >
+    const editorBlocks = useMemo(() => {
+      if (notAllowedBlocks) {
+        return Object.fromEntries(
+          Object.entries(EditorBlocks).filter(
+            ([key]) =>
+              !notAllowedBlocks.includes(key as keyof typeof EditorBlocks)
+          )
+        );
       }
-      readerBlocks={ReaderBlocks}
-      rootBlock={RootBlock}
-      extraTabs={extraTabs}
-      sidebarWidth={28}
-      header={headerComponent}
-      footer={footer}
-    />
-  );
-};
+      return EditorBlocks;
+    }, [notAllowedBlocks]);
+
+    return (
+      <Builder
+        defaultValue={value}
+        onChange={onChange}
+        onIsValidChange={onIsValidChange}
+        args={args}
+        schemas={EditorBlocksSchema}
+        editorBlocks={
+          editorBlocks as EditorDocumentBlocksDictionary<
+            typeof EditorBlocksSchema
+          >
+        }
+        readerBlocks={ReaderBlocks}
+        rootBlock={RootBlock}
+        extraTabs={extraTabs}
+        sidebarWidth={28}
+        header={headerComponent}
+        footer={footer}
+      />
+    );
+  }
+);

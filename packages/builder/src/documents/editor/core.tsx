@@ -1,33 +1,52 @@
-import React from "react";
+import { deepMemo } from "@vivid/ui";
+import React, { memo, useMemo } from "react";
 import { EditorBlockWrapper } from "../blocks/helpers/block-wrappers/editor-block-wrapper";
 import { templateProps } from "../helpers/template-props";
-import { BaseBlockProps, BlockConfiguration } from "../types";
-import { useBlocks, useEditorArgs, useRootBlock } from "./context";
+import { BaseBlockProps } from "../types";
+import {
+  useBlock,
+  useBlocks,
+  useEditorArgs,
+  useRootBlockType,
+} from "./context";
 
 export const templatePropsFromContext = (props: any) => {
   const args = useEditorArgs();
   return templateProps(props, args);
 };
 
-export const CoreEditorBlock: React.FC<
-  BlockConfiguration<any> & {
-    additionalProps?: Record<string, any>;
+export const CoreEditorBlock: React.FC<{
+  blockId: string;
+  additionalProps?: Record<string, any>;
+  index: number;
+  parentBlockId: string;
+  parentProperty: string;
+}> = memo(
+  ({ blockId, additionalProps, index, parentBlockId, parentProperty }) => {
+    const blocks = useBlocks();
+    const rootBlockType = useRootBlockType();
+    const block = useBlock(blockId)!;
+
+    const Component = useMemo(
+      () => blocks[block.type].Editor,
+      [blocks, block.type]
+    );
+
+    if (rootBlockType === block.type) return <Component {...block.data} />;
+
+    // console.log("CoreEditorBlock - rerender", type, data);
+
+    return (
+      <EditorBlockWrapper
+        index={index}
+        parentBlockId={parentBlockId}
+        parentProperty={parentProperty}
+      >
+        <Component {...block.data} base={block.base} {...additionalProps} />
+      </EditorBlockWrapper>
+    );
   }
-> = ({ type, data, additionalProps }) => {
-  const blocks = useBlocks();
-  const rootBlock = useRootBlock();
-
-  const Component = blocks[type].Editor;
-  if (rootBlock.type === type) return <Component {...data} />;
-
-  // console.log("CoreEditorBlock - rerender", type, data);
-
-  return (
-    <EditorBlockWrapper>
-      <Component {...data} {...additionalProps} />
-    </EditorBlockWrapper>
-  );
-};
+);
 
 export type BlockDisableOptions = {
   drag?: boolean;

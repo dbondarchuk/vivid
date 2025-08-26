@@ -1,10 +1,15 @@
 "use client";
 
-import { EditorBlock, useCurrentBlock } from "@vivid/builder";
+import {
+  BaseBlockProps,
+  EditorBlock,
+  useBlockChildrenBlockIds,
+  useCurrentBlockId,
+} from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
-import { HeadingProps } from "./schema";
+import { DefaultHeadingLevel, HeadingProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
 const disable = {
@@ -14,15 +19,20 @@ const disable = {
   disableDrag: true,
 };
 
-export function HeadingEditor({ props, style }: HeadingProps) {
-  const currentBlock = useCurrentBlock<HeadingProps>();
-  const content = currentBlock?.data?.props?.children?.[0];
-  const base = currentBlock.base;
+export function HeadingEditor({
+  props,
+  style,
+  base,
+}: HeadingProps & { base?: BaseBlockProps }) {
+  const level = props?.level ?? DefaultHeadingLevel;
+
+  const currentBlockId = useCurrentBlockId();
+  const contentId = useBlockChildrenBlockIds(currentBlockId, "props")?.[0];
 
   const className = useClassName();
-  const defaults = getDefaults(currentBlock.data || {}, true);
+  const defaults = getDefaults(level);
 
-  const Element = currentBlock?.data?.props?.level || "h2";
+  const Element = level;
 
   return (
     <>
@@ -34,8 +44,16 @@ export function HeadingEditor({ props, style }: HeadingProps) {
         isEditor
       />
       <Element className={cn(className, base?.className)} id={base?.id}>
-        {content && (
-          <EditorBlock key={content?.id} block={content} {...disable} />
+        {!!contentId && (
+          <EditorBlock
+            key={contentId}
+            blockId={contentId}
+            index={0}
+            {...disable}
+            parentBlockId={currentBlockId}
+            parentProperty="content"
+            allowedTypes="SimpleContainer"
+          />
         )}
       </Element>
     </>

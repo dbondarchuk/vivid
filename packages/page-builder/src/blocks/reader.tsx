@@ -22,6 +22,7 @@ import { SimpleText } from "./simple-text/reader";
 import { YouTubeVideoReader } from "./youtube-video/reader";
 import { SimpleContainerReader } from "./simple-container/reader";
 import { Link } from "./link/reader";
+import { CustomHTML } from "./custom-html/reader";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -97,5 +98,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   SimpleContainer: {
     Reader: SimpleContainerReader,
+  },
+  CustomHTML: {
+    Reader: CustomHTML,
   },
 };

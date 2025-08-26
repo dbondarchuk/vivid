@@ -5,8 +5,8 @@ import {
   useCurrentBlockId,
   useDispatchAction,
   useEditorArgs,
+  useIsSelectedBlock,
   usePortalContext,
-  useSelectedBlockId,
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
@@ -27,11 +27,10 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const currentBlockId = useCurrentBlockId();
   const args = useEditorArgs();
   const currentBlock = useCurrentBlock<ButtonProps>();
-  const selectedBlockId = useSelectedBlockId();
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
 
-  const isSelected = selectedBlockId === currentBlockId;
+  const isSelected = useIsSelectedBlock(currentBlockId);
   const value = currentBlock.data?.props?.text;
 
   const sanitizeConf = {

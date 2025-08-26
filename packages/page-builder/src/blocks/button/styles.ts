@@ -55,6 +55,6 @@ export const getDefaults = (
       left: { value: padding.left, unit: "rem" },
       right: { value: padding.right, unit: "rem" },
     },
-    display: "inline-block",
+    display: "block",
   };
 };

@@ -2,7 +2,7 @@ import { BuilderKeys } from "@vivid/i18n";
 import { z } from "zod";
 import { RawNumberInputWithUnitsProps } from "../style-inputs/base/raw-number-input-with-units";
 import { BaseStyleDictionary } from "../style/types";
-import { StateWithParent } from "../style/zod";
+import { StateWithTarget } from "../style/zod";
 
 type ShortcutTargetValue<T extends BaseStyleDictionary, K extends keyof T> =
   | z.infer<T[K]>
@@ -15,7 +15,7 @@ export interface ShortcutTargetStyle<
 > {
   value: ShortcutTargetValue<T, K>;
   breakpoint?: string[] | null;
-  state?: StateWithParent[] | null;
+  state?: StateWithTarget[] | null;
 }
 
 // Support for multiple variants of the same style

@@ -16,6 +16,7 @@ export type AppointmentsProps = {
   showPromoCode?: boolean;
   className?: string;
   id?: string;
+  isEditor?: boolean;
 };
 
 export const Appointments: React.FC<AppointmentsProps> = ({
@@ -27,6 +28,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
   showPromoCode,
   className,
   id,
+  isEditor,
 }) => {
   const fromQuery = useSearchParams().get("option");
   const [option, setOption] = React.useState<string | null>(fromQuery);
@@ -43,7 +45,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
         />
       ) : (
         <Schedule
-          className={className}
+          className={cn(className)}
           appointmentOption={selected}
           successPage={successPage}
           goBack={() => setOption(null)}
@@ -51,6 +53,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
           timeZone={timeZone}
           showPromoCode={showPromoCode}
           id={id}
+          isEditor={isEditor}
         />
       )}
     </>

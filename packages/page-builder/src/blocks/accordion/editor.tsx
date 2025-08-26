@@ -2,24 +2,31 @@
 
 import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import { useClassName } from "../../helpers/use-class-name";
+import { useMemo } from "react";
 import { BlockStyle } from "../../helpers/styling";
+import { useClassName } from "../../helpers/use-class-name";
 import { AccordionProps } from "./schema";
 import { styles } from "./styles";
 
 export const AccordionEditor = ({ props, style }: AccordionProps) => {
   const currentBlock = useCurrentBlock<AccordionProps>();
 
-  const children = currentBlock.data?.props?.children || [];
   const className = useClassName();
   const base = currentBlock.base;
 
+  const animation = currentBlock.data?.props?.animation;
+  const iconPosition = currentBlock.data?.props?.iconPosition;
+  const iconStyle = currentBlock.data?.props?.iconStyle;
+
   // Pass animation properties to accordion items
-  const additionalProps = {
-    animation: currentBlock.data?.props?.animation,
-    iconPosition: currentBlock.data?.props?.iconPosition,
-    iconStyle: currentBlock.data?.props?.iconStyle,
-  };
+  const additionalProps = useMemo(
+    () => ({
+      animation,
+      iconPosition,
+      iconStyle,
+    }),
+    [animation, iconPosition, iconStyle]
+  );
 
   return (
     <>
@@ -29,9 +36,8 @@ export const AccordionEditor = ({ props, style }: AccordionProps) => {
         styles={currentBlock.data?.style}
       />
       <EditorChildren
-        block={currentBlock}
+        blockId={currentBlock.id}
         property="props"
-        children={children}
         className={cn(className, base?.className)}
         id={base?.id}
         allowOnly="AccordionItem"

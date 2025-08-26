@@ -27,13 +27,12 @@ export function getFontSize(
 }
 
 export const getDefaults = (
-  { props, style }: HeadingProps,
-  isEditor?: boolean
+  level: NonNullable<HeadingProps["props"]>["level"]
 ): DefaultCSSProperties<AllStylesSchemas> => ({
   fontWeight: "bold",
   textAlign: "center",
   fontSize: {
-    value: getFontSize(props?.level || DefaultHeadingLevel),
+    value: getFontSize(level || DefaultHeadingLevel),
     unit: "rem",
   },
 });

@@ -23,6 +23,7 @@ export const BookingEditor = ({ props, style }: BookingProps) => {
         className={cn(className, base?.className)}
         id={base?.id}
         successPage={props.confirmationPage}
+        isEditor
       />
     </>
   );

@@ -15,21 +15,9 @@ export default function ColumnsContainerEditor({
       props={restProps}
       style={currentBlock.data?.style}
       columns={[
-        <EditorChildren
-          block={currentBlock}
-          property="props.columns.0"
-          children={columns?.[0]?.children}
-        />,
-        <EditorChildren
-          block={currentBlock}
-          property="props.columns.1"
-          children={columns?.[1]?.children}
-        />,
-        <EditorChildren
-          block={currentBlock}
-          property="props.columns.2"
-          children={columns?.[2]?.children}
-        />,
+        <EditorChildren blockId={currentBlock.id} property="props.columns.0" />,
+        <EditorChildren blockId={currentBlock.id} property="props.columns.1" />,
+        <EditorChildren blockId={currentBlock.id} property="props.columns.2" />,
       ]}
     />
   );

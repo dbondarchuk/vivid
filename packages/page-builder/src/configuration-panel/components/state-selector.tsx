@@ -11,22 +11,28 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Input,
 } from "@vivid/ui";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import {
-  parentLevelKeys,
   State,
   states,
-  StateWithParent,
+  StateWithTarget,
+  StateTarget,
+  isSelfTarget,
+  isParentTarget,
+  isSelectorTarget,
 } from "../../style/zod";
 
 interface StateSelectorProps {
-  states: StateWithParent[];
-  onStatesChange: (states: StateWithParent[]) => void;
+  states: StateWithTarget[];
+  onStatesChange: (states: StateWithTarget[]) => void;
   styleName: string;
   variantIndex: number;
 }
+
+const parentLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 
 export const StateSelector: React.FC<StateSelectorProps> = ({
   states: currentStates,
@@ -37,17 +43,43 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
   const t = useI18n("builder");
   const [isOpen, setIsOpen] = useState(false);
   const [newState, setNewState] = useState<State>("hover");
-  const [newParentLevel, setNewParentLevel] = useState<number>(0);
+  const [newTargetType, setNewTargetType] =
+    useState<StateTarget["type"]>("self");
+  const [newParentLevel, setNewParentLevel] = useState<number>(1);
+  const [newSelector, setNewSelector] = useState<string>("");
+  const [newStateType, setNewStateType] = useState<"block" | "selector">(
+    "block"
+  );
 
   const addNewState = () => {
-    const stateWithParent: StateWithParent = {
+    let stateTarget: StateTarget;
+
+    if (newTargetType === "self") {
+      stateTarget = { type: "self" };
+    } else if (newTargetType === "parent") {
+      stateTarget = { type: "parent", data: { level: newParentLevel } };
+    } else {
+      stateTarget = {
+        type: "selector",
+        data: { selector: newSelector, stateType: newStateType },
+      };
+    }
+
+    const stateWithParent: StateWithTarget = {
       state: newState,
-      parentLevel: newParentLevel,
+      target: stateTarget,
     };
 
     // Check if this combination already exists
     const exists = currentStates?.some(
-      (s) => s.state === newState && s.parentLevel === newParentLevel
+      (s) =>
+        s.state === newState &&
+        s.target?.type === newTargetType &&
+        (newTargetType === "self" ||
+          (isParentTarget(s) && s.target.data?.level === newParentLevel) ||
+          (isSelectorTarget(s) &&
+            s.target.data?.selector === newSelector &&
+            s.target.data?.stateType === newStateType))
     );
 
     if (!exists) {
@@ -57,27 +89,78 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
 
     // Reset form
     setNewState("hover");
-    setNewParentLevel(0);
+    setNewTargetType("self");
+    setNewParentLevel(1);
+    setNewSelector("");
   };
 
-  const removeState = (state: State, parentLevel: number) => {
+  const removeState = (state: State, stateTarget: StateTarget | undefined) => {
+    if (!stateTarget) return;
+
     const newStates =
       currentStates?.filter(
-        (s) => !(s.state === state && s.parentLevel === parentLevel)
+        (s) =>
+          !(
+            s.state === state &&
+            s.target?.type === stateTarget.type &&
+            (stateTarget.type === "self" ||
+              (stateTarget.type === "parent" &&
+                isParentTarget(s) &&
+                s.target?.data?.level === stateTarget.data?.level) ||
+              (stateTarget.type === "selector" &&
+                isSelectorTarget(s) &&
+                s.target?.data?.selector === stateTarget.data?.selector &&
+                s.target?.data?.stateType === stateTarget.data?.stateType))
+          )
       ) || [];
     onStatesChange(newStates);
   };
 
-  const getStateLabel = (stateWithParent: StateWithParent) => {
-    const stateLabel = t(
-      `pageBuilder.styles.states.${stateWithParent.state}` as BuilderKeys
-    );
-    const parentLevel = stateWithParent.parentLevel || 0;
-    const parentKey = parentLevelKeys[parentLevel];
-    const parentLabel = parentKey
-      ? t(`pageBuilder.styles.states.parentLevels.${parentKey}` as BuilderKeys)
-      : "";
-    return parentLevel === 0 ? stateLabel : `${parentLabel}:${stateLabel}`;
+  const getStateLabel = (stateWithParent: StateWithTarget) => {
+    const stateLabel = (
+      stateWithParent.state === "default"
+        ? ""
+        : `:${t(`pageBuilder.styles.states.${stateWithParent.state}` as BuilderKeys)}`
+    ).toLocaleLowerCase();
+
+    if (isSelfTarget(stateWithParent)) {
+      return stateWithParent.state === "default"
+        ? t("pageBuilder.styles.states.default").toLocaleLowerCase()
+        : stateLabel;
+    }
+
+    if (isParentTarget(stateWithParent)) {
+      const level = stateWithParent.target?.data?.level;
+      let parentLabel = "";
+      if (level === 1) parentLabel = "Parent";
+      else if (level === 2) parentLabel = "Grandparent";
+      else if (level === 3) parentLabel = "Great-grandparent";
+      else parentLabel = `${level}th Parent`;
+      return `${parentLabel}${stateLabel}`;
+    }
+
+    if (isSelectorTarget(stateWithParent)) {
+      const selector = stateWithParent.target?.data?.selector;
+      const stateType = stateWithParent.target?.data?.stateType;
+      return stateType === "block"
+        ? `${stateLabel} ${selector}`
+        : `${selector}${stateLabel}`;
+    }
+
+    return stateLabel;
+  };
+
+  const getStateKey = (stateWithParent: StateWithTarget) => {
+    if (isSelfTarget(stateWithParent)) {
+      return `${stateWithParent.state}-self`;
+    }
+    if (isParentTarget(stateWithParent)) {
+      return `${stateWithParent.state}-parent-${stateWithParent.target?.data?.level}`;
+    }
+    if (isSelectorTarget(stateWithParent)) {
+      return `${stateWithParent.state}-selector-${stateWithParent.target?.data?.stateType}-${stateWithParent.target?.data?.selector}`;
+    }
+    return `${stateWithParent.state}-unknown`;
   };
 
   return (
@@ -100,14 +183,11 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
               <div className="flex flex-wrap gap-1">
                 {currentStates.map((stateWithParent, index) => (
                   <Badge
-                    key={`${stateWithParent.state}-${stateWithParent.parentLevel}-${index}`}
+                    key={`${getStateKey(stateWithParent)}-${index}`}
                     variant="secondary"
                     className="text-xs cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
                     onClick={() =>
-                      removeState(
-                        stateWithParent.state,
-                        stateWithParent.parentLevel || 0
-                      )
+                      removeState(stateWithParent.state, stateWithParent.target)
                     }
                   >
                     {getStateLabel(stateWithParent)}
@@ -123,23 +203,83 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
             <Label className="text-xs font-medium">
               {t("pageBuilder.styles.states.addNewState")}
             </Label>
-            <div className="flex flex-row items-center gap-1 w-full">
+            <div className="space-y-2 w-full">
+              {/* Target Type Selection */}
               <Select
-                value={newParentLevel.toString()}
-                onValueChange={(value) => setNewParentLevel(parseInt(value))}
+                value={newTargetType}
+                onValueChange={(value) =>
+                  setNewTargetType(value as "self" | "parent" | "selector")
+                }
               >
                 <SelectTrigger size="xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {parentLevelKeys.map((key, index) => (
-                    <SelectItem key={index} value={index.toString()}>
-                      {t(`pageBuilder.styles.states.parentLevels.${key}`)}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="self">
+                    {t("pageBuilder.styles.states.self")}
+                  </SelectItem>
+                  <SelectItem value="parent">
+                    {t("pageBuilder.styles.states.parent")}
+                  </SelectItem>
+                  <SelectItem value="selector">
+                    {t("pageBuilder.styles.states.selector.title")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
+              {/* Parent Level Selection */}
+              {newTargetType === "parent" && (
+                <Select
+                  value={newParentLevel.toString()}
+                  onValueChange={(value) => setNewParentLevel(parseInt(value))}
+                >
+                  <SelectTrigger size="xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {parentLevels.map((level) => (
+                      <SelectItem key={level} value={level.toString()}>
+                        {t(`pageBuilder.styles.states.parentLevels.${level}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {/* Custom Selector Input */}
+              {newTargetType === "selector" && (
+                <>
+                  <Select
+                    value={newStateType}
+                    onValueChange={(value) =>
+                      setNewStateType(value as "block" | "selector")
+                    }
+                  >
+                    <SelectTrigger size="xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="block">
+                        {t("pageBuilder.styles.states.selector.block")}
+                      </SelectItem>
+                      <SelectItem value="selector">
+                        {t("pageBuilder.styles.states.selector.selector")}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    size={1}
+                    placeholder={t(
+                      "pageBuilder.styles.states.selector.placeholder"
+                    )}
+                    value={newSelector}
+                    onChange={(e) => setNewSelector(e.target.value)}
+                    className="text-xs"
+                  />
+                </>
+              )}
+
+              {/* State Selection */}
               <Select
                 value={newState}
                 onValueChange={(value) => setNewState(value as State)}
@@ -158,14 +298,28 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
 
               <Button
                 size="xs"
+                className="w-full"
                 onClick={addNewState}
-                disabled={currentStates?.some(
-                  (s) =>
-                    s.state === newState && s.parentLevel === newParentLevel
-                )}
+                disabled={
+                  currentStates?.some(
+                    (s) =>
+                      s.state === newState &&
+                      s.target?.type === newTargetType &&
+                      (newTargetType === "self" ||
+                        (newTargetType === "parent" &&
+                          isParentTarget(s) &&
+                          s.target?.data?.level === newParentLevel) ||
+                        (newTargetType === "selector" &&
+                          isSelectorTarget(s) &&
+                          s.target?.data?.selector === newSelector &&
+                          s.target?.data?.stateType === newStateType))
+                  ) ||
+                  (newTargetType === "selector" && !newSelector.trim())
+                }
                 variant="ghost"
               >
-                <Plus className="w-3 h-3" />
+                <Plus className="w-3 h-3" />{" "}
+                {t("pageBuilder.styles.states.add")}
               </Button>
             </div>
           </div>

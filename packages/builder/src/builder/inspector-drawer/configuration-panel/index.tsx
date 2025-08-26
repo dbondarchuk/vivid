@@ -1,8 +1,8 @@
 import { useI18n } from "@vivid/i18n";
 import { useCallback, useMemo } from "react";
 import {
+  useBlocks,
   useDispatchAction,
-  useEditorStateStore,
   useSelectedBlock,
 } from "../../../documents/editor/context";
 import { BaseBlockProps } from "../../../documents/types";
@@ -16,42 +16,47 @@ function renderMessage(val: string) {
   );
 }
 
+export const ConfigurationPanelTab = "block-configuration";
+
 export const ConfigurationPanel: React.FC = () => {
   const selectedBlock = useSelectedBlock();
+
+  const selectedBlockId = selectedBlock?.id;
+  const selectedBlockType = selectedBlock?.type;
+
   const dispatchAction = useDispatchAction();
 
-  const blocks = useEditorStateStore((s) => s.blocks);
+  const blocks = useBlocks();
   const t = useI18n("builder");
 
   const setBlock = useCallback(
     (data: any) => {
-      if (!selectedBlock) return;
+      if (!selectedBlockId) return;
       dispatchAction({
         type: "set-block-data",
-        value: { blockId: selectedBlock.id, data },
+        value: { blockId: selectedBlockId, data },
       });
     },
-    [dispatchAction, selectedBlock?.id]
+    [dispatchAction, selectedBlockId]
   );
 
   const setBase = useCallback(
     (base: BaseBlockProps) => {
-      if (!selectedBlock) return;
+      if (!selectedBlockId) return;
       dispatchAction({
         type: "set-block-base",
-        value: { blockId: selectedBlock.id, base },
+        value: { blockId: selectedBlockId, base },
       });
     },
-    [dispatchAction, selectedBlock?.id]
+    [dispatchAction, selectedBlockId]
   );
 
-  const selectedBlockType = selectedBlock?.type;
   const Panel = useMemo(
     () => (selectedBlockType ? blocks[selectedBlockType].Configuration : null),
     [blocks, selectedBlockType]
   );
 
-  if (!selectedBlock || !Panel) {
+  if (!selectedBlockId || !Panel) {
     return renderMessage(
       t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect")
     );

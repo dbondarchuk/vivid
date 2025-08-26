@@ -25,155 +25,156 @@ export type AccordionItemReaderProps = BaseReaderBlockProps<any> &
     iconStyle?: AccordionProps["props"]["iconStyle"];
   };
 
-export const AccordionItemPropsDefaults = {
-  props: {
-    title: {
-      children: [
-        {
-          type: "SimpleContainer",
-          id: generateId(),
-          data: {
-            style: SimpleContainerPropsDefaults.style,
-            props: {
-              children: [
-                {
-                  type: "SimpleText",
-                  id: generateId(),
-                  data: {
-                    props: {
-                      text: "Accordion Item Title",
+export const AccordionItemPropsDefaults = () =>
+  ({
+    props: {
+      title: {
+        children: [
+          {
+            type: "SimpleContainer",
+            id: generateId(),
+            data: {
+              style: SimpleContainerPropsDefaults.style,
+              props: {
+                children: [
+                  {
+                    type: "SimpleText",
+                    id: generateId(),
+                    data: {
+                      props: {
+                        text: "Accordion Item Title",
+                      },
                     },
                   },
-                },
-              ],
+                ],
+              },
             },
           },
-        },
-      ],
-    },
-    content: {
-      children: [
-        {
-          type: "Container",
-          data: {
-            props: {
-              children: [
-                {
-                  type: "Text",
-                  data: {
-                    props: {
-                      value:
-                        "Accordion item content goes here. You can add any blocks inside this content area.",
+        ],
+      },
+      content: {
+        children: [
+          {
+            type: "Container",
+            data: {
+              props: {
+                children: [
+                  {
+                    type: "Text",
+                    data: {
+                      props: {
+                        value:
+                          "Accordion item content goes here. You can add any blocks inside this content area.",
+                      },
+                      style: {
+                        fontFamily: [
+                          {
+                            value: "PRIMARY",
+                          },
+                        ],
+                        fontSize: [
+                          {
+                            value: { value: 1, unit: "rem" },
+                          },
+                        ],
+                      },
                     },
-                    style: {
-                      fontFamily: [
-                        {
-                          value: "PRIMARY",
-                        },
-                      ],
-                      fontSize: [
-                        {
-                          value: { value: 1, unit: "rem" },
-                        },
-                      ],
-                    },
+                    id: generateId(),
                   },
-                  id: generateId(),
-                },
-              ],
-            },
-            style: {
-              display: [
-                {
-                  value: "flex",
-                },
-              ],
-              flexDirection: [
-                {
-                  value: "column",
-                },
-              ],
-              justifyContent: [
-                {
-                  value: "flex-start",
-                },
-              ],
-              alignItems: [
-                {
-                  value: "flex-start",
-                },
-              ],
+                ],
+              },
+              style: {
+                display: [
+                  {
+                    value: "flex",
+                  },
+                ],
+                flexDirection: [
+                  {
+                    value: "column",
+                  },
+                ],
+                justifyContent: [
+                  {
+                    value: "flex-start",
+                  },
+                ],
+                alignItems: [
+                  {
+                    value: "flex-start",
+                  },
+                ],
+              },
+              id: generateId(),
             },
             id: generateId(),
           },
-          id: generateId(),
+        ],
+      },
+      isOpen: false,
+    },
+    style: {
+      textAlign: [
+        {
+          value: "left",
+        },
+      ],
+      width: [
+        {
+          value: {
+            value: 100,
+            unit: "%",
+          },
+        },
+      ],
+      margin: [
+        {
+          value: {
+            left: {
+              value: 0,
+              unit: "px",
+            },
+            right: {
+              value: 0,
+              unit: "px",
+            },
+            top: {
+              value: 0,
+              unit: "px",
+            },
+            bottom: {
+              value: 0,
+              unit: "px",
+            },
+          },
+        },
+      ],
+      padding: [
+        {
+          value: {
+            left: {
+              value: 0,
+              unit: "px",
+            },
+            right: {
+              value: 0,
+              unit: "px",
+            },
+            top: {
+              value: 0,
+              unit: "px",
+            },
+            bottom: {
+              value: 0,
+              unit: "px",
+            },
+          },
+        },
+      ],
+      display: [
+        {
+          value: "block",
         },
       ],
     },
-    isOpen: false,
-  },
-  style: {
-    textAlign: [
-      {
-        value: "left",
-      },
-    ],
-    width: [
-      {
-        value: {
-          value: 100,
-          unit: "%",
-        },
-      },
-    ],
-    margin: [
-      {
-        value: {
-          left: {
-            value: 0,
-            unit: "px",
-          },
-          right: {
-            value: 0,
-            unit: "px",
-          },
-          top: {
-            value: 0,
-            unit: "px",
-          },
-          bottom: {
-            value: 0,
-            unit: "px",
-          },
-        },
-      },
-    ],
-    padding: [
-      {
-        value: {
-          left: {
-            value: 0,
-            unit: "px",
-          },
-          right: {
-            value: 0,
-            unit: "px",
-          },
-          top: {
-            value: 0,
-            unit: "px",
-          },
-          bottom: {
-            value: 0,
-            unit: "px",
-          },
-        },
-      },
-    ],
-    display: [
-      {
-        value: "block",
-      },
-    ],
-  },
-} as const satisfies AccordionItemProps;
+  }) as const satisfies AccordionItemProps;

@@ -1,6 +1,11 @@
 "use client";
 
-import { EditorBlock, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorBlock,
+  useBlockChildrenBlockIds,
+  useCurrentBlock,
+  useSetCurrentBlockRef,
+} from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
@@ -17,9 +22,15 @@ const disable = {
 export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
   const currentBlock = useCurrentBlock<PageHeroProps>();
 
-  const title = currentBlock.data?.props?.title?.children?.[0];
-  const subtitle = currentBlock.data?.props?.subtitle?.children?.[0];
-  const buttons = currentBlock.data?.props?.buttons?.children?.[0];
+  const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
+  const subtitleId = useBlockChildrenBlockIds(
+    currentBlock.id,
+    "props.subtitle"
+  )?.[0];
+  const buttonsId = useBlockChildrenBlockIds(
+    currentBlock.id,
+    "props.buttons"
+  )?.[0];
   const className = useClassName();
   const base = currentBlock?.base;
 
@@ -27,9 +38,35 @@ export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
       <section className={cn(className, base?.className)} id={base?.id}>
-        {title && <EditorBlock block={title} {...disable} />}
-        {subtitle && <EditorBlock block={subtitle} {...disable} />}
-        {buttons && <EditorBlock block={buttons} {...disable} />}
+        {!!titleId && (
+          <EditorBlock
+            blockId={titleId}
+            {...disable}
+            index={0}
+            parentBlockId={currentBlock.id}
+            parentProperty="title"
+            allowedTypes="Heading"
+          />
+        )}
+        {!!subtitleId && (
+          <EditorBlock
+            blockId={subtitleId}
+            {...disable}
+            index={0}
+            parentBlockId={currentBlock.id}
+            parentProperty="subtitle"
+            allowedTypes="Heading"
+          />
+        )}
+        {!!buttonsId && (
+          <EditorBlock
+            blockId={buttonsId}
+            {...disable}
+            index={0}
+            parentBlockId={currentBlock.id}
+            parentProperty="buttons"
+          />
+        )}
       </section>
     </>
   );

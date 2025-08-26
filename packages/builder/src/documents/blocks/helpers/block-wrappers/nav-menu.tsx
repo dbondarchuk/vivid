@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -8,15 +9,13 @@ import {
   useIsMobile,
 } from "@vivid/ui";
 import { ArrowDown, ArrowUp, Copy, Slash, Trash } from "lucide-react";
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import {
+  useBlockHierarchy,
   useBlocks,
   useDispatchAction,
-  useDocument,
   useSetSelectedBlockId,
 } from "../../../editor/context";
-import { findBlockHierarchy } from "../../../helpers/blocks";
-import { useI18n } from "@vivid/i18n";
 import { BlockDisableOptions } from "../../../editor/core";
 import { usePortalContext } from "./portal-context";
 
@@ -29,32 +28,21 @@ const MAX_DISPLAY_LAST_ELEMENTS = 3;
 const MOBILE_DISPLAY_LAST_ELEMENTS = 2;
 
 export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
-  const document = useDocument();
   const setSelectedBlockId = useSetSelectedBlockId();
   const dispatchAction = useDispatchAction();
   const t = useI18n("builder");
-  const blocks = useBlocks();
 
   const { document: documentElement } = usePortalContext();
   const isMobile = useIsMobile(documentElement?.defaultView);
 
-  // const block = findBlock(document, blockId);
-  // const BlockToolbar = block?.type && blocks[block.type].Toolbar;
-  // const∏ setBlockData = (data: any) => {
-  //   dispatchAction({
-  //     type: "set-block-data",
-  //     value: { blockId: blockId, data },
-  //   });
-  // };
-
-  const hierarchy = React.useMemo(
-    () =>
-      findBlockHierarchy(document, blockId)?.map((block) => ({
-        ...block,
-        displayName: blocks[block.type].displayName,
-      })),
-    [document, blockId]
-  );
+  const blockHierarchy = useBlockHierarchy(blockId) || [];
+  const blocks = useBlocks();
+  const hierarchy = useMemo(() => {
+    return blockHierarchy.map((block) => ({
+      ...block,
+      displayName: blocks[block.type].displayName,
+    }));
+  }, [blockHierarchy, blocks]);
 
   const handleBlockIdClick = useCallback(
     (ev: React.MouseEvent, id: string) => {

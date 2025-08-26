@@ -16,8 +16,6 @@ export const PageLayoutEditor = () => {
   const currentBlock = useCurrentBlock<PageLayoutProps>();
   const setSelectedBlockId = useSetSelectedBlockId();
 
-  const children = currentBlock.data.children || [];
-
   return (
     <Fragment>
       <div
@@ -26,12 +24,12 @@ export const PageLayoutEditor = () => {
         }}
         style={{
           backgroundColor: getColorStyle(
-            currentBlock.data?.backgroundColor ?? COLORS.background.value
+            currentBlock?.data?.backgroundColor ?? COLORS.background.value
           ),
           color: getColorStyle(
-            currentBlock.data?.textColor ?? COLORS.foreground.value
+            currentBlock?.data?.textColor ?? COLORS.foreground.value
           ),
-          fontFamily: getFontFamily(currentBlock.data?.fontFamily),
+          fontFamily: getFontFamily(currentBlock?.data?.fontFamily),
           fontSize: "16px",
           fontWeight: "400",
           letterSpacing: "0.15008px",
@@ -41,15 +39,21 @@ export const PageLayoutEditor = () => {
           minHeight: "100%",
         }}
       >
-        <EditorChildren
-          block={currentBlock}
-          property=""
-          children={children || []}
+        <div
           className={cn(
-            "w-full",
-            !currentBlock.data?.fullWidth && "container mx-auto"
+            "w-full flex flex-col",
+            !currentBlock?.data?.fullWidth && "container mx-auto"
           )}
-        />
+        >
+          <EditorChildren
+            blockId={currentBlock?.id}
+            property=""
+            className={cn(
+              "w-full",
+              !currentBlock?.data?.fullWidth && "container mx-auto"
+            )}
+          />
+        </div>
       </div>
     </Fragment>
   );

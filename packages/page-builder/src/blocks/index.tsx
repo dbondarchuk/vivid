@@ -25,6 +25,7 @@ import {
   ChevronDown,
   Copy,
   Star,
+  Code,
 } from "lucide-react";
 import {
   AccordionConfiguration,
@@ -158,6 +159,12 @@ import { SimpleContainerEditor } from "./simple-container/editor";
 import { SimpleContainerConfiguration } from "./simple-container/configuration";
 import { SimpleContainerToolbar } from "./simple-container/toolbar";
 import { SimpleContainerPropsDefaults } from "./simple-container/schema";
+import {
+  CustomHTMLConfiguration,
+  CustomHTMLEditor,
+  CustomHTMLToolbar,
+} from "./custom-html";
+import { CustomHTMLPropsDefaults } from "./custom-html/schema";
 
 export const EditorBlocks: EditorDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -376,6 +383,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Configuration: SimpleContainerConfiguration,
     Toolbar: SimpleContainerToolbar,
     defaultValue: SimpleContainerPropsDefaults,
+    category: "pageBuilder.blocks.categories.layout",
+  },
+  CustomHTML: {
+    displayName: "pageBuilder.blocks.customHtml.displayName",
+    icon: <Code />,
+    Editor: CustomHTMLEditor,
+    Configuration: CustomHTMLConfiguration,
+    Toolbar: CustomHTMLToolbar,
+    defaultValue: CustomHTMLPropsDefaults,
     category: "pageBuilder.blocks.categories.layout",
   },
 };

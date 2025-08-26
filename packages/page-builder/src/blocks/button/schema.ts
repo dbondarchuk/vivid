@@ -90,9 +90,9 @@ export const ButtonPropsDefaults = () =>
         {
           value: "brightness(1.1)",
           state: [
-            { state: "hover", parentLevel: 0 },
-            { state: "focus", parentLevel: 0 },
-            { state: "active", parentLevel: 0 },
+            { state: "hover", target: { type: "self" } },
+            { state: "focus", target: { type: "self" } },
+            { state: "active", target: { type: "self" } },
           ],
         },
       ],

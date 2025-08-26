@@ -7,7 +7,6 @@ import { ContainerProps, styles } from "./schema";
 export const ContainerEditor = ({ style, props }: ContainerProps) => {
   const currentBlock = useCurrentBlock<ContainerProps>();
 
-  const children = currentBlock.data?.props?.children;
   const className = useClassName();
   const base = currentBlock.base;
   return (
@@ -18,9 +17,8 @@ export const ContainerEditor = ({ style, props }: ContainerProps) => {
         styles={currentBlock.data?.style}
       />
       <EditorChildren
-        block={currentBlock}
+        blockId={currentBlock.id}
         property="props"
-        children={children || []}
         className={cn(className, base?.className)}
         id={base?.id}
       />

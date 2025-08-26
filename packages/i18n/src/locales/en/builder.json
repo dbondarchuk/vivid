@@ -32,10 +32,13 @@
       "noErrors": "Awesome! No issues found!",
       "preview": "Preview",
       "fullScreen": "Full screen",
+      "disableAnimation": "Disable animation",
+      "enableAnimation": "Enable animation",
       "context": "View context",
       "contextValues": "Context values",
       "contextValuesDescription": "The context values are the values that are available to the template. They are the values that are passed to the template when it is rendered.",
       "toggleSidebar": "Toggle sidebar panel",
+      "toggleBlocksPanel": "Toggle blocks panel",
       "copied": "Copied",
       "copyPath": "Copy path"
     },
@@ -45,12 +48,26 @@
       "clone": "Clone",
       "delete": "Delete"
     },
-    "searchBlocks": "Search blocks..."
+    "blocks": {
+      "search": "Search blocks...",
+      "noResultsFound": "No blocks found matching your search",
+      "noBlocksAvailable": "No blocks available",
+      "panel": {
+        "title": "Blocks",
+        "subtitle": "Add a new block"
+      },
+      "outline": {
+        "title": "Document structure",
+        "subtitle": "Block hierarchy",
+        "noBlocks": "Document is empty",
+        "selectBlock": "Click to select a block"
+      }
+    }
   },
   "pageBuilder": {
     "styles": {
       "searchPlaceholder": "Search styles...",
-      "generatedCSS": "Generated CSS:",
+      "generatedCSS": "Generated CSS",
       "variants": "Variants",
       "addVariant": "Add Variant",
       "addStyle": "Add Style",
@@ -76,9 +93,11 @@
         "colors": "Colors",
         "effects": "Effects",
         "border": "Border",
-        "content": "Content"
+        "content": "Content",
+        "misc": "Miscellaneous"
       },
       "properties": {
+        "customCss": "Custom CSS",
         "color": "Text Color",
         "backgroundColor": "Background Color",
         "backgroundImage": "Background Image",
@@ -426,19 +445,28 @@
         "shortLabel": "{count, plural, =0 {State: default} =1 {1 State} other {# States}}",
         "selectedStates": "Selected States",
         "addNewState": "Add New State",
-        "parentLevels": {
-          "self": "Self",
-          "parent": "Parent",
-          "grandparent": "Grandparent",
-          "greatGrandparent": "Great-grandparent",
-          "fourthParent": "4th Parent",
-          "fifthParent": "5th Parent",
-          "sixthParent": "6th Parent",
-          "seventhParent": "7th Parent",
-          "eighthParent": "8th Parent",
-          "ninthParent": "9th Parent",
-          "tenthParent": "10th Parent"
+        "add": "Add",
+        "selector": {
+          "title": "Child selector",
+          "block": "Block state",
+          "selector": "Selector state",
+          "placeholder": "Enter CSS selector (e.g., .my-class, #my-id)"
         },
+        "self": "Self",
+        "parent": "Parent",
+        "parentLevels": {
+          "1": "Parent",
+          "2": "Grandparent",
+          "3": "Great-grandparent",
+          "4": "4th Parent",
+          "5": "5th Parent",
+          "6": "6th Parent",
+          "7": "7th Parent",
+          "8": "8th Parent",
+          "9": "9th Parent",
+          "10": "10th Parent"
+        },
+        "default": "Default",
         "hover": "Hover",
         "focus": "Focus",
         "active": "Active",
@@ -1189,45 +1217,12 @@
         "title": "Title",
         "content": "Content"
       },
-      "faq": {
-        "displayName": "FAQ",
-        "title": "Title",
-        "description": "Description",
-        "items": "FAQ Items",
-        "question": "Question",
-        "answer": "Answer",
-        "category": "Category",
-        "showSearch": "Show Search Bar",
-        "showCategories": "Show Category Filter",
-        "allowMultipleOpen": "Allow Multiple Items Open",
-        "defaultOpenFirst": "Open First Item by Default",
-        "animation": "Animation Type",
-        "iconPosition": "Icon Position",
-        "iconStyle": "Icon Style",
-        "animations": {
-          "slide": "Slide",
-          "fade": "Fade",
-          "none": "None"
-        },
-        "iconPositions": {
-          "left": "Left",
-          "right": "Right"
-        },
-        "iconStyles": {
-          "plus": "Plus/Minus",
-          "arrow": "Arrow",
-          "chevron": "Chevron"
-        },
-        "searchPlaceholder": "Search questions...",
-        "allCategories": "All Categories",
-        "noResults": "No questions found matching your search.",
-        "addItem": "Add Item",
-        "editItem": "Edit",
-        "saveItem": "Save",
-        "cancelEdit": "Cancel",
-        "deleteItem": "Delete",
-        "untitledQuestion": "Untitled Question",
-        "noAnswerProvided": "No answer provided"
+      "customHtml": {
+        "displayName": "Custom HTML",
+        "html": "HTML",
+        "errors": {
+          "required": "HTML is required"
+        }
       }
     },
     "shortcuts": {
@@ -1374,6 +1369,13 @@
         "ifConditionIsCorrectFormat": "If condition {condition} is correct, then",
         "otherwise": "Otherwise",
         "value": "value"
+      },
+      "customHtml": {
+        "displayName": "Custom HTML",
+        "html": "HTML",
+        "errors": {
+          "required": "HTML is required"
+        }
       },
       "container": {
         "displayName": "Container",

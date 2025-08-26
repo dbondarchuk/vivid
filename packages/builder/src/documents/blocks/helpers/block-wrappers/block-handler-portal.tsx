@@ -1,43 +1,64 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
+import {
+  Button,
+  cn,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  useDebounceCallback,
+  useThrottleCallback,
+} from "@vivid/ui";
 import { GripVertical } from "lucide-react";
 import { useI18n } from "@vivid/i18n";
 import { usePortalContext } from "./portal-context";
+import { useBlockIndex, useIsActiveDragBlock } from "../../../editor/context";
 
 interface BlockHandlerPortalProps {
+  blockId: string;
   blockElement: HTMLElement | null;
   isDragging: boolean;
-  attributes: any;
-  listeners: any;
+  handleRef: (el: HTMLElement | null) => void;
 }
 
 export const BlockHandlerPortal: React.FC<BlockHandlerPortalProps> = ({
+  blockId,
   blockElement,
   isDragging,
-  attributes,
-  listeners,
+  handleRef,
 }) => {
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [position, setPosition] = useState({
+    top: 0,
+    left: 0,
+    doNotRender: false,
+  });
   const t = useI18n("ui");
   const { body } = usePortalContext();
+  const isActiveDragBlock = useIsActiveDragBlock(blockId);
+  const index = useBlockIndex(blockId);
+  const updatePosition = useCallback(
+    (doNotRender: boolean = false) => {
+      if (!blockElement) return;
 
-  const updatePosition = React.useCallback(() => {
-    if (!blockElement) return;
-
-    const rect = blockElement.getBoundingClientRect();
-    setPosition({
-      top: rect.top,
-      left: rect.left - 40, // -left-10 equivalent
-    });
-  }, [blockElement]);
+      const rect = blockElement.getBoundingClientRect();
+      setPosition({
+        top: rect.top,
+        left: rect.left - 40, // -left-10 equivalent
+        doNotRender,
+      });
+    },
+    [blockElement]
+  );
 
   useEffect(() => {
     if (!blockElement) return;
 
-    updatePosition();
+    updatePosition(true);
+    const timeout = setTimeout(() => {
+      updatePosition(false);
+    }, 300);
 
     // Update position on scroll and resize
     const handleScroll = () => updatePosition();
@@ -54,6 +75,7 @@ export const BlockHandlerPortal: React.FC<BlockHandlerPortalProps> = ({
     }
 
     return () => {
+      clearTimeout(timeout);
       window.removeEventListener("scroll", handleScroll, true);
       window.removeEventListener("resize", handleResize);
 
@@ -64,9 +86,9 @@ export const BlockHandlerPortal: React.FC<BlockHandlerPortalProps> = ({
         parent = parent.parentElement;
       }
     };
-  }, [blockElement, updatePosition]);
+  }, [blockElement, isActiveDragBlock, index, updatePosition]);
 
-  if (!blockElement) return null;
+  if (!blockElement || isActiveDragBlock) return null;
 
   return createPortal(
     <div
@@ -74,6 +96,7 @@ export const BlockHandlerPortal: React.FC<BlockHandlerPortalProps> = ({
       style={{
         top: position.top,
         left: position.left,
+        display: position.doNotRender ? "none" : undefined,
       }}
       onClick={(ev) => ev.stopPropagation()}
     >
@@ -83,8 +106,7 @@ export const BlockHandlerPortal: React.FC<BlockHandlerPortalProps> = ({
             <Button
               variant="ghost"
               size="icon"
-              {...attributes}
-              {...listeners}
+              ref={handleRef}
               className={cn(
                 "text-secondary-foreground",
                 isDragging ? "cursor-grabbing" : "cursor-grab"

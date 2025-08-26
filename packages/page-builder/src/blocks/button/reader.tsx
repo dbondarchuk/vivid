@@ -30,7 +30,7 @@ export const ButtonReader = ({
       />
       <Button
         id={base?.id}
-        className={cn(className, base?.className)}
+        className={cn("block", className, base?.className)}
         {...restProps}
       >
         {content && <ReaderBlock key={content.id} {...rest} block={content} />}

@@ -5,6 +5,7 @@ import { backgroundStyles } from "./background";
 import { borderStyles } from "./border";
 import { effectsStyles } from "./effects";
 import { layoutStyles } from "./layout";
+import { miscStyles } from "./misc";
 import { spacingStyles } from "./spacing";
 import { typographyStyles } from "./typography";
 
@@ -13,6 +14,7 @@ export * from "./background";
 export * from "./border";
 export * from "./effects";
 export * from "./layout";
+export * from "./misc";
 export * from "./spacing";
 export * from "./typography";
 
@@ -35,6 +37,9 @@ export const allStyles = [
 
   // Typography styles
   ...typographyStyles,
+
+  // Misc styles
+  ...miscStyles,
 ] as const;
 
 export type AllStyles = (typeof allStyles)[number];

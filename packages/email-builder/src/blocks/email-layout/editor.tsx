@@ -14,8 +14,6 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
   const currentBlock = useCurrentBlock<EmailLayoutProps>();
   const setSelectedBlockId = useSetSelectedBlockId();
 
-  const children = currentBlock.data.children || [];
-
   return (
     <Fragment>
       {props.previewText && (
@@ -66,11 +64,7 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
           <tbody>
             <tr style={{ width: "100%" }}>
               <td>
-                <EditorChildren
-                  block={currentBlock}
-                  property=""
-                  children={children || []}
-                />
+                <EditorChildren blockId={currentBlock.id} property="" />
               </td>
             </tr>
           </tbody>

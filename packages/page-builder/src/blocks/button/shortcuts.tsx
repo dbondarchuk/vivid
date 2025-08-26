@@ -28,9 +28,9 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               {
                 value: "brightness(0.9)",
                 state: [
-                  { state: "hover", parentLevel: 0 },
-                  { state: "focus", parentLevel: 0 },
-                  { state: "active", parentLevel: 0 },
+                  { state: "hover", target: { type: "self" } },
+                  { state: "focus", target: { type: "self" } },
+                  { state: "active", target: { type: "self" } },
                 ],
               },
             ],
@@ -49,9 +49,9 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               {
                 value: "brightness(0.9)",
                 state: [
-                  { state: "hover", parentLevel: 0 },
-                  { state: "focus", parentLevel: 0 },
-                  { state: "active", parentLevel: 0 },
+                  { state: "hover", target: { type: "self" } },
+                  { state: "focus", target: { type: "self" } },
+                  { state: "active", target: { type: "self" } },
                 ],
               },
             ],
@@ -70,9 +70,9 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               {
                 value: "brightness(0.9)",
                 state: [
-                  { state: "hover", parentLevel: 0 },
-                  { state: "focus", parentLevel: 0 },
-                  { state: "active", parentLevel: 0 },
+                  { state: "hover", target: { type: "self" } },
+                  { state: "focus", target: { type: "self" } },
+                  { state: "active", target: { type: "self" } },
                 ],
               },
             ],
@@ -91,9 +91,9 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               {
                 value: "brightness(0.9)",
                 state: [
-                  { state: "hover", parentLevel: 0 },
-                  { state: "focus", parentLevel: 0 },
-                  { state: "active", parentLevel: 0 },
+                  { state: "hover", target: { type: "self" } },
+                  { state: "focus", target: { type: "self" } },
+                  { state: "active", target: { type: "self" } },
                 ],
               },
             ],
@@ -112,9 +112,9 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               {
                 value: COLORS["secondary"].value,
                 state: [
-                  { state: "hover", parentLevel: 0 },
-                  { state: "focus", parentLevel: 0 },
-                  { state: "active", parentLevel: 0 },
+                  { state: "hover", target: { type: "self" } },
+                  { state: "focus", target: { type: "self" } },
+                  { state: "active", target: { type: "self" } },
                 ],
               },
             ],
@@ -124,9 +124,9 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               {
                 value: "none",
                 state: [
-                  { state: "hover", parentLevel: 0 },
-                  { state: "focus", parentLevel: 0 },
-                  { state: "active", parentLevel: 0 },
+                  { state: "hover", target: { type: "self" } },
+                  { state: "focus", target: { type: "self" } },
+                  { state: "active", target: { type: "self" } },
                 ],
               },
             ],
@@ -139,9 +139,9 @@ export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
               {
                 value: COLORS["secondary-foreground"].value,
                 state: [
-                  { state: "hover", parentLevel: 0 },
-                  { state: "focus", parentLevel: 0 },
-                  { state: "active", parentLevel: 0 },
+                  { state: "hover", target: { type: "self" } },
+                  { state: "focus", target: { type: "self" } },
+                  { state: "active", target: { type: "self" } },
                 ],
               },
             ],

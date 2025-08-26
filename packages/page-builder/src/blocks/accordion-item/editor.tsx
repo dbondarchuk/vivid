@@ -1,6 +1,11 @@
 "use client";
 
-import { EditorBlock, EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorBlock,
+  EditorChildren,
+  useBlockChildrenBlockIds,
+  useCurrentBlock,
+} from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import {
   ArrowDown,
@@ -34,8 +39,7 @@ export const AccordionItemEditor = ({
 }) => {
   const currentBlock = useCurrentBlock<AccordionItemProps>();
 
-  const title = currentBlock.data?.props?.title?.children?.[0];
-  const content = currentBlock.data?.props?.content?.children || [];
+  const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
   const className = useClassName();
   const base = currentBlock.base;
 
@@ -108,7 +112,16 @@ export const AccordionItemEditor = ({
           onClick={toggleAccordion}
         >
           <div className="flex-1">
-            {title && <EditorBlock block={title} {...disable} />}
+            {!!titleId && (
+              <EditorBlock
+                blockId={titleId}
+                {...disable}
+                index={0}
+                parentBlockId={currentBlock.id}
+                parentProperty="title"
+                allowedTypes="SimpleContainer"
+              />
+            )}
           </div>
           <div
             className={cn(
@@ -122,9 +135,8 @@ export const AccordionItemEditor = ({
         <div className={getAnimationClasses()}>
           <div className="p-4">
             <EditorChildren
-              block={currentBlock}
+              blockId={currentBlock.id}
               property="props.content"
-              children={content}
             />
           </div>
         </div>

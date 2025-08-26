@@ -7,7 +7,6 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
 
   const currentBlock = useCurrentBlock<ForeachContainerProps>();
 
-  const children = currentBlock.data?.props?.children;
   const value = currentBlock.data?.props?.value || "";
 
   return (
@@ -21,11 +20,7 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
           }
         )}
       </div>
-      <EditorChildren
-        block={currentBlock}
-        property="props"
-        children={children || []}
-      />
+      <EditorChildren blockId={currentBlock.id} property="props" />
     </div>
   );
 };

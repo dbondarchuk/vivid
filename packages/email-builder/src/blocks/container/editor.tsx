@@ -5,15 +5,9 @@ import { ContainerProps } from "./schema";
 export const ContainerEditor = ({ style, props }: ContainerProps) => {
   const currentBlock = useCurrentBlock<ContainerProps>();
 
-  const children = currentBlock.data?.props?.children;
-
   return (
     <BaseContainer style={currentBlock.data?.style}>
-      <EditorChildren
-        block={currentBlock}
-        property="props"
-        children={children || []}
-      />
+      <EditorChildren blockId={currentBlock.id} property="props" />
     </BaseContainer>
   );
 };

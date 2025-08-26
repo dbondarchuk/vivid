@@ -2,14 +2,16 @@ import { useI18n } from "@vivid/i18n";
 import {
   useBlocks,
   useDispatchAction,
-  useDocument,
+  useRootBlock,
 } from "../../documents/editor/context";
 import { BaseSidebarPanel } from "./configuration-panel/input-panels/helpers/base-sidebar-panel";
 import { BaseBlockProps } from "../../documents/types";
 import { useCallback, useMemo } from "react";
 
+export const StylesPanelTab = "styles";
+
 export const StylesPanel: React.FC = () => {
-  const block = useDocument();
+  const block = useRootBlock();
   const dispatchAction = useDispatchAction();
   const t = useI18n("builder");
 

@@ -4,12 +4,11 @@ import React from "react";
 import { Appointments } from "./appointments";
 import { Skeleton } from "@vivid/ui";
 import { BookingProps } from "./types";
+import { demoBookingOptionsResponse } from "./fixtures";
 
-export const Booking: React.FC<BookingProps & { id?: string }> = ({
-  successPage,
-  className,
-  id,
-}) => {
+export const Booking: React.FC<
+  BookingProps & { id?: string; isEditor?: boolean }
+> = ({ successPage, className, id, isEditor }) => {
   const [response, setResponse] =
     React.useState<GetAppointmentOptionsResponse | null>(null);
 
@@ -20,8 +19,12 @@ export const Booking: React.FC<BookingProps & { id?: string }> = ({
       setResponse(data);
     };
 
-    loadOptions();
-  }, []);
+    if (!isEditor) {
+      loadOptions();
+    } else {
+      setResponse(demoBookingOptionsResponse);
+    }
+  }, [isEditor]);
 
   if (!response)
     return (
@@ -41,6 +44,7 @@ export const Booking: React.FC<BookingProps & { id?: string }> = ({
       fieldsSchema={response.fieldsSchema}
       timeZone={response.timeZone}
       showPromoCode={response.showPromoCode}
+      isEditor={isEditor}
     />
   );
 };

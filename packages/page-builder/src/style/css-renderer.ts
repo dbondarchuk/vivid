@@ -3,15 +3,15 @@ import { backgroundColorOpacityStyle } from "./styles";
 import { BaseStyleDictionary, StyleDictionary } from "./types";
 import {
   Breakpoint,
-  StateWithParent,
-  generateParentStateSelector,
+  StateWithTarget,
+  generateStateTargetSelector,
 } from "./zod";
 
 export type StyleValue<T extends BaseStyleDictionary> = {
   [styleName in keyof T]?:
     | Array<{
         breakpoint?: Breakpoint[] | null;
-        state?: StateWithParent[] | null;
+        state?: StateWithTarget[] | null;
         value: z.infer<T[styleName]>;
       }>
     | undefined
@@ -74,8 +74,8 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
           if (!variantsByBreakpoint[breakpointKey]) {
             variantsByBreakpoint[breakpointKey] = {};
           }
-          variant.state!.forEach((stateWithParent: StateWithParent) => {
-            const stateSelector = generateParentStateSelector(stateWithParent);
+          variant.state!.forEach((stateWithParent: StateWithTarget) => {
+            const stateSelector = generateStateTargetSelector(stateWithParent);
             if (!variantsByBreakpoint[breakpointKey][stateSelector]) {
               variantsByBreakpoint[breakpointKey][stateSelector] = [];
             }
@@ -96,8 +96,8 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
         }
         // If only states are provided (no breakpoints)
         else if (variant.state?.length) {
-          variant.state.forEach((stateWithParent: StateWithParent) => {
-            const stateSelector = generateParentStateSelector(stateWithParent);
+          variant.state.forEach((stateWithParent: StateWithTarget) => {
+            const stateSelector = generateStateTargetSelector(stateWithParent);
             if (!variantsByState[stateSelector]) {
               variantsByState[stateSelector] = [];
             }

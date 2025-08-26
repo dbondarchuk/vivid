@@ -1,75 +1,142 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo } from "react";
+import {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 
-import { findBlock } from "../helpers/blocks";
-import { useDocument, useSetBlockDisableOptions } from "./context";
-import { CoreEditorBlock, TEditorBlock } from "./core";
-import { deepMemo } from "@vivid/ui";
+import { useBlock, useBlockType, useSetBlockDisableOptions } from "./context";
+import { BlockDisableOptions, CoreEditorBlock, TEditorBlock } from "./core";
 
 const EditorBlockContext = createContext<{
   blockId: string;
   isOverlay: boolean;
+  allowedTypes?: string[];
+  ref?: React.RefObject<HTMLElement | null>;
+  disable: BlockDisableOptions;
 }>({
   blockId: "",
   isOverlay: false,
+  allowedTypes: [],
+  ref: undefined,
+  disable: {
+    move: false,
+    delete: false,
+    clone: false,
+    drag: false,
+  },
 });
 
 export const useCurrentBlockId = () => useContext(EditorBlockContext).blockId;
-export const useCurrentBlockIsOverlay = () =>
+export const useIsCurrentBlockOverlay = () =>
   useContext(EditorBlockContext).isOverlay;
+export const useCurrentBlockAllowedTypes = () =>
+  useContext(EditorBlockContext).allowedTypes;
+export const useCurrentBlockDisableOptions = () =>
+  useContext(EditorBlockContext).disable;
+
+export const useCurrentBlockRef = () => {
+  return useContext(EditorBlockContext).ref;
+};
+
+export const useSetCurrentBlockRef = () => {
+  const setRef = useContext(EditorBlockContext).ref;
+
+  return useCallback(
+    (element: HTMLElement | null) => {
+      if (setRef) {
+        setRef.current = element;
+      }
+    },
+    [setRef]
+  );
+};
 
 export const useCurrentBlock = <T,>() => {
-  const currentBlockId = useCurrentBlockId();
-  const document = useDocument();
-  // const context = useContext(EditorBlockContext);
-  const block = useMemo(
-    () => findBlock(document, currentBlockId)! as TEditorBlock<T>,
-    [document, currentBlockId]
-  );
+  // return useBlock(useCurrentBlockId()) as TEditorBlock<T>;
 
-  return block;
+  const currentBlockId = useCurrentBlockId();
+  const block = useBlock(currentBlockId);
+
+  return block! as TEditorBlock<T>;
 };
 
 type EditorBlockProps = {
-  block: TEditorBlock;
+  blockId: string;
   isOverlay?: boolean;
   disableMove?: boolean;
   disableDelete?: boolean;
   disableClone?: boolean;
   disableDrag?: boolean;
   additionalProps?: Record<string, any>;
+  index: number;
+  parentBlockId: string;
+  parentProperty: string;
+  allowedTypes?: string | string[];
 };
 
-export const EditorBlock = deepMemo(
+export const EditorBlock = memo(
   ({
-    block,
+    blockId,
     isOverlay,
     disableMove,
     disableDelete,
     disableClone,
     disableDrag,
     additionalProps,
+    index,
+    parentBlockId,
+    parentProperty,
+    allowedTypes,
   }: EditorBlockProps) => {
     const setBlockDisableOptions = useSetBlockDisableOptions();
+    const isCurrentOverlay = useIsCurrentBlockOverlay();
+    const ref = useRef<HTMLElement>(null);
 
-    useEffect(() => {
-      setBlockDisableOptions(block.id, {
+    const isOvelayBlock = !!isOverlay || !!isCurrentOverlay;
+
+    const disable = useMemo(() => {
+      return {
         move: disableMove,
         delete: disableDelete,
         clone: disableClone,
         drag: disableDrag,
-      });
-    }, [block.id, disableMove, disableDelete, disableClone, disableDrag]);
+      };
+    }, [disableMove, disableDelete, disableClone, disableDrag]);
+
+    useEffect(() => {
+      if (isOvelayBlock) return;
+      setBlockDisableOptions(blockId, disable);
+    }, [blockId, disable, setBlockDisableOptions]);
 
     const blockContext = useMemo(
-      () => ({ blockId: block.id, isOverlay: !!isOverlay }),
-      [block.id, isOverlay]
+      () => ({
+        blockId,
+        isOverlay: isOvelayBlock,
+        disable,
+        allowedTypes:
+          Array.isArray(allowedTypes) || typeof allowedTypes === "undefined"
+            ? allowedTypes
+            : [allowedTypes],
+        ref,
+      }),
+      [blockId, isOvelayBlock, allowedTypes, disable]
     );
 
     return (
       <EditorBlockContext.Provider value={blockContext}>
-        <CoreEditorBlock {...block} additionalProps={additionalProps} />
+        <CoreEditorBlock
+          blockId={blockId}
+          additionalProps={additionalProps}
+          index={index}
+          parentBlockId={parentBlockId}
+          parentProperty={parentProperty}
+        />
       </EditorBlockContext.Provider>
     );
   }

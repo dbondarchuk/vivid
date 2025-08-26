@@ -77,7 +77,7 @@ export const ScheduleSteps: Record<StepType, Step> = {
     },
     next: {
       show: () => true,
-      isEnabled: ({ isFormValid }) => isFormValid,
+      isEnabled: ({ isFormValid, isEditor }) => isFormValid && !isEditor,
       action: async (ctx) => {
         try {
           const payment = await ctx.fetchPaymentInformation();

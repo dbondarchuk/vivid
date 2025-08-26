@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useCallback } from "react";
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
@@ -22,9 +22,12 @@ interface YouTubeVideoInnerProps {
   privacy?: boolean | null;
 }
 
-export const YouTubeVideoReader: React.FC<
-  Pick<YouTubeVideoReaderProps, "props" | "style" | "block">
-> = ({ props, style, block }) => {
+export const YouTubeVideoReader = forwardRef<
+  HTMLDivElement,
+  Pick<YouTubeVideoReaderProps, "props" | "style" | "block"> & {
+    disableEvents?: boolean;
+  }
+>(({ props, style, block, disableEvents = false }, ref) => {
   const base = block?.base;
   const className = generateClassName();
   const safeProps: YouTubeVideoInnerProps = {
@@ -64,8 +67,26 @@ export const YouTubeVideoReader: React.FC<
 
   const src = `${baseUrl}${videoId}?${params.toString()}`;
 
+  const eventListener = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (disableEvents) {
+        e.preventDefault();
+      }
+    },
+    [disableEvents]
+  );
+
   const iframeElement = (
-    <div className={cn(className, base?.className)} id={base?.id}>
+    <div
+      className={cn("relative", className, base?.className)}
+      id={base?.id}
+      ref={ref}
+      style={{
+        pointerEvents: disableEvents ? "none" : undefined,
+      }}
+      onMouseDown={eventListener}
+      onClick={eventListener}
+    >
       <iframe
         src={src}
         title="YouTube video"
@@ -97,4 +118,4 @@ export const YouTubeVideoReader: React.FC<
       {iframeElement}
     </>
   );
-};
+});

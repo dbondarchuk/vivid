@@ -1,6 +1,11 @@
 "use client";
 
-import { EditorBlock, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorBlock,
+  useBlockChildrenBlockIds,
+  useCurrentBlock,
+  useSetCurrentBlockRef,
+} from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
@@ -16,7 +21,8 @@ const disable = {
 
 export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const currentBlock = useCurrentBlock<ButtonProps>();
-  const content = currentBlock?.data?.props?.children?.[0];
+  const contentId = useBlockChildrenBlockIds(currentBlock.id, "props")?.[0];
+
   const base = currentBlock.base;
 
   const className = useClassName();
@@ -31,11 +37,19 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         defaults={defaults}
         isEditor
       />
-      <span className={cn(className, base?.className)} id={base?.id}>
-        {content && (
-          <EditorBlock key={content?.id} block={content} {...disable} />
+      <div className={cn(className, base?.className)} id={base?.id}>
+        {!!contentId && (
+          <EditorBlock
+            key={contentId}
+            blockId={contentId}
+            {...disable}
+            index={0}
+            parentBlockId={currentBlock.id}
+            parentProperty="content"
+            allowedTypes="SimpleContainer"
+          />
         )}
-      </span>
+      </div>
     </>
   );
 };

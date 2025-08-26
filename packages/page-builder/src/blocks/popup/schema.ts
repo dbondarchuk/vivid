@@ -85,10 +85,18 @@ export const PopupPropsDefaults = () =>
       title: {
         children: [
           {
-            type: "SimpleText",
+            type: "SimpleContainer",
             data: {
               props: {
-                text: "Popup title",
+                children: [
+                  {
+                    type: "SimpleText",
+                    data: {
+                      props: { text: "Popup title" },
+                    },
+                    id: generateId(),
+                  },
+                ],
               },
               style: {},
             },
@@ -157,10 +165,18 @@ export const PopupPropsDefaults = () =>
       subtitle: {
         children: [
           {
-            type: "SimpleText",
+            type: "SimpleContainer",
             data: {
               props: {
-                text: "Popup subtitle",
+                children: [
+                  {
+                    type: "SimpleText",
+                    data: {
+                      props: { text: "Popup subtitle" },
+                    },
+                    id: generateId(),
+                  },
+                ],
               },
               style: {},
             },

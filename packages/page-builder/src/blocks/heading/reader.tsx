@@ -17,7 +17,7 @@ export const Heading = ({
 }: HeadingReaderProps) => {
   const level = props?.level ?? DefaultHeadingLevel;
   const content = props?.children?.[0];
-  const defaults = getDefaults({ props, style }, false);
+  const defaults = getDefaults(level);
 
   const className = generateClassName();
   const Element = level;

@@ -5,7 +5,7 @@ import {
   useCurrentBlockId,
   useDispatchAction,
   useEditorArgs,
-  useSelectedBlockId,
+  useIsSelectedBlock,
 } from "@vivid/builder";
 import { template } from "@vivid/utils";
 import { useCallback } from "react";
@@ -16,8 +16,7 @@ import { ImageProps } from "./schema";
 export const ImageEditor = ({ props, style }: ImageProps) => {
   const currentBlock = useCurrentBlock<ImageProps>();
   const currentBlockId = useCurrentBlockId();
-  const selectedBlockId = useSelectedBlockId();
-  const isSelected = selectedBlockId === currentBlockId;
+  const isSelected = useIsSelectedBlock(currentBlockId);
 
   const getUpdatedSize = (
     currentBlockData: ImageProps,

@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { Button, cn, PopoverTrigger } from "@vivid/ui";
 import { Plus } from "lucide-react";
 import React from "react";
-import { useActiveDragBlock } from "../../../../editor/context";
+import { useHasActiveDragBlock } from "../../../../editor/context";
 
 export const PlaceholderButton: React.FC<{
   contextId: string;
@@ -18,7 +18,7 @@ export const PlaceholderButton: React.FC<{
   size = "default",
 }) => {
   const id = React.useId();
-  const draggingBlock = useActiveDragBlock();
+  const hasActiveDragBlock = useHasActiveDragBlock();
 
   const { setNodeRef, isOver: isOverSortable } = useSortable({
     id,
@@ -35,7 +35,7 @@ export const PlaceholderButton: React.FC<{
     <div
       className={cn(
         "flex content-center justify-center items-center w-full",
-        !!draggingBlock &&
+        !!hasActiveDragBlock &&
           "border-2 border-dashed border-blue-400 min-h-20 min-w-36 max-w-full",
         isOver && " bg-blue-800 bg-opacity-50",
         className

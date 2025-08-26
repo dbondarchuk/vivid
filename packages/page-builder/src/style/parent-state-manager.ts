@@ -1,6 +1,8 @@
 import {
-  StateWithParent,
-  generateParentStateDataAttribute,
+  StateWithTarget,
+  generateViewStateDataAttribute,
+  isParentTarget,
+  isSelectorTarget,
   isViewState,
 } from "./zod";
 
@@ -25,7 +27,7 @@ export class ParentStateManager {
   /**
    * Initialize parent state detection for an element
    */
-  initializeElement(element: Element, states: StateWithParent[]): void {
+  initializeElement(element: Element, states: StateWithTarget[]): void {
     const elementId = this.getElementId(element);
 
     // Clean up existing handlers
@@ -33,10 +35,7 @@ export class ParentStateManager {
 
     // Set up handlers for each parent state
     states.forEach((state) => {
-      if (
-        (state.parentLevel && state.parentLevel > 0) ||
-        isViewState(state.state)
-      ) {
+      if (isParentTarget(state) || isViewState(state.state)) {
         this.setupParentStateHandler(element, state);
       }
     });
@@ -65,40 +64,66 @@ export class ParentStateManager {
    */
   private setupParentStateHandler(
     element: Element,
-    state: StateWithParent
+    state: StateWithTarget
   ): void {
     const elementId = this.getElementId(element);
-    const parentLevel = state.parentLevel || 0;
 
-    if (parentLevel === 0 && !isViewState(state.state)) return;
-
-    // Find the parent element at the specified level
-    let parentElement: Element | null = element;
-    let currentElement: Element | null = element;
-    let i = 0;
-    while (i < parentLevel && currentElement) {
-      currentElement = currentElement?.parentElement || null;
-      if (
-        Array.from(currentElement?.classList?.values() || []).some(
-          (className) => className.startsWith("block-")
-        )
-      ) {
-        parentElement = currentElement;
-        i++;
-      }
+    // Handle different target types
+    if (!isParentTarget(state) && !isViewState(state.state)) {
+      return;
     }
 
-    if (!parentElement) return;
+    let observedElement: Element | null = null;
+    let targetElement: Element = element;
+    let targetLevel = 0;
+
+    if (isParentTarget(state)) {
+      targetLevel = state.target?.data?.level || 0;
+
+      // Find the parent element at the specified level
+      let currentElement: Element | null = element;
+      let i = 0;
+      while (i < targetLevel && currentElement) {
+        currentElement = currentElement?.parentElement || null;
+        if (
+          Array.from(currentElement?.classList?.values() || []).some(
+            (className) => className.startsWith("block-")
+          )
+        ) {
+          observedElement = currentElement;
+          i++;
+        }
+      }
+    } else if (isSelectorTarget(state)) {
+      // For selector type, find the closest ancestor matching the selector
+
+      const selectorElement = element.querySelector(state.target.data.selector);
+      if (state.target.data.stateType === "block") {
+        observedElement = element;
+        targetElement = selectorElement || element;
+      } else {
+        observedElement = selectorElement || element;
+        targetElement = selectorElement || element;
+      }
+
+      targetLevel = 0; // Use level 0 for selector type
+    } else if (isViewState(state.state)) {
+      // For view states, use the element itself as parent
+      observedElement = element;
+      targetLevel = 0;
+    }
+
+    if (!observedElement) return;
 
     if (isViewState(state.state)) {
-      this.setupViewStateHandler(element, parentElement, state);
+      this.setupViewStateHandler(targetElement, observedElement, state);
       return;
     }
 
     // Set up event listeners on the parent element
     const cleanup = this.setupParentEventListeners(
-      parentElement,
-      element,
+      observedElement,
+      targetElement,
       state
     );
 
@@ -108,7 +133,7 @@ export class ParentStateManager {
     }
     this.elementHandlers
       .get(elementId)!
-      .set(`${state.state}-${parentLevel}`, cleanup);
+      .set(`${state.state}-${targetLevel}`, cleanup);
   }
 
   /**
@@ -116,11 +141,11 @@ export class ParentStateManager {
    */
   private setupViewStateHandler(
     targetElement: Element,
-    parentElement: Element,
-    state: StateWithParent
+    observedElement: Element,
+    state: StateWithTarget
   ): void {
     const elementId = this.getElementId(targetElement);
-    const dataAttribute = generateParentStateDataAttribute(state);
+    const dataAttribute = generateViewStateDataAttribute(state);
 
     // Create intersection observer
     const observer = new IntersectionObserver(
@@ -128,22 +153,22 @@ export class ParentStateManager {
         entries.forEach((entry) => {
           if (state.state === "inView") {
             if (entry.isIntersecting) {
-              targetElement.setAttribute(dataAttribute, "true");
+              targetElement.setAttribute(dataAttribute!, "true");
             } else {
-              targetElement.removeAttribute(dataAttribute);
+              targetElement.removeAttribute(dataAttribute!);
             }
           } else if (state.state === "notInView") {
             if (!entry.isIntersecting) {
-              targetElement.setAttribute(dataAttribute, "true");
+              targetElement.setAttribute(dataAttribute!, "true");
             } else {
-              targetElement.removeAttribute(dataAttribute);
+              targetElement.removeAttribute(dataAttribute!);
             }
           } else if (state.state === "firstTimeInView") {
             if (
               entry.isIntersecting &&
-              !targetElement.hasAttribute(dataAttribute)
+              !targetElement.hasAttribute(dataAttribute!)
             ) {
-              targetElement.setAttribute(dataAttribute, "true");
+              targetElement.setAttribute(dataAttribute!, "true");
             }
           }
         });
@@ -154,7 +179,7 @@ export class ParentStateManager {
       }
     );
 
-    observer.observe(parentElement);
+    observer.observe(observedElement);
 
     // Store observer for cleanup
     this.intersectionObservers.set(elementId, observer);
@@ -166,11 +191,9 @@ export class ParentStateManager {
   private setupParentEventListeners(
     parentElement: Element,
     targetElement: Element,
-    state: StateWithParent
+    state: StateWithTarget
   ): () => void {
-    const dataAttribute = generateParentStateDataAttribute(state);
-
-    if (!dataAttribute) return () => {};
+    const dataAttribute = generateViewStateDataAttribute(state);
 
     // Set up event listeners based on state type
     const eventMap: Record<string, string[]> = {
@@ -196,7 +219,7 @@ export class ParentStateManager {
           parentElement,
           targetElement,
           state,
-          dataAttribute
+          dataAttribute!
         );
       };
 
@@ -210,7 +233,7 @@ export class ParentStateManager {
         parentElement.removeEventListener(event, handler, true);
       });
       // Remove data attribute
-      targetElement.removeAttribute(dataAttribute);
+      targetElement.removeAttribute(dataAttribute!);
     };
   }
 
@@ -221,7 +244,7 @@ export class ParentStateManager {
     event: Event,
     parentElement: Element,
     targetElement: Element,
-    state: StateWithParent,
+    state: StateWithTarget,
     dataAttribute: string
   ): void {
     const isEntering =
@@ -272,7 +295,7 @@ export function useParentStateManager() {
 
   const initializeElement = (
     element: Element | null,
-    states: StateWithParent[]
+    states: StateWithTarget[]
   ) => {
     if (element && states.length > 0) {
       manager.initializeElement(element, states);

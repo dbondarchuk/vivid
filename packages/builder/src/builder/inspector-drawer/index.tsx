@@ -1,10 +1,11 @@
 import {
+  useSelectedBlockId,
   useSelectedSidebarTab,
   useSetSidebarTab,
 } from "../../documents/editor/context";
 
+import { useI18n } from "@vivid/i18n";
 import {
-  ScrollArea,
   Sidebar,
   SidebarContent,
   Tabs,
@@ -12,11 +13,13 @@ import {
   TabsList,
   TabsTrigger,
 } from "@vivid/ui";
-import { ConfigurationPanel } from "./configuration-panel";
-import { StylesPanel } from "./styles-panel";
 import { Paintbrush, SquareDashedMousePointer } from "lucide-react";
-import { useI18n } from "@vivid/i18n";
-import React from "react";
+import React, { memo, useEffect } from "react";
+import {
+  ConfigurationPanel,
+  ConfigurationPanelTab,
+} from "./configuration-panel";
+import { StylesPanel, StylesPanelTab } from "./styles-panel";
 
 // Define the SidebarTab type
 export type SidebarTab = {
@@ -25,6 +28,19 @@ export type SidebarTab = {
   icon?: React.ReactNode;
   content: React.ReactNode;
 };
+
+const SelectBlockListener: React.FC = memo(() => {
+  const selectedBlockId = useSelectedBlockId();
+  const setSidebarTab = useSetSidebarTab();
+  useEffect(() => {
+    if (selectedBlockId) {
+      setSidebarTab(ConfigurationPanelTab);
+    } else {
+      setSidebarTab(StylesPanelTab);
+    }
+  }, [selectedBlockId, setSidebarTab]);
+  return null;
+});
 
 export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
   extraTabs = [],
@@ -36,13 +52,13 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
   // Default tabs
   const defaultTabs: SidebarTab[] = [
     {
-      value: "styles",
+      value: StylesPanelTab,
       label: t("baseBuilder.inspector.styles"),
       icon: <Paintbrush size={16} />,
       content: <StylesPanel />,
     },
     {
-      value: "block-configuration",
+      value: ConfigurationPanelTab,
       label: t("baseBuilder.inspector.inspect"),
       icon: <SquareDashedMousePointer size={16} />,
       content: <ConfigurationPanel />,
@@ -64,6 +80,7 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
             value={selectedTab}
             onValueChange={(value) => setSidebarTab(value as any)}
           >
+            <SelectBlockListener />
             <TabsList className="w-full justify-between sticky top-0 z-[1] flex-wrap h-auto items-center">
               {allTabs.map((tab) => (
                 <TabsTrigger

@@ -32,16 +32,15 @@ import {
   useDebounceCacheFn,
   useDemoArguments,
 } from "@vivid/ui";
+import { formatArguments } from "@vivid/utils";
 import { Globe, Settings as SettingsIcon } from "lucide-react";
-import { useNavigationGuard } from "next-navigation-guard";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
 import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
 import { checkUniqueSlug, createPage, updatePage } from "./actions";
 import { PageSettingsPanel } from "./page-settings-panel";
-import { formatArguments } from "@vivid/utils";
 
 // Helper function to generate slug from title
 const generateSlug = (title: string): string => {
@@ -111,16 +110,19 @@ export const PageForm: React.FC<{
     }
   }, [title, isNewPage, slugManuallyChanged, slug, form]);
 
-  const breadcrumbItems = [
-    { title: t("assets.dashboard"), link: "/admin/dashboard" },
-    { title: t("pages.title"), link: "/admin/dashboard/pages" },
-    {
-      title: title || t("pages.new"),
-      link: initialData?._id
-        ? `/admin/dashboard/pages/${initialData._id}`
-        : "/admin/dashboard/pages/new",
-    },
-  ];
+  const breadcrumbItems = useMemo(
+    () => [
+      { title: t("assets.dashboard"), link: "/admin/dashboard" },
+      { title: t("pages.title"), link: "/admin/dashboard/pages" },
+      {
+        title: title || t("pages.new"),
+        link: initialData?._id
+          ? `/admin/dashboard/pages/${initialData._id}`
+          : "/admin/dashboard/pages/new",
+      },
+    ],
+    [title, initialData?._id, t]
+  );
 
   const { setError, trigger } = form;
   const onPageBuilderValidChange = React.useCallback(
@@ -172,17 +174,45 @@ export const PageForm: React.FC<{
     }
   };
 
-  const { content: _, ...restFields } = form.watch();
+  const [description, published, publishDate, tags, fullWidth] = form.watch([
+    "description",
+    "published",
+    "publishDate",
+    "tags",
+    "fullWidth",
+  ]);
   const demoAppointment = useDemoArguments();
-  const args = formatArguments(
-    {
-      ...restFields,
-      appointment: demoAppointment,
-      social: config.social,
-      general: config.general,
-      now: new Date(),
-    },
-    language || config.general.language
+  const args = useMemo(
+    () =>
+      formatArguments(
+        {
+          title,
+          slug,
+          language,
+          description,
+          published,
+          publishDate,
+          tags,
+          fullWidth,
+          appointment: demoAppointment,
+          social: config.social,
+          general: config.general,
+          now: new Date(),
+        },
+        language || config.general.language
+      ),
+    [
+      title,
+      slug,
+      language,
+      description,
+      published,
+      publishDate,
+      tags,
+      fullWidth,
+      demoAppointment,
+      config,
+    ]
   );
 
   // Determine if any settings fields have errors

@@ -6,7 +6,7 @@ import {
   NumberValueWithUnit,
   NumberValueWithUnitOrKeyword,
   zBreakpoint,
-  zStateWithParent,
+  zStateWithTarget,
 } from "./zod";
 
 // Helper function to check if a style is allowed for a block
@@ -80,7 +80,7 @@ export function getStylesSchema<T extends BaseStyleDictionary>(
         z.object({
           value: style.schema,
           breakpoint: z.array(zBreakpoint).optional().nullable(),
-          state: z.array(zStateWithParent).optional().nullable(),
+          state: z.array(zStateWithTarget).optional().nullable(),
         })
       )
       .optional()
@@ -96,7 +96,7 @@ export function getStylesSchema<T extends BaseStyleDictionary>(
               z.ZodNullable<z.ZodArray<typeof zBreakpoint>>
             >;
             state: z.ZodOptional<
-              z.ZodNullable<z.ZodArray<typeof zStateWithParent>>
+              z.ZodNullable<z.ZodArray<typeof zStateWithTarget>>
             >;
             value: T[key];
           }>

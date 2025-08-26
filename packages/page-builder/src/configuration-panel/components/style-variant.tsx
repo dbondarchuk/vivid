@@ -1,4 +1,4 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { BuilderKeys, languages, useI18n } from "@vivid/i18n";
 import { Button, Label } from "@vivid/ui";
 import { Trash } from "lucide-react";
 import React from "react";
@@ -10,7 +10,13 @@ import {
   StyleDefinition,
   StyleVariant,
 } from "../../style/types";
-import { parentLevelKeys, StateWithParent } from "../../style/zod";
+import {
+  isParentTarget,
+  isSelectorTarget,
+  isSelfTarget,
+  parentLevelKeys,
+  StateWithTarget,
+} from "../../style/zod";
 
 interface StyleVariantProps<T extends BaseStyleDictionary> {
   variant: StyleVariant<T[keyof T]>;
@@ -52,20 +58,39 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
       );
     }
     if (variant.state?.length) {
-      const stateLabels = (variant.state as StateWithParent[]).map(
+      const stateLabels = (variant.state as StateWithTarget[]).map(
         (stateWithParent) => {
-          const stateLabel = t(
-            `pageBuilder.styles.states.${stateWithParent.state}`
-          );
-          const parentLevel =
-            parentLevelKeys[stateWithParent.parentLevel || 0] || "self";
-          const parentLabel = t(
-            `pageBuilder.styles.states.parentLevels.${parentLevel}`
-          );
+          const stateLabel = (
+            stateWithParent.state === "default"
+              ? ""
+              : `:${t(`pageBuilder.styles.states.${stateWithParent.state}` as BuilderKeys)}`
+          ).toLocaleLowerCase();
 
-          return parentLevel === "self"
-            ? stateLabel
-            : `${parentLabel}:${stateLabel}`;
+          if (isSelfTarget(stateWithParent)) {
+            return stateWithParent.state === "default"
+              ? t("pageBuilder.styles.states.default")
+              : stateLabel;
+          }
+
+          if (isParentTarget(stateWithParent)) {
+            const level = stateWithParent.target?.data
+              ?.level as (typeof parentLevelKeys)[number];
+            const parentLabel = t(
+              `pageBuilder.styles.states.parentLevels.${level}`
+            );
+
+            return `${parentLabel}${stateLabel}`;
+          }
+
+          if (isSelectorTarget(stateWithParent)) {
+            const selector = stateWithParent.target?.data?.selector;
+            const stateType = stateWithParent.target?.data?.stateType;
+            return stateType === "block"
+              ? `${stateLabel} ${selector}`
+              : `${selector}${stateLabel}`;
+          }
+
+          return stateLabel;
         }
       );
       parts.push(stateLabels.join(", "));
@@ -104,7 +129,7 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
 
           {/* State selector */}
           <StateSelector
-            states={(variant.state || []) as StateWithParent[]}
+            states={(variant.state || []) as StateWithTarget[]}
             onStatesChange={(states) =>
               onUpdateVariant(styleName, variantIndex, { state: states })
             }

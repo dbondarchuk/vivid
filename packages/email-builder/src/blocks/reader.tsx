@@ -12,6 +12,7 @@ import { Image } from "./image";
 import { EditorBlocksSchema } from "./schema";
 import { Spacer } from "./spacer";
 import { TextReader } from "./text";
+import { CustomHTML } from "./custom-html";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema
@@ -51,5 +52,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   ForeachContainer: {
     Reader: ForeachContainerReader,
+  },
+  CustomHTML: {
+    Reader: CustomHTML,
   },
 };

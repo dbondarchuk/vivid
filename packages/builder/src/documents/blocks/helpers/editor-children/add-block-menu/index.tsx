@@ -2,6 +2,7 @@ import React, { Fragment, useMemo } from "react";
 
 import { TEditorBlock } from "../../../../editor/core";
 
+import { BuilderKeys, useI18n } from "@vivid/i18n";
 import {
   Command,
   CommandEmpty,
@@ -13,12 +14,11 @@ import {
   Popover,
   PopoverContent,
 } from "@vivid/ui";
-import { useBlocks, useRootBlock } from "../../../../editor/context";
+import { useBlocks, useRootBlockType } from "../../../../editor/context";
 import { generateId } from "../../../../helpers/block-id";
+import { BaseZodDictionary } from "../../../../types";
 import { DividerButton } from "./divider-button";
 import { PlaceholderButton } from "./placeholder-button";
-import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { BaseZodDictionary } from "../../../../types";
 
 type Props<T extends BaseZodDictionary = any> = {
   onSelect: (block: TEditorBlock) => void;
@@ -47,7 +47,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
 }: Props<T>) => {
   const [open, setOpen] = React.useState(false);
   const blocks = useBlocks();
-  const rootBlock = useRootBlock();
+  const rootBlockType = useRootBlockType();
   const t = useI18n("builder");
   const tUi = useI18n("ui");
 
@@ -70,7 +70,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
               ? Array.isArray(allowOnly)
                 ? allowOnly.includes(type as keyof T)
                 : type === allowOnly
-              : rootBlock.type !== type) &&
+              : rootBlockType !== type) &&
             (!blocks[type].allowedIn ||
               blocks[type].allowedIn.includes(currentBlock))
         )
@@ -88,7 +88,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
           {} as Record<string, block[]>
         )
     );
-  }, [blocks, allowOnly, currentBlock, rootBlock]);
+  }, [blocks, allowOnly, currentBlock, rootBlockType]);
 
   return (
     <Popover modal open={open} onOpenChange={setOpen}>
@@ -105,7 +105,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
       )}
       <PopoverContent className="sm:w-fit">
         <Command>
-          <CommandInput placeholder={t("baseBuilder.searchBlocks")} />
+          <CommandInput placeholder={t("baseBuilder.blocks.search")} />
           <CommandList>
             <CommandEmpty>{tUi("common.noResults")}</CommandEmpty>
             {filteredBlocks.map(([category, values], i, array) => (

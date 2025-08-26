@@ -5,9 +5,11 @@ import React from "react";
 import {
   BaseStyleDictionary,
   DefaultCSSProperties,
+  isNonSelfTarget,
+  isParentTarget,
   isViewState,
   renderStylesToCSS,
-  StateWithParent,
+  StateWithTarget,
   StyleDictionary,
   StyleValue,
 } from "../style";
@@ -136,8 +138,8 @@ export const BlockStyle = genericMemo(
 
 function extractParentStates<T extends BaseStyleDictionary>(
   styles?: StyleValue<T> | null
-): StateWithParent[] {
-  const parentStates: StateWithParent[] = [];
+): StateWithTarget[] {
+  const parentStates: StateWithTarget[] = [];
 
   if (!styles) return parentStates;
 
@@ -145,11 +147,8 @@ function extractParentStates<T extends BaseStyleDictionary>(
     if (styleValue && Array.isArray(styleValue)) {
       styleValue.forEach((variant) => {
         if (variant.state && Array.isArray(variant.state)) {
-          variant.state.forEach((state: StateWithParent) => {
-            if (
-              (state.parentLevel && state.parentLevel > 0) ||
-              isViewState(state.state)
-            ) {
+          variant.state.forEach((state: StateWithTarget) => {
+            if (isParentTarget(state) || isViewState(state.state)) {
               parentStates.push(state);
             }
           });

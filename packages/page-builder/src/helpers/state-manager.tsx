@@ -2,19 +2,19 @@
 
 import React, { useEffect, useRef } from "react";
 import { useParentStateManager } from "../style/parent-state-manager";
-import { StateWithParent } from "../style/zod";
+import { StateWithTarget } from "../style/zod";
 import { usePortalContext } from "@vivid/builder";
 
 interface StateManagerProps {
   className: string;
-  states: StateWithParent[];
+  states: StateWithTarget[];
 }
 
 /**
  * StateManager component that handles parent state detection and data attribute management
  *
  * Usage:
- * <StateManager className="my-block" states={[{ state: "hover", parentLevel: 1 }]}>
+ * <StateManager className="my-block" states={[{ state: "hover", stateTarget: { type: "parent", data: { level: 1 } } }]}>
  *   <div className="my-block">Content</div>
  * </StateManager>
  */

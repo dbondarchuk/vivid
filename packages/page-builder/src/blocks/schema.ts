@@ -5,6 +5,7 @@ import { ButtonPropsSchema } from "./button/schema";
 import { CarouselPropsSchema } from "./carousel/schema";
 import { ConditionalContainerPropsSchema } from "./conditional-container/schema";
 import { ContainerPropsSchema } from "./container/schema";
+import { CustomHTMLPropsSchema } from "./custom-html/schema";
 import { ForeachContainerPropsSchema } from "./foreach-container/schema";
 import { GridContainerPropsSchema } from "./grid-container/schema";
 import { HeadingPropsSchema } from "./heading/schema";
@@ -45,6 +46,7 @@ export const EditorBlocksSchema = {
   AccordionItem: AccordionItemPropsSchema,
   SimpleContainer: SimpleContainerPropsSchema,
   Icon: IconPropsSchema,
+  CustomHTML: CustomHTMLPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -68,4 +70,5 @@ export const EditorBlocksSchema = {
   AccordionItem: typeof AccordionItemPropsSchema;
   SimpleContainer: typeof SimpleContainerPropsSchema;
   Icon: typeof IconPropsSchema;
+  CustomHTML: typeof CustomHTMLPropsSchema;
 };

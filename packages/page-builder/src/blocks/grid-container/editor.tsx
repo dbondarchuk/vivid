@@ -1,7 +1,7 @@
 import {
   EditorChildren,
   useCurrentBlock,
-  useSelectedBlockId,
+  useIsSelectedBlock,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
@@ -11,11 +11,8 @@ import { GridContainerProps, styles } from "./schema";
 export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
   const currentBlock = useCurrentBlock<GridContainerProps>();
 
-  const children = currentBlock.data?.props?.children;
   const className = useClassName();
   const base = currentBlock.base;
-
-  const isSelected = useSelectedBlockId() === currentBlock.id;
 
   return (
     <>
@@ -25,10 +22,8 @@ export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
         styles={currentBlock.data?.style}
       />
       <EditorChildren
-        block={currentBlock}
+        blockId={currentBlock.id}
         property="props"
-        children={children || []}
-        hidePrefixAddBlockButton={!isSelected}
         className={cn(className, base?.className)}
         id={base?.id}
       />

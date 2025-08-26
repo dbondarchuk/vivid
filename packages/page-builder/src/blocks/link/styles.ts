@@ -16,7 +16,7 @@ export const getDefaults = (
     fontWeight: "normal",
     textAlign: "left",
     textDecoration: "underline",
-    display: "inline",
+    display: "block",
     width: "max-content",
   };
 };

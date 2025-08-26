@@ -3,6 +3,7 @@ import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { VideoPropsDefaults, VideoReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
+import { forwardRef } from "react";
 
 // Define the shape for the video props
 interface VideoInnerProps {
@@ -15,11 +16,10 @@ interface VideoInnerProps {
   preload?: "none" | "metadata" | "auto" | null;
 }
 
-export const Video = ({
-  style,
-  props,
-  block,
-}: Pick<VideoReaderProps, "style" | "props" | "block">) => {
+export const Video = forwardRef<
+  HTMLVideoElement,
+  Pick<VideoReaderProps, "style" | "props" | "block">
+>(({ style, props, block }, ref) => {
   const base = block?.base;
   const className = generateClassName();
   const safeProps: VideoInnerProps = {
@@ -30,7 +30,7 @@ export const Video = ({
 
   const videoElement = (
     <video
-      className={cn(className, base?.className)}
+      className={cn("block", className, base?.className)}
       src={safeProps.src ?? ""}
       poster={safeProps.poster ?? undefined}
       controls={safeProps.controls ?? true}
@@ -39,6 +39,7 @@ export const Video = ({
       muted={safeProps.muted ?? false}
       preload={safeProps.preload ?? "metadata"}
       id={base?.id}
+      ref={ref}
     />
   );
 
@@ -56,4 +57,4 @@ export const Video = ({
       {videoElement}
     </>
   );
-};
+});

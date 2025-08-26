@@ -1,21 +1,25 @@
 import {
   EditorChildren,
   useCurrentBlock,
-  useSelectedBlockId,
+  useIsSelectedBlock,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
-import React from "react";
+import React, { memo } from "react";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
 import { SimpleContainerProps, styles } from "./schema";
 
-const ChildWrapper = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <span className={className}>{children}</span>;
+const ChildWrapper = memo(
+  ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }) => <span className={className}>{children}</span>
+);
+
+const allowOnly = ["SimpleText", "Icon", "Link"];
 
 export const SimpleContainerEditor = ({
   style,
@@ -23,12 +27,8 @@ export const SimpleContainerEditor = ({
 }: SimpleContainerProps) => {
   const currentBlock = useCurrentBlock<SimpleContainerProps>();
 
-  const children = currentBlock.data?.props?.children;
   const className = useClassName();
   const base = currentBlock.base;
-  const allowOnly = React.useMemo(() => ["SimpleText", "Icon", "Link"], []);
-
-  const isSelected = useSelectedBlockId() === currentBlock.id;
 
   return (
     <>
@@ -38,14 +38,11 @@ export const SimpleContainerEditor = ({
         styles={currentBlock.data?.style}
       />
       <EditorChildren
-        block={currentBlock}
+        blockId={currentBlock.id}
         property="props"
-        children={children || []}
         className={cn(className, base?.className)}
         childWrapper={ChildWrapper}
-        hidePrefixAddBlockButton={!isSelected}
         id={base?.id}
-        addButtonSize="small"
         allowOnly={allowOnly}
       />
     </>

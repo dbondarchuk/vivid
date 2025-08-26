@@ -7,9 +7,10 @@ import {
   useCurrentBlock,
   useDispatchAction,
   useEditorArgs,
+  useIsSelectedBlock,
   usePortalContext,
+  useSetCurrentBlockRef,
   useSetSelectedBlockId,
-  useSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { ArgumentsAutocomplete, cn, useDebounceCallback } from "@vivid/ui";
@@ -26,11 +27,11 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
   const value = currentBlock?.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const setRef = useSetCurrentBlockRef();
 
   const { document } = usePortalContext();
 
-  const selectedBlockId = useSelectedBlockId();
-  const isSelected = selectedBlockId === currentBlock?.id;
+  const isSelected = useIsSelectedBlock(currentBlock?.id);
 
   const sanitizeConf = {
     allowedTags: [],
@@ -80,7 +81,10 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         isEditor
       />
       <ArgumentsAutocomplete
-        ref={ref}
+        ref={(el) => {
+          ref.current = el as HTMLInputElement;
+          setRef(el as any);
+        }}
         args={args}
         className={cn(
           "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal",

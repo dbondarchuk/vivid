@@ -4,6 +4,7 @@ import {
   useCurrentBlock,
   useDispatchAction,
   usePortalContext,
+  useSetCurrentBlockRef,
 } from "@vivid/builder";
 import { PlateEditor } from "@vivid/rte";
 import { cn, useDebounceCallback } from "@vivid/ui";
