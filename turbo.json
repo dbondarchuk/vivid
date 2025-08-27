@@ -15,6 +15,12 @@
       "cache": false,
       "persistent": true
     },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"]
+    },
     "check-translations": {
       "dependsOn": ["^check-translations"]
     }

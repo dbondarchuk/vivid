@@ -9,17 +9,16 @@
     "build": "turbo run check-translations && turbo run build",
     "start": "turbo run start",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint --",
+    "lint:fix": "turbo run lint:fix --",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migration": "migrate-mongo",
     "migration:up": "migrate-mongo up",
     "migration:down": "migrate-mongo down",
-    "check-translations": "turbo run check-translations -- ",
+    "check-translations": "turbo run check-translations --",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "**/*": "prettier --check --ignore-unknown \"**/*.{ts,tsx,md}\""
-  },
+  "lint-staged": {},
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",

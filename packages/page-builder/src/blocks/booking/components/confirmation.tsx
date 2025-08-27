@@ -5,7 +5,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
 import { DollarSign, Timer } from "lucide-react";

@@ -25,7 +25,7 @@ try {
 } catch (error) {
   console.warn(
     "Warning: Could not load .i18n-check.json config file:",
-    error.message
+    error.message,
   );
 }
 
@@ -128,7 +128,7 @@ function checkTranslations() {
 
   if (!locales.includes(baseLocale)) {
     throw new Error(
-      `Base locale '${baseLocale}' not found in locales directory`
+      `Base locale '${baseLocale}' not found in locales directory`,
     );
   }
 
@@ -198,7 +198,7 @@ function checkTranslations() {
         }
       } catch (error) {
         report.errors.push(
-          `Error processing ${locale}/${filename}: ${error.message}`
+          `Error processing ${locale}/${filename}: ${error.message}`,
         );
       }
     }

@@ -6,8 +6,8 @@
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "check-translations": "node scripts/check-translations.js"
   },
   "exports": {
@@ -18,7 +18,6 @@
   "devDependencies": {
     "@vivid/eslint-config": "*",
     "@vivid/typescript-config": "*",
-    "eslint": "^8.57.0",
     "typescript": "5.5.4"
   },
   "dependencies": {
