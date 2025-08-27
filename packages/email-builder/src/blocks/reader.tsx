@@ -4,6 +4,7 @@ import { Button } from "./button";
 import { ColumnsContainerReader } from "./columns-container";
 import { ConditionalContainerReader } from "./conditional-container";
 import { ContainerReader } from "./container";
+import { CustomHTML } from "./custom-html";
 import { Divider } from "./divider";
 import { EmailLayoutReader } from "./email-layout";
 import { ForeachContainerReader } from "./foreach-container";
@@ -12,7 +13,6 @@ import { Image } from "./image";
 import { EditorBlocksSchema } from "./schema";
 import { Spacer } from "./spacer";
 import { TextReader } from "./text";
-import { CustomHTML } from "./custom-html";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema

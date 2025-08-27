@@ -3,22 +3,22 @@
 import { ConfigurationProps, PageInput, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { deepMemo } from "@vivid/ui";
+import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { LinkDefaultTarget, LinkDefaultUrl, LinkProps } from "./schema";
 import { linkShortcuts } from "./shortcuts";
 import { styles } from "./styles";
-import { useCallback } from "react";
 
 export const LinkConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<LinkProps>) => {
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as LinkProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as LinkProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const t = useI18n("builder");
 
@@ -57,5 +57,5 @@ export const LinkConfiguration = deepMemo(
         />
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

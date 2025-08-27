@@ -3,7 +3,7 @@
 import { useI18n } from "@vivid/i18n";
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
 import { GripVertical } from "lucide-react";
-import React, { forwardRef, useCallback, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useBlockIndex, useIsActiveDragBlock } from "../../../editor/context";
 import { usePortalContext } from "./portal-context";
@@ -38,7 +38,7 @@ export const BlockHandlerPortal = forwardRef<
         doNotRender,
       });
     },
-    [blockElement]
+    [blockElement],
   );
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export const BlockHandlerPortal = forwardRef<
               ref={handleRef}
               className={cn(
                 "text-secondary-foreground",
-                isDragging ? "cursor-grabbing" : "cursor-grab"
+                isDragging ? "cursor-grabbing" : "cursor-grab",
               )}
             >
               <GripVertical fontSize="small" />
@@ -108,6 +108,6 @@ export const BlockHandlerPortal = forwardRef<
         </Tooltip>
       </div>
     </div>,
-    body
+    body,
   );
 });

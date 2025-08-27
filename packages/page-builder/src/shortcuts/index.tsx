@@ -153,7 +153,7 @@ export const Shortcuts = <T extends BaseStyleDictionary>({
         <ChevronRight
           className={cn(
             "size-4 transition-transform",
-            isShortcutsOpen && "rotate-90"
+            isShortcutsOpen && "rotate-90",
           )}
         />
       </CollapsibleTrigger>

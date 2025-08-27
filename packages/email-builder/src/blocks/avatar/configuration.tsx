@@ -8,10 +8,10 @@ import {
   SliderInput,
   TextInput,
 } from "@vivid/builder";
+import { useI18n } from "@vivid/i18n";
 import { Proportions } from "lucide-react";
 import { MultiStylePropertyPanel } from "../../style-inputs/multi-style-property-panel";
 import { AvatarProps, AvatarPropsDefaults } from "./schema";
-import { useI18n } from "@vivid/i18n";
 
 export const AvatarConfiguration = ({
   data,

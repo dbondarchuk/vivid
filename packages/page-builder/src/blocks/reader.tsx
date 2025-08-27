@@ -1,28 +1,28 @@
 import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
-import { Accordion } from "./accordion/reader";
 import { AccordionItem } from "./accordion-item/reader";
+import { Accordion } from "./accordion/reader";
 import { BookingReader } from "./booking/reader";
 import { ButtonReader } from "./button/reader";
 import { CarouselReader } from "./carousel/reader";
 import { ConditionalContainerReader } from "./conditional-container/reader";
 import { ContainerReader } from "./container/reader";
+import { CustomHTML } from "./custom-html/reader";
 import { ForeachContainerReader } from "./foreach-container/reader";
 import { GridContainerReader } from "./grid-container/reader";
 import { Heading } from "./heading/reader";
 import { Icon } from "./icon/reader";
 import { Image } from "./image/reader";
+import { Link } from "./link/reader";
 import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
 import { PopupReader } from "./popup/reader";
 import { EditorBlocksSchema } from "./schema";
+import { SimpleContainerReader } from "./simple-container/reader";
+import { SimpleText } from "./simple-text/reader";
 import { Spacer } from "./spacer/reader";
 import { TextReader } from "./text/reader";
 import { Video } from "./video";
-import { SimpleText } from "./simple-text/reader";
 import { YouTubeVideoReader } from "./youtube-video/reader";
-import { SimpleContainerReader } from "./simple-container/reader";
-import { Link } from "./link/reader";
-import { CustomHTML } from "./custom-html/reader";
 
 export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   typeof EditorBlocksSchema

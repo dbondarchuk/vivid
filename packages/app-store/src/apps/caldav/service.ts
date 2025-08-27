@@ -56,7 +56,7 @@ export default class CaldavConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processAppData(
-    appData: CaldavCalendarSource
+    appData: CaldavCalendarSource,
   ): Promise<CaldavCalendarSource> {
     return {
       ...appData,
@@ -66,7 +66,7 @@ export default class CaldavConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    action: CaldavAction
+    action: CaldavAction,
   ): Promise<ConnectedAppStatusWithText | string[]> {
     const logger = this.loggerFactory("processRequest");
     const { type, data } = action;
@@ -77,7 +77,7 @@ export default class CaldavConnectedApp
         serverUrl: data.serverUrl,
         username: data.username,
       },
-      "Processing CalDAV connection request"
+      "Processing CalDAV connection request",
     );
 
     if (data.password === MASKED_PASSWORD && appData?.data?.password) {
@@ -94,14 +94,14 @@ export default class CaldavConnectedApp
       {
         appId: appData._id,
       },
-      "Processing CalDAV save request"
+      "Processing CalDAV save request",
     );
 
     try {
       const client = this.getClient(data);
       logger.debug(
         { appId: appData._id },
-        "Attempting to login to CalDAV server"
+        "Attempting to login to CalDAV server",
       );
 
       await client.login();
@@ -109,7 +109,7 @@ export default class CaldavConnectedApp
       // Try to connect
       logger.debug(
         { appId: appData._id },
-        "Fetching calendars from CalDAV server"
+        "Fetching calendars from CalDAV server",
       );
 
       const calendars = await client.fetchCalendars();
@@ -120,7 +120,7 @@ export default class CaldavConnectedApp
           calendarCount: calendars.length,
           targetCalendar: data.calendarName,
         },
-        "Retrieved calendars from server"
+        "Retrieved calendars from server",
       );
 
       if (!calendars.some((c) => c.displayName === data.calendarName)) {
@@ -130,7 +130,7 @@ export default class CaldavConnectedApp
             calendarName: data.calendarName,
             availableCalendars: calendars.map((c) => c.displayName),
           },
-          "Target calendar not found"
+          "Target calendar not found",
         );
 
         throw new ConnectedAppError("calDav.statusText.calendar_not_found", {
@@ -163,7 +163,7 @@ export default class CaldavConnectedApp
           calendarName: data.calendarName,
           status: status.status,
         },
-        "Successfully connected to CalDAV calendar"
+        "Successfully connected to CalDAV calendar",
       );
 
       return status;
@@ -174,7 +174,7 @@ export default class CaldavConnectedApp
           error,
           serverUrl: data.serverUrl,
         },
-        "Failed to connect to CalDAV server"
+        "Failed to connect to CalDAV server",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -197,12 +197,12 @@ export default class CaldavConnectedApp
   }
 
   public async processStaticRequest(
-    request: CaldavCalendarSource & { fetchCalendars: true }
+    request: CaldavCalendarSource & { fetchCalendars: true },
   ): Promise<string[]> {
     const logger = this.loggerFactory("processStaticRequest");
     logger.debug(
       { serverUrl: request.serverUrl, username: request.username },
-      "Processing static request to fetch calendars"
+      "Processing static request to fetch calendars",
     );
 
     request.password = request.password ? encrypt(request.password) : undefined;
@@ -212,19 +212,19 @@ export default class CaldavConnectedApp
 
   public async fetchCalendars(
     appData: ConnectedAppData | undefined,
-    data: CaldavCalendarSource
+    data: CaldavCalendarSource,
   ): Promise<string[]> {
     const logger = this.loggerFactory("fetchCalendars");
     logger.debug(
       { serverUrl: data.serverUrl, username: data.username },
-      "Fetching calendars from CalDAV server"
+      "Fetching calendars from CalDAV server",
     );
 
     try {
       const client = this.getClient(data);
       logger.debug(
         { serverUrl: data.serverUrl },
-        "Attempting to login for calendar fetch"
+        "Attempting to login for calendar fetch",
       );
 
       await client.login();
@@ -242,21 +242,21 @@ export default class CaldavConnectedApp
 
       logger.info(
         { serverUrl: data.serverUrl, calendarCount: calendarNames.length },
-        "Successfully fetched calendar list"
+        "Successfully fetched calendar list",
       );
 
       return calendarNames;
     } catch (error: any) {
       logger.error(
         { serverUrl: data.serverUrl, error },
-        "Failed to fetch calendars"
+        "Failed to fetch calendars",
       );
 
       throw new ConnectedAppError(
         "calDav.statusText.failed_to_fetch_calendars",
         {
           serverUrl: data.serverUrl,
-        }
+        },
       );
     }
   }
@@ -264,7 +264,7 @@ export default class CaldavConnectedApp
   public async getBusyTimes(
     appData: ConnectedAppData,
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
     logger.debug(
@@ -273,7 +273,7 @@ export default class CaldavConnectedApp
         start: start.toISOString(),
         end: end.toISOString(),
       },
-      "Getting busy times from CalDAV calendar"
+      "Getting busy times from CalDAV calendar",
     );
 
     try {
@@ -282,14 +282,14 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { appId: appData._id, startTime, endTime },
-        "Converted time range to UTC"
+        "Converted time range to UTC",
       );
 
       const { client, calendar } = await this.getCalendar(appData.data);
 
       logger.debug(
         { appId: appData._id, calendarName: calendar.displayName },
-        "Retrieved calendar for busy time fetch"
+        "Retrieved calendar for busy time fetch",
       );
 
       const timezones =
@@ -299,12 +299,12 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { appId: appData._id, timezoneCount: timezones.length },
-        "Parsed calendar timezones"
+        "Parsed calendar timezones",
       );
 
       logger.debug(
         { appId: appData._id, startTime, endTime },
-        "Fetching calendar objects from CalDAV server"
+        "Fetching calendar objects from CalDAV server",
       );
 
       const objects = await client.fetchCalendarObjects({
@@ -319,7 +319,7 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { appId: appData._id, objectCount: objects.length },
-        "Retrieved calendar objects from server"
+        "Retrieved calendar objects from server",
       );
 
       const events = objects
@@ -334,7 +334,7 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { appId: appData._id, eventCount: events.length },
-        "Parsed events from calendar objects"
+        "Parsed events from calendar objects",
       );
 
       const calDavEvents: CalendarBusyTime[] = events.map((event) => {
@@ -353,7 +353,7 @@ export default class CaldavConnectedApp
 
       logger.info(
         { appId: appData._id, busyTimeCount: calDavEvents.length },
-        "Successfully retrieved busy times from CalDAV calendar"
+        "Successfully retrieved busy times from CalDAV calendar",
       );
 
       this.props.update({
@@ -370,7 +370,7 @@ export default class CaldavConnectedApp
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error getting busy times from CalDAV calendar"
+        "Error getting busy times from CalDAV calendar",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -394,12 +394,12 @@ export default class CaldavConnectedApp
 
   public async createEvent(
     app: ConnectedAppData,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
       { appId: app._id, eventId: event.id, eventTitle: event.title },
-      "Creating event in CalDAV calendar"
+      "Creating event in CalDAV calendar",
     );
 
     try {
@@ -407,14 +407,14 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { appId: app._id, calendarName: calendar.displayName },
-        "Retrieved calendar for event creation"
+        "Retrieved calendar for event creation",
       );
 
       const ics = this.getEventIcs(event);
 
       logger.debug(
         { appId: app._id, eventId: event.id, icsLength: ics.length },
-        "Generated ICS content for event"
+        "Generated ICS content for event",
       );
 
       const result = await client.createCalendarObject({
@@ -425,7 +425,7 @@ export default class CaldavConnectedApp
 
       logger.info(
         { appId: app._id, eventId: event.id, eventTitle: event.title },
-        "Successfully created event in CalDAV calendar"
+        "Successfully created event in CalDAV calendar",
       );
 
       return {
@@ -438,7 +438,7 @@ export default class CaldavConnectedApp
           eventId: event.id,
           error: error instanceof Error ? error.message : String(error),
         },
-        "Error creating event in CalDAV calendar"
+        "Error creating event in CalDAV calendar",
       );
 
       this.props.update({
@@ -459,12 +459,12 @@ export default class CaldavConnectedApp
   public async updateEvent(
     app: ConnectedAppData,
     uid: string,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
       { appId: app._id, eventId: event.id, uid, eventTitle: event.title },
-      "Updating event in CalDAV calendar"
+      "Updating event in CalDAV calendar",
     );
 
     try {
@@ -475,7 +475,7 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { appId: app._id, eventId: event.id, url },
-        "Updating calendar object at URL"
+        "Updating calendar object at URL",
       );
 
       await client.updateCalendarObject({
@@ -487,7 +487,7 @@ export default class CaldavConnectedApp
 
       logger.info(
         { appId: app._id, eventId: event.id, uid, eventTitle: event.title },
-        "Successfully updated event in CalDAV calendar"
+        "Successfully updated event in CalDAV calendar",
       );
 
       return {
@@ -501,7 +501,7 @@ export default class CaldavConnectedApp
           uid,
           error: error instanceof Error ? error.message : String(error),
         },
-        "Error updating event in CalDAV calendar"
+        "Error updating event in CalDAV calendar",
       );
 
       this.props.update({
@@ -522,12 +522,12 @@ export default class CaldavConnectedApp
   public async deleteEvent(
     app: ConnectedAppData,
     uid: string,
-    eventId: string
+    eventId: string,
   ): Promise<void> {
     const logger = this.loggerFactory("deleteEvent");
     logger.debug(
       { appId: app._id, eventId, uid },
-      "Deleting event from CalDAV calendar"
+      "Deleting event from CalDAV calendar",
     );
 
     try {
@@ -536,7 +536,7 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { appId: app._id, eventId, url },
-        "Deleting calendar object at URL"
+        "Deleting calendar object at URL",
       );
 
       await client.deleteCalendarObject({
@@ -547,7 +547,7 @@ export default class CaldavConnectedApp
 
       logger.info(
         { appId: app._id, eventId, uid },
-        "Successfully deleted event from CalDAV calendar"
+        "Successfully deleted event from CalDAV calendar",
       );
     } catch (error: any) {
       logger.error(
@@ -557,7 +557,7 @@ export default class CaldavConnectedApp
           uid,
           error: error instanceof Error ? error.message : String(error),
         },
-        "Error deleting event from CalDAV calendar"
+        "Error deleting event from CalDAV calendar",
       );
 
       this.props.update({
@@ -583,7 +583,7 @@ export default class CaldavConnectedApp
         eventTitle: event.title,
         attendeeCount: event.attendees.length,
       },
-      "Generating ICS content for event"
+      "Generating ICS content for event",
     );
 
     const start = DateTime.fromJSDate(event.startTime).setZone(event.timeZone);
@@ -632,7 +632,7 @@ export default class CaldavConnectedApp
 
     logger.debug(
       { eventId: event.id, icsLength: ics.length },
-      "Generated ICS content"
+      "Generated ICS content",
     );
 
     return ics;
@@ -646,7 +646,7 @@ export default class CaldavConnectedApp
         username: config.username,
         calendarName: config.calendarName,
       },
-      "Getting calendar configuration"
+      "Getting calendar configuration",
     );
 
     try {
@@ -654,7 +654,7 @@ export default class CaldavConnectedApp
 
       logger.debug(
         { serverUrl: config.serverUrl },
-        "Attempting to login to CalDAV server"
+        "Attempting to login to CalDAV server",
       );
       await client.login();
 
@@ -662,14 +662,14 @@ export default class CaldavConnectedApp
       if (!calendarName) {
         logger.error(
           { serverUrl: config.serverUrl },
-          "Calendar name is not set"
+          "Calendar name is not set",
         );
         throw new Error("Calendar name is not set");
       }
 
       logger.debug(
         { serverUrl: config.serverUrl },
-        "Fetching calendars from server"
+        "Fetching calendars from server",
       );
 
       const calendars = await client.fetchCalendars();
@@ -680,7 +680,7 @@ export default class CaldavConnectedApp
           calendarCount: calendars.length,
           targetCalendar: calendarName,
         },
-        "Retrieved calendars from server"
+        "Retrieved calendars from server",
       );
 
       const calendar = calendars.find((c) => {
@@ -698,7 +698,7 @@ export default class CaldavConnectedApp
             calendarName,
             availableCalendars: calendars.map((c) => c.displayName),
           },
-          "Target calendar not found"
+          "Target calendar not found",
         );
         throw new Error(`Can't find calendar '${calendarName}'`);
       }
@@ -709,7 +709,7 @@ export default class CaldavConnectedApp
           calendarName,
           calendarUrl: calendar.url,
         },
-        "Found target calendar"
+        "Found target calendar",
       );
 
       return { client, calendar };
@@ -719,7 +719,7 @@ export default class CaldavConnectedApp
           serverUrl: config.serverUrl,
           error: error instanceof Error ? error.message : String(error),
         },
-        "Error getting calendar configuration"
+        "Error getting calendar configuration",
       );
 
       this.props.update({
@@ -741,7 +741,7 @@ export default class CaldavConnectedApp
     const logger = this.loggerFactory("getClient");
     logger.debug(
       { serverUrl: config.serverUrl, username: config.username },
-      "Creating DAV client"
+      "Creating DAV client",
     );
 
     return new DAVClient({

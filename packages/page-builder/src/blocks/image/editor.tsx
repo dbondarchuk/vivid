@@ -21,7 +21,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
   const getUpdatedSize = (
     currentBlockData: ImageProps,
     width: number,
-    height: number
+    height: number,
   ) => {
     const newStyles = {
       ...(currentBlockData.style || {}),
@@ -29,11 +29,11 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
 
     newStyles.width =
       newStyles.width?.filter(
-        (w) => !!w.breakpoint?.length || !!w.state?.length
+        (w) => !!w.breakpoint?.length || !!w.state?.length,
       ) || [];
     newStyles.height =
       newStyles.height?.filter(
-        (h) => !!h.breakpoint?.length || !!h.state?.length
+        (h) => !!h.breakpoint?.length || !!h.state?.length,
       ) || [];
 
     newStyles.width.push({
@@ -56,7 +56,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
   const getUpdatedPosition = (
     currentBlockData: ImageProps,
     x: number,
-    y: number
+    y: number,
   ) => {
     const newStyles = {
       ...(currentBlockData.style || {}),
@@ -64,7 +64,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
 
     newStyles.objectPosition =
       newStyles.objectPosition?.filter(
-        (p) => !!p.breakpoint?.length || !!p.state?.length
+        (p) => !!p.breakpoint?.length || !!p.state?.length,
       ) || [];
 
     newStyles.objectPosition.push({
@@ -91,7 +91,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
 
   const onPositionChange = useCallback(
@@ -107,23 +107,23 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
 
   const baseWidth = currentBlock.data?.style?.width?.find(
-    (w) => !w.breakpoint?.length && !w.state?.length
+    (w) => !w.breakpoint?.length && !w.state?.length,
   )?.value;
 
   const baseHeight = currentBlock.data?.style?.height?.find(
-    (h) => !h.breakpoint?.length && !h.state?.length
+    (h) => !h.breakpoint?.length && !h.state?.length,
   )?.value;
 
   const baseX = currentBlock.data?.style?.objectPosition?.find(
-    (position) => !position.breakpoint?.length && !position.state?.length
+    (position) => !position.breakpoint?.length && !position.state?.length,
   )?.value.x;
 
   const baseY = currentBlock.data?.style?.objectPosition?.find(
-    (position) => !position.breakpoint?.length && !position.state?.length
+    (position) => !position.breakpoint?.length && !position.state?.length,
   )?.value.y;
 
   const args = useEditorArgs();

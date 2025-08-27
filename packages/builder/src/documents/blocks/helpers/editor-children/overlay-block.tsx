@@ -53,7 +53,7 @@ const OverlayBlockContent = memo(
         </div>
       </>
     );
-  }
+  },
 );
 
 export const OverlayBlock = memo(
@@ -69,7 +69,7 @@ export const OverlayBlock = memo(
     const isActiveOverDroppable = useIsActiveOverDroppable(
       blockId,
       property,
-      index
+      index,
     );
 
     // return null;
@@ -80,5 +80,5 @@ export const OverlayBlock = memo(
         index={index}
       />
     ) : null;
-  }
+  },
 );

@@ -1,16 +1,13 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
 import { PageForm } from "../../../../../components/admin/pages/form";
 
-import { ServicesContainer } from "@vivid/services";
-import { Link } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
-import { Globe } from "lucide-react";
-import { notFound } from "next/navigation";
-import { Metadata } from "next";
-import { cache } from "react";
+import { getLoggerFactory } from "@vivid/logger";
 import { Styling } from "@vivid/page-builder";
+import { ServicesContainer } from "@vivid/services";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -38,7 +35,7 @@ export default async function EditPagesPage(props: Props) {
     {
       pageId: params.id,
     },
-    "Loading page edit page"
+    "Loading page edit page",
   );
 
   const page = await getPage(params.id);
@@ -46,7 +43,7 @@ export default async function EditPagesPage(props: Props) {
     await ServicesContainer.ConfigurationService().getConfigurations(
       "styling",
       "general",
-      "social"
+      "social",
     );
 
   if (!page) {
@@ -61,7 +58,7 @@ export default async function EditPagesPage(props: Props) {
       pageTitle: page.title,
       isPublished: page.published,
     },
-    "Page edit page loaded"
+    "Page edit page loaded",
   );
 
   return (

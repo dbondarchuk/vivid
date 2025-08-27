@@ -53,7 +53,7 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
 
         // Copy all stylesheets from parent document
         const parentStylesheets = document.querySelectorAll(
-          'link[rel="stylesheet"], style'
+          'link[rel="stylesheet"], style',
         );
         parentStylesheets.forEach((stylesheet) => {
           if (stylesheet.tagName === "LINK") {
@@ -122,7 +122,7 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
 
         // Copy Tailwind CSS if it exists in parent
         const tailwindScript = document.querySelector(
-          'script[src*="tailwindcss"]'
+          'script[src*="tailwindcss"]',
         );
         if (tailwindScript) {
           const script = iframeDoc.createElement("script");
@@ -277,7 +277,7 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
       `}</style>
       </>
     );
-  }
+  },
 );
 
 // Component to render React content into iframe
@@ -326,6 +326,6 @@ const IframePortal: React.FC<IframePortalProps> = ({ document, children }) => {
       `}</style>
       {children}
     </>,
-    rootElement
+    rootElement,
   );
 };

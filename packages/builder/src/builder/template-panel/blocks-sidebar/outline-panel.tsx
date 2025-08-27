@@ -27,7 +27,7 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
     const children = useBlockChildrenIds(blockId);
     const childrenIds = useMemo(
       () => Object.values(children || {}).flat(),
-      [children]
+      [children],
     );
 
     // Auto-scroll to outline item when it becomes selected
@@ -68,7 +68,7 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
           className={cn(
             "flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground",
             isSelected ? "bg-accent text-accent-foreground" : "text-foreground",
-            !isVisible && "hidden"
+            !isVisible && "hidden",
           )}
           style={{
             marginLeft: !searchQuery ? `${depth * 8}px` : undefined,
@@ -101,7 +101,7 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
         )}
       </>
     );
-  }
+  },
 );
 
 export const OutlinePanel = () => {

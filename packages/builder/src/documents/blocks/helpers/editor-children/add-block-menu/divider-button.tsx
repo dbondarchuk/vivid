@@ -41,7 +41,7 @@ export const DividerButton: React.FC<{ size?: "small" | "default" }> = ({
           size="icon"
           className={cn(
             "animate-in absolute -top-3 left-1/2 -translate-x-2 z-30 hover:z-[60] text-secondary-foreground opacity-0 transition-all hover:opacity-100",
-            size === "small" && "w-4 h-4"
+            size === "small" && "w-4 h-4",
           )}
         >
           <Plus fontSize="small" size={16} />

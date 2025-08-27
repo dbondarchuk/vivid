@@ -5,6 +5,7 @@ import { Combobox } from "@vivid/ui";
 import { Clock, Timer } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
+import { RawNumberInput } from "../../../../style-inputs/base/raw-number-input";
 import {
   AnimationSchema,
   AnimationStyleConfiguration,
@@ -19,7 +20,6 @@ import {
   animationTimingFunctionKeyMap,
   animationTimingFunctionKeys,
 } from "./schema";
-import { RawNumberInput } from "../../../../style-inputs/base/raw-number-input";
 
 export const AnimationConfiguration = ({
   value,
@@ -98,7 +98,7 @@ export const AnimationConfiguration = ({
           values={animationNameKeys.map((animation) => ({
             value: animation,
             label: t(
-              `pageBuilder.styles.animation.${animationNameKeyMap[animation]}`
+              `pageBuilder.styles.animation.${animationNameKeyMap[animation]}`,
             ),
           }))}
           value={value?.name || "none"}
@@ -136,7 +136,7 @@ export const AnimationConfiguration = ({
           values={animationIterationCountKeys.map((mode) => ({
             value: mode,
             label: t(
-              `pageBuilder.styles.animationKeywords.${animationIterationCountKeyMap[mode]}`
+              `pageBuilder.styles.animationKeywords.${animationIterationCountKeyMap[mode]}`,
             ),
           }))}
           value={isCustomIteration ? "custom" : "infinite"}
@@ -174,7 +174,7 @@ export const AnimationConfiguration = ({
           values={animationDirectionKeys.map((direction) => ({
             value: direction,
             label: t(
-              `pageBuilder.styles.animationDirection.${animationDirectionKeyMap[direction]}`
+              `pageBuilder.styles.animationDirection.${animationDirectionKeyMap[direction]}`,
             ),
           }))}
           value={value?.direction || "normal"}
@@ -193,7 +193,7 @@ export const AnimationConfiguration = ({
           values={animationTimingFunctionKeys.map((timing) => ({
             value: timing,
             label: t(
-              `pageBuilder.styles.animationTimingFunction.${animationTimingFunctionKeyMap[timing]}`
+              `pageBuilder.styles.animationTimingFunction.${animationTimingFunctionKeyMap[timing]}`,
             ),
           }))}
           value={value?.timingFunction || "ease"}
@@ -212,7 +212,7 @@ export const AnimationConfiguration = ({
           values={animationFillModeKeys.map((fillMode) => ({
             value: fillMode,
             label: t(
-              `pageBuilder.styles.animationFillMode.${animationFillModeKeyMap[fillMode]}`
+              `pageBuilder.styles.animationFillMode.${animationFillModeKeyMap[fillMode]}`,
             ),
           }))}
           value={value?.fillMode || "none"}

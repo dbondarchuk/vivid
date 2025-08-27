@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing calendar API request"
+    "Processing calendar API request",
   );
 
   const searchParams = request.nextUrl.searchParams;
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     logger.warn({ startStr, endStr }, "Missing required date range parameters");
     return NextResponse.json(
       { error: "Start and end dates are required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       start: startStr,
       end: endStr,
     },
-    "Fetching calendar data"
+    "Fetching calendar data",
   );
 
   const start = DateTime.fromISO(startStr);
@@ -42,22 +42,22 @@ export async function GET(request: NextRequest) {
   if (!start.isValid || !end.isValid)
     return NextResponse.json(
       { error: "Start and End must be dates in ISO format" },
-      { status: 400 }
+      { status: 400 },
     );
 
   const statuses: AppointmentStatus[] = appointmentStatuses.filter(
-    (s) => includeDeclined || s !== "declined"
+    (s) => includeDeclined || s !== "declined",
   );
 
   const [events, schedule] = await Promise.all([
     ServicesContainer.EventsService().getEvents(
       start.toJSDate(),
       end.toJSDate(),
-      statuses
+      statuses,
     ),
     ServicesContainer.ScheduleService().getSchedule(
       start.toJSDate(),
-      end.toJSDate()
+      end.toJSDate(),
     ),
   ]);
 
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
       start: startStr,
       end: endStr,
     },
-    "Successfully retrieved calendar data"
+    "Successfully retrieved calendar data",
   );
 
   return NextResponse.json({

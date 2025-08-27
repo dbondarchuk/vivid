@@ -39,25 +39,25 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       fetchTitle: i18n("availability_fetch_failed_title"),
       fetchDescription: i18n("availability_fetch_failed_description"),
       fetchPaymentInformationTitle: i18n(
-        "payment_information_fetch_failed_title"
+        "payment_information_fetch_failed_title",
       ),
       fetchPaymentInformationDescription: i18n(
-        "payment_information_fetch_failed_description"
+        "payment_information_fetch_failed_description",
       ),
       submitTitle: i18n("submit_event_failed_title"),
       submitDescription: i18n("submit_event_failed_description"),
       timeNotAvailableDescription: i18n(
-        "submit_event_failed_time_not_available_description"
+        "submit_event_failed_time_not_available_description",
       ),
     }),
-    [i18n]
+    [i18n],
   );
 
   const topRef = React.createRef<HTMLDivElement>();
 
   const appointmentOptionDuration = props.appointmentOption.duration;
   const [duration, setDuration] = React.useState<number | undefined>(
-    appointmentOptionDuration
+    appointmentOptionDuration,
   );
 
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
@@ -75,7 +75,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
   const [step, setStep] = React.useState<StepType>(initialStep);
   const [dateTime, setDateTime] = React.useState<DateTime | undefined>(
-    undefined
+    undefined,
   );
 
   const [selectedAddons, setSelectedAddons] = React.useState<
@@ -93,7 +93,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       ...map,
       [field.id]: !!map[field.id] || !!field.required,
     }),
-    {} as Record<string, boolean>
+    {} as Record<string, boolean>,
   );
 
   const formFields = Object.entries(fieldsIdsRequired)
@@ -122,7 +122,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       duration +
       (selectedAddons || []).reduce(
         (sum, addon) => sum + (addon.duration || 0),
-        0
+        0,
       )
     );
   };
@@ -136,7 +136,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
     try {
       const response = await fetch(
-        `/api/availability?duration=${getTotalDuration()}`
+        `/api/availability?duration=${getTotalDuration()}`,
       );
 
       if (response.status >= 400) throw new Error(response.statusText);
@@ -166,7 +166,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           minute: dateTime.time.minute,
           second: 0,
         },
-        { zone: dateTime.timeZone }
+        { zone: dateTime.timeZone },
       )
         .toUTC()
         .toJSDate(),
@@ -183,7 +183,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
             ...obj,
             [cur[0]]: cur[1],
           }),
-          {} as AppointmentFields
+          {} as AppointmentFields,
         ),
     };
   };
@@ -207,12 +207,12 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           method: intentId ? "POST" : "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(request),
-        }
+        },
       );
 
       if (response.status >= 400) {
         throw new Error(
-          `Failed to payment information: ${response.status}: ${await response.text()}`
+          `Failed to payment information: ${response.status}: ${await response.text()}`,
         );
       }
 
@@ -239,7 +239,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
       formData.append("json", JSON.stringify(eventBody));
 
       const files = Object.entries(fields).filter(
-        ([_, value]) => (value as any) instanceof File
+        ([_, value]) => (value as any) instanceof File,
       );
 
       for (const [fileField, file] of files) {
@@ -278,7 +278,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
 
         document.cookie = `appointment_id=${encodeURIComponent(
-          id
+          id,
         )}; expires=${expireDate.toJSDate().toUTCString()};`;
 
         router.push(props.successPage);

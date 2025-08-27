@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing customers API request"
+    "Processing customers API request",
   );
 
   const loader = createLoader(searchParams);
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       offset,
       priorityIds,
     },
-    "Fetching customers with parameters"
+    "Fetching customers with parameters",
   );
 
   const res = await ServicesContainer.CustomersService().getCustomers({
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       total: res.total,
       count: res.items.length,
     },
-    "Successfully retrieved customers"
+    "Successfully retrieved customers",
   );
 
   return NextResponse.json(res);

@@ -1,8 +1,8 @@
-import { Move } from "lucide-react";
-import { Combobox } from "@vivid/ui";
 import { useI18n } from "@vivid/i18n";
-import { StyleDefinition } from "../../types";
+import { Combobox } from "@vivid/ui";
+import { Move } from "lucide-react";
 import { z } from "zod";
+import { StyleDefinition } from "../../types";
 
 const transformKeys = [
   "none",
@@ -59,7 +59,7 @@ export const transformStyle = {
         values={transformKeys.map((transform) => ({
           value: transform,
           label: t(
-            `pageBuilder.styles.transform.${transformKeyMap[transform]}`
+            `pageBuilder.styles.transform.${transformKeyMap[transform]}`,
           ),
         }))}
         value={value}

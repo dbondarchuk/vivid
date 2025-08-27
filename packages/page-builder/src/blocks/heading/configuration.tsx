@@ -13,11 +13,11 @@ export const HeadingConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<HeadingProps>) => {
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as HeadingProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as HeadingProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
     const t = useI18n("builder");
 
@@ -47,5 +47,5 @@ export const HeadingConfiguration = deepMemo(
         />
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

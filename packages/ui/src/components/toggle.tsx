@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 import { cn } from "../utils";
 import { withTooltip } from "./tooltip";
 
@@ -25,7 +25,7 @@ export const toggleVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export const Toggle = withTooltip(
@@ -40,5 +40,5 @@ export const Toggle = withTooltip(
       className={cn(toggleVariants({ variant, size, className }))}
       {...props}
     />
-  ))
+  )),
 );

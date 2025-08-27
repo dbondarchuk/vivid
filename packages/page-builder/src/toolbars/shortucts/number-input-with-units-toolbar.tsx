@@ -19,10 +19,10 @@ import {
 } from "@vivid/ui";
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
+import { ShortcutWithNumberWithUnit } from "../../shortcuts";
 import { baseUnitConfigs } from "../../style-inputs/base/raw-number-input-with-units";
 import { BaseStyleDictionary } from "../../style/types";
 import { NumberValueWithUnit, Unit, units } from "../../style/zod";
-import { ShortcutWithNumberWithUnit } from "../../shortcuts";
 
 export interface NumberWithUnitShortcutToolbarItem {
   shortcut: ShortcutWithNumberWithUnit<BaseStyleDictionary>;
@@ -100,7 +100,7 @@ export const NumberInputWithUnitsToolbarMenu = ({
 
   const handleDeltaChange = (delta: number) => {
     const newSize = parseFloat(
-      Number((currentNumericValue?.value ?? 0) + delta).toFixed(10)
+      Number((currentNumericValue?.value ?? 0) + delta).toFixed(10),
     );
     handleInputChange(newSize);
   };
@@ -121,7 +121,7 @@ export const NumberInputWithUnitsToolbarMenu = ({
             <PopoverTrigger asChild>
               <input
                 className={cn(
-                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-full w-10 shrink-0 bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted"
+                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-full w-10 shrink-0 bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted",
                 )}
                 value={currentNumericValue?.value ?? ""}
                 onBlur={() => {
@@ -152,7 +152,7 @@ export const NumberInputWithUnitsToolbarMenu = ({
                 <button
                   key={option}
                   className={cn(
-                    "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent"
+                    "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent",
                   )}
                   onClick={() => {
                     handleInputChange(option);
@@ -212,11 +212,11 @@ export const NumberInputWithUnitsToolbarMenu = ({
 export const createNumberWithUnitToolbarItem = <T extends BaseStyleDictionary>(
   shortcut: ShortcutWithNumberWithUnit<T>,
   data: any,
-  setData: (data: any) => void
+  setData: (data: any) => void,
 ): NumberWithUnitShortcutToolbarItem => {
   // Get current numeric value from the target style
   const currentStyle = data.style?.[shortcut.targetStyle]?.find(
-    (s: any) => !s.breakpoint?.length && !s.state?.length
+    (s: any) => !s.breakpoint?.length && !s.state?.length,
   );
 
   const currentNumericValue: NumberValueWithUnit | null =

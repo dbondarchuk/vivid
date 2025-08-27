@@ -81,14 +81,14 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
     try {
       const domRange = ReactEditor.toDOMRange(
         editor as unknown as ReactEditor,
-        editor.selection
+        editor.selection,
       );
 
       const rect = domRange.getBoundingClientRect();
 
       const editorContainer = ReactEditor.toDOMNode(
         editor as unknown as ReactEditor,
-        editor.children[0]
+        editor.children[0],
       ).parentElement;
 
       if (!editorContainer) return;

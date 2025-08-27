@@ -18,7 +18,7 @@ export type ImageStylesSchema = {
 
 export const getDefaults = (
   { props, style }: ImageProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): DefaultCSSProperties<ImageStylesSchema> => ({
   display: "inline-block",
   textDecoration: "none",

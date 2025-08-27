@@ -2,11 +2,7 @@ import { ReaderBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
-import {
-  DefaultHeadingLevel,
-  HeadingPropsDefaults,
-  HeadingReaderProps,
-} from "./schema";
+import { DefaultHeadingLevel, HeadingReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
 export const Heading = ({

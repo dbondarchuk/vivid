@@ -16,19 +16,19 @@ export default class TextMessageResenderConnectedApp
   implements IConnectedApp, ITextMessageResponder
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "TextMessageResenderConnectedApp"
+    "TextMessageResenderConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: TextMessageResenderConfiguration
+    data: TextMessageResenderConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, phone: data?.phone },
-      "Processing text message resender configuration request"
+      "Processing text message resender configuration request",
     );
 
     try {
@@ -44,14 +44,14 @@ export default class TextMessageResenderConnectedApp
 
       logger.info(
         { appId: appData._id, status: status.status },
-        "Successfully configured text message resender"
+        "Successfully configured text message resender",
       );
 
       return status;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error processing text message resender configuration"
+        "Error processing text message resender configuration",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -70,7 +70,7 @@ export default class TextMessageResenderConnectedApp
 
   public async respond(
     appData: ConnectedAppData<TextMessageResenderConfiguration>,
-    textMessageReply: TextMessageReply
+    textMessageReply: TextMessageReply,
   ): Promise<RespondResult | null> {
     const logger = this.loggerFactory("respond");
     logger.debug(
@@ -81,7 +81,7 @@ export default class TextMessageResenderConnectedApp
         message: textMessageReply.message,
         hasData: !!textMessageReply.data.data?.length,
       },
-      "Processing text message resender reply"
+      "Processing text message resender reply",
     );
 
     try {
@@ -99,10 +99,10 @@ export default class TextMessageResenderConnectedApp
             from: reply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
             targetPhone: textMessageReply.data.data.replace(
               /(\d{3})\d{3}(\d{4})/,
-              "$1***$2"
+              "$1***$2",
             ),
           },
-          "Processing reply from user - resending to customer"
+          "Processing reply from user - resending to customer",
         );
 
         this.props.services.NotificationService().sendTextMessage({
@@ -120,7 +120,7 @@ export default class TextMessageResenderConnectedApp
 
         logger.info(
           { appId: appData._id, appointmentId: reply.data.appointmentId },
-          "Successfully resent user reply to customer"
+          "Successfully resent user reply to customer",
         );
 
         return {
@@ -136,7 +136,7 @@ export default class TextMessageResenderConnectedApp
           from: reply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
           customerName: customer?.name,
         },
-        "Processing reply from customer - resending to user"
+        "Processing reply from customer - resending to user",
       );
 
       const args = getArguments({
@@ -153,14 +153,14 @@ export default class TextMessageResenderConnectedApp
         TextMessageResenderMessages[config.general.language]
           .resendToUserFromCustomer ??
           TextMessageResenderMessages["en"].resendToUserFromCustomer,
-        args
+        args,
       );
 
       const phone = appData?.data?.phone || config.general.phone;
       if (!phone) {
         logger.warn(
           { appId: appData._id, appointmentId: reply.data.appointmentId },
-          "Phone field not found for owner notification"
+          "Phone field not found for owner notification",
         );
 
         return null;
@@ -173,7 +173,7 @@ export default class TextMessageResenderConnectedApp
           phone: phone.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
           messageLength: body.length,
         },
-        "Sending customer reply to user"
+        "Sending customer reply to user",
       );
 
       this.props.services.NotificationService().sendTextMessage({
@@ -191,7 +191,7 @@ export default class TextMessageResenderConnectedApp
 
       logger.info(
         { appId: appData._id, appointmentId: reply.data.appointmentId },
-        "Successfully resent customer reply to user"
+        "Successfully resent customer reply to user",
       );
 
       return {
@@ -205,7 +205,7 @@ export default class TextMessageResenderConnectedApp
           appointmentId: textMessageReply.data?.appointmentId,
           error,
         },
-        "Error processing text message resender reply"
+        "Error processing text message resender reply",
       );
 
       this.props.update({

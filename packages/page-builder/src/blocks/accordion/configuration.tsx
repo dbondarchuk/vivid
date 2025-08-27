@@ -18,11 +18,11 @@ export const AccordionConfiguration = deepMemo(
     const t = useI18n("builder");
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as AccordionProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as AccordionProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -93,5 +93,5 @@ export const AccordionConfiguration = deepMemo(
         />
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

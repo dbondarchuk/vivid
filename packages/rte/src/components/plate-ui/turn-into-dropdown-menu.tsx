@@ -130,9 +130,9 @@ export function TurnIntoDropdownMenu({
   const selectedItem = React.useMemo(
     () =>
       turnIntoItems.find(
-        (item) => item.value === (value ?? ParagraphPlugin.key)
+        (item) => item.value === (value ?? ParagraphPlugin.key),
       ) ?? turnIntoItems[0],
-    [value]
+    [value],
   );
 
   return (

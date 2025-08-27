@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing schedule API request"
+    "Processing schedule API request",
   );
 
   const searchParams = request.nextUrl.searchParams;
@@ -30,13 +30,13 @@ export async function GET(request: NextRequest) {
     logger.warn({ startStr, endStr }, "Invalid date range parameters");
     return NextResponse.json(
       { error: "Start and End must be dates in ISO format" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const response = await ServicesContainer.ScheduleService().getSchedule(
     start.toJSDate(),
-    end.toJSDate()
+    end.toJSDate(),
   );
 
   logger.debug(
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       start: startStr,
       end: endStr,
     },
-    "Successfully retrieved schedule"
+    "Successfully retrieved schedule",
   );
 
   return NextResponse.json(response);

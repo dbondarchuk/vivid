@@ -4,7 +4,7 @@ import Color from "color";
 export const getColorsCss = (
   colors?: StylingConfiguration["colors"],
   prefix?: string,
-  replaceOriginal?: boolean
+  replaceOriginal?: boolean,
 ) => {
   return (colors || [])
     .filter((color) => !!color.value)

@@ -49,17 +49,17 @@ const buttonClasses = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export type ButtonVariant = VariantProps<typeof buttonClasses>["variant"];
 export const ButtonVariants = Object.keys(
-  buttonVariants
+  buttonVariants,
 ) as (keyof typeof buttonVariants)[];
 
 export type ButtonSize = VariantProps<typeof buttonClasses>["size"];
 export const ButtonSizes = Object.keys(
-  buttonSizes
+  buttonSizes,
 ) as (keyof typeof buttonSizes)[];
 
 export type ButtonVariants = VariantProps<typeof buttonClasses>;
@@ -84,7 +84,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       type = "button",
       ...props
     },
-    ref
+    ref,
   ) => {
     const Comp = asChild ? Slot : "button";
     return (
@@ -92,14 +92,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           textVariants({ font, fontSize, fontWeight }),
           buttonClasses({ variant, size }),
-          className
+          className,
         )}
         type={type}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";
 

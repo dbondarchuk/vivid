@@ -20,7 +20,7 @@ import {
 import { Merge } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { deleteSelected, mergeSelected } from "../actions";
+import { mergeSelected } from "../actions";
 
 export const MergeSelectedCustomersButton: React.FC<{
   selected: CustomerListModel[];
@@ -40,12 +40,12 @@ export const MergeSelectedCustomersButton: React.FC<{
       await toastPromise(
         mergeSelected(
           targetCustomerId,
-          selected.map((customer) => customer._id)
+          selected.map((customer) => customer._id),
         ),
         {
           success: t("customers.table.merge.success"),
           error: t("customers.table.merge.error"),
-        }
+        },
       );
 
       router.refresh();

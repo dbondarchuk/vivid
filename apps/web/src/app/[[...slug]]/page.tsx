@@ -3,7 +3,6 @@ import { getLoggerFactory } from "@vivid/logger";
 import { Styling } from "@vivid/page-builder";
 import { Header, PageReader } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
-import { cn } from "@vivid/ui";
 import { formatArguments, setPageData } from "@vivid/utils";
 import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
@@ -36,7 +35,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
   if (!slug || !slug.length) {
     logger.debug(
       { originalSlug: slug },
-      "No slug provided, defaulting to home"
+      "No slug provided, defaulting to home",
     );
     slug = "home";
   }
@@ -67,7 +66,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
         publishDate: page?.publishDate,
         currentDate: new Date().toISOString(),
       },
-      "Page not found or not published"
+      "Page not found or not published",
     );
     throw new NotFoundError("Page not found");
   }
@@ -84,7 +83,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
       pagePublished: page.published,
       publishDate: page.publishDate,
     },
-    "Successfully retrieved page source"
+    "Successfully retrieved page source",
   );
 
   return { page, settings };
@@ -92,7 +91,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
 
 export async function generateMetadata(
   props: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const logger = getLoggerFactory("PageComponent")("generateMetadata");
 
@@ -107,12 +106,12 @@ export async function generateMetadata(
         slug: params.slug,
         preview: searchParams?.preview,
       },
-      "Processing metadata generation request"
+      "Processing metadata generation request",
     );
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview
+      searchParams?.preview,
     );
 
     logger.debug(
@@ -120,7 +119,7 @@ export async function generateMetadata(
         siteTitle: settings.title,
         siteDescription: settings.description?.substring(0, 100) + "...",
       },
-      "Retrieved general configuration"
+      "Retrieved general configuration",
     );
 
     const title = page.doNotCombine?.title
@@ -144,7 +143,7 @@ export async function generateMetadata(
         doNotCombineDescription: page.doNotCombine?.description,
         doNotCombineKeywords: page.doNotCombine?.keywords,
       },
-      "Generated page metadata"
+      "Generated page metadata",
     );
 
     return {
@@ -164,7 +163,7 @@ export async function generateMetadata(
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Error generating page metadata"
+      "Error generating page metadata",
     );
 
     // Return basic metadata on error
@@ -187,7 +186,7 @@ export default async function Page(props: Props) {
     const { styling, social } =
       await ServicesContainer.ConfigurationService().getConfigurations(
         "styling",
-        "social"
+        "social",
       );
 
     logger.debug(
@@ -196,12 +195,12 @@ export default async function Page(props: Props) {
         preview: searchParams?.preview,
         slugLength: params.slug?.length,
       },
-      "Processing page render request"
+      "Processing page render request",
     );
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview
+      searchParams?.preview,
     );
 
     logger.debug(
@@ -211,7 +210,7 @@ export default async function Page(props: Props) {
         pageFullWidth: page.fullWidth,
         contentLength: page.content?.length || 0,
       },
-      "Setting page data and rendering content"
+      "Setting page data and rendering content",
     );
 
     setPageData({
@@ -227,7 +226,7 @@ export default async function Page(props: Props) {
         pageSlug: params.slug?.join("/") || "home",
         preview: searchParams?.preview,
       },
-      "Successfully rendered page"
+      "Successfully rendered page",
     );
 
     const { content, ...rest } = page;
@@ -287,7 +286,7 @@ export default async function Page(props: Props) {
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Error rendering page"
+      "Error rendering page",
     );
 
     if (error instanceof NotFoundError) {

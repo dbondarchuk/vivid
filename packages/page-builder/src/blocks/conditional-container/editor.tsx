@@ -22,7 +22,7 @@ export const ConditionalContainerEditor = ({
                   t("pageBuilder.blocks.conditionalContainer.value")}
               </em>
             ),
-          }
+          },
         )}
       </div>
       <EditorChildren blockId={currentBlock.id} property="props.then" />

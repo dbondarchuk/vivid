@@ -6,7 +6,6 @@ import {
   useIsCurrentBlockOverlay,
   useIsSelectedBlock,
   usePortalContext,
-  useSetCurrentBlockRef,
 } from "@vivid/builder";
 import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
 import { cn, useDebounceCallback } from "@vivid/ui";
@@ -41,7 +40,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
       });
     },
     [dispatchAction, currentBlock],
-    300
+    300,
   );
 
   const className = useClassName();
@@ -65,7 +64,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
           className={cn(
             "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
             className,
-            base?.className
+            base?.className,
           )}
           id={base?.id}
           document={document}

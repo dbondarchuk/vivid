@@ -2,12 +2,12 @@
 
 import { cn } from "@vivid/ui";
 import {
-  ArrowRight,
   ArrowDown,
-  ChevronRight,
+  ArrowRight,
   ChevronDown,
-  Plus,
+  ChevronRight,
   Minus,
+  Plus,
 } from "lucide-react";
 import React, { useState } from "react";
 import { AccordionProps } from "../accordion/schema";
@@ -76,7 +76,7 @@ export const AccordionItemInternal: React.FC<AccordionItemInternalProps> = ({
       <button
         className={cn(
           "w-full p-4 flex items-center justify-between transition-colors hover:bg-secondary hover:text-secondary-foreground cursor-pointer",
-          isOpen && "border-b"
+          isOpen && "border-b",
         )}
         onClick={() => setIsOpen(!isOpen)}
         type="button"
@@ -84,14 +84,14 @@ export const AccordionItemInternal: React.FC<AccordionItemInternalProps> = ({
         <div
           className={cn(
             "flex items-center justify-between w-full",
-            iconPosition === "left" ? "flex-row-reverse" : "flex-row"
+            iconPosition === "left" ? "flex-row-reverse" : "flex-row",
           )}
         >
           <div className="flex-1 text-left">{title}</div>
           <div
             className={cn(
               "flex items-center justify-center transition-transform duration-200",
-              iconPosition === "left" ? "mr-3" : "ml-3"
+              iconPosition === "left" ? "mr-3" : "ml-3",
             )}
           >
             {getIcon()}

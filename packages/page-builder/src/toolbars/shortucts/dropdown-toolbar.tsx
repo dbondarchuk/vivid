@@ -29,7 +29,7 @@ export interface ShortcutDropdownToolbarItem {
 // Get current value for this shortcut
 export const getCurrentValue = <T extends BaseStyleDictionary>(
   shortcut: Extract<Shortcut<T>, { options: ShortcutOption<T>[] }>,
-  data: any
+  data: any,
 ): string | undefined => {
   return getShortcutCurrentValue(shortcut, data.style, data.props);
 };
@@ -39,10 +39,10 @@ export const applyShortcut = <T extends BaseStyleDictionary>(
   shortcut: Extract<Shortcut<T>, { options: ShortcutOption<T>[] }>,
   data: any,
   setData: (data: any) => void,
-  optionValue: string
+  optionValue: string,
 ) => {
   const selectedOption = shortcut.options.find(
-    (opt) => opt.value === optionValue
+    (opt) => opt.value === optionValue,
   );
   if (!selectedOption) return;
 
@@ -57,7 +57,7 @@ export const applyShortcut = <T extends BaseStyleDictionary>(
 export const createDropdownToolbarItem = <T extends BaseStyleDictionary>(
   shortcut: Extract<Shortcut<T>, { options: ShortcutOption<T>[] }>,
   data: any,
-  setData: (data: any) => void
+  setData: (data: any) => void,
 ): ShortcutDropdownToolbarItem => {
   return {
     shortcut,

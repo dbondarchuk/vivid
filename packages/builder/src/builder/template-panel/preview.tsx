@@ -22,5 +22,5 @@ export const Preview = memo(
         />
       </TabsContent>
     );
-  }
+  },
 );

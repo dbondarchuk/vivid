@@ -14,7 +14,7 @@ export async function createPageHeader(pageHeader: PageHeaderUpdateModel) {
     {
       pageHeaderName: pageHeader.name,
     },
-    "Creating new page"
+    "Creating new page",
   );
 
   try {
@@ -26,7 +26,7 @@ export async function createPageHeader(pageHeader: PageHeaderUpdateModel) {
         pageId: result._id,
         pageHeaderName: pageHeader.name,
       },
-      "Page header created successfully"
+      "Page header created successfully",
     );
 
     return result;
@@ -36,7 +36,7 @@ export async function createPageHeader(pageHeader: PageHeaderUpdateModel) {
         pageHeaderName: pageHeader.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create page header"
+      "Failed to create page header",
     );
     throw error;
   }
@@ -44,7 +44,7 @@ export async function createPageHeader(pageHeader: PageHeaderUpdateModel) {
 
 export async function updatePageHeader(
   _id: string,
-  update: PageHeaderUpdateModel
+  update: PageHeaderUpdateModel,
 ) {
   const actionLogger = logger("updatePageHeader");
 
@@ -53,7 +53,7 @@ export async function updatePageHeader(
       pageId: _id,
       pageHeaderName: update.name,
     },
-    "Updating page"
+    "Updating page",
   );
 
   try {
@@ -64,7 +64,7 @@ export async function updatePageHeader(
         pageId: _id,
         pageHeaderName: update.name,
       },
-      "Page header updated successfully"
+      "Page header updated successfully",
     );
 
     return okStatus;
@@ -75,7 +75,7 @@ export async function updatePageHeader(
         pageHeaderName: update.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update page header"
+      "Failed to update page header",
     );
     throw error;
   }
@@ -88,7 +88,7 @@ export async function deletePageHeader(_id: string) {
     {
       pageId: _id,
     },
-    "Deleting page header"
+    "Deleting page header",
   );
 
   try {
@@ -105,7 +105,7 @@ export async function deletePageHeader(_id: string) {
         pageId: _id,
         pageHeaderName: pageHeader.name,
       },
-      "Page header deleted successfully"
+      "Page header deleted successfully",
     );
 
     return okStatus;
@@ -115,7 +115,7 @@ export async function deletePageHeader(_id: string) {
         pageId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete page header"
+      "Failed to delete page header",
     );
     throw error;
   }
@@ -129,7 +129,7 @@ export async function deleteSelectedPageHeaders(ids: string[]) {
       pageIds: ids,
       count: ids.length,
     },
-    "Deleting selected page headers"
+    "Deleting selected page headers",
   );
 
   try {
@@ -140,7 +140,7 @@ export async function deleteSelectedPageHeaders(ids: string[]) {
         pageIds: ids,
         count: ids.length,
       },
-      "Selected page headers deleted successfully"
+      "Selected page headers deleted successfully",
     );
 
     return okStatus;
@@ -151,7 +151,7 @@ export async function deleteSelectedPageHeaders(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected page headers"
+      "Failed to delete selected page headers",
     );
     throw error;
   }
@@ -165,14 +165,14 @@ export async function checkUniquePageHeaderName(name: string, _id?: string) {
       pageHeaderName: name,
       excludeId: _id,
     },
-    "Checking page header name uniqueness"
+    "Checking page header name uniqueness",
   );
 
   try {
     const result =
       await ServicesContainer.PagesService().checkUniquePageHeaderName(
         name,
-        _id
+        _id,
       );
 
     actionLogger.debug(
@@ -181,7 +181,7 @@ export async function checkUniquePageHeaderName(name: string, _id?: string) {
         excludeId: _id,
         isUnique: result,
       },
-      "Page header name uniqueness check completed"
+      "Page header name uniqueness check completed",
     );
 
     return result;
@@ -192,7 +192,7 @@ export async function checkUniquePageHeaderName(name: string, _id?: string) {
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check page header name uniqueness"
+      "Failed to check page header name uniqueness",
     );
     throw error;
   }

@@ -32,7 +32,7 @@ export const pageSchema = z.object({
 
 export const getPageSchemaWithUniqueCheck = (
   uniqueSlugCheckFn: (slug: string, id?: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return z.object({
     ...pageSchema.shape,

@@ -3,10 +3,12 @@
 import { Check } from "lucide-react";
 import * as React from "react";
 
+import { useI18n } from "@vivid/i18n";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import { useDebounce } from "../hooks";
 import { cn } from "../utils";
+import { ButtonProps } from "./button";
 import { ComboboxTrigger, IComboboxItem, Loader } from "./combobox";
 import {
   Command,
@@ -17,8 +19,6 @@ import {
   CommandList,
 } from "./command";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { ButtonProps } from "./button";
-import { useI18n } from "@vivid/i18n";
 
 type BaseComboboAsyncProps = {
   placeholder?: string;
@@ -27,7 +27,7 @@ type BaseComboboAsyncProps = {
   value?: string;
   fetchItems: (
     page: number,
-    search?: string
+    search?: string,
   ) => Promise<{
     items: IComboboxItem[];
     hasMore: boolean;
@@ -89,7 +89,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
   // Get selected item label
   const selectedItem = React.useMemo(
     () => items.find((item) => item.value === value),
-    [items, value]
+    [items, value],
   );
 
   // Reset when search changes
@@ -180,7 +180,7 @@ export const ComboboxAsync: React.FC<ComboboAsyncProps> = ({
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === item.value ? "opacity-100" : "opacity-0"
+                        value === item.value ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {item.label}

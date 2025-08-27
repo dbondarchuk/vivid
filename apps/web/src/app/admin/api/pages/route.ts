@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing pages API request"
+    "Processing pages API request",
   );
 
   const loader = createLoader(searchParams);
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       sort,
       offset,
     },
-    "Fetching pages with parameters"
+    "Fetching pages with parameters",
   );
 
   const response = await ServicesContainer.PagesService().getPages({
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       total: response.total,
       count: response.items.length,
     },
-    "Successfully retrieved pages"
+    "Successfully retrieved pages",
   );
 
   const items = response.items.map(
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
         ...page,
         slug: page.slug === "home" ? "" : page.slug,
         url: `${request.nextUrl.origin}/${page.slug === "home" ? "" : page.slug}`,
-      }) satisfies PageListModelWithUrl
+      }) satisfies PageListModelWithUrl,
   );
 
   return NextResponse.json({ ...response, items });

@@ -77,7 +77,7 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
       toast.error(
         t("calDav.toast.failed_to_fetch_calendars", {
           serverUrl: form.getValues("serverUrl"),
-        })
+        }),
       );
       console.error(error);
     } finally {

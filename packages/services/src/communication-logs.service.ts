@@ -20,7 +20,7 @@ export const LOG_COLLECTION_NAME = "communication-logs";
 
 export class CommunicationLogsService implements ICommunicationLogsService {
   protected readonly loggerFactory = getLoggerFactory(
-    "CommunicationLogsService"
+    "CommunicationLogsService",
   );
 
   public async log(log: Omit<CommunicationLogEntity, "dateTime" | "_id">) {
@@ -65,7 +65,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
       range?: DateRange;
       customerId?: string | string[];
       appointmentId?: string;
-    }
+    },
   ): Promise<WithTotal<CommunicationLog>> {
     const logger = this.loggerFactory("getCommunicationLogs");
     logger.debug({ query }, "Getting communication logs");
@@ -77,7 +77,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { dateTime: -1 };
 
     const filter: Filter<CommunicationLog> = {};
@@ -132,7 +132,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
         "text",
         "appointment.option.name",
         "customer.name",
-        "subject"
+        "subject",
       );
 
       filter.$or = queries;
@@ -224,7 +224,7 @@ export class CommunicationLogsService implements ICommunicationLogsService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched communication logs"
+      "Fetched communication logs",
     );
 
     return response;

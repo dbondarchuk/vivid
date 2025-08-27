@@ -107,8 +107,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  useOpenState,
   ToolbarButton,
+  useOpenState,
 } from "@vivid/ui";
 import { EditorStatic } from "./editor-static";
 import { EquationElementStatic } from "./equation-element-static";
@@ -126,7 +126,7 @@ export function ExportToolbarButton({ children, ...props }: DropdownMenuProps) {
     const style = document.createElement("style");
     document.head.append(style);
     style.sheet?.insertRule(
-      "body > div:last-child img { display: inline-block !important; }"
+      "body > div:last-child img { display: inline-block !important; }",
     );
 
     const canvas = await html2canvas(editor.api.toDOMNode(editor)!);

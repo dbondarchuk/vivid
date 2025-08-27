@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import ReactPlayer from "react-player";
 
@@ -89,7 +88,7 @@ export const MediaVideoElement = withHOC(
                         "[&_>_.lty-playbtn]:before:absolute [&_>_.lty-playbtn]:before:top-1/2 [&_>_.lty-playbtn]:before:left-1/2 [&_>_.lty-playbtn]:before:[transform:translate3d(-50%,-50%,0)]",
                         "[&.lyt-activated]:cursor-[unset]",
                         "[&.lyt-activated]:before:pointer-events-none [&.lyt-activated]:before:opacity-0",
-                        "[&.lyt-activated_>_.lty-playbtn]:pointer-events-none [&.lyt-activated_>_.lty-playbtn]:opacity-0!"
+                        "[&.lyt-activated_>_.lty-playbtn]:pointer-events-none [&.lyt-activated_>_.lty-playbtn]:opacity-0!",
                       )}
                     />
                   </div>
@@ -119,6 +118,6 @@ export const MediaVideoElement = withHOC(
           {children}
         </PlateElement>
       );
-    }
-  )
+    },
+  ),
 );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { Asset } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,7 +19,6 @@ import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { deleteSelectedAssets } from "../actions";
-import { Asset } from "@vivid/types";
 
 export const DeleteSelectedAssetsButton: React.FC<{
   selected: Asset[];
@@ -38,7 +38,7 @@ export const DeleteSelectedAssetsButton: React.FC<{
         {
           success: t("assets.table.delete.success"),
           error: t("assets.table.delete.error"),
-        }
+        },
       );
 
       router.refresh();

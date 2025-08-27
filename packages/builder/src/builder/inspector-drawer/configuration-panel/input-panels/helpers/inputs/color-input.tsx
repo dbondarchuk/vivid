@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Sketch } from "@uiw/react-color";
 import {
   Button,
   Label,
@@ -8,7 +9,6 @@ import {
   PopoverTrigger,
 } from "@vivid/ui";
 import { Plus } from "lucide-react";
-import { Sketch } from "@uiw/react-color";
 import { ResetButton } from "./reset-button";
 
 type Props =

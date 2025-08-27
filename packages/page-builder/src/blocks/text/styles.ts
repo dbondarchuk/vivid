@@ -9,7 +9,7 @@ export const zStyles = getStylesSchema(styles);
 
 export const getDefaults = (
   { props, style }: TextProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): DefaultCSSProperties<AllStylesSchemas> => ({
   fontSize: {
     value: 1,

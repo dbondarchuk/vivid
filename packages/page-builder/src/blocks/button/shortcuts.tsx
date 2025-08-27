@@ -2,14 +2,14 @@ import {
   AlignLeft,
   MoveDiagonal2,
   MoveHorizontal,
-  SquareRoundCorner,
   Palette,
+  SquareRoundCorner,
 } from "lucide-react";
 import { Shortcut } from "../../shortcuts";
-import { AllStylesSchemas, COLORS } from "../../style";
 import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
-import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
 import { colorShortcut } from "../../shortcuts/common/color";
+import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
+import { AllStylesSchemas, COLORS } from "../../style";
 
 export const buttonShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

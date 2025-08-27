@@ -38,15 +38,15 @@ export const paymentsConfigurationSchema = z
                 "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.min",
             })
             .int(
-              "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.integer"
+              "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.integer",
             )
             .min(
               1,
-              "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.min"
-            )
+              "configuration.booking.payments.dontRequireIfCompletedMinNumberOfAppointments.min",
+            ),
         ),
       }),
-    ])
+    ]),
   )
   .or(
     z.object({
@@ -55,7 +55,7 @@ export const paymentsConfigurationSchema = z
           message: "configuration.booking.payments.paymentAppId.required",
         })
         .optional(),
-    })
+    }),
   );
 
 export type PaymentsConfiguration = z.infer<typeof paymentsConfigurationSchema>;

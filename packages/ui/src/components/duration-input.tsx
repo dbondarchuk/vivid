@@ -1,9 +1,9 @@
+import { useI18n } from "@vivid/i18n";
 import { durationToTime, timeToDuration } from "@vivid/utils";
 import { Clock } from "lucide-react";
 import React from "react";
-import { Input, InputProps } from "./input";
-import { useI18n } from "@vivid/i18n";
 import { cn } from "../utils/cn";
+import { Input, InputProps } from "./input";
 
 export type DurationInputProps = Omit<
   InputProps,
@@ -49,8 +49,8 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           : {
               hours: value || 0,
               minutes: duration?.minutes || 0,
-            }
-      ) ?? null
+            },
+      ) ?? null,
     );
   };
 
@@ -63,8 +63,8 @@ export const DurationInput: React.FC<DurationInputProps> = ({
           : {
               minutes: value || 0,
               hours: duration?.hours || 0,
-            }
-      ) ?? null
+            },
+      ) ?? null,
     );
   };
 
@@ -98,7 +98,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
   const incrementValue = (
     value: string,
     max: number,
-    setFunction: (value: string) => void
+    setFunction: (value: string) => void,
   ) => {
     const numValue = value === "" ? 0 : Number.parseInt(value, 10);
     setFunction(((numValue + 1) % max).toString().padStart(2, "0"));
@@ -107,7 +107,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
   const decrementValue = (
     value: string,
     max: number,
-    setFunction: (value: string) => void
+    setFunction: (value: string) => void,
   ) => {
     const numValue = value === "" ? 0 : Number.parseInt(value, 10);
     setFunction(((numValue - 1 + max) % max).toString().padStart(2, "0"));
@@ -115,7 +115,7 @@ export const DurationInput: React.FC<DurationInputProps> = ({
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    field: "hours" | "minutes"
+    field: "hours" | "minutes",
   ) => {
     switch (e.key) {
       case "ArrowRight":

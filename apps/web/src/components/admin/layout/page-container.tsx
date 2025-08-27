@@ -1,4 +1,4 @@
-import { ScrollArea, ScrollBar } from "@vivid/ui";
+import { ScrollArea } from "@vivid/ui";
 import React from "react";
 
 export default function PageContainer({

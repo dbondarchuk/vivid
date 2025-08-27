@@ -45,7 +45,7 @@ export const iconMenuItemSchema = baseMenuItemSchema.merge(
   z.object({
     icon: iconsEnum,
     type: menuItemTypesEnum.extract(["icon"]),
-  })
+  }),
 );
 
 export type IconMenuItem = z.infer<typeof iconMenuItemSchema>;
@@ -64,7 +64,7 @@ const textStyleSchema = baseMenuItemSchema.merge(
       .enum([firstTextWeight, ...restTextWeights])
       .nullable()
       .optional(),
-  })
+  }),
 );
 
 export type TextStyle = z.infer<typeof textStyleSchema>;
@@ -82,7 +82,7 @@ export const linkMenuItemSchema = textStyleSchema.merge(
       .nullable()
       .optional(),
     type: menuItemTypesEnum.extract(["link"]),
-  })
+  }),
 );
 
 export type LinkMenuItem = z.infer<typeof linkMenuItemSchema>;
@@ -98,7 +98,7 @@ export const buttonMenuItemSchema = linkMenuItemSchema.merge(
       .nullable()
       .optional(),
     type: menuItemTypesEnum.extract(["button"]),
-  })
+  }),
 );
 
 export type ButtonMenuItem = z.infer<typeof buttonMenuItemSchema>;
@@ -115,7 +115,7 @@ export const subMenuMenuItemSchema = linkMenuItemSchema
         .array()
         .min(1, "configuration.styling.menuItem.submenu.min"),
       type: menuItemTypesEnum.extract(["submenu"]),
-    })
+    }),
   );
 
 export type SubMenuMenuItem = z.infer<typeof subMenuMenuItemSchema>;

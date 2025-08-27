@@ -7,7 +7,7 @@ import { generateId } from "./block-id";
 
 const findChildrenProps = (
   obj: any,
-  parentProps: string[]
+  parentProps: string[],
 ): { children: any; property: string }[] => {
   if (!obj || typeof obj !== "object") return [];
   const result: { children: any; property: string }[] = [];
@@ -54,7 +54,7 @@ export const insertBlockInLevel = (
   block: TEditorBlock,
   newBlock: TEditorBlock,
   property: string | undefined | null,
-  index: number | "last"
+  index: number | "last",
 ) => {
   const prop = property
     ? resolve(block, property, true) || resolve(block, `data.${property}`, true)
@@ -72,7 +72,7 @@ export const insertBlockInLevel = (
 export const moveBlockInLevel = (
   block: TEditorBlock,
   blockId: string,
-  dir: "up" | "down"
+  dir: "up" | "down",
 ) => {
   const childrenProps = findChildrenProp(block.data);
   let index = -1;
@@ -104,7 +104,7 @@ export const moveBlockInLevel = (
 export const swapBlockInLevel = (
   block: TEditorBlock,
   blockId1: string,
-  blockId2: string
+  blockId2: string,
 ) => {
   const childrenProps = findChildrenProp(block.data);
   let index1 = -1;
@@ -136,7 +136,7 @@ export const swapBlockInLevel = (
 export const moveBlockToIndexInLevel = (
   block: TEditorBlock,
   blockId: string,
-  newIndex: number | "last"
+  newIndex: number | "last",
 ) => {
   const childrenProps = findChildrenProp(block.data);
   let index = -1;
@@ -207,12 +207,12 @@ export const cloneBlockInLevel = (block: TEditorBlock, blockId: string) => {
 
 const recursiveFindBlock = (
   block: TEditorBlock,
-  blockId: string
+  blockId: string,
 ): TEditorBlock | null => {
   if (block.id === blockId) return block;
 
   const childrenProps = findChildrenProps(block.data, []).flatMap(
-    (x) => x.children
+    (x) => x.children,
   );
 
   for (const child of childrenProps || []) {
@@ -226,7 +226,7 @@ const recursiveFindBlock = (
 
 const recursiveValidateBlocks = (
   block: TEditorBlock,
-  schemas: BuilderSchema
+  schemas: BuilderSchema,
 ): Record<
   string,
   {
@@ -253,7 +253,7 @@ const recursiveValidateBlocks = (
   }
 
   const childrenProps = findChildrenProps(block.data, []).flatMap(
-    (x) => x.children
+    (x) => x.children,
   );
 
   for (const child of childrenProps || []) {
@@ -268,12 +268,12 @@ const recursiveValidateBlocks = (
 
 const recursiveFindBlockHierarchy = (
   block: TEditorBlock,
-  blockId: string
+  blockId: string,
 ): TEditorBlock[] | null => {
   if (block.id === blockId) return [block];
 
   const childrenProps = findChildrenProps(block.data, []).flatMap(
-    (x) => x.children
+    (x) => x.children,
   );
   for (const child of childrenProps || []) {
     if (!child || !("id" in child)) continue;
@@ -288,7 +288,7 @@ const recursiveFindParentBlock = (
   block: TEditorBlock,
   blockId: string,
   parent: TEditorBlock,
-  parentProperty: string
+  parentProperty: string,
 ): { block: TEditorBlock; property: string } | null => {
   if (block.id === blockId)
     return {
@@ -314,21 +314,21 @@ export const findBlock = (document: TEditorConfiguration, blockId: string) => {
 
 export const validateBlocks = (
   document: TEditorConfiguration,
-  schemas: BuilderSchema
+  schemas: BuilderSchema,
 ) => {
   return recursiveValidateBlocks(document, schemas);
 };
 
 export const findBlockHierarchy = (
   document: TEditorConfiguration,
-  blockId: string
+  blockId: string,
 ) => {
   return recursiveFindBlockHierarchy(document, blockId);
 };
 
 export const findParentBlock = (
   document: TEditorConfiguration,
-  blockId: string
+  blockId: string,
 ) => {
   return recursiveFindParentBlock(document, blockId, document, "");
 };

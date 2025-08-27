@@ -107,7 +107,7 @@ export const AppointmentRescheduleDialog: React.FC<
         {
           success: t("appointments.rescheduleDialog.success"),
           error: t("appointments.rescheduleDialog.error"),
-        }
+        },
       );
 
       router.refresh();
@@ -237,7 +237,7 @@ export const AppointmentRescheduleDialog: React.FC<
                         </div>
                         <FormDescription>
                           {t(
-                            "appointments.rescheduleDialog.confirmOverlapDescription"
+                            "appointments.rescheduleDialog.confirmOverlapDescription",
                           )}
                         </FormDescription>
                       </FormItem>

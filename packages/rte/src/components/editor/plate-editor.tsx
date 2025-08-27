@@ -6,9 +6,9 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { Plate } from "@udecode/plate/react";
 
-import { useCreateEditor } from "./use-create-editor";
-import { Editor, EditorContainer } from "../plate-ui/editor";
 import { Value } from "@udecode/plate";
+import { Editor, EditorContainer } from "../plate-ui/editor";
+import { useCreateEditor } from "./use-create-editor";
 
 export type PlateEditorProps = {
   onChange?: (value: Value) => void;
@@ -35,7 +35,7 @@ export const PlateEditor = forwardRef<HTMLDivElement, PlateEditorProps>(
       id,
       document,
     },
-    ref
+    ref,
   ) => {
     const editor = useCreateEditor(value, { singleLine });
 
@@ -62,5 +62,5 @@ export const PlateEditor = forwardRef<HTMLDivElement, PlateEditorProps>(
         </Plate>
       </DndProvider>
     );
-  }
+  },
 );

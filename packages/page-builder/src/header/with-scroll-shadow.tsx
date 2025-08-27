@@ -20,7 +20,7 @@ export const HeaderWithScrollShadow: React.FC<{
     ...(children.props as {}),
     className: cn(
       (children.props as { className: string })?.className,
-      !top ? "drop-shadow-md" : ""
+      !top ? "drop-shadow-md" : "",
     ),
   } as {});
 

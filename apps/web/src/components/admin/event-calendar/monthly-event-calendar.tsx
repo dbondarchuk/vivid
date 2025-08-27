@@ -1,3 +1,4 @@
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   Button,
   cn,
@@ -7,7 +8,6 @@ import {
   useTimeZone,
 } from "@vivid/ui";
 import { formatTimeLocale, hasSame, parseTime } from "@vivid/utils";
-import { useI18n, useLocale } from "@vivid/i18n";
 
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { DateTime } from "luxon";
@@ -48,12 +48,12 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
   const timeZone = useTimeZone();
 
   const [dates, setDates] = React.useState<Dates>(
-    getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone))
+    getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone)),
   );
 
   React.useEffect(() => {
     setDates(
-      getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone))
+      getDates(DateTime.fromJSDate(date || new Date()).setZone(timeZone)),
     );
   }, [date]);
 
@@ -80,7 +80,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
 
       // Get events for this day
       const dayEvents = (propsEvents || []).filter((event) =>
-        hasSame(DateTime.fromJSDate(event.start), dayClonned, "day")
+        hasSame(DateTime.fromJSDate(event.start), dayClonned, "day"),
       );
 
       const isToday = hasSame(dayClonned, DateTime.now(), "day");
@@ -93,7 +93,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
             "h-32 cursor-pointer border p-1 transition-colors hover:bg-accent/40 relative",
             !hasSame(dayClonned, dates.monthStart, "month") &&
               "bg-muted text-muted-foreground",
-            isToday && "bg-accent/20"
+            isToday && "bg-accent/20",
           )}
           onClick={() => onDateClick?.(dayClonned.toJSDate())}
         >
@@ -101,7 +101,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
             <span
               className={cn(
                 "text-sm font-medium px-1",
-                isToday && "bg-primary text-primary-foreground"
+                isToday && "bg-primary text-primary-foreground",
               )}
             >
               {formattedDate}
@@ -146,7 +146,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
                   className={cn(
                     "text-xs p-1 rounded truncate cursor-pointer text-primary-foreground",
                     EventVariantClasses[event.variant || "primary"] ??
-                      EventVariantClasses.primary
+                      EventVariantClasses.primary,
                   )}
                   onClick={(e) => {
                     onEventClick?.(event);
@@ -163,14 +163,14 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
               </div>
             )} */}
           </div>
-        </div>
+        </div>,
       );
       day = day.plus({ days: 1 });
     }
     rows.push(
       <div key={day.toString()} className="grid grid-cols-7">
         {days}
-      </div>
+      </div>,
     );
     days = [];
   }
@@ -180,7 +180,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
       <div
         className={cn(
           "flex flex-row items-center pb-2 bg-background sticky z-[5] top-0 h-12",
-          disableTimeChange ? "justify-center" : "justify-between"
+          disableTimeChange ? "justify-center" : "justify-between",
         )}
       >
         {!disableTimeChange && (
@@ -191,7 +191,7 @@ export const MonthlyEventCalendar: React.FC<MonthlyEventCalendarProps> = ({
         <div>
           {dates.currentDate.toLocaleString(
             { month: "long", year: "numeric" },
-            { locale }
+            { locale },
           )}
         </div>
         {!disableTimeChange && (

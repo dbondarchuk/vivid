@@ -1,12 +1,12 @@
 import { useI18n } from "@vivid/i18n";
+import { useCallback, useMemo } from "react";
 import {
   useBlocks,
   useDispatchAction,
   useRootBlock,
 } from "../../documents/editor/context";
-import { BaseSidebarPanel } from "./configuration-panel/input-panels/helpers/base-sidebar-panel";
 import { BaseBlockProps } from "../../documents/types";
-import { useCallback, useMemo } from "react";
+import { BaseSidebarPanel } from "./configuration-panel/input-panels/helpers/base-sidebar-panel";
 
 export const StylesPanelTab = "styles";
 
@@ -23,7 +23,7 @@ export const StylesPanel: React.FC = () => {
   const blocks = useBlocks();
   const Panel = useMemo(
     () => blocks[block.type].Configuration,
-    [block.type, blocks]
+    [block.type, blocks],
   );
 
   const setData = useCallback(
@@ -33,7 +33,7 @@ export const StylesPanel: React.FC = () => {
         value: { blockId: block.id, data },
       });
     },
-    [block.id, dispatchAction]
+    [block.id, dispatchAction],
   );
 
   const setBase = useCallback(
@@ -43,7 +43,7 @@ export const StylesPanel: React.FC = () => {
         value: { blockId: block.id, base },
       });
     },
-    [block.id, dispatchAction]
+    [block.id, dispatchAction],
   );
 
   return (

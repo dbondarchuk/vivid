@@ -28,7 +28,7 @@ const getFields = async () => {
     toast.error("Request failed.");
     const text = await response.text();
     console.error(
-      `Request to fetch fields failed: ${response.status}; ${text}`
+      `Request to fetch fields failed: ${response.status}; ${text}`,
     );
 
     return [];
@@ -40,7 +40,7 @@ const getFields = async () => {
 const checkFieldSearch = (
   field: ServiceField,
   query: string,
-  t: I18nFn<"admin">
+  t: I18nFn<"admin">,
 ) => {
   const search = query.toLocaleLowerCase();
   return (

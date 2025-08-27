@@ -10,7 +10,7 @@ export const socialType = z.enum(
     "twitch",
     "youtube",
   ],
-  { message: "configuration.social.type.invalid" }
+  { message: "configuration.social.type.invalid" },
 );
 
 export type SocialLinkType = z.infer<typeof socialType>;
@@ -20,7 +20,7 @@ export const socialTypeLabels = Object.keys(socialType.Values).reduce(
     ...acc,
     [cur]: `${cur[0].toUpperCase()}${cur.substring(1)}`,
   }),
-  {} as Record<SocialLinkType, string>
+  {} as Record<SocialLinkType, string>,
 );
 
 export const socialLinkSchema = z.object({

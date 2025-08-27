@@ -2,11 +2,10 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { NavMenu } from "./nav-menu";
-import { BlockDisableOptions } from "../../../editor/core";
-import { usePortalContext } from "./portal-context";
 import { useBlockIndex, useIsActiveDragBlock } from "../../../editor/context";
-import { useThrottleCallback } from "@vivid/ui";
+import { BlockDisableOptions } from "../../../editor/core";
+import { NavMenu } from "./nav-menu";
+import { usePortalContext } from "./portal-context";
 
 interface BlockNavPortalProps {
   blockId: string;
@@ -39,7 +38,7 @@ export const BlockNavPortal: React.FC<BlockNavPortalProps> = ({
         doNotRender,
       });
     },
-    [blockElement]
+    [blockElement],
     // 100
   );
 
@@ -92,6 +91,6 @@ export const BlockNavPortal: React.FC<BlockNavPortalProps> = ({
     >
       <NavMenu blockId={blockId} disable={disable} />
     </div>,
-    body
+    body,
   );
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import { useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { Image as ImageIcon } from "lucide-react";

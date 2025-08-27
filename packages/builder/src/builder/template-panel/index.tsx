@@ -6,13 +6,12 @@ import {
   PointerSensor,
 } from "@dnd-kit/react";
 import { effect } from "@dnd-kit/state";
-import { cn, Tabs, useThrottleCallback } from "@vivid/ui";
-import { ComponentProps, memo, useCallback, useState } from "react";
+import { Tabs, useThrottleCallback } from "@vivid/ui";
+import { ComponentProps, memo } from "react";
 import { PortalProvider } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 import {
   useDisableAnimation,
   useDispatchAction,
-  useHasActiveDragBlock,
   useSelectedScreenSize,
   useSelectedView,
   useSetActiveDragBlockId,
@@ -26,7 +25,6 @@ import { DndContext } from "../../types/dndContext";
 import { BlocksSidebar } from "./blocks-sidebar";
 import { BlockDragOverlay, Editor } from "./editor";
 import { Preview } from "./preview";
-import { BuilderToolbar, ViewType } from "./toolbar/builder-toolbar";
 import { ViewportEmulator } from "./viewport-emulator";
 
 type TemplatePanelProps = {
@@ -54,7 +52,7 @@ const EnableDisableAnimations = memo(
         {children}
       </>
     );
-  }
+  },
 );
 
 const sensors = [
@@ -160,12 +158,12 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
           // event.preventDefault();
         },
         [setActiveOverBlock],
-        100
+        100,
       );
 
     const onDragEnd: ComponentProps<typeof DragDropProvider>["onDragEnd"] = (
       event,
-      manager
+      manager,
     ) => {
       setActiveDragBlock(null);
       setActiveOverBlock(null);
@@ -307,5 +305,5 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
         </Tabs>
       </PortalProvider>
     );
-  }
+  },
 );

@@ -1,20 +1,20 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
-import { useCallback, useState } from "react";
-import { z } from "zod";
 import { Combobox, MultiSelect } from "@vivid/ui";
 import { Clock } from "lucide-react";
+import { useCallback, useState } from "react";
+import { z } from "zod";
 import { RawNumberInput } from "../../../../style-inputs/base/raw-number-input";
 import {
   TransitionSchema,
+  TransitionStyleConfiguration,
   transitionKeyMap,
   transitionKeys,
   transitionPropertyKeyMap,
   transitionPropertyKeys,
   transitionTimingFunctionKeyMap,
   transitionTimingFunctionKeys,
-  TransitionStyleConfiguration,
 } from "./schema";
 
 export const TransitionConfiguration = ({
@@ -31,7 +31,7 @@ export const TransitionConfiguration = ({
   const [selectedProperties, setSelectedProperties] = useState<string[]>(
     typeof value === "object" && "properties" in value
       ? (value as any).properties
-      : ["all"]
+      : ["all"],
   );
 
   const handleTransitionChange = useCallback(
@@ -48,7 +48,7 @@ export const TransitionConfiguration = ({
         onChange(transition as z.infer<typeof TransitionSchema>);
       }
     },
-    [setIsCustom, onChange]
+    [setIsCustom, onChange],
   );
 
   const onPropertiesChange = useCallback(
@@ -72,7 +72,7 @@ export const TransitionConfiguration = ({
         });
       }
     },
-    [selectedProperties, onChange]
+    [selectedProperties, onChange],
   );
 
   const handleDurationChange = useCallback(
@@ -84,7 +84,7 @@ export const TransitionConfiguration = ({
         });
       }
     },
-    [onChange]
+    [onChange],
   );
 
   const handleTimingFunctionChange = useCallback(
@@ -97,7 +97,7 @@ export const TransitionConfiguration = ({
         });
       }
     },
-    [onChange]
+    [onChange],
   );
 
   return (
@@ -111,7 +111,7 @@ export const TransitionConfiguration = ({
           values={transitionKeys.map((transition) => ({
             value: transition,
             label: t(
-              `pageBuilder.styles.transition.${transitionKeyMap[transition]}`
+              `pageBuilder.styles.transition.${transitionKeyMap[transition]}`,
             ),
           }))}
           value={
@@ -139,7 +139,7 @@ export const TransitionConfiguration = ({
               options={transitionPropertyKeys.map((property) => ({
                 value: property,
                 label: t(
-                  `pageBuilder.styles.transitionProperties.${transitionPropertyKeyMap[property]}`
+                  `pageBuilder.styles.transitionProperties.${transitionPropertyKeyMap[property]}`,
                 ),
               }))}
               selected={selectedProperties}
@@ -181,7 +181,7 @@ export const TransitionConfiguration = ({
               values={transitionTimingFunctionKeys.map((timing) => ({
                 value: timing,
                 label: t(
-                  `pageBuilder.styles.transitionTimingFunction.${transitionTimingFunctionKeyMap[timing]}`
+                  `pageBuilder.styles.transitionTimingFunction.${transitionTimingFunctionKeyMap[timing]}`,
                 ),
               }))}
               value={typeof value === "object" ? value.timingFunction : "ease"}

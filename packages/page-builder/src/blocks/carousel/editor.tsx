@@ -7,15 +7,15 @@ import {
   CarouselPrevious,
   cn,
 } from "@vivid/ui";
+import { memo } from "react";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
 import { CarouselProps, styles } from "./schema";
-import { memo, useCallback } from "react";
 
 const CarouselItemWrapper = memo(
   ({ children }: { children: React.ReactNode }) => (
     <CarouselItem className="carousel-item">{children}</CarouselItem>
-  )
+  ),
 );
 const CarouselItemsWrapper = memo(
   ({
@@ -36,7 +36,7 @@ const CarouselItemsWrapper = memo(
       <CarouselPrevious className="left-0" />
       <CarouselNext className="right-0" />
     </Carousel>
-  )
+  ),
 );
 
 export const CarouselEditor = ({ style, props }: CarouselProps) => {
@@ -65,7 +65,7 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
           "items-center",
           currentBlock.data?.props?.orientation === "vertical" && "flex-col",
           className,
-          base?.className
+          base?.className,
         )}
         id={base?.id}
         property="props"

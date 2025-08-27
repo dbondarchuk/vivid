@@ -1,15 +1,18 @@
 "use client";
 
+import { Sketch, SketchProps } from "@uiw/react-color";
+import { Palette } from "lucide-react";
 import React from "react";
-import { ControllerRenderProps } from "react-hook-form";
-import { SketchProps, Sketch } from "@uiw/react-color";
-import { InputGroupInputClasses, InputGroupSuffixClasses } from "./input-group";
+import { cn } from "../utils";
 import { Button } from "./button";
 import { Input, InputProps } from "./input";
-import { InputGroup, InputGroupInput } from "./input-group";
-import { Palette } from "lucide-react";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupInputClasses,
+  InputGroupSuffixClasses,
+} from "./input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { cn } from "../utils";
 
 export type ColorPickerInputProps = Omit<
   InputProps,
@@ -43,7 +46,7 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
         className={cn(
           InputGroupSuffixClasses({ variant: "prefix" }),
           "w-9 h-9",
-          "transition-colors"
+          "transition-colors",
         )}
         style={{ backgroundColor: value }}
       ></div>
@@ -52,7 +55,7 @@ export const ColorPickerInput: React.FC<ColorPickerInputProps> = ({
           disabled={disabled}
           className={cn(
             InputGroupInputClasses({ variant: "prefix" }),
-            InputGroupInputClasses({ variant: "suffix" })
+            InputGroupInputClasses({ variant: "suffix" }),
           )}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}

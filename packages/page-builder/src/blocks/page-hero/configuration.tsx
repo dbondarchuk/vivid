@@ -1,12 +1,12 @@
 "use client";
 
 import { ConfigurationProps } from "@vivid/builder";
+import { deepMemo } from "@vivid/ui";
+import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { PageHeroProps } from "./schema";
 import { pageHeroShortcuts } from "./shortcuts";
 import { styles } from "./styles";
-import { deepMemo } from "@vivid/ui";
-import { useCallback } from "react";
 
 export const PageHeroConfiguration = deepMemo(
   ({
@@ -17,7 +17,7 @@ export const PageHeroConfiguration = deepMemo(
   }: ConfigurationProps<PageHeroProps>) => {
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as PageHeroProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -30,5 +30,5 @@ export const PageHeroConfiguration = deepMemo(
         onBaseChange={onBaseChange}
       />
     );
-  }
+  },
 );

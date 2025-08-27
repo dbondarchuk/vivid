@@ -2,8 +2,8 @@ import { getRequestConfig } from "next-intl/server";
 
 export const getConfig = (
   getLocale: (
-    baseLocale: string | undefined
-  ) => Promise<{ locale: string; includeAdmin: boolean }>
+    baseLocale: string | undefined,
+  ) => Promise<{ locale: string; includeAdmin: boolean }>,
 ) =>
   getRequestConfig(async ({ locale: baseLocale }) => {
     const { locale, includeAdmin } = await getLocale(baseLocale);

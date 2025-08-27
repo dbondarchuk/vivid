@@ -46,7 +46,7 @@ export class PagesService implements IPagesService {
           slug: page.slug,
           published: page.published,
         },
-        "Page found"
+        "Page found",
       );
     }
 
@@ -74,7 +74,7 @@ export class PagesService implements IPagesService {
           title: page.title,
           published: page.published,
         },
-        "Page found by slug"
+        "Page found by slug",
       );
     }
 
@@ -86,7 +86,7 @@ export class PagesService implements IPagesService {
       publishStatus: boolean[];
       maxPublishDate?: Date;
       tags?: string[];
-    }
+    },
   ): Promise<WithTotal<PageListModel>> {
     const logger = this.loggerFactory("getPages");
     logger.debug({ query }, "Getting pages");
@@ -98,7 +98,7 @@ export class PagesService implements IPagesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
     const filter: Filter<Page> = {};
@@ -128,7 +128,7 @@ export class PagesService implements IPagesService {
         "slug",
         "keywords",
         "title",
-        "description"
+        "description",
       );
 
       filter.$or = queries;
@@ -181,7 +181,7 @@ export class PagesService implements IPagesService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched pages"
+      "Fetched pages",
     );
 
     return response;
@@ -191,7 +191,7 @@ export class PagesService implements IPagesService {
     const logger = this.loggerFactory("createPage");
     logger.debug(
       { page: { slug: page.slug, title: page.title } },
-      "Creating new page"
+      "Creating new page",
     );
 
     const dbPage: Page = {
@@ -213,7 +213,7 @@ export class PagesService implements IPagesService {
 
     logger.debug(
       { pageId: dbPage._id, slug: dbPage.slug },
-      "Successfully created page"
+      "Successfully created page",
     );
 
     return dbPage;
@@ -223,7 +223,7 @@ export class PagesService implements IPagesService {
     const logger = this.loggerFactory("updatePage");
     logger.debug(
       { pageId: id, update: { slug: update.slug, title: update.title } },
-      "Updating page"
+      "Updating page",
     );
 
     const db = await getDbConnection();
@@ -244,7 +244,7 @@ export class PagesService implements IPagesService {
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ pageId: id }, "Successfully updated page");
@@ -303,7 +303,7 @@ export class PagesService implements IPagesService {
 
     logger.debug(
       { pageIds: ids, count: deletedCount },
-      "Successfully deleted multiple pages"
+      "Successfully deleted multiple pages",
     );
   }
 
@@ -345,7 +345,7 @@ export class PagesService implements IPagesService {
     } else {
       logger.debug(
         { pageHeaderId: id, name: pageHeader.name },
-        "Page header found"
+        "Page header found",
       );
     }
 
@@ -353,7 +353,7 @@ export class PagesService implements IPagesService {
   }
 
   public async getPageHeaders(
-    query: Query & { priorityIds?: string[] }
+    query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<PageHeaderListModel>> {
     const logger = this.loggerFactory("getPageHeaders");
     logger.debug({ query }, "Getting page headers");
@@ -363,7 +363,7 @@ export class PagesService implements IPagesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
     const db = await getDbConnection();
@@ -502,19 +502,19 @@ export class PagesService implements IPagesService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched page headers"
+      "Fetched page headers",
     );
 
     return response;
   }
 
   public async createPageHeader(
-    pageHeader: PageHeaderUpdateModel
+    pageHeader: PageHeaderUpdateModel,
   ): Promise<PageHeader> {
     const logger = this.loggerFactory("createPageHeader");
     logger.debug(
       { pageHeader: { name: pageHeader.name } },
-      "Creating new page header"
+      "Creating new page header",
     );
 
     const dbPageHeader: PageHeader = {
@@ -530,7 +530,7 @@ export class PagesService implements IPagesService {
 
     logger.debug(
       { pageHeaderId: dbPageHeader._id, name: dbPageHeader.name },
-      "Successfully created page header"
+      "Successfully created page header",
     );
 
     return dbPageHeader;
@@ -538,12 +538,12 @@ export class PagesService implements IPagesService {
 
   public async updatePageHeader(
     id: string,
-    update: PageHeaderUpdateModel
+    update: PageHeaderUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updatePageHeader");
     logger.debug(
       { pageHeaderId: id, update: { name: update.name } },
-      "Updating page header"
+      "Updating page header",
     );
 
     const db = await getDbConnection();
@@ -559,7 +559,7 @@ export class PagesService implements IPagesService {
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ pageHeaderId: id }, "Successfully updated page header");
@@ -602,13 +602,13 @@ export class PagesService implements IPagesService {
 
     logger.debug(
       { pageHeaderIds: ids, count: deletedCount },
-      "Successfully deleted multiple page headers"
+      "Successfully deleted multiple page headers",
     );
   }
 
   public async checkUniquePageHeaderName(
     name: string,
-    id?: string
+    id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkUniquePageHeaderName");
     logger.debug({ name, id }, "Checking unique page header name");
@@ -647,7 +647,7 @@ export class PagesService implements IPagesService {
     } else {
       logger.debug(
         { pageFooterId: id, name: pageFooter.name },
-        "Page footer found"
+        "Page footer found",
       );
     }
 
@@ -655,7 +655,7 @@ export class PagesService implements IPagesService {
   }
 
   public async getPageFooters(
-    query: Query & { priorityIds?: string[] }
+    query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<PageFooterListModel>> {
     const logger = this.loggerFactory("getPageFooters");
     logger.debug({ query }, "Getting page footers");
@@ -665,7 +665,7 @@ export class PagesService implements IPagesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
     const db = await getDbConnection();
@@ -804,19 +804,19 @@ export class PagesService implements IPagesService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched page footers"
+      "Fetched page footers",
     );
 
     return response;
   }
 
   public async createPageFooter(
-    pageFooter: PageFooterUpdateModel
+    pageFooter: PageFooterUpdateModel,
   ): Promise<PageFooter> {
     const logger = this.loggerFactory("createPageFooter");
     logger.debug(
       { pageFooter: { name: pageFooter.name } },
-      "Creating new page footer"
+      "Creating new page footer",
     );
 
     const dbPageFooter: PageFooter = {
@@ -832,7 +832,7 @@ export class PagesService implements IPagesService {
 
     logger.debug(
       { pageFooterId: dbPageFooter._id, name: dbPageFooter.name },
-      "Successfully created page footer"
+      "Successfully created page footer",
     );
 
     return dbPageFooter;
@@ -840,12 +840,12 @@ export class PagesService implements IPagesService {
 
   public async updatePageFooter(
     id: string,
-    update: PageFooterUpdateModel
+    update: PageFooterUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updatePageFooter");
     logger.debug(
       { pageFooterId: id, update: { name: update.name } },
-      "Updating page footer"
+      "Updating page footer",
     );
 
     const db = await getDbConnection();
@@ -861,7 +861,7 @@ export class PagesService implements IPagesService {
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ pageFooterId: id }, "Successfully updated page footer");
@@ -904,13 +904,13 @@ export class PagesService implements IPagesService {
 
     logger.debug(
       { pageFooterIds: ids, count: deletedCount },
-      "Successfully deleted multiple page footers"
+      "Successfully deleted multiple page footers",
     );
   }
 
   public async checkUniquePageFooterName(
     name: string,
-    id?: string
+    id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkUniquePageFooterName");
     logger.debug({ name, id }, "Checking unique page footer name");

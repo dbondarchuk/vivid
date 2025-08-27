@@ -1,6 +1,8 @@
 "use client";
 
-import { PageListModelWithUrl, UploadedFile } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
+import { PageListModelWithUrl } from "@vivid/types";
+import { VariantProps } from "class-variance-authority";
 import React from "react";
 import { Button } from "./button";
 import { Input, inputVariants } from "./input";
@@ -10,9 +12,7 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
 } from "./input-group";
-import { useI18n } from "@vivid/i18n";
 import { PageSelectorDialog } from "./page-selector-dialog";
-import { VariantProps } from "class-variance-authority";
 
 export type PageSelectorInputProps = {
   value?: string | null;

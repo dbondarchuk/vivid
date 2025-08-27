@@ -5,7 +5,7 @@ export const zStyles = getStylesSchema(styles);
 
 export const getDefaults = (
   data: { props?: any; style?: any },
-  isEditor: boolean
+  isEditor: boolean,
 ) => {
   return {};
 };

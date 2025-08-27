@@ -54,12 +54,12 @@ const basicCSS = renderStylesToCSS(
   basicNestedStyles,
   undefined,
   false,
-  "my-block"
+  "my-block",
 );
 console.log("Generated CSS:");
 console.log(basicCSS);
 console.log(
-  "\nExpected: .my-block with color: black, .my-block .header with color: red and font-size: 1.5rem, .my-block .footer with background-color: gray"
+  "\nExpected: .my-block with color: black, .my-block .header with color: red and font-size: 1.5rem, .my-block .footer with background-color: gray",
 );
 console.log("✅ Basic nested styles test completed\n");
 
@@ -82,12 +82,12 @@ const variantsCSS = renderStylesToCSS(
   nestedWithVariants,
   undefined,
   false,
-  "my-block"
+  "my-block",
 );
 console.log("Generated CSS:");
 console.log(variantsCSS);
 console.log(
-  "\nExpected: .my-block with color: black, .my-block .header with color: red, and @media (min-width: 40rem) with .my-block .header color: blue"
+  "\nExpected: .my-block with color: black, .my-block .header with color: red, and @media (min-width: 40rem) with .my-block .header color: blue",
 );
 console.log("✅ Nested styles with variants test completed\n");
 
@@ -112,12 +112,12 @@ const deepCSS = renderStylesToCSS(
   deepNested,
   undefined,
   false,
-  "my-block"
+  "my-block",
 );
 console.log("Generated CSS:");
 console.log(deepCSS);
 console.log(
-  "\nExpected: .my-block, .my-block .header, and .my-block .header .title"
+  "\nExpected: .my-block, .my-block .header, and .my-block .header .title",
 );
 console.log("✅ Deep nesting test completed\n");
 
@@ -135,12 +135,12 @@ const emptyCSS = renderStylesToCSS(
   emptyChildren,
   undefined,
   false,
-  "my-block"
+  "my-block",
 );
 console.log("Generated CSS:");
 console.log(emptyCSS);
 console.log(
-  "\nExpected: Only .my-block with color: black, no .my-block .empty"
+  "\nExpected: Only .my-block with color: black, no .my-block .empty",
 );
 console.log("✅ Empty children test completed\n");
 

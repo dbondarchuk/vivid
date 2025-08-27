@@ -3,19 +3,19 @@
 import { ConfigurationProps } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Checkbox, deepMemo, Label } from "@vivid/ui";
+import { useCallback } from "react";
 import { COLORS } from "../../style/helpers/colors";
 import { backgroundColorStyle } from "../../style/styles/background/background-color";
 import { colorStyle } from "../../style/styles/typography/color";
 import { fontFamilyStyle } from "../../style/styles/typography/font-family";
 import { PageLayoutDefaultProps, PageLayoutProps } from "./schema";
-import { useCallback } from "react";
 
 export const PageLayoutConfiguration = deepMemo(
   ({ data, setData }: ConfigurationProps<PageLayoutProps>) => {
     const t = useI18n("builder");
     const updateData = useCallback(
       (d: unknown) => setData(d as PageLayoutProps),
-      [setData]
+      [setData],
     );
 
     return (
@@ -55,5 +55,5 @@ export const PageLayoutConfiguration = deepMemo(
         </div>
       </>
     );
-  }
+  },
 );

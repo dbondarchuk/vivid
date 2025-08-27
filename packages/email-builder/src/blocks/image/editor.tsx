@@ -42,7 +42,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
 
   const onPositionChange = useCallback(
@@ -62,7 +62,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
 
   return isSelected ? (

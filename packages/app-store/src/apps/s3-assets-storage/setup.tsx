@@ -76,7 +76,7 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
                     <Input
                       autoComplete="off"
                       placeholder={t(
-                        "s3AssetsStorage.form.accessKeyId.placeholder"
+                        "s3AssetsStorage.form.accessKeyId.placeholder",
                       )}
                       {...field}
                     />
@@ -97,7 +97,7 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
                     <Input
                       autoComplete="off"
                       placeholder={t(
-                        "s3AssetsStorage.form.secretAccessKey.placeholder"
+                        "s3AssetsStorage.form.secretAccessKey.placeholder",
                       )}
                       type="password"
                       {...field}
@@ -121,7 +121,7 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
                   <FormControl>
                     <Input
                       placeholder={t(
-                        "s3AssetsStorage.form.endpoint.placeholder"
+                        "s3AssetsStorage.form.endpoint.placeholder",
                       )}
                       {...field}
                     />

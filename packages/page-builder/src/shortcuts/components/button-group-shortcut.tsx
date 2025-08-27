@@ -1,7 +1,7 @@
-import { Button } from "@vivid/ui";
-import { ShortcutOption, ShortcutWithButtonGroup } from "../types";
-import { BaseStyleDictionary } from "../../style/types";
 import { useI18n } from "@vivid/i18n";
+import { Button } from "@vivid/ui";
+import { BaseStyleDictionary } from "../../style/types";
+import { ShortcutOption, ShortcutWithButtonGroup } from "../types";
 
 export const ButtonGroupShortcut = <T extends BaseStyleDictionary>({
   shortcut,

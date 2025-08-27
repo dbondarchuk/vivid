@@ -1,10 +1,13 @@
 import { useI18n } from "@vivid/i18n";
-import React, { useMemo } from "react";
-import { renderStylesToCSS } from "../../style/css-renderer";
-import { BaseStyleDictionary, StyleDictionary } from "../../style/types";
-import { DefaultCSSProperties, StyleValue } from "../../style/css-renderer";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@vivid/ui";
 import { Bug } from "lucide-react";
+import { useMemo } from "react";
+import {
+  DefaultCSSProperties,
+  renderStylesToCSS,
+  StyleValue,
+} from "../../style/css-renderer";
+import { BaseStyleDictionary, StyleDictionary } from "../../style/types";
 
 interface CSSPreviewProps<T extends BaseStyleDictionary> {
   availableStyles: StyleDictionary<T>;

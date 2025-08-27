@@ -43,7 +43,7 @@ export const decrypt = <T extends string | null | undefined>(data: T): T => {
   const decipher = crypto.createDecipheriv(
     algorithm,
     Buffer.from(key),
-    Buffer.from(inputIV, "hex")
+    Buffer.from(inputIV, "hex"),
   );
   let decrypted = decipher.update(encrypted, "hex", "utf-8");
   decrypted += decipher.final("utf-8");

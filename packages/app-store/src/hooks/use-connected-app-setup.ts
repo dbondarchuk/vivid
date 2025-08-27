@@ -73,7 +73,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
 
           const status = (await processRequest(
             _appId,
-            processedData
+            processedData,
           )) as ConnectedAppStatusWithText;
 
           setAppStatus(status);
@@ -86,7 +86,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
           if (status.status === "connected") {
             resolve(status);
           }
-        }
+        },
       );
 
       await toastPromise(promise, {

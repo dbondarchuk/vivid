@@ -1,8 +1,8 @@
-import { ArrowUpDown } from "lucide-react";
-import { Combobox } from "@vivid/ui";
 import { useI18n } from "@vivid/i18n";
-import { StyleDefinition } from "../../types";
+import { Combobox } from "@vivid/ui";
+import { ArrowUpDown } from "lucide-react";
 import { z } from "zod";
+import { StyleDefinition } from "../../types";
 
 const flexDirectionKeys = [
   "row",

@@ -16,13 +16,13 @@ export async function updateGeneralConfiguration(data: GeneralConfiguration) {
       hasBusinessPhone: !!data.phone,
       hasBusinessAddress: !!data.address,
     },
-    "Updating general configuration"
+    "Updating general configuration",
   );
 
   try {
     await ServicesContainer.ConfigurationService().setConfiguration(
       "general",
-      data
+      data,
     );
 
     actionLogger.debug(
@@ -32,7 +32,7 @@ export async function updateGeneralConfiguration(data: GeneralConfiguration) {
         hasBusinessPhone: !!data.phone,
         hasBusinessAddress: !!data.address,
       },
-      "General configuration updated successfully"
+      "General configuration updated successfully",
     );
   } catch (error) {
     actionLogger.error(
@@ -43,7 +43,7 @@ export async function updateGeneralConfiguration(data: GeneralConfiguration) {
         hasBusinessAddress: !!data.address,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update general configuration"
+      "Failed to update general configuration",
     );
     throw error;
   }

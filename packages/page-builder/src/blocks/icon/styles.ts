@@ -9,7 +9,7 @@ export const zStyles = getStylesSchema(styles);
 
 export const getDefaults = (
   { props, style }: IconProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): DefaultCSSProperties<AllStylesSchemas> => {
   return {
     display: "block",

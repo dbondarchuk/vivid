@@ -24,13 +24,13 @@ const getAppPage = cache(async (path: string) => {
     {
       slug: path,
     },
-    "Processing dashboard page request"
+    "Processing dashboard page request",
   );
 
   const app = Object.values(AvailableApps).find(
     (app) =>
       app.type === "complex" &&
-      app.menuItems?.some(({ href }) => href.toLocaleLowerCase() === path)
+      app.menuItems?.some(({ href }) => href.toLocaleLowerCase() === path),
   );
 
   if (!app) {
@@ -47,7 +47,7 @@ const getAppPage = cache(async (path: string) => {
   }
 
   const menuItem = app.menuItems?.find(
-    ({ href }) => href.toLocaleLowerCase() === path
+    ({ href }) => href.toLocaleLowerCase() === path,
   );
 
   if (!menuItem) {
@@ -77,7 +77,7 @@ const getAppPage = cache(async (path: string) => {
       menuItem.pageDescription || "common.defaultDescription",
       {
         appName: tApps(app.displayName),
-      }
+      },
     ),
     breadcrumbItems,
     appId,
@@ -110,7 +110,7 @@ export default async function Page(props: Props) {
       slug: path,
       searchParams: searchParams,
     },
-    "Processing dashboard page request"
+    "Processing dashboard page request",
   );
 
   const { menuItem, breadcrumbItems, appId, title, description } =

@@ -5,11 +5,11 @@ import {
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { PaintBucket } from "lucide-react";
-import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
 import { ContentAlignmentDropdownMenu } from "../../toolbars/content-alignment";
+import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
 
 export const ColumnsContainerToolbar = (
-  props: ConfigurationProps<ColumnsContainerProps>
+  props: ConfigurationProps<ColumnsContainerProps>,
 ) => {
   const t = useI18n("builder");
 

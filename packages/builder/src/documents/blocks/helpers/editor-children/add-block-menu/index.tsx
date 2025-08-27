@@ -72,7 +72,7 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
                 : type === allowOnly
               : rootBlockType !== type) &&
             (!blocks[type].allowedIn ||
-              blocks[type].allowedIn.includes(currentBlock))
+              blocks[type].allowedIn.includes(currentBlock)),
         )
         .reduce(
           (map, [name, value]) => ({
@@ -85,8 +85,8 @@ export const AddBlockButton = <T extends BaseZodDictionary = any>({
               },
             ],
           }),
-          {} as Record<string, block[]>
-        )
+          {} as Record<string, block[]>,
+        ),
     );
   }, [blocks, allowOnly, currentBlock, rootBlockType]);
 

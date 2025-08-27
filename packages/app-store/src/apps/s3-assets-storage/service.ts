@@ -27,13 +27,13 @@ export default class S3AssetsStorageConnectedApp
   implements IConnectedApp<S3Configuration>, IAssetsStorage
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "S3AssetsStorageConnectedApp"
+    "S3AssetsStorageConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processAppData(
-    appData: S3Configuration
+    appData: S3Configuration,
   ): Promise<S3Configuration> {
     return {
       ...appData,
@@ -43,7 +43,7 @@ export default class S3AssetsStorageConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: S3Configuration
+    data: S3Configuration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
@@ -54,7 +54,7 @@ export default class S3AssetsStorageConnectedApp
         bucket: data.bucket || DEFAULT_BUCKET_NAME,
         accessKeyId: maskify(data.accessKeyId),
       },
-      "Processing S3 configuration request"
+      "Processing S3 configuration request",
     );
 
     if (
@@ -72,29 +72,29 @@ export default class S3AssetsStorageConnectedApp
 
       logger.debug(
         { appId: appData._id, bucket },
-        "Checking if S3 bucket exists"
+        "Checking if S3 bucket exists",
       );
 
       try {
         const response = await client.send(
-          new HeadBucketCommand({ Bucket: bucket })
+          new HeadBucketCommand({ Bucket: bucket }),
         );
 
         logger.debug(
           { appId: appData._id, bucket },
-          "S3 bucket already exists"
+          "S3 bucket already exists",
         );
       } catch (error: any) {
         if (error?.name === "NotFound") {
           logger.debug(
             { appId: appData._id, bucket },
-            "S3 bucket not found, creating new bucket"
+            "S3 bucket not found, creating new bucket",
           );
           await client.send(new CreateBucketCommand({ Bucket: bucket }));
 
           logger.debug(
             { appId: appData._id, bucket },
-            "Successfully created S3 bucket"
+            "Successfully created S3 bucket",
           );
         } else {
           logger.error(
@@ -103,10 +103,10 @@ export default class S3AssetsStorageConnectedApp
               bucket,
               error: error?.message || error?.toString(),
             },
-            "Error checking S3 bucket"
+            "Error checking S3 bucket",
           );
           throw new ConnectedAppError(
-            "s3AssetsStorage.statusText.error_checking_bucket"
+            "s3AssetsStorage.statusText.error_checking_bucket",
           );
         }
       }
@@ -127,14 +127,14 @@ export default class S3AssetsStorageConnectedApp
 
       logger.info(
         { appId: appData._id, bucket, region: data.region },
-        "Successfully connected to S3 storage"
+        "Successfully connected to S3 storage",
       );
 
       return status;
     } catch (e: any) {
       logger.error(
         { appId: appData._id, error: e?.message || e?.toString() },
-        "Error processing S3 configuration request"
+        "Error processing S3 configuration request",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -158,7 +158,7 @@ export default class S3AssetsStorageConnectedApp
 
   public async getFile(
     appData: ConnectedAppData,
-    filename: string
+    filename: string,
   ): Promise<Readable> {
     const logger = this.loggerFactory("getFile");
     logger.debug(
@@ -167,7 +167,7 @@ export default class S3AssetsStorageConnectedApp
         filename,
         bucket: this.getBucketName(appData.data),
       },
-      "Getting file from S3"
+      "Getting file from S3",
     );
 
     try {
@@ -177,22 +177,22 @@ export default class S3AssetsStorageConnectedApp
         new GetObjectCommand({
           Bucket: this.getBucketName(appData.data),
           Key: filename,
-        })
+        }),
       );
 
       if (!response.Body) {
         logger.error(
           { appId: appData._id, filename },
-          "S3 response has no body"
+          "S3 response has no body",
         );
         throw new ConnectedAppError(
-          "s3AssetsStorage.statusText.no_body_present"
+          "s3AssetsStorage.statusText.no_body_present",
         );
       }
 
       logger.debug(
         { appId: appData._id, filename, contentLength: response.ContentLength },
-        "Successfully retrieved file from S3"
+        "Successfully retrieved file from S3",
       );
 
       return response.Body as Readable;
@@ -201,7 +201,7 @@ export default class S3AssetsStorageConnectedApp
         logger.warn({ appId: appData._id, filename }, "File not found in S3");
         throw new ConnectedAppError(
           "s3AssetsStorage.statusText.file_not_found",
-          { filename }
+          { filename },
         );
       }
 
@@ -211,10 +211,10 @@ export default class S3AssetsStorageConnectedApp
           filename,
           error: error?.message || error?.toString(),
         },
-        "Error getting file from S3"
+        "Error getting file from S3",
       );
       throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_getting_file"
+        "s3AssetsStorage.statusText.error_getting_file",
       );
     }
   }
@@ -223,7 +223,7 @@ export default class S3AssetsStorageConnectedApp
     appData: ConnectedAppData,
     filename: string,
     file: Readable,
-    fileLength: number
+    fileLength: number,
   ): Promise<void> {
     const logger = this.loggerFactory("saveFile");
     logger.debug(
@@ -233,7 +233,7 @@ export default class S3AssetsStorageConnectedApp
         fileLength,
         bucket: this.getBucketName(appData.data),
       },
-      "Saving file to S3"
+      "Saving file to S3",
     );
 
     try {
@@ -245,12 +245,12 @@ export default class S3AssetsStorageConnectedApp
           Key: filename,
           Body: file,
           ContentLength: fileLength,
-        })
+        }),
       );
 
       logger.info(
         { appId: appData._id, filename, fileLength },
-        "Successfully saved file to S3"
+        "Successfully saved file to S3",
       );
     } catch (error: any) {
       logger.error(
@@ -260,17 +260,17 @@ export default class S3AssetsStorageConnectedApp
           fileLength,
           error: error?.message || error?.toString(),
         },
-        "Error saving file to S3"
+        "Error saving file to S3",
       );
       throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_saving_file"
+        "s3AssetsStorage.statusText.error_saving_file",
       );
     }
   }
 
   public async deleteFile(
     appData: ConnectedAppData,
-    filename: string
+    filename: string,
   ): Promise<void> {
     const logger = this.loggerFactory("deleteFile");
     logger.debug(
@@ -279,7 +279,7 @@ export default class S3AssetsStorageConnectedApp
         filename,
         bucket: this.getBucketName(appData.data),
       },
-      "Deleting file from S3"
+      "Deleting file from S3",
     );
 
     try {
@@ -289,7 +289,7 @@ export default class S3AssetsStorageConnectedApp
       if (!exists) {
         logger.debug(
           { appId: appData._id, filename },
-          "File does not exist, skipping deletion"
+          "File does not exist, skipping deletion",
         );
         return;
       }
@@ -298,12 +298,12 @@ export default class S3AssetsStorageConnectedApp
         new DeleteObjectCommand({
           Bucket: this.getBucketName(appData.data),
           Key: filename,
-        })
+        }),
       );
 
       logger.info(
         { appId: appData._id, filename },
-        "Successfully deleted file from S3"
+        "Successfully deleted file from S3",
       );
     } catch (error: any) {
       logger.error(
@@ -312,32 +312,32 @@ export default class S3AssetsStorageConnectedApp
           filename,
           error: error?.message || error?.toString(),
         },
-        "Error deleting file from S3"
+        "Error deleting file from S3",
       );
       throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_deleting_file"
+        "s3AssetsStorage.statusText.error_deleting_file",
       );
     }
   }
 
   public async deleteFiles(
     appData: ConnectedAppData,
-    filenames: string[]
+    filenames: string[],
   ): Promise<void> {
     const logger = this.loggerFactory("deleteFiles");
     logger.debug(
       { appId: appData._id, filenames, fileCount: filenames.length },
-      "Deleting multiple files from S3"
+      "Deleting multiple files from S3",
     );
 
     try {
       await Promise.all(
-        filenames.map((filename) => this.deleteFile(appData, filename))
+        filenames.map((filename) => this.deleteFile(appData, filename)),
       );
 
       logger.info(
         { appId: appData._id, fileCount: filenames.length },
-        "Successfully deleted all files from S3"
+        "Successfully deleted all files from S3",
       );
     } catch (error: any) {
       logger.error(
@@ -346,17 +346,17 @@ export default class S3AssetsStorageConnectedApp
           filenames,
           error: error?.message || error?.toString(),
         },
-        "Error deleting files from S3"
+        "Error deleting files from S3",
       );
       throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_deleting_files"
+        "s3AssetsStorage.statusText.error_deleting_files",
       );
     }
   }
 
   public async checkExists(
     appData: ConnectedAppData,
-    filename: string
+    filename: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkExists");
     logger.debug(
@@ -365,7 +365,7 @@ export default class S3AssetsStorageConnectedApp
         filename,
         bucket: this.getBucketName(appData.data),
       },
-      "Checking if file exists in S3"
+      "Checking if file exists in S3",
     );
 
     try {
@@ -375,7 +375,7 @@ export default class S3AssetsStorageConnectedApp
         new HeadObjectCommand({
           Bucket: this.getBucketName(appData.data),
           Key: filename,
-        })
+        }),
       );
 
       logger.debug({ appId: appData._id, filename }, "File exists in S3");
@@ -385,7 +385,7 @@ export default class S3AssetsStorageConnectedApp
       if (error?.name === "NotFound") {
         logger.debug(
           { appId: appData._id, filename },
-          "File does not exist in S3"
+          "File does not exist in S3",
         );
         return false;
       }
@@ -396,10 +396,10 @@ export default class S3AssetsStorageConnectedApp
           filename,
           error: error?.message || error?.toString(),
         },
-        "Error checking if file exists in S3"
+        "Error checking if file exists in S3",
       );
       throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_checking_file_exists"
+        "s3AssetsStorage.statusText.error_checking_file_exists",
       );
     }
   }
@@ -418,7 +418,7 @@ export default class S3AssetsStorageConnectedApp
         accessKeyId: data?.accessKeyId ? maskify(data.accessKeyId) : undefined,
         forcePathStyle: data?.forcePathStyle,
       },
-      "Creating S3 client"
+      "Creating S3 client",
     );
 
     if (!data || !data.region || !data.accessKeyId || !secretAccessKey) {
@@ -428,16 +428,16 @@ export default class S3AssetsStorageConnectedApp
           hasAccessKeyId: !!data?.accessKeyId,
           hasSecretAccessKey: !!data?.secretAccessKey,
         },
-        "Invalid S3 configuration"
+        "Invalid S3 configuration",
       );
       throw new ConnectedAppError(
-        "s3AssetsStorage.statusText.error_processing_configuration"
+        "s3AssetsStorage.statusText.error_processing_configuration",
       );
     }
 
     logger.debug(
       { region: data.region, endpoint: data.endpoint },
-      "S3 client created successfully"
+      "S3 client created successfully",
     );
 
     return new S3Client({
@@ -457,7 +457,7 @@ export default class S3AssetsStorageConnectedApp
     const logger = this.loggerFactory("getBucketName");
     logger.debug(
       { bucketName, defaultBucket: data?.bucket ? false : true },
-      "Getting S3 bucket name"
+      "Getting S3 bucket name",
     );
 
     return bucketName;

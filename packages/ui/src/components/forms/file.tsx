@@ -3,13 +3,13 @@ import { Input } from "../input";
 
 import { FieldFileData, WithLabelFieldData } from "@vivid/types";
 import { FieldValues } from "react-hook-form";
+import { getFieldName, IFormFieldProps } from "./form-fiel.types";
 import { FormFieldDescription } from "./form-field-description";
 import { FormFieldErrorMessage } from "./form-field-error-message";
 import { FormFieldLabel } from "./form-field-label";
-import { getFieldName, IFormFieldProps } from "./form-fiel.types";
 
 export const FileField: <T extends FieldValues>(
-  p: IFormFieldProps<T, WithLabelFieldData & FieldFileData>
+  p: IFormFieldProps<T, WithLabelFieldData & FieldFileData>,
 ) => React.ReactElement<
   IFormFieldProps<T, WithLabelFieldData & FieldFileData>
 > = (props) => {

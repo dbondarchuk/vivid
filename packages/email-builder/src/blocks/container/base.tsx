@@ -1,6 +1,6 @@
 import { CSSProperties, JSX } from "react";
-import { ContainerProps } from "./schema";
 import { getPadding } from "../../style-inputs/helpers/styles";
+import { ContainerProps } from "./schema";
 
 function getBorder(style: ContainerProps["style"]) {
   if (!style || !style.borderColor) {

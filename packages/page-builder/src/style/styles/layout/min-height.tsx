@@ -6,7 +6,7 @@ import { renderRawNumberWithUnitOrKeywordCss } from "../../utils";
 import { getZNumberValueWithUnitOrKeyword } from "../../zod";
 
 const MinHeightSchema = getZNumberValueWithUnitOrKeyword(
-  widthOrHeightOptions.map((option) => option.value)
+  widthOrHeightOptions.map((option) => option.value),
 );
 
 export const minHeightStyle = {

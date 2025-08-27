@@ -67,7 +67,7 @@ export type AppointmentScheduleFormProps = {
 const getSelectedFields = (
   selectedOption: AppointmentChoice | undefined,
   selectedAddons: AppointmentAddon[] | undefined,
-  knownFields: AppointmentScheduleFormProps["knownFields"]
+  knownFields: AppointmentScheduleFormProps["knownFields"],
 ) => {
   if (!selectedOption) return [];
 
@@ -81,7 +81,7 @@ const getSelectedFields = (
         ...map,
         [cur.id]: !!map[cur.id] || !!cur.required,
       }),
-      {} as Record<string, boolean>
+      {} as Record<string, boolean>,
     );
 
   const fieldsWithData = knownFields
@@ -102,7 +102,7 @@ export const AppointmentScheduleForm: React.FC<
   const timeZone = useTimeZone();
   const now = React.useMemo(
     () => DateTime.now().set({ second: 0 }).toJSDate(),
-    []
+    [],
   );
 
   const formSchema = z
@@ -116,14 +116,14 @@ export const AppointmentScheduleForm: React.FC<
       totalPrice: asOptionalField(
         z.coerce
           .number({ message: t("appointments.form.priceNumber") })
-          .min(0, t("appointments.form.priceMin"))
+          .min(0, t("appointments.form.priceMin")),
       ).transform((e) => (e === 0 ? undefined : e)),
       option: z.string({ message: t("appointments.form.optionRequired") }),
       addons: z
         .array(
           z.object({
             id: z.string({ message: t("appointments.form.addonRequired") }),
-          })
+          }),
         )
         .optional(),
       fields: z
@@ -154,8 +154,8 @@ export const AppointmentScheduleForm: React.FC<
             prev[field.name] = fieldSchemaMapper(field);
             return prev;
           },
-          {} as { [field: string]: z.ZodType }
-        )
+          {} as { [field: string]: z.ZodType },
+        ),
       );
 
       const result = fieldSchema.safeParse(args.fields);
@@ -205,7 +205,7 @@ export const AppointmentScheduleForm: React.FC<
   >();
 
   const [disabledFields, setDisabledFields] = React.useState<Set<String>>(
-    new Set()
+    new Set(),
   );
 
   const router = useRouter();
@@ -219,15 +219,15 @@ export const AppointmentScheduleForm: React.FC<
 
   const selectedOption = React.useMemo(
     () => options.find((x) => x._id === selectedOptionId),
-    [options, selectedOptionId]
+    [options, selectedOptionId],
   );
 
   const selectedAddons = React.useMemo(
     () =>
       selectedOption?.addons?.filter((x) =>
-        (selectedAddonIds || []).find((y) => y.id === x._id)
+        (selectedAddonIds || []).find((y) => y.id === x._id),
       ),
-    [selectedOption, selectedAddonIds]
+    [selectedOption, selectedAddonIds],
   );
 
   const isOverlaping = React.useMemo(() => {
@@ -276,7 +276,7 @@ export const AppointmentScheduleForm: React.FC<
             name: data.fields.name,
             email: data.fields.email,
             phone: data.fields.phone,
-          }
+          },
         );
 
       const files = Object.entries(fields)
@@ -286,7 +286,7 @@ export const AppointmentScheduleForm: React.FC<
             ...map,
             [key]: value as unknown as File,
           }),
-          {} as Record<string, File>
+          {} as Record<string, File>,
         );
 
       let appointmentDiscount: AppointmentDiscount | undefined = undefined;
@@ -314,7 +314,7 @@ export const AppointmentScheduleForm: React.FC<
             ...acc,
             [field.name]: field.data?.label,
           }),
-          {}
+          {},
         ),
         totalDuration: data.totalDuration,
         totalPrice: data.totalPrice,
@@ -333,7 +333,7 @@ export const AppointmentScheduleForm: React.FC<
         {
           success: t("appointments.form.scheduledSuccess"),
           error: t("appointments.form.requestError"),
-        }
+        },
       );
 
       router.push(`/admin/dashboard/appointments/${id}`);
@@ -352,7 +352,7 @@ export const AppointmentScheduleForm: React.FC<
 
   const selectedFields = React.useMemo(
     () => getSelectedFields(selectedOption, selectedAddons, knownFields),
-    [selectedAddons, selectedOption, knownFields]
+    [selectedAddons, selectedOption, knownFields],
   );
 
   const appointment: Appointment | undefined = React.useMemo(() => {
@@ -384,7 +384,7 @@ export const AppointmentScheduleForm: React.FC<
           ...acc,
           [field.name]: field.data?.label,
         }),
-        {}
+        {},
       ),
       status: "pending",
       timeZone,
@@ -415,7 +415,7 @@ export const AppointmentScheduleForm: React.FC<
   React.useEffect(() => {
     const newAddons = (selectedAddons || [])
       .filter((addon) =>
-        selectedOption?.addons?.some((x) => x._id === addon._id)
+        selectedOption?.addons?.some((x) => x._id === addon._id),
       )
       .map(({ _id }) => ({ id: _id }));
 
@@ -427,14 +427,14 @@ export const AppointmentScheduleForm: React.FC<
       (selectedOption?.duration || 0) +
       (selectedAddons || []).reduce(
         (prev, curr) => prev + (curr.duration || 0),
-        0
+        0,
       );
 
     let price: number | undefined =
       (selectedOption?.price || 0) +
       (selectedAddons || []).reduce(
         (prev, curr) => prev + (curr.price || 0),
-        0
+        0,
       );
 
     let priceDiscount = 0;
@@ -453,7 +453,7 @@ export const AppointmentScheduleForm: React.FC<
   React.useEffect(() => {
     setDisabledFields((prev) => {
       ["name", "email", "phone"].forEach((field) =>
-        customerId ? prev.add(field) : prev.delete(field)
+        customerId ? prev.add(field) : prev.delete(field),
       );
       return prev;
     });
@@ -597,7 +597,7 @@ export const AppointmentScheduleForm: React.FC<
                     field,
                     // @ts-expect-error ignore typecheck for form.control
                     form.control,
-                    loading || disabledFields.has(field.name)
+                    loading || disabledFields.has(field.name),
                   )}
                 </React.Fragment>
               ))}

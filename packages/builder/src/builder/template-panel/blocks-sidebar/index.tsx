@@ -34,7 +34,7 @@ export const BlocksSidebar = memo(
           "w-0 opacity-0 border-r bg-background transition-all flex flex-col",
           "max-h-[calc(100vh-250px)] min-h-72",
           show && "w-80 opacity-100",
-          className
+          className,
         )}
       >
         <Accordion
@@ -74,5 +74,5 @@ export const BlocksSidebar = memo(
         </Accordion>
       </div>
     );
-  }
+  },
 );

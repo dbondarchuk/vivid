@@ -1,4 +1,3 @@
-import { TypeOutline } from "lucide-react";
 import { Shortcut } from "../../shortcuts";
 import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
 import { colorShortcut } from "../../shortcuts/common/color";

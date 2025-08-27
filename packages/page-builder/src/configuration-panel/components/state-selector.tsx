@@ -1,28 +1,28 @@
 import { BuilderKeys, useI18n } from "@vivid/i18n";
 import {
+  Badge,
   Button,
+  Input,
   Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Badge,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Input,
 } from "@vivid/ui";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import {
-  State,
-  states,
-  StateWithTarget,
-  StateTarget,
-  isSelfTarget,
   isParentTarget,
   isSelectorTarget,
+  isSelfTarget,
+  State,
+  states,
+  StateTarget,
+  StateWithTarget,
 } from "../../style/zod";
 
 interface StateSelectorProps {
@@ -48,7 +48,7 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
   const [newParentLevel, setNewParentLevel] = useState<number>(1);
   const [newSelector, setNewSelector] = useState<string>("");
   const [newStateType, setNewStateType] = useState<"block" | "selector">(
-    "block"
+    "block",
   );
 
   const addNewState = () => {
@@ -79,7 +79,7 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
           (isParentTarget(s) && s.target.data?.level === newParentLevel) ||
           (isSelectorTarget(s) &&
             s.target.data?.selector === newSelector &&
-            s.target.data?.stateType === newStateType))
+            s.target.data?.stateType === newStateType)),
     );
 
     if (!exists) {
@@ -111,7 +111,7 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
                 isSelectorTarget(s) &&
                 s.target?.data?.selector === stateTarget.data?.selector &&
                 s.target?.data?.stateType === stateTarget.data?.stateType))
-          )
+          ),
       ) || [];
     onStatesChange(newStates);
   };
@@ -270,7 +270,7 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
                   <Input
                     size={1}
                     placeholder={t(
-                      "pageBuilder.styles.states.selector.placeholder"
+                      "pageBuilder.styles.states.selector.placeholder",
                     )}
                     value={newSelector}
                     onChange={(e) => setNewSelector(e.target.value)}
@@ -312,7 +312,7 @@ export const StateSelector: React.FC<StateSelectorProps> = ({
                         (newTargetType === "selector" &&
                           isSelectorTarget(s) &&
                           s.target?.data?.selector === newSelector &&
-                          s.target?.data?.stateType === newStateType))
+                          s.target?.data?.stateType === newStateType)),
                   ) ||
                   (newTargetType === "selector" && !newSelector.trim())
                 }

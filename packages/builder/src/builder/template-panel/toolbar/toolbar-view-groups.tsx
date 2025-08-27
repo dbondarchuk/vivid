@@ -1,9 +1,10 @@
 "use client";
 
+import JsonView from "@uiw/react-json-view";
+import { darkTheme } from "@uiw/react-json-view/dark";
+import { lightTheme } from "@uiw/react-json-view/light";
+import { useI18n } from "@vivid/i18n";
 import {
-  ToolbarGroup,
-  ToolbarButton,
-  useTheme,
   Button,
   cn,
   Dialog,
@@ -13,9 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
   ScrollArea,
+  ToolbarButton,
+  ToolbarGroup,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  useTheme,
 } from "@vivid/ui";
 import {
   Blocks,
@@ -26,22 +30,18 @@ import {
   PanelRight,
   Pause,
 } from "lucide-react";
-import { useI18n } from "@vivid/i18n";
+import { memo } from "react";
 import {
-  useFullScreen,
   useDisableAnimation,
-  useToggleDisableAnimation,
-  useToggleFullScreen,
+  useFullScreen,
   useSelectedView,
   useSetSelectedView,
   useShowBlocksPanel,
-  useToggleShowBlocksPanel,
+  useToggleDisableAnimation,
+  useToggleFullScreen,
   useToggleInspectorDrawer,
+  useToggleShowBlocksPanel,
 } from "../../../documents/editor/context";
-import { memo } from "react";
-import JsonView from "@uiw/react-json-view";
-import { darkTheme } from "@uiw/react-json-view/dark";
-import { lightTheme } from "@uiw/react-json-view/light";
 
 export type ViewType = "editor" | "preview";
 
@@ -73,7 +73,7 @@ export const ToolbarViewGroups = memo(
             tooltip={t("baseBuilder.builderToolbar.preview")}
             onClick={() =>
               setSelectedView((prev) =>
-                prev === "editor" ? "preview" : "editor"
+                prev === "editor" ? "preview" : "editor",
               )
             }
           >
@@ -118,7 +118,7 @@ export const ToolbarViewGroups = memo(
                     render={(
                       // @ts-expect-error
                       { "data-copied": copied, onClick, ...props },
-                      { value, keyName, keys, parentValue }
+                      { value, keyName, keys, parentValue },
                     ) => {
                       const click = (event: React.MouseEvent) => {
                         onClick?.(event as any);
@@ -138,7 +138,7 @@ export const ToolbarViewGroups = memo(
                               <ClipboardCopy
                                 className={cn(
                                   "w-3 h-3",
-                                  copied ? "text-green-600" : ""
+                                  copied ? "text-green-600" : "",
                                 )}
                               />
                             </Button>
@@ -179,5 +179,5 @@ export const ToolbarViewGroups = memo(
         </ToolbarGroup>
       </>
     );
-  }
+  },
 );

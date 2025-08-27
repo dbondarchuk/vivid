@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import type { TPlaceholderElement } from "@udecode/plate-media";
 
-import { cn, useUploadFile } from "@vivid/ui";
 import {
   AudioPlugin,
   FilePlugin,
@@ -16,6 +15,7 @@ import {
   VideoPlugin,
 } from "@udecode/plate-media/react";
 import { useEditorPlugin, withHOC, withRef } from "@udecode/plate/react";
+import { cn, useUploadFile } from "@vivid/ui";
 import { AudioLines, FileUp, Film, ImageIcon } from "lucide-react";
 import { useFilePicker } from "use-file-picker";
 
@@ -95,7 +95,7 @@ export const MediaPlaceholderElement = withHOC(
           void uploadFile([{ file }]);
           api.placeholder.addUploadingFile(element.id as string, file);
         },
-        [api.placeholder, element.id, uploadFile]
+        [api.placeholder, element.id, uploadFile],
       );
 
       useEffect(() => {
@@ -138,7 +138,7 @@ export const MediaPlaceholderElement = withHOC(
 
         isReplaced.current = true;
         const currentFiles = api.placeholder.getUploadingFile(
-          element.id as string
+          element.id as string,
         );
 
         if (!currentFiles) return;
@@ -153,7 +153,7 @@ export const MediaPlaceholderElement = withHOC(
           {(!loading || !isImage) && (
             <div
               className={cn(
-                "flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10"
+                "flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10",
               )}
               onClick={() => !loading && openFilePicker()}
               contentEditable={false}
@@ -191,8 +191,8 @@ export const MediaPlaceholderElement = withHOC(
           {children}
         </PlateElement>
       );
-    }
-  )
+    },
+  ),
 );
 
 export function ImageProgress({
@@ -246,7 +246,7 @@ export function formatBytes(
   opts: {
     decimals?: number;
     sizeType?: "accurate" | "normal";
-  } = {}
+  } = {},
 ) {
   const { decimals = 0, sizeType = "normal" } = opts;
 

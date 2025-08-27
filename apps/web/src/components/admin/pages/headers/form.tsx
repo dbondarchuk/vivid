@@ -12,7 +12,6 @@ import {
   Breadcrumbs,
   Checkbox,
   Combobox,
-  Heading,
   Form,
   FormControl,
   FormDescription,
@@ -20,10 +19,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Heading,
   Input,
   SaveButton,
   Sortable,
-  Switch,
   toastPromise,
   use12HourFormat,
   useDebounceCacheFn,
@@ -52,12 +51,12 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
 
   const cachedUniqueSlugCheck = useDebounceCacheFn(
     checkUniquePageHeaderName,
-    300
+    300,
   );
 
   const formSchema = getPageHeaderSchemaWithUniqueNameCheck(
     (slug) => cachedUniqueSlugCheck(slug, initialData?._id),
-    "pages.headers.name.unique"
+    "pages.headers.name.unique",
   );
 
   type PageFormValues = z.infer<typeof formSchema>;
@@ -143,7 +142,7 @@ export const PageHeaderForm: React.FC<{ initialData?: PageHeader }> = ({
           description={t(
             initialData
               ? "pages.headers.managePageHeader"
-              : "pages.headers.addNewPageHeader"
+              : "pages.headers.addNewPageHeader",
           )}
         />
 

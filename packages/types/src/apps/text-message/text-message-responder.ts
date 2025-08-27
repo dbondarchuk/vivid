@@ -22,6 +22,6 @@ export type RespondResult = {
 export interface ITextMessageResponder {
   respond(
     appData: ConnectedAppData,
-    reply: TextMessageReply
+    reply: TextMessageReply,
   ): Promise<RespondResult | null>;
 }

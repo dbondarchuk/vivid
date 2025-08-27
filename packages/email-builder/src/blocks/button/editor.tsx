@@ -71,7 +71,7 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         asInput
         className={cn(
           "border-0 bg-transparent focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
-          props?.width === "full" ? "w-full" : "w-auto"
+          props?.width === "full" ? "w-full" : "w-auto",
         )}
         style={{ ...linkStyles, textAlign: style?.textAlign ?? undefined }}
         value={value ?? t("emailBuilder.blocks.button.text")}

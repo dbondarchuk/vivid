@@ -1,13 +1,3 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-  ToolbarButton,
-  useOpenState,
-} from "@vivid/ui";
 import {
   Shortcut,
   ShortcutWithAssetSelector,
@@ -15,7 +5,6 @@ import {
   ShortcutWithNumberWithUnit,
 } from "../../shortcuts";
 import { BaseStyleDictionary } from "../../style/types";
-import { NumberValueWithUnit } from "../../style/zod";
 import {
   AssetSelectorShortcutToolbar,
   AssetSelectorShortcutToolbarItem,
@@ -27,15 +16,15 @@ import {
   createColorToolbarItem,
 } from "./color-shortcut-toolbar";
 import {
-  createNumberWithUnitToolbarItem,
-  NumberInputWithUnitsToolbarMenu,
-  NumberWithUnitShortcutToolbarItem,
-} from "./number-input-with-units-toolbar";
-import {
   createDropdownToolbarItem,
   DropdownToolbar,
   ShortcutDropdownToolbarItem,
 } from "./dropdown-toolbar";
+import {
+  createNumberWithUnitToolbarItem,
+  NumberInputWithUnitsToolbarMenu,
+  NumberWithUnitShortcutToolbarItem,
+} from "./number-input-with-units-toolbar";
 import {
   createToggleToolbarItem,
   ShortcutToggleToolbarItem,
@@ -55,7 +44,7 @@ export type ShortcutToolbarItemUnion =
 export const createShortcutsToolbarItems = <T extends BaseStyleDictionary>(
   shortcuts: Shortcut<T>[],
   data: any,
-  setData: (data: any) => void
+  setData: (data: any) => void,
 ): ShortcutToolbarItemUnion[] => {
   return shortcuts.map((shortcut) => {
     // Handle number-with-unit type separately
@@ -63,7 +52,7 @@ export const createShortcutsToolbarItems = <T extends BaseStyleDictionary>(
       return createNumberWithUnitToolbarItem(
         shortcut as ShortcutWithNumberWithUnit<T>,
         data,
-        setData
+        setData,
       );
     }
 
@@ -72,7 +61,7 @@ export const createShortcutsToolbarItems = <T extends BaseStyleDictionary>(
       return createAssetSelectorToolbarItem(
         shortcut as ShortcutWithAssetSelector<T>,
         data,
-        setData
+        setData,
       );
     }
 
@@ -81,7 +70,7 @@ export const createShortcutsToolbarItems = <T extends BaseStyleDictionary>(
       return createColorToolbarItem(
         shortcut as ShortcutWithColor<T>,
         data,
-        setData
+        setData,
       );
     }
 

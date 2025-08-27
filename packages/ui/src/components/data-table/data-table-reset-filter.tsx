@@ -1,7 +1,7 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { FilterX } from "lucide-react";
 import { Button } from "../button";
-import { useI18n } from "@vivid/i18n";
 
 type DataTableResetFilterProps = {
   isFilterActive: boolean;

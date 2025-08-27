@@ -1,11 +1,11 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { mimeTypeToExtension } from "@vivid/utils";
 import React, { InputHTMLAttributes } from "react";
 import { Accept, useDropzone } from "react-dropzone";
 import { DefaultExtensionType, defaultStyles, FileIcon } from "react-file-icon";
 import { cn } from "../utils";
-import { useI18n } from "@vivid/i18n";
 
 export type DndFileInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -29,7 +29,7 @@ export const DndFileInput: React.FC<DndFileInputProps> = ({
     (droppedFiles: File[]) => {
       onChange?.(droppedFiles || []);
     },
-    [onChange]
+    [onChange],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -50,7 +50,7 @@ py-2 px-3 leading-tight text-background shadow focus:outline-none"
       <div
         className={cn(
           "w-full border border-dashed border-primary rounded-md p-2 text-muted-foreground cursor-pointer",
-          isDragActive && "bg-primary/20"
+          isDragActive && "bg-primary/20",
         )}
       >
         {isDragActive ? (
@@ -75,7 +75,7 @@ py-2 px-3 leading-tight text-background shadow focus:outline-none"
                     <div className="max-w-10 flex self-center">
                       <FileIcon
                         extension={file.name.substring(
-                          file.name.lastIndexOf(".") + 1
+                          file.name.lastIndexOf(".") + 1,
                         )}
                         {...defaultStyles[
                           mimeTypeToExtension(file.type) as DefaultExtensionType

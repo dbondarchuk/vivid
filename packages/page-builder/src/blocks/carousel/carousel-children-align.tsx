@@ -1,9 +1,9 @@
-import { AlignLeft } from "lucide-react";
-import { Combobox } from "@vivid/ui";
 import { useI18n } from "@vivid/i18n";
+import { Combobox } from "@vivid/ui";
+import { AlignLeft } from "lucide-react";
 import { z } from "zod";
-import { StyleDefinition } from "../../style/types";
 import { justifyItemsStyle } from "../../style/styles/layout/justify-items";
+import { StyleDefinition } from "../../style/types";
 
 const carouselChildrenAlignKeys = [
   "left",
@@ -33,7 +33,7 @@ export const carouselChildrenAlignStyle = {
   ),
   defaultValue: "center",
   renderToCSS: (
-    value: z.infer<typeof CarouselChildrenAlignSchema> | null | undefined
+    value: z.infer<typeof CarouselChildrenAlignSchema> | null | undefined,
   ) => {
     if (!value) return null;
     return `text-align: ${value};

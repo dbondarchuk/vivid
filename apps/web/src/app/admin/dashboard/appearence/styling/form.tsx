@@ -82,7 +82,7 @@ export const StylingsConfigurationForm: React.FC<{
 
   const fonts: IComboboxItem[] = React.useMemo(
     () => fontsNames.map(fontTransform),
-    []
+    [],
   );
 
   const [loading, setLoading] = React.useState(false);
@@ -98,7 +98,7 @@ export const StylingsConfigurationForm: React.FC<{
         {
           success: t("appearance.styling.form.toasts.changesSaved"),
           error: t("appearance.styling.form.toasts.requestError"),
-        }
+        },
       );
 
       router.refresh();
@@ -224,7 +224,7 @@ export const StylingsConfigurationForm: React.FC<{
                 const type = form.getValues(`colors.${index}.type`);
                 const hasMultipleTypes =
                   (form.getValues("colors") || []).filter(
-                    (c) => c.type === type
+                    (c) => c.type === type,
                   ).length > 1;
 
                 return (
@@ -234,7 +234,7 @@ export const StylingsConfigurationForm: React.FC<{
                       <div
                         className={cn(
                           "w-full text-center flex flex-col",
-                          (!type || hasMultipleTypes) && "text-destructive"
+                          (!type || hasMultipleTypes) && "text-destructive",
                         )}
                       >
                         {colorsLabels[type] ||
@@ -263,12 +263,12 @@ export const StylingsConfigurationForm: React.FC<{
                             <AlertDialogHeader>
                               <AlertDialogTitle>
                                 {t(
-                                  "appearance.styling.form.deleteConfirmTitle"
+                                  "appearance.styling.form.deleteConfirmTitle",
                                 )}
                               </AlertDialogTitle>
                               <AlertDialogDescription>
                                 {t(
-                                  "appearance.styling.form.deleteConfirmDescription"
+                                  "appearance.styling.form.deleteConfirmDescription",
                                 )}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
@@ -302,11 +302,11 @@ export const StylingsConfigurationForm: React.FC<{
                                 values={colorOverrides.map((color) => ({
                                   value: color,
                                   label: t(
-                                    `appearance.styling.colors.${color}`
+                                    `appearance.styling.colors.${color}`,
                                   ),
                                 }))}
                                 searchLabel={t(
-                                  "appearance.styling.form.selectColorOverrideType"
+                                  "appearance.styling.form.selectColorOverrideType",
                                 )}
                                 value={field.value}
                                 onItemSelect={field.onChange}

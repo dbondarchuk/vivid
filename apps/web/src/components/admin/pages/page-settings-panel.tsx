@@ -1,7 +1,7 @@
 import { LanguageOptions } from "@/constants/texts";
+import { BaseSidebarPanel } from "@vivid/builder";
 import { languages, useI18n } from "@vivid/i18n";
 import { pageTagSchema } from "@vivid/types";
-import { BaseSidebarPanel } from "@vivid/builder";
 import {
   Checkbox,
   Combobox,

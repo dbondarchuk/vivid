@@ -24,10 +24,10 @@ export const PageLayoutEditor = () => {
         }}
         style={{
           backgroundColor: getColorStyle(
-            currentBlock?.data?.backgroundColor ?? COLORS.background.value
+            currentBlock?.data?.backgroundColor ?? COLORS.background.value,
           ),
           color: getColorStyle(
-            currentBlock?.data?.textColor ?? COLORS.foreground.value
+            currentBlock?.data?.textColor ?? COLORS.foreground.value,
           ),
           fontFamily: getFontFamily(currentBlock?.data?.fontFamily),
           fontSize: "16px",
@@ -42,7 +42,7 @@ export const PageLayoutEditor = () => {
         <div
           className={cn(
             "w-full flex flex-col",
-            !currentBlock?.data?.fullWidth && "container mx-auto"
+            !currentBlock?.data?.fullWidth && "container mx-auto",
           )}
         >
           <EditorChildren
@@ -50,7 +50,7 @@ export const PageLayoutEditor = () => {
             property=""
             className={cn(
               "w-full",
-              !currentBlock?.data?.fullWidth && "container mx-auto"
+              !currentBlock?.data?.fullWidth && "container mx-auto",
             )}
           />
         </div>

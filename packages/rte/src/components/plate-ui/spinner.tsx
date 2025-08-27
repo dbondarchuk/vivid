@@ -1,5 +1,3 @@
-import React from "react";
-
 import { cn } from "@vivid/ui";
 import { type VariantProps, cva } from "class-variance-authority";
 import { type LucideProps, Loader2Icon } from "lucide-react";

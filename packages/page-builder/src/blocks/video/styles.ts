@@ -10,7 +10,7 @@ export type VideoStylesSchema = AllStylesSchemas;
 
 export const getDefaults = (
   { props, style }: VideoProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): DefaultCSSProperties<VideoStylesSchema> => ({
   display: "inline-block",
   maxWidth: {

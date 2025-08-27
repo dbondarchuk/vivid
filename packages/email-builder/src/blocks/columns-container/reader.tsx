@@ -1,6 +1,6 @@
 import { ReaderBlock, TReaderBlock } from "@vivid/builder";
-import { ColumnsContainerReaderProps } from "./schema";
 import { BaseColumnsContainer } from "./base";
+import { ColumnsContainerReaderProps } from "./schema";
 
 export const ColumnsContainerReader = ({
   style,
@@ -13,7 +13,7 @@ export const ColumnsContainerReader = ({
     cols = columns.map((col) =>
       col.children.map((child: TReaderBlock) => (
         <ReaderBlock key={child.id} {...rest} block={child} />
-      ))
+      )),
     );
   }
 

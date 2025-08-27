@@ -61,9 +61,9 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
           acc[style.category].push(style);
           return acc;
         },
-        {}
+        {},
       ) as Record<StyleCategory, StyleDefinition<T[keyof T]>[]>,
-    [availableStyles]
+    [availableStyles],
   );
 
   // Filter to only show categories that have active styles
@@ -73,7 +73,7 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
         StyleCategory,
         StyleDefinition<T[keyof T]>[],
       ][],
-    [stylesByCategory]
+    [stylesByCategory],
   );
 
   // Filter categories by search term
@@ -89,13 +89,13 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
                 t(style.label)
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase()) ||
-                style.name.toLowerCase().includes(searchTerm.toLowerCase())
+                style.name.toLowerCase().includes(searchTerm.toLowerCase()),
             )
           );
         }
         return true;
       }),
-    [activeCategories, searchTerm]
+    [activeCategories, searchTerm],
   );
 
   const addStyle = useCallback(
@@ -112,7 +112,7 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
       };
       onStylesChange(newStyles);
     },
-    [onStylesChange, styles]
+    [onStylesChange, styles],
   );
 
   const updateStyle = useCallback(
@@ -130,7 +130,7 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
       };
       onStylesChange(newStyles);
     },
-    [onStylesChange, styles]
+    [onStylesChange, styles],
   );
 
   const deleteStyle = useCallback(
@@ -139,7 +139,7 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
       delete newStyles[styleName];
       onStylesChange(newStyles);
     },
-    [onStylesChange, styles]
+    [onStylesChange, styles],
   );
 
   const addVariant = useCallback(
@@ -160,7 +160,7 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
       };
       onStylesChange(newStyles);
     },
-    [onStylesChange, styles, availableStyles]
+    [onStylesChange, styles, availableStyles],
   );
 
   const addVariantFromStyle = useCallback(
@@ -183,14 +183,14 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
       };
       onStylesChange(newStyles);
     },
-    [onStylesChange, styles]
+    [onStylesChange, styles],
   );
 
   const updateVariant = useCallback(
     (
       styleName: keyof T,
       variantIndex: number,
-      updates: Partial<StyleVariant<T[keyof T]>>
+      updates: Partial<StyleVariant<T[keyof T]>>,
     ) => {
       const currentVariants = styles[styleName] || [];
       const newVariants = [...currentVariants];
@@ -202,7 +202,7 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
       };
       onStylesChange(newStyles);
     },
-    [onStylesChange, styles]
+    [onStylesChange, styles],
   );
 
   const deleteVariant = useCallback(
@@ -217,7 +217,7 @@ export const StylesConfigurationPanel = <T extends BaseStyleDictionary>({
       };
       onStylesChange(newStyles);
     },
-    [onStylesChange, styles]
+    [onStylesChange, styles],
   );
 
   return (

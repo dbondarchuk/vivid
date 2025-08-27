@@ -8,5 +8,5 @@ export const zStyles = getStylesSchema(styles);
 
 export const getDefaults = (
   { props, style }: AccordionItemProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ) => ({});

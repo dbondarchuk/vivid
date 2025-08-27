@@ -1,7 +1,6 @@
 "use client";
 
 import { ConfigurationProps } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
 import { deepMemo } from "@vivid/ui";
 import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
@@ -18,7 +17,7 @@ export const AccordionItemConfiguration = deepMemo(
     const updateStyle = useCallback(
       (s: unknown) =>
         setData({ ...data, style: s as AccordionItemProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -30,5 +29,5 @@ export const AccordionItemConfiguration = deepMemo(
         onBaseChange={onBaseChange}
       />
     );
-  }
+  },
 );

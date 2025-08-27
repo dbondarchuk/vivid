@@ -1,9 +1,9 @@
+import { BuilderKeys } from "@vivid/i18n";
+import { RawNumberInputWithUnit } from "../../style-inputs/base/raw-number-input-with-units";
 import { StyleValue } from "../../style/css-renderer";
 import { BaseStyleDictionary } from "../../style/types";
 import { NumberValueWithUnit } from "../../style/zod";
-import { RawNumberInputWithUnit } from "../../style-inputs/base/raw-number-input-with-units";
 import { ShortcutWithNumberWithUnit } from "../types";
-import { BuilderKeys } from "@vivid/i18n";
 
 /**
  * Helper function to create number-with-unit shortcuts
@@ -12,7 +12,7 @@ export const createNumberWithUnitShortcut = <T extends BaseStyleDictionary>(
   label: BuilderKeys,
   icon: (props: { className?: string }) => React.ReactNode,
   targetStyle: keyof T,
-  config: ShortcutWithNumberWithUnit<T>["numberWithUnitConfig"]
+  config: ShortcutWithNumberWithUnit<T>["numberWithUnitConfig"],
 ): ShortcutWithNumberWithUnit<T> => {
   return {
     label,
@@ -34,7 +34,7 @@ export const NumberWithUnitShortcut = <T extends BaseStyleDictionary>({
 }) => {
   // Get current numeric value directly from the target style
   const currentStyle = styles[shortcut.targetStyle]?.find(
-    (s) => !s.breakpoint?.length && !s.state?.length
+    (s) => !s.breakpoint?.length && !s.state?.length,
   );
 
   const currentNumericValue: NumberValueWithUnit | null =

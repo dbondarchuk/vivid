@@ -13,7 +13,7 @@ import { UseFormReturn } from "react-hook-form";
 export const useUnsavedChangesPrompt = (
   form: UseFormReturn<any>,
   enabled: boolean = true,
-  message?: string
+  message?: string,
 ) => {
   const { isDirty } = form.formState;
   const hasUnsavedChangesRef = useRef(false);

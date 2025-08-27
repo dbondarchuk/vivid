@@ -8,7 +8,7 @@ export const styles = ALL_STYLES;
 export const zStyles = getStylesSchema(styles);
 
 export function getFontSize(
-  level: NonNullable<NonNullable<HeadingProps["props"]>["level"]>
+  level: NonNullable<NonNullable<HeadingProps["props"]>["level"]>,
 ) {
   switch (level) {
     case "h1":
@@ -27,7 +27,7 @@ export function getFontSize(
 }
 
 export const getDefaults = (
-  level: NonNullable<HeadingProps["props"]>["level"]
+  level: NonNullable<HeadingProps["props"]>["level"],
 ): DefaultCSSProperties<AllStylesSchemas> => ({
   fontWeight: "bold",
   textAlign: "center",

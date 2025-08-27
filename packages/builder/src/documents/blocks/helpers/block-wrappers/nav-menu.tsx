@@ -50,7 +50,7 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
       ev.stopPropagation();
       ev.preventDefault();
     },
-    [setSelectedBlockId]
+    [setSelectedBlockId],
   );
 
   const handleDeleteClick = useCallback(() => {
@@ -73,7 +73,7 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
         },
       });
     },
-    [blockId, dispatchAction]
+    [blockId, dispatchAction],
   );
 
   const handleCloneClick = useCallback(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   Dialog,
@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@vivid/ui";
 import { Grid3X3 } from "lucide-react";
-import { useI18n } from "@vivid/i18n";
+import React, { useState } from "react";
 
 interface GridTemplateColumnsDialogProps {
   value: string;
@@ -123,7 +123,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.responsive")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.responsiveDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.responsiveDescription",
                     )}
                   </div>
                 </Label>
@@ -134,7 +134,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.fixed")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.fixedDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.fixedDescription",
                     )}
                   </div>
                 </Label>
@@ -145,7 +145,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.masonry")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.masonryDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.masonryDescription",
                     )}
                   </div>
                 </Label>
@@ -156,7 +156,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.sidebar")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.sidebarDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.sidebarDescription",
                     )}
                   </div>
                 </Label>
@@ -167,7 +167,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.hero")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.heroDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.heroDescription",
                     )}
                   </div>
                 </Label>
@@ -178,7 +178,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.magazine")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.magazineDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.magazineDescription",
                     )}
                   </div>
                 </Label>
@@ -189,7 +189,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.gallery")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.galleryDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.galleryDescription",
                     )}
                   </div>
                 </Label>
@@ -200,7 +200,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.dashboard")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.dashboardDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.dashboardDescription",
                     )}
                   </div>
                 </Label>
@@ -211,7 +211,7 @@ export const GridTemplateColumnsDialog: React.FC<
                   {t("pageBuilder.styles.gridTemplateColumnsDialog.custom")}
                   <div className="text-xs text-muted-foreground font-normal">
                     {t(
-                      "pageBuilder.styles.gridTemplateColumnsDialog.customDescription"
+                      "pageBuilder.styles.gridTemplateColumnsDialog.customDescription",
                     )}
                   </div>
                 </Label>
@@ -254,10 +254,10 @@ export const GridTemplateColumnsDialog: React.FC<
                       {num}{" "}
                       {num === 1
                         ? t(
-                            "pageBuilder.styles.gridTemplateColumnsDialog.column"
+                            "pageBuilder.styles.gridTemplateColumnsDialog.column",
                           )
                         : t(
-                            "pageBuilder.styles.gridTemplateColumnsDialog.columns"
+                            "pageBuilder.styles.gridTemplateColumnsDialog.columns",
                           )}
                     </SelectItem>
                   ))}
@@ -304,7 +304,7 @@ export const GridTemplateColumnsDialog: React.FC<
             <div className="grid gap-2">
               <Label htmlFor="customValue">
                 {t(
-                  "pageBuilder.styles.gridTemplateColumnsDialog.customTemplate"
+                  "pageBuilder.styles.gridTemplateColumnsDialog.customTemplate",
                 )}
               </Label>
               <Input

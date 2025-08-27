@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react";
 import { cn } from "../utils";
+import { mergeRefs } from "../utils/merge-refs";
 import {
   Command,
   CommandGroup,
@@ -17,7 +18,6 @@ import {
   CommandList,
 } from "./command";
 import { MentionData } from "./textarea-mention";
-import { mergeRefs } from "../utils/merge-refs";
 
 const isBrowser = typeof window !== "undefined";
 
@@ -34,7 +34,7 @@ function getCaretPosition(element: HTMLElement, documentElement: Document) {
 function setCaretPosition(
   element: HTMLElement,
   position: number,
-  documentElement: Document
+  documentElement: Document,
 ) {
   if (!isBrowser) return;
 
@@ -75,7 +75,7 @@ function setCaretPosition(
 function getCurrentWordPos(
   element: HTMLElement,
   trigger: string,
-  documentElement: Document
+  documentElement: Document,
 ) {
   const text = element.innerText || "";
   const caretStartIndex = getCaretPosition(element, documentElement);
@@ -102,12 +102,12 @@ function getCurrentWordPos(
 function getCurrentWord(
   element: HTMLElement,
   trigger: string,
-  documentElement: Document
+  documentElement: Document,
 ) {
   const { start, end, text } = getCurrentWordPos(
     element,
     trigger,
-    documentElement
+    documentElement,
   );
   const w = text.substring(start, end);
 
@@ -118,12 +118,12 @@ function replaceWord(
   element: HTMLElement,
   value: string,
   trigger: string,
-  documentElement: Document
+  documentElement: Document,
 ) {
   const { start: startIndex, end: endIndex } = getCurrentWordPos(
     element,
     trigger,
-    documentElement
+    documentElement,
   );
 
   // Replace the word with a new word using document.execCommand
@@ -238,7 +238,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
       documentElement = document,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const [isInside, setIsInside] = useState(false);
     const elementRef = useRef<HTMLElement>(null);
@@ -294,7 +294,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
         if (htmlElement) {
           lastCursorPosition.current = getCaretPosition(
             htmlElement,
-            documentElement
+            documentElement,
           );
         }
 
@@ -306,7 +306,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
           const currentWord = getCurrentWord(
             htmlElement,
             trigger,
-            documentElement
+            documentElement,
           );
           if (currentWord.startsWith(trigger)) {
             setCommandValue(currentWord.substring(trigger.length));
@@ -322,7 +322,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
           }
         }
       },
-      [setTextValue, commandValue]
+      [setTextValue, commandValue],
     );
 
     const onCommandSelect = useCallback((value: MentionData) => {
@@ -333,7 +333,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
           textarea,
           insertTransform ? insertTransform(value) : `${value.id}`,
           trigger,
-          documentElement
+          documentElement,
         );
 
         setCommandValue("");
@@ -355,7 +355,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
           const currentWord = getCurrentWord(
             textarea,
             trigger,
-            documentElement
+            documentElement,
           );
           if (!currentWord.startsWith(trigger) && commandValue !== "") {
             setCommandValue("");
@@ -363,12 +363,12 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
           }
         }
       },
-      [commandValue]
+      [commandValue],
     );
 
     const toggleInside = (e: any) => {
       setIsInside(
-        !!e?.target && !!elementRef.current?.contains(e.target as any)
+        !!e?.target && !!elementRef.current?.contains(e.target as any),
       );
     };
 
@@ -392,7 +392,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
         textarea?.removeEventListener("blur", handleBlur);
         documentElement?.removeEventListener(
           "selectionchange",
-          handleSectionChange
+          handleSectionChange,
         );
         dropdown?.removeEventListener("mousedown", handleMouseDown);
       };
@@ -410,7 +410,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
             setCaretPosition(
               elementRef.current,
               Math.min(lastCursorPosition.current, textValue.length),
-              documentElement
+              documentElement,
             );
           }
           isUpdatingContent.current = false;
@@ -434,7 +434,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
         <Command
           ref={dropdownRef}
           className={cn(
-            "fixed hidden h-auto max-w-min border border-popover shadow z-[46]"
+            "fixed hidden h-auto max-w-min border border-popover shadow z-[46]",
           )}
         >
           <div className="hidden">
@@ -461,5 +461,5 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
         </Command>
       </div>
     );
-  }
+  },
 );

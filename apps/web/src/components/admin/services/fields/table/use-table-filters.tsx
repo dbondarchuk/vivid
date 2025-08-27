@@ -9,14 +9,14 @@ export function useFieldsTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [typeFilter, setTypeFilter] = useQueryState(
     "type",
     searchParams.type
       .withOptions({ shallow: false })
-      .withDefault(searchParams.type.defaultValue)
+      .withDefault(searchParams.type.defaultValue),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);

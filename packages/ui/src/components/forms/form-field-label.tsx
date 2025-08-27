@@ -1,6 +1,6 @@
 import { TranslationKeys, useI18n } from "@vivid/i18n";
-import { FormLabel } from "../form";
 import { cn } from "../../utils";
+import { FormLabel } from "../form";
 
 export const FormFieldLabel: React.FC<{
   label: TranslationKeys | string;

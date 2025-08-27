@@ -1,7 +1,7 @@
-import { Toggle } from "@vivid/ui";
-import { ShortcutOption, ShortcutWithToggle } from "../types";
-import { BaseStyleDictionary } from "../../style/types";
 import { useI18n } from "@vivid/i18n";
+import { Toggle } from "@vivid/ui";
+import { BaseStyleDictionary } from "../../style/types";
+import { ShortcutOption, ShortcutWithToggle } from "../types";
 
 export const ToggleShortcut = <T extends BaseStyleDictionary>({
   shortcut,

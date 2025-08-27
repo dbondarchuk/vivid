@@ -6,7 +6,10 @@ import {
 } from "@vivid/builder";
 import {
   Calendar,
+  ChevronDown,
+  Code,
   Columns3,
+  Copy,
   CopyPlus,
   Film,
   GalleryHorizontalEnd,
@@ -20,12 +23,9 @@ import {
   ShieldQuestion,
   SquareMousePointer,
   SquareSquare,
+  Star,
   Text,
   Zap,
-  ChevronDown,
-  Copy,
-  Star,
-  Code,
 } from "lucide-react";
 import {
   AccordionConfiguration,
@@ -76,6 +76,12 @@ import {
   ContainerToolbar,
 } from "./container";
 import {
+  CustomHTMLConfiguration,
+  CustomHTMLEditor,
+  CustomHTMLToolbar,
+} from "./custom-html";
+import { CustomHTMLPropsDefaults } from "./custom-html/schema";
+import {
   ForeachContainerConfiguration,
   ForeachContainerEditor,
   ForeachContainerPropsDefaults,
@@ -112,8 +118,8 @@ import {
 } from "./page-hero";
 import {
   PageLayoutConfiguration,
-  PageLayoutEditor,
   PageLayoutDefaultProps,
+  PageLayoutEditor,
   PageLayoutProps,
   PageLayoutToolbar,
 } from "./page-layout";
@@ -123,19 +129,23 @@ import {
   PopupPropsDefaults,
   PopupToolbar,
 } from "./popup";
+import { EditorBlocksSchema } from "./schema";
+import { SimpleContainerConfiguration } from "./simple-container/configuration";
+import { SimpleContainerEditor } from "./simple-container/editor";
+import { SimpleContainerPropsDefaults } from "./simple-container/schema";
+import { SimpleContainerToolbar } from "./simple-container/toolbar";
 import {
   SimpleTextConfiguration,
   SimpleTextEditor,
   SimpleTextPropsDefaults,
   SimpleTextToolbar,
 } from "./simple-text";
-import { EditorBlocksSchema } from "./schema";
 import {
-  Spacer,
   SpacerConfiguration,
   SpacerPropsDefaults,
   SpacerToolbar,
 } from "./spacer";
+import { SpacerEditor } from "./spacer/editor";
 import {
   TextConfiguration,
   TextEditor,
@@ -154,17 +164,6 @@ import {
   YouTubeVideoPropsDefaults,
   YouTubeVideoToolbar,
 } from "./youtube-video";
-import { SpacerEditor } from "./spacer/editor";
-import { SimpleContainerEditor } from "./simple-container/editor";
-import { SimpleContainerConfiguration } from "./simple-container/configuration";
-import { SimpleContainerToolbar } from "./simple-container/toolbar";
-import { SimpleContainerPropsDefaults } from "./simple-container/schema";
-import {
-  CustomHTMLConfiguration,
-  CustomHTMLEditor,
-  CustomHTMLToolbar,
-} from "./custom-html";
-import { CustomHTMLPropsDefaults } from "./custom-html/schema";
 
 export const EditorBlocks: EditorDocumentBlocksDictionary<
   typeof EditorBlocksSchema

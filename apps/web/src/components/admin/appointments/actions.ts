@@ -8,7 +8,7 @@ const logger = getLoggerFactory("AppointmentsActions");
 
 export async function changeAppointmentStatus(
   id: string,
-  newStatus: AppointmentStatus
+  newStatus: AppointmentStatus,
 ) {
   const actionLogger = logger("changeAppointmentStatus");
 
@@ -17,13 +17,13 @@ export async function changeAppointmentStatus(
       appointmentId: id,
       newStatus,
     },
-    "Changing appointment status"
+    "Changing appointment status",
   );
 
   try {
     await ServicesContainer.EventsService().changeAppointmentStatus(
       id,
-      newStatus
+      newStatus,
     );
 
     actionLogger.debug(
@@ -31,7 +31,7 @@ export async function changeAppointmentStatus(
         appointmentId: id,
         newStatus,
       },
-      "Appointment status changed successfully"
+      "Appointment status changed successfully",
     );
 
     return okStatus;
@@ -42,7 +42,7 @@ export async function changeAppointmentStatus(
         newStatus,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to change appointment status"
+      "Failed to change appointment status",
     );
     throw error;
   }
@@ -57,7 +57,7 @@ export async function updateAppointmentNote(id: string, note?: string) {
       hasNote: !!note,
       noteLength: note?.length || 0,
     },
-    "Updating appointment note"
+    "Updating appointment note",
   );
 
   try {
@@ -68,7 +68,7 @@ export async function updateAppointmentNote(id: string, note?: string) {
         appointmentId: id,
         hasNote: !!note,
       },
-      "Appointment note updated successfully"
+      "Appointment note updated successfully",
     );
 
     return okStatus;
@@ -79,7 +79,7 @@ export async function updateAppointmentNote(id: string, note?: string) {
         hasNote: !!note,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update appointment note"
+      "Failed to update appointment note",
     );
     throw error;
   }
@@ -97,7 +97,7 @@ export async function addAppointmentFiles(formData: FormData) {
         appointmentId: id,
         hasFile: !!file,
       },
-      "Appointment ID and file are required"
+      "Appointment ID and file are required",
     );
     throw new Error("Appointment ID and file are required");
   }
@@ -109,13 +109,13 @@ export async function addAppointmentFiles(formData: FormData) {
       fileSize: file.size,
       fileType: file.type,
     },
-    "Adding appointment files"
+    "Adding appointment files",
   );
 
   try {
     const result = await ServicesContainer.EventsService().addAppointmentFiles(
       id,
-      [file]
+      [file],
     );
 
     actionLogger.debug(
@@ -124,7 +124,7 @@ export async function addAppointmentFiles(formData: FormData) {
         fileName: file.name,
         fileSize: file.size,
       },
-      "Appointment files added successfully"
+      "Appointment files added successfully",
     );
 
     return result;
@@ -136,7 +136,7 @@ export async function addAppointmentFiles(formData: FormData) {
         fileSize: file.size,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to add appointment files"
+      "Failed to add appointment files",
     );
     throw error;
   }
@@ -149,7 +149,7 @@ export async function removeAppointmentFile(assetId: string) {
     {
       assetId,
     },
-    "Removing appointment file"
+    "Removing appointment file",
   );
 
   try {
@@ -159,7 +159,7 @@ export async function removeAppointmentFile(assetId: string) {
       {
         assetId,
       },
-      "Appointment file removed successfully"
+      "Appointment file removed successfully",
     );
 
     return okStatus;
@@ -169,7 +169,7 @@ export async function removeAppointmentFile(assetId: string) {
         assetId,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to remove appointment file"
+      "Failed to remove appointment file",
     );
     throw error;
   }
@@ -178,7 +178,7 @@ export async function removeAppointmentFile(assetId: string) {
 export async function rescheduleAppointment(
   id: string,
   dateTime: Date,
-  duration: number
+  duration: number,
 ) {
   const actionLogger = logger("rescheduleAppointment");
 
@@ -188,14 +188,14 @@ export async function rescheduleAppointment(
       newDateTime: dateTime.toISOString(),
       newDuration: duration,
     },
-    "Rescheduling appointment"
+    "Rescheduling appointment",
   );
 
   try {
     await ServicesContainer.EventsService().rescheduleAppointment(
       id,
       dateTime,
-      duration
+      duration,
     );
 
     actionLogger.debug(
@@ -204,7 +204,7 @@ export async function rescheduleAppointment(
         newDateTime: dateTime.toISOString(),
         newDuration: duration,
       },
-      "Appointment rescheduled successfully"
+      "Appointment rescheduled successfully",
     );
 
     return okStatus;
@@ -216,7 +216,7 @@ export async function rescheduleAppointment(
         newDuration: duration,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to reschedule appointment"
+      "Failed to reschedule appointment",
     );
     throw error;
   }

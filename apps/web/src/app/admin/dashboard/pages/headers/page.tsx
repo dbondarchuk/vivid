@@ -1,10 +1,10 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { PageHeadersTableColumnsCount } from "@/components/admin/pages/headers/table/columns";
 import {
   searchParamsCache,
   serialize,
 } from "@/components/admin/pages/headers/table/search-params";
 import { PageHeadersTable } from "@/components/admin/pages/headers/table/table";
-import { PageHeadersTableColumnsCount } from "@/components/admin/pages/headers/table/columns";
 import { PageHeadersTableAction } from "@/components/admin/pages/headers/table/table-action";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";

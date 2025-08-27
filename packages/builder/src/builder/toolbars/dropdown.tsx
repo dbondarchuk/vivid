@@ -1,3 +1,4 @@
+import { Leaves } from "@vivid/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +9,6 @@ import {
   useOpenState,
 } from "@vivid/ui";
 import { destructAndReplace, resolveProperty } from "@vivid/utils";
-import { Leaves } from "@vivid/types";
 import { CSSProperties, ReactNode } from "react";
 import { ConfigurationProps } from "../../documents/types";
 
@@ -55,10 +55,10 @@ export const ToolbarDropdownMenu = <T,>({
     "icon" in rest
       ? rest.icon
       : ((items as ToolbarDropdownItemWithIcon[]).find(
-          (item) => item.value === propValue
+          (item) => item.value === propValue,
         )?.icon ??
         (items as ToolbarDropdownItemWithIcon[]).find(
-          (item) => item.value === defaultValue
+          (item) => item.value === defaultValue,
         )?.icon!);
 
   return (
@@ -79,7 +79,7 @@ export const ToolbarDropdownMenu = <T,>({
           value={propValue ?? defaultValue}
           onValueChange={(value: any) => {
             setData(
-              destructAndReplace(data, property, value) as unknown as any
+              destructAndReplace(data, property, value) as unknown as any,
             );
           }}
         >
@@ -98,7 +98,7 @@ export const ToolbarDropdownMenu = <T,>({
               >
                 {"icon" in rest && rest.icon} {itemLabel}
               </DropdownMenuRadioItem>
-            )
+            ),
           )}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

@@ -60,7 +60,7 @@ export const HeadingToolbar = (props: ConfigurationProps<HeadingProps>) => {
       <FontSizeToolbarMenu
         {...props}
         defaultValue={getFontSize(
-          props.data.props?.level || HeadingPropsDefaults.props.level
+          props.data.props?.level || HeadingPropsDefaults.props.level,
         )}
       />
       <ToolbarColorMenu

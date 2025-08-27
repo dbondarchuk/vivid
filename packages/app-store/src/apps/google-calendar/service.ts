@@ -76,20 +76,20 @@ class GoogleCalendarConnectedApp
   implements IOAuthConnectedApp, ICalendarBusyTimeProvider, ICalendarWriter
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "GoogleCalendarConnectedApp"
+    "GoogleCalendarConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData<GoogleCalendarConfiguration>,
-    data: RequestAction
+    data: RequestAction,
   ) {
     const requestType = data.type;
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, requestType },
-      "Processing Google Calendar request"
+      "Processing Google Calendar request",
     );
 
     try {
@@ -99,7 +99,7 @@ class GoogleCalendarConnectedApp
           const calendarId = appData.data?.calendar?.id;
           logger.debug(
             { appId: appData._id, calendarId },
-            "Retrieved selected calendar ID"
+            "Retrieved selected calendar ID",
           );
           return calendarId;
 
@@ -108,7 +108,7 @@ class GoogleCalendarConnectedApp
           const calendarList = await this.getCalendarList(appData);
           logger.info(
             { appId: appData._id, calendarCount: calendarList?.length },
-            "Successfully retrieved calendar list"
+            "Successfully retrieved calendar list",
           );
           return calendarList;
 
@@ -119,7 +119,7 @@ class GoogleCalendarConnectedApp
               calendarId: data.calendar.id,
               calendarName: data.calendar.name,
             },
-            "Setting calendar configuration"
+            "Setting calendar configuration",
           );
           await this.props.update({
             data: {
@@ -137,21 +137,21 @@ class GoogleCalendarConnectedApp
               calendarId: data.calendar.id,
               calendarName: data.calendar.name,
             },
-            "Successfully set calendar configuration"
+            "Successfully set calendar configuration",
           );
           return;
 
         default:
           logger.debug(
             { appId: appData._id, requestType },
-            "Processing default request"
+            "Processing default request",
           );
           return okStatus;
       }
     } catch (error: any) {
       logger.error(
         { appId: appData._id, requestType, error },
-        "Error processing Google Calendar request"
+        "Error processing Google Calendar request",
       );
       throw error;
     }
@@ -176,19 +176,19 @@ class GoogleCalendarConnectedApp
     } catch (error: any) {
       logger.error(
         { appId, error },
-        "Error generating Google Calendar login URL"
+        "Error generating Google Calendar login URL",
       );
       throw error;
     }
   }
 
   public async processRedirect(
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ConnectedAppResponse> {
     const logger = this.loggerFactory("processRedirect");
     logger.debug(
       { url: request.url },
-      "Processing Google Calendar OAuth redirect"
+      "Processing Google Calendar OAuth redirect",
     );
 
     try {
@@ -198,7 +198,7 @@ class GoogleCalendarConnectedApp
 
       logger.debug(
         { appId, hasCode: !!code },
-        "Extracted OAuth parameters from redirect"
+        "Extracted OAuth parameters from redirect",
       );
 
       const client = await this.getOAuthClient();
@@ -206,21 +206,21 @@ class GoogleCalendarConnectedApp
       if (!appId) {
         logger.error(
           { url: request.url },
-          "Redirect request does not contain app ID"
+          "Redirect request does not contain app ID",
         );
 
         throw new ConnectedAppError(
-          "googleCalendar.statusText.redirect_request_does_not_contain_app_id"
+          "googleCalendar.statusText.redirect_request_does_not_contain_app_id",
         );
       }
 
       if (!code) {
         logger.error(
           { appId },
-          "Redirect request does not contain authorization code"
+          "Redirect request does not contain authorization code",
         );
         throw new ConnectedAppError(
-          "googleCalendar.statusText.redirect_request_does_not_contain_authorization_code"
+          "googleCalendar.statusText.redirect_request_does_not_contain_authorization_code",
         );
       }
 
@@ -237,26 +237,26 @@ class GoogleCalendarConnectedApp
             hasRefreshToken: !!tokens?.refresh_token,
             hasIdToken: !!tokens?.id_token,
           },
-          "App was not authorized properly"
+          "App was not authorized properly",
         );
 
         throw new ConnectedAppError(
-          "googleCalendar.statusText.app_was_not_authorized_properly"
+          "googleCalendar.statusText.app_was_not_authorized_properly",
         );
       }
 
       logger.debug(
         { appId, scopes: tokens.scope },
-        "Verifying required scopes"
+        "Verifying required scopes",
       );
 
       if (!requiredScopes.every((s) => !!tokens.scope?.includes(s))) {
         logger.error(
           { appId, requiredScopes, actualScopes: tokens.scope },
-          "App was not given required scopes"
+          "App was not given required scopes",
         );
         throw new ConnectedAppError(
-          "googleCalendar.statusText.app_was_not_given_required_scopes"
+          "googleCalendar.statusText.app_was_not_given_required_scopes",
         );
       }
 
@@ -268,13 +268,13 @@ class GoogleCalendarConnectedApp
       if (!email) {
         logger.error({ appId }, "Failed to get user email from ID token");
         throw new ConnectedAppError(
-          "googleCalendar.statusText.failed_to_get_user_email"
+          "googleCalendar.statusText.failed_to_get_user_email",
         );
       }
 
       logger.info(
         { appId, email },
-        "Successfully processed Google Calendar OAuth redirect"
+        "Successfully processed Google Calendar OAuth redirect",
       );
 
       return {
@@ -291,7 +291,7 @@ class GoogleCalendarConnectedApp
     } catch (e: any) {
       logger.error(
         { url: request.url, error: e?.message || e?.toString() },
-        "Error processing Google Calendar OAuth redirect"
+        "Error processing Google Calendar OAuth redirect",
       );
 
       return {
@@ -308,7 +308,7 @@ class GoogleCalendarConnectedApp
   public async getBusyTimes(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
     logger.debug(
@@ -318,7 +318,7 @@ class GoogleCalendarConnectedApp
         end: end.toISOString(),
         calendarId: app.data?.calendar?.id,
       },
-      "Getting busy times from Google Calendar"
+      "Getting busy times from Google Calendar",
     );
 
     try {
@@ -326,19 +326,19 @@ class GoogleCalendarConnectedApp
 
       logger.debug(
         { appId: app._id, start: start.toISOString(), end: end.toISOString() },
-        "Retrieved OAuth client, fetching events"
+        "Retrieved OAuth client, fetching events",
       );
 
       const events = await this.getEvents(
         client,
         DateTime.fromJSDate(start),
         DateTime.fromJSDate(end),
-        app.data?.calendar?.id
+        app.data?.calendar?.id,
       );
 
       logger.debug(
         { appId: app._id, eventCount: events.length },
-        "Retrieved events from Google Calendar"
+        "Retrieved events from Google Calendar",
       );
 
       const result = events
@@ -347,7 +347,7 @@ class GoogleCalendarConnectedApp
             event.start &&
             event.end &&
             event.summary &&
-            event.transparency !== "transparent"
+            event.transparency !== "transparent",
         )
         .map((event) => {
           const startAt = DateTime.fromISO(event.start?.dateTime!, {
@@ -373,7 +373,7 @@ class GoogleCalendarConnectedApp
 
       logger.info(
         { appId: app._id, busyTimeCount: result.length },
-        "Successfully processed busy times from Google Calendar"
+        "Successfully processed busy times from Google Calendar",
       );
 
       await this.props.update({
@@ -385,7 +385,7 @@ class GoogleCalendarConnectedApp
     } catch (e: any) {
       logger.error(
         { appId: app._id, error: e?.message || e?.toString() },
-        "Error getting busy times from Google Calendar"
+        "Error getting busy times from Google Calendar",
       );
 
       await this.props.update({
@@ -399,7 +399,7 @@ class GoogleCalendarConnectedApp
 
   public async createEvent(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
@@ -409,7 +409,7 @@ class GoogleCalendarConnectedApp
         eventTitle: event.title,
         calendarId: app.data?.calendar?.id,
       },
-      "Creating event in Google Calendar"
+      "Creating event in Google Calendar",
     );
 
     try {
@@ -421,7 +421,7 @@ class GoogleCalendarConnectedApp
 
       logger.debug(
         { appId: app._id, eventId: event.id },
-        "Preparing Google Calendar event"
+        "Preparing Google Calendar event",
       );
 
       const googleEvent = this.getGoogleEvent(event);
@@ -432,7 +432,7 @@ class GoogleCalendarConnectedApp
           eventId: event.id,
           calendarId: app.data?.calendar?.id || "primary",
         },
-        "Inserting event into Google Calendar"
+        "Inserting event into Google Calendar",
       );
 
       const result = await calendarClient.events.insert({
@@ -448,7 +448,7 @@ class GoogleCalendarConnectedApp
           eventTitle: event.title,
           googleEventId: result.data.id,
         },
-        "Successfully created event in Google Calendar"
+        "Successfully created event in Google Calendar",
       );
 
       return {
@@ -457,7 +457,7 @@ class GoogleCalendarConnectedApp
     } catch (error: any) {
       logger.error(
         { appId: app._id, eventId: event.id, error },
-        "Error creating event in Google Calendar"
+        "Error creating event in Google Calendar",
       );
       throw error;
     }
@@ -466,7 +466,7 @@ class GoogleCalendarConnectedApp
   public async updateEvent(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
     uid: string,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
@@ -477,7 +477,7 @@ class GoogleCalendarConnectedApp
         eventTitle: event.title,
         calendarId: app.data?.calendar?.id,
       },
-      "Updating event in Google Calendar"
+      "Updating event in Google Calendar",
     );
 
     try {
@@ -490,7 +490,7 @@ class GoogleCalendarConnectedApp
       const encodedUid = base32hexEncode(uid);
       logger.debug(
         { appId: app._id, eventId: event.id, uid, encodedUid },
-        "Preparing to update Google Calendar event"
+        "Preparing to update Google Calendar event",
       );
 
       const result = await calendarClient.events.patch({
@@ -507,7 +507,7 @@ class GoogleCalendarConnectedApp
           eventTitle: event.title,
           googleEventId: result.data.id,
         },
-        "Successfully updated event in Google Calendar"
+        "Successfully updated event in Google Calendar",
       );
 
       return {
@@ -516,7 +516,7 @@ class GoogleCalendarConnectedApp
     } catch (error: any) {
       logger.error(
         { appId: app._id, eventId: event.id, uid, error },
-        "Error updating event in Google Calendar"
+        "Error updating event in Google Calendar",
       );
       throw error;
     }
@@ -524,12 +524,12 @@ class GoogleCalendarConnectedApp
 
   public async deleteEvent(
     app: ConnectedAppData<GoogleCalendarConfiguration>,
-    uid: string
+    uid: string,
   ): Promise<void> {
     const logger = this.loggerFactory("deleteEvent");
     logger.debug(
       { appId: app._id, uid, calendarId: app.data?.calendar?.id },
-      "Deleting event from Google Calendar"
+      "Deleting event from Google Calendar",
     );
 
     try {
@@ -542,7 +542,7 @@ class GoogleCalendarConnectedApp
       const encodedUid = base32hexEncode(uid);
       logger.debug(
         { appId: app._id, uid, encodedUid },
-        "Deleting Google Calendar event"
+        "Deleting Google Calendar event",
       );
 
       await calendarClient.events.delete({
@@ -552,12 +552,12 @@ class GoogleCalendarConnectedApp
 
       logger.info(
         { appId: app._id, uid },
-        "Successfully deleted event from Google Calendar"
+        "Successfully deleted event from Google Calendar",
       );
     } catch (error: any) {
       logger.error(
         { appId: app._id, uid, error },
-        "Error deleting event from Google Calendar"
+        "Error deleting event from Google Calendar",
       );
       throw error;
     }
@@ -576,7 +576,7 @@ class GoogleCalendarConnectedApp
 
       logger.debug(
         { appId: app._id },
-        "Fetching calendar list from Google Calendar API"
+        "Fetching calendar list from Google Calendar API",
       );
 
       const list = await calendarClient.calendarList.list({});
@@ -585,19 +585,19 @@ class GoogleCalendarConnectedApp
           ({
             id: item.id!,
             name: item.summary!,
-          }) as CalendarListItem
+          }) as CalendarListItem,
       );
 
       logger.debug(
         { appId: app._id, calendarCount: calendars?.length },
-        "Retrieved calendar list from Google Calendar API"
+        "Retrieved calendar list from Google Calendar API",
       );
 
       return calendars;
     } catch (error: any) {
       logger.error(
         { appId: app._id, error },
-        "Error getting Google Calendar list"
+        "Error getting Google Calendar list",
       );
       throw error;
     }
@@ -611,7 +611,7 @@ class GoogleCalendarConnectedApp
         eventTitle: event.title,
         attendeeCount: event.attendees.length,
       },
-      "Converting event to Google Calendar format"
+      "Converting event to Google Calendar format",
     );
 
     const start = DateTime.fromJSDate(event.startTime).setZone(event.timeZone);
@@ -651,7 +651,7 @@ class GoogleCalendarConnectedApp
 
     logger.debug(
       { eventId: event.id, googleEventId: googleEvent.id },
-      "Converted event to Google Calendar format"
+      "Converted event to Google Calendar format",
     );
 
     return googleEvent;
@@ -663,7 +663,7 @@ class GoogleCalendarConnectedApp
     end: DateTime,
     top: number,
     pageToken?: string,
-    calendarId?: string
+    calendarId?: string,
   ) {
     const logger = this.loggerFactory("getEventsPaginated");
     logger.debug(
@@ -674,7 +674,7 @@ class GoogleCalendarConnectedApp
         pageToken: !!pageToken,
         calendarId,
       },
-      "Fetching paginated events from Google Calendar"
+      "Fetching paginated events from Google Calendar",
     );
 
     try {
@@ -697,14 +697,14 @@ class GoogleCalendarConnectedApp
           eventCount: response.data.items?.length,
           hasNextPage: !!response.data.nextPageToken,
         },
-        "Retrieved paginated events from Google Calendar"
+        "Retrieved paginated events from Google Calendar",
       );
 
       return response;
     } catch (error: any) {
       logger.error(
         { start: start.toISO(), end: end.toISO(), top, calendarId, error },
-        "Error fetching paginated events from Google Calendar"
+        "Error fetching paginated events from Google Calendar",
       );
       throw error;
     }
@@ -714,12 +714,12 @@ class GoogleCalendarConnectedApp
     client: OAuth2Client,
     start: DateTime,
     end: DateTime,
-    calendarId?: string
+    calendarId?: string,
   ) {
     const logger = this.loggerFactory("getEvents");
     logger.debug(
       { start: start.toISO(), end: end.toISO(), calendarId },
-      "Getting all events from Google Calendar"
+      "Getting all events from Google Calendar",
     );
 
     try {
@@ -737,7 +737,7 @@ class GoogleCalendarConnectedApp
             pageCount,
             hasPageToken: !!pageToken,
           },
-          "Fetching page of events from Google Calendar"
+          "Fetching page of events from Google Calendar",
         );
 
         const response = await this.getEventsPaginated(
@@ -746,7 +746,7 @@ class GoogleCalendarConnectedApp
           end,
           top,
           pageToken,
-          calendarId
+          calendarId,
         );
 
         results.push(...(response.data.items || []));
@@ -760,14 +760,14 @@ class GoogleCalendarConnectedApp
           totalEvents: results.length,
           pageCount,
         },
-        "Successfully retrieved all events from Google Calendar"
+        "Successfully retrieved all events from Google Calendar",
       );
 
       return results;
     } catch (error: any) {
       logger.error(
         { start: start.toISO(), end: end.toISO(), calendarId, error },
-        "Error getting events from Google Calendar"
+        "Error getting events from Google Calendar",
       );
       throw error;
     }
@@ -789,7 +789,7 @@ class GoogleCalendarConnectedApp
       return new googleAuth.OAuth2(
         env.GOOGLE_CALENDAR_APP_CLIENT_ID!,
         env.GOOGLE_CALENDAR_APP_CLIENT_SECRET,
-        redirectUri
+        redirectUri,
       );
     } catch (error: any) {
       logger.error({ error }, "Error creating Google OAuth client");
@@ -801,7 +801,7 @@ class GoogleCalendarConnectedApp
     const logger = this.loggerFactory("getOAuthClientWithCredentials");
     logger.debug(
       { appId: appData._id },
-      "Creating Google OAuth client with credentials"
+      "Creating Google OAuth client with credentials",
     );
 
     try {
@@ -820,7 +820,7 @@ class GoogleCalendarConnectedApp
       client.on("tokens", async (tokens) => {
         logger.debug(
           { appId: appData._id },
-          "Received new tokens from Google OAuth"
+          "Received new tokens from Google OAuth",
         );
         await this.props.update({
           token: {
@@ -834,14 +834,14 @@ class GoogleCalendarConnectedApp
 
       logger.debug(
         { appId: appData._id },
-        "Successfully created Google OAuth client with credentials"
+        "Successfully created Google OAuth client with credentials",
       );
 
       return client;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error creating Google OAuth client with credentials"
+        "Error creating Google OAuth client with credentials",
       );
       throw error;
     }

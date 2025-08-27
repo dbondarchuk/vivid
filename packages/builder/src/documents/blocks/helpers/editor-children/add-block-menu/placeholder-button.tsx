@@ -38,7 +38,7 @@ export const PlaceholderButton: React.FC<{
         !!hasActiveDragBlock &&
           "border-2 border-dashed border-blue-400 min-h-20 min-w-36 max-w-full",
         isOver && " bg-blue-800 bg-opacity-50",
-        className
+        className,
       )}
       ref={setNodeRef}
     >
@@ -48,7 +48,7 @@ export const PlaceholderButton: React.FC<{
           variant="outline"
           className={cn(
             "text-secondary-foreground",
-            size === "small" && "w-4 h-4"
+            size === "small" && "w-4 h-4",
           )}
         >
           <Plus size={16} />

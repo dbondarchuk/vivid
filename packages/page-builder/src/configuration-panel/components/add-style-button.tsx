@@ -64,17 +64,17 @@ export const AddStyleButton = <T extends BaseStyleDictionary>({
                     },
                   ],
                 }),
-                {} as Record<StyleCategory, StyleDefinition<T[keyof T]>[]>
-              )
+                {} as Record<StyleCategory, StyleDefinition<T[keyof T]>[]>,
+              ),
             )
               .filter(([category]) =>
-                onlyCategory ? category === onlyCategory : true
+                onlyCategory ? category === onlyCategory : true,
               )
               .map(([category, values], i, array) => (
                 <Fragment key={category}>
                   <CommandGroup
                     heading={t(
-                      `pageBuilder.styles.categories.${category}` as BuilderKeys
+                      `pageBuilder.styles.categories.${category}` as BuilderKeys,
                     )}
                   >
                     {values.map((value) => (

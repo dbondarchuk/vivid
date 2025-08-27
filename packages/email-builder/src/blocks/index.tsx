@@ -48,6 +48,12 @@ import {
   ContainerToolbar,
 } from "./container";
 import {
+  CustomHTMLConfiguration,
+  CustomHTMLEditor,
+  CustomHTMLPropsDefaults,
+  CustomHTMLToolbar,
+} from "./custom-html";
+import {
   Divider,
   DividerConfiguration,
   DividerPropsDefaults,
@@ -88,12 +94,6 @@ import {
 } from "./spacer";
 import { TextConfiguration, TextEditor, TextToolbar } from "./text";
 import { TextPropsDefaults } from "./text/schema";
-import {
-  CustomHTMLConfiguration,
-  CustomHTMLEditor,
-  CustomHTMLPropsDefaults,
-  CustomHTMLToolbar,
-} from "./custom-html";
 
 export const EditorBlocks: EditorDocumentBlocksDictionary<
   typeof EditorBlocksSchema

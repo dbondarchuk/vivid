@@ -43,7 +43,7 @@ export default async function Page({ searchParams }: Params) {
       activeTab,
       key,
     },
-    "Loading dashboard page"
+    "Loading dashboard page",
   );
 
   return (
@@ -56,7 +56,7 @@ export default async function Page({ searchParams }: Params) {
               {
                 (
                   await ServicesContainer.ConfigurationService().getConfiguration(
-                    "general"
+                    "general",
                   )
                 ).name
               }

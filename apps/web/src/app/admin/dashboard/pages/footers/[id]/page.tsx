@@ -35,7 +35,7 @@ export default async function EditPageFooterPage(props: Props) {
     {
       pageId: params.id,
     },
-    "Loading page edit page"
+    "Loading page edit page",
   );
 
   const pageFooter = await getPageFooter(params.id);
@@ -50,14 +50,14 @@ export default async function EditPageFooterPage(props: Props) {
       pageFooterId: params.id,
       name: pageFooter.name,
     },
-    "Page footer edit page loaded"
+    "Page footer edit page loaded",
   );
 
   const { general, social, styling } =
     await ServicesContainer.ConfigurationService().getConfigurations(
       "general",
       "social",
-      "styling"
+      "styling",
     );
 
   const args = formatArguments(
@@ -66,7 +66,7 @@ export default async function EditPageFooterPage(props: Props) {
       social,
       now: new Date(),
     },
-    general.language
+    general.language,
   );
 
   return (

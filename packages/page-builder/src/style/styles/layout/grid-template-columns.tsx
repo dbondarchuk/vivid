@@ -1,4 +1,3 @@
-import { Grid3X3 } from "lucide-react";
 import {
   Button,
   cn,
@@ -8,8 +7,9 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
 } from "@vivid/ui";
-import { StyleDefinition } from "../../types";
+import { Grid3X3 } from "lucide-react";
 import { z } from "zod";
+import { StyleDefinition } from "../../types";
 import { GridTemplateColumnsDialog } from "./grid-template-columns-dialog";
 
 const GridTemplateColumnsSchema = z.string();

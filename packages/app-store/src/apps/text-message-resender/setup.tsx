@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -16,7 +17,6 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageResenderApp } from "./app";
 import {

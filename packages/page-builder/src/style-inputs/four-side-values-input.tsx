@@ -6,7 +6,6 @@ import {
   AlignStartHorizontal,
   AlignStartVertical,
 } from "lucide-react";
-import { renderRawNumberWithUnitOrKeywordCss } from "../style/utils";
 import {
   FourSideValues,
   NumberValueWithUnitOrGlobalKeyword,
@@ -52,7 +51,7 @@ export const FourSideValuesInput: React.FC<Props> = ({
       bottom: "auto",
       left: "auto",
       right: "auto",
-    }
+    },
   );
 
   React.useEffect(() => {
@@ -61,7 +60,7 @@ export const FourSideValuesInput: React.FC<Props> = ({
 
   const handleChange = (
     internalName: keyof FourSideValues,
-    nValue?: NumberValueWithUnitOrGlobalKeyword | null
+    nValue?: NumberValueWithUnitOrGlobalKeyword | null,
   ) => {
     const v = {
       ...value,

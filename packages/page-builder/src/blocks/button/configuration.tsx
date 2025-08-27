@@ -24,11 +24,11 @@ export const ButtonConfiguration = deepMemo(
     const t = useI18n("builder");
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as ButtonProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as ButtonProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const url =
@@ -111,13 +111,13 @@ export const ButtonConfiguration = deepMemo(
                   {
                     value: "open-popup",
                     label: t(
-                      "pageBuilder.blocks.button.actions.openPopup.label"
+                      "pageBuilder.blocks.button.actions.openPopup.label",
                     ),
                   },
                   {
                     value: "close-current-popup",
                     label: t(
-                      "pageBuilder.blocks.button.actions.closeCurrentPopup.label"
+                      "pageBuilder.blocks.button.actions.closeCurrentPopup.label",
                     ),
                   },
                 ]}
@@ -127,11 +127,11 @@ export const ButtonConfiguration = deepMemo(
               {action === "open-popup" && (
                 <TextInput
                   label={t(
-                    "pageBuilder.blocks.button.actions.openPopup.popupId"
+                    "pageBuilder.blocks.button.actions.openPopup.popupId",
                   )}
                   defaultValue={actionData?.popupId}
                   helperText={t(
-                    "pageBuilder.blocks.button.actions.openPopup.helperText"
+                    "pageBuilder.blocks.button.actions.openPopup.helperText",
                   )}
                   onChange={(popupId) =>
                     updateProps({ ...data.props, actionData: { popupId } })
@@ -143,5 +143,5 @@ export const ButtonConfiguration = deepMemo(
         </>
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

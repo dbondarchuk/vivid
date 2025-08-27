@@ -16,7 +16,7 @@ export async function createPage(page: PageUpdateModel) {
       pageSlug: page.slug,
       hasContent: !!page.content,
     },
-    "Creating new page"
+    "Creating new page",
   );
 
   try {
@@ -28,7 +28,7 @@ export async function createPage(page: PageUpdateModel) {
         pageTitle: page.title,
         pageSlug: page.slug,
       },
-      "Page created successfully"
+      "Page created successfully",
     );
 
     return result;
@@ -39,7 +39,7 @@ export async function createPage(page: PageUpdateModel) {
         pageSlug: page.slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create page"
+      "Failed to create page",
     );
     throw error;
   }
@@ -55,7 +55,7 @@ export async function updatePage(_id: string, update: PageUpdateModel) {
       pageSlug: update.slug,
       hasContent: !!update.content,
     },
-    "Updating page"
+    "Updating page",
   );
 
   try {
@@ -67,7 +67,7 @@ export async function updatePage(_id: string, update: PageUpdateModel) {
         pageTitle: update.title,
         pageSlug: update.slug,
       },
-      "Page updated successfully"
+      "Page updated successfully",
     );
 
     return okStatus;
@@ -79,7 +79,7 @@ export async function updatePage(_id: string, update: PageUpdateModel) {
         pageSlug: update.slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update page"
+      "Failed to update page",
     );
     throw error;
   }
@@ -92,7 +92,7 @@ export async function deletePage(_id: string) {
     {
       pageId: _id,
     },
-    "Deleting page"
+    "Deleting page",
   );
 
   try {
@@ -108,7 +108,7 @@ export async function deletePage(_id: string) {
         pageTitle: page.title,
         pageSlug: page.slug,
       },
-      "Page deleted successfully"
+      "Page deleted successfully",
     );
 
     return okStatus;
@@ -118,7 +118,7 @@ export async function deletePage(_id: string) {
         pageId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete page"
+      "Failed to delete page",
     );
     throw error;
   }
@@ -132,7 +132,7 @@ export async function deleteSelectedPages(ids: string[]) {
       pageIds: ids,
       count: ids.length,
     },
-    "Deleting selected pages"
+    "Deleting selected pages",
   );
 
   try {
@@ -143,7 +143,7 @@ export async function deleteSelectedPages(ids: string[]) {
         pageIds: ids,
         count: ids.length,
       },
-      "Selected pages deleted successfully"
+      "Selected pages deleted successfully",
     );
 
     return okStatus;
@@ -154,7 +154,7 @@ export async function deleteSelectedPages(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected pages"
+      "Failed to delete selected pages",
     );
     throw error;
   }
@@ -168,13 +168,13 @@ export async function checkUniqueSlug(slug: string, _id?: string) {
       pageSlug: slug,
       excludeId: _id,
     },
-    "Checking page slug uniqueness"
+    "Checking page slug uniqueness",
   );
 
   try {
     const result = await ServicesContainer.PagesService().checkUniqueSlug(
       slug,
-      _id
+      _id,
     );
 
     actionLogger.debug(
@@ -183,7 +183,7 @@ export async function checkUniqueSlug(slug: string, _id?: string) {
         excludeId: _id,
         isUnique: result,
       },
-      "Page slug uniqueness check completed"
+      "Page slug uniqueness check completed",
     );
 
     return result;
@@ -194,7 +194,7 @@ export async function checkUniqueSlug(slug: string, _id?: string) {
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check page slug uniqueness"
+      "Failed to check page slug uniqueness",
     );
     throw error;
   }

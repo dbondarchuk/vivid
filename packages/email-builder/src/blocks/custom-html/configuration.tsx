@@ -12,7 +12,7 @@ export const CustomHTMLConfiguration = deepMemo(
     const updateProps = useCallback(
       (p: unknown) =>
         setData({ ...data, props: p as CustomHTMLProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -32,5 +32,5 @@ export const CustomHTMLConfiguration = deepMemo(
         </div>
       </>
     );
-  }
+  },
 );

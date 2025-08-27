@@ -11,7 +11,7 @@ export async function register() {
 export const onRequestError: Instrumentation.onRequestError = async (
   err,
   request,
-  context
+  context,
 ) => {
   if (process.env.NEXT_RUNTIME === "nodejs") {
     await import("pino");
@@ -24,7 +24,7 @@ export const onRequestError: Instrumentation.onRequestError = async (
         request,
         context,
       },
-      "Request error"
+      "Request error",
     );
   }
 };

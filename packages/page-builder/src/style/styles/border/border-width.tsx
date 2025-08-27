@@ -1,8 +1,8 @@
 import { Square } from "lucide-react";
 import { RawNumberInputWithUnit } from "../../../style-inputs/base/raw-number-input-with-units";
 import { StyleDefinition } from "../../types";
-import { zNumberValueWithUnit } from "../../zod";
 import { renderRawNumberWithUnitCss } from "../../utils";
+import { zNumberValueWithUnit } from "../../zod";
 
 const BorderWidthSchema = zNumberValueWithUnit;
 

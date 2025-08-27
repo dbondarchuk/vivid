@@ -21,7 +21,7 @@ const Loader: React.FC<{ className?: string }> = ({ className }) => (
   <div
     className={cn(
       "border rounded-md flex flex-row gap-2 cursor-pointer p-2 items-center",
-      className
+      className,
     )}
   >
     <Skeleton className="w-4 h-4" />
@@ -186,7 +186,7 @@ export const PageSelectorDialog: React.FC<PageSelectorProps> = ({
                     }
                     className={cn(
                       "border rounded-md flex flex-row gap-2 cursor-pointer p-2 items-center",
-                      selected?._id === page._id ? "bg-accent" : ""
+                      selected?._id === page._id ? "bg-accent" : "",
                     )}
                     key={page._id}
                   >

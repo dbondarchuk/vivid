@@ -3,22 +3,22 @@
 import { ConfigurationProps, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { deepMemo } from "@vivid/ui";
+import { useCallback, useMemo } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { overlayType, PopupProps, showPopupType } from "./schema";
 import { popupShortcuts } from "./shortcuts";
 import { styles } from "./styles";
-import { useCallback, useMemo } from "react";
 
 export const PopupConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<PopupProps>) => {
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as PopupProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as PopupProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const t = useI18n("builder");
@@ -60,5 +60,5 @@ export const PopupConfiguration = deepMemo(
         />
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

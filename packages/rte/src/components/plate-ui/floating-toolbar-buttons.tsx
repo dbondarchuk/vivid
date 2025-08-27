@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 
 import { ToolbarGroup } from "@vivid/ui";
-import { CommentToolbarButton } from "./comment-toolbar-button";
 import { InlineEquationToolbarButton } from "./inline-equation-toolbar-button";
 import { LinkToolbarButton } from "./link-toolbar-button";
 import { MarkToolbarButton } from "./mark-toolbar-button";

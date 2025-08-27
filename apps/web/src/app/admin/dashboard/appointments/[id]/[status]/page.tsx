@@ -1,5 +1,5 @@
-import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
+import { ServicesContainer } from "@vivid/services";
 import { redirect } from "next/navigation";
 
 type Props = {
@@ -15,14 +15,14 @@ export default async function Page(props: Props) {
       appointmentId: params.id,
       status: params.status,
     },
-    "Processing appointment status change"
+    "Processing appointment status change",
   );
 
   switch (params.status) {
     case "confirm":
       await ServicesContainer.EventsService().changeAppointmentStatus(
         params.id,
-        "confirmed"
+        "confirmed",
       );
 
       logger.debug(
@@ -30,7 +30,7 @@ export default async function Page(props: Props) {
           appointmentId: params.id,
           newStatus: "confirmed",
         },
-        "Appointment confirmed, redirecting"
+        "Appointment confirmed, redirecting",
       );
 
       redirect(`/admin/dashboard/appointments/${params.id}`);
@@ -46,7 +46,7 @@ export default async function Page(props: Props) {
           appointmentId: params.id,
           action: "decline",
         },
-        "Appointment decline requested, redirecting with decline modal"
+        "Appointment decline requested, redirecting with decline modal",
       );
 
       redirect(`/admin/dashboard/appointments/${params.id}?decline`);

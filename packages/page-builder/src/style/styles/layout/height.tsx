@@ -1,12 +1,12 @@
 import { Ruler } from "lucide-react";
 import { RawNumberInputWithUnitsAndKeywords } from "../../../style-inputs/base/raw-number-input-with-units-and-keywords";
-import { StyleDefinition } from "../../types";
-import { getZNumberValueWithUnitOrKeyword } from "../../zod";
 import { widthOrHeightOptions } from "../../../style-inputs/base/types";
+import { StyleDefinition } from "../../types";
 import { renderRawNumberWithUnitOrKeywordCss } from "../../utils";
+import { getZNumberValueWithUnitOrKeyword } from "../../zod";
 
 const HeightSchema = getZNumberValueWithUnitOrKeyword(
-  widthOrHeightOptions.map((option) => option.value)
+  widthOrHeightOptions.map((option) => option.value),
 );
 
 export const heightStyle = {

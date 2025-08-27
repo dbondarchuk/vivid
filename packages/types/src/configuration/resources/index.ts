@@ -10,7 +10,7 @@ export const resourceSourceTypeLabels = {
 
 export const resourceSourceType = z.enum(
   [inlineResourceType, remoteResourceType],
-  { message: "configuration.resources.type.invalid" }
+  { message: "configuration.resources.type.invalid" },
 );
 
 export const inlineResourceSchema = z.object({

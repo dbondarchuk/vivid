@@ -10,7 +10,7 @@ export const pageFooterSchema = z.object({
 
 export const getPageFooterSchemaWithUniqueNameCheck = (
   uniqueNameCheckFn: (name: string, id?: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return z.object({
     ...pageFooterSchema.shape,

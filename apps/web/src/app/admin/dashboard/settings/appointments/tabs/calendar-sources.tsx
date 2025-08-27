@@ -51,7 +51,7 @@ export const CalendarSourcesTab: React.FC<TabProps> = ({ form, disabled }) => {
                 ?.map(({ appId }) => appId)
                 .filter(
                   (appId) =>
-                    appId !== form.getValues(`calendarSources.${index}`).appId
+                    appId !== form.getValues(`calendarSources.${index}`).appId,
                 )}
             />
           );

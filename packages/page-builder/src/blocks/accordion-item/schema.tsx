@@ -1,8 +1,8 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import z from "zod";
-import { zStyles } from "./styles";
 import { AccordionProps } from "../accordion/schema";
 import { SimpleContainerPropsDefaults } from "../simple-container/schema";
+import { zStyles } from "./styles";
 
 export const AccordionItemPropsSchema = z.object({
   style: zStyles,

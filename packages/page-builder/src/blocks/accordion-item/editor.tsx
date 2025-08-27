@@ -50,7 +50,7 @@ export const AccordionItemEditor = ({
 
   // Use local state for accordion item open/close
   const [isOpen, setIsOpen] = useState(
-    currentBlock.data?.props?.isOpen ?? false
+    currentBlock.data?.props?.isOpen ?? false,
   );
 
   // Get the appropriate icon based on iconStyle and state
@@ -107,7 +107,7 @@ export const AccordionItemEditor = ({
         <div
           className={cn(
             "p-4 cursor-pointer hover:bg-secondary hover:text-secondary-foreground flex items-center justify-between",
-            isOpen && "border-b"
+            isOpen && "border-b",
           )}
           onClick={toggleAccordion}
         >
@@ -126,7 +126,7 @@ export const AccordionItemEditor = ({
           <div
             className={cn(
               "flex items-center justify-center transition-transform duration-200",
-              iconPosition === "left" ? "order-first mr-3" : "ml-3"
+              iconPosition === "left" ? "order-first mr-3" : "ml-3",
             )}
           >
             {getIcon()}

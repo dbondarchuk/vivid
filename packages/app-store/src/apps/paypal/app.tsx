@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
+import { PAYPAL_APP_NAME } from "./const";
 import { PaypalLogo } from "./logo";
 import { PaypalAppSetup } from "./setup";
-import { PAYPAL_APP_NAME } from "./const";
 
 import image1 from "./images/1.png";
 

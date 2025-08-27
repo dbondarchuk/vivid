@@ -2,7 +2,7 @@ import React from "react";
 
 export const useDebounceCacheFn = <T extends (...args: any[]) => Promise<any>>(
   fn: T,
-  delay: number = 300
+  delay: number = 300,
 ) => {
   const cache = React.useRef<Record<string, boolean>>({});
   type FnReturnType = Awaited<ReturnType<T>>;
@@ -59,7 +59,7 @@ export const useDebounceCacheFn = <T extends (...args: any[]) => Promise<any>>(
 
       return lastPromise.current;
     },
-    [fn, delay]
+    [fn, delay],
   );
 
   return cachedFn;

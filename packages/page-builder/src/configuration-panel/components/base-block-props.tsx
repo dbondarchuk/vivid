@@ -63,7 +63,7 @@ export const BaseBlockProps = ({
         <ChevronRight
           className={cn(
             "size-4 transition-transform",
-            isBaseOpen && "rotate-90"
+            isBaseOpen && "rotate-90",
           )}
         />
       </CollapsibleTrigger>

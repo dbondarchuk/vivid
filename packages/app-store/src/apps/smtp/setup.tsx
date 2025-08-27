@@ -14,7 +14,6 @@ import {
   InfoTooltip,
   Input,
   SaveButton,
-  Switch,
 } from "@vivid/ui";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";

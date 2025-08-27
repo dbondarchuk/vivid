@@ -10,7 +10,7 @@ import { FontWeight } from "../style-inputs/helpers/zod";
 type PropsType = { style?: { fontWeight?: FontWeight | null } | null };
 
 export const FontWeightDropdownMenu = <T extends PropsType>(
-  props: ToolbarDropdownPropsValues<T>
+  props: ToolbarDropdownPropsValues<T>,
 ) => {
   const t = useI18n("builder");
 

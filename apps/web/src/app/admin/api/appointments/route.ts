@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing appointments API request"
+    "Processing appointments API request",
   );
 
   const loader = createLoader(searchParams);
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       end,
       offset,
     },
-    "Fetching appointments with parameters"
+    "Fetching appointments with parameters",
   );
 
   const res = await ServicesContainer.EventsService().getAppointments({
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       total: res.total,
       count: res.items.length,
     },
-    "Successfully retrieved appointments"
+    "Successfully retrieved appointments",
   );
 
   return NextResponse.json(res);

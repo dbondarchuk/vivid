@@ -8,7 +8,7 @@ export const formatAmount = (value: number): number =>
 
 export const getDiscountAmount = (
   price: number,
-  discount: Discount
+  discount: Discount,
 ): number => {
   switch (discount.type) {
     case "amount":

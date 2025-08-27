@@ -1,11 +1,10 @@
-import React, { forwardRef, useCallback } from "react";
 import { cn } from "@vivid/ui";
+import React, { forwardRef, useCallback } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { YouTubeVideoPropsDefaults, YouTubeVideoReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 import { extractYouTubeVideoId } from "./utils";
-import { useI18n } from "@vivid/i18n";
 
 // Define the shape for the YouTube video props
 interface YouTubeVideoInnerProps {
@@ -73,7 +72,7 @@ export const YouTubeVideoReader = forwardRef<
         e.preventDefault();
       }
     },
-    [disableEvents]
+    [disableEvents],
   );
 
   const iframeElement = (

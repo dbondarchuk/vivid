@@ -8,7 +8,7 @@ export const styles = ALL_STYLES;
 export const zStyles = getStylesSchema(styles);
 
 export function getRoundedCorners(
-  style: "rectangle" | "pill" | "rounded" = "rounded"
+  style: "rectangle" | "pill" | "rounded" = "rounded",
 ) {
   switch (style) {
     case "rectangle":
@@ -22,7 +22,7 @@ export function getRoundedCorners(
 }
 
 export const getButtonSizePadding = (
-  size: "x-small" | "small" | "large" | "medium" = "medium"
+  size: "x-small" | "small" | "large" | "medium" = "medium",
 ) => {
   switch (size) {
     case "x-small":
@@ -39,7 +39,7 @@ export const getButtonSizePadding = (
 
 export const getDefaults = (
   { props, style }: ButtonProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): DefaultCSSProperties<AllStylesSchemas> => {
   const padding = getButtonSizePadding("medium");
   const borderRadius = getRoundedCorners("rounded");

@@ -4,7 +4,7 @@ import { SimpleContainerProps } from "./schema";
 import { containerShortcuts } from "./shortcuts";
 
 export const SimpleContainerToolbar = (
-  props: ConfigurationProps<SimpleContainerProps>
+  props: ConfigurationProps<SimpleContainerProps>,
 ) => (
   <ShortcutsToolbar
     shortcuts={containerShortcuts}

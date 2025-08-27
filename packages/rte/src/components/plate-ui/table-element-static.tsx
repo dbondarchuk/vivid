@@ -1,10 +1,8 @@
-import React from "react";
-
 import type { SlateElementProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
 import { SlateElement } from "@udecode/plate";
 import { type TTableElement, BaseTablePlugin } from "@udecode/plate-table";
+import { cn } from "@vivid/ui";
 
 export const TableElementStatic = ({
   children,

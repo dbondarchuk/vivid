@@ -26,7 +26,7 @@ export const ComboboxShortcut = <T extends BaseStyleDictionary>({
       value={currentValue as any}
       onItemSelect={(value) => {
         const selectedOption = shortcut.options.find(
-          (opt) => opt.value === value
+          (opt) => opt.value === value,
         );
         if (selectedOption) {
           applyShortcut(selectedOption);

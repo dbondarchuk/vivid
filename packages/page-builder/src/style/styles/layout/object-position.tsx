@@ -19,7 +19,7 @@ export const objectPositionStyle = {
   schema: ObjectPositionSchema,
   defaultValue: { x: 50, y: 50 },
   renderToCSS: (
-    value: z.infer<typeof ObjectPositionSchema> | null | undefined
+    value: z.infer<typeof ObjectPositionSchema> | null | undefined,
   ) => {
     if (!value) return null;
     return `object-position: ${value.x}% ${value.y}%;`;

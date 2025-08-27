@@ -6,14 +6,13 @@ import {
   SidebarTab,
   TEditorConfiguration,
 } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
 import { PageHeader } from "@vivid/types";
+import { deepMemo } from "@vivid/ui";
 import { useMemo } from "react";
 import { EditorBlocks, RootBlock } from "./blocks";
 import { ReaderBlocks } from "./blocks/reader";
 import { EditorBlocksSchema } from "./blocks/schema";
 import { Header } from "./header";
-import { deepMemo } from "@vivid/ui";
 export { Styling } from "./helpers/styling";
 
 type PageBuilderProps = {
@@ -52,7 +51,7 @@ export const PageBuilder = deepMemo(
             className="-top-8"
           />
         ) : null,
-      [header]
+      [header],
     );
 
     const editorBlocks = useMemo(() => {
@@ -60,8 +59,8 @@ export const PageBuilder = deepMemo(
         return Object.fromEntries(
           Object.entries(EditorBlocks).filter(
             ([key]) =>
-              !notAllowedBlocks.includes(key as keyof typeof EditorBlocks)
-          )
+              !notAllowedBlocks.includes(key as keyof typeof EditorBlocks),
+          ),
         );
       }
       return EditorBlocks;
@@ -87,5 +86,5 @@ export const PageBuilder = deepMemo(
         footer={footer}
       />
     );
-  }
+  },
 );

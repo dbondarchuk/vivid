@@ -1,12 +1,7 @@
-import {
-  CustomerListModel,
-  PageHeaderListModel,
-  WithTotal,
-} from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
-import Image from "next/image";
-import React from "react";
 import { useI18n } from "@vivid/i18n";
+import { PageHeaderListModel, WithTotal } from "@vivid/types";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
+import React from "react";
 
 const HeaderShortLabel: React.FC<{
   header: PageHeaderListModel;
@@ -17,7 +12,7 @@ const HeaderShortLabel: React.FC<{
     <div
       className={cn(
         "flex gap-0.5  shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]",
-        row ? "items-baseline" : "flex-col"
+        row ? "items-baseline" : "flex-col",
       )}
     >
       <span>{header.name}</span>
@@ -109,7 +104,7 @@ export const HeaderSelector: React.FC<HeaderSelectorProps> = ({
             ...map,
             [cur._id]: cur,
           }),
-          {} as typeof itemsCache
+          {} as typeof itemsCache,
         ),
       }));
 
@@ -122,7 +117,7 @@ export const HeaderSelector: React.FC<HeaderSelectorProps> = ({
         hasMore: page * limit < res.total,
       };
     },
-    [value, setItemsCache, t]
+    [value, setItemsCache, t],
   );
 
   React.useEffect(() => {

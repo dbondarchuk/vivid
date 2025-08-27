@@ -1,17 +1,15 @@
-import { BuilderKeys } from "@vivid/i18n";
-import { Shortcut } from "../../shortcuts";
-import { AllStylesSchemas, COLORS } from "../../style";
 import {
   AlignLeft,
   Bold,
   CaseSensitive,
   Space,
-  Type,
   TypeOutline,
 } from "lucide-react";
-import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
+import { Shortcut } from "../../shortcuts";
 import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
 import { colorShortcut } from "../../shortcuts/common/color";
+import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
+import { AllStylesSchemas, COLORS } from "../../style";
 
 export const textShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

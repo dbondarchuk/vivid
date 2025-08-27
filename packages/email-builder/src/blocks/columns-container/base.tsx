@@ -1,7 +1,7 @@
-import { CSSProperties, JSX } from "react";
-import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
-import { getPadding } from "../../style-inputs/helpers/styles";
 import type { NestedOmit } from "@vivid/types";
+import { CSSProperties, JSX } from "react";
+import { getPadding } from "../../style-inputs/helpers/styles";
+import { ColumnsContainerProps, ColumnsContainerPropsDefaults } from "./schema";
 
 type TColumn = JSX.Element | JSX.Element[] | null;
 
@@ -84,7 +84,7 @@ const TableCell = ({ index, props, columns }: Props) => {
 
 function getPaddingBefore(
   index: number,
-  { columnsGap, columnsCount }: Props["props"]
+  { columnsGap, columnsCount }: Props["props"],
 ) {
   if (index === 0) {
     return 0;
@@ -100,7 +100,7 @@ function getPaddingBefore(
 
 function getPaddingAfter(
   index: number,
-  { columnsGap, columnsCount }: Props["props"]
+  { columnsGap, columnsCount }: Props["props"],
 ) {
   if (columnsCount === 2) {
     if (index === 0) {

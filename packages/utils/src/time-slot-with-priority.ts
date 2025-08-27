@@ -40,7 +40,7 @@ type Props = {
 function parseTimeToDateTime(
   date: DateTime,
   time: string,
-  zone: string
+  zone: string,
 ): DateTime {
   const [hour, minute] = time.split(":").map(Number);
   return date.setZone(zone).set({ hour, minute, second: 0, millisecond: 0 });
@@ -49,7 +49,7 @@ function parseTimeToDateTime(
 function getSlotStartTimes(
   start: DateTime,
   end: DateTime,
-  config: TimeSlotsWithPriorityFinderConfiguration
+  config: TimeSlotsWithPriorityFinderConfiguration,
 ): DateTime[] {
   const {
     slotStart = 5,
@@ -91,7 +91,7 @@ function getSlotStartTimes(
   const primaryStep = slotStart === "every-hour" ? 60 : slotStart;
   const additionalSteps = allowSmartSlotStarts
     ? [5, 10, 15, 20, 30].filter(
-        (s) => s !== primaryStep && primaryStep % s === 0
+        (s) => s !== primaryStep && primaryStep % s === 0,
       )
     : [];
 
@@ -134,7 +134,7 @@ export function getAvailableTimeSlotsWithPriority({
   const days: TimeSlot[] = [];
 
   const sortedDurations = [...(allServiceDurations || [])].sort(
-    (a, b) => b - a
+    (a, b) => b - a,
   );
   const durationWeights = new Map<number, number>();
   sortedDurations.forEach((d, i) => durationWeights.set(d, i + 1)); // weight 1 = highest priority
@@ -149,7 +149,7 @@ export function getAvailableTimeSlotsWithPriority({
 
     while (true) {
       const next = sortedDurations.find((d) =>
-        allowSkipBreak ? d <= remaining : d + breakDuration <= remaining
+        allowSkipBreak ? d <= remaining : d + breakDuration <= remaining,
       );
 
       if (!next) break;
@@ -192,13 +192,13 @@ export function getAvailableTimeSlotsWithPriority({
       const workStart = parseTimeToDateTime(day, shift.start, timeZone);
       const workEnd = parseTimeToDateTime(day, shift.end, timeZone);
       const shiftEvents = events.filter(
-        (e) => e.startAt < workEnd && e.endAt > workStart
+        (e) => e.startAt < workEnd && e.endAt > workStart,
       );
 
       const timeline: Period[] = [
         { startAt: workStart, endAt: workStart },
         ...shiftEvents.sort(
-          (a, b) => a.startAt.toMillis() - b.startAt.toMillis()
+          (a, b) => a.startAt.toMillis() - b.startAt.toMillis(),
         ),
         { startAt: workEnd, endAt: workEnd },
       ];
@@ -219,7 +219,7 @@ export function getAvailableTimeSlotsWithPriority({
         const possibleStarts = getSlotStartTimes(
           gapStart,
           gapEnd,
-          configuration
+          configuration,
         );
 
         const gapSlots: (TimeSlot & {
@@ -245,13 +245,13 @@ export function getAvailableTimeSlotsWithPriority({
               slotStart
                 .plus({ minutes: duration })
                 .diff(lastValidSlotStart.plus({ minutes: duration }), "minutes")
-                .minutes
+                .minutes,
             ) <= 5;
 
           const anyOtherServiceCanFit =
             allServiceDurations &&
             allServiceDurations.some(
-              (s) => s <= gapBeforeSlot || s <= gapAfterSlot
+              (s) => s <= gapBeforeSlot || s <= gapAfterSlot,
             );
 
           const hasBreakBefore =
@@ -278,14 +278,14 @@ export function getAvailableTimeSlotsWithPriority({
             Math.abs(slotStart.diff(timeline[i].endAt, "minutes").minutes) <=
               breakDuration ||
             Math.abs(
-              slotEnd.diff(timeline[i + 1].startAt, "minutes").minutes
+              slotEnd.diff(timeline[i + 1].startAt, "minutes").minutes,
             ) <= breakDuration;
 
           const slotMatchesCustom = (() => {
             if (slotStartAt === "custom") {
               return customSlots?.some(
                 (t) =>
-                  t.hour === slotStart.hour && t.minute === slotStart.minute
+                  t.hour === slotStart.hour && t.minute === slotStart.minute,
               );
             }
             const step = slotStartAt === "every-hour" ? 60 : slotStartAt;
@@ -317,7 +317,7 @@ export function getAvailableTimeSlotsWithPriority({
             const penalizeGap = (
               gapMinutes: number,
               isAtShiftEdge: boolean,
-              isBackToBack: boolean
+              isBackToBack: boolean,
             ): number => {
               if (isBackToBack) {
                 if (gapMinutes > 120) return isAtShiftEdge ? 1 : 2;
@@ -334,7 +334,7 @@ export function getAvailableTimeSlotsWithPriority({
             priority -= penalizeGap(
               gapBeforeSlot,
               isToShiftStart,
-              isBackToBack
+              isBackToBack,
             );
             priority -= penalizeGap(gapAfterSlot, isToShiftEnd, isBackToBack);
           }
@@ -352,7 +352,7 @@ export function getAvailableTimeSlotsWithPriority({
         // 🔍 Filter per-gap low priority slots
         if (filterLowPrioritySlots && gapSlots.length > 0) {
           const maxAppointments = Math.max(
-            ...gapSlots.map((s) => s.possibleAppointments)
+            ...gapSlots.map((s) => s.possibleAppointments),
           );
 
           if (maxAppointments > 0) {

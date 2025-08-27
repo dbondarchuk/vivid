@@ -68,7 +68,7 @@ export const stylingConfigurationSchema = z.object({
   colors: zUniqueArray(
     colorOverrideSchema.array(),
     (item) => item.type,
-    "configuration.styling.colors.unique"
+    "configuration.styling.colors.unique",
   ).optional(),
   fonts: z
     .object({

@@ -24,9 +24,9 @@ import {
 } from "@vivid/ui";
 
 import { TranslationKeys, useI18n } from "@vivid/i18n";
+import { fieldSchemaMapper, fieldsComponentMap } from "@vivid/ui";
 import { deepEqual, formatAmountString } from "@vivid/utils";
 import { DateTime as Luxon } from "luxon";
-import { fieldSchemaMapper, fieldsComponentMap } from "@vivid/ui";
 import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";
 
@@ -60,8 +60,8 @@ export const FormCard: React.FC = () => {
         prev[field.name] = fieldSchemaMapper(field);
         return prev;
       },
-      {} as { [field: string]: z.ZodType }
-    )
+      {} as { [field: string]: z.ZodType },
+    ),
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -109,7 +109,7 @@ export const FormCard: React.FC = () => {
               minute: dateTime.time.minute,
               second: 0,
             },
-            { zone: dateTime.timeZone }
+            { zone: dateTime.timeZone },
           )
             .toUTC()
             .toJSDate(),
@@ -121,7 +121,7 @@ export const FormCard: React.FC = () => {
 
       if (response.status >= 400) {
         throw new Error(
-          `Failed to apply promo code: ${response.status}: ${await response.text()}`
+          `Failed to apply promo code: ${response.status}: ${await response.text()}`,
         );
       }
 
@@ -175,7 +175,7 @@ export const FormCard: React.FC = () => {
                 <p
                   className={cn(
                     "text-sm font-medium",
-                    promoCodeError ? "text-destructive" : "text-green-700"
+                    promoCodeError ? "text-destructive" : "text-green-700",
                   )}
                 >
                   {!!promoCodeError && i18n(promoCodeError)}

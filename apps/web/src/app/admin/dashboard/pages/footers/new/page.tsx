@@ -1,11 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { PageFooterForm } from "@/components/admin/pages/footers/form";
-import { Styling } from "@vivid/page-builder";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
+import { Styling } from "@vivid/page-builder";
 import { ServicesContainer } from "@vivid/services";
-import { Metadata } from "next";
 import { formatArguments } from "@vivid/utils";
+import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getI18nAsync("admin");
@@ -23,7 +23,7 @@ export default async function NewPageFooterPage() {
     await ServicesContainer.ConfigurationService().getConfigurations(
       "general",
       "social",
-      "styling"
+      "styling",
     );
 
   const args = formatArguments(
@@ -32,7 +32,7 @@ export default async function NewPageFooterPage() {
       social,
       now: new Date(),
     },
-    general.language
+    general.language,
   );
 
   return (

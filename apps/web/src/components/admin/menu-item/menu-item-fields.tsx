@@ -1,5 +1,6 @@
 "use client";
 
+import { I18nText, useI18n } from "@vivid/i18n";
 import { MenuItemType, SubMenuItem } from "@vivid/types";
 import {
   ButtonSizes,
@@ -20,7 +21,6 @@ import {
   TextSizes,
   TextWeights,
 } from "@vivid/ui";
-import { I18nText, useI18n } from "@vivid/i18n";
 import { useMemo } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { IconSelect } from "./icon-select";
@@ -43,7 +43,7 @@ const linkVariantsValues = LinkVariants.map(
           <I18nText key={`admin.menuItem.linkVariants.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const buttonVariantsValues = ButtonVariants.map(
@@ -62,7 +62,7 @@ const buttonVariantsValues = ButtonVariants.map(
           <I18nText key={`admin.menuItem.buttonVariants.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const linkSizesValues = LinkSizes.map(
@@ -80,7 +80,7 @@ const linkSizesValues = LinkSizes.map(
           <I18nText key={`admin.menuItem.sizes.${size}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const buttonSizesValues = ButtonSizes.map(
@@ -99,7 +99,7 @@ const buttonSizesValues = ButtonSizes.map(
           <I18nText key={`admin.menuItem.sizes.${size}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const textFontValues = TextFonts.map(
@@ -118,7 +118,7 @@ const textFontValues = TextFonts.map(
           <I18nText key={`admin.menuItem.fonts.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const textSizesValues = TextSizes.map(
@@ -137,7 +137,7 @@ const textSizesValues = TextSizes.map(
           <I18nText key={`admin.menuItem.sizes.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const textWeightsValues = TextWeights.map(
@@ -156,7 +156,7 @@ const textWeightsValues = TextWeights.map(
           <I18nText key={`admin.menuItem.weights.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
@@ -180,7 +180,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
 
   const subMenusIds = useMemo(
     () => subMenuItems.map((x) => x.id),
-    [subMenuItems]
+    [subMenuItems],
   );
 
   const sortSubMenus = (activeId: string, overId: string) => {
@@ -462,7 +462,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                 <Input
                   disabled={disabled}
                   placeholder={t(
-                    "menuItem.fields.additionalClassesPlaceholder"
+                    "menuItem.fields.additionalClassesPlaceholder",
                   )}
                   {...field}
                 />

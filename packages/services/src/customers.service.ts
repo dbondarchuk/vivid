@@ -40,7 +40,7 @@ export class CustomersService implements ICustomersService {
           customerId: id,
           name: customer.name,
         },
-        "Customer found"
+        "Customer found",
       );
     }
 
@@ -48,7 +48,7 @@ export class CustomersService implements ICustomersService {
   }
 
   public async getCustomers(
-    query: Query & { priorityIds?: string[] }
+    query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<CustomerListModel>> {
     const logger = this.loggerFactory("getCustomers");
     logger.debug({ query }, "Getting customers");
@@ -60,7 +60,7 @@ export class CustomersService implements ICustomersService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { "lastAppointment.dateTime": -1 };
 
     const filter: Filter<Customer> = {};
@@ -75,7 +75,7 @@ export class CustomersService implements ICustomersService {
         "knownNames",
         "knownEmails",
         "knownPhones",
-        "note"
+        "note",
       );
 
       filter.$or = queries;
@@ -248,7 +248,7 @@ export class CustomersService implements ICustomersService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Fetched customers"
+      "Fetched customers",
     );
 
     return response;
@@ -256,7 +256,7 @@ export class CustomersService implements ICustomersService {
 
   public async findCustomer(
     email: string,
-    phone: string
+    phone: string,
   ): Promise<Customer | null> {
     const logger = this.loggerFactory("findCustomer");
     logger.debug({ email, phone }, "Finding customer by email and phone");
@@ -265,7 +265,7 @@ export class CustomersService implements ICustomersService {
     if (byEmail) {
       logger.debug(
         { email, customerId: byEmail._id },
-        "Customer found by email"
+        "Customer found by email",
       );
       return byEmail;
     }
@@ -274,7 +274,7 @@ export class CustomersService implements ICustomersService {
     if (byPhone) {
       logger.debug(
         { phone, customerId: byPhone._id },
-        "Customer found by phone"
+        "Customer found by phone",
       );
     } else {
       logger.debug({ email, phone }, "Customer not found by email or phone");
@@ -284,7 +284,7 @@ export class CustomersService implements ICustomersService {
 
   public async findCustomerBySearchField(
     search: string,
-    field: CustomerSearchField
+    field: CustomerSearchField,
   ): Promise<Customer | null> {
     const logger = this.loggerFactory("findCustomerBySearchField");
     logger.debug({ search, field }, "Finding customer by search field");
@@ -296,7 +296,7 @@ export class CustomersService implements ICustomersService {
     const queries = buildSearchQuery<Customer>(
       { $regex },
       field,
-      `known${field[0].toUpperCase()}${field.substring(1)}s` as Leaves<Customer>
+      `known${field[0].toUpperCase()}${field.substring(1)}s` as Leaves<Customer>,
     );
 
     const customer = await collection.findOne({
@@ -306,7 +306,7 @@ export class CustomersService implements ICustomersService {
     if (customer) {
       logger.debug(
         { search, field, customerId: customer._id },
-        "Customer found by search field"
+        "Customer found by search field",
       );
     } else {
       logger.debug({ search, field }, "Customer not found by search field");
@@ -325,7 +325,7 @@ export class CustomersService implements ICustomersService {
           phone: customer.phone,
         },
       },
-      "Creating new customer"
+      "Creating new customer",
     );
 
     const id = new ObjectId().toString();
@@ -340,7 +340,7 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { customerId: id, name: customer.name },
-      "Successfully created customer"
+      "Successfully created customer",
     );
 
     return id;
@@ -348,7 +348,7 @@ export class CustomersService implements ICustomersService {
 
   public async updateCustomer(
     id: string,
-    update: CustomerUpdateModel
+    update: CustomerUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateCustomer");
     logger.debug(
@@ -356,7 +356,7 @@ export class CustomersService implements ICustomersService {
         customerId: id,
         update: { name: update.name, email: update.email, phone: update.phone },
       },
-      "Updating customer"
+      "Updating customer",
     );
 
     const db = await getDbConnection();
@@ -371,7 +371,7 @@ export class CustomersService implements ICustomersService {
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ customerId: id }, "Successfully updated customer");
@@ -392,7 +392,7 @@ export class CustomersService implements ICustomersService {
     }
 
     const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
     const count = await appointmentsCollection.countDocuments({
       customerId: id,
@@ -401,7 +401,7 @@ export class CustomersService implements ICustomersService {
     if (count > 0) {
       logger.error(
         { customerId: id, appointmentCount: count },
-        "Cannot delete customer with existing appointments"
+        "Cannot delete customer with existing appointments",
       );
       throw new Error("Customer has existing appointments");
     }
@@ -412,7 +412,7 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { customerId: id, name: customer.name },
-      "Successfully deleted customer"
+      "Successfully deleted customer",
     );
 
     return customer;
@@ -426,7 +426,7 @@ export class CustomersService implements ICustomersService {
 
     const collection = db.collection<Customer>(CUSTOMERS_COLLECTION_NAME);
     const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
 
     const appointmentMap = (await appointmentsCollection
@@ -456,10 +456,10 @@ export class CustomersService implements ICustomersService {
           customerIds: nonEmptyCustomers.map(({ _id }) => _id),
           appointmentCounts: nonEmptyCustomers,
         },
-        "Cannot delete customers with existing appointments"
+        "Cannot delete customers with existing appointments",
       );
       throw new Error(
-        `Some customers already have appointments: ${nonEmptyCustomers.map(({ _id }) => _id).join(", ")}`
+        `Some customers already have appointments: ${nonEmptyCustomers.map(({ _id }) => _id).join(", ")}`,
       );
     }
 
@@ -471,13 +471,13 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { customerIds: ids, count: ids.length },
-      "Successfully deleted multiple customers"
+      "Successfully deleted multiple customers",
     );
   }
 
   public async mergeCustomers(
     targetId: string,
-    valueIds: string[]
+    valueIds: string[],
   ): Promise<void> {
     const logger = this.loggerFactory("mergeCustomers");
     logger.debug({ targetId, valueIds }, "Merging customers");
@@ -517,7 +517,7 @@ export class CustomersService implements ICustomersService {
           foundCount: customers.length,
           expectedCount: ids.length,
         },
-        "Could not find all customers for merge"
+        "Could not find all customers for merge",
       );
       throw new Error(`Could not find all customers for merge`);
     }
@@ -571,11 +571,11 @@ export class CustomersService implements ICustomersService {
       },
       {
         $set: update,
-      }
+      },
     );
 
     const appointmentsCollection = db.collection<Appointment>(
-      APPOINTMENTS_COLLECTION_NAME
+      APPOINTMENTS_COLLECTION_NAME,
     );
     await appointmentsCollection.updateMany(
       {
@@ -587,7 +587,7 @@ export class CustomersService implements ICustomersService {
         $set: {
           customerId: targetId,
         },
-      }
+      },
     );
 
     await collection.deleteMany({
@@ -598,19 +598,19 @@ export class CustomersService implements ICustomersService {
 
     logger.debug(
       { targetId, valueIds, mergedCount: ids.length },
-      "Successfully merged customers"
+      "Successfully merged customers",
     );
   }
 
   public async checkUniqueEmailAndPhone(
     emails: string[],
     phones: string[],
-    id?: string
+    id?: string,
   ): Promise<{ email: boolean; phone: boolean }> {
     const logger = this.loggerFactory("checkUniqueEmailAndPhone");
     logger.debug(
       { emails, phones, customerId: id },
-      "Checking unique email and phone"
+      "Checking unique email and phone",
     );
 
     const db = await getDbConnection();
@@ -661,7 +661,7 @@ export class CustomersService implements ICustomersService {
     const result = { email: !emailResult, phone: !phoneResult };
     logger.debug(
       { emails, phones, customerId: id, result },
-      "Email and phone uniqueness check completed"
+      "Email and phone uniqueness check completed",
     );
 
     return result;

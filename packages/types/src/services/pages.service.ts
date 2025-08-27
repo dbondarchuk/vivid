@@ -21,7 +21,7 @@ export interface IPagesService {
       publishStatus: boolean[];
       maxPublishDate?: Date;
       tags?: string[];
-    }
+    },
   ): Promise<WithTotal<PageListModel>>;
   createPage(page: PageUpdateModel): Promise<Page>;
   updatePage(id: string, update: PageUpdateModel): Promise<void>;
@@ -33,7 +33,7 @@ export interface IPagesService {
 
   getPageHeader(id: string): Promise<PageHeader | null>;
   getPageHeaders(
-    query: Query & { priorityIds?: string[] }
+    query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<PageHeaderListModel>>;
   createPageHeader(pageHeader: PageHeaderUpdateModel): Promise<PageHeader>;
   updatePageHeader(id: string, update: PageHeaderUpdateModel): Promise<void>;
@@ -45,7 +45,7 @@ export interface IPagesService {
 
   getPageFooter(id: string): Promise<PageFooter | null>;
   getPageFooters(
-    query: Query & { priorityIds?: string[] }
+    query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<PageFooterListModel>>;
   createPageFooter(pageFooter: PageFooterUpdateModel): Promise<PageFooter>;
   updatePageFooter(id: string, update: PageFooterUpdateModel): Promise<void>;

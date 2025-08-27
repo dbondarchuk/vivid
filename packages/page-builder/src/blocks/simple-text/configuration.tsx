@@ -1,13 +1,12 @@
 "use client";
 
 import { ConfigurationProps } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
 import { deepMemo } from "@vivid/ui";
+import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { SimpleTextProps } from "./schema";
 import { simpleTextShortcuts } from "./shortcuts";
 import { styles } from "./styles";
-import { useCallback } from "react";
 
 export const SimpleTextConfiguration = deepMemo(
   ({
@@ -19,7 +18,7 @@ export const SimpleTextConfiguration = deepMemo(
     const updateStyle = useCallback(
       (s: unknown) =>
         setData({ ...data, style: s as SimpleTextProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -40,5 +39,5 @@ export const SimpleTextConfiguration = deepMemo(
       /> */}
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

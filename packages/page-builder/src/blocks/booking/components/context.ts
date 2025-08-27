@@ -89,7 +89,7 @@ const getAppointmentDuration = ({
     baseDuration +
     (selectedAddons || []).reduce(
       (sum, addon) => sum + (addon.duration || 0),
-      0
+      0,
     )
   );
 };
@@ -115,7 +115,7 @@ const getAppointmentDiscountAmount = ({
       return promoCode.value;
     case "percentage":
       return parseFloat(
-        ((getAppointmentBasePrice(rest) * promoCode.value) / 100).toFixed(2)
+        ((getAppointmentBasePrice(rest) * promoCode.value) / 100).toFixed(2),
       );
   }
 };
@@ -123,7 +123,7 @@ const getAppointmentDiscountAmount = ({
 const getAppointmentPrice = (ctx: ScheduleContextProps) => {
   return Math.max(
     0,
-    getAppointmentBasePrice(ctx) - getAppointmentDiscountAmount(ctx)
+    getAppointmentBasePrice(ctx) - getAppointmentDiscountAmount(ctx),
   );
 };
 

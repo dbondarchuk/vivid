@@ -3,15 +3,15 @@
 import { ConfigurationProps, TextInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { deepMemo } from "@vivid/ui";
-import { ForeachContainerProps } from "./schema";
 import { useCallback } from "react";
+import { ForeachContainerProps } from "./schema";
 
 export const ForeachContainerConfiguration = deepMemo(
   ({ data, setData }: ConfigurationProps<ForeachContainerProps>) => {
     const updateProps = useCallback(
       (p: unknown) =>
         setData({ ...data, props: p as ForeachContainerProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const t = useI18n("builder");
     return (
@@ -23,5 +23,5 @@ export const ForeachContainerConfiguration = deepMemo(
         />
       </>
     );
-  }
+  },
 );

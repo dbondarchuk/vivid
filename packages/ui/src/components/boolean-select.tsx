@@ -1,5 +1,5 @@
-import React from "react";
 import { useI18n } from "@vivid/i18n";
+import React from "react";
 import {
   Select,
   SelectContent,

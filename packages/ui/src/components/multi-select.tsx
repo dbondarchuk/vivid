@@ -1,10 +1,11 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import * as React from "react";
 import { cn } from "../utils";
-import { useI18n } from "@vivid/i18n";
 
-import { Check, X, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Badge } from "./badge";
 import { Button, ButtonProps } from "./button";
 import {
   Command,
@@ -15,7 +16,6 @@ import {
   CommandList,
 } from "./command";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Badge } from "./badge";
 
 export type OptionType = {
   label: string;
@@ -112,7 +112,7 @@ function MultiSelect({
                     onChange?.(
                       selected.includes(option.value)
                         ? selected.filter((item) => item !== option.value)
-                        : [...selected, option.value]
+                        : [...selected, option.value],
                     );
                     setOpen(true);
                   }}
@@ -122,7 +122,7 @@ function MultiSelect({
                       "mr-2 h-4 w-4",
                       selected.includes(option.value)
                         ? "opacity-100"
-                        : "opacity-0"
+                        : "opacity-0",
                     )}
                   />
                   {option.label}

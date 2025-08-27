@@ -43,16 +43,16 @@ export const PageFooterForm: React.FC<{
 
   const cachedUniqueNameCheck = useDebounceCacheFn(
     checkUniquePageFooterName,
-    300
+    300,
   );
 
   const formSchema = useMemo(
     () =>
       getPageFooterSchemaWithUniqueNameCheck(
         (name) => cachedUniqueNameCheck(name, initialData?._id),
-        "pages.footers.name.unique"
+        "pages.footers.name.unique",
       ),
-    [cachedUniqueNameCheck, initialData?._id]
+    [cachedUniqueNameCheck, initialData?._id],
   );
 
   type PageFormValues = z.infer<typeof formSchema>;
@@ -81,7 +81,7 @@ export const PageFooterForm: React.FC<{
           : "/admin/dashboard/pages/footers/new",
       },
     ],
-    [initialData, t]
+    [initialData, t],
   );
 
   const { setError, trigger } = form;
@@ -92,7 +92,7 @@ export const PageFooterForm: React.FC<{
         : setError("content", {
             message: t("templates.form.validation.templateNotValid"),
           }),
-    [setError, trigger, t]
+    [setError, trigger, t],
   );
 
   const { isFormDirty, onFormSubmit } = useIsDirty(form);
@@ -143,7 +143,7 @@ export const PageFooterForm: React.FC<{
           description={t(
             initialData
               ? "pages.footers.managePageFooter"
-              : "pages.footers.addNewPageFooter"
+              : "pages.footers.addNewPageFooter",
           )}
         />
 

@@ -1,3 +1,4 @@
+import { ScrollArea, ScrollBar } from "../scroll-area";
 import { Skeleton } from "../skeleton";
 import {
   Table,
@@ -7,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "../table";
-import { ScrollArea, ScrollBar } from "../scroll-area";
 
 export function DataTableSkeleton({
   columnCount = 1,

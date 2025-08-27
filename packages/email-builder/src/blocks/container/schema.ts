@@ -13,7 +13,7 @@ export const ContainerPropsSchema = z.object({
           .int("emailBuilder.common.container.validation.borderRadius")
           .optional()
           .nullable(),
-      })
+      }),
     )
     .optional()
     .nullable(),

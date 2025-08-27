@@ -1,6 +1,6 @@
 "use client";
-import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { Discount } from "@vivid/types";
 import {
   Checkbox,
@@ -54,7 +54,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.discounts.table.columns.name",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -76,7 +76,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.discounts.table.columns.type",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -87,7 +87,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.discounts.table.columns.value",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -97,7 +97,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.discounts.table.columns.enabled",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -107,7 +107,7 @@ export const columns: ColumnDef<
       return row.original.startDate
         ? DateTime.fromJSDate(row.original.startDate).toLocaleString(
             DateTime.DATETIME_MED,
-            { locale }
+            { locale },
           )
         : "";
     },
@@ -115,7 +115,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.discounts.table.columns.startDate",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -125,7 +125,7 @@ export const columns: ColumnDef<
       return row.original.endDate
         ? DateTime.fromJSDate(row.original.endDate).toLocaleString(
             DateTime.DATETIME_MED,
-            { locale }
+            { locale },
           )
         : "";
     },
@@ -133,7 +133,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.discounts.table.columns.endDate",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -150,7 +150,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.discounts.table.columns.usedCount",
       "number",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -159,14 +159,14 @@ export const columns: ColumnDef<
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",
     header: tableSortHeader(
       "services.discounts.table.columns.updatedAt",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },

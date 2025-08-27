@@ -16,7 +16,7 @@ import { FormFieldDescription } from "./form-field-description";
 import { FormFieldErrorMessage } from "./form-field-error-message";
 
 export const SelectField: <T extends FieldValues>(
-  p: IFormFieldProps<T, WithLabelFieldData & FieldOptionsData>
+  p: IFormFieldProps<T, WithLabelFieldData & FieldOptionsData>,
 ) => React.ReactElement<
   IFormFieldProps<T, WithLabelFieldData & FieldOptionsData>
 > = (props) => (

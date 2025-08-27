@@ -1,6 +1,6 @@
 import { App } from "@vivid/types";
-import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./const";
 import { Folder } from "lucide-react";
+import { FILE_SYSTEM_ASSETS_STORAGE_APP_NAME } from "./const";
 
 export const FileSystemAssetsStorageApp: App = {
   name: FILE_SYSTEM_ASSETS_STORAGE_APP_NAME,

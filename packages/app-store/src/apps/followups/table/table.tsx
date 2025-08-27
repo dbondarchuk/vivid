@@ -2,9 +2,9 @@ import { useQueryStates } from "nuqs";
 import React from "react";
 import { searchParams } from "./search-params";
 
+import { useI18n } from "@vivid/i18n";
 import { WithTotal } from "@vivid/types";
 import { DataTable, DataTableSkeleton, toast, useDebounce } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
 import { getFollowUps } from "../actions";
 import { FollowUp } from "../models";
 import { columns } from "./columns";

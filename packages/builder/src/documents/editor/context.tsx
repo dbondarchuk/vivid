@@ -101,7 +101,7 @@ type EditorState = {
     setShowBlocksPanel: (showBlocksPanel: boolean) => void;
     toggleShowBlocksPanel: () => void;
     setSelectedSidebarTab: (
-      selectedSidebarTab: "block-configuration" | "styles"
+      selectedSidebarTab: "block-configuration" | "styles",
     ) => void;
     setSelectedScreenSize: (selectedScreenSize: ViewportSize) => void;
     setFullScreen: (fullScreen: boolean) => void;
@@ -112,30 +112,30 @@ type EditorState = {
     setSelectedView: (fn: (prev: View) => View) => void;
     setActiveDragBlockId: (
       activeDragBlockId: string | null,
-      activeDragBlockTemplate?: TEditorBlock | null
+      activeDragBlockTemplate?: TEditorBlock | null,
     ) => void;
     setActiveOverBlockContextId: (
       activerOverBlock: {
         blockId: string;
         property: string;
         index: number;
-      } | null
+      } | null,
     ) => void;
     setBlockDisableOptions: (
       blockId: string,
-      options: BlockDisableOptions | undefined
+      options: BlockDisableOptions | undefined,
     ) => void;
     setDocument: (document: TEditorConfiguration) => void;
     setOnChange: (onChange: (document: TEditorConfiguration) => void) => void;
     setRootBlock: (rootBlock: TEditorBlock) => void;
     setSchemas: (schemas: BuilderSchema) => void;
     setErrors: (
-      errors: Record<string, { type: string; error: z.ZodError }>
+      errors: Record<string, { type: string; error: z.ZodError }>,
     ) => void;
     setHistory: (history: EditorHistory) => void;
     resetDocument: (
       document?: EditorState["document"],
-      onChange?: EditorState["onChange"]
+      onChange?: EditorState["onChange"],
     ) => void;
     redoHistory: () => void;
     undoHistory: () => void;
@@ -213,7 +213,7 @@ const createEditorStateStore = ({
         set({ showBlocksPanel: !get().showBlocksPanel });
       },
       setSelectedSidebarTab: (
-        selectedSidebarTab: "block-configuration" | "styles"
+        selectedSidebarTab: "block-configuration" | "styles",
       ) => {
         set({ selectedSidebarTab });
       },
@@ -241,7 +241,7 @@ const createEditorStateStore = ({
       },
       setActiveDragBlockId: (
         activeDragBlockId: string | null,
-        activeDragBlockTemplate?: TEditorBlock | null
+        activeDragBlockTemplate?: TEditorBlock | null,
       ) => {
         set({
           activeDragBlockId,
@@ -257,7 +257,7 @@ const createEditorStateStore = ({
           blockId: string;
           property: string;
           index: number;
-        } | null
+        } | null,
       ) => {
         if (!activeOverBlock) {
           set({ activeOverBlockContextId: null });
@@ -272,7 +272,7 @@ const createEditorStateStore = ({
 
         const hierarchy = getBlockHierarchy(
           activeOverBlock.blockId,
-          get().indexes
+          get().indexes,
         );
 
         if (hierarchy?.some((block) => block.id === currentDragBlockId)) {
@@ -286,7 +286,7 @@ const createEditorStateStore = ({
       },
       setBlockDisableOptions: (
         blockId: string,
-        options: BlockDisableOptions | undefined
+        options: BlockDisableOptions | undefined,
       ) => {
         set({
           blockDisableOptions: {
@@ -308,7 +308,7 @@ const createEditorStateStore = ({
         set({ schemas });
       },
       setErrors: (
-        errors: Record<string, { type: string; error: z.ZodError }>
+        errors: Record<string, { type: string; error: z.ZodError }>,
       ) => {
         set({ errors });
       },
@@ -356,7 +356,7 @@ const createEditorStateStore = ({
       },
       resetDocument: (
         document?: EditorState["document"],
-        onChange?: EditorState["onChange"]
+        onChange?: EditorState["onChange"],
       ) => {
         const newDocument = document || get().rootBlock;
         const newIndexes = buildIndexes(newDocument, schemas);
@@ -390,7 +390,7 @@ const createEditorStateStore = ({
         const result = editorHistoryReducer(
           document,
           selectedBlockId,
-          history.entries[history.index + 1]
+          history.entries[history.index + 1],
         );
 
         if (!result) return;
@@ -426,7 +426,7 @@ const createEditorStateStore = ({
           const result = editorHistoryReducer(
             document,
             selectedBlockId,
-            history.entries[i]
+            history.entries[i],
           );
 
           if (!result) return;
@@ -467,14 +467,14 @@ export function useDeep<S, U>(selector: (state: S) => U): (state: S) => U {
 
 function validateStoreState(
   document: EditorState["document"],
-  schemas: BuilderSchema
+  schemas: BuilderSchema,
 ) {
   return validateBlocks(document, schemas);
 }
 
 function buildIndexes(
   document: EditorState["document"],
-  schemas: BuilderSchema
+  schemas: BuilderSchema,
 ) {
   const indexes: EditorState["indexes"] = {};
 
@@ -500,7 +500,7 @@ function buildIndexes(
             "type" in item &&
             item.type &&
             // Check if the type is a known block type from schemas
-            schemas[item.type]
+            schemas[item.type],
         );
         if (containsBlocks) {
           continue; // Skip this children property
@@ -524,7 +524,7 @@ function buildIndexes(
     parentProperty: string | null,
     index: number,
     depth: number,
-    currentPath: string = ""
+    currentPath: string = "",
   ) => {
     if (!block || typeof block !== "object" || !("id" in block) || !block.id)
       return;
@@ -560,7 +560,7 @@ function buildIndexes(
               parentProperty,
               childIndex,
               depth + 1,
-              currentPath
+              currentPath,
             );
           }
         });
@@ -581,7 +581,7 @@ function buildIndexes(
     parentBlockId: string,
     currentPath: string,
     depth: number,
-    blockId: string
+    blockId: string,
   ) => {
     if (!data || typeof data !== "object") return;
 
@@ -600,7 +600,7 @@ function buildIndexes(
               parentProperty,
               index,
               depth,
-              currentPath
+              currentPath,
             );
           } else if (item && typeof item === "object") {
             // This might be an object containing blocks
@@ -628,7 +628,7 @@ function buildIndexes(
           parentProperty,
           0,
           depth,
-          currentPath
+          currentPath,
         );
       } else if (value && typeof value === "object") {
         // This might be an object containing blocks
@@ -649,7 +649,7 @@ function buildIndexes(
 
   const buildParentPropertyPath = (
     currentPath: string,
-    prop: string
+    prop: string,
   ): string => {
     // Build the full path first
     let path = buildNextPath(currentPath, prop);
@@ -719,7 +719,7 @@ export function useDocument() {
   const store = useEditorStateStore();
   return useStore(
     store,
-    useDeep((s) => s.document)
+    useDeep((s) => s.document),
   );
 }
 
@@ -727,7 +727,7 @@ export function useBlocks() {
   const store = useEditorStateStore();
   return useStore(
     store,
-    useDeep((s) => s.blocks)
+    useDeep((s) => s.blocks),
   );
 }
 
@@ -743,7 +743,7 @@ export function useBlockSchema(blockId: string) {
             schema: s.blocks[blockType],
           }
         : null;
-    })
+    }),
   );
 }
 
@@ -751,7 +751,7 @@ export function useBlockTypes() {
   const store = useEditorStateStore();
   return useStore(
     store,
-    useDeep((s) => Object.keys(s.schemas))
+    useDeep((s) => Object.keys(s.schemas)),
   );
 }
 
@@ -759,7 +759,7 @@ export function useReaderBlocks() {
   const store = useEditorStateStore();
   return useStore(
     store,
-    useDeep((s) => s.readerBlocks)
+    useDeep((s) => s.readerBlocks),
   );
 }
 
@@ -767,7 +767,7 @@ export function useRootBlock() {
   const store = useEditorStateStore();
   return useStore(
     store,
-    useDeep((s) => s.indexes[s.document.id]?.noChildrenBlock)
+    useDeep((s) => s.indexes[s.document.id]?.noChildrenBlock),
   );
 }
 
@@ -789,7 +789,7 @@ export function useSelectedBlockId() {
 export function useSelectedBlockType() {
   const store = useEditorStateStore();
   return useStore(store, (s) =>
-    s.selectedBlockId ? s.indexes[s.selectedBlockId]?.block.type : null
+    s.selectedBlockId ? s.indexes[s.selectedBlockId]?.block.type : null,
   );
 }
 
@@ -805,8 +805,8 @@ export function useSelectedBlock() {
     useDeep((s) =>
       s.selectedBlockId
         ? s.indexes[s.selectedBlockId]?.noChildrenBlock || null
-        : null
-    )
+        : null,
+    ),
   );
 }
 
@@ -872,18 +872,18 @@ export function useActiveDragBlock() {
                 isTemplate: false,
               }
             : null
-        : null
-    )
+        : null,
+    ),
   );
 }
 
 export function useBlockDisableOptions(
-  blockId: string | undefined | null
+  blockId: string | undefined | null,
 ): BlockDisableOptions | undefined {
   const store = useEditorStateStore();
   return useStore(
     store,
-    useDeep((s) => (blockId ? s.blockDisableOptions[blockId] : undefined))
+    useDeep((s) => (blockId ? s.blockDisableOptions[blockId] : undefined)),
   );
 }
 
@@ -914,14 +914,14 @@ export function useActiveOverBlock() {
             index: parseInt(index),
           }
         : null;
-    })
+    }),
   );
 }
 
 export function useIsActiveOverDroppable(
   blockId: string,
   property: string,
-  index: number
+  index: number,
 ) {
   const store = useEditorStateStore();
   return useStore(
@@ -935,7 +935,7 @@ export function useIsActiveOverDroppable(
         overProperty === property &&
         parseInt(overIndex) === index
       );
-    })
+    }),
   );
 }
 
@@ -957,7 +957,7 @@ export function useChildrenBlocksIds(blockId: string, property: string) {
     useDeep((s) => {
       const block = s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId];
       return block ? block.childrenBlockIds[property] || [] : [];
-    })
+    }),
   );
 }
 
@@ -968,7 +968,7 @@ export function useBlockChildrenBlockIds(blockId: string, property: string) {
     useDeep((s) => {
       const block = s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId];
       return block ? block.childrenBlockIds[property] || [] : [];
-    })
+    }),
   );
 }
 
@@ -1030,7 +1030,7 @@ export function useEditorStateErrors() {
   const store = useEditorStateStore();
   return useStore(
     store,
-    useDeep((s) => s.errors)
+    useDeep((s) => s.errors),
   );
 }
 
@@ -1090,7 +1090,7 @@ export function useBlock(blockId: string | null) {
         (s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId])
           ?.noChildrenBlock || null
       );
-    })
+    }),
   );
 }
 
@@ -1134,7 +1134,7 @@ export function useBlockDepth(blockId: string | null) {
 
 export function getBlockHierarchy(
   blockId: string | null,
-  indexes: EditorState["indexes"]
+  indexes: EditorState["indexes"],
 ) {
   if (!blockId) return null;
   const hierarchy = [];
@@ -1165,7 +1165,7 @@ export function useBlockHierarchy(blockId: string | null) {
     store,
     useDeep((s) => {
       return getBlockHierarchy(blockId, s.indexes);
-    })
+    }),
   );
 }
 
@@ -1182,7 +1182,7 @@ export function useBlockParent(blockId: string | null) {
         ? (s.indexes[parentId] ?? s.templateBlockIndexes?.[parentId])
             ?.noChildrenBlock || null
         : null;
-    })
+    }),
   );
 }
 
@@ -1197,7 +1197,7 @@ export function useBlockChildrenIds(blockId: string | null) {
       if (!block) return null;
 
       return block.childrenBlockIds;
-    })
+    }),
   );
 }
 

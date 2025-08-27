@@ -53,7 +53,7 @@ export type FormattedArguments<T> = {
 export function formatArguments<T extends Record<string, any>>(
   args: T,
   locale: Language,
-  timeZone?: string
+  timeZone?: string,
 ): FormattedArguments<T> {
   return processObject(args, locale, timeZone) as FormattedArguments<T>;
 }

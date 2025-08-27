@@ -10,7 +10,7 @@ import { TextAlign } from "../style-inputs/helpers/zod";
 type PropsType = { style?: { textAlign?: TextAlign | null } | null };
 
 export const TextAlignDropdownMenu = <T extends PropsType>(
-  props: ToolbarDropdownPropsValues<T>
+  props: ToolbarDropdownPropsValues<T>,
 ) => {
   const t = useI18n("builder");
 

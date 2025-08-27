@@ -12,7 +12,7 @@ export const COLORS: Record<(typeof COLOR_NAMES)[number], ValueLabel> =
         value: `var(--value-${color}-color)`,
       },
     }),
-    {} as Record<(typeof COLOR_NAMES)[number], ValueLabel>
+    {} as Record<(typeof COLOR_NAMES)[number], ValueLabel>,
   );
 
 export const COLORS_LIST = [
@@ -29,7 +29,7 @@ export const COLORS_LIST = [
 
 export const getColorStyle = (
   color: string | undefined | null,
-  opacityVar?: string | null | undefined
+  opacityVar?: string | null | undefined,
 ) =>
   color
     ? color === "transparent"

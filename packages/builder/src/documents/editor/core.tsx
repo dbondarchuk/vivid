@@ -1,4 +1,3 @@
-import { deepMemo } from "@vivid/ui";
 import React, { memo, useMemo } from "react";
 import { EditorBlockWrapper } from "../blocks/helpers/block-wrappers/editor-block-wrapper";
 import { templateProps } from "../helpers/template-props";
@@ -29,7 +28,7 @@ export const CoreEditorBlock: React.FC<{
 
     const Component = useMemo(
       () => blocks[block.type].Editor,
-      [blocks, block.type]
+      [blocks, block.type],
     );
 
     if (rootBlockType === block.type) return <Component {...block.data} />;
@@ -45,7 +44,7 @@ export const CoreEditorBlock: React.FC<{
         <Component {...block.data} base={block.base} {...additionalProps} />
       </EditorBlockWrapper>
     );
-  }
+  },
 );
 
 export type BlockDisableOptions = {

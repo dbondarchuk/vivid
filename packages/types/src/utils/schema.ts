@@ -12,7 +12,7 @@ export function zUniqueArray<
 >(
   schema: ArrSchema,
   uniqueBy: (item: z.infer<ArrSchema>[number]) => UniqueVal,
-  errorMessage?: string
+  errorMessage?: string,
 ) {
   return schema.superRefine((items, ctx) => {
     const seen = new Set<UniqueVal>();
@@ -34,7 +34,7 @@ export function zUniqueArray<
 }
 
 export function isPlainObject(
-  value: unknown
+  value: unknown,
 ): value is Record<string | number | symbol, unknown> {
   return (
     typeof value === "object" &&
@@ -53,7 +53,7 @@ export function zStrictRecord<
       isPlainObject(input) &&
       Object.entries(input).every(
         ([key, value]) =>
-          zKey.safeParse(key).success && zValue.safeParse(value).success
+          zKey.safeParse(key).success && zValue.safeParse(value).success,
       )
     );
   }, "zodStrictRecord: error");
@@ -61,7 +61,7 @@ export function zStrictRecord<
 
 export function zOptionalOrMinLengthString(
   minLength: number,
-  minLengthErrorMessage?: string
+  minLengthErrorMessage?: string,
 ) {
   return z
     .union([
@@ -81,6 +81,6 @@ export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
 export function asOptinalNumberField<T extends z.ZodNumber>(schema: T) {
   return z.preprocess(
     (arg) => (arg === "" ? undefined : arg),
-    schema.optional()
+    schema.optional(),
   ) as unknown as z.ZodOptional<T>;
 }

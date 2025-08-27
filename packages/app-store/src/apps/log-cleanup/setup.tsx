@@ -104,7 +104,7 @@ export const LogCleanupAppSetup: React.FC<AppSetupProps> = ({
                               <SelectItem key={key} value={key}>
                                 {label}
                               </SelectItem>
-                            )
+                            ),
                           )}
                         </SelectContent>
                       </Select>

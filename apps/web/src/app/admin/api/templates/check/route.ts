@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing templates check API request"
+    "Processing templates check API request",
   );
 
   const searchParams = request.nextUrl.searchParams;
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     logger.warn("Missing required name parameter");
     return NextResponse.json(
       { error: "Name parameter is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
   const isUnique = await ServicesContainer.TemplatesService().checkUniqueName(
     name,
-    id || undefined
+    id || undefined,
   );
 
   logger.debug(
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       id,
       isUnique,
     },
-    "Template name uniqueness check completed"
+    "Template name uniqueness check completed",
   );
 
   return NextResponse.json(
@@ -51,6 +51,6 @@ export async function GET(request: NextRequest) {
       headers: new Headers({
         "Cache-Control": "max-age=10",
       }),
-    }
+    },
   );
 }

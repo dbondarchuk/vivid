@@ -4,7 +4,7 @@ import { GridContainerProps } from "./schema";
 import { gridContainerShortcuts } from "./shortcuts";
 
 export const GridContainerToolbar = (
-  props: ConfigurationProps<GridContainerProps>
+  props: ConfigurationProps<GridContainerProps>,
 ) => (
   <>
     <ShortcutsToolbar

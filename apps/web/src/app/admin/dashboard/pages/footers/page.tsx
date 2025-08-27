@@ -1,11 +1,11 @@
 import PageContainer from "@/components/admin/layout/page-container";
 import { PageFootersTableColumnsCount } from "@/components/admin/pages/footers/table/columns";
-import { PageFootersTable } from "@/components/admin/pages/footers/table/table";
-import { PageFootersTableAction } from "@/components/admin/pages/footers/table/table-action";
 import {
   searchParamsCache,
   serialize,
 } from "@/components/admin/pages/footers/table/search-params";
+import { PageFootersTable } from "@/components/admin/pages/footers/table/table";
+import { PageFootersTableAction } from "@/components/admin/pages/footers/table/table-action";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";

@@ -29,7 +29,7 @@ export const RawSliderInput: React.FC<SliderInputProps> = ({
         onValueChange={(val) => {
           if (typeof val[0] !== "number") {
             throw new Error(
-              "RawSliderInput values can only receive numeric values"
+              "RawSliderInput values can only receive numeric values",
             );
           }
 

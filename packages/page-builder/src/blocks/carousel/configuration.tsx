@@ -18,11 +18,11 @@ export const CarouselConfiguration = deepMemo(
   }: ConfigurationProps<CarouselProps>) => {
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as CarouselProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as CarouselProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
     const t = useI18n("builder");
 
@@ -101,5 +101,5 @@ export const CarouselConfiguration = deepMemo(
         )}
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

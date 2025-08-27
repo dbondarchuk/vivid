@@ -24,12 +24,12 @@ interface StyleCategoryStyleProps<T extends BaseStyleDictionary> {
   onUpdateVariant: (
     styleName: keyof T,
     variantIndex: number,
-    updates: Partial<StyleVariant<T[keyof T]>>
+    updates: Partial<StyleVariant<T[keyof T]>>,
   ) => void;
   onUpdateStyle: (
     styleName: keyof T,
     variantIndex: number,
-    value: z.infer<T[keyof T]>
+    value: z.infer<T[keyof T]>,
   ) => void;
   onDeleteVariant: (styleName: keyof T, variantIndex: number) => void;
 }
@@ -73,7 +73,7 @@ export const StyleCategoryStyle = <T extends BaseStyleDictionary>({
             <ChevronRight
               className={cn(
                 "size-3 transition-transform",
-                isStyleOpen && "rotate-90"
+                isStyleOpen && "rotate-90",
               )}
             />
             <style.icon className="size-4" />

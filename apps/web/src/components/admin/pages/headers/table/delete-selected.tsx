@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { PageHeaderListModel } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,7 +19,6 @@ import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { deleteSelectedPageHeaders } from "../actions";
-import { PageHeaderListModel } from "@vivid/types";
 
 export const DeleteSelectedPageHeadersButton: React.FC<{
   selected: PageHeaderListModel[];
@@ -37,7 +37,7 @@ export const DeleteSelectedPageHeadersButton: React.FC<{
         {
           success: t("pages.headers.table.delete.success"),
           error: t("pages.headers.table.delete.error"),
-        }
+        },
       );
 
       router.refresh();

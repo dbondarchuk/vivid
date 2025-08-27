@@ -116,41 +116,41 @@ export const ResizableImage = ({
       case "bottom-right":
         newWidth = Math.max(
           minWidth,
-          startDimensionsRef.current.width + deltaX
+          startDimensionsRef.current.width + deltaX,
         );
         newHeight = Math.max(
           minHeight,
-          startDimensionsRef.current.height + deltaY
+          startDimensionsRef.current.height + deltaY,
         );
         break;
       case "bottom-left":
         newWidth = Math.max(
           minWidth,
-          startDimensionsRef.current.width - deltaX
+          startDimensionsRef.current.width - deltaX,
         );
         newHeight = Math.max(
           minHeight,
-          startDimensionsRef.current.height + deltaY
+          startDimensionsRef.current.height + deltaY,
         );
         break;
       case "top-right":
         newWidth = Math.max(
           minWidth,
-          startDimensionsRef.current.width + deltaX
+          startDimensionsRef.current.width + deltaX,
         );
         newHeight = Math.max(
           minHeight,
-          startDimensionsRef.current.height - deltaY
+          startDimensionsRef.current.height - deltaY,
         );
         break;
       case "top-left":
         newWidth = Math.max(
           minWidth,
-          startDimensionsRef.current.width - deltaX
+          startDimensionsRef.current.width - deltaX,
         );
         newHeight = Math.max(
           minHeight,
-          startDimensionsRef.current.height - deltaY
+          startDimensionsRef.current.height - deltaY,
         );
         break;
     }
@@ -251,8 +251,8 @@ export const ResizableImage = ({
         Math.min(
           100,
           dragStartObjectPosRef.current.x -
-            (deltaX / (dimensions.width ?? imageRef.current.clientWidth)) * 100
-        )
+            (deltaX / (dimensions.width ?? imageRef.current.clientWidth)) * 100,
+        ),
       );
       const newY = Math.max(
         0,
@@ -260,13 +260,13 @@ export const ResizableImage = ({
           100,
           dragStartObjectPosRef.current.y -
             (deltaY / (dimensions.height ?? imageRef.current?.clientHeight)) *
-              100
-        )
+              100,
+        ),
       );
 
       setObjectPosition({ x: Math.round(newX), y: Math.round(newY) });
     },
-    [isDraggingImage, dimensions.width, dimensions.height, imageRef.current]
+    [isDraggingImage, dimensions.width, dimensions.height, imageRef.current],
   );
 
   const handleImageMouseUp = useCallback(() => {
@@ -295,7 +295,7 @@ export const ResizableImage = ({
         className={cn(
           "relative group inline-block",
           resizing ? "select-none" : "",
-          className
+          className,
         )}
         style={{}}
       >

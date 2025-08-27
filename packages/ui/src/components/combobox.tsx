@@ -1,8 +1,8 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import * as React from "react";
-import { useI18n } from "@vivid/i18n";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -82,7 +82,7 @@ const ItemComponent = React.memo(
   }) => {
     const onSelect = React.useCallback(
       () => props.select(props.item.value),
-      []
+      [],
     );
 
     return (
@@ -90,13 +90,13 @@ const ItemComponent = React.memo(
         <Check
           className={cn(
             "mr-2 h-4 w-4",
-            props.selected === props.item.value ? "opacity-100" : "opacity-0"
+            props.selected === props.item.value ? "opacity-100" : "opacity-0",
           )}
         />
         {props.item.label}
       </CommandItem>
     );
-  }
+  },
 );
 
 ItemComponent.displayName = "ItemComponent";
@@ -115,12 +115,12 @@ const Items = React.memo(
     const [loaded, setLoaded] = React.useState(toLoad);
     const hasMore = React.useMemo(
       () => loaded < props.values.length - 1,
-      [loaded, props]
+      [loaded, props],
     );
 
     const values = React.useMemo(
       () => props.values.slice(0, loaded),
-      [props, loaded]
+      [props, loaded],
     );
 
     const fetchMore = () => {
@@ -156,8 +156,8 @@ const Items = React.memo(
                   acc[item.category || ""].push(item);
                   return acc;
                 },
-                {} as Record<string, IComboboxItem[]>
-              )
+                {} as Record<string, IComboboxItem[]>,
+              ),
             ).map(([category, items]) => (
               <CommandGroup key={category} heading={category}>
                 {items.map((item) => (
@@ -185,7 +185,7 @@ const Items = React.memo(
     ) : (
       <></>
     );
-  }
+  },
 );
 Items.displayName = "Items";
 
@@ -211,7 +211,7 @@ export const ComboboxTrigger = React.forwardRef<
         ref={ref}
         className={cn(
           "justify-between flex-grow min-w-0",
-          allowClear ? "rounded-r-none" : ""
+          allowClear ? "rounded-r-none" : "",
         )}
       >
         {children}
@@ -267,7 +267,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
       setOpen(false);
       onItemSelect?.(value as string);
     },
-    [props]
+    [props],
   );
 
   const onOpenChange = (isOpen: boolean) => {
@@ -278,7 +278,7 @@ export const Combobox: React.FC<ComboboxProps> = (props) => {
   const propsValues = props.values;
   const values = React.useMemo(
     () => (customSearch ? customSearch(search) : propsValues),
-    [customSearch, search, propsValues]
+    [customSearch, search, propsValues],
   );
 
   const listId = React.useId();

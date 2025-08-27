@@ -4,7 +4,6 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { Styling } from "@vivid/page-builder";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading } from "@vivid/ui";
 import { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -24,7 +23,7 @@ export default async function NewPagesPage() {
     await ServicesContainer.ConfigurationService().getConfigurations(
       "styling",
       "general",
-      "social"
+      "social",
     );
 
   return (

@@ -27,7 +27,7 @@ export interface StyleDefinition<T extends z.ZodTypeAny> {
   defaultValue?: z.infer<T>;
   renderToCSS: (
     value?: z.infer<T> | null | undefined,
-    isEditor?: boolean
+    isEditor?: boolean,
   ) => string | null;
   component: React.ComponentType<{
     value: z.infer<T>;

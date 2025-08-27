@@ -84,7 +84,7 @@ export const FONT_FAMILIES_LIST = Object.entries(FONT_FAMILIES).map(
   ([key, value]) => ({
     key,
     ...value,
-  })
+  }),
 ) as {
   key: (typeof FONT_FAMILY_NAMES)[number];
   label: BuilderKeys | string;

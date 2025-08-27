@@ -1,5 +1,5 @@
-import React from "react";
 import type { VariantProps } from "class-variance-authority";
+import React from "react";
 
 import { withProps } from "@udecode/cn";
 import {
@@ -47,6 +47,7 @@ import { BaseKbdPlugin } from "@udecode/plate-kbd";
 import { BaseColumnItemPlugin, BaseColumnPlugin } from "@udecode/plate-layout";
 import { BaseLineHeightPlugin } from "@udecode/plate-line-height";
 import { BaseLinkPlugin } from "@udecode/plate-link";
+import { MarkdownPlugin } from "@udecode/plate-markdown";
 import {
   BaseEquationPlugin,
   BaseInlineEquationPlugin,
@@ -66,7 +67,7 @@ import {
   BaseTableRowPlugin,
 } from "@udecode/plate-table";
 import { BaseTogglePlugin } from "@udecode/plate-toggle";
-import { MarkdownPlugin } from "@udecode/plate-markdown";
+import { cn } from "@vivid/ui";
 import Prism from "prismjs";
 import { BlockquoteElementStatic } from "../plate-ui/blockquote-element-static";
 import { CodeBlockElementStatic } from "../plate-ui/code-block-element-static";
@@ -77,6 +78,7 @@ import { ColumnElementStatic } from "../plate-ui/column-element-static";
 import { ColumnGroupElementStatic } from "../plate-ui/column-group-element-static";
 import { CommentLeafStatic } from "../plate-ui/comment-leaf-static";
 import { DateElementStatic } from "../plate-ui/date-element-static";
+import { editorVariants } from "../plate-ui/editor-static";
 import { EquationElementStatic } from "../plate-ui/equation-element-static";
 import { HeadingElementStatic } from "../plate-ui/heading-element-static";
 import { HighlightLeafStatic } from "../plate-ui/highlight-leaf-static";
@@ -103,8 +105,6 @@ import { TableElementStatic } from "../plate-ui/table-element-static";
 import { TableRowElementStatic } from "../plate-ui/table-row-element-static";
 import { TocElementStatic } from "../plate-ui/toc-element-static";
 import { ToggleElementStatic } from "../plate-ui/toggle-element-static";
-import { cn } from "@vivid/ui";
-import { editorVariants } from "../plate-ui/editor-static";
 
 export type PlateStaticEditorProps = {
   value?: Value;
@@ -117,7 +117,7 @@ export const createPlateStaticEditor = (
   value?: string | Value | ((editor: SlateEditor) => Value) | undefined,
   options?: {
     includeMarkdown?: boolean;
-  }
+  },
 ) =>
   createSlateEditor({
     plugins: [

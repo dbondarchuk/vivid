@@ -1,8 +1,8 @@
 import { HeaderContext, Row, SortDirection } from "@tanstack/react-table";
-import { Button } from "../button";
-import { icons } from "lucide-react";
-import { Icon } from "../icon";
 import { I18nKey, I18nNamespaces, useI18n } from "@vivid/i18n";
+import { icons } from "lucide-react";
+import { Button } from "../button";
+import { Icon } from "../icon";
 
 export type SortingFieldType =
   | "number"
@@ -46,7 +46,7 @@ const buttons: Record<
 export const tableSortHeader = <T extends I18nNamespaces>(
   title: I18nKey<T>,
   type: SortingFieldType = "default",
-  i18nNamespace: T = "ui" as T
+  i18nNamespace: T = "ui" as T,
 ) => {
   const TableHeader = ({ column }: HeaderContext<any, any>) => {
     const t = useI18n(i18nNamespace);
@@ -71,7 +71,7 @@ export const tableSortHeader = <T extends I18nNamespaces>(
 export const tableSortNoopFunction = (
   rowA: Row<any>,
   rowB: Row<any>,
-  columnId: string
+  columnId: string,
 ): number => {
   return rowA.index - rowB.index;
 };

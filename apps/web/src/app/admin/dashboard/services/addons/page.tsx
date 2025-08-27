@@ -7,12 +7,7 @@ import { AddonsTable } from "@/components/admin/services/addons/table/table";
 import { AddonsTableAction } from "@/components/admin/services/addons/table/table-action";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import {
-  Breadcrumbs,
-  DataTableSkeleton,
-  Heading,
-  Link
-} from "@vivid/ui";
+import { Breadcrumbs, DataTableSkeleton, Heading, Link } from "@vivid/ui";
 import { Plus } from "lucide-react";
 import { Metadata } from "next";
 import { Suspense } from "react";

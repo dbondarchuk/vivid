@@ -1,9 +1,9 @@
+import { ReaderBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
-import { AccordionPropsDefaults, AccordionReaderProps } from "./schema";
+import { AccordionReaderProps } from "./schema";
 import { styles } from "./styles";
-import { ReaderBlock } from "@vivid/builder";
 
 export const Accordion = ({
   props,

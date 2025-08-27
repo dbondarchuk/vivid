@@ -1,4 +1,4 @@
-import { AlignLeft, Film, Play, Volume2, VolumeX } from "lucide-react";
+import { AlignLeft, Film, Play, Volume2 } from "lucide-react";
 import { Shortcut } from "../../shortcuts";
 import { YouTubeVideoStylesSchema } from "./styles";
 

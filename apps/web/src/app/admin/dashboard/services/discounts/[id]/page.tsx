@@ -3,8 +3,8 @@ import { Breadcrumbs, Heading } from "@vivid/ui";
 
 import { DiscountForm } from "@/components/admin/services/discounts/form";
 import { getI18nAsync } from "@vivid/i18n/server";
-import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
+import { ServicesContainer } from "@vivid/services";
 import { notFound } from "next/navigation";
 import { Metadata } from "next/types";
 import { cache } from "react";
@@ -35,7 +35,7 @@ export default async function EditDiscountPage(props: Props) {
     {
       discountId: params.id,
     },
-    "Loading service discount edit page"
+    "Loading service discount edit page",
   );
 
   const discount = await getDiscount(params.id);
@@ -52,7 +52,7 @@ export default async function EditDiscountPage(props: Props) {
       discountType: discount.type,
       discountValue: discount.value,
     },
-    "Service discount edit page loaded"
+    "Service discount edit page loaded",
   );
 
   const breadcrumbItems = [

@@ -25,14 +25,14 @@ export const DeleteSelectedRemindersButton: React.FC<{
       await toastPromise(
         deleteSelectedReminders(
           appId,
-          selected.map((r) => r._id)
+          selected.map((r) => r._id),
         ),
         {
           success: t("reminders.statusText.reminders_deleted", {
             count: selected.length,
           }),
           error: tAdmin("common.toasts.error"),
-        }
+        },
       );
 
       reload(`${new Date().valueOf()}`);

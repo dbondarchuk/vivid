@@ -1,6 +1,6 @@
-import { cn } from "../utils";
 import Link from "next/link";
 import React from "react";
+import { cn } from "../utils";
 
 export const Logo: React.FC<{
   showLogo?: boolean;
@@ -14,7 +14,7 @@ export const Logo: React.FC<{
       href="/"
       className={cn(
         "flex title-font font-medium items-center gap-2",
-        className
+        className,
       )}
     >
       {logo && showLogo && (

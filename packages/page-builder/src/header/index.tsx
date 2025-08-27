@@ -111,7 +111,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
             fontWeight={item.fontWeight}
             className={cn(
               "hover:text-gray-600 transition-colors inline-flex items-center gap-1",
-              item.className
+              item.className,
             )}
             href={item.url}
           >
@@ -127,7 +127,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
         "font-light text-[hsl(var(--value-foreground-color))] font-[family-name:--font-primary-value] w-full bg-[hsl(var(--value-background-color))] z-40 transition-all duration-300",
         config?.sticky && "sticky top-0",
         config?.shadow === "static" && "drop-shadow-md",
-        className
+        className,
       )}
     >
       <ReplaceOriginalColors />
@@ -191,7 +191,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
-                    )
+                    ),
                   )}
                 </nav>
               </div>

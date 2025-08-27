@@ -1,6 +1,6 @@
 "use client";
-import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   Checkbox,
   Link,
@@ -69,7 +69,7 @@ export const columns: ColumnDef<Reminder>[] = [
     header: tableSortHeader(
       "reminders.table.columns.channel",
       "string",
-      "apps"
+      "apps",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -78,14 +78,14 @@ export const columns: ColumnDef<Reminder>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",
     header: tableSortHeader(
       "reminders.table.columns.updatedAt",
       "date",
-      "apps"
+      "apps",
     ),
     sortingFn: tableSortNoopFunction,
   },

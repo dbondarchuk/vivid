@@ -18,12 +18,12 @@ export interface IConnectedAppsService {
   processRedirect(name: string, request: ApiRequest, data?: any): Promise<void>;
   processWebhook(
     appId: string,
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ApiResponse | undefined>;
   processAppCall(
     appId: string,
     slug: string[],
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ApiResponse | undefined>;
   processRequest(appId: string, data: any): Promise<any>;
   processStaticRequest(appName: string, data: any): Promise<any>;
@@ -36,7 +36,7 @@ export interface IConnectedAppsService {
   getApp(appId: string): Promise<ConnectedAppData>;
   getAppsData(appIds: string[]): Promise<ConnectedAppData[]>;
   getAppService<T>(
-    appId: string
+    appId: string,
   ): Promise<{ service: IConnectedApp & T; app: ConnectedAppData }>;
   getAppServiceProps(appId: string): IConnectedAppProps;
 }

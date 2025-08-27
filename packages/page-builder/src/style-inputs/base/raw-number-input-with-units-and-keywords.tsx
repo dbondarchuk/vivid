@@ -109,7 +109,7 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
     (newValue: NumberValueWithUnit | null) => {
       onChange((newValue ?? { value: 0, unit: defaultUnit }) as any);
     },
-    [onChange, defaultUnit]
+    [onChange, defaultUnit],
   );
 
   const t = useI18n("builder");
@@ -137,7 +137,7 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
   const currentKeyword = useMemo(
     () =>
       isCustomValue ? "custom" : typeof value === "string" ? value : undefined,
-    [isCustomValue, value]
+    [isCustomValue, value],
   );
 
   return (

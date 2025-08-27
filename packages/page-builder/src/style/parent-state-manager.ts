@@ -64,7 +64,7 @@ export class ParentStateManager {
    */
   private setupParentStateHandler(
     element: Element,
-    state: StateWithTarget
+    state: StateWithTarget,
   ): void {
     const elementId = this.getElementId(element);
 
@@ -87,7 +87,7 @@ export class ParentStateManager {
         currentElement = currentElement?.parentElement || null;
         if (
           Array.from(currentElement?.classList?.values() || []).some(
-            (className) => className.startsWith("block-")
+            (className) => className.startsWith("block-"),
           )
         ) {
           observedElement = currentElement;
@@ -124,7 +124,7 @@ export class ParentStateManager {
     const cleanup = this.setupParentEventListeners(
       observedElement,
       targetElement,
-      state
+      state,
     );
 
     // Store cleanup function
@@ -142,7 +142,7 @@ export class ParentStateManager {
   private setupViewStateHandler(
     targetElement: Element,
     observedElement: Element,
-    state: StateWithTarget
+    state: StateWithTarget,
   ): void {
     const elementId = this.getElementId(targetElement);
     const dataAttribute = generateViewStateDataAttribute(state);
@@ -176,7 +176,7 @@ export class ParentStateManager {
       {
         threshold: 0.1, // Trigger when 10% of the element is visible
         rootMargin: "0px", // No margin
-      }
+      },
     );
 
     observer.observe(observedElement);
@@ -191,7 +191,7 @@ export class ParentStateManager {
   private setupParentEventListeners(
     parentElement: Element,
     targetElement: Element,
-    state: StateWithTarget
+    state: StateWithTarget,
   ): () => void {
     const dataAttribute = generateViewStateDataAttribute(state);
 
@@ -219,7 +219,7 @@ export class ParentStateManager {
           parentElement,
           targetElement,
           state,
-          dataAttribute!
+          dataAttribute!,
         );
       };
 
@@ -245,7 +245,7 @@ export class ParentStateManager {
     parentElement: Element,
     targetElement: Element,
     state: StateWithTarget,
-    dataAttribute: string
+    dataAttribute: string,
   ): void {
     const isEntering =
       event.type.includes("enter") ||
@@ -295,7 +295,7 @@ export function useParentStateManager() {
 
   const initializeElement = (
     element: Element | null,
-    states: StateWithTarget[]
+    states: StateWithTarget[],
   ) => {
     if (element && states.length > 0) {
       manager.initializeElement(element, states);

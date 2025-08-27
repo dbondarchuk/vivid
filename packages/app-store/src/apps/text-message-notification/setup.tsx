@@ -60,7 +60,7 @@ export const TextMessageNotificationAppSetup: React.FC<AppSetupProps> = ({
                     <PhoneInput
                       {...field}
                       label={t(
-                        "textMessageNotification.form.phone.placeholder"
+                        "textMessageNotification.form.phone.placeholder",
                       )}
                     />
                   </FormControl>

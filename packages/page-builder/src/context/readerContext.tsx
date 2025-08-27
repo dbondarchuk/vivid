@@ -83,7 +83,7 @@ const usePopupContext = () => {
       registerPopup,
       unregisterPopup,
     }),
-    [popups]
+    [popups],
   );
 
   return popup;

@@ -69,7 +69,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     },
     onError: (error: string | { key: string; args?: Record<string, any> }) => {
       console.error(
-        `Failed to set up app: ${typeof error === "string" ? error : error.key}`
+        `Failed to set up app: ${typeof error === "string" ? error : error.key}`,
       );
 
       toast.error(t("common.connectedAppSetup.error.description"));

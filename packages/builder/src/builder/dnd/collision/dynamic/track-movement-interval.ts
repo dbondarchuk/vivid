@@ -33,7 +33,7 @@ const intervalCache: Interval = {
  */
 export const trackMovementInterval = (
   point: Point,
-  dragAxis: DragAxis = "dynamic"
+  dragAxis: DragAxis = "dynamic",
 ) => {
   intervalCache.current = point;
 

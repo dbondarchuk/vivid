@@ -118,7 +118,7 @@ type StyleValueAccessors<
   set: {
     [K in keyof T]?: (
       value: string,
-      prev: z.infer<T[K]> | null | undefined
+      prev: z.infer<T[K]> | null | undefined,
     ) => z.infer<T[K]>;
   };
 };
@@ -134,7 +134,7 @@ export type ShortcutWithAssetSelector<
     set: {
       [K in keyof T]?: (
         value: string,
-        prev: z.infer<T[K]> | null | undefined
+        prev: z.infer<T[K]> | null | undefined,
       ) => z.infer<T[K]>;
     };
   };

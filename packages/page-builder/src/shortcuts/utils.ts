@@ -28,7 +28,7 @@ export interface ApplyShortcutOptions {
  */
 export const applyShortcutOption = <T extends BaseStyleDictionary>(
   option: ShortcutOption<T>,
-  options: ApplyShortcutOptions
+  options: ApplyShortcutOptions,
 ) => {
   const { styles, onStylesChange, setData, data, props, onPropsChange } =
     options;
@@ -49,7 +49,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
 
     // Check if this is a variant object
     const isVariantObject = (
-      targetStyle: any
+      targetStyle: any,
     ): targetStyle is {
       value: any;
       breakpoint?: string[];
@@ -97,7 +97,8 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
             // Find existing variant to get previous value for function calls
             const existingVariant = currentVariants.find(
               (v: any) =>
-                deepEqual(v.breakpoint, breakpoint) && deepEqual(v.state, state)
+                deepEqual(v.breakpoint, breakpoint) &&
+                deepEqual(v.state, state),
             );
 
             const previousValue = existingVariant?.value;
@@ -110,7 +111,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
                   ? variant.value(previousValue)
                   : variant.value,
             };
-          }
+          },
         )
         .filter((variant: any): variant is any => variant !== null); // Remove null variants
 
@@ -126,7 +127,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
           const filteredVariants = newStyles[styleName].filter(
             (variant: any) =>
               !deepEqual(variant.breakpoint, breakpoint) ||
-              !deepEqual(variant.state, state)
+              !deepEqual(variant.state, state),
           );
 
           // If no variants remain, remove the entire style property
@@ -144,7 +145,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
         const existingVariantIndex = newStyles[styleName]?.findIndex(
           (variant: any) =>
             deepEqual(variant.breakpoint, breakpoint) &&
-            deepEqual(variant.state, state)
+            deepEqual(variant.state, state),
         );
 
         if (existingVariantIndex !== undefined && existingVariantIndex >= 0) {
@@ -263,7 +264,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
 export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
   shortcut: Shortcut<T>,
   styles: any,
-  props?: any
+  props?: any,
 ): string | undefined => {
   if (!styles && !props) return undefined;
 
@@ -295,7 +296,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
 
       // Check if this is a variants array object
       const isVariantsArrayObject = (
-        targetValue: any
+        targetValue: any,
       ): targetValue is {
         variants: Array<{
           value: any;
@@ -327,7 +328,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
             const matchingCurrentVariant = currentVariants.find(
               (cv: any) =>
                 deepEqual(cv.breakpoint, targetVariant.breakpoint || []) &&
-                deepEqual(cv.state, targetVariant.state || [])
+                deepEqual(cv.state, targetVariant.state || []),
             );
 
             if (matchingCurrentVariant) {
@@ -350,7 +351,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
             // Bonus for having more variants that match (up to 0.5 extra points)
             const variantBonus = Math.min(
               0.5,
-              (variantMatches / targetVariants.length) * 0.5
+              (variantMatches / targetVariants.length) * 0.5,
             );
             totalScore += matchRatio + variantBonus;
           }
@@ -362,7 +363,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
       } else {
         // For single value, check base variant
         const currentStyle = styles?.[styleName]?.find(
-          (s: any) => !s.breakpoint?.length && !s.state?.length
+          (s: any) => !s.breakpoint?.length && !s.state?.length,
         );
 
         if (!currentStyle) {
@@ -386,7 +387,7 @@ export const getShortcutCurrentValue = <T extends BaseStyleDictionary>(
               const diff = Math.abs(currentValue - target);
               const maxValue = Math.max(
                 Math.abs(currentValue),
-                Math.abs(target)
+                Math.abs(target),
               );
               if (maxValue > 0) {
                 totalScore += Math.max(0, 1 - diff / maxValue); // Partial score based on similarity

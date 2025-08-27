@@ -14,11 +14,18 @@
     "migration": "migrate-mongo",
     "migration:up": "migrate-mongo up",
     "migration:down": "migrate-mongo down",
-    "check-translations": "turbo run check-translations -- "
+    "check-translations": "turbo run check-translations -- ",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*": "prettier --check --ignore-unknown \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "migrate-mongo": "^12.1.3",
     "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^4.2.0",
     "turbo": "^2.3.3"
   },
   "packageManager": "yarn@1.22.22",

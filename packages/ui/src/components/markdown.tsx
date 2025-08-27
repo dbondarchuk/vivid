@@ -1,6 +1,6 @@
+import { cn } from "@vivid/ui";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
-import { cn } from "@vivid/ui";
 
 export type MarkdownProps = {
   markdown: string;
@@ -20,7 +20,7 @@ export const Markdown: React.FC<MarkdownProps> = ({
         prose === "prose" &&
           "[&_p]:py-4 [&_li]:list-inside [&_li]:pl-8 [&_ul_li]:list-disc prose prose-slate",
         prose === "simple" && "prose prose-slate",
-        className
+        className,
       )}
     >
       <ReactMarkdown remarkPlugins={[remarkBreaks]}>{markdown}</ReactMarkdown>

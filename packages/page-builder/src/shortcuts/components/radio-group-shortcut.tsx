@@ -1,7 +1,7 @@
-import { RadioGroup, RadioGroupItem, Label } from "@vivid/ui";
+import { useI18n } from "@vivid/i18n";
+import { Label, RadioGroup, RadioGroupItem } from "@vivid/ui";
 import { BaseStyleDictionary } from "../../style/types";
 import { ShortcutOption, ShortcutWithRadio } from "../types";
-import { useI18n } from "@vivid/i18n";
 
 export const RadioGroupShortcut = <T extends BaseStyleDictionary>({
   shortcut,
@@ -18,7 +18,7 @@ export const RadioGroupShortcut = <T extends BaseStyleDictionary>({
       value={currentValue || ""}
       onValueChange={(value) => {
         const selectedOption = shortcut.options.find(
-          (opt) => opt.value === value
+          (opt) => opt.value === value,
         );
         if (selectedOption) {
           applyShortcut(selectedOption);

@@ -4,7 +4,6 @@ import {
   EditorBlock,
   useBlockChildrenBlockIds,
   useCurrentBlock,
-  useSetCurrentBlockRef,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
@@ -25,11 +24,11 @@ export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
   const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
   const subtitleId = useBlockChildrenBlockIds(
     currentBlock.id,
-    "props.subtitle"
+    "props.subtitle",
   )?.[0];
   const buttonsId = useBlockChildrenBlockIds(
     currentBlock.id,
-    "props.buttons"
+    "props.buttons",
   )?.[0];
   const className = useClassName();
   const base = currentBlock?.base;

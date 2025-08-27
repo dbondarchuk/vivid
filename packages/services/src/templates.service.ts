@@ -36,7 +36,7 @@ export class TemplatesService implements ITemplatesService {
   public async getTemplates(
     query: Query & {
       type?: CommunicationChannel[];
-    }
+    },
   ): Promise<WithTotal<TemplateListModel>> {
     const logger = this.loggerFactory("getTemplates");
     logger.debug({ query }, "Getting templates");
@@ -47,7 +47,7 @@ export class TemplatesService implements ITemplatesService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { updatedAt: -1 };
 
     const filter: Filter<Template> = {};
@@ -112,14 +112,14 @@ export class TemplatesService implements ITemplatesService {
         query,
         result: { total: response.total, count: response.items.length },
       },
-      "Templates fetched"
+      "Templates fetched",
     );
 
     return response;
   }
 
   public async createTemplate(
-    template: TemplateUpdateModel
+    template: TemplateUpdateModel,
   ): Promise<Template> {
     const logger = this.loggerFactory("createTemplate");
     logger.debug({ template }, "Creating template");
@@ -140,7 +140,7 @@ export class TemplatesService implements ITemplatesService {
 
     logger.debug(
       { templateId: dbTemplate._id, name: dbTemplate.name },
-      "Template created"
+      "Template created",
     );
 
     return dbTemplate;
@@ -148,12 +148,12 @@ export class TemplatesService implements ITemplatesService {
 
   public async updateTemplate(
     id: string,
-    update: TemplateUpdateModel
+    update: TemplateUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateTemplate");
     logger.debug(
       { id, update: { type: update.type, name: update.name } },
-      "Updating template"
+      "Updating template",
     );
     const db = await getDbConnection();
     const templates = db.collection<Template>(TEMPLATES_COLLECTION_NAME);
@@ -163,7 +163,7 @@ export class TemplatesService implements ITemplatesService {
     if (!this.checkUniqueName(update.name, id)) {
       logger.error(
         { id, update: { type: update.type, name: update.name } },
-        "Template name already exists"
+        "Template name already exists",
       );
       throw new Error("Name already exists");
     }
@@ -176,7 +176,7 @@ export class TemplatesService implements ITemplatesService {
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ id, update }, "Template updated");
@@ -232,7 +232,7 @@ export class TemplatesService implements ITemplatesService {
 
     logger.debug(
       { name, id, hasNext },
-      "Template name uniqueness check result"
+      "Template name uniqueness check result",
     );
 
     return !hasNext;

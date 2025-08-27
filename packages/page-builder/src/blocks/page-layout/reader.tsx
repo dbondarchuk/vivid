@@ -1,9 +1,9 @@
 import { ReaderBlock, ReaderProps } from "@vivid/builder";
-import { COLORS, getColorStyle } from "../../style/helpers/colors";
-import { getFontFamily } from "../../style-inputs/helpers/styles";
-import { PageLayoutReaderProps } from "./schema";
 import { cn } from "@vivid/ui";
 import { ReaderProvider } from "../../context/readerContext";
+import { getFontFamily } from "../../style-inputs/helpers/styles";
+import { COLORS, getColorStyle } from "../../style/helpers/colors";
+import { PageLayoutReaderProps } from "./schema";
 
 export const PageLayoutReader = ({
   args,
@@ -16,7 +16,7 @@ export const PageLayoutReader = ({
       <div
         style={{
           backgroundColor: getColorStyle(
-            props.backgroundColor ?? COLORS.background.value
+            props.backgroundColor ?? COLORS.background.value,
           ),
           color: getColorStyle(props.textColor ?? COLORS.foreground.value),
           fontFamily: getFontFamily(props.fontFamily),
@@ -34,7 +34,7 @@ export const PageLayoutReader = ({
         <div
           className={cn(
             "w-full flex flex-col",
-            !props.fullWidth && "container mx-auto"
+            !props.fullWidth && "container mx-auto",
           )}
         >
           {children.map((child) => (

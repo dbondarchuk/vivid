@@ -7,14 +7,14 @@ import {
 } from "@vivid/types";
 import { Control } from "react-hook-form";
 import { z, ZodSchema } from "zod";
+import { CheckboxField } from "./checkbox-field";
 import { EmailField } from "./email";
+import { FileField } from "./file";
 import { MultiLineField } from "./multi-line";
 import { NameField } from "./name";
 import { OneLineField } from "./one-line";
 import { PhoneField } from "./phone";
-import { CheckboxField } from "./checkbox-field";
 import { SelectField } from "./select";
-import { FileField } from "./file";
 
 export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
   name: (field: Field) =>
@@ -42,7 +42,7 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
       .default(false)
       .refine(
         (arg) => (field.required ? !!arg : true),
-        "checkbox_required_error"
+        "checkbox_required_error",
       ),
   select: (field: Field) => {
     const [firstOption, ...restOptions] = (
@@ -74,7 +74,7 @@ export const fieldsSchemaMap: Record<FieldType, (field: Field) => ZodSchema> = {
           params: {
             maxSizeMb: (field.data as unknown as FieldFileData).maxSizeMb,
           },
-        }
+        },
       );
   },
 };
@@ -89,11 +89,11 @@ export const fieldSchemaMapper = (field: Field) => {
 export type FieldComponentMapFn = (
   field: Field<any>,
   control: Control,
-  disabled?: boolean
+  disabled?: boolean,
 ) => React.ReactNode;
 
 export const fieldsComponentMap: (
-  namespace?: string
+  namespace?: string,
 ) => Record<FieldType, FieldComponentMapFn> = (namespace) => ({
   name: (field, control, disabled) => (
     <NameField

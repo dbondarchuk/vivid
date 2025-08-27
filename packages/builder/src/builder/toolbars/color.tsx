@@ -1,3 +1,6 @@
+import { Sketch } from "@uiw/react-color";
+import { useI18n } from "@vivid/i18n";
+import { Leaves } from "@vivid/types";
 import {
   Button,
   DropdownMenu,
@@ -7,12 +10,9 @@ import {
   useOpenState,
 } from "@vivid/ui";
 import { destructAndReplace, resolveProperty } from "@vivid/utils";
-import { Leaves } from "@vivid/types";
-import { ReactNode } from "react";
-import { Sketch } from "@uiw/react-color";
-import { ConfigurationProps } from "../../documents/types";
 import { X } from "lucide-react";
-import { useI18n } from "@vivid/i18n";
+import { ReactNode } from "react";
+import { ConfigurationProps } from "../../documents/types";
 
 export type ToolbarColorPropsValues<T> = ConfigurationProps<T> &
   (
@@ -68,7 +68,7 @@ export const ToolbarColorMenu = <T,>({
           color={propValue ?? defaultValue}
           onChange={(value) => {
             setData(
-              destructAndReplace(data, property, value.hex) as unknown as any
+              destructAndReplace(data, property, value.hex) as unknown as any,
             );
           }}
           disableAlpha
@@ -78,7 +78,7 @@ export const ToolbarColorMenu = <T,>({
             variant="ghost"
             onClick={() => {
               setData(
-                destructAndReplace(data, property, null) as unknown as any
+                destructAndReplace(data, property, null) as unknown as any,
               );
             }}
           >

@@ -1,10 +1,10 @@
 "use client";
 import { GetAppointmentOptionsResponse } from "@vivid/types";
+import { Skeleton } from "@vivid/ui";
 import React from "react";
 import { Appointments } from "./appointments";
-import { Skeleton } from "@vivid/ui";
-import { BookingProps } from "./types";
 import { demoBookingOptionsResponse } from "./fixtures";
+import { BookingProps } from "./types";
 
 export const Booking: React.FC<
   BookingProps & { id?: string; isEditor?: boolean }

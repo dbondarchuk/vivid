@@ -12,7 +12,6 @@ import {
   AlertDialogTrigger,
   Button,
   Spinner,
-  toast,
   toastPromise,
 } from "@vivid/ui";
 import { Trash } from "lucide-react";

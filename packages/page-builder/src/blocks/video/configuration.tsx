@@ -3,27 +3,27 @@
 import { ConfigurationProps, FileInput, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Checkbox, deepMemo, Label } from "@vivid/ui";
+import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { VideoProps } from "./schema";
 import { videoShortcuts } from "./shortcuts";
 import { styles } from "./styles";
-import { useCallback, useMemo } from "react";
 
 export const VideoConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<VideoProps>) => {
     const updateData = useCallback(
       (d: unknown) => setData(d as VideoProps),
-      [setData]
+      [setData],
     );
 
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as VideoProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as VideoProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const t = useI18n("builder");
@@ -132,5 +132,5 @@ export const VideoConfiguration = deepMemo(
         </div>
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

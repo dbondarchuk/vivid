@@ -25,7 +25,7 @@ export default class SmtpConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processAppData(
-    appData: SmtpConfiguration
+    appData: SmtpConfiguration,
   ): Promise<SmtpConfiguration> {
     return {
       ...appData,
@@ -38,7 +38,7 @@ export default class SmtpConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: SmtpConfiguration
+    data: SmtpConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
@@ -49,7 +49,7 @@ export default class SmtpConnectedApp
         secure: data.secure,
         email: data.email,
       },
-      "Processing SMTP configuration request"
+      "Processing SMTP configuration request",
     );
 
     if (data?.auth?.pass === MASKED_PASSWORD && appData?.data?.auth?.pass) {
@@ -69,7 +69,7 @@ export default class SmtpConnectedApp
 
       logger.debug(
         { appId: appData._id, host: data.host, port: data.port },
-        "Verifying SMTP connection"
+        "Verifying SMTP connection",
       );
 
       const result = await client.verify();
@@ -77,17 +77,17 @@ export default class SmtpConnectedApp
       if (!result) {
         logger.error(
           { appId: appData._id, host: data.host, port: data.port },
-          "SMTP connection verification failed"
+          "SMTP connection verification failed",
         );
 
         throw new ConnectedAppError(
-          "smtp.statusText.connection_verification_failed"
+          "smtp.statusText.connection_verification_failed",
         );
       }
 
       logger.debug(
         { appId: appData._id, host: data.host, port: data.port },
-        "SMTP connection verified successfully"
+        "SMTP connection verified successfully",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -106,12 +106,12 @@ export default class SmtpConnectedApp
 
       logger.info(
         { appId: appData._id, host: data.host, email: data.email },
-        "Successfully connected to SMTP server"
+        "Successfully connected to SMTP server",
       );
 
       logger.debug(
         { appId: appData._id, status: status.status },
-        "Successfully configured SMTP"
+        "Successfully configured SMTP",
       );
 
       return status;
@@ -122,7 +122,7 @@ export default class SmtpConnectedApp
           host: data.host,
           error: e?.message || e?.toString(),
         },
-        "Error processing SMTP configuration request"
+        "Error processing SMTP configuration request",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -146,7 +146,7 @@ export default class SmtpConnectedApp
 
   public async sendMail(
     appData: ConnectedAppData,
-    email: Email
+    email: Email,
   ): Promise<EmailResponse> {
     const logger = this.loggerFactory("sendMail");
     logger.debug(
@@ -157,7 +157,7 @@ export default class SmtpConnectedApp
         hasAttachments: !!email.attachments?.length,
         hasIcalEvent: !!email.icalEvent,
       },
-      "Sending email via SMTP"
+      "Sending email via SMTP",
     );
 
     try {
@@ -165,27 +165,27 @@ export default class SmtpConnectedApp
 
       logger.debug(
         { appId: appData._id, subject: email.subject },
-        "Processing email attachments and iCal events"
+        "Processing email attachments and iCal events",
       );
 
       let icalEvent: Mail.IcalAttachment | undefined = undefined;
       if (email.icalEvent) {
         logger.debug(
           { appId: appData._id, subject: email.subject },
-          "Processing iCal event attachment"
+          "Processing iCal event attachment",
         );
 
         const { value: icsContent, error: icsError } = createEvent(
-          email.icalEvent.content
+          email.icalEvent.content,
         );
 
         if (!icsContent || icsError) {
           logger.error(
             { appId: appData._id, icsError },
-            "Failed to parse iCal event"
+            "Failed to parse iCal event",
           );
           throw new ConnectedAppError(
-            "smtp.statusText.error_parsing_ical_event"
+            "smtp.statusText.error_parsing_ical_event",
           );
         }
 
@@ -201,7 +201,7 @@ export default class SmtpConnectedApp
             subject: email.subject,
             filename: icalEvent.filename,
           },
-          "Successfully created iCal event attachment"
+          "Successfully created iCal event attachment",
         );
       }
 
@@ -227,7 +227,7 @@ export default class SmtpConnectedApp
           to: Array.isArray(email.to) ? email.to : [email.to],
           attachmentCount: email.attachments?.length || 0,
         },
-        "Prepared email options, sending via SMTP"
+        "Prepared email options, sending via SMTP",
       );
 
       const client = this.getClient(smtpConfiguration);
@@ -239,7 +239,7 @@ export default class SmtpConnectedApp
           subject: email.subject,
           messageId: result.messageId,
         },
-        "Successfully sent email via SMTP"
+        "Successfully sent email via SMTP",
       );
 
       return {
@@ -252,7 +252,7 @@ export default class SmtpConnectedApp
           subject: email.subject,
           error: e?.message || e?.toString(),
         },
-        "Error sending email via SMTP"
+        "Error sending email via SMTP",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -283,7 +283,7 @@ export default class SmtpConnectedApp
         secure: smtpConfiguration.secure,
         email: smtpConfiguration.email,
       },
-      "Creating SMTP client"
+      "Creating SMTP client",
     );
 
     try {
@@ -301,7 +301,7 @@ export default class SmtpConnectedApp
 
       logger.debug(
         { host: smtpConfiguration.host, port: smtpConfiguration.port },
-        "SMTP client created successfully"
+        "SMTP client created successfully",
       );
 
       return client;
@@ -312,7 +312,7 @@ export default class SmtpConnectedApp
           port: smtpConfiguration.port,
           error: error?.message || error?.toString(),
         },
-        "Error creating SMTP client"
+        "Error creating SMTP client",
       );
       throw error;
     }

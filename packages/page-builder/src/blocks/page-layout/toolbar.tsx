@@ -4,26 +4,18 @@ import {
   ToolbarDropdownPropsValues,
   ToolbarToggle,
 } from "@vivid/builder";
-import {
-  AlignHorizontalSpaceAround,
-  Baseline,
-  PaintBucket,
-} from "lucide-react";
-import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
-import { ToolbarColorMenu } from "../../toolbars/color";
-import {
-  FontFamilyDropdownMenu,
-  fontFamilyItems,
-} from "../../toolbars/font-family";
-import { PageLayoutDefaultProps, PageLayoutProps } from "./schema";
 import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { FontFamily } from "../../style";
-import { ColorShortcutToolbar } from "../../toolbars/shortucts/color-shortcut-toolbar";
-import { colorShortcut } from "../../shortcuts/common/color";
+import { AlignHorizontalSpaceAround } from "lucide-react";
 import { backgroundColorShortcut } from "../../shortcuts/common/background-color";
+import { colorShortcut } from "../../shortcuts/common/color";
+import { FontFamily } from "../../style";
+import { FONT_FAMILIES } from "../../style-inputs/helpers/font-family";
+import { fontFamilyItems } from "../../toolbars/font-family";
+import { ColorShortcutToolbar } from "../../toolbars/shortucts/color-shortcut-toolbar";
+import { PageLayoutDefaultProps, PageLayoutProps } from "./schema";
 
 const LayoutFontFamilyDropdownMenu = (
-  props: ToolbarDropdownPropsValues<PageLayoutProps>
+  props: ToolbarDropdownPropsValues<PageLayoutProps>,
 ) => {
   const selectedFont = props.data?.fontFamily
     ? FONT_FAMILIES[props.data?.fontFamily]
@@ -57,7 +49,7 @@ const LayoutFontFamilyDropdownMenu = (
 };
 
 export const PageLayoutToolbar = (
-  props: ConfigurationProps<PageLayoutProps>
+  props: ConfigurationProps<PageLayoutProps>,
 ) => {
   const t = useI18n("builder");
   return (

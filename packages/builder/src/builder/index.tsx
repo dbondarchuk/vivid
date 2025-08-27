@@ -1,9 +1,9 @@
 "use client";
 
 import { cn, SidebarInset, SidebarProvider, useSidebar } from "@vivid/ui";
-import { createPortal } from "react-dom";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useCookies } from "react-cookie";
+import { createPortal } from "react-dom";
 import {
   EditorArgsContext,
   EditorStateProvider,
@@ -68,7 +68,7 @@ const BuilderSidebarProvider = ({
       // suppressHydrationWarning for open/close state
       suppressHydrationWarning
       className={cn(
-        "!bg-transparent h-full min-h-full w-full justify-center relative"
+        "!bg-transparent h-full min-h-full w-full justify-center relative",
       )}
       style={
         {
@@ -93,7 +93,7 @@ const BuilderFullScreenProvider = ({
     <div
       className={cn(
         "flex flex-col w-full h-full min-h-full",
-        fullScreen && "fixed inset-0 z-50 pointer-events-auto bg-background"
+        fullScreen && "fixed inset-0 z-50 pointer-events-auto bg-background",
       )}
     >
       {children}

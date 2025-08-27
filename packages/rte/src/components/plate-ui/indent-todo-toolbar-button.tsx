@@ -18,5 +18,5 @@ export const IndentTodoToolbarButton = withRef<typeof ToolbarButton>(
         <ListTodoIcon />
       </ToolbarButton>
     );
-  }
+  },
 );

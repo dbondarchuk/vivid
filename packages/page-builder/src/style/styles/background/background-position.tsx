@@ -1,6 +1,6 @@
-import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { Combobox, Label } from "@vivid/ui";
 import { RawDoubleNumberInput } from "@vivid/builder";
+import { BuilderKeys, useI18n } from "@vivid/i18n";
+import { Combobox } from "@vivid/ui";
 import { Move } from "lucide-react";
 import { z } from "zod";
 import { StyleDefinition } from "../../types";

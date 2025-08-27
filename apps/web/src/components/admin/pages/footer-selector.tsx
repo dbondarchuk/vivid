@@ -1,13 +1,7 @@
-import {
-  CustomerListModel,
-  PageFooterListModel,
-  PageHeaderListModel,
-  WithTotal,
-} from "@vivid/types";
-import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
-import Image from "next/image";
-import React from "react";
 import { useI18n } from "@vivid/i18n";
+import { PageFooterListModel, WithTotal } from "@vivid/types";
+import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
+import React from "react";
 
 const FooterShortLabel: React.FC<{
   footer: PageFooterListModel;
@@ -18,7 +12,7 @@ const FooterShortLabel: React.FC<{
     <div
       className={cn(
         "flex gap-0.5  shrink overflow-hidden text-nowrap min-w-0 max-w-[var(--radix-popover-trigger-width)]",
-        row ? "items-baseline" : "flex-col"
+        row ? "items-baseline" : "flex-col",
       )}
     >
       <span>{footer.name}</span>
@@ -110,7 +104,7 @@ export const FooterSelector: React.FC<FooterSelectorProps> = ({
             ...map,
             [cur._id]: cur,
           }),
-          {} as typeof itemsCache
+          {} as typeof itemsCache,
         ),
       }));
 
@@ -123,7 +117,7 @@ export const FooterSelector: React.FC<FooterSelectorProps> = ({
         hasMore: page * limit < res.total,
       };
     },
-    [value, setItemsCache, t]
+    [value, setItemsCache, t],
   );
 
   React.useEffect(() => {

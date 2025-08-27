@@ -64,7 +64,7 @@ export const RawDoubleNumberInput: React.FC<RawDoubleNumberInputProps> = ({
         "w-full items-center justify-center",
         asRow
           ? ["grid gap-1", !!x ? "grid-cols-[1fr_auto_1fr]" : "grid-cols-1"]
-          : "flex flex-row gap-2 flex-wrap"
+          : "flex flex-row gap-2 flex-wrap",
       )}
     >
       <InputGroup>
@@ -84,7 +84,7 @@ export const RawDoubleNumberInput: React.FC<RawDoubleNumberInputProps> = ({
             className={cn(
               "min-w-10",
               InputGroupInputClasses(),
-              prefix1 && InputGroupInputClasses({ variant: "prefix" })
+              prefix1 && InputGroupInputClasses({ variant: "prefix" }),
             )}
             h={size}
             value={defaultValue1?.toString() || ""}
@@ -121,7 +121,7 @@ export const RawDoubleNumberInput: React.FC<RawDoubleNumberInputProps> = ({
             className={cn(
               "min-w-10",
               InputGroupInputClasses(),
-              prefix2 && InputGroupInputClasses({ variant: "prefix" })
+              prefix2 && InputGroupInputClasses({ variant: "prefix" }),
             )}
             h={size}
             value={defaultValue2?.toString() || ""}

@@ -66,7 +66,7 @@ export const ToolbarViewportGroup = () => {
     (value: ViewportSize) => {
       setSelectedScreenSize(value);
     },
-    [setSelectedScreenSize]
+    [setSelectedScreenSize],
   );
 
   const ViewportIcon = VIEWPORT_SIZES[selectedScreenSize].icon;
@@ -87,7 +87,7 @@ export const ToolbarViewportGroup = () => {
               suppressHydrationWarning
               className={cn(
                 "size-4",
-                VIEWPORT_SIZES[selectedScreenSize].className
+                VIEWPORT_SIZES[selectedScreenSize].className,
               )}
             />
           </ToolbarButton>

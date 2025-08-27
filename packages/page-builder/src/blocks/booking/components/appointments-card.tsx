@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { AppointmentChoice } from "@vivid/types";
 import {
   Card,
@@ -10,7 +11,6 @@ import {
 import { durationToTime } from "@vivid/utils";
 import { DollarSign, Timer } from "lucide-react";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 
 export type AppointmentsCardProps = {
   options: AppointmentChoice[];
@@ -34,7 +34,7 @@ export const AppointmentsCard: React.FC<AppointmentsCardProps> = ({
         event.preventDefault();
       }
     },
-    [onSelect]
+    [onSelect],
   );
 
   return (
@@ -60,7 +60,7 @@ export const AppointmentsCard: React.FC<AppointmentsCardProps> = ({
                       option.duration
                         ? i18n(
                             "form_duration_hour_minutes_label_format",
-                            durationToTime(option.duration)
+                            durationToTime(option.duration),
                           )
                         : i18n("custom_duration_label_format")
                     }
@@ -69,7 +69,7 @@ export const AppointmentsCard: React.FC<AppointmentsCardProps> = ({
                     {option.duration
                       ? i18n(
                           "duration_hour_min_format",
-                          durationToTime(option.duration)
+                          durationToTime(option.duration),
                         )
                       : i18n("duration_custom")}
                   </div>

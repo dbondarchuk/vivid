@@ -1,5 +1,5 @@
-import React from "react";
 import { cva } from "class-variance-authority";
+import React from "react";
 import { cn } from "../utils";
 
 export const InputGroupSuffixClasses = cva(
@@ -36,7 +36,7 @@ export const InputGroupSuffixClasses = cva(
     defaultVariants: {
       variant: "suffix",
     },
-  }
+  },
 );
 
 export const InputGroupInputClasses = cva(
@@ -56,7 +56,7 @@ export const InputGroupInputClasses = cva(
     defaultVariants: {
       variant: "suffix",
     },
-  }
+  },
 );
 
 type ChildrenWithClassName = React.PropsWithChildren & {
@@ -91,7 +91,7 @@ export const InputGroup: React.FC<ChildrenWithClassName> = ({
     <div
       className={cn(
         "rounded-md relative flex focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-        className
+        className,
       )}
     >
       {children}

@@ -1,10 +1,10 @@
 import type { AppsKeys } from "@vivid/i18n";
 import { App } from "@vivid/types";
-import { REMINDERS_APP_NAME } from "./const";
-import { RemindersPage } from "./page";
 import { BellRing } from "lucide-react";
-import { NewReminderPage } from "./new-page";
+import { REMINDERS_APP_NAME } from "./const";
 import { EditReminderPage } from "./edit-page";
+import { NewReminderPage } from "./new-page";
+import { RemindersPage } from "./page";
 
 const reminderBreadcrumb = {
   title: "reminders.title" as AppsKeys,

@@ -26,7 +26,7 @@ export const ToolbarErrorGroup = () => {
 
   const errors = useMemo(
     () => Object.entries(editorErrors || {}),
-    [editorErrors]
+    [editorErrors],
   );
 
   const errorsCount = useMemo(() => errors.length, [errors]);
@@ -41,9 +41,9 @@ export const ToolbarErrorGroup = () => {
           displayName: blocks[type].displayName,
           error: issue.message,
           property: issue.path.slice(1).join("."),
-        }))
+        })),
       ),
-    [errors, blocks]
+    [errors, blocks],
   );
 
   return (
@@ -81,7 +81,7 @@ export const ToolbarErrorGroup = () => {
                       </div>
                       {index < flattendErrors.length - 1 && <Separator />}
                     </Fragment>
-                  )
+                  ),
                 )}
               </div>
             </ScrollArea>

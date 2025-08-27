@@ -1,13 +1,12 @@
 "use client";
-import { DateTime } from "@vivid/types";
 
 import React from "react";
 
-import { useI18n } from "@vivid/i18n";
 import { PaymentAppForms } from "@vivid/app-store";
+import { useI18n } from "@vivid/i18n";
+import { formatAmountString } from "@vivid/utils";
 import { CardWithAppointmentInformation } from "./card-with-info";
 import { useScheduleContext } from "./context";
-import { formatAmountString } from "@vivid/utils";
 
 export const PaymentCard: React.FC = () => {
   const i18n = useI18n("translation");
@@ -42,7 +41,7 @@ export const PaymentCard: React.FC = () => {
           {
             percentage: paymentForm.intent.percentage,
             amount: formatAmountString(paymentForm.intent.amount),
-          }
+          },
         )}
       </div>
       <Form

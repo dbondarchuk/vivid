@@ -46,12 +46,12 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
   const t = useI18n("apps");
   const apps = React.useMemo(
     () => Object.values(AvailableApps).filter((app) => !app.isHidden),
-    []
+    [],
   );
 
   const categories = React.useMemo(
     () => Array.from(new Set(apps.flatMap((app) => app.category))),
-    [apps]
+    [apps],
   );
 
   const [search, setSearch] = React.useState("");
@@ -63,7 +63,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
         if (
           category &&
           !app.category.some(
-            (c) => c.toLocaleLowerCase() === category.toLocaleLowerCase()
+            (c) => c.toLocaleLowerCase() === category.toLocaleLowerCase(),
           )
         )
           return false;
@@ -78,7 +78,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
           app.description.text.toLocaleLowerCase().includes(s)
         );
       }),
-    [apps, category, search]
+    [apps, category, search],
   );
 
   return (

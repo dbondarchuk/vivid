@@ -35,7 +35,7 @@ export default async function EditOptionPage(props: Props) {
     {
       optionId: params.id,
     },
-    "Loading service option edit page"
+    "Loading service option edit page",
   );
 
   const option = await getOption(params.id);
@@ -52,7 +52,7 @@ export default async function EditOptionPage(props: Props) {
       optionDuration: option.duration,
       optionPrice: option.price,
     },
-    "Service option edit page loaded"
+    "Service option edit page loaded",
   );
 
   const breadcrumbItems = [

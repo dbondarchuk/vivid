@@ -32,7 +32,7 @@ export const Popup: React.FC<{
   const [isOpen, setIsOpen] = useState(
     show === "always" ||
       (isEditor && show !== "on-click") ||
-      (show === "one-time" && cookies[COOKIE_NAME] !== shownCookieValue)
+      (show === "one-time" && cookies[COOKIE_NAME] !== shownCookieValue),
   );
 
   const onOpenChange = (isOpen: boolean) => {

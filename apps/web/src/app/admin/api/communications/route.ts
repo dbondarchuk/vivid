@@ -18,25 +18,25 @@ export async function POST(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing communications API request"
+    "Processing communications API request",
   );
 
   const { error, success, data } = sendCommunicationRequestSchema.safeParse(
-    await request.json()
+    await request.json(),
   );
   if (!success || !data || error) {
     logger.error(
       {
         error: error?.message || error?.toString(),
       },
-      "Error parsing communication request"
+      "Error parsing communication request",
     );
     return NextResponse.json(
       {
         error: "bad_data",
         message: error?.message,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
   if ("appointmentId" in data) {
     appointment = await ServicesContainer.EventsService().getAppointment(
-      data.appointmentId
+      data.appointmentId,
     );
 
     if (!appointment) {
@@ -54,21 +54,21 @@ export async function POST(request: NextRequest) {
           error: "appointment_not_found",
           message: `Appointment ${data.appointmentId} was not found`,
         },
-        "Appointment not found"
+        "Appointment not found",
       );
       return NextResponse.json(
         {
           error: "appointment_not_found",
           message: `Appointment ${data.appointmentId} was not found`,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     customer = appointment.customer;
   } else {
     const _customer = await ServicesContainer.CustomersService().getCustomer(
-      data.customerId! // Customer Id will be present
+      data.customerId!, // Customer Id will be present
     );
 
     if (!_customer) {
@@ -77,14 +77,14 @@ export async function POST(request: NextRequest) {
           error: "customer_not_found",
           message: `Customer ${data.customerId} was not found`,
         },
-        "Customer not found"
+        "Customer not found",
       );
       return NextResponse.json(
         {
           error: "customer_not_found",
           message: `Customer ${data.customerId} was not found`,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     await ServicesContainer.ConfigurationService().getConfigurations(
       "booking",
       "general",
-      "social"
+      "social",
     );
 
   const locale = config.general.language;
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
       success: true,
       messageId: "Communication sent successfully",
     },
-    "Communication sent successfully"
+    "Communication sent successfully",
   );
 
   return NextResponse.json(okStatus);

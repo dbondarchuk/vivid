@@ -27,7 +27,7 @@ export const AccordionItem = ({
         className={cn(
           "border border-gray-200 rounded-lg",
           className,
-          base?.className
+          base?.className,
         )}
         id={base?.id}
       >

@@ -16,7 +16,7 @@ export const pageHeaderSchema = z.object({
 
 export const getPageHeaderSchemaWithUniqueNameCheck = (
   uniqueNameCheckFn: (name: string, id?: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return z.object({
     ...pageHeaderSchema.shape,

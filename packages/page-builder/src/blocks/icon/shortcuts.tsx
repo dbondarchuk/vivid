@@ -1,7 +1,7 @@
 import { MoveDiagonal2 } from "lucide-react";
 import { Shortcut } from "../../shortcuts";
-import { AllStylesSchemas } from "../../style";
 import { colorShortcut } from "../../shortcuts/common/color";
+import { AllStylesSchemas } from "../../style";
 
 export const iconShortcuts: Shortcut<AllStylesSchemas>[] = [
   {

@@ -3,13 +3,12 @@ import { SonnerToaster, Toaster } from "@vivid/ui";
 import { Resource } from "@vivid/types";
 
 import NextScript from "next/script";
-import { TwLoad } from "../twLoad";
 
-import { ServicesContainer } from "@vivid/services";
-import "../globals.css";
-import { getColorsCss } from "@vivid/utils";
 import { CookiesProvider } from "@/components/cookies-provider";
 import { getLoggerFactory } from "@vivid/logger";
+import { ServicesContainer } from "@vivid/services";
+import { getColorsCss } from "@vivid/utils";
+import "../globals.css";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
@@ -69,14 +68,14 @@ export default async function RootLayout({
     await ServicesContainer.ConfigurationService().getConfigurations(
       "general",
       "scripts",
-      "styling"
+      "styling",
     );
 
   const locale = await getLocale();
 
   logger.debug(
     { hasGeneral: !!general, hasScripts: !!scripts, hasStyling: !!styling },
-    "Retrieved configurations"
+    "Retrieved configurations",
   );
 
   if (!general) {
@@ -96,7 +95,7 @@ export default async function RootLayout({
 
   logger.debug(
     { primaryFont, secondaryFont, tertiaryFont },
-    "Font configuration"
+    "Font configuration",
   );
 
   const tertiaryFontQueryArg = tertiaryFont
@@ -105,13 +104,13 @@ export default async function RootLayout({
 
   const fontsRes = await fetch(
     `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-      primaryFont
+      primaryFont,
     )}${weights}&family=${encodeURIComponent(
-      secondaryFont
+      secondaryFont,
     )}${weights}${tertiaryFontQueryArg}&display=swap`,
     {
       cache: "force-cache",
-    }
+    },
   );
 
   const fonts = await fontsRes.text();
@@ -119,7 +118,7 @@ export default async function RootLayout({
 
   logger.debug(
     { fontsLength: fonts.length, hasColors: !!colors },
-    "Generated styles"
+    "Generated styles",
   );
 
   return (

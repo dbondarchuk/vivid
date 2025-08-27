@@ -4,7 +4,6 @@ import {
   EditorBlock,
   useBlockChildrenBlockIds,
   useCurrentBlock,
-  useSetCurrentBlockRef,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";

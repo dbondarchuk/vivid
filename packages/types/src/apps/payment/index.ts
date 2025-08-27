@@ -11,7 +11,7 @@ export interface IPaymentProcessor {
   refundPayment?: (
     appDate: ConnectedAppData,
     payment: Payment,
-    amount: number
+    amount: number,
   ) => Promise<{ success: boolean; error?: string }>;
 }
 

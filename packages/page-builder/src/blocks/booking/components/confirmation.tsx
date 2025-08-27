@@ -1,16 +1,16 @@
 import { getI18nAsync } from "@vivid/i18n/server";
+import { ServicesContainer } from "@vivid/services";
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@vivid/ui";
-import { Timer, DollarSign } from "lucide-react";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { durationToTime } from "@vivid/utils";
-import { ServicesContainer } from "@vivid/services";
+import { DollarSign, Timer } from "lucide-react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const BookingConfirmation: React.FC = async () => {
   const appointmentIdCookie = (await cookies()).get("appointment_id");
@@ -21,7 +21,7 @@ export const BookingConfirmation: React.FC = async () => {
   const i18n = await getI18nAsync("translation");
 
   const appointment = await ServicesContainer.EventsService().getAppointment(
-    appointmentIdCookie.value
+    appointmentIdCookie.value,
   );
 
   if (!appointment) {
@@ -38,7 +38,7 @@ export const BookingConfirmation: React.FC = async () => {
               <Timer className="mr-1" />
               {i18n(
                 "duration_hour_min_format",
-                durationToTime(appointment.totalDuration)
+                durationToTime(appointment.totalDuration),
               )}
             </div>
           )}

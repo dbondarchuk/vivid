@@ -10,7 +10,7 @@ export type YouTubeVideoStylesSchema = AllStylesSchemas;
 
 export const getDefaults = (
   { props, style }: YouTubeVideoProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): DefaultCSSProperties<YouTubeVideoStylesSchema> => ({
   display: "inline-block",
   maxWidth: {

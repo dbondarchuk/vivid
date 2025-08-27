@@ -6,8 +6,8 @@ import {
   useSelectedRowsStore,
 } from "@vivid/ui";
 import { DeleteSelectedCustomersButton } from "./delete-selected";
-import { useCustomersTableFilters } from "./use-table-filters";
 import { MergeSelectedCustomersButton } from "./merge-selected";
+import { useCustomersTableFilters } from "./use-table-filters";
 
 export function CustomersTableAction() {
   const {

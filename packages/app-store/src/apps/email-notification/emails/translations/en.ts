@@ -80,19 +80,19 @@ export const EnEmailTemplates: EmailTemplates = {
   rescheduled: {
     title: "Appointment was rescheduled for {{dateTime.full}}",
     text: getText(
-      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime.full}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}"
+      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime.full}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}",
     ),
   },
   "auto-confirmed": {
     title: "Appointment for {{option.name}} was requested and auto-confirmed",
     text: getText(
-      "A new appointment was requested on the website and was auto-confirmed."
+      "A new appointment was requested on the website and was auto-confirmed.",
     ),
   },
   pending: {
     title: "Appointment for {{option.name}} was requested",
     text: getText(
-      "A new appointment was requested on the website for {{option.name}}."
+      "A new appointment was requested on the website for {{option.name}}.",
     ),
   },
   subject: "{{fields.name}} for {{option.name}} at {{dateTime.full}}",

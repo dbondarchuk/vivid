@@ -3,6 +3,8 @@
 import { Asset, WithTotal } from "@vivid/types";
 import { useInView } from "react-intersection-observer";
 
+import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
+import { useI18n } from "@vivid/i18n";
 import {
   AssetPreview,
   Button,
@@ -25,11 +27,9 @@ import {
   useSelectedRowsStore,
   useUploadFile,
 } from "@vivid/ui";
-import React, { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
-import { useI18n } from "@vivid/i18n";
-import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
+import { useRouter } from "next/navigation";
+import React, { useCallback } from "react";
 
 const AssetItem: React.FC<{ asset: Asset }> = ({ asset }) => {
   const { rowSelection, setRowSelection } = useSelectedRowsStore();
@@ -53,7 +53,7 @@ const AssetItem: React.FC<{ asset: Asset }> = ({ asset }) => {
       onClick={setSelected}
       className={cn(
         "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3 relative",
-        isSelected ? "bg-accent" : ""
+        isSelected ? "bg-accent" : "",
       )}
       key={asset._id}
     >
@@ -77,7 +77,7 @@ const Loader: React.FC<{ className?: string }> = ({ className }) => (
   <div
     className={cn(
       "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3",
-      className
+      className,
     )}
   >
     <Skeleton className="w-16 h-16" />
@@ -233,7 +233,7 @@ export const CustomerFiles: React.FC<{
         hasMore: page * toLoad < res.total,
       };
     },
-    [customerId, search]
+    [customerId, search],
   );
 
   React.useEffect(() => {

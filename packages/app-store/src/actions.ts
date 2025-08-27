@@ -17,7 +17,7 @@ export const addNewApp = async (type: string) => {
   } catch (error) {
     actionLogger.error(
       { type, error: error instanceof Error ? error.message : String(error) },
-      "Failed to add new app"
+      "Failed to add new app",
     );
     throw error;
   }
@@ -31,13 +31,13 @@ export const getAppStatus = async (appId: string) => {
       await ServicesContainer.ConnectedAppsService().getAppStatus(appId);
     actionLogger.debug(
       { appId, status: result?.status },
-      "App status retrieved"
+      "App status retrieved",
     );
     return result;
   } catch (error) {
     actionLogger.error(
       { appId, error: error instanceof Error ? error.message : String(error) },
-      "Failed to get app status"
+      "Failed to get app status",
     );
     throw error;
   }
@@ -45,21 +45,21 @@ export const getAppStatus = async (appId: string) => {
 
 export const setAppStatus = async (
   appId: string,
-  status: ConnectedAppStatusWithText
+  status: ConnectedAppStatusWithText,
 ) => {
   const actionLogger = logger("setAppStatus");
   actionLogger.debug(
     { appId, status: status.status, statusText: status.statusText },
-    "Setting app status"
+    "Setting app status",
   );
   try {
     const result = await ServicesContainer.ConnectedAppsService().updateApp(
       appId,
-      status
+      status,
     );
     actionLogger.debug(
       { appId, status: status.status, statusText: status.statusText },
-      "App status updated"
+      "App status updated",
     );
     return result;
   } catch (error) {
@@ -70,7 +70,7 @@ export const setAppStatus = async (
         statusText: status.statusText,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to set app status"
+      "Failed to set app status",
     );
     throw error;
   }
@@ -87,7 +87,7 @@ export const getAppLoginUrl = async (appId: string) => {
   } catch (error) {
     actionLogger.error(
       { appId, error: error instanceof Error ? error.message : String(error) },
-      "Failed to get app login URL"
+      "Failed to get app login URL",
     );
     throw error;
   }
@@ -100,7 +100,7 @@ export const processRequest = async (appId: string, data: any) => {
     const result =
       await ServicesContainer.ConnectedAppsService().processRequest(
         appId,
-        data
+        data,
       );
     actionLogger.debug({ appId, hasData: !!data }, "App request processed");
     return result;
@@ -111,7 +111,7 @@ export const processRequest = async (appId: string, data: any) => {
         hasData: !!data,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to process app request"
+      "Failed to process app request",
     );
     throw error;
   }
@@ -121,17 +121,17 @@ export const processStaticRequest = async (appName: string, data: any) => {
   const actionLogger = logger("processStaticRequest");
   actionLogger.debug(
     { appName, hasData: !!data },
-    "Processing static app request"
+    "Processing static app request",
   );
   try {
     const result =
       await ServicesContainer.ConnectedAppsService().processStaticRequest(
         appName,
-        data
+        data,
       );
     actionLogger.debug(
       { appName, hasData: !!data },
-      "Static app request processed"
+      "Static app request processed",
     );
     return result;
   } catch (error) {
@@ -141,7 +141,7 @@ export const processStaticRequest = async (appName: string, data: any) => {
         hasData: !!data,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to process static app request"
+      "Failed to process static app request",
     );
     throw error;
   }
@@ -158,7 +158,7 @@ export const deleteApp = async (appId: string) => {
   } catch (error) {
     actionLogger.error(
       { appId, error: error instanceof Error ? error.message : String(error) },
-      "Failed to delete app"
+      "Failed to delete app",
     );
     throw error;
   }
@@ -175,7 +175,7 @@ export const getAppData = async (appId: string) => {
     if (result.service.processAppData && appData) {
       actionLogger.debug(
         { appId, appName: appData.name },
-        "Processing app data by service"
+        "Processing app data by service",
       );
 
       appData = await result.service.processAppData(appData);
@@ -186,7 +186,7 @@ export const getAppData = async (appId: string) => {
   } catch (error) {
     actionLogger.error(
       { appId, error: error instanceof Error ? error.message : String(error) },
-      "Failed to get app data"
+      "Failed to get app data",
     );
     throw error;
   }
@@ -200,13 +200,13 @@ export const getApps = async (...scope: AppScope[]) => {
       await ServicesContainer.ConnectedAppsService().getAppsByScope(...scope);
     actionLogger.debug(
       { scope, count: result.length },
-      "Apps by scope retrieved"
+      "Apps by scope retrieved",
     );
     return result;
   } catch (error) {
     actionLogger.error(
       { scope, error: error instanceof Error ? error.message : String(error) },
-      "Failed to get apps by scope"
+      "Failed to get apps by scope",
     );
     throw error;
   }

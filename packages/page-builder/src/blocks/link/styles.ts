@@ -9,7 +9,7 @@ export const zStyles = getStylesSchema(styles);
 
 export const getDefaults = (
   { props, style }: LinkProps,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): DefaultCSSProperties<AllStylesSchemas> => {
   return {
     fontSize: { value: 1, unit: "rem" },

@@ -1,6 +1,6 @@
 import { evaluate, ReaderBlock } from "@vivid/builder";
-import { ForeachContainerReaderProps } from "./schema";
 import { Fragment } from "react";
+import { ForeachContainerReaderProps } from "./schema";
 
 export const ForeachContainerReader = ({
   props,

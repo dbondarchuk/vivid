@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Textarea, TextareaProps } from "./textarea";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { cn } from "../utils";
+import { mergeRefs } from "../utils/merge-refs";
 import {
   Command,
   CommandGroup,
@@ -9,10 +10,8 @@ import {
   CommandItem,
   CommandList,
 } from "./command";
-import { cn } from "../utils";
-import { mergeRefs } from "../utils/merge-refs";
-import { escapeRegex } from "@vivid/utils";
 import { Input } from "./input";
+import { Textarea, TextareaProps } from "./textarea";
 
 // https://github.com/component/textarea-caret-position
 
@@ -74,7 +73,7 @@ function getCaretPosition(element: HTMLTextAreaElement | HTMLInputElement) {
 
 function getCurrentWordPos(
   element: HTMLTextAreaElement | HTMLInputElement,
-  trigger: string
+  trigger: string,
 ) {
   const text = element.value;
   const { caretStartIndex } = getCaretPosition(element);
@@ -100,7 +99,7 @@ function getCurrentWordPos(
 
 function getCurrentWord(
   element: HTMLTextAreaElement | HTMLInputElement,
-  trigger: string
+  trigger: string,
 ) {
   const { start, end, text } = getCurrentWordPos(element, trigger);
   const w = text.substring(start, end);
@@ -112,7 +111,7 @@ function replaceWord(
   element: HTMLTextAreaElement | HTMLInputElement,
   value: string,
   trigger: string,
-  documentElement: Document
+  documentElement: Document,
 ) {
   //   const text = element.value;
   //   const caretPos = element.selectionStart;
@@ -133,7 +132,7 @@ function replaceWord(
   //   }
   const { start: startIndex, end: endIndex } = getCurrentWordPos(
     element,
-    trigger
+    trigger,
   );
 
   // Replace the word with a new word using document.execCommand
@@ -152,7 +151,7 @@ function replaceWord(
     // Restore the original selection range
     element.setSelectionRange(
       selectionStart - (endIndex - startIndex) + value.length,
-      selectionEnd - (endIndex - startIndex) + value.length
+      selectionEnd - (endIndex - startIndex) + value.length,
     );
   }
 }
@@ -161,18 +160,18 @@ function getCaretCoordinates(
   element: HTMLTextAreaElement | HTMLInputElement,
   position: number,
   documentElement: Document,
-  options?: { debug: boolean }
+  options?: { debug: boolean },
 ) {
   if (!isBrowser) {
     throw new Error(
-      "textarea-caret-position#getCaretCoordinates should only be called in a browser"
+      "textarea-caret-position#getCaretCoordinates should only be called in a browser",
     );
   }
 
   var debug = (options && options.debug) || false;
   if (debug) {
     var el = documentElement.querySelector(
-      "#input-textarea-caret-position-mirror-div"
+      "#input-textarea-caret-position-mirror-div",
     );
     if (el) el?.parentNode?.removeChild(el);
   }
@@ -300,7 +299,7 @@ export const TextareaMentions = React.forwardRef<
       documentElement = document,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const textareaRef = asInput
       ? useRef<HTMLInputElement>(null)
@@ -353,7 +352,7 @@ export const TextareaMentions = React.forwardRef<
       (
         e: React.ChangeEvent<
           HTMLTextAreaElement | HTMLInputElement | HTMLSpanElement
-        >
+        >,
       ) => {
         const text =
           e.target instanceof HTMLSpanElement
@@ -366,7 +365,7 @@ export const TextareaMentions = React.forwardRef<
           const caret = getCaretCoordinates(
             textarea,
             textarea.selectionEnd || 0,
-            documentElement
+            documentElement,
           );
           const currentWord = getCurrentWord(textarea, trigger);
           setTextValue?.(text);
@@ -384,7 +383,7 @@ export const TextareaMentions = React.forwardRef<
           }
         }
       },
-      [setTextValue, commandValue]
+      [setTextValue, commandValue],
     );
 
     const onCommandSelect = useCallback((value: MentionData) => {
@@ -395,7 +394,7 @@ export const TextareaMentions = React.forwardRef<
           textarea,
           insertTransform ? insertTransform(value) : `${value.id}`,
           trigger,
-          documentElement
+          documentElement,
         );
 
         setCommandValue("");
@@ -420,7 +419,7 @@ export const TextareaMentions = React.forwardRef<
           }
         }
       },
-      [commandValue]
+      [commandValue],
     );
 
     useEffect(() => {
@@ -459,7 +458,7 @@ export const TextareaMentions = React.forwardRef<
           <Input
             ref={mergeRefs(
               ref as React.RefObject<HTMLInputElement | null>,
-              textareaRef as React.RefObject<HTMLInputElement | null>
+              textareaRef as React.RefObject<HTMLInputElement | null>,
             )}
             value={textValue}
             onChange={onTextValueChange}
@@ -471,7 +470,7 @@ export const TextareaMentions = React.forwardRef<
           <Textarea
             ref={mergeRefs(
               ref as React.RefObject<HTMLTextAreaElement | null>,
-              textareaRef as React.RefObject<HTMLTextAreaElement | null>
+              textareaRef as React.RefObject<HTMLTextAreaElement | null>,
             )}
             autoComplete="off"
             autoCorrect="off"
@@ -484,7 +483,7 @@ export const TextareaMentions = React.forwardRef<
         <Command
           ref={dropdownRef}
           className={cn(
-            "absolute hidden h-auto max-w-min border border-popover shadow z-[46]"
+            "absolute hidden h-auto max-w-min border border-popover shadow z-[46]",
           )}
         >
           <div className="hidden">
@@ -511,5 +510,5 @@ export const TextareaMentions = React.forwardRef<
         </Command>
       </div>
     );
-  }
+  },
 );

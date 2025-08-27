@@ -1,6 +1,8 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { UploadedFile } from "@vivid/types";
+import { VariantProps } from "class-variance-authority";
 import React from "react";
 import { AssetSelectorDialog } from "./assets-selector-dialog";
 import { Button } from "./button";
@@ -11,8 +13,6 @@ import {
   InputGroupInputClasses,
   InputGroupSuffixClasses,
 } from "./input-group";
-import { useI18n } from "@vivid/i18n";
-import { VariantProps } from "class-variance-authority";
 
 export type AssetSelectorInputProps = {
   value?: string | null;

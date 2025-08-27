@@ -1,9 +1,9 @@
 import { AppDetails } from "@/components/admin/apps/store/app-details";
 import PageContainer from "@/components/admin/layout/page-container";
 import { AvailableApps } from "@vivid/app-store";
-import { Breadcrumbs } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs } from "@vivid/ui";
 import { Metadata } from "next/types";
 
 type Params = {
@@ -30,7 +30,7 @@ export default async function AppsStorePage(props: Params) {
     {
       appName,
     },
-    "Loading app store details page"
+    "Loading app store details page",
   );
 
   const breadcrumbItems = [
@@ -48,7 +48,7 @@ export default async function AppsStorePage(props: Params) {
       appName,
       appDisplayName: AvailableApps[appName].displayName,
     },
-    "App store details page loaded"
+    "App store details page loaded",
   );
 
   console.log(breadcrumbItems);

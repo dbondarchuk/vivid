@@ -5,8 +5,8 @@ export const genericMemo: <T extends ComponentType<any>>(
   component: T,
   propsAreEqual?: (
     prevProps: Readonly<ComponentProps<T>>,
-    nextProps: Readonly<ComponentProps<T>>
-  ) => boolean
+    nextProps: Readonly<ComponentProps<T>>,
+  ) => boolean,
 ) => T = memo;
 
 export function deepMemo<T extends ComponentType<any>>(component: T): T {
@@ -14,7 +14,7 @@ export function deepMemo<T extends ComponentType<any>>(component: T): T {
     component,
     (
       prevProps: Readonly<ComponentProps<T>>,
-      nextProps: Readonly<ComponentProps<T>>
-    ) => deepEqual(prevProps, nextProps)
+      nextProps: Readonly<ComponentProps<T>>,
+    ) => deepEqual(prevProps, nextProps),
   ) as unknown as T;
 }

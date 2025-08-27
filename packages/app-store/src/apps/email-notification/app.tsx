@@ -1,6 +1,6 @@
 import { App } from "@vivid/types";
-import { EMAIL_NOTIFICATION_APP_NAME } from "./const";
 import { Mailbox } from "lucide-react";
+import { EMAIL_NOTIFICATION_APP_NAME } from "./const";
 import { EmailNotificationAppSetup } from "./setup";
 
 export const EmailNotificationApp: App = {

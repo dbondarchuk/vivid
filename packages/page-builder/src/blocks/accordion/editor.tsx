@@ -25,7 +25,7 @@ export const AccordionEditor = ({ props, style }: AccordionProps) => {
       iconPosition,
       iconStyle,
     }),
-    [animation, iconPosition, iconStyle]
+    [animation, iconPosition, iconStyle],
   );
 
   return (

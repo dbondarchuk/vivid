@@ -1,12 +1,10 @@
 "use client";
 
-import React from "react";
-
-import { Button, cn } from "@vivid/ui";
 import {
   useCommentDeleteButton,
   useCommentEditButton,
 } from "@udecode/plate-comments/react";
+import { Button, cn } from "@vivid/ui";
 import { MoreHorizontal } from "lucide-react";
 
 import {

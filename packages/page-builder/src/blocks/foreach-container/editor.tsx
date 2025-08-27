@@ -15,7 +15,7 @@ export const ForeachContainerEditor = ({ props }: ForeachContainerProps) => {
           {
             item: () => <em>_item</em>,
             value: () => <em>{value || "value"}</em>,
-          }
+          },
         )}
       </div>
       <EditorChildren blockId={currentBlock.id} property="props" />

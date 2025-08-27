@@ -2,7 +2,7 @@ import { useDraggable } from "@dnd-kit/react";
 import { BuilderKeys, useI18n } from "@vivid/i18n";
 import { Button, cn, genericMemo, Input, ScrollArea } from "@vivid/ui";
 import { GripVertical, Search, X } from "lucide-react";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { useBlocks, useRootBlockType } from "../../../documents/editor/context";
 import { BaseZodDictionary } from "../../../documents/types";
 
@@ -36,7 +36,7 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
           ref={ref}
           className={cn(
             "flex items-center gap-2 p-3 rounded-lg border border-border bg-background hover:bg-accent hover:text-accent-foreground cursor-grab active:cursor-grabbing transition-colors",
-            isDragging ? "opacity-50" : "!opacity-100"
+            isDragging ? "opacity-50" : "!opacity-100",
           )}
         >
           <div className="flex-shrink-0 text-muted-foreground">
@@ -56,7 +56,7 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
         </div>
       </>
     );
-  }
+  },
 );
 
 const BlocksPanelContent = memo(
@@ -102,7 +102,7 @@ const BlocksPanelContent = memo(
         )}
       </ScrollArea>
     );
-  }
+  },
 );
 
 export const BlocksPanel = genericMemo(
@@ -160,7 +160,7 @@ export const BlocksPanel = genericMemo(
             acc[category].push({ type, config });
             return acc;
           },
-          {} as Record<string, Array<{ type: string; config: any }>>
+          {} as Record<string, Array<{ type: string; config: any }>>,
         );
     }, [blocks, allowOnly, rootBlockType, t]);
 
@@ -198,5 +198,5 @@ export const BlocksPanel = genericMemo(
         {PanelContent}
       </>
     );
-  }
+  },
 );

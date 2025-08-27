@@ -5,7 +5,6 @@ import {
   FileInput,
   RadioGroupInput,
   RadioGroupInputItem,
-  TextDimensionInput,
   TextDoubleNumberInput,
   TextInput,
 } from "@vivid/builder";

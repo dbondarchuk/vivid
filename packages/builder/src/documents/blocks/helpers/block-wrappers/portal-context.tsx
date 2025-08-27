@@ -26,7 +26,7 @@ interface PortalProviderProps {
 
 export const PortalProvider: React.FC<PortalProviderProps> = ({ children }) => {
   const [stateDocument, setDocument] = useState<Document>(
-    typeof document !== "undefined" ? document : ({} as Document)
+    typeof document !== "undefined" ? document : ({} as Document),
   );
 
   const value: PortalContextType = useMemo(
@@ -35,7 +35,7 @@ export const PortalProvider: React.FC<PortalProviderProps> = ({ children }) => {
       body: stateDocument.body || ({} as HTMLElement),
       setDocument,
     }),
-    [stateDocument, setDocument]
+    [stateDocument, setDocument],
   );
 
   return (

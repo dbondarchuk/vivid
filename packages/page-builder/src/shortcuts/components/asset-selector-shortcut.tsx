@@ -15,7 +15,7 @@ export const createAssetSelectorShortcut = <
   icon: (props: { className?: string }) => React.ReactNode,
   targetStyle: TStyle,
   styleValue?: ShortcutWithAssetSelector<T, TStyle>["styleValue"],
-  config?: ShortcutWithAssetSelector<T, TStyle>["assetSelectorConfig"]
+  config?: ShortcutWithAssetSelector<T, TStyle>["assetSelectorConfig"],
 ): ShortcutWithAssetSelector<T, TStyle> => {
   return {
     label,
@@ -37,7 +37,7 @@ export const AssetSelectorShortcut = <T extends BaseStyleDictionary>({
 }) => {
   // Get current asset value from the target style
   const currentStyle = styles[shortcut.targetStyle]?.find(
-    (s) => !s.breakpoint?.length && !s.state?.length
+    (s) => !s.breakpoint?.length && !s.state?.length,
   );
 
   let currentAssetValue: string | null = currentStyle?.value || null;

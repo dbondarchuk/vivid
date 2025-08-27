@@ -13,12 +13,12 @@ export const BookingConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<BookingProps>) => {
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as BookingProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const t = useI18n("builder");
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as BookingProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -40,5 +40,5 @@ export const BookingConfiguration = deepMemo(
         />
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

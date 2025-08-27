@@ -1,9 +1,8 @@
-import { globalCssColors } from "@/app/tailwind-colors";
 import PageContainer from "@/components/admin/layout/page-container";
+import { getLoggerFactory } from "@vivid/logger";
 import { PageBuilder, Styling } from "@vivid/page-builder";
 import { ServicesContainer } from "@vivid/services";
-import { Breadcrumbs, Heading, Separator } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
+import { Breadcrumbs, Heading } from "@vivid/ui";
 
 const breadcrumbItems = [
   { title: "Dashboard", link: "/admin/dashboard" },
@@ -22,7 +21,7 @@ export default async function Page() {
     {
       hasStylingConfig: !!styling,
     },
-    "Page builder loaded"
+    "Page builder loaded",
   );
 
   return (

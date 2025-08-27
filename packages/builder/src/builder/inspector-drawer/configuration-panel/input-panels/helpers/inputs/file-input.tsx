@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Prettify } from "@vivid/types";
 import {
   AssetSelectorInput,
   AssetSelectorInputProps,
@@ -8,7 +9,6 @@ import {
   Label,
 } from "@vivid/ui";
 import { ResetButton } from "./reset-button";
-import { Prettify } from "@vivid/types";
 
 type Props = Prettify<
   Omit<AssetSelectorInputProps, "value" | "onChange" | "onBlur"> & {

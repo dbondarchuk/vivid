@@ -12,7 +12,7 @@ export async function GET() {
   const fn = async (callback: (count: number) => void) => {
     const count =
       await ServicesContainer.EventsService().getPendingAppointmentsCount(
-        new Date()
+        new Date(),
       );
 
     logger.debug({ count }, "Retrieved pending appointments count");
@@ -24,7 +24,9 @@ export async function GET() {
     start: async (controller) => {
       logger.debug("Initializing SSE stream");
       fn((count) =>
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(count)}\n\n`))
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify(count)}\n\n`),
+        ),
       );
     },
     cancel: () => {

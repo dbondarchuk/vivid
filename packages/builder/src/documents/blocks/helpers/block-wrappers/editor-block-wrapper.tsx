@@ -6,10 +6,10 @@ import { cva } from "class-variance-authority";
 
 import {
   useCurrentBlockAllowedTypes,
+  useCurrentBlockDisableOptions,
   useCurrentBlockId,
   useCurrentBlockRef,
   useIsCurrentBlockOverlay,
-  useCurrentBlockDisableOptions,
 } from "../../../editor/block";
 import {
   useBlockDepth,
@@ -21,13 +21,12 @@ import {
   useSetSelectedBlockId,
 } from "../../../editor/context";
 
-import { closestCenter, directionBiased } from "@dnd-kit/collision";
+import { directionBiased } from "@dnd-kit/collision";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { cn } from "@vivid/ui";
 import { DndContext } from "../../../../types/dndContext";
 import { BlockHandlerPortal } from "./block-handler-portal";
 import { BlockNavPortal } from "./block-nav-portal";
-import { createDynamicCollisionDetector } from "../../../../builder/dnd/collision/dynamic";
 
 type TEditorBlockWrapperProps = {
   children: React.JSX.Element;
@@ -76,7 +75,7 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
     // const hasActiveDragBlock = useHasActiveDragBlock();
 
     const [blockElement, setBlockElement] = React.useState<HTMLElement | null>(
-      null
+      null,
     );
 
     const className = cn(
@@ -84,7 +83,7 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
       variants({
         outline: isSelected ? "selected" : undefined,
         over: isActiveHierarchyOverDroppable,
-      })
+      }),
     );
 
     // Auto-scroll to block when it becomes selected
@@ -139,13 +138,13 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
         )}
       </>
     );
-  }
+  },
 );
 
 export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
   ({ children, index, parentBlockId, parentProperty }) => {
     const [blockElement, setBlockElement] = React.useState<HTMLElement | null>(
-      null
+      null,
     );
     const ref = useCurrentBlockRef();
     const blockId = useCurrentBlockId();
@@ -173,7 +172,7 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
         ev.stopPropagation();
         ev.preventDefault();
       },
-      [blockId, setSelectedBlockId]
+      [blockId, setSelectedBlockId],
     );
 
     // Auto-scroll to block when it becomes selected
@@ -248,7 +247,7 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
       variants({
         outline: isSelected ? "selected" : undefined,
         over: isActiveHierarchyOverDroppable,
-      })
+      }),
     );
 
     const Element = ref?.current ? (
@@ -310,7 +309,7 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
           )}
       </>
     );
-  }
+  },
 );
 
 export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
@@ -328,5 +327,5 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
     return (
       <DragEditorBlockWrapper {...rest}>{children}</DragEditorBlockWrapper>
     );
-  }
+  },
 );

@@ -28,7 +28,7 @@ export default async function NewServicePage(props: Props) {
     {
       fromFieldId: from,
     },
-    "Loading new service field page"
+    "Loading new service field page",
   );
 
   const breadcrumbItems = [
@@ -58,7 +58,7 @@ export default async function NewServicePage(props: Props) {
         fieldName: result.name,
         fieldType: result.type,
       },
-      "Using source field as template"
+      "Using source field as template",
     );
   }
 
@@ -67,7 +67,7 @@ export default async function NewServicePage(props: Props) {
       fromFieldId: from,
       hasInitialData: !!initialData,
     },
-    "New service field page loaded"
+    "New service field page loaded",
   );
 
   return (

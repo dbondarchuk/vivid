@@ -1,7 +1,7 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import z from "zod";
-import { zStyles } from "./styles";
 import { AccordionItemPropsDefaults } from "../accordion-item/schema";
+import { zStyles } from "./styles";
 
 export const AccordionPropsSchema = z.object({
   style: zStyles,

@@ -5,7 +5,7 @@ import { SimpleTextProps } from "./schema";
 import { simpleTextShortcuts } from "./shortcuts";
 
 export const SimpleTextToolbar = (
-  props: ConfigurationProps<SimpleTextProps>
+  props: ConfigurationProps<SimpleTextProps>,
 ) => {
   const t = useI18n("builder");
 

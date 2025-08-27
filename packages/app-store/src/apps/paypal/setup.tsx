@@ -183,7 +183,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                         {paypalButtonLayout.map((layout) => (
                           <SelectItem key={layout} value={layout}>
                             {t(
-                              `paypal.form.buttonStyle.layout.values.${layout}`
+                              `paypal.form.buttonStyle.layout.values.${layout}`,
                             )}
                           </SelectItem>
                         ))}

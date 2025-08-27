@@ -1,8 +1,8 @@
 import { ReaderBlock } from "@vivid/builder";
+import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { GridContainerReaderProps, styles } from "./schema";
-import { cn } from "@vivid/ui";
 
 export const GridContainerReader = ({
   style,

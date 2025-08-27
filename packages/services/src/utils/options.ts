@@ -30,7 +30,7 @@ export const getOptions = async () => {
       ...map,
       [field._id]: field,
     }),
-    {} as Record<string, FieldSchema>
+    {} as Record<string, FieldSchema>,
   );
 
   const optionsChoices = (config.options || [])
@@ -50,7 +50,7 @@ export const getOptions = async () => {
         ...map,
         [field.id]: !!map[field.id] || !!field.required,
       }),
-      {} as Record<string, boolean>
+      {} as Record<string, boolean>,
     );
 
     const fields = Object.entries(fieldsIdsRequired)

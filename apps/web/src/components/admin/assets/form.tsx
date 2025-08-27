@@ -13,7 +13,6 @@ import {
   Input,
   SaveButton,
   Textarea,
-  toast,
   toastPromise,
 } from "@vivid/ui";
 import mimeType from "mime-type/with-db";
@@ -35,7 +34,7 @@ export const AssetForm: React.FC = () => {
       .min(3, { message: "assets.fileNameMinLength" })
       .regex(
         /^[\w,\.\(\)\s-]+\.[A-Za-z0-9]{1,6}$/gi,
-        "assets.fileNameExtension"
+        "assets.fileNameExtension",
       )
       .refine((filename) => checkUniqueFileName(filename), {
         message: "assets.fileNameUnique",

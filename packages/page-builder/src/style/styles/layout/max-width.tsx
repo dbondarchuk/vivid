@@ -6,7 +6,7 @@ import { renderRawNumberWithUnitOrKeywordCss } from "../../utils";
 import { getZNumberValueWithUnitOrKeyword } from "../../zod";
 
 const MaxWidthSchema = getZNumberValueWithUnitOrKeyword(
-  widthOrHeightOptions.map((option) => option.value)
+  widthOrHeightOptions.map((option) => option.value),
 );
 
 export const maxWidthStyle = {

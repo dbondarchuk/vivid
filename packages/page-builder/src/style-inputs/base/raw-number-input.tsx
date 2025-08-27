@@ -54,7 +54,7 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
 
       setValue(value as number);
     },
-    [setValue, nullable, min, max]
+    [setValue, nullable, min, max],
   );
 
   const parseFn = (val: string) =>
@@ -89,7 +89,7 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
           <PopoverTrigger asChild>
             <input
               className={cn(
-                "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-8 min-w-10 max-w-12 shrink bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted disabled:text-muted-foreground"
+                "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-8 min-w-10 max-w-12 shrink bg-transparent text-foreground px-1 text-center text-sm hover:bg-muted disabled:text-muted-foreground",
               )}
               value={value?.toString()}
               onBlur={() => {
@@ -120,7 +120,7 @@ export const RawNumberInput: React.FC<RawNumberInputProps> = ({
               <button
                 key={option}
                 className={cn(
-                  "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent"
+                  "flex h-8 w-full items-center justify-center text-sm hover:bg-accent data-[highlighted=true]:bg-accent",
                 )}
                 onClick={() => {
                   handleInputChange(option);

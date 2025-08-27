@@ -18,11 +18,11 @@ export const ImageConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<ImageProps>) => {
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as ImageProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as ImageProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const t = useI18n("builder");
@@ -61,5 +61,5 @@ export const ImageConfiguration = deepMemo(
         />
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

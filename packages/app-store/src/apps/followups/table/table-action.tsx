@@ -1,5 +1,7 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
+import { communicationChannels } from "@vivid/types";
 import {
   Button,
   DataTableFilterBox,
@@ -15,8 +17,6 @@ import { Plus, Settings2 } from "lucide-react";
 import React from "react";
 import { DeleteSelectedFollowUpsButton } from "./delete-selected";
 import { useFollowUpsTableFilters } from "./use-table-filters";
-import { useI18n } from "@vivid/i18n";
-import { communicationChannels } from "@vivid/types";
 
 export const FollowUpsTableAction: React.FC<{ appId: string }> = ({
   appId,

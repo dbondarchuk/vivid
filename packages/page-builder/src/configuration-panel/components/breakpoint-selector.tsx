@@ -19,7 +19,7 @@ interface BreakpointSelectorProps {
 // Helper function to check if breakpoints conflict
 const hasConflictingBreakpoints = (
   currentBreakpoints: Breakpoint[],
-  newBreakpoint: Breakpoint
+  newBreakpoint: Breakpoint,
 ): boolean => {
   const minWidthBreakpoints = ["sm", "md", "lg", "xl", "2xl"];
   const maxWidthBreakpoints = [
@@ -80,7 +80,7 @@ const hasConflictingBreakpoints = (
 // Helper function to get conflicting breakpoint for a given breakpoint
 const getConflictingBreakpoints = (
   breakpoint: Breakpoint,
-  currentBreakpoints: Breakpoint[]
+  currentBreakpoints: Breakpoint[],
 ): Breakpoint[] => {
   const minWidthBreakpoints = ["sm", "md", "lg", "xl", "2xl"];
   const maxWidthBreakpoints = [
@@ -189,10 +189,10 @@ export const BreakpointSelector: React.FC<BreakpointSelectorProps> = ({
                     if (current.length >= 2) {
                       const conflicting = getConflictingBreakpoints(
                         bp,
-                        current
+                        current,
                       );
                       const filtered = current.filter(
-                        (b) => !conflicting.includes(b)
+                        (b) => !conflicting.includes(b),
                       );
                       const newBreakpoints = [...filtered, bp];
                       onBreakpointsChange(newBreakpoints);
@@ -205,7 +205,7 @@ export const BreakpointSelector: React.FC<BreakpointSelectorProps> = ({
                     // Removing breakpoint
                     const newBreakpoints = current.filter((b) => b !== bp);
                     onBreakpointsChange(
-                      newBreakpoints.length > 0 ? newBreakpoints : []
+                      newBreakpoints.length > 0 ? newBreakpoints : [],
                     );
                   }
                 }}

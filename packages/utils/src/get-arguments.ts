@@ -124,17 +124,17 @@ export const getArguments = <
 
   const totalAmountPaid = payments?.reduce(
     (sum, payment) => sum + payment.amount,
-    0
+    0,
   );
 
   const totalRefunded = payments?.reduce(
     (sum, payment) => sum + payment.totalRefunded,
-    0
+    0,
   );
 
   const totalAmountLeft = payments?.reduce(
     (sum, payment) => sum + payment.amountLeft,
-    0
+    0,
   );
 
   const extendedArgs: ArgsProps = {
@@ -149,7 +149,7 @@ export const getArguments = <
     })),
     files:
       appointment?.files?.filter(
-        (file) => !file.mimeType.startsWith("image/")
+        (file) => !file.mimeType.startsWith("image/"),
       ) || [],
     images:
       appointment?.files
@@ -178,8 +178,8 @@ export const getArguments = <
             ...acc,
             [`is_${cur}`]: link.type === cur,
           }),
-          { ...link }
-        )
+          { ...link },
+        ),
       ) || [],
     locale,
   };
@@ -196,7 +196,7 @@ export const getArguments = <
       ...(additionalProperties || {}),
     },
     config.general.language,
-    useAppointmentTimezone ? appointment?.timeZone : config.general.timeZone
+    useAppointmentTimezone ? appointment?.timeZone : config.general.timeZone,
   ) as FormattedArguments<
     TAdditional extends undefined
       ? BaseArgs<TAppointment>

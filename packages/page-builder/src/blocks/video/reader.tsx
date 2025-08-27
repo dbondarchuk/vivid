@@ -1,9 +1,9 @@
 import { cn } from "@vivid/ui";
+import { forwardRef } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { VideoPropsDefaults, VideoReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
-import { forwardRef } from "react";
 
 // Define the shape for the video props
 interface VideoInnerProps {

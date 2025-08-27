@@ -5,7 +5,6 @@ import React from "react";
 import {
   BaseStyleDictionary,
   DefaultCSSProperties,
-  isNonSelfTarget,
   isParentTarget,
   isViewState,
   renderStylesToCSS,
@@ -60,9 +59,9 @@ export const Styling: React.FC<Props> = ({ styling: propsStyling }) => {
 
   const weights = `:wght@100..900`;
   const fontsCssUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-    primaryFont
+    primaryFont,
   )}${weights}&family=${encodeURIComponent(
-    secondaryFont
+    secondaryFont,
   )}${weights}&family=${encodeURIComponent(tertiaryFont)}${weights}&display=swap`;
 
   //   const fonts = await fontsRes.text();
@@ -109,7 +108,7 @@ export const BlockStyle = genericMemo(
       styles,
       defaults,
       isEditor,
-      name
+      name,
     );
 
     const states = extractParentStates(styles);
@@ -133,11 +132,11 @@ export const BlockStyle = genericMemo(
       deepEqual(prevProps.styleDefinitions, nextProps.styleDefinitions) &&
       prevProps.isEditor === nextProps.isEditor
     );
-  }
+  },
 );
 
 function extractParentStates<T extends BaseStyleDictionary>(
-  styles?: StyleValue<T> | null
+  styles?: StyleValue<T> | null,
 ): StateWithTarget[] {
   const parentStates: StateWithTarget[] = [];
 

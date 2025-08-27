@@ -10,7 +10,7 @@ import {
   useRef,
 } from "react";
 
-import { useBlock, useBlockType, useSetBlockDisableOptions } from "./context";
+import { useBlock, useSetBlockDisableOptions } from "./context";
 import { BlockDisableOptions, CoreEditorBlock, TEditorBlock } from "./core";
 
 const EditorBlockContext = createContext<{
@@ -53,7 +53,7 @@ export const useSetCurrentBlockRef = () => {
         setRef.current = element;
       }
     },
-    [setRef]
+    [setRef],
   );
 };
 
@@ -125,7 +125,7 @@ export const EditorBlock = memo(
             : [allowedTypes],
         ref,
       }),
-      [blockId, isOvelayBlock, allowedTypes, disable]
+      [blockId, isOvelayBlock, allowedTypes, disable],
     );
 
     return (
@@ -139,5 +139,5 @@ export const EditorBlock = memo(
         />
       </EditorBlockContext.Provider>
     );
-  }
+  },
 );

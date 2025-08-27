@@ -5,7 +5,6 @@ import {
   useBlockChildrenBlockIds,
   useCurrentBlock,
 } from "@vivid/builder";
-import { useI18n } from "@vivid/i18n";
 import { cn, DialogFooter, DialogHeader } from "@vivid/ui";
 import { X } from "lucide-react";
 import { BlockStyle } from "../../helpers/styling";
@@ -26,15 +25,15 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
   const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
   const subtitleId = useBlockChildrenBlockIds(
     currentBlock.id,
-    "props.subtitle"
+    "props.subtitle",
   )?.[0];
   const contentId = useBlockChildrenBlockIds(
     currentBlock.id,
-    "props.content"
+    "props.content",
   )?.[0];
   const buttonsId = useBlockChildrenBlockIds(
     currentBlock.id,
-    "props.buttons"
+    "props.buttons",
   )?.[0];
   const className = useClassName();
   const base = currentBlock.base;
@@ -54,7 +53,7 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
         >
           <div
             className={cn(
-              "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none text-muted-foreground"
+              "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none text-muted-foreground",
             )}
           >
             <X className="h-4 w-4" />

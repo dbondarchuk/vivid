@@ -68,9 +68,9 @@ export const PageForm: React.FC<{
     () =>
       getPageSchemaWithUniqueCheck(
         (slug) => cachedUniqueSlugCheck(slug, initialData?._id),
-        "page.slug.unique"
+        "page.slug.unique",
       ),
-    [cachedUniqueSlugCheck, initialData?._id]
+    [cachedUniqueSlugCheck, initialData?._id],
   );
 
   type PageFormValues = z.infer<typeof formSchema>;
@@ -119,7 +119,7 @@ export const PageForm: React.FC<{
           : "/admin/dashboard/pages/new",
       },
     ],
-    [title, initialData?._id, t]
+    [title, initialData?._id, t],
   );
 
   const { setError, trigger } = form;
@@ -130,7 +130,7 @@ export const PageForm: React.FC<{
         : setError("content", {
             message: t("templates.form.validation.templateNotValid"),
           }),
-    [setError, trigger, t]
+    [setError, trigger, t],
   );
 
   const { isFormDirty, onFormSubmit } = useIsDirty(form);
@@ -197,7 +197,7 @@ export const PageForm: React.FC<{
           general: config.general,
           now: new Date(),
         },
-        language || config.general.language
+        language || config.general.language,
       ),
     [
       title,
@@ -210,7 +210,7 @@ export const PageForm: React.FC<{
       fullWidth,
       demoAppointment,
       config,
-    ]
+    ],
   );
 
   // Determine if any settings fields have errors
@@ -218,7 +218,7 @@ export const PageForm: React.FC<{
 
   const { errors } = useFormState({ control: form.control });
   const hasSettingsErrors = Object.keys(errors).some(
-    (error) => !nonSettingsFields.includes(error)
+    (error) => !nonSettingsFields.includes(error),
   );
 
   const headerId = form.watch("headerId");
@@ -326,7 +326,7 @@ export const PageForm: React.FC<{
                               variant: "prefix",
                               h: "sm",
                             }),
-                            "border-0 pt-2.5"
+                            "border-0 pt-2.5",
                           )}
                         >
                           <span className="text-sm text-muted-foreground">
@@ -338,7 +338,7 @@ export const PageForm: React.FC<{
                             className={cn(
                               "text-sm text-muted-foreground",
                               InputGroupInputClasses({ variant: "prefix" }),
-                              "pl-0.5 border-0"
+                              "pl-0.5 border-0",
                             )}
                             h="sm"
                             disabled={

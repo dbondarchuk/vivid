@@ -1,9 +1,9 @@
-import React, { CSSProperties } from "react";
-import { MentionData, TextareaMentions } from "./textarea-mention";
 import { propertiesToArray } from "@vivid/utils";
-import { TextareaProps } from "./textarea";
-import { InputProps } from "./input";
+import React from "react";
 import { ContentEditableMentions } from "./content-editable-mention";
+import { InputProps } from "./input";
+import { TextareaProps } from "./textarea";
+import { MentionData, TextareaMentions } from "./textarea-mention";
 
 export type ArgumentsAutocompleteProps = {
   args?: Record<string, any>;
@@ -40,7 +40,7 @@ export const ArgumentsAutocomplete = React.forwardRef<
 
   const argsData = React.useMemo(
     () => (argsJson ? propertiesToArray(JSON.parse(argsJson)) : []),
-    [argsJson]
+    [argsJson],
   );
 
   const insertTransform = React.useCallback((value: MentionData) => {
@@ -58,7 +58,7 @@ export const ArgumentsAutocomplete = React.forwardRef<
         <span className="text-xs text-muted-foreground">{item.display}</span>
       </div>
     ),
-    []
+    [],
   );
 
   return !!asContentEditable ? (

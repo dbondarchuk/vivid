@@ -75,7 +75,7 @@ export const TextMessageBuilder: React.FC<{
                     render={(
                       // @ts-expect-error
                       { "data-copied": copied, onClick, ...props },
-                      { value, keyName, keys, parentValue }
+                      { value, keyName, keys, parentValue },
                     ) => {
                       const click = (event: React.MouseEvent) => {
                         onClick?.(event as any);
@@ -95,7 +95,7 @@ export const TextMessageBuilder: React.FC<{
                               <ClipboardCopy
                                 className={cn(
                                   "w-3 h-3",
-                                  copied ? "text-green-600" : ""
+                                  copied ? "text-green-600" : "",
                                 )}
                               />
                             </Button>

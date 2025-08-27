@@ -41,7 +41,7 @@ export const boxShadowStyle = {
 
     const handleChange = (
       field: keyof z.infer<typeof BoxShadowSchema>,
-      newValue: any
+      newValue: any,
     ) => {
       onChange({ ...value, [field]: newValue });
     };

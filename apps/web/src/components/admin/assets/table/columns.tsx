@@ -83,8 +83,8 @@ export const columns: ColumnDef<Asset>[] = [
             <span className="text-primary underline decoration-dashed underline-offset-2">
               {shortenFilename(
                 row.original.filename?.substring(
-                  row.original.filename.lastIndexOf("/") + 1
-                )
+                  row.original.filename.lastIndexOf("/") + 1,
+                ),
               )}
             </span>
           </TooltipTrigger>
@@ -114,7 +114,7 @@ export const columns: ColumnDef<Asset>[] = [
     header: tableSortHeader(
       "assets.table.columns.description",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -132,7 +132,7 @@ export const columns: ColumnDef<Asset>[] = [
     header: tableSortHeader(
       "assets.table.columns.appointment",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -155,7 +155,7 @@ export const columns: ColumnDef<Asset>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.uploadedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "uploadedAt",

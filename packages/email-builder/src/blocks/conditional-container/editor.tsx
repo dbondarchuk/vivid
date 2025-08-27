@@ -20,7 +20,7 @@ export const ConditionalContainerEditor = ({
             condition:
               condition ||
               t("emailBuilder.blocks.conditionalContainer.condition"),
-          }
+          },
         )}
       </div>
       <EditorChildren blockId={currentBlock.id} property="props.then" />

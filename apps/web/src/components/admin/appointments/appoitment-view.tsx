@@ -240,7 +240,7 @@ export const AppointmentView: React.FC<{
   };
 
   const paidPayments = appointment.payments?.filter(
-    (payment) => payment.status === "paid"
+    (payment) => payment.status === "paid",
   );
 
   const totalPaid =
@@ -948,7 +948,7 @@ export const AppointmentView: React.FC<{
                               DateTime.DATETIME_MED_WITH_WEEKDAY,
                               {
                                 locale,
-                              }
+                              },
                             )}{" "}
                           -{" "}
                           {DateTime.fromJSDate(appointment.dateTime)
@@ -966,7 +966,7 @@ export const AppointmentView: React.FC<{
                                   DateTime.DATETIME_MED_WITH_WEEKDAY,
                                   {
                                     locale,
-                                  }
+                                  },
                                 )}
                             </div>
                             <div>{t("appointments.view.duration")}:</div>
@@ -991,7 +991,7 @@ export const AppointmentView: React.FC<{
                             <div>
                               {
                                 timeZones.find(
-                                  (tz) => tz.name === appointment.timeZone
+                                  (tz) => tz.name === appointment.timeZone,
                                 )?.currentTimeFormat
                               }{" "}
                               <span className="text-sm text-muted-foreground">
@@ -1005,7 +1005,7 @@ export const AppointmentView: React.FC<{
                                 .plus({ minutes: appointment.totalDuration })
                                 .toLocaleString(
                                   DateTime.DATETIME_MED_WITH_WEEKDAY,
-                                  { locale }
+                                  { locale },
                                 )}{" "}
                             </div>
                             <div>{t("appointments.view.requestedAt")}:</div>
@@ -1016,7 +1016,7 @@ export const AppointmentView: React.FC<{
                                   DateTime.DATETIME_MED_WITH_WEEKDAY,
                                   {
                                     locale,
-                                  }
+                                  },
                                 )}
                             </div>
                           </div>
@@ -1057,7 +1057,7 @@ export const AppointmentView: React.FC<{
                           <dd className="col-span-2">
                             $
                             {formatAmountString(
-                              appointment.totalPrice - totalPaid
+                              appointment.totalPrice - totalPaid,
                             )}
                           </dd>
                         </div>
@@ -1115,7 +1115,7 @@ export const AppointmentView: React.FC<{
                         <Link
                           variant="default"
                           href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                            name
+                            name,
                           )}`}
                         >
                           {name}
@@ -1126,7 +1126,7 @@ export const AppointmentView: React.FC<{
                         <Link
                           variant="default"
                           href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                            email
+                            email,
                           )}`}
                         >
                           {email}
@@ -1137,7 +1137,7 @@ export const AppointmentView: React.FC<{
                         <Link
                           variant="default"
                           href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                            phone
+                            phone,
                           )}`}
                         >
                           {phone}
@@ -1169,7 +1169,7 @@ export const AppointmentView: React.FC<{
                               <Link
                                 variant="default"
                                 href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                                  value.toString()
+                                  value.toString(),
                                 )}`}
                               >
                                 {value.toString()}
@@ -1365,11 +1365,11 @@ export const AppointmentView: React.FC<{
                           <div className="max-w-10 flex self-center">
                             <FileIcon
                               extension={file.name.substring(
-                                file.name.lastIndexOf(".") + 1
+                                file.name.lastIndexOf(".") + 1,
                               )}
                               {...defaultStyles[
                                 mimeTypeToExtension(
-                                  file.type
+                                  file.type,
                                 ) as DefaultExtensionType
                               ]}
                             />
@@ -1447,18 +1447,18 @@ export const AppointmentView: React.FC<{
                       <div className="max-w-10 flex self-center">
                         <FileIcon
                           extension={file.filename?.substring(
-                            file.filename.lastIndexOf(".") + 1
+                            file.filename.lastIndexOf(".") + 1,
                           )}
                           {...defaultStyles[
                             mimeTypeToExtension(
-                              file.mimeType
+                              file.mimeType,
                             ) as DefaultExtensionType
                           ]}
                         />
                       </div>
                       <div className="text-muted-foreground text-center">
                         {file.filename.substring(
-                          file.filename.lastIndexOf("/") + 1
+                          file.filename.lastIndexOf("/") + 1,
                         )}
                       </div>
                     </a>

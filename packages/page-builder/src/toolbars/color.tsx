@@ -1,3 +1,6 @@
+import { Sketch } from "@uiw/react-color";
+import { ConfigurationProps } from "@vivid/builder";
+import { Leaves } from "@vivid/types";
 import {
   Button,
   DropdownMenu,
@@ -12,13 +15,9 @@ import {
   useOpenState,
 } from "@vivid/ui";
 import { destructAndReplace, resolveProperty } from "@vivid/utils";
-import { Leaves } from "@vivid/types";
-import { ReactNode } from "react";
-import { Sketch } from "@uiw/react-color";
 import { X } from "lucide-react";
-import { ConfigurationProps } from "@vivid/builder";
+import React, { ReactNode } from "react";
 import { COLORS_LIST } from "../style/helpers/colors";
-import React from "react";
 
 export type ToolbarColorPropsValues<T> = ConfigurationProps<T> &
   (
@@ -135,7 +134,7 @@ export const ToolbarColorMenu = <T,>({
             variant="ghost"
             onClick={() => {
               setData(
-                destructAndReplace(data, property, null) as unknown as any
+                destructAndReplace(data, property, null) as unknown as any,
               );
             }}
           >

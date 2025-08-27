@@ -1,8 +1,4 @@
-import {
-  EditorChildren,
-  useCurrentBlock,
-  useIsSelectedBlock,
-} from "@vivid/builder";
+import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";

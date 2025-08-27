@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing services fields API request"
+    "Processing services fields API request",
   );
 
   const fields = await ServicesContainer.ServicesService().getFields({});
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       total: fields.total,
       count: fields.items.length,
     },
-    "Successfully retrieved service fields"
+    "Successfully retrieved service fields",
   );
 
   const headers = new Headers();

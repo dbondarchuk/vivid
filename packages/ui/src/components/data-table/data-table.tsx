@@ -13,11 +13,11 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { useI18n } from "@vivid/i18n";
 import { Sort } from "@vivid/types";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useI18n } from "@vivid/i18n";
 import { cn } from "../../utils";
 import { Button } from "../button";
 import { ScrollArea, ScrollBar } from "../scroll-area";
@@ -115,14 +115,14 @@ export function DataTable<TData, TValue>({
   const t = useI18n("ui");
   const [currentPage, setCurrentPage] = useQueryState(
     "page",
-    parseAsInteger.withOptions({ shallow: false }).withDefault(1)
+    parseAsInteger.withOptions({ shallow: false }).withDefault(1),
   );
 
   const [pageSize, setPageSize] = useQueryState(
     "limit",
     parseAsInteger
       .withOptions({ shallow: false, history: "push" })
-      .withDefault(10)
+      .withDefault(10),
   );
 
   const paginationState = {
@@ -134,7 +134,7 @@ export function DataTable<TData, TValue>({
     "sort",
     baseSearchParams.sort
       .withOptions({ shallow: false, history: "push" })
-      .withDefault(sortSchemaDefault || [])
+      .withDefault(sortSchemaDefault || []),
   );
   const sortingState = sort || [];
 
@@ -143,7 +143,7 @@ export function DataTable<TData, TValue>({
   const handlePaginationChange = (
     updaterOrValue:
       | PaginationState
-      | ((old: PaginationState) => PaginationState)
+      | ((old: PaginationState) => PaginationState),
   ) => {
     const pagination =
       typeof updaterOrValue === "function"
@@ -155,7 +155,7 @@ export function DataTable<TData, TValue>({
   };
 
   const handleSortingChange = (
-    updaterOrValue: SortingState | ((old: SortingState) => SortingState)
+    updaterOrValue: SortingState | ((old: SortingState) => SortingState),
   ) => {
     const sorting =
       typeof updaterOrValue === "function"
@@ -193,7 +193,7 @@ export function DataTable<TData, TValue>({
   const selected = table.getSelectedRowModel().flatRows;
   const selectedRows = useMemo(
     () => selected.map((row) => row.original),
-    [selected]
+    [selected],
   );
 
   useEffect(() => {
@@ -222,7 +222,7 @@ export function DataTable<TData, TValue>({
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 top-0 flex overflow-scroll rounded-md border md:overflow-auto",
-            className
+            className,
           )}
         >
           <ScrollArea className="flex-1">
@@ -244,7 +244,7 @@ export function DataTable<TData, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                         {/* <ColumnResizer header={header} /> */}
                       </TableHead>
@@ -264,7 +264,7 @@ export function DataTable<TData, TValue>({
                           key={cell.id}
                           className={cn(
                             cell.column.getIsResizing() &&
-                              "border-r border-dashed"
+                              "border-r border-dashed",
                           )}
                           // style={{
                           //   width: cell.column.getSize(),
@@ -305,7 +305,7 @@ export function DataTable<TData, TValue>({
                     paginationState.pageIndex * paginationState.pageSize + 1,
                   end: Math.min(
                     (paginationState.pageIndex + 1) * paginationState.pageSize,
-                    totalItems
+                    totalItems,
                   ),
                   total: totalItems,
                 })

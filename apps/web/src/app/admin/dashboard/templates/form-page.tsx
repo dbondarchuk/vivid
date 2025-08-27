@@ -4,7 +4,7 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { CommunicationChannel, Template } from "@vivid/types";
 import { Breadcrumbs } from "@vivid/ui";
-import { demoAppointment, getArguments, template } from "@vivid/utils";
+import { demoAppointment, getArguments } from "@vivid/utils";
 import { notFound } from "next/navigation";
 import React from "react";
 import { getTemplate } from "./cached";
@@ -23,7 +23,7 @@ export const TemplateFormPage: React.FC<
     await ServicesContainer.ConfigurationService().getConfigurations(
       "booking",
       "general",
-      "social"
+      "social",
     );
 
   const demoArguments = getArguments({

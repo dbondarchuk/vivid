@@ -81,19 +81,19 @@ export const UkEmailTemplates: EmailTemplates = {
   rescheduled: {
     title: "Запис був перенесений на {{dateTime.full}}",
     text: getText(
-      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime.full}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}"
+      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime.full}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}",
     ),
   },
   "auto-confirmed": {
     title: "Запис на {{option.name}} був запитаний і автоматично підтверджений",
     text: getText(
-      "Новий запис був запитаний на веб-сайті і автоматично підтверджений."
+      "Новий запис був запитаний на веб-сайті і автоматично підтверджений.",
     ),
   },
   pending: {
     title: "Запит на запис для {{option.name}}",
     text: getText(
-      "Новий запис був запитаний на веб-сайті для {{option.name}}."
+      "Новий запис був запитаний на веб-сайті для {{option.name}}.",
     ),
   },
   subject: "{{fields.name}} на {{option.name}} на {{dateTime.full}}",

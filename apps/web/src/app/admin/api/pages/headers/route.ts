@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing pages headers API request"
+    "Processing pages headers API request",
   );
 
   const loader = createLoader(searchParams);
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       offset,
       priorityIds,
     },
-    "Fetching page headers with parameters"
+    "Fetching page headers with parameters",
   );
 
   const response = await ServicesContainer.PagesService().getPageHeaders({
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       total: response.total,
       count: response.items.length,
     },
-    "Successfully retrieved page headers"
+    "Successfully retrieved page headers",
   );
 
   return NextResponse.json(response);

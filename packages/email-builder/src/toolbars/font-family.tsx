@@ -22,11 +22,11 @@ export const fontFamilyItems = [
 type PropsType = { style?: { fontFamily?: FontFamily | null } | null };
 
 export const FontFamilyDropdownMenu = <T extends PropsType>(
-  props: Omit<ToolbarDropdownPropsValues<T>, "defaultValue">
+  props: Omit<ToolbarDropdownPropsValues<T>, "defaultValue">,
 ) => {
   const t = useI18n("builder");
   const selectedFont = FONT_FAMILIES.find(
-    (font) => font.key === props.data?.style?.fontFamily
+    (font) => font.key === props.data?.style?.fontFamily,
   );
 
   return (

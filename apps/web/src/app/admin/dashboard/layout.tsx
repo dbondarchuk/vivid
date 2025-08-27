@@ -11,10 +11,10 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@vivid/ui";
+import { cookies } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../../components/cookies-provider";
 import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
-import { cookies } from "next/headers";
 
 const SIDEBAR_COOKIE_NAME = "admin-sidebar-open";
 

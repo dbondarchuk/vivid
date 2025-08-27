@@ -1,7 +1,7 @@
 import { ServicesContainer } from "@vivid/services";
-import { searchParams, searchParamsCache } from "./search-params";
 import { DataTable } from "@vivid/ui";
 import { columns } from "./columns";
+import { searchParams, searchParamsCache } from "./search-params";
 
 export const AppointmentsTable: React.FC<{ customerId?: string }> = async ({
   customerId,

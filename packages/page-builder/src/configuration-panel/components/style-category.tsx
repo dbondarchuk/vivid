@@ -1,18 +1,16 @@
 import { BuilderKeys, useI18n } from "@vivid/i18n";
 import {
+  Badge,
   Button,
-  Label,
+  cn,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-  Badge,
 } from "@vivid/ui";
-import { Plus, ChevronRight } from "lucide-react";
-import React, { useState, useRef, useEffect } from "react";
-import { cn } from "@vivid/ui";
+import { ChevronRight, Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
-import { AddVariantButton } from "./add-variant-button";
-import { StyleCategoryStyle } from "./style-category-style";
+import { StyleValue } from "../../style/css-renderer";
 import {
   BaseStyleDictionary,
   StyleCategory,
@@ -20,7 +18,8 @@ import {
   StyleDictionary,
   StyleVariant,
 } from "../../style/types";
-import { StyleValue } from "../../style/css-renderer";
+import { AddVariantButton } from "./add-variant-button";
+import { StyleCategoryStyle } from "./style-category-style";
 
 interface StyleCategoryProps<T extends BaseStyleDictionary> {
   category: StyleCategory;
@@ -33,12 +32,12 @@ interface StyleCategoryProps<T extends BaseStyleDictionary> {
   onUpdateVariant: (
     styleName: keyof T,
     variantIndex: number,
-    updates: Partial<StyleVariant<T[keyof T]>>
+    updates: Partial<StyleVariant<T[keyof T]>>,
   ) => void;
   onUpdateStyle: (
     styleName: keyof T,
     variantIndex: number,
-    value: z.infer<T[keyof T]>
+    value: z.infer<T[keyof T]>,
   ) => void;
   onDeleteVariant: (styleName: keyof T, variantIndex: number) => void;
 }
@@ -69,7 +68,8 @@ export const StyleCategoryComponent = <T extends BaseStyleDictionary>({
   // Filter to only show styles that have active variants
   const activeStylesInCategory = categoryStyles.filter(
     (style) =>
-      styles[style.name as keyof T] && styles[style.name as keyof T]!.length > 0
+      styles[style.name as keyof T] &&
+      styles[style.name as keyof T]!.length > 0,
   );
 
   // Count total active styles in this category
@@ -101,7 +101,7 @@ export const StyleCategoryComponent = <T extends BaseStyleDictionary>({
             <ChevronRight
               className={cn(
                 "size-4 transition-transform",
-                isOpen && "rotate-90"
+                isOpen && "rotate-90",
               )}
             />
             <div className="flex flex-row gap-1 justify-between w-full">

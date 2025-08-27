@@ -61,7 +61,7 @@ export type I18nKey<T extends I18nNamespaces | undefined> = T extends undefined
 
 type I18nBaseFn<T extends I18nNamespaces | undefined> = (
   key: I18nKey<T>,
-  args?: Record<string, any>
+  args?: Record<string, any>,
 ) => string;
 
 export type ChangeReturnType<T extends (...args: any[]) => any, NewReturn> = (

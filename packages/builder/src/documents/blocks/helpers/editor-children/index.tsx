@@ -11,7 +11,6 @@ import { DndContext } from "../../../../types/dndContext";
 import {
   useBlockChildrenBlockIds,
   useBlockDepth,
-  useBlockType,
   useBlockTypes,
   useHasActiveDragBlock,
 } from "../../../editor/context";
@@ -61,7 +60,7 @@ const Placeholder = ({
       ref={ref}
       className={cn(
         "w-full min-h-10 min-w-10 bg-opacity-50 border-2 border-dashed border-blue-400 bg-blue-400/10",
-        hasActiveDragBlock && "bg-blue-400/60"
+        hasActiveDragBlock && "bg-blue-400/60",
       )}
     >
       <OverlayBlock blockId={blockId} property={property} index={index} />
@@ -111,7 +110,7 @@ export const EditorChildren = memo(
 
     const Wrapper = useMemo(
       () => (childrenWrapper ?? "div") as React.ElementType,
-      [childrenWrapper]
+      [childrenWrapper],
     );
 
     const allowOnly = useMemo(
@@ -121,7 +120,7 @@ export const EditorChildren = memo(
             ? propAllowOnly
             : [propAllowOnly]
           : knownBlockTypes,
-      [propAllowOnly, knownBlockTypes]
+      [propAllowOnly, knownBlockTypes],
     );
 
     const childrenIds = useBlockChildrenBlockIds(currentBlockId, property);
@@ -139,7 +138,7 @@ export const EditorChildren = memo(
         />
       </Wrapper>
     );
-  }
+  },
 );
 
 const EditorChildrenRender = deepMemo(
@@ -162,7 +161,7 @@ const EditorChildrenRender = deepMemo(
   }) => {
     const ChildWrapper = useMemo(
       () => (childWrapper ?? Fragment) as React.ElementType,
-      [childWrapper]
+      [childWrapper],
     );
 
     return (
@@ -205,5 +204,5 @@ const EditorChildrenRender = deepMemo(
         )}
       </>
     );
-  }
+  },
 );

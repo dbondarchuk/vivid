@@ -17,11 +17,11 @@ export interface ShortcutToggleToolbarItem {
 export const createToggleToolbarItem = <T extends BaseStyleDictionary>(
   shortcut: Extract<Shortcut<T>, { inputType: "toggle" }>,
   data: any,
-  setData: (data: any) => void
+  setData: (data: any) => void,
 ): ShortcutToggleToolbarItem => {
   const getCurrentValue = (
     shortcut: Shortcut<T>,
-    data: any
+    data: any,
   ): string | undefined => {
     return getShortcutCurrentValue(shortcut, data.style, data.props);
   };
@@ -30,10 +30,10 @@ export const createToggleToolbarItem = <T extends BaseStyleDictionary>(
     shortcut: Extract<Shortcut<T>, { inputType: "toggle" }>,
     data: any,
     setData: (data: any) => void,
-    optionValue: string
+    optionValue: string,
   ) => {
     const selectedOption = shortcut.options.find(
-      (opt: any) => opt.value === optionValue
+      (opt: any) => opt.value === optionValue,
     );
     if (!selectedOption) return;
 
@@ -69,7 +69,7 @@ export const ToggleToolbar = ({
         shortcut.onValueChange(
           shortcut.currentValue === shortcut.shortcut.options[1].value
             ? shortcut.shortcut.options[0].value
-            : shortcut.shortcut.options[1].value
+            : shortcut.shortcut.options[1].value,
         )
       }
       className="text-xs"

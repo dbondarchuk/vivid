@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { PageFooterListModel } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,7 +19,6 @@ import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { deleteSelectedPageFooters } from "../actions";
-import { PageFooterListModel } from "@vivid/types";
 
 export const DeleteSelectedPageFootersButton: React.FC<{
   selected: PageFooterListModel[];
@@ -37,7 +37,7 @@ export const DeleteSelectedPageFootersButton: React.FC<{
         {
           success: t("pages.footers.table.delete.success"),
           error: t("pages.footers.table.delete.error"),
-        }
+        },
       );
 
       router.refresh();

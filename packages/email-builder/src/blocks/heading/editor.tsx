@@ -3,16 +3,16 @@
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
-import { ArgumentsAutocomplete } from "@vivid/ui";
-import { getStyles } from "./styles";
 import {
-  useEditorArgs,
   useCurrentBlock,
   useDispatchAction,
-  useSetSelectedBlockId,
+  useEditorArgs,
   usePortalContext,
+  useSetSelectedBlockId,
 } from "@vivid/builder";
+import { ArgumentsAutocomplete } from "@vivid/ui";
 import { HeadingProps } from "./schema";
+import { getStyles } from "./styles";
 
 export function HeadingEditor({ props, style }: HeadingProps) {
   const ref = useRef<HTMLInputElement>(null);

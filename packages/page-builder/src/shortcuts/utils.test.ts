@@ -159,7 +159,7 @@ const testStyles = {
 const dynamicOption = mockShortcutOptions[2];
 console.log(
   "Before applying dynamic option:",
-  JSON.stringify(testStyles, null, 2)
+  JSON.stringify(testStyles, null, 2),
 );
 
 const newStyles = applyShortcutOption(dynamicOption, {
@@ -167,7 +167,7 @@ const newStyles = applyShortcutOption(dynamicOption, {
   onStylesChange: (styles) => {
     console.log(
       "After applying dynamic option:",
-      JSON.stringify(styles, null, 2)
+      JSON.stringify(styles, null, 2),
     );
   },
 });
@@ -222,7 +222,7 @@ console.log("Testing styles that could match both 'full' and 'contained':");
 console.log(JSON.stringify(fullVsContainedTest.styles, null, 2));
 const result = getShortcutCurrentValue(
   mockShortcut,
-  fullVsContainedTest.styles
+  fullVsContainedTest.styles,
 );
 console.log(`Result: "${result}" (should be 'contained' due to variant bonus)`);
 console.log("");
@@ -287,7 +287,7 @@ const removeSpecificVariantOption = {
 console.log("Test 1: Remove specific variant (sm breakpoint)");
 console.log(
   "Before:",
-  JSON.stringify(variantRemovalTestStyles.maxWidth, null, 2)
+  JSON.stringify(variantRemovalTestStyles.maxWidth, null, 2),
 );
 
 const afterSpecificRemoval = applyShortcutOption(removeSpecificVariantOption, {
@@ -295,7 +295,7 @@ const afterSpecificRemoval = applyShortcutOption(removeSpecificVariantOption, {
   onStylesChange: (styles) => {
     console.log(
       "After removing sm variant:",
-      JSON.stringify(styles.maxWidth, null, 2)
+      JSON.stringify(styles.maxWidth, null, 2),
     );
   },
 });
@@ -317,7 +317,7 @@ const removeFromArrayOption = {
 console.log("\nTest 2: Remove variant from variants array");
 console.log(
   "Before:",
-  JSON.stringify(variantRemovalTestStyles.backgroundColor, null, 2)
+  JSON.stringify(variantRemovalTestStyles.backgroundColor, null, 2),
 );
 
 const afterArrayRemoval = applyShortcutOption(removeFromArrayOption, {
@@ -325,7 +325,7 @@ const afterArrayRemoval = applyShortcutOption(removeFromArrayOption, {
   onStylesChange: (styles) => {
     console.log(
       "After array removal:",
-      JSON.stringify(styles.backgroundColor, null, 2)
+      JSON.stringify(styles.backgroundColor, null, 2),
     );
   },
 });
@@ -342,7 +342,7 @@ const removeAllVariantsOption = {
 console.log("\nTest 3: Remove all variants (should remove entire style)");
 console.log(
   "Before:",
-  JSON.stringify(variantRemovalTestStyles.maxWidth, null, 2)
+  JSON.stringify(variantRemovalTestStyles.maxWidth, null, 2),
 );
 
 const afterAllRemoval = applyShortcutOption(removeAllVariantsOption, {
@@ -350,7 +350,7 @@ const afterAllRemoval = applyShortcutOption(removeAllVariantsOption, {
   onStylesChange: (styles) => {
     console.log(
       "After removing all variants:",
-      JSON.stringify(styles.maxWidth, null, 2)
+      JSON.stringify(styles.maxWidth, null, 2),
     );
     console.log("Style property exists:", "maxWidth" in styles);
   },
@@ -411,10 +411,10 @@ const afterPracticalRemoval = applyShortcutOption(mediumContainedOption, {
   onStylesChange: (styles) => {
     console.log(
       "After applying medium-contained:",
-      JSON.stringify(styles.maxWidth, null, 2)
+      JSON.stringify(styles.maxWidth, null, 2),
     );
     console.log(
-      "This creates a container that's contained up to md breakpoint, then full width"
+      "This creates a container that's contained up to md breakpoint, then full width",
     );
   },
 });

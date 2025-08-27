@@ -11,7 +11,7 @@ type PropsType = {
 };
 
 export const ContentAlignmentDropdownMenu = <T extends PropsType>(
-  props: ToolbarDropdownPropsValues<T>
+  props: ToolbarDropdownPropsValues<T>,
 ) => {
   const t = useI18n("builder");
   const alignItems = [

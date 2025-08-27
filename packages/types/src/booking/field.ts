@@ -24,12 +24,12 @@ export const selectFieldDataSchema = defaultFieldDataSchema.merge(
       z.array(
         z.object({
           option: z.string().min(1, "fields.option.required"),
-        })
+        }),
       ),
       (item) => item.option,
-      "fields.option.unique"
+      "fields.option.unique",
     ),
-  })
+  }),
 );
 
 export const fileFieldAcceptItemSchema = z
@@ -37,22 +37,22 @@ export const fileFieldAcceptItemSchema = z
   .min(1, "fields.accept.min")
   .regex(
     /(\.[a-zA-Z0-9]+$)|(^(image|video|audio)\/\*$)|(^[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_\.]+$)/,
-    "fields.accept.invalid"
+    "fields.accept.invalid",
   );
 
 export const fileFieldDataSchema = defaultFieldDataSchema.merge(
   z.object({
     accept: zUniqueArray(
       z.array(fileFieldAcceptItemSchema),
-      (x) => x
+      (x) => x,
     ).optional(),
     maxSizeMb: asOptionalField(
       z.coerce
         .number()
         .min(1, "fields.maxSizeMb.min")
-        .max(100, "fields.maxSizeMb.max")
+        .max(100, "fields.maxSizeMb.max"),
     ),
-  })
+  }),
 );
 
 export const baseFieldSchema = z.object({
@@ -68,25 +68,25 @@ export const fieldSchema = z.discriminatedUnion("type", [
     z.object({
       type: fieldTypeEnum.extract(["select"]),
       data: selectFieldDataSchema,
-    })
+    }),
   ),
   baseFieldSchema.merge(
     z.object({
       type: fieldTypeEnum.extract(["file"]),
       data: fileFieldDataSchema,
-    })
+    }),
   ),
   baseFieldSchema.merge(
     z.object({
       type: fieldTypeEnum.exclude(["select", "file"]),
       data: defaultFieldDataSchema,
-    })
+    }),
   ),
 ]);
 
 export const getFieldSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return fieldSchema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueNameCheckFn(args.name);

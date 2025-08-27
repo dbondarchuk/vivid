@@ -17,7 +17,7 @@ export const GridContainerConfiguration = deepMemo(
     const updateStyle = useCallback(
       (s: unknown) =>
         setData({ ...data, style: s as GridContainerProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -30,5 +30,5 @@ export const GridContainerConfiguration = deepMemo(
         onBaseChange={onBaseChange}
       />
     );
-  }
+  },
 );

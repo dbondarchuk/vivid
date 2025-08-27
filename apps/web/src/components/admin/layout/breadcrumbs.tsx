@@ -14,10 +14,9 @@ import {
   DropdownMenuTrigger,
   Link,
 } from "@vivid/ui";
-import { ChevronDownIcon, Slash } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import React from "react";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 
 const useBreadcrumbs = () => {
   const pathname = usePathname();
@@ -68,7 +67,7 @@ export const BreadcrumbsRender = () => {
                 <BreadcrumbPage>{item.title}</BreadcrumbPage>
               )}
             </Fragment>
-          )
+          ),
         )}
       </BreadcrumbList>
     </Breadcrumb>

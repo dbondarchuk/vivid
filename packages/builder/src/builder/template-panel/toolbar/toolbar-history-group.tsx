@@ -33,7 +33,7 @@ export const ToolbarHistoryGroup = () => {
         e.stopPropagation();
       }
     },
-    [canUndo, canRedo, undoHistory, redoHistory]
+    [canUndo, canRedo, undoHistory, redoHistory],
   );
 
   useEffect(() => {

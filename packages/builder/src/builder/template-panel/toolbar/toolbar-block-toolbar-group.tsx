@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolbarGroup } from "@vivid/ui";
+import { useCallback, useMemo } from "react";
 import {
   useBlocks,
   useDispatchAction,
@@ -8,7 +9,6 @@ import {
   useRootBlockType,
   useSelectedBlock,
 } from "../../../documents/editor/context";
-import { useCallback, useMemo } from "react";
 
 export const ToolbarBlockToolbarGroup = () => {
   const selectedBlock = useSelectedBlock();
@@ -22,7 +22,7 @@ export const ToolbarBlockToolbarGroup = () => {
 
   const BlockToolbar = useMemo(
     () => blocks[blockType].Toolbar,
-    [blocks, blockType]
+    [blocks, blockType],
   );
 
   const setBlockData = useCallback(
@@ -32,7 +32,7 @@ export const ToolbarBlockToolbarGroup = () => {
         value: { blockId, data },
       });
     },
-    [dispatchAction, blockId]
+    [dispatchAction, blockId],
   );
 
   const blockData = selectedBlock?.data ?? {};

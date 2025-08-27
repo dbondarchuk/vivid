@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { usePortalContext } from "@vivid/builder";
+import React, { useEffect } from "react";
 import { useParentStateManager } from "../style/parent-state-manager";
 import { StateWithTarget } from "../style/zod";
-import { usePortalContext } from "@vivid/builder";
 
 interface StateManagerProps {
   className: string;

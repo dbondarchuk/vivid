@@ -2,11 +2,11 @@ import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
 } from "@vivid/builder";
+import { Leaves } from "@vivid/types";
 import {
   FONT_FAMILIES,
   FONT_FAMILIES_LIST,
 } from "../style-inputs/helpers/font-family";
-import { Leaves } from "@vivid/types";
 
 export const fontFamilyItems = [
   {
@@ -23,7 +23,7 @@ export const fontFamilyItems = [
 type PropsType = { style?: { fontFamily?: string | null } | null };
 
 export const FontFamilyDropdownMenu = <T extends PropsType>(
-  props: Omit<ToolbarDropdownPropsValues<T>, "defaultValue">
+  props: Omit<ToolbarDropdownPropsValues<T>, "defaultValue">,
 ) => {
   const selectedFont = props.data?.style?.fontFamily
     ? FONT_FAMILIES[props.data?.style?.fontFamily as keyof typeof FONT_FAMILIES]

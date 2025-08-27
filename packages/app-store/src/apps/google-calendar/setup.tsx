@@ -87,7 +87,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
         {
           success: t("googleCalendar.toast.changes_saved"),
           error: t("googleCalendar.toast.request_error"),
-        }
+        },
       );
     } catch (e: any) {
       console.error(e);
@@ -158,7 +158,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
         value: c.id,
         label: c.name,
       })) ?? [],
-    [calendars]
+    [calendars],
   );
 
   return (

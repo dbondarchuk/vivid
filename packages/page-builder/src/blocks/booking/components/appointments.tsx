@@ -1,11 +1,11 @@
 "use client";
 
+import { AppointmentChoice, FieldSchema } from "@vivid/types";
+import { cn } from "@vivid/ui";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 import { AppointmentsCard } from "./appointments-card";
 import { Schedule } from "./schedule";
-import { AppointmentChoice, FieldSchema } from "@vivid/types";
-import { useSearchParams } from "next/navigation";
-import { cn } from "@vivid/ui";
 
 export type AppointmentsProps = {
   options: AppointmentChoice[];

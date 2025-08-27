@@ -20,9 +20,6 @@ import { SlashPlugin } from "@udecode/plate-slash-command/react";
 import { TogglePlugin } from "@udecode/plate-toggle/react";
 import { TrailingBlockPlugin } from "@udecode/plate-trailing-block";
 
-import { FixedToolbarPlugin } from "./fixed-toolbar-plugin";
-import { FloatingToolbarPlugin } from "./floating-toolbar-plugin";
-
 // import { aiPlugins } from "./ai-plugins";
 import { alignPlugin } from "./align-plugin";
 import { autoformatPlugin } from "./autoformat-plugin";
@@ -38,7 +35,6 @@ import { indentListPlugins } from "./indent-list-plugins";
 import { lineHeightPlugin } from "./line-height-plugin";
 import { linkPlugin } from "./link-plugin";
 import { mediaPlugins } from "./media-plugins";
-import { mentionPlugin } from "./mention-plugin";
 import { resetBlockTypePlugin } from "./reset-block-type-plugin";
 import { softBreakPlugin } from "./soft-break-plugin";
 import { tablePlugin } from "./table-plugin";

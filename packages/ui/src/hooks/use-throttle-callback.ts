@@ -15,7 +15,7 @@ import { useCallback, useEffect, useRef } from "react";
 export const useThrottleCallback = <T extends (...args: Parameters<T>) => any>(
   callback: T,
   deps: React.DependencyList,
-  delay: number = 500
+  delay: number = 500,
 ): T => {
   const lastExecutedRef = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -43,7 +43,7 @@ export const useThrottleCallback = <T extends (...args: Parameters<T>) => any>(
         }, remainingDelay);
       }
     },
-    [delay, ...deps]
+    [delay, ...deps],
   ) as T;
 
   useEffect(() => {

@@ -64,7 +64,7 @@ function deepMerge(target: any, source: any): any {
 export const editorHistoryReducer = (
   originalDocument: TEditorConfiguration,
   selectedBlockId: string | null,
-  { type, value }: EditorHistoryEntry
+  { type, value }: EditorHistoryEntry,
 ) => {
   let newSelectedBlockId: string | null = selectedBlockId;
 
@@ -110,7 +110,7 @@ export const editorHistoryReducer = (
           parent,
           value.block,
           value.parentBlockProperty,
-          value.index ?? "last"
+          value.index ?? "last",
         );
 
         newSelectedBlockId = value.block.id;
@@ -161,7 +161,7 @@ export const editorHistoryReducer = (
       // const hierarchy = getBlockHierarchy(value.parentBlockId, indexes);
       const hierarchy = findBlockHierarchy(
         originalDocument,
-        value.parentBlockId
+        value.parentBlockId,
       );
 
       if (hierarchy && hierarchy.find((block) => block.id === value.blockId)) {
@@ -189,7 +189,7 @@ export const editorHistoryReducer = (
           newParent,
           block,
           value.parentBlockProperty,
-          value.index || 0
+          value.index || 0,
         );
 
         deleteBlockInLevel(parent.block, value.blockId);

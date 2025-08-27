@@ -35,16 +35,16 @@ const uploadFilesWithProgress = ({
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.upload.addEventListener("progress", (e) =>
-      onProgress(Math.round((e.loaded / e.total) * 100))
+      onProgress(Math.round((e.loaded / e.total) * 100)),
     );
     xhr.addEventListener("load", () =>
-      resolve({ status: xhr.status, body: xhr.responseText })
+      resolve({ status: xhr.status, body: xhr.responseText }),
     );
     xhr.addEventListener("error", () =>
-      reject(new Error("File upload failed"))
+      reject(new Error("File upload failed")),
     );
     xhr.addEventListener("abort", () =>
-      reject(new Error("File upload aborted"))
+      reject(new Error("File upload aborted")),
     );
 
     xhr.open("POST", url, true);
@@ -69,7 +69,7 @@ export function useUploadFile({
   const [uploadedFiles, setUploadedFiles] = React.useState<UploadedFile[]>([]);
   const [uploadingFiles, setUploadingFiles] = React.useState<File[]>([]);
   const [progress, setProgress] = React.useState<Map<string, number>>(
-    new Map()
+    new Map(),
   );
   const [isUploading, setIsUploading] = React.useState(false);
 
@@ -117,7 +117,7 @@ export function useUploadFile({
 
           onUploadError?.(file.file, error);
         }
-      })
+      }),
     );
 
     try {
@@ -137,9 +137,9 @@ export function useUploadFile({
       ? Math.min(
           Math.round(
             Array.from(progress.values()).reduce((a, b) => a + b, 0) /
-              uploadingFiles.length
+              uploadingFiles.length,
           ),
-          100
+          100,
         )
       : 0;
 

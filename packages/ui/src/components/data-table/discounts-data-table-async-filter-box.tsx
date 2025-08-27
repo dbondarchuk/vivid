@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import React from "react";
 
-import { CustomerListModel, Discount, WithTotal } from "@vivid/types";
+import { useI18n } from "@vivid/i18n";
+import { Discount, WithTotal } from "@vivid/types";
 import {
   Skeleton,
   toast,
@@ -17,7 +17,6 @@ import {
   AsyncFilterBoxProps,
   DataTableAsyncFilterBox,
 } from "./data-table-async-filter-box";
-import { useI18n } from "@vivid/i18n";
 
 const DiscountShortLabel: React.FC<{
   discount: Discount;
@@ -75,7 +74,7 @@ export const DiscountsDataTableAsyncFilterBox: React.FC<
       toast.error(t("common.toasts.error"));
       const text = await response.text();
       console.error(
-        `Request to fetch disconts failed: ${response.status}; ${text}`
+        `Request to fetch disconts failed: ${response.status}; ${text}`,
       );
 
       return {

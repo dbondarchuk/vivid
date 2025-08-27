@@ -2,10 +2,10 @@
 
 import { ConfigurationProps } from "@vivid/builder";
 import { deepMemo } from "@vivid/ui";
+import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { ContainerProps, styles } from "./schema";
 import { containerShortcuts } from "./shortcuts";
-import { useCallback } from "react";
 
 export const ContainerConfiguration = deepMemo(
   ({
@@ -16,7 +16,7 @@ export const ContainerConfiguration = deepMemo(
   }: ConfigurationProps<ContainerProps>) => {
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as ContainerProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     return (
@@ -29,5 +29,5 @@ export const ContainerConfiguration = deepMemo(
         onBaseChange={onBaseChange}
       />
     );
-  }
+  },
 );

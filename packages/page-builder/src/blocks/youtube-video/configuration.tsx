@@ -3,11 +3,11 @@
 import { ConfigurationProps, TextInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { Checkbox, DurationInput, Label, deepMemo } from "@vivid/ui";
+import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { YouTubeVideoProps } from "./schema";
 import { youtubeVideoShortcuts } from "./shortcuts";
 import { styles } from "./styles";
-import { useCallback } from "react";
 
 export const YouTubeVideoConfiguration = deepMemo(
   ({
@@ -18,17 +18,17 @@ export const YouTubeVideoConfiguration = deepMemo(
   }: ConfigurationProps<YouTubeVideoProps>) => {
     const updateData = useCallback(
       (d: unknown) => setData(d as YouTubeVideoProps),
-      [setData]
+      [setData],
     );
     const updateProps = useCallback(
       (p: unknown) =>
         setData({ ...data, props: p as YouTubeVideoProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const updateStyle = useCallback(
       (s: unknown) =>
         setData({ ...data, style: s as YouTubeVideoProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const t = useI18n("builder");
@@ -200,5 +200,5 @@ export const YouTubeVideoConfiguration = deepMemo(
         </div>
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

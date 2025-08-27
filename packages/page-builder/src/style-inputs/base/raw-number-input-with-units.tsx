@@ -89,7 +89,7 @@ export const RawNumberInputWithUnit: React.FC<RawNumberInputWithUnitsProps> = ({
   }, [defaultValue, setValue]);
 
   const [unit, setUnit] = React.useState(
-    defaultValue?.unit ?? forceUnit ?? "px"
+    defaultValue?.unit ?? forceUnit ?? "px",
   );
   React.useEffect(() => {
     setUnit(defaultValue?.unit ?? forceUnit ?? "px");
@@ -131,7 +131,7 @@ export const RawNumberInputWithUnit: React.FC<RawNumberInputWithUnitsProps> = ({
       setValue(value);
       onChange(val as NumberValueWithUnit);
     },
-    [onChange, unit]
+    [onChange, unit],
   );
 
   const handleUnitChange = useCallback(
@@ -147,7 +147,7 @@ export const RawNumberInputWithUnit: React.FC<RawNumberInputWithUnitsProps> = ({
       setUnit(unit);
       onChange(val as NumberValueWithUnit);
     },
-    [onChange, value]
+    [onChange, value],
   );
 
   return (

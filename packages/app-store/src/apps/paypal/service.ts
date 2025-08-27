@@ -34,7 +34,7 @@ class PaypalConnectedApp
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processAppData(
-    appData: PaypalConfiguration
+    appData: PaypalConfiguration,
   ): Promise<PaypalConfiguration> {
     return {
       ...appData,
@@ -45,12 +45,12 @@ class PaypalConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: PaypalConfiguration
+    data: PaypalConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id },
-      "Processing PayPal configuration request"
+      "Processing PayPal configuration request",
     );
 
     if (data.secretKey === MASKED_SECRET_KEY && appData?.data?.secretKey) {
@@ -69,10 +69,10 @@ class PaypalConnectedApp
       if (!paypalConfigurationSchema.safeParse(data).success) {
         logger.error(
           { appId: appData._id },
-          "Invalid PayPal configuration data"
+          "Invalid PayPal configuration data",
         );
         throw new ConnectedAppError(
-          "paypal.statusText.invalid_configuration_data"
+          "paypal.statusText.invalid_configuration_data",
         );
       }
 
@@ -83,7 +83,7 @@ class PaypalConnectedApp
 
       logger.debug(
         { appId: appData._id },
-        "Successfully obtained PayPal access token"
+        "Successfully obtained PayPal access token",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -103,14 +103,14 @@ class PaypalConnectedApp
 
       logger.info(
         { appId: appData._id, clientId: maskify(decryptedClientId) },
-        "Successfully connected to PayPal account"
+        "Successfully connected to PayPal account",
       );
 
       return status;
     } catch (e: any) {
       logger.error(
         { appId: appData._id, error: e?.message || e?.toString() },
-        "Error processing PayPal configuration request"
+        "Error processing PayPal configuration request",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -132,12 +132,12 @@ class PaypalConnectedApp
   public async processAppCall(
     appData: ConnectedAppData,
     slug: string[],
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ApiResponse | undefined> {
     const logger = this.loggerFactory("processAppCall");
     logger.debug(
       { appId: appData._id, slug, method: request.method },
-      "Processing PayPal app call"
+      "Processing PayPal app call",
     );
 
     if (
@@ -154,21 +154,21 @@ class PaypalConnectedApp
         if (!success) {
           logger.error(
             { appId: appData._id, error },
-            "Invalid create order request data"
+            "Invalid create order request data",
           );
           return Response.json({ success: false, error }, { status: 400 });
         }
 
         logger.debug(
           { appId: appData._id, paymentIntentId: data.paymentIntentId },
-          "Creating PayPal order"
+          "Creating PayPal order",
         );
 
         return await this.createOrder(appData, data);
       } catch (error: any) {
         logger.error(
           { appId: appData._id, error: error?.message || error?.toString() },
-          "Error creating PayPal order"
+          "Error creating PayPal order",
         );
         throw error;
       }
@@ -187,7 +187,7 @@ class PaypalConnectedApp
         if (!success) {
           logger.error(
             { appId: appData._id, error },
-            "Invalid capture order request data"
+            "Invalid capture order request data",
           );
           return Response.json({ success: false, error }, { status: 400 });
         }
@@ -198,14 +198,14 @@ class PaypalConnectedApp
             orderId: data.orderId,
             paymentIntentId: data.paymentIntentId,
           },
-          "Capturing PayPal order"
+          "Capturing PayPal order",
         );
 
         return await this.captureOrder(appData, data);
       } catch (error: any) {
         logger.error(
           { appId: appData._id, error: error?.message || error?.toString() },
-          "Error capturing PayPal order"
+          "Error capturing PayPal order",
         );
         throw error;
       }
@@ -213,7 +213,7 @@ class PaypalConnectedApp
 
     logger.debug(
       { appId: appData._id, slug },
-      "No matching PayPal app call handler found"
+      "No matching PayPal app call handler found",
     );
 
     return undefined;
@@ -254,7 +254,7 @@ class PaypalConnectedApp
   // }
 
   public getFormProps(
-    appData: ConnectedAppData<PaypalConfiguration>
+    appData: ConnectedAppData<PaypalConfiguration>,
   ): PaypalFormProps {
     if (!appData.data)
       throw new ConnectedAppError("paypal.statusText.app_not_configured");
@@ -269,12 +269,12 @@ class PaypalConnectedApp
 
   protected async createOrder(
     appData: ConnectedAppData,
-    request: CreateOrderRequest
+    request: CreateOrderRequest,
   ) {
     const logger = this.loggerFactory("createOrder");
     logger.debug(
       { appId: appData._id, paymentIntentId: request.paymentIntentId },
-      "Creating PayPal order"
+      "Creating PayPal order",
     );
 
     try {
@@ -285,7 +285,7 @@ class PaypalConnectedApp
       if (!intent) {
         logger.error(
           { appId: appData._id, paymentIntentId: request.paymentIntentId },
-          "Payment intent not found"
+          "Payment intent not found",
         );
         return Response.json({ error: "intent_not_found" }, { status: 400 });
       }
@@ -296,7 +296,7 @@ class PaypalConnectedApp
           paymentIntentId: request.paymentIntentId,
           amount: intent.amount,
         },
-        "Retrieved payment intent, creating PayPal order"
+        "Retrieved payment intent, creating PayPal order",
       );
 
       const client = await this.getSimplifiedClient(appData);
@@ -329,11 +329,11 @@ class PaypalConnectedApp
             paymentIntentId: request.paymentIntentId,
             statusCode: error.statusCode,
           },
-          "Failed to create PayPal order"
+          "Failed to create PayPal order",
         );
         return Response.json(
           { error: "create_order_failed" },
-          { status: error.statusCode || 500 }
+          { status: error.statusCode || 500 },
         );
       }
 
@@ -343,7 +343,7 @@ class PaypalConnectedApp
           paymentIntentId: request.paymentIntentId,
           orderId: order.id,
         },
-        "Successfully created PayPal order, updating payment intent"
+        "Successfully created PayPal order, updating payment intent",
       );
 
       await this.props.services.PaymentsService().updateIntent(intent._id, {
@@ -356,7 +356,7 @@ class PaypalConnectedApp
           paymentIntentId: request.paymentIntentId,
           orderId: order.id,
         },
-        "Successfully created PayPal order"
+        "Successfully created PayPal order",
       );
 
       return Response.json(order);
@@ -367,7 +367,7 @@ class PaypalConnectedApp
           paymentIntentId: request.paymentIntentId,
           error: error?.message || error?.toString(),
         },
-        "Error creating PayPal order"
+        "Error creating PayPal order",
       );
       throw error;
     }
@@ -375,7 +375,7 @@ class PaypalConnectedApp
 
   protected async captureOrder(
     appData: ConnectedAppData,
-    request: CaptureOrderRequest
+    request: CaptureOrderRequest,
   ) {
     const logger = this.loggerFactory("captureOrder");
     logger.debug(
@@ -384,7 +384,7 @@ class PaypalConnectedApp
         orderId: request.orderId,
         paymentIntentId: request.paymentIntentId,
       },
-      "Capturing PayPal order"
+      "Capturing PayPal order",
     );
 
     try {
@@ -395,7 +395,7 @@ class PaypalConnectedApp
       if (!intent) {
         logger.error(
           { appId: appData._id, orderId: request.orderId },
-          "Payment intent not found by external ID"
+          "Payment intent not found by external ID",
         );
         return Response.json({ error: "intent_not_found" }, { status: 400 });
       }
@@ -408,7 +408,7 @@ class PaypalConnectedApp
             intentId: intent._id,
             requestIntentId: request.paymentIntentId,
           },
-          "Payment intent ID mismatch"
+          "Payment intent ID mismatch",
         );
         return Response.json({ error: "intent_id_not_match" }, { status: 400 });
       }
@@ -419,7 +419,7 @@ class PaypalConnectedApp
           orderId: request.orderId,
           paymentIntentId: request.paymentIntentId,
         },
-        "Retrieved payment intent, capturing PayPal order"
+        "Retrieved payment intent, capturing PayPal order",
       );
 
       const client = await this.getSimplifiedClient(appData);
@@ -438,7 +438,7 @@ class PaypalConnectedApp
             orderId: request.orderId,
             statusCode: error.statusCode,
           },
-          "Failed to capture PayPal order"
+          "Failed to capture PayPal order",
         );
 
         await this.props.services.PaymentsService().updateIntent(intent._id, {
@@ -447,7 +447,7 @@ class PaypalConnectedApp
 
         return Response.json(
           { error: "capture_order_failed" },
-          { status: error.statusCode || 500 }
+          { status: error.statusCode || 500 },
         );
       }
 
@@ -457,7 +457,7 @@ class PaypalConnectedApp
           orderId: request.orderId,
           paymentIntentId: request.paymentIntentId,
         },
-        "Successfully captured PayPal order, updating payment intent status"
+        "Successfully captured PayPal order, updating payment intent status",
       );
 
       await this.props.services.PaymentsService().updateIntent(intent._id, {
@@ -470,7 +470,7 @@ class PaypalConnectedApp
           orderId: request.orderId,
           paymentIntentId: request.paymentIntentId,
         },
-        "Successfully captured PayPal order"
+        "Successfully captured PayPal order",
       );
 
       return Response.json(order);
@@ -482,7 +482,7 @@ class PaypalConnectedApp
           paymentIntentId: request.paymentIntentId,
           error: error?.message || error?.toString(),
         },
-        "Error capturing PayPal order"
+        "Error capturing PayPal order",
       );
       throw error;
     }
@@ -491,7 +491,7 @@ class PaypalConnectedApp
   public async refundPayment(
     appData: ConnectedAppData,
     payment: Payment,
-    amount: number
+    amount: number,
   ): Promise<{ success: boolean; error?: string }> {
     const logger = this.loggerFactory("refundPayment");
     logger.debug(
@@ -505,7 +505,7 @@ class PaypalConnectedApp
           externalId: (payment as any).externalId,
         }),
       },
-      "Processing PayPal refund"
+      "Processing PayPal refund",
     );
 
     if (
@@ -515,7 +515,7 @@ class PaypalConnectedApp
     ) {
       logger.debug(
         { appId: appData._id, paymentId: payment._id },
-        "Payment not supported for refund"
+        "Payment not supported for refund",
       );
       return { success: false, error: "not_supported" };
     }
@@ -525,7 +525,7 @@ class PaypalConnectedApp
     try {
       logger.debug(
         { appId: appData._id, paymentId: payment._id, externalId },
-        "Retrieving PayPal order for refund"
+        "Retrieving PayPal order for refund",
       );
 
       const client = await this.getSimplifiedClient(appData);
@@ -545,7 +545,7 @@ class PaypalConnectedApp
             externalId,
             statusCode: error.statusCode,
           },
-          "Failed to retrieve PayPal order for refund"
+          "Failed to retrieve PayPal order for refund",
         );
         return {
           success: false,
@@ -557,14 +557,14 @@ class PaypalConnectedApp
       if (!captureId) {
         logger.error(
           { appId: appData._id, paymentId: payment._id, externalId },
-          "Failed to get capture ID from PayPal order"
+          "Failed to get capture ID from PayPal order",
         );
         return { success: false, error: "failed_to_get_capture_id" };
       }
 
       logger.debug(
         { appId: appData._id, paymentId: payment._id, captureId },
-        "Processing PayPal refund with capture ID"
+        "Processing PayPal refund with capture ID",
       );
 
       // const clientRefund = this.getClient(appData);
@@ -574,7 +574,7 @@ class PaypalConnectedApp
 
       const { ok: refundOk, error: refundError } = await client.refundPayment(
         captureId,
-        amount
+        amount,
       );
 
       if (!refundOk || refundError) {
@@ -585,7 +585,7 @@ class PaypalConnectedApp
             captureId,
             statusCode: refundError.statusCode,
           },
-          "Failed to refund PayPal payment"
+          "Failed to refund PayPal payment",
         );
         return {
           success: false,
@@ -595,7 +595,7 @@ class PaypalConnectedApp
 
       logger.info(
         { appId: appData._id, paymentId: payment._id, captureId },
-        "Successfully refunded PayPal payment"
+        "Successfully refunded PayPal payment",
       );
 
       return { success: true };
@@ -606,7 +606,7 @@ class PaypalConnectedApp
           paymentId: payment._id,
           error: error?.message || error?.toString(),
         },
-        "Error processing PayPal refund"
+        "Error processing PayPal refund",
       );
       throw error;
     }
@@ -630,7 +630,7 @@ class PaypalConnectedApp
         clientId: clientId ? maskify(clientId) : undefined,
         environment,
       },
-      "Creating simplified PayPal client"
+      "Creating simplified PayPal client",
     );
 
     if (!data || !clientId || !secretKey) {
@@ -645,13 +645,13 @@ class PaypalConnectedApp
 
       logger.debug(
         { clientId: maskify(clientId) },
-        "Created simplified PayPal client"
+        "Created simplified PayPal client",
       );
 
       return new PaypalClient(
         clientId,
         secretKey,
-        environment === Environment.Production
+        environment === Environment.Production,
       );
     } catch (error: any) {
       logger.error(
@@ -659,7 +659,7 @@ class PaypalConnectedApp
           clientId: maskify(clientId),
           error: error?.message || error?.toString(),
         },
-        "Error creating simplified PayPal client"
+        "Error creating simplified PayPal client",
       );
       throw error;
     }

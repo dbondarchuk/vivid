@@ -1,9 +1,10 @@
 "use client";
 
-import { useInView } from "react-intersection-observer";
+import { useI18n } from "@vivid/i18n";
 import { UploadedFile, WithTotal } from "@vivid/types";
 import React from "react";
 import { Accept } from "react-dropzone";
+import { useInView } from "react-intersection-observer";
 import { DndFileInput, ScrollArea, Skeleton, toast } from ".";
 import { useDebounce, useUploadFile } from "../hooks";
 import { cn } from "../utils";
@@ -13,7 +14,6 @@ import { Input } from "./input";
 import { Modal } from "./modal";
 import { Progress } from "./progress";
 import { Spinner } from "./spinner";
-import { useI18n } from "@vivid/i18n";
 
 export type AssetSelectorProps = {
   accept?: string[];
@@ -31,7 +31,7 @@ const Loader: React.FC<{ className?: string }> = ({ className }) => (
   <div
     className={cn(
       "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3",
-      className
+      className,
     )}
   >
     <Skeleton className="w-16 h-16" />
@@ -62,7 +62,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
 }) => {
   const t = useI18n("ui");
   const [selected, setSelected] = React.useState<UploadedFile | undefined>(
-    undefined
+    undefined,
   );
 
   const [search, setSearch] = React.useState("");
@@ -90,7 +90,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
       if (search) url += `&search=${encodeURIComponent(search)}`;
       if (accept?.length) {
         const acceptQuery = accept.map(
-          (type) => `accept=${encodeURIComponent(type)}`
+          (type) => `accept=${encodeURIComponent(type)}`,
         );
         url += `&${acceptQuery.join("&")}`;
       }
@@ -107,7 +107,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
         hasMore: page * toLoad < res.total,
       };
     },
-    [accept]
+    [accept],
   );
 
   React.useEffect(() => {
@@ -182,7 +182,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
     if (!fileToUpload) return;
 
     await uploadFile(
-      fileToUpload.map((file) => ({ file, description: addTo?.description }))
+      fileToUpload.map((file) => ({ file, description: addTo?.description })),
     );
     setFileToUpload([]);
   };
@@ -219,7 +219,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
                   ...map,
                   [cur]: [],
                 }),
-                {} as Accept
+                {} as Accept,
               )}
             />
             <Button
@@ -254,7 +254,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
                   }
                   className={cn(
                     "border rounded-md flex flex-col gap-3 items-center justify-between cursor-pointer py-3",
-                    selected?._id === asset._id ? "bg-accent" : ""
+                    selected?._id === asset._id ? "bg-accent" : "",
                   )}
                   key={asset._id}
                 >
@@ -265,7 +265,7 @@ export const AssetSelectorDialog: React.FC<AssetSelectorProps> = ({
                     </span>
                     <span>
                       {asset.filename?.substring(
-                        asset.filename?.lastIndexOf("/") + 1
+                        asset.filename?.lastIndexOf("/") + 1,
                       )}
                     </span>
                   </div>

@@ -53,7 +53,7 @@ export const columns: ColumnDef<PageHeaderListModel>[] = [
     header: tableSortHeader(
       "pages.headers.table.columns.name",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -62,14 +62,14 @@ export const columns: ColumnDef<PageHeaderListModel>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",
     header: tableSortHeader(
       "pages.headers.table.columns.updatedAt",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -81,7 +81,7 @@ export const columns: ColumnDef<PageHeaderListModel>[] = [
     header: tableSortHeader(
       "pages.headers.table.columns.usedCount",
       "number",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },

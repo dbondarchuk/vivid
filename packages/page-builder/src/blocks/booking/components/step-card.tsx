@@ -40,7 +40,7 @@ export const StepCard: React.FC = () => {
         setIsLoadingFn(false);
       }
     },
-    [step, ctx]
+    [step, ctx],
   );
 
   const StepContent = ScheduleSteps[stepType].Content;

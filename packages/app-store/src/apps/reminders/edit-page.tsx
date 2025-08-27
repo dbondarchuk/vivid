@@ -2,12 +2,12 @@
 
 import { useI18n } from "@vivid/i18n";
 import { ComplexAppSetupProps } from "@vivid/types";
-import { ReminderForm } from "./form";
+import { Skeleton, toast } from "@vivid/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import { Reminder } from "./models";
 import { getReminder } from "./actions";
-import { Skeleton, toast } from "@vivid/ui";
+import { ReminderForm } from "./form";
+import { Reminder } from "./models";
 
 export const EditReminderPage: React.FC<ComplexAppSetupProps> = ({ appId }) => {
   const searchParams = useSearchParams();

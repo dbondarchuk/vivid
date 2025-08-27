@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useI18n } from "@vivid/i18n";
 import {
   MenuItem,
   MenuItemType,
@@ -19,7 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";

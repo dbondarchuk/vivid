@@ -29,18 +29,18 @@ export interface ApiResponse extends Response {}
 
 export interface IConnectedApp<TData = any, TToken = any> {
   processAppData?: (
-    appData: NonNullable<ConnectedAppData<TData, TToken>["data"]>
+    appData: NonNullable<ConnectedAppData<TData, TToken>["data"]>,
   ) => Promise<NonNullable<ConnectedAppData<TData, TToken>["data"]>>;
   processRequest?: (
     appData: ConnectedAppData<TData, TToken>,
-    data: any
+    data: any,
   ) => Promise<any>;
   processStaticRequest?: (data: any) => Promise<any>;
   unInstall?: (appData: ConnectedAppData<TData, TToken>) => Promise<void>;
   processAppCall?: (
     appData: ConnectedAppData<TData, TToken>,
     slug: string[],
-    request: ApiRequest
+    request: ApiRequest,
   ) => Promise<ApiResponse | undefined>;
 }
 
@@ -48,7 +48,7 @@ export interface IConnectedAppWithWebhook<TData = any, TToken = any>
   extends IConnectedApp<TData, TToken> {
   processWebhook(
     appData: ConnectedAppData<TData, TToken>,
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ApiResponse>;
 }
 
@@ -57,7 +57,7 @@ export interface IOAuthConnectedApp<TData = any, TToken = any>
   getLoginUrl: (appId: string) => Promise<string>;
   processRedirect: (
     request: ApiRequest,
-    data?: any
+    data?: any,
   ) => Promise<ConnectedAppResponse>;
 }
 

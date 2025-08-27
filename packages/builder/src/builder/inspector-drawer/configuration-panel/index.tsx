@@ -37,7 +37,7 @@ export const ConfigurationPanel: React.FC = () => {
         value: { blockId: selectedBlockId, data },
       });
     },
-    [dispatchAction, selectedBlockId]
+    [dispatchAction, selectedBlockId],
   );
 
   const setBase = useCallback(
@@ -48,17 +48,17 @@ export const ConfigurationPanel: React.FC = () => {
         value: { blockId: selectedBlockId, base },
       });
     },
-    [dispatchAction, selectedBlockId]
+    [dispatchAction, selectedBlockId],
   );
 
   const Panel = useMemo(
     () => (selectedBlockType ? blocks[selectedBlockType].Configuration : null),
-    [blocks, selectedBlockType]
+    [blocks, selectedBlockType],
   );
 
   if (!selectedBlockId || !Panel) {
     return renderMessage(
-      t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect")
+      t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect"),
     );
   }
 

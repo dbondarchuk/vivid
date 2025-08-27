@@ -26,19 +26,19 @@ export class CalendarWriterConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "CalendarWriterConnectedApp"
+    "CalendarWriterConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: CalendarWriterConfiguration
+    data: CalendarWriterConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, targetAppId: data.appId },
-      "Processing calendar writer configuration request"
+      "Processing calendar writer configuration request",
     );
 
     try {
@@ -48,7 +48,7 @@ export class CalendarWriterConnectedApp
 
       logger.debug(
         { appId: appData._id, targetAppId: data.appId, appName },
-        "Retrieved target app information"
+        "Retrieved target app information",
       );
 
       const app = AvailableApps[appName];
@@ -61,22 +61,22 @@ export class CalendarWriterConnectedApp
             appName,
             scope: app.scope,
           },
-          "Target app does not support calendar-write scope"
+          "Target app does not support calendar-write scope",
         );
 
         throw new ConnectedAppError(
-          "calendarWriter.statusText.calendar_app_not_found"
+          "calendarWriter.statusText.calendar_app_not_found",
         );
       }
 
       logger.debug(
         { appId: appData._id, targetAppId: data.appId, appName },
-        "Target app supports calendar-write scope"
+        "Target app supports calendar-write scope",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, targetAppId: data.appId, error },
-        "Failed to validate calendar app configuration"
+        "Failed to validate calendar app configuration",
       );
 
       return {
@@ -97,7 +97,7 @@ export class CalendarWriterConnectedApp
 
     logger.info(
       { appId: appData._id, targetAppId: data.appId, status: status.status },
-      "Successfully configured calendar writer"
+      "Successfully configured calendar writer",
     );
 
     return status;
@@ -106,12 +106,12 @@ export class CalendarWriterConnectedApp
   public async onAppointmentCreated(
     appData: ConnectedAppData,
     appointment: Appointment,
-    confirmed: boolean
+    confirmed: boolean,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentCreated");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, confirmed },
-      "Appointment created, creating calendar event"
+      "Appointment created, creating calendar event",
     );
 
     try {
@@ -119,17 +119,17 @@ export class CalendarWriterConnectedApp
         appData,
         appointment,
         confirmed ? "auto-confirmed" : "pending",
-        "New Request"
+        "New Request",
       );
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, confirmed },
-        "Successfully created calendar event for new appointment"
+        "Successfully created calendar event for new appointment",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, error },
-        "Error creating calendar event for new appointment"
+        "Error creating calendar event for new appointment",
       );
 
       this.props.update({
@@ -145,12 +145,12 @@ export class CalendarWriterConnectedApp
   public async onAppointmentStatusChanged(
     appData: ConnectedAppData,
     appointment: Appointment,
-    newStatus: AppointmentStatus
+    newStatus: AppointmentStatus,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, newStatus },
-      "Appointment status changed, updating calendar event"
+      "Appointment status changed, updating calendar event",
     );
 
     try {
@@ -158,7 +158,7 @@ export class CalendarWriterConnectedApp
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, newStatus },
-        "Successfully updated calendar event for status change"
+        "Successfully updated calendar event for status change",
       );
     } catch (error: any) {
       logger.error(
@@ -168,7 +168,7 @@ export class CalendarWriterConnectedApp
           newStatus,
           error,
         },
-        "Error updating calendar event for status change"
+        "Error updating calendar event for status change",
       );
 
       this.props.update({
@@ -185,7 +185,7 @@ export class CalendarWriterConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newTime: Date,
-    newDuration: number
+    newDuration: number,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     logger.debug(
@@ -195,7 +195,7 @@ export class CalendarWriterConnectedApp
         newTime,
         newDuration,
       },
-      "Appointment rescheduled, updating calendar event"
+      "Appointment rescheduled, updating calendar event",
     );
 
     try {
@@ -208,7 +208,7 @@ export class CalendarWriterConnectedApp
           newTime,
           newDuration,
         },
-        "Successfully updated calendar event for rescheduled appointment"
+        "Successfully updated calendar event for rescheduled appointment",
       );
     } catch (error: any) {
       logger.error(
@@ -219,7 +219,7 @@ export class CalendarWriterConnectedApp
           newDuration,
           error,
         },
-        "Error updating calendar event for rescheduled appointment"
+        "Error updating calendar event for rescheduled appointment",
       );
 
       this.props.update({
@@ -236,12 +236,12 @@ export class CalendarWriterConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     status: keyof typeof AppointmentStatusToICalMethodMap | "auto-confirmed",
-    initiator: string
+    initiator: string,
   ) {
     const logger = this.loggerFactory("makeEvent");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, status, initiator },
-      "Making calendar event"
+      "Making calendar event",
     );
 
     try {
@@ -251,7 +251,7 @@ export class CalendarWriterConnectedApp
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
-        "Retrieved configuration for calendar event"
+        "Retrieved configuration for calendar event",
       );
 
       const args = getArguments({
@@ -269,7 +269,7 @@ export class CalendarWriterConnectedApp
         config.general.language,
         config.general.url,
         appointment,
-        args
+        args,
       );
 
       logger.debug(
@@ -278,7 +278,7 @@ export class CalendarWriterConnectedApp
           appointmentId: appointment._id,
           targetAppId: data.appId,
         },
-        "Getting calendar writer service"
+        "Getting calendar writer service",
       );
 
       const { app, service } = await this.props.services
@@ -342,25 +342,25 @@ export class CalendarWriterConnectedApp
           eventId: event.id,
           uid,
         },
-        "Created calendar event object"
+        "Created calendar event object",
       );
 
       if (status === "pending" || status === "auto-confirmed") {
         logger.debug(
           { appId: appData._id, appointmentId: appointment._id, status },
-          "Creating new calendar event"
+          "Creating new calendar event",
         );
         await service.createEvent(app, event);
       } else if (status === "declined") {
         logger.debug(
           { appId: appData._id, appointmentId: appointment._id, status },
-          "Deleting calendar event"
+          "Deleting calendar event",
         );
         await service.deleteEvent(app, uid, event.id);
       } else {
         logger.debug(
           { appId: appData._id, appointmentId: appointment._id, status },
-          "Updating calendar event"
+          "Updating calendar event",
         );
         service.updateEvent(app, uid, event);
       }
@@ -373,12 +373,12 @@ export class CalendarWriterConnectedApp
           eventId: event.id,
           uid,
         },
-        "Successfully processed calendar event"
+        "Successfully processed calendar event",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, status, error },
-        "Error making calendar event"
+        "Error making calendar event",
       );
 
       throw error;

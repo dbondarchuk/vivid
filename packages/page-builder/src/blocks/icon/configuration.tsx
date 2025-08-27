@@ -17,11 +17,11 @@ export const IconConfiguration = deepMemo(
     const t = useI18n("builder");
     const updateProps = useCallback(
       (p: unknown) => setData({ ...data, props: p as IconProps["props"] }),
-      [setData, data]
+      [setData, data],
     );
     const updateStyle = useCallback(
       (s: unknown) => setData({ ...data, style: s as IconProps["style"] }),
-      [setData, data]
+      [setData, data],
     );
 
     const icon = (data.props as any)?.icon ?? IconPropsDefaults.props.icon;
@@ -39,7 +39,7 @@ export const IconConfiguration = deepMemo(
 
         if (search) {
           iconNames = iconNames.filter((iconName) =>
-            iconName.toLowerCase().includes(search.toLowerCase())
+            iconName.toLowerCase().includes(search.toLowerCase()),
           );
         }
 
@@ -62,7 +62,7 @@ export const IconConfiguration = deepMemo(
           hasMore: page * limit < iconNames.length,
         };
       },
-      [icon]
+      [icon],
     );
 
     return (
@@ -87,5 +87,5 @@ export const IconConfiguration = deepMemo(
         </div>
       </StylesConfigurationPanel>
     );
-  }
+  },
 );

@@ -1,4 +1,3 @@
-import React from "react";
 import { useI18n } from "@vivid/i18n";
 import { Combobox } from "@vivid/ui";
 import { AlignVerticalJustifyCenter } from "lucide-react";
@@ -28,7 +27,7 @@ export const verticalAlignStyle = {
   schema: VerticalAlignSchema,
   defaultValue: "baseline",
   renderToCSS: (
-    value: z.infer<typeof VerticalAlignSchema> | null | undefined
+    value: z.infer<typeof VerticalAlignSchema> | null | undefined,
   ) => {
     if (!value) return null;
     return `vertical-align: ${value};`;

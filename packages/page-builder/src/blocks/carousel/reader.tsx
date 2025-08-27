@@ -5,11 +5,11 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  cn,
 } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { CarouselReaderProps, styles } from "./schema";
-import { cn } from "@vivid/ui";
 
 export const CarouselReader = ({
   style,

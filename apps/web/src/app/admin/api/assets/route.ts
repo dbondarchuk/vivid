@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing assets API request"
+    "Processing assets API request",
   );
 
   const loader = createLoader(searchParams);
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       sort,
       offset,
     },
-    "Fetching assets with parameters"
+    "Fetching assets with parameters",
   );
 
   const response = await ServicesContainer.AssetsService().getAssets({
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
       total: response.total,
       count: response.items.length,
     },
-    "Successfully retrieved assets"
+    "Successfully retrieved assets",
   );
 
   const { url } =
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
       ({
         ...asset,
         url: `${url}/assets/${asset.filename}`,
-      }) satisfies UploadedFile
+      }) satisfies UploadedFile,
   );
 
   return NextResponse.json({ ...response, items });
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing assets upload request"
+    "Processing assets upload request",
   );
 
   const formData = await request.formData();
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       appointmentId,
       customerId,
     },
-    file
+    file,
   );
 
   logger.debug(
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
       filename: asset.filename,
       size: asset.size,
     },
-    "Successfully uploaded asset"
+    "Successfully uploaded asset",
   );
 
   const { url } =

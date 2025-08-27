@@ -1,17 +1,14 @@
 import { DragOverlay } from "@dnd-kit/react";
-import { cn, deepMemo, TabsContent } from "@vivid/ui";
+import { cn, TabsContent } from "@vivid/ui";
+import { memo, useMemo } from "react";
 import { EditorBlock } from "../../documents/editor/block";
 import {
   useActiveDragBlock,
   useActiveOverBlock,
   useBlock,
   useBlockDepth,
-  useBlocks,
   useRootBlockId,
 } from "../../documents/editor/context";
-import { ReaderBlock } from "../../documents/reader/block";
-import { ReaderDocumentBlocksDictionary } from "../../documents/types";
-import { memo, useMemo } from "react";
 
 export const ActiveOverblockDebug = () => {
   const activeOverBlock = useActiveOverBlock();

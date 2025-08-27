@@ -26,7 +26,7 @@ export const AddonsCard: React.FC = () => {
 
   const onClick = (option: AppointmentAddon): void => {
     const index = (selectedAddons || []).findIndex(
-      (addon) => addon._id === option._id
+      (addon) => addon._id === option._id,
     );
 
     if (index < 0) {
@@ -66,13 +66,13 @@ export const AddonsCard: React.FC = () => {
                         className="flex flex-row items-center"
                         aria-label={i18n(
                           "form_duration_hour_minutes_label_format",
-                          durationToTime(addon.duration)
+                          durationToTime(addon.duration),
                         )}
                       >
                         <Timer className="mr-1" />
                         {i18n(
                           "duration_hour_min_format",
-                          durationToTime(addon.duration)
+                          durationToTime(addon.duration),
                         )}
                       </div>
                     )}

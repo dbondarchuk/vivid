@@ -74,7 +74,7 @@ export const CalendarCard: React.FC = () => {
   const [time, setTime] = React.useState<Time | undefined>(dateTime?.time);
 
   const [timeZone, setTimeZone] = React.useState<string>(
-    dateTime?.timeZone || propsTimeZone
+    dateTime?.timeZone || propsTimeZone,
   );
 
   const changeDate = (date: Date | undefined) => {
@@ -85,9 +85,9 @@ export const CalendarCard: React.FC = () => {
   const adjustedAvailability = React.useMemo(
     () =>
       availability.map((time) =>
-        Luxon.fromMillis(time, { zone: "utc" }).setZone(timeZone)
+        Luxon.fromMillis(time, { zone: "utc" }).setZone(timeZone),
       ),
-    [availability, timeZone]
+    [availability, timeZone],
   );
 
   const dates = React.useMemo(
@@ -95,13 +95,13 @@ export const CalendarCard: React.FC = () => {
       adjustedAvailability
         .map((dateTime) => asJsDate(dateTime))
         .sort((a, b) => a.getTime() - b.getTime()),
-    [adjustedAvailability]
+    [adjustedAvailability],
   );
 
   const isDisabledDay = React.useCallback(
     (day: Date) =>
       dates.map((date) => formatDate(date)).indexOf(formatDate(day)) < 0,
-    [dates]
+    [dates],
   );
 
   const times = React.useMemo(
@@ -117,18 +117,18 @@ export const CalendarCard: React.FC = () => {
             });
             return prev;
           },
-          {} as { [x: string]: Time[] }
-        )
+          {} as { [x: string]: Time[] },
+        ),
       ).reduce(
         (prev, curr) => {
           prev[curr[0]] = curr[1].sort(
-            (a, b) => a.hour - b.hour || a.minute - b.minute
+            (a, b) => a.hour - b.hour || a.minute - b.minute,
           );
           return prev;
         },
-        {} as { [x: string]: Time[] }
+        {} as { [x: string]: Time[] },
       ),
-    [adjustedAvailability]
+    [adjustedAvailability],
   );
 
   React.useEffect(() => {
@@ -139,7 +139,7 @@ export const CalendarCard: React.FC = () => {
             date,
             time,
             timeZone,
-          }
+          },
     );
 
     setPromoCode(undefined);
@@ -159,7 +159,7 @@ export const CalendarCard: React.FC = () => {
 
   const isTimeSelected = React.useCallback(
     (t: Time) => areTimesEqual(t, time),
-    [time]
+    [time],
   );
 
   const timeZoneLabel = i18n.rich("select_timezone_label_format", {
@@ -173,7 +173,7 @@ export const CalendarCard: React.FC = () => {
             (zone) =>
               (zone.label as string)
                 .toLocaleLowerCase()
-                .indexOf(search.toLocaleLowerCase()) >= 0
+                .indexOf(search.toLocaleLowerCase()) >= 0,
           )
         }
         value={timeZone}

@@ -15,7 +15,7 @@ export const zColorPreset = z.enum(
   [zColorPresetVarsFirst, ...zColorPresetVars],
   {
     message: "pageBuilder.styleInputs.color.unknownType",
-  }
+  },
 );
 
 export const zColor = z.union([zColorCustom, zColorPreset, zTransparentColor], {
@@ -59,7 +59,7 @@ export type NumberValueWithUnitOrGlobalKeyword = z.infer<
 >;
 
 export const getZNumberValueWithUnitOrKeyword = <T extends string>(
-  keywords: T[]
+  keywords: T[],
 ) =>
   z.union(
     [
@@ -72,7 +72,7 @@ export const getZNumberValueWithUnitOrKeyword = <T extends string>(
     ],
     {
       message: "pageBuilder.styleInputs.unit.unknownType",
-    }
+    },
   );
 
 export type NumberValueWithUnitOrKeyword<T extends string> = z.infer<
@@ -181,7 +181,7 @@ export function generateStateTargetSelector(state: StateWithTarget): string {
 }
 
 export function isSelfTarget(
-  state: StateWithTarget
+  state: StateWithTarget,
 ): state is StateWithTarget & { target: { type: "self" } } {
   return !state.target || state.target.type === "self";
 }
@@ -193,21 +193,21 @@ export function isNonSelfTarget(state: StateWithTarget): boolean {
 
 // Helper function to check if a state has parent target
 export function isParentTarget(
-  state: StateWithTarget
+  state: StateWithTarget,
 ): state is StateWithTarget & { target: { type: "parent" } } {
   return state.target?.type === "parent";
 }
 
 // Helper function to check if a state has custom selector target
 export function isSelectorTarget(
-  state: StateWithTarget
+  state: StateWithTarget,
 ): state is StateWithTarget & { target: { type: "selector" } } {
   return state.target?.type === "selector";
 }
 
 // Helper function to generate the data attribute name for view state
 export function generateViewStateDataAttribute(
-  state: StateWithTarget
+  state: StateWithTarget,
 ): string | null {
   const level = isParentTarget(state) ? state.target?.data?.level || 0 : 0;
   return `data-parent-${level}-${state.state}`;
@@ -215,7 +215,7 @@ export function generateViewStateDataAttribute(
 
 // Legacy compatibility - convert old parentLevel to new stateTarget
 export function convertParentLevelToStateTarget(
-  parentLevel: number
+  parentLevel: number,
 ): StateTarget {
   if (parentLevel === 0) {
     return { type: "self" };
@@ -228,7 +228,7 @@ export function convertParentLevelToStateTarget(
 
 // Legacy compatibility - convert new stateTarget to old parentLevel
 export function convertStateTargetToParentLevel(
-  stateTarget: StateTarget
+  stateTarget: StateTarget,
 ): number {
   if (stateTarget.type === "self") {
     return 0;

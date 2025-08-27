@@ -1,8 +1,4 @@
-import {
-  EditorChildren,
-  useCurrentBlock,
-  useIsSelectedBlock,
-} from "@vivid/builder";
+import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import React, { memo } from "react";
 import { BlockStyle } from "../../helpers/styling";
@@ -16,7 +12,7 @@ const ChildWrapper = memo(
   }: {
     children: React.ReactNode;
     className?: string;
-  }) => <span className={className}>{children}</span>
+  }) => <span className={className}>{children}</span>,
 );
 
 const allowOnly = ["SimpleText", "Icon", "Link"];

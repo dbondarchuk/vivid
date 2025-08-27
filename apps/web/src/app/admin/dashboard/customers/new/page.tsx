@@ -25,7 +25,7 @@ export default async function NewCustomerPage(props: Props) {
     {
       from: searchParams.from,
     },
-    "Loading new customer page"
+    "Loading new customer page",
   );
 
   const breadcrumbItems = [

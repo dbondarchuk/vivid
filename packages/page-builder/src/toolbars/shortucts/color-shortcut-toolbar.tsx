@@ -24,7 +24,6 @@ import React from "react";
 import { useI18n } from "../../../../i18n/src/client";
 import { BuilderKeys } from "../../../../i18n/src/types";
 import { ShortcutWithColor } from "../../shortcuts";
-import { applyShortcutOption } from "../../shortcuts/utils";
 import { BaseStyleDictionary, COLORS_LIST, getColorStyle } from "../../style";
 
 export interface ColorShortcutToolbarItem {
@@ -59,7 +58,7 @@ const ColorToolbarButton = React.forwardRef<
       handleColorChange,
       ...props
     },
-    ref
+    ref,
   ) => {
     const t = useI18n("builder");
     return (
@@ -133,7 +132,7 @@ const ColorToolbarButton = React.forwardRef<
         </PopoverContent>
       </Popover>
     );
-  }
+  },
 );
 
 // Specialized toolbar for color shortcuts
@@ -203,11 +202,11 @@ export const ColorShortcutToolbar = ({
 export const createColorToolbarItem = <T extends BaseStyleDictionary>(
   shortcut: ShortcutWithColor<T>,
   data: any,
-  setData: (data: any) => void
+  setData: (data: any) => void,
 ): ColorShortcutToolbarItem => {
   // Get current color value from the target style
   const currentStyle = data.style?.[shortcut.targetStyle]?.find(
-    (s: any) => !s.breakpoint?.length && !s.state?.length
+    (s: any) => !s.breakpoint?.length && !s.state?.length,
   );
 
   const currentColorValue: string | null = currentStyle?.value || null;

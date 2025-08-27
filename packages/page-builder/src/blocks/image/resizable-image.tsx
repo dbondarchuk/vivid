@@ -43,7 +43,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
       onPositionChange,
       base,
     },
-    ref
+    ref,
   ) => {
     const { src, alt } = props.props ?? {
       src: "/assets/placeholder/400x200.jpg",
@@ -134,41 +134,41 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
           case "bottom-right":
             newWidth = Math.max(
               minWidth,
-              startDimensionsRef.current.width + deltaX
+              startDimensionsRef.current.width + deltaX,
             );
             newHeight = Math.max(
               minHeight,
-              startDimensionsRef.current.height + deltaY
+              startDimensionsRef.current.height + deltaY,
             );
             break;
           case "bottom-left":
             newWidth = Math.max(
               minWidth,
-              startDimensionsRef.current.width - deltaX
+              startDimensionsRef.current.width - deltaX,
             );
             newHeight = Math.max(
               minHeight,
-              startDimensionsRef.current.height + deltaY
+              startDimensionsRef.current.height + deltaY,
             );
             break;
           case "top-right":
             newWidth = Math.max(
               minWidth,
-              startDimensionsRef.current.width + deltaX
+              startDimensionsRef.current.width + deltaX,
             );
             newHeight = Math.max(
               minHeight,
-              startDimensionsRef.current.height - deltaY
+              startDimensionsRef.current.height - deltaY,
             );
             break;
           case "top-left":
             newWidth = Math.max(
               minWidth,
-              startDimensionsRef.current.width - deltaX
+              startDimensionsRef.current.width - deltaX,
             );
             newHeight = Math.max(
               minHeight,
-              startDimensionsRef.current.height - deltaY
+              startDimensionsRef.current.height - deltaY,
             );
             break;
         }
@@ -185,7 +185,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
         startPosRef.current.x,
         startPosRef.current.y,
         activeHandle,
-      ]
+      ],
     );
 
     useEffect(() => {
@@ -206,7 +206,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
         documentOrPortal.removeEventListener("mousemove", handleMouseMove);
         documentOrPortal.removeEventListener("mouseup", handleMouseUp);
       },
-      [resizing]
+      [resizing],
     );
 
     // Clean up event listeners on unmount
@@ -272,7 +272,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
         // Change cursor style
         documentOrPortal.body.style.cursor = "move";
       },
-      [resizing, objectPosition]
+      [resizing, objectPosition],
     );
 
     const handleImageMouseMove = useCallback(
@@ -291,8 +291,8 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
             100,
             dragStartObjectPosRef.current.x -
               (deltaX / (dimensions.width ?? imageRef.current.clientWidth)) *
-                100
-          )
+                100,
+          ),
         );
         const newY = Math.max(
           0,
@@ -300,13 +300,13 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
             100,
             dragStartObjectPosRef.current.y -
               (deltaY / (dimensions.height ?? imageRef.current?.clientHeight)) *
-                100
-          )
+                100,
+          ),
         );
 
         setObjectPosition({ x: Math.round(newX), y: Math.round(newY) });
       },
-      [isDraggingImage, dimensions.width, dimensions.height, imageRef.current]
+      [isDraggingImage, dimensions.width, dimensions.height, imageRef.current],
     );
 
     const handleImageMouseUp = useCallback(
@@ -318,7 +318,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
           e.preventDefault();
         }
       },
-      [isDraggingImage]
+      [isDraggingImage],
     );
 
     // Add event listeners for image dragging
@@ -353,7 +353,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
           className={cn(
             "relative group block",
             resizing ? "select-none" : "",
-            className
+            className,
           )}
           style={{}}
           id={base?.id}
@@ -364,7 +364,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
               src={template(
                 src || "/assets/placeholder/400x200.jpg",
                 args,
-                true
+                true,
               )}
               alt={alt ?? ""}
               className={cn(imgClassName, base?.className)}
@@ -421,5 +421,5 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
         </div>
       </>
     );
-  }
+  },
 );

@@ -27,7 +27,7 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
   styleDefinitions: StyleDictionary<T>,
   styles?: StyleValue<T> | null,
   defaultProperties?: DefaultCSSProperties<T> | null,
-  isEditor?: boolean
+  isEditor?: boolean,
 ): string {
   let css = "";
 
@@ -105,7 +105,7 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
           });
         }
       });
-    }
+    },
   );
 
   // Add state variants (no breakpoint)
@@ -148,7 +148,7 @@ function renderDirectStylesToCSS<T extends BaseStyleDictionary>(
       });
 
       css += "}\n";
-    }
+    },
   );
 
   return css.trim();
@@ -160,7 +160,7 @@ export function renderStylesToCSS<T extends BaseStyleDictionary>(
   styles?: StyleValue<T> | null,
   defaultProperties?: DefaultCSSProperties<T> | null,
   isEditor?: boolean,
-  className?: string
+  className?: string,
 ): string {
   let css = "";
   const rootSelector = className ? `.${className}` : "&";
@@ -192,7 +192,7 @@ export function renderStylesToCSS<T extends BaseStyleDictionary>(
     styleDefinitions,
     directStyles,
     defaultProperties,
-    isEditor
+    isEditor,
   );
   if (directCSS.trim()) {
     css += `${rootSelector} {\n${directCSS}\n}\n`;
@@ -204,7 +204,7 @@ export function renderStylesToCSS<T extends BaseStyleDictionary>(
       styleDefinitions,
       childStyle,
       undefined,
-      isEditor
+      isEditor,
     );
     if (childCSS.trim()) {
       const fullSelector = className ? `.${className} ${selector}` : selector;

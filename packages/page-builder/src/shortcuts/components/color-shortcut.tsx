@@ -10,7 +10,7 @@ import { ShortcutWithColor } from "../types";
 export const createColorShortcut = <T extends BaseStyleDictionary>(
   label: BuilderKeys,
   icon: (props: { className?: string }) => React.ReactNode,
-  targetStyle: keyof T
+  targetStyle: keyof T,
 ): ShortcutWithColor<T> => {
   return {
     label,
@@ -31,7 +31,7 @@ export const ColorShortcut = <T extends BaseStyleDictionary>({
 }) => {
   // Get current color value from the target style
   const currentStyle = styles[shortcut.targetStyle]?.find(
-    (s) => !s.breakpoint?.length && !s.state?.length
+    (s) => !s.breakpoint?.length && !s.state?.length,
   );
 
   const currentColorValue: string | null = currentStyle?.value || null;

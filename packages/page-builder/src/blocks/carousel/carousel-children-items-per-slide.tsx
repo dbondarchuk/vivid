@@ -1,8 +1,7 @@
 import { Percent } from "lucide-react";
 import { z } from "zod";
-import { Input } from "@vivid/ui";
-import { StyleDefinition } from "../../style/types";
 import { RawNumberInput } from "../../style-inputs/base/raw-number-input";
+import { StyleDefinition } from "../../style/types";
 
 const CarouselChildrenItemsPerSlideSchema = z.coerce
   .number()
@@ -23,7 +22,7 @@ export const carouselChildrenItemsPerSlideStyle = {
     value:
       | z.infer<typeof CarouselChildrenItemsPerSlideSchema>
       | null
-      | undefined
+      | undefined,
   ) => {
     if (value === null || typeof value === "undefined") return null;
     // Calculate flex-basis as percentage: 100 / items

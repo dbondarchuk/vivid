@@ -4,6 +4,7 @@ import { useI18n, useLocale } from "@vivid/i18n";
 import { AppointmentHistoryEntry, WithTotal } from "@vivid/types";
 import { useInView } from "react-intersection-observer";
 
+import { AvailableApps } from "@vivid/app-store";
 import {
   Badge,
   cn,
@@ -15,18 +16,17 @@ import {
   TooltipTrigger,
   useTimeZone,
 } from "@vivid/ui";
+import { formatAmountString } from "@vivid/utils";
 import {
+  Banknote,
+  BanknoteX,
   CalendarCheck,
+  CalendarPlus2,
   CalendarX,
   HistoryIcon,
-  BanknoteX,
-  Banknote,
-  CalendarPlus2,
 } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
-import { formatAmountString } from "@vivid/utils";
-import { AvailableApps } from "@vivid/app-store";
 
 const HistoryEntryTypeIcon: React.FC<{
   entry: AppointmentHistoryEntry;
@@ -126,11 +126,11 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                 variant="default"
                 className={cn(
                   "text-xs",
-                  entry.data.confirmed && "bg-green-500"
+                  entry.data.confirmed && "bg-green-500",
                 )}
               >
                 {t(
-                  `admin.appointments.status.${entry.data.confirmed ? "confirmed" : "pending"}`
+                  `admin.appointments.status.${entry.data.confirmed ? "confirmed" : "pending"}`,
                 )}
               </Badge>
               <Badge variant="outline" className="text-xs">
@@ -143,7 +143,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                   {t("admin.appointments.history.payment", {
                     amount: formatAmountString(entry.data.payment.amount),
                     appName: t(
-                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`
+                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
                     ),
                   })}
                 </Badge>
@@ -157,12 +157,12 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                 className={cn(
                   "text-xs",
                   entry.data.oldStatus === "confirmed" && "bg-green-500",
-                  entry.data.oldStatus === "declined" && "bg-destructive"
+                  entry.data.oldStatus === "declined" && "bg-destructive",
                 )}
               >
                 {t("admin.appointments.history.oldStatus", {
                   oldStatus: t(
-                    `admin.appointments.status.${entry.data.oldStatus}`
+                    `admin.appointments.status.${entry.data.oldStatus}`,
                   ),
                 })}
               </Badge>
@@ -171,12 +171,12 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                 className={cn(
                   "text-xs",
                   entry.data.newStatus === "confirmed" && "bg-green-500",
-                  entry.data.newStatus === "declined" && "bg-destructive"
+                  entry.data.newStatus === "declined" && "bg-destructive",
                 )}
               >
                 {t("admin.appointments.history.newStatus", {
                   newStatus: t(
-                    `admin.appointments.status.${entry.data.newStatus}`
+                    `admin.appointments.status.${entry.data.newStatus}`,
                   ),
                 })}
               </Badge>
@@ -187,7 +187,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               <Badge variant="outline" className="text-xs">
                 {t("admin.appointments.history.oldDateTime", {
                   oldDateTime: DateTime.fromISO(
-                    entry.data.oldDateTime as any as string
+                    entry.data.oldDateTime as any as string,
                   )
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
@@ -196,7 +196,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               <Badge variant="default" className="text-xs">
                 {t("admin.appointments.history.newDateTime", {
                   newDateTime: DateTime.fromISO(
-                    entry.data.newDateTime as any as string
+                    entry.data.newDateTime as any as string,
                   )
                     .setZone(timeZone)
                     .toLocaleString(DateTime.DATETIME_MED, { locale }),
@@ -212,7 +212,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               <Badge variant="outline" className="text-xs">
                 {entry.data.payment.appName
                   ? t(
-                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`
+                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
                     )
                   : entry.data.payment.type === "cash"
                     ? t("admin.payment.methods.cash")
@@ -235,7 +235,7 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
               <Badge variant="outline" className="text-xs">
                 {entry.data.payment.appName
                   ? t(
-                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`
+                      `apps.${AvailableApps[entry.data.payment.appName].displayName}`,
                     )
                   : entry.data.payment.type === "cash"
                     ? t("admin.payment.methods.cash")
@@ -316,7 +316,7 @@ export const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
         hasMore: page * toLoad < res.total,
       };
     },
-    [appointmentId]
+    [appointmentId],
   );
 
   React.useEffect(() => {

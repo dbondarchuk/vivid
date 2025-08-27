@@ -61,7 +61,7 @@ export const EmailNotificationAppSetup: React.FC<AppSetupProps> = ({
                       disabled={isLoading}
                       type="email"
                       placeholder={t(
-                        "emailNotification.form.email.placeholder"
+                        "emailNotification.form.email.placeholder",
                       )}
                       {...field}
                     />

@@ -82,7 +82,7 @@ export function buildReaderBlockConfigurationDictionary<
 }
 
 export function buildBlockConfigurationDictionary<T extends BaseZodDictionary>(
-  blocks: EditorDocumentBlocksDictionary<T>
+  blocks: EditorDocumentBlocksDictionary<T>,
 ) {
   return blocks;
 }

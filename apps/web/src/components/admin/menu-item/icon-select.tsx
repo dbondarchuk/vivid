@@ -1,5 +1,5 @@
-import { Combobox, IComboboxItem, Icon } from "@vivid/ui";
 import { useI18n } from "@vivid/i18n";
+import { Combobox, IComboboxItem, Icon } from "@vivid/ui";
 import { icons } from "lucide-react";
 import { ControllerRenderProps } from "react-hook-form";
 
@@ -18,7 +18,7 @@ const iconValues = Object.keys(icons).map(
           <Icon name={icon as keyof typeof icons} size={20} /> {icon}
         </div>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 export const IconSelect: React.FC<IconSelectProps> = ({
@@ -39,7 +39,7 @@ export const IconSelect: React.FC<IconSelectProps> = ({
           (icon) =>
             icon.value
               .toLocaleLowerCase()
-              .indexOf(search.toLocaleLowerCase()) >= 0
+              .indexOf(search.toLocaleLowerCase()) >= 0,
         )
       }
       value={field.value}

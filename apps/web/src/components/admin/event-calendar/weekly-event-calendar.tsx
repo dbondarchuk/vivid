@@ -91,8 +91,8 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
       formatTime({
         hour: hour as HourNumbers,
         minute: (index * slotInterval) as SecondNumbers,
-      })
-    )
+      }),
+    ),
   );
 
   const scrollAreaRef = React.useRef<HTMLDivElement | null>(null);
@@ -112,19 +112,19 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         return Array.from({ length: daysAround * 2 + 1 })
           .map((_, index) => -1 * daysAround + index)
           .map((d) =>
-            DateTime.fromJSDate(day).startOf("day").plus({ days: d })
+            DateTime.fromJSDate(day).startOf("day").plus({ days: d }),
           );
 
       case "week-of":
       default:
         return [0, 1, 2, 3, 4, 5, 6].map((d) =>
-          DateTime.fromJSDate(day).startOf("week").plus({ days: d })
+          DateTime.fromJSDate(day).startOf("week").plus({ days: d }),
         );
     }
   };
 
   const [dates, setDates] = React.useState<DateTime[]>(
-    getDates(date || new Date())
+    getDates(date || new Date()),
   );
 
   React.useEffect(() => {
@@ -187,10 +187,10 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
   const getEventClassNames = useCallback(
     (event: (typeof events)[number]) => {
       const previousMultiDayEvents = events.filter(
-        ({ isMultiDay }, index) => isMultiDay && index < events.indexOf(event)
+        ({ isMultiDay }, index) => isMultiDay && index < events.indexOf(event),
       );
       const previousNonMultiDayEvents = events.filter(
-        ({ isMultiDay }, index) => !isMultiDay && index < events.indexOf(event)
+        ({ isMultiDay }, index) => !isMultiDay && index < events.indexOf(event),
       );
       const isOverlappingNonMultiDay =
         !event.isMultiDay &&
@@ -202,7 +202,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 event.end > otherAppointment.start)
             );
           },
-          false
+          false,
         );
 
       // Disallow negative index (if date outside of range, the
@@ -212,8 +212,8 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         dates.findIndex((date) =>
           date
             .toFormat("YYYY-MM-DD")
-            .startsWith(event.start.toFormat("YYYY-MM-DD"))
-        )
+            .startsWith(event.start.toFormat("YYYY-MM-DD")),
+        ),
       );
 
       const styles = {
@@ -223,9 +223,9 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
             dates.length - dateIndex,
             event.end.diff(
               event.start > dates[0] ? event.start : dates[0],
-              "days"
-            ).days
-          )
+              "days",
+            ).days,
+          ),
         )}`,
         "--calendar-row-start": `${
           (event.isMultiDay
@@ -245,11 +245,11 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                     minute:
                       event.start.minute - (event.start.minute % slotInterval),
                   })
-                  .toFormat("HH:mm") as (typeof timeSlots)[number]
+                  .toFormat("HH:mm") as (typeof timeSlots)[number],
               )) + 1
         }`,
         "--calendar-row-end": `span ${Math.floor(
-          event.end.diff(event.start, "minutes").minutes / slotInterval
+          event.end.diff(event.start, "minutes").minutes / slotInterval,
         )}`,
       };
 
@@ -262,7 +262,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         EventVariantClasses[event.variant || "primary"] ||
           EventVariantClasses.primary,
         isOverlappingNonMultiDay &&
-          "w-[75%] ml-[25%] border border-white text-right z-[3] hover:z-[4]"
+          "w-[75%] ml-[25%] border border-white text-right z-[3] hover:z-[4]",
       );
 
       return {
@@ -270,7 +270,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         classes,
       };
     },
-    [dates, events, timeSlotColCount]
+    [dates, events, timeSlotColCount],
   );
 
   const getShiftClassNames = useCallback(
@@ -279,7 +279,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
       // event should start at the first date in props.dates)
       const dateIndex = Math.max(
         0,
-        dates.findIndex((d) => d.toISODate() === date)
+        dates.findIndex((d) => d.toISODate() === date),
       );
 
       const shiftStart = DateTime.fromFormat(shift.start, "HH:mm");
@@ -294,11 +294,11 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
               .set({
                 minute: shiftStart.minute - (shiftStart.minute % slotInterval),
               })
-              .toFormat("HH:mm") as (typeof timeSlots)[number]
+              .toFormat("HH:mm") as (typeof timeSlots)[number],
           ) + 1
         }`,
         "--calendar-row-end": `span ${Math.floor(
-          shiftEnd.diff(shiftStart, "minutes").minutes / slotInterval
+          shiftEnd.diff(shiftStart, "minutes").minutes / slotInterval,
         )}`,
       };
 
@@ -307,7 +307,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         colStartClass,
         rowStartClass,
         colSpanClass,
-        rowSpanClass
+        rowSpanClass,
       );
 
       return {
@@ -315,7 +315,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         classes,
       };
     },
-    [dates, schedule, timeSlotColCount]
+    [dates, schedule, timeSlotColCount],
   );
 
   const sizePerRow = 64 / (timeSlots.length / 24);
@@ -326,7 +326,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
 
   const endDateFormatted = dates[dates.length - 1].toLocaleString(
     DateTime.DATE_MED,
-    { locale }
+    { locale },
   );
 
   return (
@@ -337,7 +337,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
       <div
         className={cn(
           "flex flex-row items-center pb-2 bg-background sticky z-[5] top-0 h-12",
-          disableTimeChange ? "justify-center" : "justify-between"
+          disableTimeChange ? "justify-center" : "justify-between",
         )}
       >
         {!disableTimeChange && (
@@ -360,7 +360,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         <div
           className={cn(
             "px-2 grid grid-rows-1 gap-0 sticky top-12 bg-background z-[5] shadow-md  border-y border-secondary",
-            colsRepeatClass
+            colsRepeatClass,
             //colsRepeatClasses[dates.length as keyof typeof colsRepeatClasses]
           )}
           style={{
@@ -374,7 +374,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 <div
                   className={cn(
                     "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs",
-                    colStartClass
+                    colStartClass,
                   )}
                   style={{
                     "--calendar-col-start": timeSlotColCount + index + 1,
@@ -385,7 +385,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 <div
                   className={cn(
                     "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-secondary",
-                    colStartClass
+                    colStartClass,
                   )}
                   style={{
                     "--calendar-col-start": timeSlotColCount + index,
@@ -397,7 +397,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
           <div
             className={cn(
               "text-darkGray row-start-1 col-span-1 px-2 py-6 text-center text-[13px] text-xs border-r border-secondary",
-              colStartClass
+              colStartClass,
             )}
             style={{
               "--calendar-col-start": timeSlotColCount + dates.length,
@@ -424,7 +424,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                         "rounded-l-none ",
                       dates[dates.length - 1].plus({ days: 1 }).startOf("day") <
                         event.end && "rounded-r-none ",
-                      "mt-0.5"
+                      "mt-0.5",
                     )}
                     style={restStyles}
                   >
@@ -438,7 +438,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
         <div
           className={cn(
             "mt-8 px-2 grid grid-rows-[var(--rows-repeat)] gap-0",
-            colsRepeatClass
+            colsRepeatClass,
           )}
           style={{
             "--calendar-grid-cols": `100px repeat(${dates.length}, minmax(100px, 1fr))`,
@@ -451,7 +451,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 key={index}
                 className={cn(
                   "text-darkGray row-start-1 row-span-full translate-y-[var(--translate-y)] col-span-1 py-6 text-center text-[13px] text-xs border-r border-secondary",
-                  colStartClass
+                  colStartClass,
                 )}
                 style={{
                   "--calendar-col-start": timeSlotColCount + index,
@@ -470,7 +470,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                     "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-span-full border-t scroll-m-16",
                     time.endsWith("00")
                       ? "col-start-1 border-secondary"
-                      : "col-start-2 border-primary/20"
+                      : "col-start-2 border-primary/20",
                   )}
                   style={{
                     "--calendar-row-start": index + 1,
@@ -486,7 +486,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                 <div
                   className={cn(
                     rowStartClass,
-                    "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-start-1"
+                    "text-darkGray translate-y-[var(--translate-y)] text-xs leading-[30px] col-start-1",
                   )}
                   style={{
                     "--calendar-row-start": index + 1,
@@ -524,7 +524,7 @@ export const WeeklyEventCalendar: React.FC<WeeklyEventCalendarProps> = ({
                   key={`${date}-${index}`}
                 />
               );
-            })
+            }),
           )}
 
           {events

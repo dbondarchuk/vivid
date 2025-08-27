@@ -41,7 +41,7 @@ const checkUniqueName = async (name: string, id?: string) => {
     toast.error("Request failed.");
     const text = await response.text();
     console.error(
-      `Request to validate template name failed: ${response.status}; ${text}`
+      `Request to validate template name failed: ${response.status}; ${text}`,
     );
 
     return false;
@@ -65,7 +65,7 @@ export const TemplateForm: React.FC<
 
   const formSchema = getTemplateSchemaWithUniqueCheck(
     (name) => checkUniqueName(name, initialData?._id),
-    "templates.nameMustBeUnique"
+    "templates.nameMustBeUnique",
   );
 
   type TemplateFormValues = z.infer<typeof formSchema>;
@@ -125,7 +125,7 @@ export const TemplateForm: React.FC<
         : setError("value", {
             message: t("templates.form.validation.templateNotValid"),
           }),
-    [setError, trigger, t]
+    [setError, trigger, t],
   );
 
   return (

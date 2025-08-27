@@ -1,10 +1,9 @@
 import { BuilderKeys, useI18n } from "@vivid/i18n";
 import { UploadedFile } from "@vivid/types";
-import { ToolbarButton } from "@vivid/ui";
-import { AssetSelectorDialog } from "@vivid/ui";
+import { AssetSelectorDialog, ToolbarButton } from "@vivid/ui";
 import React from "react";
-import { BaseStyleDictionary } from "../../style/types";
 import { ShortcutWithAssetSelector } from "../../shortcuts";
+import { BaseStyleDictionary } from "../../style/types";
 
 export interface AssetSelectorShortcutToolbarItem {
   shortcut: ShortcutWithAssetSelector<BaseStyleDictionary>;
@@ -58,11 +57,11 @@ export const AssetSelectorShortcutToolbar = ({
 export const createAssetSelectorToolbarItem = <T extends BaseStyleDictionary>(
   shortcut: ShortcutWithAssetSelector<T>,
   data: any,
-  setData: (data: any) => void
+  setData: (data: any) => void,
 ): AssetSelectorShortcutToolbarItem => {
   // Get current asset value from the target style
   const currentStyle = data.style?.[shortcut.targetStyle]?.find(
-    (s: any) => !s.breakpoint?.length && !s.state?.length
+    (s: any) => !s.breakpoint?.length && !s.state?.length,
   );
 
   const currentAssetValue: string | null =

@@ -6,7 +6,7 @@ export const withLocale: MiddlewareFactory = (next) => {
   return async (request: NextRequest, event: NextFetchEvent) => {
     if (
       /^(\/_next\/static|\/_next\/image|\/favicon.ico)/.test(
-        request.nextUrl.pathname
+        request.nextUrl.pathname,
       )
     )
       return next(request, event);
@@ -19,7 +19,7 @@ export const withLocale: MiddlewareFactory = (next) => {
 
     request.headers.set(
       "x-is-admin-path",
-      containsAdminPath(nextUrl.pathname).toString()
+      containsAdminPath(nextUrl.pathname).toString(),
     );
 
     request.headers.set("x-pathname", nextUrl.pathname);

@@ -1,10 +1,7 @@
-import { BuilderKeys, languages, useI18n } from "@vivid/i18n";
+import { BuilderKeys, useI18n } from "@vivid/i18n";
 import { Button, Label } from "@vivid/ui";
 import { Trash } from "lucide-react";
-import React from "react";
 import { z } from "zod";
-import { BreakpointSelector } from "./breakpoint-selector";
-import { StateSelector } from "./state-selector";
 import {
   BaseStyleDictionary,
   StyleDefinition,
@@ -17,6 +14,8 @@ import {
   parentLevelKeys,
   StateWithTarget,
 } from "../../style/zod";
+import { BreakpointSelector } from "./breakpoint-selector";
+import { StateSelector } from "./state-selector";
 
 interface StyleVariantProps<T extends BaseStyleDictionary> {
   variant: StyleVariant<T[keyof T]>;
@@ -26,12 +25,12 @@ interface StyleVariantProps<T extends BaseStyleDictionary> {
   onUpdateVariant: (
     styleName: keyof T,
     variantIndex: number,
-    updates: Partial<StyleVariant<T[keyof T]>>
+    updates: Partial<StyleVariant<T[keyof T]>>,
   ) => void;
   onUpdateStyle: (
     styleName: keyof T,
     variantIndex: number,
-    value: z.infer<T[keyof T]>
+    value: z.infer<T[keyof T]>,
   ) => void;
   onDeleteVariant: (styleName: keyof T, variantIndex: number) => void;
 }
@@ -51,10 +50,10 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
     const parts = [];
     if (variant.breakpoint?.length) {
       const breakpointLabels = variant.breakpoint.map((bp) =>
-        t(`pageBuilder.styles.breakpoints.${bp}`)
+        t(`pageBuilder.styles.breakpoints.${bp}`),
       );
       parts.push(
-        breakpointLabels.join(t("pageBuilder.styles.breakpoints.and"))
+        breakpointLabels.join(t("pageBuilder.styles.breakpoints.and")),
       );
     }
     if (variant.state?.length) {
@@ -76,7 +75,7 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
             const level = stateWithParent.target?.data
               ?.level as (typeof parentLevelKeys)[number];
             const parentLabel = t(
-              `pageBuilder.styles.states.parentLevels.${level}`
+              `pageBuilder.styles.states.parentLevels.${level}`,
             );
 
             return `${parentLabel}${stateLabel}`;
@@ -91,7 +90,7 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
           }
 
           return stateLabel;
-        }
+        },
       );
       parts.push(stateLabels.join(", "));
     }

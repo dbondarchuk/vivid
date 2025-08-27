@@ -64,7 +64,7 @@ export const backgroundImageStyle = {
       } else {
         const direction = (value.gradientDirection || "to-right").replaceAll(
           "-",
-          " "
+          " ",
         );
 
         return `background-image: linear-gradient(${direction}, ${colors});`;
@@ -78,7 +78,7 @@ export const backgroundImageStyle = {
 
     const handleChange = (
       field: keyof z.infer<typeof BackgroundImageSchema>,
-      newValue: any
+      newValue: any,
     ) => {
       if (field === "type" && newValue === "gradient") {
         onChange({

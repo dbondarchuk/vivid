@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const createOrUpdateIntent = async (
   request: NextRequest,
-  intentId?: string
+  intentId?: string,
 ) => {
   const logger = getLoggerFactory("PaymentsUtils")("createOrUpdateIntent");
 
@@ -29,7 +29,7 @@ export const createOrUpdateIntent = async (
         success,
         body,
       },
-      "Failed to parse request"
+      "Failed to parse request",
     );
 
     return NextResponse.json(error, { status: 400 });
@@ -37,7 +37,7 @@ export const createOrUpdateIntent = async (
 
   const isPaymentRequired = await getAppointmentEventAndIsPaymentRequired(
     appointmentRequest,
-    true
+    true,
   );
 
   if (!isPaymentRequired) {
@@ -51,7 +51,7 @@ export const createOrUpdateIntent = async (
         error: isPaymentRequired.error,
         appointmentRequest,
       },
-      "Failed to get event or is payment required"
+      "Failed to get event or is payment required",
     );
 
     return NextResponse.json(
@@ -60,7 +60,7 @@ export const createOrUpdateIntent = async (
         error: isPaymentRequired.error.code,
         message: isPaymentRequired.error.message,
       },
-      { status: isPaymentRequired.error.status }
+      { status: isPaymentRequired.error.status },
     );
   }
 
@@ -76,7 +76,7 @@ export const createOrUpdateIntent = async (
 
   const { app, service } =
     await ServicesContainer.ConnectedAppsService().getAppService<IPaymentProcessor>(
-      appId
+      appId,
     );
 
   const formProps = service.getFormProps(app);
@@ -92,7 +92,7 @@ export const createOrUpdateIntent = async (
 
   logger.debug(
     { intent: intentUpdate, isUpdating: !!intentId },
-    "Creating or updating intent"
+    "Creating or updating intent",
   );
 
   const intent = intentId
@@ -104,7 +104,7 @@ export const createOrUpdateIntent = async (
 
   logger.debug(
     { intent, isUpdating: !!intentId },
-    "Successfully created or updated intent"
+    "Successfully created or updated intent",
   );
 
   return NextResponse.json({

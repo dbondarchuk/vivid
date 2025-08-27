@@ -33,7 +33,7 @@ export default async function EditPageHeaderPage(props: Props) {
     {
       pageId: params.id,
     },
-    "Loading page edit page"
+    "Loading page edit page",
   );
 
   const pageHeader = await getPageHeader(params.id);
@@ -48,7 +48,7 @@ export default async function EditPageHeaderPage(props: Props) {
       pageHeaderId: params.id,
       name: pageHeader.name,
     },
-    "Page header edit page loaded"
+    "Page header edit page loaded",
   );
 
   return (

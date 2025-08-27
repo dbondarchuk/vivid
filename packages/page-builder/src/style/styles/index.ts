@@ -55,7 +55,7 @@ export const ALL_STYLES_SCHEMAS = Object.values(allStyles).reduce(
     map[style.name] = style.schema;
     return map;
   },
-  {} as any
+  {} as any,
 ) as AllStylesSchemas;
 
 export const ALL_STYLES = Object.values(allStyles).reduce((map, style) => {
@@ -64,7 +64,7 @@ export const ALL_STYLES = Object.values(allStyles).reduce((map, style) => {
 }, {} as any) as StyleDictionary<AllStylesSchemas>;
 
 export const getAllStylesWithAdditionalStyles = <T extends BaseStyleDictionary>(
-  additionalStyles: StyleDictionary<T>
+  additionalStyles: StyleDictionary<T>,
 ) => {
   return {
     ...ALL_STYLES,

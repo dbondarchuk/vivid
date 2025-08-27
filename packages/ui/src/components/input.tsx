@@ -1,7 +1,7 @@
 import React from "react";
 
-import { withVariants } from "../cn/with-variants";
 import { type VariantProps, cva } from "class-variance-authority";
+import { withVariants } from "../cn/with-variants";
 
 export const inputVariants = cva(
   "flex w-full rounded-md bg-background text-base file:border-0 file:bg-background file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
@@ -23,7 +23,7 @@ export const inputVariants = cva(
         ghost: "border-none focus-visible:ring-transparent",
       },
     },
-  }
+  },
 );
 
 export type InputProps = React.ComponentPropsWithoutRef<"input"> &

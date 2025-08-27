@@ -21,20 +21,20 @@ export default class CustomerEmailNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "CustomerEmailNotificationConnectedApp"
+    "CustomerEmailNotificationConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: CustomerEmailNotificationConfiguration
+    data: CustomerEmailNotificationConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
 
     logger.debug(
       { appId: appData._id },
-      "Processing customer email notification configuration request"
+      "Processing customer email notification configuration request",
     );
 
     try {
@@ -45,19 +45,19 @@ export default class CustomerEmailNotificationConnectedApp
 
       logger.debug(
         { appId: appData._id, emailAppId },
-        "Retrieved default email app configuration"
+        "Retrieved default email app configuration",
       );
 
       try {
         await this.props.services.ConnectedAppsService().getApp(emailAppId);
         logger.debug(
           { appId: appData._id, emailAppId },
-          "Email app is properly configured"
+          "Email app is properly configured",
         );
       } catch (error: any) {
         logger.error(
           { appId: appData._id, emailAppId, error },
-          "Email sender default is not configured"
+          "Email sender default is not configured",
         );
         return {
           status: "failed",
@@ -78,14 +78,14 @@ export default class CustomerEmailNotificationConnectedApp
 
       logger.info(
         { appId: appData._id, status: status.status },
-        "Successfully configured customer email notification"
+        "Successfully configured customer email notification",
       );
 
       return status;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error processing customer email notification configuration"
+        "Error processing customer email notification configuration",
       );
 
       this.props.update({
@@ -101,12 +101,12 @@ export default class CustomerEmailNotificationConnectedApp
   public async onAppointmentCreated(
     appData: ConnectedAppData,
     appointment: Appointment,
-    confirmed: boolean
+    confirmed: boolean,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentCreated");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, confirmed },
-      "Appointment created, sending customer email notification"
+      "Appointment created, sending customer email notification",
     );
 
     try {
@@ -115,17 +115,17 @@ export default class CustomerEmailNotificationConnectedApp
         appointment,
         confirmed ? "confirmed" : "pending",
         "newRequest",
-        confirmed
+        confirmed,
       );
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, confirmed },
-        "Successfully sent customer email notification for new appointment"
+        "Successfully sent customer email notification for new appointment",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, error },
-        "Error sending customer email notification for new appointment"
+        "Error sending customer email notification for new appointment",
       );
 
       this.props.update({
@@ -141,12 +141,12 @@ export default class CustomerEmailNotificationConnectedApp
   public async onAppointmentStatusChanged(
     appData: ConnectedAppData,
     appointment: Appointment,
-    newStatus: AppointmentStatus
+    newStatus: AppointmentStatus,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, newStatus },
-      "Appointment status changed, sending customer email notification"
+      "Appointment status changed, sending customer email notification",
     );
 
     try {
@@ -154,7 +154,7 @@ export default class CustomerEmailNotificationConnectedApp
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, newStatus },
-        "Successfully sent customer email notification for status change"
+        "Successfully sent customer email notification for status change",
       );
     } catch (error: any) {
       logger.error(
@@ -164,7 +164,7 @@ export default class CustomerEmailNotificationConnectedApp
           newStatus,
           error,
         },
-        "Error sending customer email notification for status change"
+        "Error sending customer email notification for status change",
       );
 
       this.props.update({
@@ -181,7 +181,7 @@ export default class CustomerEmailNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newTime: Date,
-    newDuration: number
+    newDuration: number,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     logger.debug(
@@ -191,7 +191,7 @@ export default class CustomerEmailNotificationConnectedApp
         newTime: newTime.toISOString(),
         newDuration,
       },
-      "Appointment rescheduled, sending customer email notification"
+      "Appointment rescheduled, sending customer email notification",
     );
 
     try {
@@ -205,7 +205,7 @@ export default class CustomerEmailNotificationConnectedApp
         appData,
         newAppointment,
         "rescheduled",
-        "rescheduled"
+        "rescheduled",
       );
 
       logger.info(
@@ -215,7 +215,7 @@ export default class CustomerEmailNotificationConnectedApp
           newTime: newTime.toISOString(),
           newDuration,
         },
-        "Successfully sent customer email notification for rescheduled appointment"
+        "Successfully sent customer email notification for rescheduled appointment",
       );
     } catch (error: any) {
       logger.error(
@@ -226,7 +226,7 @@ export default class CustomerEmailNotificationConnectedApp
           newDuration,
           error,
         },
-        "Error sending customer email notification for rescheduled appointment"
+        "Error sending customer email notification for rescheduled appointment",
       );
 
       this.props.update({
@@ -246,7 +246,7 @@ export default class CustomerEmailNotificationConnectedApp
     initiator:
       | keyof CustomerEmailNotificationConfiguration["templates"]
       | "newRequest",
-    forceRequest?: boolean
+    forceRequest?: boolean,
   ) {
     const logger = this.loggerFactory("sendNotification");
     logger.debug(
@@ -257,7 +257,7 @@ export default class CustomerEmailNotificationConnectedApp
         initiator,
         forceRequest,
       },
-      "Sending customer email notification"
+      "Sending customer email notification",
     );
 
     try {
@@ -267,7 +267,7 @@ export default class CustomerEmailNotificationConnectedApp
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
-        "Retrieved configuration for email notification"
+        "Retrieved configuration for email notification",
       );
 
       const args = getArguments({
@@ -283,7 +283,7 @@ export default class CustomerEmailNotificationConnectedApp
       if (!data.event.templateId) {
         logger.warn(
           { appId: appData._id, appointmentId: appointment._id, status },
-          "No event template ID configured, skipping email notification"
+          "No event template ID configured, skipping email notification",
         );
         return;
       }
@@ -294,7 +294,7 @@ export default class CustomerEmailNotificationConnectedApp
           appointmentId: appointment._id,
           eventTemplateId: data.event.templateId,
         },
-        "Getting event template"
+        "Getting event template",
       );
 
       const eventTemplate = await this.props.services
@@ -307,14 +307,14 @@ export default class CustomerEmailNotificationConnectedApp
             appointmentId: appointment._id,
             eventTemplateId: data.event.templateId,
           },
-          "Event template not found"
+          "Event template not found",
         );
         return;
       }
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
-        "Rendering event template"
+        "Rendering event template",
       );
 
       const renderedEventTemplate = await renderToStaticMarkup({
@@ -327,19 +327,19 @@ export default class CustomerEmailNotificationConnectedApp
         appointment,
         templateSafeWithError(data.event.summary, args),
         renderedEventTemplate,
-        forceRequest ? "REQUEST" : AppointmentStatusToICalMethodMap[status]
+        forceRequest ? "REQUEST" : AppointmentStatusToICalMethodMap[status],
       );
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id, status },
-        "Generated event calendar content"
+        "Generated event calendar content",
       );
 
       const { subject, templateId } = data.templates[status];
       if (!templateId) {
         logger.warn(
           { appId: appData._id, appointmentId: appointment._id, status },
-          "No email template ID configured for status, skipping email notification"
+          "No email template ID configured for status, skipping email notification",
         );
         return;
       }
@@ -351,7 +351,7 @@ export default class CustomerEmailNotificationConnectedApp
           templateId,
           subject,
         },
-        "Getting email template"
+        "Getting email template",
       );
 
       const template = await this.props.services
@@ -360,14 +360,14 @@ export default class CustomerEmailNotificationConnectedApp
       if (!template) {
         logger.error(
           { appId: appData._id, appointmentId: appointment._id, templateId },
-          "Email template not found"
+          "Email template not found",
         );
         return;
       }
 
       logger.debug(
         { appId: appData._id, appointmentId: appointment._id },
-        "Rendering email template"
+        "Rendering email template",
       );
 
       const renderedTemplate = await renderToStaticMarkup({
@@ -381,7 +381,7 @@ export default class CustomerEmailNotificationConnectedApp
           appointmentId: appointment._id,
           customerEmail: appointment.fields.email,
         },
-        "Sending email notification"
+        "Sending email notification",
       );
 
       await this.props.services.NotificationService().sendEmail({
@@ -408,12 +408,12 @@ export default class CustomerEmailNotificationConnectedApp
           status,
           customerEmail: appointment.fields.email,
         },
-        "Successfully sent customer email notification"
+        "Successfully sent customer email notification",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, status, error },
-        "Error sending customer email notification"
+        "Error sending customer email notification",
       );
       throw error;
     }

@@ -14,13 +14,13 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
       optionsCount: data.options.length,
       smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
     },
-    "Updating booking configuration"
+    "Updating booking configuration",
   );
 
   try {
     await ServicesContainer.ConfigurationService().setConfiguration(
       "booking",
-      data
+      data,
     );
 
     actionLogger.debug(
@@ -28,7 +28,7 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
         optionsCount: data.options.length,
         smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
       },
-      "Booking configuration updated successfully"
+      "Booking configuration updated successfully",
     );
   } catch (error) {
     actionLogger.error(
@@ -37,7 +37,7 @@ export async function updateBookingConfiguration(data: BookingConfiguration) {
         smartSchedule: !!data.smartSchedule?.allowSmartSchedule,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update booking configuration"
+      "Failed to update booking configuration",
     );
     throw error;
   }

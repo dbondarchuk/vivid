@@ -14,7 +14,7 @@ export async function createPageFooter(pageFooter: PageFooterUpdateModel) {
     {
       pageFooterName: pageFooter.name,
     },
-    "Creating new page footer"
+    "Creating new page footer",
   );
 
   try {
@@ -26,7 +26,7 @@ export async function createPageFooter(pageFooter: PageFooterUpdateModel) {
         pageId: result._id,
         pageFooterName: pageFooter.name,
       },
-      "Page footer created successfully"
+      "Page footer created successfully",
     );
 
     return result;
@@ -36,7 +36,7 @@ export async function createPageFooter(pageFooter: PageFooterUpdateModel) {
         pageFooterName: pageFooter.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create page footer"
+      "Failed to create page footer",
     );
     throw error;
   }
@@ -44,7 +44,7 @@ export async function createPageFooter(pageFooter: PageFooterUpdateModel) {
 
 export async function updatePageFooter(
   _id: string,
-  update: PageFooterUpdateModel
+  update: PageFooterUpdateModel,
 ) {
   const actionLogger = logger("updatePageFooter");
 
@@ -53,7 +53,7 @@ export async function updatePageFooter(
       pageId: _id,
       pageFooterName: update.name,
     },
-    "Updating page footer"
+    "Updating page footer",
   );
 
   try {
@@ -64,7 +64,7 @@ export async function updatePageFooter(
         pageId: _id,
         pageFooterName: update.name,
       },
-      "Page footer updated successfully"
+      "Page footer updated successfully",
     );
 
     return okStatus;
@@ -75,7 +75,7 @@ export async function updatePageFooter(
         pageFooterName: update.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update page footer"
+      "Failed to update page footer",
     );
     throw error;
   }
@@ -88,7 +88,7 @@ export async function deletePageFooter(_id: string) {
     {
       pageId: _id,
     },
-    "Deleting page footer"
+    "Deleting page footer",
   );
 
   try {
@@ -105,7 +105,7 @@ export async function deletePageFooter(_id: string) {
         pageId: _id,
         pageFooterName: pageFooter.name,
       },
-      "Page footer deleted successfully"
+      "Page footer deleted successfully",
     );
 
     return okStatus;
@@ -115,7 +115,7 @@ export async function deletePageFooter(_id: string) {
         pageId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete page footer"
+      "Failed to delete page footer",
     );
     throw error;
   }
@@ -129,7 +129,7 @@ export async function deleteSelectedPageFooters(ids: string[]) {
       pageIds: ids,
       count: ids.length,
     },
-    "Deleting selected page footers"
+    "Deleting selected page footers",
   );
 
   try {
@@ -140,7 +140,7 @@ export async function deleteSelectedPageFooters(ids: string[]) {
         pageIds: ids,
         count: ids.length,
       },
-      "Selected page footers deleted successfully"
+      "Selected page footers deleted successfully",
     );
 
     return okStatus;
@@ -151,7 +151,7 @@ export async function deleteSelectedPageFooters(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected page footers"
+      "Failed to delete selected page footers",
     );
     throw error;
   }
@@ -165,14 +165,14 @@ export async function checkUniquePageFooterName(name: string, _id?: string) {
       pageFooterName: name,
       excludeId: _id,
     },
-    "Checking page footer name uniqueness"
+    "Checking page footer name uniqueness",
   );
 
   try {
     const result =
       await ServicesContainer.PagesService().checkUniquePageFooterName(
         name,
-        _id
+        _id,
       );
 
     actionLogger.debug(
@@ -181,7 +181,7 @@ export async function checkUniquePageFooterName(name: string, _id?: string) {
         excludeId: _id,
         isUnique: result,
       },
-      "Page footer name uniqueness check completed"
+      "Page footer name uniqueness check completed",
     );
 
     return result;
@@ -192,7 +192,7 @@ export async function checkUniquePageFooterName(name: string, _id?: string) {
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check page footer name uniqueness"
+      "Failed to check page footer name uniqueness",
     );
     throw error;
   }

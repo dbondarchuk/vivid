@@ -12,7 +12,7 @@ import {
 // Helper function to check if a style is allowed for a block
 export function isStyleAllowed(
   styleName: AllStylesNames,
-  support?: StyleSupport
+  support?: StyleSupport,
 ): boolean {
   if (!support) return true;
 
@@ -54,7 +54,7 @@ export function filterStyleDefinitions<
   }
 
   const result = Object.fromEntries(
-    keys.map((k) => [k, allStyles.find((s) => s.name === k)!])
+    keys.map((k) => [k, allStyles.find((s) => s.name === k)!]),
   ) as Pick<typeof ALL_STYLES, FinalKeys>;
 
   return result;
@@ -62,7 +62,7 @@ export function filterStyleDefinitions<
 
 // Main function to build styles schema
 export function getStylesSchema<T extends BaseStyleDictionary>(
-  styleDefinitions: StyleDictionary<T>
+  styleDefinitions: StyleDictionary<T>,
 ) {
   const baseSchema = Object.values(styleDefinitions).reduce((map, style) => {
     // map[style.name] = z.object({
@@ -81,7 +81,7 @@ export function getStylesSchema<T extends BaseStyleDictionary>(
           value: style.schema,
           breakpoint: z.array(zBreakpoint).optional().nullable(),
           state: z.array(zStateWithTarget).optional().nullable(),
-        })
+        }),
       )
       .optional()
       .nullable();
@@ -113,7 +113,7 @@ export const renderRawNumberWithUnitCss = (value: NumberValueWithUnit) => {
   return `${value.value}${value.unit}`;
 };
 export const renderRawNumberWithUnitOrKeywordCss = <T extends string>(
-  value: NumberValueWithUnitOrKeyword<T> | null | undefined
+  value: NumberValueWithUnitOrKeyword<T> | null | undefined,
 ): string => {
   if (value === null || typeof value === "undefined") {
     return "auto";

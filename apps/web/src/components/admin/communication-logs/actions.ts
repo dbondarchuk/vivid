@@ -22,7 +22,7 @@ export const clearAllCommunicationLogs = async () => {
       {
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to clear all communication logs"
+      "Failed to clear all communication logs",
     );
     throw error;
   }
@@ -36,7 +36,7 @@ export const clearSelectedCommunicationLogs = async (ids: string[]) => {
       logIds: ids,
       count: ids.length,
     },
-    "Clearing selected communication logs"
+    "Clearing selected communication logs",
   );
 
   try {
@@ -47,7 +47,7 @@ export const clearSelectedCommunicationLogs = async (ids: string[]) => {
         logIds: ids,
         count: ids.length,
       },
-      "Selected communication logs cleared successfully"
+      "Selected communication logs cleared successfully",
     );
 
     return okStatus;
@@ -58,7 +58,7 @@ export const clearSelectedCommunicationLogs = async (ids: string[]) => {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to clear selected communication logs"
+      "Failed to clear selected communication logs",
     );
     throw error;
   }

@@ -45,7 +45,7 @@ export const TextInput: React.FC<Props> = ({
       setValue(value);
       onChange(value);
     },
-    [onChange]
+    [onChange],
   );
 
   return (
