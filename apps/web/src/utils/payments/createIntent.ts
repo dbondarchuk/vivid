@@ -95,12 +95,14 @@ export const createOrUpdateIntent = async (
     "Creating or updating intent",
   );
 
-  const intent = intentId
+  const intentResult = intentId
     ? await ServicesContainer.PaymentsService().updateIntent(intentId, {
         ...intentUpdate,
         status: "created",
       })
     : await ServicesContainer.PaymentsService().createIntent(intentUpdate);
+
+  const { request: _, ...intent } = intentResult;
 
   logger.debug(
     { intent, isUpdating: !!intentId },
