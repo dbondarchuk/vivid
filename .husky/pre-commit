@@ -1,1 +1,2 @@
+yarn check-translations
 yarn lint-staged
