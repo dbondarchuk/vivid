@@ -655,11 +655,7 @@
         "stickyHeaderDescription": "Should header move with the page scroll",
         "headerShadow": "Header shadow",
         "selectShadowType": "Select shadow type",
-        "menu": "Menu",
-        "toasts": {
-          "changesSaved": "Your changes were saved.",
-          "requestError": "There was a problem with your request."
-        }
+        "menu": "Menu"
       },
       "shadowType": {
         "none": "None",

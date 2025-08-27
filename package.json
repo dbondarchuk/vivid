@@ -6,14 +6,15 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run check-translations && turbo run build",
     "start": "turbo run start",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migration": "migrate-mongo",
     "migration:up": "migrate-mongo up",
-    "migration:down": "migrate-mongo down"
+    "migration:down": "migrate-mongo down",
+    "check-translations": "turbo run check-translations -- "
   },
   "devDependencies": {
     "migrate-mongo": "^12.1.3",

@@ -93,6 +93,7 @@
         "colors": "Кольори",
         "effects": "Ефекти",
         "border": "Рамка",
+        "content": "Контент",
         "misc": "Різноманітне"
       },
       "properties": {
@@ -1067,14 +1068,6 @@
           "large": "Великий",
           "x-large": "Дуже великий",
           "huge": "Огромний"
-        },
-        "backgroundColors": {
-          "none": "Немає",
-          "muted": "Вимкнений",
-          "accent": "Акцент",
-          "foreground": "Текст",
-          "primary": "Основний",
-          "secondary": "Додатковий"
         }
       },
       "conditionalContainer": {
@@ -1315,33 +1308,13 @@
         "shape": "Форма",
         "imageUrl": "URL зображення",
         "alt": "Альтернативний текст",
-        "shortcuts": {
-          "size": "Розмір",
-          "shape": "Форма",
-          "alignment": "Вирівнювання",
-          "padding": "Внутрішній відступ"
-        },
-        "sizes": {
-          "small": "Малий",
-          "medium": "Середній",
-          "large": "Великий",
-          "x-large": "Дуже великий"
-        },
         "shapes": {
           "circle": "Коло",
           "square": "Квадрат",
           "rounded": "Закруглений"
         },
-        "alignments": {
-          "left": "Ліворуч",
-          "center": "По центру",
-          "right": "Праворуч"
-        },
-        "paddings": {
-          "none": "Немає",
-          "small": "Малий",
-          "medium": "Середній",
-          "large": "Великий"
+        "validation": {
+          "size": "Розмір повинен бути цілим числом і більше 0"
         }
       },
       "button": {

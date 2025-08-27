@@ -7,7 +7,8 @@
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
     "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix",
+    "check-translations": "node scripts/check-translations.js"
   },
   "exports": {
     ".": "./src/index.ts",
