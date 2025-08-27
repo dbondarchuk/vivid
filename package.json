@@ -6,7 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run check-translations && turbo run build",
+    "build": "turbo run build",
+    "prebuild": "turbo run check-translations && turbo run lint",
     "start": "turbo run start",
     "dev": "turbo run dev",
     "lint": "turbo run lint --",
