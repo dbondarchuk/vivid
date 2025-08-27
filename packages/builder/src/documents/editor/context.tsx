@@ -3,6 +3,7 @@
 import z from "zod";
 import { create, StoreApi, UseBoundStore, useStore } from "zustand";
 
+import { DeepOmit } from "@vivid/types";
 import { deepEqual } from "@vivid/utils";
 import {
   createContext,
@@ -11,6 +12,7 @@ import {
   useContext,
   useRef,
 } from "react";
+import { useCookies } from "react-cookie";
 import { validateBlocks } from "../helpers/blocks";
 import {
   BuilderSchema,
@@ -24,7 +26,6 @@ import {
 } from "./core";
 import { EditorHistory, EditorHistoryEntry } from "./history";
 import { editorHistoryReducer } from "./reducers";
-import { DeepOmit } from "@vivid/types";
 
 export type ViewportSize =
   // | "original"
@@ -51,6 +52,12 @@ export type EditorBlockIndexes = {
   };
 };
 
+const DEFAULT_SCREEN_SIZE = "laptop";
+const SCREEN_SIZE_STORAGE_KEY = "builder-screen-size";
+
+type View = "editor" | "preview";
+const DEFAULT_VIEW: View = "editor";
+
 type EditorState = {
   blocks: EditorDocumentBlocksDictionary<any>;
   readerBlocks: ReaderDocumentBlocksDictionary<any>;
@@ -71,11 +78,13 @@ type EditorState = {
   onChange?: (document: TEditorConfiguration) => void;
 
   selectedBlockId: string | null;
+  selectedView: View;
+  showBlocksPanel: boolean;
   selectedSidebarTab: "block-configuration" | "styles";
   selectedScreenSize: ViewportSize;
   fullScreen: boolean;
 
-  inspectorDrawerOpen: boolean;
+  toggleInspectorDrawer: () => void;
   activeOverBlockContextId: string | null;
   activeDragBlockId: string | null;
   activeDragBlockTemplate: TEditorBlock | null;
@@ -89,16 +98,18 @@ type EditorState = {
   actions: {
     dispatch: (action: EditorHistoryEntry) => void;
     setSelectedBlockId: (selectedBlockId: string | null) => void;
+    setShowBlocksPanel: (showBlocksPanel: boolean) => void;
+    toggleShowBlocksPanel: () => void;
     setSelectedSidebarTab: (
       selectedSidebarTab: "block-configuration" | "styles"
     ) => void;
     setSelectedScreenSize: (selectedScreenSize: ViewportSize) => void;
     setFullScreen: (fullScreen: boolean) => void;
     toggleFullScreen: () => void;
-    setInspectorDrawerOpen: (inspectorDrawerOpen: boolean) => void;
-    toggleInspectorDrawerOpen: () => void;
+    setToggleInspectorDrawer: (toggleInspectorDrawer: () => void) => void;
     setDisableAnimation: (disableAnimation: boolean) => void;
     toggleDisableAnimation: () => void;
+    setSelectedView: (fn: (prev: View) => View) => void;
     setActiveDragBlockId: (
       activeDragBlockId: string | null,
       activeDragBlockTemplate?: TEditorBlock | null
@@ -131,22 +142,31 @@ type EditorState = {
   };
 };
 
-const useCreateEditorStateStore = ({
+const createEditorStateStore = ({
   blocks,
   readerBlocks,
   rootBlock,
   document,
   schemas,
+  defaultScreenSize,
+  persistScreenSize,
 }: {
   blocks: EditorDocumentBlocksDictionary<any>;
   readerBlocks: ReaderDocumentBlocksDictionary<any>;
   rootBlock: TEditorBlock;
   schemas: BuilderSchema;
   document?: TEditorConfiguration;
+  defaultScreenSize?: ViewportSize;
+  persistScreenSize?: (screenSize: ViewportSize) => void;
 }) => {
   const defaultDocument = document || rootBlock;
   const defaultRootBlock = defaultDocument || rootBlock;
   const initialIndexes = buildIndexes(defaultDocument, schemas);
+
+  // const [cookie, setCookie] = useCookies([
+  //   SCREEN_SIZE_STORAGE_KEY,
+  //   INSPECTOR_DRAWER_OPEN_STORAGE_KEY,
+  // ]);
 
   return create<EditorState>((set, get) => ({
     document: defaultDocument,
@@ -169,13 +189,15 @@ const useCreateEditorStateStore = ({
       index: 0,
     },
     selectedBlockId: null,
+    showBlocksPanel: false,
     selectedSidebarTab: "styles",
+    selectedView: DEFAULT_VIEW,
     // selectedScreenSize: "original",
-    selectedScreenSize: "laptop",
+    selectedScreenSize: defaultScreenSize || DEFAULT_SCREEN_SIZE,
     fullScreen: false,
     indexes: initialIndexes,
     templateBlockIndexes: null,
-    inspectorDrawerOpen: true,
+    toggleInspectorDrawer: () => {},
     activeDragBlockId: null,
     activeDragBlockTemplate: null,
     activeOverBlockContextId: null,
@@ -184,6 +206,12 @@ const useCreateEditorStateStore = ({
       setSelectedBlockId: (selectedBlockId: string | null) => {
         set({ selectedBlockId });
       },
+      setShowBlocksPanel: (showBlocksPanel: boolean) => {
+        set({ showBlocksPanel });
+      },
+      toggleShowBlocksPanel: () => {
+        set({ showBlocksPanel: !get().showBlocksPanel });
+      },
       setSelectedSidebarTab: (
         selectedSidebarTab: "block-configuration" | "styles"
       ) => {
@@ -191,6 +219,7 @@ const useCreateEditorStateStore = ({
       },
       setSelectedScreenSize: (selectedScreenSize: ViewportSize) => {
         set({ selectedScreenSize });
+        persistScreenSize?.(selectedScreenSize);
       },
       setFullScreen: (fullScreen: boolean) => {
         set({ fullScreen });
@@ -198,11 +227,11 @@ const useCreateEditorStateStore = ({
       toggleFullScreen: () => {
         set({ fullScreen: !get().fullScreen });
       },
-      setInspectorDrawerOpen: (inspectorDrawerOpen: boolean) => {
-        set({ inspectorDrawerOpen });
+      setSelectedView: (fn: (prev: View) => View) => {
+        set({ selectedView: fn(get().selectedView) });
       },
-      toggleInspectorDrawerOpen: () => {
-        set({ inspectorDrawerOpen: !get().inspectorDrawerOpen });
+      setToggleInspectorDrawer: (toggleInspectorDrawer: () => void) => {
+        set({ toggleInspectorDrawer });
       },
       setDisableAnimation: (disableAnimation: boolean) => {
         set({ disableAnimation });
@@ -230,22 +259,26 @@ const useCreateEditorStateStore = ({
           index: number;
         } | null
       ) => {
-        // if (!activeOverBlock) {
-        //   set({ activeOverBlockContextId: null });
-        //   return;
-        // }
+        if (!activeOverBlock) {
+          set({ activeOverBlockContextId: null });
+          return;
+        }
 
-        // const currentDragBlock = get().activeDragBlockId;
-        // if (!currentDragBlock) {
-        //   set({ activeOverBlockContextId: null });
-        //   return;
-        // }
+        const currentDragBlockId = get().activeDragBlockId;
+        if (!currentDragBlockId) {
+          set({ activeOverBlockContextId: null });
+          return;
+        }
 
-        // const hierarchy = getBlockHierarchy(currentDragBlock, get().indexes);
-        // if (hierarchy?.some((block) => block.id === activeOverBlock.blockId)) {
-        //   set({ activeOverBlockContextId: null });
-        //   return;
-        // }
+        const hierarchy = getBlockHierarchy(
+          activeOverBlock.blockId,
+          get().indexes
+        );
+
+        if (hierarchy?.some((block) => block.id === currentDragBlockId)) {
+          set({ activeOverBlockContextId: null });
+          return;
+        }
 
         set({
           activeOverBlockContextId: `${activeOverBlock?.blockId}/${activeOverBlock?.property}/${activeOverBlock?.index}`,
@@ -638,7 +671,7 @@ function buildIndexes(
   return indexes;
 }
 
-export type EditorStateStore = ReturnType<typeof useCreateEditorStateStore>;
+export type EditorStateStore = ReturnType<typeof createEditorStateStore>;
 
 const EditorStateContext = createContext<UseBoundStore<
   StoreApi<EditorState>
@@ -654,9 +687,16 @@ export const EditorStateProvider: FC<
   }>
 > = ({ children, ...props }) => {
   const storeRef = useRef<EditorStateStore | null>(null);
+  const [cookies, setCookies] = useCookies([SCREEN_SIZE_STORAGE_KEY]);
 
   if (!storeRef.current) {
-    storeRef.current = useCreateEditorStateStore(props);
+    storeRef.current = createEditorStateStore({
+      ...props,
+      defaultScreenSize: cookies[SCREEN_SIZE_STORAGE_KEY],
+      persistScreenSize: (screenSize) => {
+        setCookies(SCREEN_SIZE_STORAGE_KEY, screenSize);
+      },
+    });
   }
 
   return (
@@ -773,6 +813,21 @@ export function useSelectedBlock() {
 export function useSelectedScreenSize() {
   const store = useEditorStateStore();
   return useStore(store, (s) => s.selectedScreenSize);
+}
+
+export function useShowBlocksPanel() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.showBlocksPanel);
+}
+
+export function useSetShowBlocksPanel() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.actions.setShowBlocksPanel);
+}
+
+export function useToggleShowBlocksPanel() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.actions.toggleShowBlocksPanel);
 }
 
 export function useSelectedSidebarTab() {
@@ -979,9 +1034,24 @@ export function useEditorStateErrors() {
   );
 }
 
-export function useToggleInspectorDrawerOpen() {
+export function useSelectedView() {
   const store = useEditorStateStore();
-  return useStore(store, (s) => s.actions.toggleInspectorDrawerOpen);
+  return useStore(store, (s) => s.selectedView);
+}
+
+export function useSetSelectedView() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.actions.setSelectedView);
+}
+
+export function useToggleInspectorDrawer() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.toggleInspectorDrawer);
+}
+
+export function useSetToggleInspectorDrawer() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.actions.setToggleInspectorDrawer);
 }
 
 export function useSetSelectedScreenSize() {

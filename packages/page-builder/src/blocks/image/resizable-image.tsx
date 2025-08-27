@@ -107,6 +107,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
     const handleMouseDown = (e: React.MouseEvent, handle: string) => {
       if (!imageRef.current) return;
       e.preventDefault();
+      e.stopPropagation();
       setResizing(() => true);
       setActiveHandle(() => handle);
 
@@ -193,14 +194,20 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
     }, [debouncedNewDimensions]);
 
     // Handle mouse up to stop resizing
-    const handleMouseUp = useCallback(() => {
-      if (!resizing) return;
+    const handleMouseUp = useCallback(
+      (e: MouseEvent) => {
+        if (!resizing) return;
 
-      setResizing(false);
-      setActiveHandle(null);
-      documentOrPortal.removeEventListener("mousemove", handleMouseMove);
-      documentOrPortal.removeEventListener("mouseup", handleMouseUp);
-    }, [resizing]);
+        setResizing(false);
+        setActiveHandle(null);
+        e.stopPropagation();
+        e.preventDefault();
+
+        documentOrPortal.removeEventListener("mousemove", handleMouseMove);
+        documentOrPortal.removeEventListener("mouseup", handleMouseUp);
+      },
+      [resizing]
+    );
 
     // Clean up event listeners on unmount
     useEffect(() => {
@@ -257,6 +264,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
         if (resizing) return;
 
         e.stopPropagation();
+        e.preventDefault();
         setIsDraggingImage(true);
         dragStartPosRef.current = { x: e.clientX, y: e.clientY };
         dragStartObjectPosRef.current = { ...objectPosition };
@@ -301,12 +309,17 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
       [isDraggingImage, dimensions.width, dimensions.height, imageRef.current]
     );
 
-    const handleImageMouseUp = useCallback(() => {
-      if (isDraggingImage) {
-        setIsDraggingImage(false);
-        documentOrPortal.body.style.cursor = "default";
-      }
-    }, [isDraggingImage]);
+    const handleImageMouseUp = useCallback(
+      (e: MouseEvent) => {
+        if (isDraggingImage) {
+          setIsDraggingImage(false);
+          documentOrPortal.body.style.cursor = "default";
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      },
+      [isDraggingImage]
+    );
 
     // Add event listeners for image dragging
     useEffect(() => {

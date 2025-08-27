@@ -14,12 +14,19 @@ import {
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { CookiesProvider } from "../../../components/cookies-provider";
 import { PendingAppointmentsToastStream } from "./pending-appointments-toast-stream";
+import { cookies } from "next/headers";
+
+const SIDEBAR_COOKIE_NAME = "admin-sidebar-open";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const sidebarDefaultOpen =
+    cookieStore.get(SIDEBAR_COOKIE_NAME)?.value === "true";
+
   const { name, logo } =
     await ServicesContainer.ConfigurationService().getConfiguration("general");
 
@@ -76,7 +83,10 @@ export default async function DashboardLayout({
   return (
     <div className="flex">
       <ConfigProvider config={config}>
-        <SidebarProvider>
+        <SidebarProvider
+          defaultOpen={sidebarDefaultOpen}
+          cookieName={SIDEBAR_COOKIE_NAME}
+        >
           <BreadcrumbsProvider>
             <CookiesProvider>
               <NuqsAdapter>

@@ -78,8 +78,13 @@ export const ToolbarViewportGroup = () => {
             tooltip={t("baseBuilder.builderToolbar.view.title")}
             isDropdown
             className="text-xs px-2"
+            // suppressHydrationWarning for persisted state
+            suppressHydrationWarning
           >
             <ViewportIcon
+              // suppressHydrationWarning for persisted state
+              // @ts-expect-error - suppressHydrationWarning is not a valid prop for the Icon component
+              suppressHydrationWarning
               className={cn(
                 "size-4",
                 VIEWPORT_SIZES[selectedScreenSize].className

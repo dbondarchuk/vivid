@@ -42,14 +42,18 @@ export const PageBuilder = deepMemo(
     footer,
     notAllowedBlocks,
   }: PageBuilderProps) => {
-    const headerComponent = header ? (
-      <Header
-        name={header.name}
-        logo={header.logo}
-        config={header.config}
-        className="-top-8"
-      />
-    ) : null;
+    const headerComponent = useMemo(
+      () =>
+        header ? (
+          <Header
+            name={header.name}
+            logo={header.logo}
+            config={header.config}
+            className="-top-8"
+          />
+        ) : null,
+      [header]
+    );
 
     const editorBlocks = useMemo(() => {
       if (notAllowedBlocks) {

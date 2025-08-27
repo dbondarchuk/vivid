@@ -1,4 +1,5 @@
 import React from "react";
+import type { VariantProps } from "class-variance-authority";
 
 import { withProps } from "@udecode/cn";
 import {
@@ -102,13 +103,15 @@ import { TableElementStatic } from "../plate-ui/table-element-static";
 import { TableRowElementStatic } from "../plate-ui/table-row-element-static";
 import { TocElementStatic } from "../plate-ui/toc-element-static";
 import { ToggleElementStatic } from "../plate-ui/toggle-element-static";
+import { cn } from "@vivid/ui";
+import { editorVariants } from "../plate-ui/editor-static";
 
 export type PlateStaticEditorProps = {
   value?: Value;
   style?: React.CSSProperties;
   className?: string;
   id?: string;
-};
+} & VariantProps<typeof editorVariants>;
 
 export const createPlateStaticEditor = (
   value?: string | Value | ((editor: SlateEditor) => Value) | undefined,
@@ -225,6 +228,7 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
   style,
   className,
   id,
+  variant,
 }) => {
   const editorStatic = createPlateStaticEditor(value);
 
@@ -276,7 +280,7 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
       editor={editorStatic}
       components={components}
       style={style}
-      className={className}
+      className={cn(editorVariants({ variant }), className)}
       id={id}
     />
   );

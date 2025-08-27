@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useCallback, useEffect } from "react";
+import React, { memo, useCallback, useEffect, useRef } from "react";
 
 import { cva } from "class-variance-authority";
 
@@ -17,6 +17,7 @@ import {
   useBlockType,
   useIsActiveHierarchyOverDroppable,
   useIsSelectedBlock,
+  useSelectedView,
   useSetSelectedBlockId,
 } from "../../../editor/context";
 
@@ -162,6 +163,8 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
     const parentBlockType = useBlockType(parentBlockId);
     const blocks = useBlocks();
 
+    const isEditorView = useSelectedView() === "editor";
+
     const setSelectedBlockId = useSetSelectedBlockId();
 
     const onClick = useCallback(
@@ -192,17 +195,16 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
       }
     }, [isSelected, ref, blockElement]);
 
-    const {
-      ref: sortableRef,
-      handleRef,
-      isDragging,
-    } = useSortable({
+    const handleRef = useRef<HTMLButtonElement | null>(null);
+
+    const { ref: sortableRef, isDragging } = useSortable({
       id: blockId,
       index,
       group: `${parentBlockId}/${parentProperty}`,
       collisionPriority: depth,
       feedback: "clone",
       element: !disable?.drag ? ref : undefined,
+      handle: handleRef,
       accept: (draggable) => {
         if (!draggable.type) return false;
         const type = draggable.type as string;
@@ -287,21 +289,25 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
     return (
       <>
         {Element}
-        {!isOverlay && isSelected && !isDragging && (
+        {!isOverlay && isSelected && !isDragging && isEditorView && (
           <BlockNavPortal
             blockId={blockId}
             blockElement={ref?.current ?? blockElement}
             disable={disable}
           />
         )}
-        {!isOverlay && !disable?.drag && isSelected && !isDragging && (
-          <BlockHandlerPortal
-            blockId={blockId}
-            blockElement={ref?.current ?? blockElement}
-            isDragging={isDragging}
-            handleRef={handleRef}
-          />
-        )}
+        {!isOverlay &&
+          !disable?.drag &&
+          isSelected &&
+          !isDragging &&
+          isEditorView && (
+            <BlockHandlerPortal
+              blockId={blockId}
+              blockElement={ref?.current ?? blockElement}
+              isDragging={isDragging}
+              ref={handleRef}
+            />
+          )}
       </>
     );
   }
@@ -309,7 +315,6 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
 
 export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
   ({ children, ...rest }) => {
-    const blockId = useCurrentBlockId();
     const disable = useCurrentBlockDisableOptions();
 
     if (disable?.drag) {

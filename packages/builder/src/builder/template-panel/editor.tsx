@@ -1,5 +1,5 @@
 import { DragOverlay } from "@dnd-kit/react";
-import { deepMemo, TabsContent } from "@vivid/ui";
+import { cn, deepMemo, TabsContent } from "@vivid/ui";
 import { EditorBlock } from "../../documents/editor/block";
 import {
   useActiveDragBlock,
@@ -32,16 +32,18 @@ export const ActiveOverblockDebug = () => {
   );
 };
 
-export const Editor = ({
-  args,
-  readerBlocks,
-}: {
-  args: any;
-  readerBlocks: ReaderDocumentBlocksDictionary<any>;
-}) => {
+export const Editor = memo(({ selectedView }: { selectedView: string }) => {
   const rootBlockId = useRootBlockId();
+
+  // We are using forceMount to avoid the editor from being unmounted when the tab is not selected
+  // This is because the editor is a large component and we want to avoid the re-rendering of the editor when the tab is not selected
+  // This is a workaround to avoid the editor from being unmounted when the tab is not selected
   return (
-    <TabsContent value="editor" className="mt-0">
+    <TabsContent
+      value="editor"
+      className={cn("mt-0", selectedView !== "editor" && "hidden")}
+      forceMount
+    >
       <EditorBlock
         blockId={rootBlockId}
         index={0}
@@ -50,7 +52,7 @@ export const Editor = ({
       />
     </TabsContent>
   );
-};
+});
 
 export const BlockDragOverlay = memo(() => {
   const activeDragBlock = useActiveDragBlock();

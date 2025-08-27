@@ -3,10 +3,12 @@
 import {
   useCurrentBlock,
   useDispatchAction,
+  useIsCurrentBlockOverlay,
+  useIsSelectedBlock,
   usePortalContext,
   useSetCurrentBlockRef,
 } from "@vivid/builder";
-import { PlateEditor } from "@vivid/rte";
+import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
 import { cn, useDebounceCallback } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
@@ -17,6 +19,10 @@ export const TextEditor = ({ props, style }: TextProps) => {
   const currentBlock = useCurrentBlock<TextProps>();
   const value = currentBlock?.data?.props?.value;
   const dispatchAction = useDispatchAction();
+  const isSelected = useIsSelectedBlock(currentBlock?.id);
+  const isOverlay = useIsCurrentBlockOverlay();
+
+  const shouldShowEditor = isSelected && !isOverlay;
 
   const onChange = useDebounceCallback(
     (value: any) => {
@@ -52,17 +58,25 @@ export const TextEditor = ({ props, style }: TextProps) => {
         defaults={defaults}
         isEditor
       />
-      <PlateEditor
-        value={value ?? []}
-        onChange={onChange}
-        className={cn(
-          "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
-          className,
-          base?.className
-        )}
-        id={base?.id}
-        document={document}
-      />
+      {shouldShowEditor ? (
+        <PlateEditor
+          value={value ?? []}
+          onChange={onChange}
+          className={cn(
+            "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
+            className,
+            base?.className
+          )}
+          id={base?.id}
+          document={document}
+        />
+      ) : (
+        <PlateStaticEditor
+          value={value ?? []}
+          className={cn(className, base?.className)}
+          id={base?.id}
+        />
+      )}
     </>
   );
 };

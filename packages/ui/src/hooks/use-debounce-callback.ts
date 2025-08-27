@@ -28,7 +28,7 @@ export const useDebounceCallback = <T extends (...args: any[]) => any>(
         callback(...args);
       }, delay);
     },
-    [callback, delay, ...deps]
+    [delay, ...deps]
   ) as T;
 
   useEffect(() => {

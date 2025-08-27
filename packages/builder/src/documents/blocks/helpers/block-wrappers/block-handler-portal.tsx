@@ -1,34 +1,23 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import {
-  Button,
-  cn,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  useDebounceCallback,
-  useThrottleCallback,
-} from "@vivid/ui";
-import { GripVertical } from "lucide-react";
 import { useI18n } from "@vivid/i18n";
-import { usePortalContext } from "./portal-context";
+import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
+import { GripVertical } from "lucide-react";
+import React, { forwardRef, useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useBlockIndex, useIsActiveDragBlock } from "../../../editor/context";
+import { usePortalContext } from "./portal-context";
 
 interface BlockHandlerPortalProps {
   blockId: string;
   blockElement: HTMLElement | null;
   isDragging: boolean;
-  handleRef: (el: HTMLElement | null) => void;
 }
 
-export const BlockHandlerPortal: React.FC<BlockHandlerPortalProps> = ({
-  blockId,
-  blockElement,
-  isDragging,
-  handleRef,
-}) => {
+export const BlockHandlerPortal = forwardRef<
+  HTMLButtonElement,
+  BlockHandlerPortalProps
+>(({ blockId, blockElement, isDragging }, handleRef) => {
   const [position, setPosition] = useState({
     top: 0,
     left: 0,
@@ -121,4 +110,4 @@ export const BlockHandlerPortal: React.FC<BlockHandlerPortalProps> = ({
     </div>,
     body
   );
-};
+});

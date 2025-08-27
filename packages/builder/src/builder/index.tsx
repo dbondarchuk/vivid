@@ -1,13 +1,16 @@
 "use client";
 
-import { cn, SidebarInset, SidebarProvider } from "@vivid/ui";
+import { cn, SidebarInset, SidebarProvider, useSidebar } from "@vivid/ui";
+import { createPortal } from "react-dom";
+import { useEffect, useMemo } from "react";
+import { useCookies } from "react-cookie";
 import {
   EditorArgsContext,
   EditorStateProvider,
   useEditorStateErrors,
-  useEditorStateStore,
   useFullScreen,
   useResetDocument,
+  useSetToggleInspectorDrawer,
 } from "../documents/editor/context";
 import { TEditorBlock, TEditorConfiguration } from "../documents/editor/core";
 import {
@@ -17,7 +20,7 @@ import {
 } from "../documents/types";
 import { InspectorDrawer, SidebarTab } from "./inspector-drawer";
 import { TemplatePanel } from "./template-panel";
-import { useEffect } from "react";
+import { BuilderToolbar } from "./template-panel/toolbar/builder-toolbar";
 
 export type BuilderProps<T extends BaseZodDictionary> = {
   defaultValue?: TEditorConfiguration;
@@ -35,6 +38,71 @@ export type BuilderProps<T extends BaseZodDictionary> = {
   footer?: React.ReactNode;
 };
 
+const SIDEBAR_COOKIE_NAME = "builder-sidebar-open";
+
+const BuilderSidebarListener = () => {
+  const setToggleInspectorDrawer = useSetToggleInspectorDrawer();
+  const { toggleSidebar } = useSidebar();
+
+  useEffect(() => {
+    setToggleInspectorDrawer(toggleSidebar);
+  }, [toggleSidebar, setToggleInspectorDrawer]);
+
+  return null;
+};
+
+const BuilderSidebarProvider = ({
+  children,
+  sidebarWidth,
+}: {
+  children: React.ReactNode;
+  sidebarWidth: number;
+}) => {
+  const [cookies] = useCookies([SIDEBAR_COOKIE_NAME]);
+  const defaultOpen = cookies[SIDEBAR_COOKIE_NAME]?.toString() === "true";
+
+  return (
+    <SidebarProvider
+      cookieName={SIDEBAR_COOKIE_NAME}
+      defaultOpen={defaultOpen}
+      // suppressHydrationWarning for open/close state
+      suppressHydrationWarning
+      className={cn(
+        "!bg-transparent h-full min-h-full w-full justify-center relative"
+      )}
+      style={
+        {
+          "--sidebar-width": `${sidebarWidth}rem`,
+        } as React.CSSProperties
+      }
+    >
+      <BuilderSidebarListener />
+      {children}
+    </SidebarProvider>
+  );
+};
+
+const BuilderFullScreenProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const fullScreen = useFullScreen();
+
+  const Element = (
+    <div
+      className={cn(
+        "flex flex-col w-full h-full min-h-full",
+        fullScreen && "fixed inset-0 z-50 pointer-events-auto bg-background"
+      )}
+    >
+      {children}
+    </div>
+  );
+
+  return fullScreen ? createPortal(Element, document.body) : Element;
+};
+
 const BuilderInternal = ({
   defaultValue,
   onChange,
@@ -50,7 +118,6 @@ const BuilderInternal = ({
   const resetDocument = useResetDocument();
   const errors = useEditorStateErrors();
   const isValid = Object.keys(errors).length === 0;
-  const fullScreen = useFullScreen();
 
   useEffect(() => {
     onIsValidChange?.(isValid);
@@ -59,27 +126,20 @@ const BuilderInternal = ({
   useEffect(() => resetDocument(defaultValue, onChange), [key]);
 
   return (
-    <SidebarProvider
-      className={cn(
-        "!bg-transparent h-full min-h-full",
-        fullScreen && "fixed inset-0 z-20"
-      )}
-      style={
-        {
-          "--sidebar-width": `${sidebarWidth}rem`,
-        } as React.CSSProperties
-      }
-    >
-      <SidebarInset className="flex flex-col w-full h-full min-h-full" asDiv>
-        <TemplatePanel
-          args={args}
-          readerBlocks={readerBlocks}
-          header={header}
-          footer={footer}
-        />
-      </SidebarInset>
-      <InspectorDrawer extraTabs={extraTabs} />
-    </SidebarProvider>
+    <BuilderFullScreenProvider>
+      <BuilderToolbar args={args} />
+      <BuilderSidebarProvider sidebarWidth={sidebarWidth}>
+        <SidebarInset className="flex flex-col w-full h-full min-h-full" asDiv>
+          <TemplatePanel
+            args={args}
+            readerBlocks={readerBlocks}
+            header={header}
+            footer={footer}
+          />
+        </SidebarInset>
+        <InspectorDrawer extraTabs={extraTabs} />
+      </BuilderSidebarProvider>
+    </BuilderFullScreenProvider>
   );
 };
 

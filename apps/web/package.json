@@ -45,7 +45,6 @@
     "p-limit": "^6.2.0",
     "pino-http": "^10.5.0",
     "react": "19.0.0",
-    "react-cookie": "^8.0.1",
     "react-window": "^1.8.10",
     "rehype-pretty-code": "^0.14.0",
     "rehype-starry-night": "^2.2.0",

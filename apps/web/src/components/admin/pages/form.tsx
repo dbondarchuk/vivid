@@ -62,8 +62,6 @@ export const PageForm: React.FC<{
 }> = ({ initialData, config }) => {
   const t = useI18n("admin");
 
-  const isDirty = React.useRef(false);
-
   const cachedUniqueSlugCheck = useDebounceCacheFn(checkUniqueSlug, 300);
 
   const formSchema = React.useMemo(
@@ -256,6 +254,37 @@ export const PageForm: React.FC<{
     }
   }, [footerId]);
 
+  const pageHeader = useMemo(() => {
+    return header
+      ? {
+          config: header,
+          name: config.general.name,
+          logo: config.general.logo,
+        }
+      : undefined;
+  }, [header, config]);
+
+  const pageFooter = useMemo(() => {
+    return footer?.content ? (
+      <PageReader document={footer.content} args={args} />
+    ) : undefined;
+  }, [footer, args]);
+
+  const extraTabs = useMemo(() => {
+    return [
+      {
+        value: "page-settings",
+        label: (
+          <span className={cn(hasSettingsErrors && "text-destructive")}>
+            {t("pages.form.settingsTabLabel")}
+          </span>
+        ),
+        icon: <SettingsIcon size={16} />,
+        content: <PageSettingsPanel form={form} loading={loading} />,
+      },
+    ];
+  }, [form, loading, t, hasSettingsErrors]);
+
   return (
     <Form {...form}>
       <NavigationGuardDialog isDirty={isFormDirty} />
@@ -360,38 +389,9 @@ export const PageForm: React.FC<{
                       value={field.value}
                       onIsValidChange={onPageBuilderValidChange}
                       onChange={field.onChange}
-                      header={
-                        header
-                          ? {
-                              config: header,
-                              name: config.general.name,
-                              logo: config.general.logo,
-                            }
-                          : undefined
-                      }
-                      footer={
-                        footer?.content ? (
-                          <PageReader document={footer.content} args={args} />
-                        ) : undefined
-                      }
-                      extraTabs={[
-                        {
-                          value: "page-settings",
-                          label: (
-                            <span
-                              className={cn(
-                                hasSettingsErrors && "text-destructive"
-                              )}
-                            >
-                              {t("pages.form.settingsTabLabel")}
-                            </span>
-                          ),
-                          icon: <SettingsIcon size={16} />,
-                          content: (
-                            <PageSettingsPanel form={form} loading={loading} />
-                          ),
-                        },
-                      ]}
+                      header={pageHeader}
+                      footer={pageFooter}
+                      extraTabs={extraTabs}
                     />
                   </FormControl>
                   <FormMessage />

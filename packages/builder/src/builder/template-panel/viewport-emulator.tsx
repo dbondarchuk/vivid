@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
-import { cn, ScrollArea, ScrollBar } from "@vivid/ui";
+import { cn, ScrollArea, ScrollBar, Skeleton } from "@vivid/ui";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePortalContext } from "../../documents/blocks/helpers/block-wrappers/portal-context";
@@ -191,6 +191,12 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
                   maxHeight: "80vh",
                 }}
               >
+                {!iframeReady && (
+                  <Skeleton
+                    className="w-full h-full"
+                    id="viewport-emulator-skeleton"
+                  />
+                )}
                 <iframe
                   ref={iframeRef}
                   style={{
@@ -198,6 +204,7 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
                     height: "100%",
                     border: "none",
                     backgroundColor: "#fff",
+                    display: !iframeReady ? "none" : undefined,
                   }}
                   className="transition-all duration-300"
                   title={`${currentSize.name} Viewport`}

@@ -43,7 +43,7 @@ export const useThrottleCallback = <T extends (...args: Parameters<T>) => any>(
         }, remainingDelay);
       }
     },
-    [callback, delay, ...deps]
+    [delay, ...deps]
   ) as T;
 
   useEffect(() => {
