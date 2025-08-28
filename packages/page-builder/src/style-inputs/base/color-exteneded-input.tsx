@@ -33,23 +33,24 @@ export const ColorExtendedInput: React.FC<Props> = ({
   const isCustom = selectValue === "custom";
 
   React.useEffect(() => {
-    setValue(defaultValue);
+    if (value !== defaultValue) {
+      setValue(defaultValue);
+      setSelectValue(getSelectValue(defaultValue));
+    }
   }, [defaultValue, setValue]);
 
-  React.useEffect(() => {
-    setSelectValue(getSelectValue(value));
-  }, [value]);
+  const onSelectValueChange = React.useCallback(
+    (val: string) => {
+      setSelectValue(val);
 
-  React.useEffect(() => {
-    const newValue =
-      selectValue === "default"
-        ? null
-        : selectValue === "custom"
-          ? "0 0% 100%"
-          : selectValue;
-    setValue(newValue);
-    onChange(newValue as any as string);
-  }, [selectValue]);
+      const newValue =
+        val === "default" ? null : val === "custom" ? "0 0% 100%" : val;
+
+      setValue(newValue);
+      onChange(newValue as any as string);
+    },
+    [onChange],
+  );
 
   const renderOpenButton = () => {
     if (value) {
@@ -79,7 +80,7 @@ export const ColorExtendedInput: React.FC<Props> = ({
         <div className="flex flex-row gap-1 w-full">
           <Combobox
             value={selectValue}
-            onItemSelect={setSelectValue}
+            onItemSelect={onSelectValueChange}
             className="w-full flex-grow"
             size="sm"
             searchLabel={t("pageBuilder.styles.colors.custom")}

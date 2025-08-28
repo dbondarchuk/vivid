@@ -182,7 +182,7 @@ const createEditorStateStore = ({
         {
           type: "document",
           value: {
-            document: defaultDocument,
+            document: JSON.parse(JSON.stringify(defaultDocument)),
           },
         },
       ],
@@ -371,7 +371,7 @@ const createEditorStateStore = ({
               {
                 type: "document",
                 value: {
-                  document: newDocument,
+                  document: JSON.parse(JSON.stringify(newDocument)),
                 },
               },
             ],
@@ -387,6 +387,7 @@ const createEditorStateStore = ({
 
         if (!canRedoHistory(history)) return;
 
+        // We need to clone the original document to avoid mutating it
         const result = editorHistoryReducer(
           document,
           selectedBlockId,
@@ -412,15 +413,13 @@ const createEditorStateStore = ({
         onChange?.(result.document);
       },
       undoHistory: () => {
-        let {
-          originalDocument: document,
-          history,
-          selectedBlockId,
-          schemas,
-          onChange,
-        } = get();
+        let { originalDocument, history, selectedBlockId, schemas, onChange } =
+          get();
 
         if (!canUndoHistory(history)) return;
+
+        // We need to clone the original document to avoid mutating it
+        let document = JSON.parse(JSON.stringify(originalDocument));
 
         for (let i = 0; i < history.index; i++) {
           const result = editorHistoryReducer(

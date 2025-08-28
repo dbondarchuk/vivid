@@ -70,7 +70,10 @@ export const editorHistoryReducer = (
 
   switch (type) {
     case "document":
-      return { document: value.document, selectedBlockId };
+      return {
+        document: JSON.parse(JSON.stringify(value.document)),
+        selectedBlockId,
+      };
 
     case "delete-block": {
       // const parent = indexes[indexes[value.blockId]?.parentBlockId!];
