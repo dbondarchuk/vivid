@@ -31,7 +31,7 @@ export const InlineTextConfiguration = deepMemo(
         onBaseChange={onBaseChange}
       >
         {/* <TextInput
-        label={t("pageBuilder.blocks.simpleText.url")}
+        label={t("pageBuilder.blocks.InlineText.url")}
         defaultValue={data.props?.url ?? ""}
         onChange={(value) =>
           updateData({ ...data, props: { ...data.props, url: value } })

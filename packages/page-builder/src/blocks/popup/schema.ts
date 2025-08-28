@@ -85,12 +85,12 @@ export const PopupPropsDefaults = () =>
       title: {
         children: [
           {
-            type: "SimpleContainer",
+            type: "InlineContainer",
             data: {
               props: {
                 children: [
                   {
-                    type: "SimpleText",
+                    type: "InlineText",
                     data: {
                       props: { text: "Popup title" },
                     },
@@ -165,12 +165,12 @@ export const PopupPropsDefaults = () =>
       subtitle: {
         children: [
           {
-            type: "SimpleContainer",
+            type: "InlineContainer",
             data: {
               props: {
                 children: [
                   {
-                    type: "SimpleText",
+                    type: "InlineText",
                     data: {
                       props: { text: "Popup subtitle" },
                     },
@@ -199,14 +199,14 @@ export const PopupPropsDefaults = () =>
                         action: "close-current-popup",
                         children: [
                           {
-                            type: "SimpleContainer",
+                            type: "InlineContainer",
                             id: generateId(),
                             data: {
                               style: InlineContainerPropsDefaults.style,
                               props: {
                                 children: [
                                   {
-                                    type: "SimpleText",
+                                    type: "InlineText",
                                     id: generateId(),
                                     data: {
                                       props: { text: "Close" },

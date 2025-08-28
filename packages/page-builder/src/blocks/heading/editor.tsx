@@ -52,7 +52,7 @@ export function HeadingEditor({
             {...disable}
             parentBlockId={currentBlockId}
             parentProperty="content"
-            allowedTypes="SimpleContainer"
+            allowedTypes="InlineContainer"
           />
         )}
       </Element>

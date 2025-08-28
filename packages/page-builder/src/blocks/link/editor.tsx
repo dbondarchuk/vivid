@@ -46,7 +46,7 @@ export const LinkEditor = ({ props, style }: LinkProps) => {
             index={0}
             parentBlockId={currentBlock.id}
             parentProperty="content"
-            allowedTypes="SimpleContainer"
+            allowedTypes="InlineContainer"
           />
         )}
       </div>

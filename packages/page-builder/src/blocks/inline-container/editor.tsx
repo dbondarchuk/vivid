@@ -15,7 +15,7 @@ const ChildWrapper = memo(
   }) => <span className={className}>{children}</span>,
 );
 
-const allowOnly = ["SimpleText", "Icon", "Link"];
+const allowOnly = ["InlineText", "Icon", "Link"];
 
 export const InlineContainerEditor = ({
   style,

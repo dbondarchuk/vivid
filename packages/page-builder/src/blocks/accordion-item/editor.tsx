@@ -119,7 +119,7 @@ export const AccordionItemEditor = ({
                 index={0}
                 parentBlockId={currentBlock.id}
                 parentProperty="title"
-                allowedTypes="SimpleContainer"
+                allowedTypes="InlineContainer"
               />
             )}
           </div>

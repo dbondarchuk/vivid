@@ -123,13 +123,13 @@ export const PageHeroPropsDefaults = () =>
                 level: "h1",
                 children: [
                   {
-                    type: "SimpleContainer",
+                    type: "InlineContainer",
                     id: generateId(),
                     data: {
                       props: {
                         children: [
                           {
-                            type: "SimpleText",
+                            type: "InlineText",
                             id: generateId(),
                             data: {
                               props: { text: "Hello friend" },
@@ -168,13 +168,13 @@ export const PageHeroPropsDefaults = () =>
                 level: "h2",
                 children: [
                   {
-                    type: "SimpleContainer",
+                    type: "InlineContainer",
                     id: generateId(),
                     data: {
                       props: {
                         children: [
                           {
-                            type: "SimpleText",
+                            type: "InlineText",
                             id: generateId(),
                             data: {
                               props: { text: "Welcome to the page" },
@@ -217,14 +217,14 @@ export const PageHeroPropsDefaults = () =>
                       props: {
                         children: [
                           {
-                            type: "SimpleContainer",
+                            type: "InlineContainer",
                             id: generateId(),
                             data: {
                               style: InlineContainerPropsDefaults.style,
                               props: {
                                 children: [
                                   {
-                                    type: "SimpleText",
+                                    type: "InlineText",
                                     id: generateId(),
                                     data: {
                                       props: { text: "Click me" },

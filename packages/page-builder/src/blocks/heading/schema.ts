@@ -26,14 +26,14 @@ export const HeadingPropsDefaults = () =>
       level: DefaultHeadingLevel,
       children: [
         {
-          type: "SimpleContainer",
+          type: "InlineContainer",
           id: generateId(),
           data: {
             style: InlineContainerPropsDefaults.style,
             props: {
               children: [
                 {
-                  type: "SimpleText",
+                  type: "InlineText",
                   id: generateId(),
                   data: {
                     props: {

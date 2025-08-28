@@ -45,7 +45,7 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
             index={0}
             parentBlockId={currentBlock.id}
             parentProperty="content"
-            allowedTypes="SimpleContainer"
+            allowedTypes="InlineContainer"
           />
         )}
       </div>

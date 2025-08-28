@@ -68,7 +68,7 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
                   index={0}
                   parentBlockId={currentBlock.id}
                   parentProperty="title"
-                  allowedTypes="SimpleContainer"
+                  allowedTypes="InlineContainer"
                 />
               )}
             </div>
@@ -80,7 +80,7 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
                   index={0}
                   parentBlockId={currentBlock.id}
                   parentProperty="subtitle"
-                  allowedTypes="SimpleContainer"
+                  allowedTypes="InlineContainer"
                 />
               )}
             </div>

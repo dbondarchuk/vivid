@@ -30,7 +30,7 @@ export const LinkPropsDefaults = () =>
       target: LinkDefaultTarget,
       children: [
         {
-          type: "SimpleContainer",
+          type: "InlineContainer",
           id: generateId(),
           data: {
             style: {
@@ -44,7 +44,7 @@ export const LinkPropsDefaults = () =>
             props: {
               children: [
                 {
-                  type: "SimpleText",
+                  type: "InlineText",
                   id: generateId(),
                   data: {
                     props: {
