@@ -80,10 +80,10 @@ const DocumentOutlineItem: React.FC<DocumentOutlineItemProps> = memo(
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium truncate">
-              {t(block.schema.displayName as BuilderKeys)}
+              {t(block.schema.displayName)}
             </div>
             <div className="text-xs text-muted-foreground truncate">
-              {block.type}
+              {t(block.schema.category)}
             </div>
           </div>
         </div>

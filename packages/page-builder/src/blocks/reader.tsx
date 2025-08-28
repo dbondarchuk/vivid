@@ -12,13 +12,13 @@ import { GridContainerReader } from "./grid-container/reader";
 import { Heading } from "./heading/reader";
 import { Icon } from "./icon/reader";
 import { Image } from "./image/reader";
+import { InlineContainerReader } from "./inline-container/reader";
+import { InlineText } from "./inline-text/reader";
 import { Link } from "./link/reader";
 import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
 import { PopupReader } from "./popup/reader";
 import { EditorBlocksSchema } from "./schema";
-import { SimpleContainerReader } from "./simple-container/reader";
-import { SimpleText } from "./simple-text/reader";
 import { Spacer } from "./spacer/reader";
 import { TextReader } from "./text/reader";
 import { Video } from "./video";
@@ -84,8 +84,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   Popup: {
     Reader: PopupReader,
   },
-  SimpleText: {
-    Reader: SimpleText,
+  InlineText: {
+    Reader: InlineText,
   },
   YouTubeVideo: {
     Reader: YouTubeVideoReader,
@@ -96,8 +96,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   AccordionItem: {
     Reader: AccordionItem,
   },
-  SimpleContainer: {
-    Reader: SimpleContainerReader,
+  InlineContainer: {
+    Reader: InlineContainerReader,
   },
   CustomHTML: {
     Reader: CustomHTML,

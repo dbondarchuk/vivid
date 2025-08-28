@@ -2,7 +2,7 @@ import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
 import z from "zod";
 import { COLORS } from "../../style";
-import { SimpleContainerPropsDefaults } from "../simple-container";
+import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";
 
 export const LinkPropsSchema = z.object({
@@ -34,7 +34,7 @@ export const LinkPropsDefaults = () =>
           id: generateId(),
           data: {
             style: {
-              ...SimpleContainerPropsDefaults.style,
+              ...InlineContainerPropsDefaults.style,
               textDecoration: [
                 {
                   value: "underline",

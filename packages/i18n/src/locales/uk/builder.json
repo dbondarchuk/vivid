@@ -1039,8 +1039,8 @@
           "baseline": "Базова лінія"
         }
       },
-      "simpleContainer": {
-        "displayName": "Простий контейнер"
+      "inlineContainer": {
+        "displayName": "Рядковий контейнер"
       },
       "icon": {
         "displayName": "Іконка",
@@ -1185,8 +1185,8 @@
           }
         }
       },
-      "simpleText": {
-        "displayName": "Простий текст",
+      "inlineText": {
+        "displayName": "Рядковий текст",
         "placeholder": "Текст тут",
         "url": "URL посилання"
       },

@@ -2,14 +2,14 @@ import { ReaderBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
-import { SimpleContainerReaderProps, styles } from "./schema";
+import { InlineContainerReaderProps, styles } from "./schema";
 
-export const SimpleContainerReader = ({
+export const InlineContainerReader = ({
   style,
   props,
   block,
   ...rest
-}: SimpleContainerReaderProps) => {
+}: InlineContainerReaderProps) => {
   const children = props?.children ?? [];
 
   const className = generateClassName();

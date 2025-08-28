@@ -1000,8 +1000,8 @@
           "baseline": "Baseline"
         }
       },
-      "simpleContainer": {
-        "displayName": "Simple Container"
+      "inlineContainer": {
+        "displayName": "Inline Container"
       },
       "icon": {
         "displayName": "Icon",
@@ -1185,8 +1185,8 @@
           }
         }
       },
-      "simpleText": {
-        "displayName": "Simple text",
+      "inlineText": {
+        "displayName": "Inline text",
         "placeholder": "Text here",
         "url": "Link URL"
       },

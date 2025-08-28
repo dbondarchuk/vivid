@@ -3,7 +3,7 @@ import { Prettify } from "@vivid/types";
 import z from "zod";
 import { zStyles } from "./styles";
 
-export const SimpleTextPropsSchema = z.object({
+export const InlineTextPropsSchema = z.object({
   props: z
     .object({
       text: z.string().optional().nullable(),
@@ -14,10 +14,10 @@ export const SimpleTextPropsSchema = z.object({
   style: zStyles,
 });
 
-export type SimpleTextProps = Prettify<z.infer<typeof SimpleTextPropsSchema>>;
-export type SimpleTextReaderProps = BaseReaderBlockProps<any> & SimpleTextProps;
+export type InlineTextProps = Prettify<z.infer<typeof InlineTextPropsSchema>>;
+export type InlineTextReaderProps = BaseReaderBlockProps<any> & InlineTextProps;
 
-export const SimpleTextPropsDefaults = {
+export const InlineTextPropsDefaults = {
   props: {
     text: "Hello friend",
   },
@@ -33,4 +33,4 @@ export const SimpleTextPropsDefaults = {
       },
     ],
   },
-} as const satisfies SimpleTextProps;
+} as const satisfies InlineTextProps;

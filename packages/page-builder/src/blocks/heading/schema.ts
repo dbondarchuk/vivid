@@ -1,7 +1,7 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
 import z from "zod";
-import { SimpleContainerPropsDefaults } from "../simple-container";
+import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";
 
 export const HeadingPropsSchema = z.object({
@@ -29,7 +29,7 @@ export const HeadingPropsDefaults = () =>
           type: "SimpleContainer",
           id: generateId(),
           data: {
-            style: SimpleContainerPropsDefaults.style,
+            style: InlineContainerPropsDefaults.style,
             props: {
               children: [
                 {

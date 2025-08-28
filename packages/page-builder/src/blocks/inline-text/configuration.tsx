@@ -4,20 +4,20 @@ import { ConfigurationProps } from "@vivid/builder";
 import { deepMemo } from "@vivid/ui";
 import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
-import { SimpleTextProps } from "./schema";
-import { simpleTextShortcuts } from "./shortcuts";
+import { InlineTextProps } from "./schema";
+import { inlineTextShortcuts } from "./shortcuts";
 import { styles } from "./styles";
 
-export const SimpleTextConfiguration = deepMemo(
+export const InlineTextConfiguration = deepMemo(
   ({
     data,
     setData,
     base,
     onBaseChange,
-  }: ConfigurationProps<SimpleTextProps>) => {
+  }: ConfigurationProps<InlineTextProps>) => {
     const updateStyle = useCallback(
       (s: unknown) =>
-        setData({ ...data, style: s as SimpleTextProps["style"] }),
+        setData({ ...data, style: s as InlineTextProps["style"] }),
       [setData, data],
     );
 
@@ -26,7 +26,7 @@ export const SimpleTextConfiguration = deepMemo(
         styles={data.style ?? {}}
         onStylesChange={updateStyle}
         availableStyles={styles}
-        shortcuts={simpleTextShortcuts}
+        shortcuts={inlineTextShortcuts}
         base={base}
         onBaseChange={onBaseChange}
       >

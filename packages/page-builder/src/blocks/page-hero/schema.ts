@@ -2,7 +2,7 @@ import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import z from "zod";
 import { COLORS } from "../../style";
 import { ButtonPropsDefaults } from "../button";
-import { SimpleContainerPropsDefaults } from "../simple-container/schema";
+import { InlineContainerPropsDefaults } from "../inline-container/schema";
 import { zStyles } from "./styles";
 
 export const PageHeroPropsSchema = z.object({
@@ -137,7 +137,7 @@ export const PageHeroPropsDefaults = () =>
                           },
                         ],
                       },
-                      style: SimpleContainerPropsDefaults.style,
+                      style: InlineContainerPropsDefaults.style,
                     },
                   },
                 ],
@@ -182,7 +182,7 @@ export const PageHeroPropsDefaults = () =>
                           },
                         ],
                       },
-                      style: SimpleContainerPropsDefaults.style,
+                      style: InlineContainerPropsDefaults.style,
                     },
                   },
                 ],
@@ -220,7 +220,7 @@ export const PageHeroPropsDefaults = () =>
                             type: "SimpleContainer",
                             id: generateId(),
                             data: {
-                              style: SimpleContainerPropsDefaults.style,
+                              style: InlineContainerPropsDefaults.style,
                               props: {
                                 children: [
                                   {

@@ -1,11 +1,11 @@
 import { cn } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
-import { SimpleTextPropsDefaults, SimpleTextReaderProps } from "./schema";
+import { InlineTextPropsDefaults, InlineTextReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
-export const SimpleText = ({ props, style, block }: SimpleTextReaderProps) => {
-  const text = props?.text ?? SimpleTextPropsDefaults.props.text;
+export const InlineText = ({ props, style, block }: InlineTextReaderProps) => {
+  const text = props?.text ?? InlineTextPropsDefaults.props.text;
   const defaults = getDefaults({ props, style }, false);
   const base = block.base;
 

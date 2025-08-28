@@ -4,19 +4,19 @@ import { ConfigurationProps } from "@vivid/builder";
 import { deepMemo } from "@vivid/ui";
 import { useCallback } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
-import { SimpleContainerProps, styles } from "./schema";
-import { containerShortcuts } from "./shortcuts";
+import { InlineContainerProps, styles } from "./schema";
+import { inlineContainerShortcuts } from "./shortcuts";
 
-export const SimpleContainerConfiguration = deepMemo(
+export const InlineContainerConfiguration = deepMemo(
   ({
     data,
     setData,
     base,
     onBaseChange,
-  }: ConfigurationProps<SimpleContainerProps>) => {
+  }: ConfigurationProps<InlineContainerProps>) => {
     const updateStyle = useCallback(
       (s: unknown) =>
-        setData({ ...data, style: s as SimpleContainerProps["style"] }),
+        setData({ ...data, style: s as InlineContainerProps["style"] }),
       [setData, data],
     );
 
@@ -25,7 +25,7 @@ export const SimpleContainerConfiguration = deepMemo(
         styles={data.style ?? {}}
         onStylesChange={updateStyle}
         availableStyles={styles}
-        shortcuts={containerShortcuts}
+        shortcuts={inlineContainerShortcuts}
         base={base}
         onBaseChange={onBaseChange}
       />

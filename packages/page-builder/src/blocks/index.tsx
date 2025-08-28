@@ -110,6 +110,16 @@ import {
   ImagePropsDefaults,
   ImageToolbar,
 } from "./image";
+import { InlineContainerConfiguration } from "./inline-container/configuration";
+import { InlineContainerEditor } from "./inline-container/editor";
+import { InlineContainerPropsDefaults } from "./inline-container/schema";
+import { InlineContainerToolbar } from "./inline-container/toolbar";
+import {
+  InlineTextConfiguration,
+  InlineTextEditor,
+  InlineTextPropsDefaults,
+  InlineTextToolbar,
+} from "./inline-text";
 import {
   PageHeroConfiguration,
   PageHeroEditor,
@@ -130,16 +140,6 @@ import {
   PopupToolbar,
 } from "./popup";
 import { EditorBlocksSchema } from "./schema";
-import { SimpleContainerConfiguration } from "./simple-container/configuration";
-import { SimpleContainerEditor } from "./simple-container/editor";
-import { SimpleContainerPropsDefaults } from "./simple-container/schema";
-import { SimpleContainerToolbar } from "./simple-container/toolbar";
-import {
-  SimpleTextConfiguration,
-  SimpleTextEditor,
-  SimpleTextPropsDefaults,
-  SimpleTextToolbar,
-} from "./simple-text";
 import {
   SpacerConfiguration,
   SpacerPropsDefaults,
@@ -347,13 +347,13 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     category: "pageBuilder.blocks.categories.objects",
     allowedIn: ["PageLayout"],
   },
-  SimpleText: {
-    displayName: "pageBuilder.blocks.simpleText.displayName",
+  InlineText: {
+    displayName: "pageBuilder.blocks.inlineText.displayName",
     icon: <Text />,
-    Editor: SimpleTextEditor,
-    Configuration: SimpleTextConfiguration,
-    Toolbar: SimpleTextToolbar,
-    defaultValue: SimpleTextPropsDefaults,
+    Editor: InlineTextEditor,
+    Configuration: InlineTextConfiguration,
+    Toolbar: InlineTextToolbar,
+    defaultValue: InlineTextPropsDefaults,
     category: "pageBuilder.blocks.categories.text",
   },
   Accordion: {
@@ -375,13 +375,13 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     category: "pageBuilder.blocks.categories.layout",
     allowedIn: ["Accordion"],
   },
-  SimpleContainer: {
-    displayName: "pageBuilder.blocks.simpleContainer.displayName",
+  InlineContainer: {
+    displayName: "pageBuilder.blocks.inlineContainer.displayName",
     icon: <Copy />,
-    Editor: SimpleContainerEditor,
-    Configuration: SimpleContainerConfiguration,
-    Toolbar: SimpleContainerToolbar,
-    defaultValue: SimpleContainerPropsDefaults,
+    Editor: InlineContainerEditor,
+    Configuration: InlineContainerConfiguration,
+    Toolbar: InlineContainerToolbar,
+    defaultValue: InlineContainerPropsDefaults,
     category: "pageBuilder.blocks.categories.layout",
   },
   CustomHTML: {

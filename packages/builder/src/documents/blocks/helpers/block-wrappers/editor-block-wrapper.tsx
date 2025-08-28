@@ -21,9 +21,9 @@ import {
   useSetSelectedBlockId,
 } from "../../../editor/context";
 
-import { directionBiased } from "@dnd-kit/collision";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { cn } from "@vivid/ui";
+import { createDynamicCollisionDetector } from "../../../../builder/dnd/collision/dynamic";
 import { DndContext } from "../../../../types/dndContext";
 import { BlockHandlerPortal } from "./block-handler-portal";
 import { BlockNavPortal } from "./block-nav-portal";
@@ -226,8 +226,8 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
         easing: "cubic-bezier(0.2, 0, 0, 1)",
       },
       // collisionDetector: closestCenter,
-      collisionDetector: directionBiased,
-      // collisionDetector: createDynamicCollisionDetector("dynamic"),
+      // collisionDetector: directionBiased,
+      collisionDetector: createDynamicCollisionDetector("dynamic"),
       data: {
         context: {
           parentBlockId,

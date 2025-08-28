@@ -5,18 +5,18 @@ import { ALL_STYLES, getStylesSchema } from "../../style";
 export const styles = ALL_STYLES;
 export const zStyles = getStylesSchema(styles);
 
-export const SimpleContainerPropsSchema = z.object({
+export const InlineContainerPropsSchema = z.object({
   style: zStyles,
   props: z.object({
     children: z.array(z.any()),
   }),
 });
 
-export type SimpleContainerProps = z.infer<typeof SimpleContainerPropsSchema>;
-export type SimpleContainerReaderProps = BaseReaderBlockProps<any> &
-  SimpleContainerProps;
+export type InlineContainerProps = z.infer<typeof InlineContainerPropsSchema>;
+export type InlineContainerReaderProps = BaseReaderBlockProps<any> &
+  InlineContainerProps;
 
-export const SimpleContainerPropsDefaults = {
+export const InlineContainerPropsDefaults = {
   style: {
     padding: [
       {
@@ -60,4 +60,4 @@ export const SimpleContainerPropsDefaults = {
   props: {
     children: [],
   },
-} as const satisfies SimpleContainerProps;
+} as const satisfies InlineContainerProps;

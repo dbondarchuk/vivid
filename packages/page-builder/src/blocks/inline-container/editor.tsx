@@ -3,7 +3,7 @@ import { cn } from "@vivid/ui";
 import React, { memo } from "react";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
-import { SimpleContainerProps, styles } from "./schema";
+import { InlineContainerProps, styles } from "./schema";
 
 const ChildWrapper = memo(
   ({
@@ -17,11 +17,11 @@ const ChildWrapper = memo(
 
 const allowOnly = ["SimpleText", "Icon", "Link"];
 
-export const SimpleContainerEditor = ({
+export const InlineContainerEditor = ({
   style,
   props,
-}: SimpleContainerProps) => {
-  const currentBlock = useCurrentBlock<SimpleContainerProps>();
+}: InlineContainerProps) => {
+  const currentBlock = useCurrentBlock<InlineContainerProps>();
 
   const className = useClassName();
   const base = currentBlock.base;

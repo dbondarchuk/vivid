@@ -11,12 +11,12 @@ import { GridContainerPropsSchema } from "./grid-container/schema";
 import { HeadingPropsSchema } from "./heading/schema";
 import { IconPropsSchema } from "./icon/schema";
 import { ImagePropsSchema } from "./image/schema";
+import { InlineContainerPropsSchema } from "./inline-container/schema";
+import { InlineTextPropsSchema } from "./inline-text/schema";
 import { LinkPropsSchema } from "./link/schema";
 import { PageHeroPropsSchema } from "./page-hero/schema";
 import { PageLayoutPropsSchema } from "./page-layout/schema";
 import { PopupPropsSchema } from "./popup/schema";
-import { SimpleContainerPropsSchema } from "./simple-container/schema";
-import { SimpleTextPropsSchema } from "./simple-text/schema";
 import { SpacerPropsSchema } from "./spacer/schema";
 import { TextPropsSchema } from "./text/schema";
 import { VideoPropsSchema } from "./video/schema";
@@ -41,10 +41,10 @@ export const EditorBlocksSchema = {
   Video: VideoPropsSchema,
   YouTubeVideo: YouTubeVideoPropsSchema,
   Popup: PopupPropsSchema,
-  SimpleText: SimpleTextPropsSchema,
+  InlineText: InlineTextPropsSchema,
   Accordion: AccordionPropsSchema,
   AccordionItem: AccordionItemPropsSchema,
-  SimpleContainer: SimpleContainerPropsSchema,
+  InlineContainer: InlineContainerPropsSchema,
   Icon: IconPropsSchema,
   CustomHTML: CustomHTMLPropsSchema,
 } as {
@@ -65,10 +65,10 @@ export const EditorBlocksSchema = {
   Video: typeof VideoPropsSchema;
   YouTubeVideo: typeof YouTubeVideoPropsSchema;
   Popup: typeof PopupPropsSchema;
-  SimpleText: typeof SimpleTextPropsSchema;
+  InlineText: typeof InlineTextPropsSchema;
   Accordion: typeof AccordionPropsSchema;
   AccordionItem: typeof AccordionItemPropsSchema;
-  SimpleContainer: typeof SimpleContainerPropsSchema;
+  InlineContainer: typeof InlineContainerPropsSchema;
   Icon: typeof IconPropsSchema;
   CustomHTML: typeof CustomHTMLPropsSchema;
 };

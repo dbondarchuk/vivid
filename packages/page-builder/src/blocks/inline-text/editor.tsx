@@ -16,14 +16,14 @@ import { useI18n } from "@vivid/i18n";
 import { ArgumentsAutocomplete, cn, useDebounceCallback } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
-import { SimpleTextProps } from "./schema";
+import { InlineTextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
-export function SimpleTextEditor({ props, style }: SimpleTextProps) {
+export function InlineTextEditor({ props, style }: InlineTextProps) {
   const t = useI18n("builder");
   const ref = useRef<HTMLInputElement>(null);
   const args = useEditorArgs();
-  const currentBlock = useCurrentBlock<SimpleTextProps>();
+  const currentBlock = useCurrentBlock<InlineTextProps>();
   const value = currentBlock?.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
@@ -97,7 +97,7 @@ export function SimpleTextEditor({ props, style }: SimpleTextProps) {
         onKeyDown={handleKeyPress}
         asContentEditable
         element={"span"}
-        placeholder={t("pageBuilder.blocks.simpleText.placeholder")}
+        placeholder={t("pageBuilder.blocks.inlineText.placeholder")}
         documentElement={document}
         style={
           {

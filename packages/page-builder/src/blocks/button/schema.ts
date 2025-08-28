@@ -2,7 +2,7 @@ import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import { Prettify } from "@vivid/types";
 import z from "zod";
 import { COLORS } from "../../style";
-import { SimpleContainerPropsDefaults } from "../simple-container";
+import { InlineContainerPropsDefaults } from "../inline-container";
 import { zStyles } from "./styles";
 
 export const ButtonType = z.enum(["action", "link"]);
@@ -47,7 +47,7 @@ export const ButtonPropsDefaults = () =>
           type: "SimpleContainer",
           id: generateId(),
           data: {
-            style: SimpleContainerPropsDefaults.style,
+            style: InlineContainerPropsDefaults.style,
             props: {
               children: [
                 {

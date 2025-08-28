@@ -12,7 +12,7 @@ import { colorShortcut } from "../../shortcuts/common/color";
 import { fontFamilyShortcut } from "../../shortcuts/common/font-family";
 import { AllStylesSchemas } from "../../style";
 
-export const containerShortcuts: Shortcut<AllStylesSchemas>[] = [
+export const inlineContainerShortcuts: Shortcut<AllStylesSchemas>[] = [
   {
     label: "pageBuilder.blocks.container.shortcuts.gap",
     icon: Move,

@@ -1,7 +1,7 @@
 import { BaseReaderBlockProps, generateId } from "@vivid/builder";
 import z from "zod";
 import { AccordionProps } from "../accordion/schema";
-import { SimpleContainerPropsDefaults } from "../simple-container/schema";
+import { InlineContainerPropsDefaults } from "../inline-container/schema";
 import { zStyles } from "./styles";
 
 export const AccordionItemPropsSchema = z.object({
@@ -34,7 +34,7 @@ export const AccordionItemPropsDefaults = () =>
             type: "SimpleContainer",
             id: generateId(),
             data: {
-              style: SimpleContainerPropsDefaults.style,
+              style: InlineContainerPropsDefaults.style,
               props: {
                 children: [
                   {
