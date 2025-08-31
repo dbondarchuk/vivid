@@ -1,6 +1,13 @@
 import { useDraggable } from "@dnd-kit/react";
 import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { Button, cn, genericMemo, Input, ScrollArea } from "@vivid/ui";
+import {
+  Button,
+  cn,
+  genericMemo,
+  Input,
+  ScrollArea,
+  useDebounce,
+} from "@vivid/ui";
 import { GripVertical, Search, X } from "lucide-react";
 import { memo, useMemo, useState } from "react";
 import { useBlocks, useRootBlockType } from "../../../documents/editor/context";
@@ -62,10 +69,8 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
 const BlocksPanelContent = memo(
   ({
     filteredBlocks,
-    searchQuery,
   }: {
     filteredBlocks: Record<string, Array<{ type: string; config: any }>>;
-    searchQuery: string;
   }) => {
     const t = useI18n("builder");
 
@@ -75,9 +80,7 @@ const BlocksPanelContent = memo(
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <Search className="h-12 w-12 text-muted-foreground mb-3" />
             <p className="text-sm text-muted-foreground">
-              {searchQuery.trim()
-                ? t("baseBuilder.blocks.noResultsFound")
-                : t("baseBuilder.blocks.noBlocksAvailable")}
+              {t("baseBuilder.blocks.noResultsFound")}
             </p>
           </div>
         ) : (
@@ -109,6 +112,7 @@ export const BlocksPanel = genericMemo(
   <T extends BaseZodDictionary = any>({ allowOnly }: BlocksPanelProps<T>) => {
     const t = useI18n("builder");
     const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearchQuery = useDebounce(searchQuery, 300);
     const blocks = useBlocks();
     const rootBlockType = useRootBlockType();
 
@@ -126,28 +130,26 @@ export const BlocksPanel = genericMemo(
 
           // Don't show root block type
           if (rootBlockType === type) return false;
+          if (debouncedSearchQuery.trim()) {
+            const query = debouncedSearchQuery.trim();
+            const name = config.displayName.toLocaleLowerCase();
+            const displayName = t(
+              config.displayName as BuilderKeys,
+            ).toLocaleLowerCase();
+            const category = t(
+              config.category as BuilderKeys,
+            ).toLocaleLowerCase();
+            const typeLower = type.toLocaleLowerCase();
 
-          // // Filter by search query
-          // if (searchQuery.trim()) {
-          //   const query = searchQuery.toLocaleLowerCase();
-          //   const name = config.displayName.toLocaleLowerCase();
-          //   const displayName = t(
-          //     config.displayName as BuilderKeys
-          //   ).toLocaleLowerCase();
-          //   const category = t(
-          //     config.category as BuilderKeys
-          //   ).toLocaleLowerCase();
-          //   const typeLower = type.toLocaleLowerCase();
-
-          //   if (
-          //     !name.includes(query) &&
-          //     !displayName.includes(query) &&
-          //     !category.includes(query) &&
-          //     !typeLower.includes(query)
-          //   ) {
-          //     return false;
-          //   }
-          // }
+            if (
+              !name.includes(query) &&
+              !displayName.includes(query) &&
+              !category.includes(query) &&
+              !typeLower.includes(query)
+            ) {
+              return false;
+            }
+          }
 
           return true;
         })
@@ -162,16 +164,7 @@ export const BlocksPanel = genericMemo(
           },
           {} as Record<string, Array<{ type: string; config: any }>>,
         );
-    }, [blocks, allowOnly, rootBlockType, t]);
-
-    const PanelContent = useMemo(() => {
-      return (
-        <BlocksPanelContent
-          filteredBlocks={filteredBlocks}
-          searchQuery={searchQuery}
-        />
-      );
-    }, [filteredBlocks, searchQuery]);
+    }, [blocks, allowOnly, rootBlockType, t, debouncedSearchQuery]);
 
     return (
       <>
@@ -195,7 +188,7 @@ export const BlocksPanel = genericMemo(
             <X className="h-4 w-4" />
           </Button>
         </div>
-        {PanelContent}
+        <BlocksPanelContent filteredBlocks={filteredBlocks} />
       </>
     );
   },
