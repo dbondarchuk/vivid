@@ -141,7 +141,9 @@ export const StyleVariantComponent = <T extends BaseStyleDictionary>({
       {/* Style component */}
       <div className="flex flex-col gap-2">
         <Label className="text-xs font-medium">
-          {t(`pageBuilder.styles.properties.${style.name}` as BuilderKeys)}
+          {t.has(`pageBuilder.styles.properties.${style.name}` as BuilderKeys)
+            ? t(`pageBuilder.styles.properties.${style.name}` as BuilderKeys)
+            : t(style.label)}
         </Label>
         <style.component
           value={variant.value}
