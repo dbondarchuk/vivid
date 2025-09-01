@@ -60,8 +60,6 @@ export const NavMenu: React.FC<Props> = memo(({ blockId, disable }) => {
         blockId: blockId,
       },
     });
-
-    setSelectedBlockId(null);
   }, [blockId, dispatchAction, setSelectedBlockId]);
 
   const handleMoveClick = useCallback(

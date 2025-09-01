@@ -79,8 +79,14 @@ export const editorHistoryReducer = (
       // const parent = indexes[indexes[value.blockId]?.parentBlockId!];
       const parent = findParentBlock(originalDocument, value.blockId);
       if (parent) {
-        deleteBlockInLevel(parent.block, value.blockId);
-        if (selectedBlockId === value.blockId) newSelectedBlockId = null;
+        // const previousBlockId = findPreviousBlockId(
+        //   parent.block,
+        //   value.blockId,
+        // );
+        const result = deleteBlockInLevel(parent.block, value.blockId);
+        if (selectedBlockId === value.blockId) {
+          newSelectedBlockId = result?.previousBlockId ?? null;
+        }
       } else {
         return null;
       }

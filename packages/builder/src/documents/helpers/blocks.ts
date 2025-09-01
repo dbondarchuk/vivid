@@ -45,9 +45,16 @@ export const deleteBlockInLevel = (block: TEditorBlock, blockId: string) => {
 
     if (toRemove >= 0) {
       const result = (prop.children as any[]).splice(toRemove, 1);
-      return result[0] as TEditorBlock;
+      return {
+        block: result[0] as TEditorBlock,
+        property: prop.property,
+        index: toRemove,
+        previousBlockId: prop.children[toRemove - 1]?.id ?? null,
+      };
     }
   }
+
+  return null;
 };
 
 export const insertBlockInLevel = (
@@ -176,7 +183,12 @@ const regenerateIds = (block: any) => {
   }
 };
 
-const cloneBlock = (block: TEditorBlock) => {
+export const regenerateBlockIds = (block: TEditorBlock) => {
+  regenerateIds(block);
+  return block;
+};
+
+export const cloneBlock = (block: TEditorBlock, seed?: string) => {
   const newBlock = JSON.parse(JSON.stringify(block)) as TEditorBlock;
   regenerateIds(newBlock);
 
@@ -197,8 +209,8 @@ export const cloneBlockInLevel = (block: TEditorBlock, blockId: string) => {
 
     if (index >= 0) {
       const value = prop.children[index];
-      const newBlock = cloneBlock(value);
-      (prop.children as any[]).splice(index, 0, newBlock);
+      const newBlock = cloneBlock(value, blockId);
+      (prop.children as any[]).splice(index + 1, 0, newBlock);
 
       return newBlock;
     }
@@ -219,6 +231,33 @@ const recursiveFindBlock = (
     if (!child || !("id" in child)) continue;
     const result = recursiveFindBlock(child, blockId);
     if (result) return result;
+  }
+
+  return null;
+};
+
+const recursiveFindPreviousBlockId = (
+  block: TEditorBlock,
+  blockId: string,
+  previousBlockId: string | null,
+): string | null => {
+  if (block.id === blockId) return previousBlockId;
+
+  const childrenProps = findChildrenProps(block.data, []).flatMap(
+    (x) => x.children,
+  );
+
+  let currentPreviousBlockId = previousBlockId;
+
+  for (const child of childrenProps || []) {
+    if (!child || !("id" in child)) continue;
+    const result = recursiveFindPreviousBlockId(
+      child,
+      blockId,
+      currentPreviousBlockId,
+    );
+    if (result) return currentPreviousBlockId;
+    currentPreviousBlockId = child.id;
   }
 
   return null;
@@ -289,19 +328,29 @@ const recursiveFindParentBlock = (
   blockId: string,
   parent: TEditorBlock,
   parentProperty: string,
-): { block: TEditorBlock; property: string } | null => {
+  index = 0,
+): { block: TEditorBlock; property: string; index: number } | null => {
   if (block.id === blockId)
     return {
       block: parent,
       property: parentProperty,
+      index,
     };
 
   const childrenProps = findChildrenProps(block.data, []);
   for (const { children, property } of childrenProps || []) {
+    let index = 0;
     for (const child of children || []) {
       if (!child || !("id" in child)) continue;
-      const result = recursiveFindParentBlock(child, blockId, block, property);
+      const result = recursiveFindParentBlock(
+        child,
+        blockId,
+        block,
+        property,
+        index,
+      );
       if (result) return result;
+      index++;
     }
   }
 
@@ -310,6 +359,13 @@ const recursiveFindParentBlock = (
 
 export const findBlock = (document: TEditorConfiguration, blockId: string) => {
   return recursiveFindBlock(document, blockId);
+};
+
+export const findPreviousBlockId = (
+  document: TEditorConfiguration,
+  blockId: string,
+) => {
+  return recursiveFindPreviousBlockId(document, blockId, null);
 };
 
 export const validateBlocks = (

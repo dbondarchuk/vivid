@@ -37,15 +37,9 @@ export const ToolbarHistoryGroup = () => {
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", undoRedo);
-    if (portalDocument && portalDocument.defaultView !== window) {
-      portalDocument.defaultView?.addEventListener("keydown", undoRedo);
-    }
+    portalDocument.defaultView?.addEventListener("keydown", undoRedo);
     return () => {
-      window.removeEventListener("keydown", undoRedo);
-      if (portalDocument && portalDocument.defaultView !== window) {
-        portalDocument.defaultView?.removeEventListener("keydown", undoRedo);
-      }
+      portalDocument.defaultView?.removeEventListener("keydown", undoRedo);
     };
   }, [undoRedo, portalDocument]);
 

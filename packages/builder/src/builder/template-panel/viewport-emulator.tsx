@@ -208,6 +208,7 @@ export const ViewportEmulator: React.FC<ViewportEmulatorProps> = memo(
                   }}
                   className="transition-all duration-300"
                   title={`${currentSize.name} Viewport`}
+                  allow="clipboard-read; clipboard-write"
                   onLoad={() => {
                     // Iframe loaded, styles will be copied via the effect
                   }}

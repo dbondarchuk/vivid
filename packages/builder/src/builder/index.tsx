@@ -4,6 +4,7 @@ import { cn, SidebarInset, SidebarProvider, useSidebar } from "@vivid/ui";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { createPortal } from "react-dom";
+import { PortalProvider } from "../documents/blocks/helpers/block-wrappers/portal-context";
 import {
   EditorArgsContext,
   EditorStateProvider,
@@ -127,18 +128,23 @@ const BuilderInternal = ({
 
   return (
     <BuilderFullScreenProvider>
-      <BuilderToolbar args={args} />
-      <BuilderSidebarProvider sidebarWidth={sidebarWidth}>
-        <SidebarInset className="flex flex-col w-full h-full min-h-full" asDiv>
-          <TemplatePanel
-            args={args}
-            readerBlocks={readerBlocks}
-            header={header}
-            footer={footer}
-          />
-        </SidebarInset>
-        <InspectorDrawer extraTabs={extraTabs} />
-      </BuilderSidebarProvider>
+      <PortalProvider>
+        <BuilderToolbar args={args} />
+        <BuilderSidebarProvider sidebarWidth={sidebarWidth}>
+          <SidebarInset
+            className="flex flex-col w-full h-full min-h-full"
+            asDiv
+          >
+            <TemplatePanel
+              args={args}
+              readerBlocks={readerBlocks}
+              header={header}
+              footer={footer}
+            />
+          </SidebarInset>
+          <InspectorDrawer extraTabs={extraTabs} />
+        </BuilderSidebarProvider>
+      </PortalProvider>
     </BuilderFullScreenProvider>
   );
 };

@@ -8,8 +8,8 @@ import {
   useDispatchAction,
   useRootBlockId,
   useSelectedBlockId,
-  useSetSelectedBlockId,
 } from "../../../documents/editor/context";
+import { ToolbarCopyPasteGroup } from "./toolbar-copy-paste-group";
 
 export const ToolbarBlockGroups = () => {
   const t = useI18n("builder");
@@ -18,7 +18,6 @@ export const ToolbarBlockGroups = () => {
   const rootBlockId = useRootBlockId();
   const disable = useBlockDisableOptions(selectedBlockId);
   const canDoBlockActions = selectedBlockId && selectedBlockId !== rootBlockId;
-  const setSelectedBlockId = useSetSelectedBlockId();
 
   const blockId = selectedBlockId ?? rootBlockId;
   return (
@@ -53,6 +52,10 @@ export const ToolbarBlockGroups = () => {
           <ArrowDown />
         </ToolbarButton>
       </ToolbarGroup>
+      <ToolbarCopyPasteGroup
+        canDoBlockActions={!!canDoBlockActions}
+        disableClone={!!disable?.clone}
+      />
       <ToolbarGroup>
         <ToolbarButton
           tooltip={t("baseBuilder.builderToolbar.clone")}
@@ -78,8 +81,6 @@ export const ToolbarBlockGroups = () => {
                 blockId,
               },
             });
-
-            setSelectedBlockId(null);
           }}
         >
           <Trash />

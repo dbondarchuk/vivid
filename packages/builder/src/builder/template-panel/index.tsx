@@ -8,7 +8,6 @@ import {
 import { effect } from "@dnd-kit/state";
 import { Tabs, useThrottleCallback } from "@vivid/ui";
 import { ComponentProps, memo } from "react";
-import { PortalProvider } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 import {
   useDisableAnimation,
   useDispatchAction,
@@ -266,44 +265,41 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
     };
 
     return (
-      <PortalProvider>
-        {/* <ActiveOverblockDebug /> */}
-        <Tabs value={selectedView}>
-          <div className="flex flex-col w-full mt-2">
-            <DragDropProvider
-              sensors={sensors}
-              onDragStart={onDragStart}
-              onDragEnd={onDragEnd}
-              onDragOver={(...args) => {
-                args[0].preventDefault();
-                onDragOver(...args);
-              }}
-              // plugins={defaultPreset.plugins}
-              // collisionDetection={customCollisionDetectionAlgorithm}
-            >
-              <div className="relative flex h-full">
-                {selectedView === "editor" && (
-                  <>
-                    <BlocksSidebar className="h-full" />
-                    <BlockDragOverlay />
-                  </>
-                )}
-                <div className="flex-1">
-                  <ViewportEmulator viewportSize={selectedScreenSize}>
-                    <EnableDisableAnimations>
-                      {/* Main Editor Area */}
-                      {header}
-                      <Editor selectedView={selectedView} />
-                      <Preview args={args} readerBlocks={readerBlocks} />
-                      {footer}
-                    </EnableDisableAnimations>
-                  </ViewportEmulator>
-                </div>
+      <Tabs value={selectedView}>
+        <div className="flex flex-col w-full mt-2">
+          <DragDropProvider
+            sensors={sensors}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDragOver={(...args) => {
+              args[0].preventDefault();
+              onDragOver(...args);
+            }}
+            // plugins={defaultPreset.plugins}
+            // collisionDetection={customCollisionDetectionAlgorithm}
+          >
+            <div className="relative flex h-full">
+              {selectedView === "editor" && (
+                <>
+                  <BlocksSidebar className="h-full" />
+                  <BlockDragOverlay />
+                </>
+              )}
+              <div className="flex-1">
+                <ViewportEmulator viewportSize={selectedScreenSize}>
+                  <EnableDisableAnimations>
+                    {/* Main Editor Area */}
+                    {header}
+                    <Editor selectedView={selectedView} />
+                    <Preview args={args} readerBlocks={readerBlocks} />
+                    {footer}
+                  </EnableDisableAnimations>
+                </ViewportEmulator>
               </div>
-            </DragDropProvider>
-          </div>
-        </Tabs>
-      </PortalProvider>
+            </div>
+          </DragDropProvider>
+        </div>
+      </Tabs>
     );
   },
 );

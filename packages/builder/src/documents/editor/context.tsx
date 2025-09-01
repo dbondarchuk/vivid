@@ -13,7 +13,7 @@ import {
   useRef,
 } from "react";
 import { useCookies } from "react-cookie";
-import { validateBlocks } from "../helpers/blocks";
+import { cloneBlock, validateBlocks } from "../helpers/blocks";
 import {
   BuilderSchema,
   EditorDocumentBlocksDictionary,
@@ -89,6 +89,8 @@ type EditorState = {
   activeDragBlockId: string | null;
   activeDragBlockTemplate: TEditorBlock | null;
   blockDisableOptions: Record<string, BlockDisableOptions | undefined>;
+  // Key: blockId|property
+  allowedBlockTypes: Record<string, string[]>;
 
   indexes: EditorBlockIndexes;
   templateBlockIndexes: EditorBlockIndexes | null;
@@ -124,6 +126,11 @@ type EditorState = {
     setBlockDisableOptions: (
       blockId: string,
       options: BlockDisableOptions | undefined,
+    ) => void;
+    setAllowedBlockTypes: (
+      blockId: string,
+      property: string,
+      types: string[],
     ) => void;
     setDocument: (document: TEditorConfiguration) => void;
     setOnChange: (onChange: (document: TEditorConfiguration) => void) => void;
@@ -202,6 +209,7 @@ const createEditorStateStore = ({
     activeDragBlockTemplate: null,
     activeOverBlockContextId: null,
     blockDisableOptions: {},
+    allowedBlockTypes: {},
     actions: {
       setSelectedBlockId: (selectedBlockId: string | null) => {
         set({ selectedBlockId });
@@ -295,6 +303,18 @@ const createEditorStateStore = ({
           },
         });
       },
+      setAllowedBlockTypes: (
+        blockId: string,
+        property: string,
+        types: string[],
+      ) => {
+        set({
+          allowedBlockTypes: {
+            ...get().allowedBlockTypes,
+            [`${blockId}/${property}`]: types,
+          },
+        });
+      },
       setDocument: (document: TEditorConfiguration) => {
         set({ document });
       },
@@ -319,6 +339,25 @@ const createEditorStateStore = ({
         const state = get();
         const { history, document, selectedBlockId, schemas, onChange } = state;
 
+        let newAction = action;
+
+        // Clone block is a special case, as we want to record new block with already regenerated ids
+        // for undo and redo operations to make those ids consistent
+        if (action.type === "clone-block") {
+          const index = state.indexes[action.value.blockId];
+          if (!index) return;
+
+          newAction = {
+            type: "add-block",
+            value: {
+              block: cloneBlock(index.block),
+              parentBlockId: index.parentBlockId ?? state.rootBlock.id,
+              parentBlockProperty: index.parentProperty ?? undefined,
+              index: index.index ? index.index + 1 : "last",
+            },
+          };
+        }
+
         // Update history entry if needed
         // if (
         //   history.entries.length > 0 &&
@@ -329,12 +368,17 @@ const createEditorStateStore = ({
         //   history.entries[0].value.document = document;
         // }
 
-        const result = editorHistoryReducer(document, selectedBlockId, action);
+        const result = editorHistoryReducer(
+          document,
+          selectedBlockId,
+          newAction,
+        );
+
         if (!result) return;
 
         const newHistoryEntries = [
           ...history.entries.slice(0, history.index + 1),
-          action,
+          newAction,
         ];
 
         const errors = validateStoreState(result.document, schemas);
@@ -713,6 +757,11 @@ export const useEditorStateStore = () => {
   return store;
 };
 
+export const useEditorStore = () => {
+  const store = useEditorStateStore();
+  return useStore(store);
+};
+
 // Memoized selectors to prevent unnecessary re-renders
 export function useDocument() {
   const store = useEditorStateStore();
@@ -890,6 +939,23 @@ export function useBlockDisableOptions(
 export function useSetBlockDisableOptions() {
   const store = useEditorStateStore();
   return useStore(store, (s) => s.actions.setBlockDisableOptions);
+}
+
+export function useAllowedBlockTypes(
+  blockId: string | undefined | null,
+  property: string | undefined | null,
+): string[] | undefined {
+  const store = useEditorStateStore();
+  return useStore(store, (s) =>
+    blockId && property
+      ? s.allowedBlockTypes[`${blockId}/${property}`]
+      : undefined,
+  );
+}
+
+export function useSetAllowedBlockTypes() {
+  const store = useEditorStateStore();
+  return useStore(store, (s) => s.actions.setAllowedBlockTypes);
 }
 
 export function useSetActiveDragBlockId() {
@@ -1121,6 +1187,28 @@ export function useBlockIndex(blockId: string | null) {
     if (!blockId) return null;
     return (s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId])?.index;
   });
+}
+
+export function useBlockParentData(blockId: string | null) {
+  const store = useEditorStateStore();
+  return useStore(
+    store,
+    useDeep((s) => {
+      if (!blockId) return null;
+      const data = s.indexes[blockId] ?? s.templateBlockIndexes?.[blockId];
+      return data
+        ? {
+            parentBlockId: data.parentBlockId,
+            parentProperty: data.parentProperty,
+            index: data.index,
+            depth: data.depth,
+            parentBlockType: data.parentBlockId
+              ? s.indexes[data.parentBlockId]?.blockType
+              : null,
+          }
+        : null;
+    }),
+  );
 }
 
 export function useBlockDepth(blockId: string | null) {

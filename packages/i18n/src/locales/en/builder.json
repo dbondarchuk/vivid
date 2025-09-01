@@ -18,6 +18,8 @@
       "moveDown": "Move selected block down",
       "clone": "Clone selected block",
       "delete": "Delete selected block",
+      "copy": "Copy selected block",
+      "paste": "Paste block",
       "view": {
         "title": "Viewport size",
         "original": "Original",

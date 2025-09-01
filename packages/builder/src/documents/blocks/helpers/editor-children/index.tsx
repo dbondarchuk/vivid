@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, memo, useMemo } from "react";
+import { Fragment, memo, useEffect, useMemo } from "react";
 
 import { EditorBlock, useIsCurrentBlockOverlay } from "../../../editor/block";
 import { TEditorBlock } from "../../../editor/core";
@@ -13,6 +13,7 @@ import {
   useBlockDepth,
   useBlockTypes,
   useHasActiveDragBlock,
+  useSetAllowedBlockTypes,
 } from "../../../editor/context";
 import { BaseZodDictionary } from "../../../types";
 import { OverlayBlock } from "./overlay-block";
@@ -163,6 +164,20 @@ const EditorChildrenRender = deepMemo(
       () => (childWrapper ?? Fragment) as React.ElementType,
       [childWrapper],
     );
+
+    const setAllowedBlockTypes = useSetAllowedBlockTypes();
+    const isCurrentOverlay = useIsCurrentBlockOverlay();
+
+    useEffect(() => {
+      if (isCurrentOverlay) return;
+      setAllowedBlockTypes(currentBlockId, property, allowOnly);
+    }, [
+      allowOnly,
+      currentBlockId,
+      property,
+      setAllowedBlockTypes,
+      isCurrentOverlay,
+    ]);
 
     return (
       <>
