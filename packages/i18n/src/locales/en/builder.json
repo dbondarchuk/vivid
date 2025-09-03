@@ -105,6 +105,7 @@
         "backgroundImage": "Background Image",
         "fontSize": "Font Size",
         "fontFamily": "Font Family",
+        "fontStyle": "Font Style",
         "fontWeight": "Font Weight",
         "textAlign": "Text Alignment",
         "textDecoration": "Text Decoration",
@@ -179,6 +180,11 @@
         "700": "700 (Bold)",
         "800": "800 (Extra Bold)",
         "900": "900 (Black)"
+      },
+      "fontStyle": {
+        "normal": "Normal",
+        "italic": "Italic",
+        "oblique": "Oblique"
       },
       "display": {
         "block": "Block",
