@@ -80,10 +80,10 @@ export type NumberValueWithUnitOrKeyword<T extends string> = z.infer<
 >;
 
 export const zFourSideValues = z.object({
-  top: zNumberValueWithUnitOrGlobalKeyword,
-  bottom: zNumberValueWithUnitOrGlobalKeyword,
-  right: zNumberValueWithUnitOrGlobalKeyword,
-  left: zNumberValueWithUnitOrGlobalKeyword,
+  top: zNumberValueWithUnitOrGlobalKeyword.nullable(),
+  bottom: zNumberValueWithUnitOrGlobalKeyword.nullable(),
+  right: zNumberValueWithUnitOrGlobalKeyword.nullable(),
+  left: zNumberValueWithUnitOrGlobalKeyword.nullable(),
 });
 
 export type FourSideValues = z.infer<typeof zFourSideValues>;

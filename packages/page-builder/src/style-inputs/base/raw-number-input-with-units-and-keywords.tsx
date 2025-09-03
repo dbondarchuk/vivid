@@ -1,6 +1,7 @@
 "use client";
 import { BuilderKeys, useI18n } from "@vivid/i18n";
-import { cn, Combobox } from "@vivid/ui";
+import { Button, cn, Combobox } from "@vivid/ui";
+import { X } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import {
   NumberValueWithUnit,
@@ -12,33 +13,6 @@ import {
   RawNumberInputWithUnitsProps,
 } from "./raw-number-input-with-units";
 import { CSSValueOption } from "./types";
-
-type BaseRawNumberInputWithUnitsAndKeywordsProps = Pick<
-  RawNumberInputWithUnitsProps,
-  "icon" | "min" | "max" | "step" | "forceUnit" | "id" | "options"
-> & {
-  className?: string;
-};
-
-// Type for when keywords are provided
-interface RawNumberInputWithUnitsAndKeywordsPropsWithKeywords<T extends string>
-  extends BaseRawNumberInputWithUnitsAndKeywordsProps {
-  value: NumberValueWithUnitOrKeyword<T> | null | undefined;
-  onChange: (value: NumberValueWithUnitOrKeyword<T>) => void;
-  keywords: readonly CSSValueOption<T>[];
-}
-
-// Type for when keywords are not provided
-interface RawNumberInputWithUnitsAndKeywordsPropsWithoutKeywords
-  extends BaseRawNumberInputWithUnitsAndKeywordsProps {
-  value: NumberValueWithUnitOrGlobalKeyword | null | undefined;
-  onChange: (value: NumberValueWithUnitOrGlobalKeyword) => void;
-  keywords?: never;
-}
-
-type RawNumberInputWithUnitsAndKeywordsProps<T extends string> =
-  | RawNumberInputWithUnitsAndKeywordsPropsWithKeywords<T>
-  | RawNumberInputWithUnitsAndKeywordsPropsWithoutKeywords;
 
 // Create options list
 const globalKeywords = [
@@ -63,6 +37,45 @@ const globalKeywords = [
     isKeyword: false,
   },
 ] as const satisfies CSSValueOption<string>[];
+type BaseRawNumberInputWithUnitsAndKeywordsProps = Pick<
+  RawNumberInputWithUnitsProps,
+  "icon" | "min" | "max" | "step" | "forceUnit" | "id" | "options" | "nullable"
+> & {
+  className?: string;
+  notAllowedGlobalKeywords?: (typeof globalKeywords)[number]["value"][];
+};
+
+// Type for when keywords are provided
+interface RawNumberInputWithUnitsAndKeywordsPropsWithKeywords<T extends string>
+  extends BaseRawNumberInputWithUnitsAndKeywordsProps {
+  value: NumberValueWithUnitOrKeyword<T> | null | undefined;
+  onChange: (value: NumberValueWithUnitOrKeyword<T>) => void;
+  keywords: readonly CSSValueOption<T>[];
+}
+
+// Type for when keywords are not provided
+interface RawNumberInputWithUnitsAndKeywordsPropsWithoutKeywords
+  extends BaseRawNumberInputWithUnitsAndKeywordsProps {
+  value: NumberValueWithUnitOrGlobalKeyword | null | undefined;
+  onChange: (value: NumberValueWithUnitOrGlobalKeyword) => void;
+  keywords?: never;
+}
+
+type RawNumberInputWithUnitsAndKeywordsProps<T extends string> =
+  | RawNumberInputWithUnitsAndKeywordsPropsWithKeywords<T>
+  | RawNumberInputWithUnitsAndKeywordsPropsWithoutKeywords;
+
+const customKeyword = {
+  value: "custom",
+  label: "pageBuilder.styles.keywords.custom",
+  isKeyword: false,
+};
+
+const nullKeyword = {
+  value: "null",
+  label: "pageBuilder.styles.keywords.notSet",
+  isKeyword: false,
+};
 
 export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
   value,
@@ -70,6 +83,8 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
   keywords,
   className,
   icon,
+  nullable,
+  notAllowedGlobalKeywords,
   ...rest
 }: RawNumberInputWithUnitsAndKeywordsProps<T>) => {
   const hasKeywords = keywords && keywords.length > 0;
@@ -101,42 +116,41 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
       }
     } else {
       setIsCustomValue(false);
-      onChange(selectedValue as any);
+      if (selectedValue === "null") {
+        onChange(null as any);
+      } else {
+        onChange(selectedValue as any);
+      }
     }
   };
 
   const handleCustomValueChange = useCallback(
     (newValue: NumberValueWithUnit | null) => {
-      onChange((newValue ?? { value: 0, unit: defaultUnit }) as any);
+      onChange(newValue as any);
     },
     [onChange, defaultUnit],
   );
 
   const t = useI18n("builder");
 
+  const filteredGlobalKeywords = useMemo(() => {
+    return globalKeywords.filter(
+      (keyword) => !notAllowedGlobalKeywords?.includes(keyword.value),
+    );
+  }, [notAllowedGlobalKeywords]);
+
+  const globalKeywordsWithOrWithoutNullable = nullable
+    ? [nullKeyword, ...filteredGlobalKeywords]
+    : filteredGlobalKeywords;
+
   const allOptions = hasKeywords
-    ? [
-        ...globalKeywords,
-        ...keywords,
-        {
-          value: "custom",
-          label: "pageBuilder.styles.keywords.custom",
-          isKeyword: false,
-        },
-      ]
-    : [
-        ...globalKeywords,
-        {
-          value: "custom",
-          label: "pageBuilder.styles.keywords.custom",
-          isKeyword: false,
-        },
-      ];
+    ? [...globalKeywordsWithOrWithoutNullable, ...keywords, customKeyword]
+    : [...globalKeywordsWithOrWithoutNullable, customKeyword];
 
   // Find the current keyword value
   const currentKeyword = useMemo(
     () =>
-      isCustomValue ? "custom" : typeof value === "string" ? value : undefined,
+      isCustomValue ? "custom" : typeof value === "string" ? value : "null",
     [isCustomValue, value],
   );
 
@@ -154,6 +168,16 @@ export const RawNumberInputWithUnitsAndKeywords = <T extends string>({
           className="w-full"
           size="xs"
         />
+
+        {nullable && (
+          <Button
+            variant="ghost"
+            size="xs"
+            onClick={() => handleKeywordSelect("null")}
+          >
+            <X />
+          </Button>
+        )}
       </div>
 
       {isCustomValue && (

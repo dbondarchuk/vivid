@@ -5,6 +5,7 @@ import { flexDirectionStyle } from "./flex-direction";
 import { flexWrapStyle } from "./flex-wrap";
 import { gridTemplateColumnsStyle } from "./grid-template-columns";
 import { heightStyle } from "./height";
+import { insetStyle } from "./inset";
 import { justifyContentStyle } from "./justify-content";
 import { justifyItemsStyle } from "./justify-items";
 import { maxHeightStyle } from "./max-height";
@@ -22,6 +23,7 @@ export * from "./flex-direction";
 export * from "./flex-wrap";
 export * from "./grid-template-columns";
 export * from "./height";
+export * from "./inset";
 export * from "./justify-content";
 export * from "./justify-items";
 export * from "./max-height";
@@ -36,6 +38,7 @@ export const layoutStyles = [
   displayStyle,
   heightStyle,
   positionStyle,
+  insetStyle,
   widthStyle,
   minWidthStyle,
   maxWidthStyle,

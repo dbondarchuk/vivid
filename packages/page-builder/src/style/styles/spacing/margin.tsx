@@ -20,7 +20,7 @@ export const marginStyle = {
   },
   renderToCSS: (value) => {
     if (!value) return null;
-    return `margin: ${renderFourSideValuesCss(value)};`;
+    return renderFourSideValuesCss(value, "margin");
   },
   component: ({ value, onChange }) => (
     <FourSideValuesInput defaultValue={value} onChange={onChange} />

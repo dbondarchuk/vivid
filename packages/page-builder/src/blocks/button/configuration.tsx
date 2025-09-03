@@ -19,6 +19,17 @@ import {
 import { buttonShortcuts } from "./shortcuts";
 import { styles } from "./styles";
 
+const isLinkProps = (
+  props: ButtonProps["props"],
+): props is ButtonProps["props"] & { type: "link" } => {
+  return !props?.type || props?.type === "link";
+};
+const isActionProps = (
+  props: ButtonProps["props"],
+): props is ButtonProps["props"] & { type: "action" } => {
+  return props?.type === "action";
+};
+
 export const ButtonConfiguration = deepMemo(
   ({ data, setData, base, onBaseChange }: ConfigurationProps<ButtonProps>) => {
     const t = useI18n("builder");
@@ -31,22 +42,21 @@ export const ButtonConfiguration = deepMemo(
       [setData, data],
     );
 
-    const url =
-      data.props?.type === "link"
-        ? (data.props.url ?? ButtonDefaultUrl)
-        : undefined;
-    const target =
-      data.props?.type === "link"
-        ? (data.props.target ?? ButtonDefaultTarget)
-        : undefined;
-
     const type = data.props?.type ?? "link";
-    const action =
-      data.props?.type === "action"
-        ? (data.props.action ?? ButtonDefaultAction)
-        : undefined;
-    const actionData =
-      data.props?.type === "action" ? data.props.actionData : undefined;
+
+    const url = isLinkProps(data.props)
+      ? (data.props?.url ?? ButtonDefaultUrl)
+      : undefined;
+    const target = isLinkProps(data.props)
+      ? (data.props?.target ?? ButtonDefaultTarget)
+      : undefined;
+
+    const action = isActionProps(data.props)
+      ? (data.props.action ?? ButtonDefaultAction)
+      : undefined;
+    const actionData = isActionProps(data.props)
+      ? data.props.actionData
+      : undefined;
 
     return (
       <StylesConfigurationPanel

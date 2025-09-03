@@ -116,21 +116,24 @@ export const renderRawNumberWithUnitOrKeywordCss = <T extends string>(
   value: NumberValueWithUnitOrKeyword<T> | null | undefined,
 ): string => {
   if (value === null || typeof value === "undefined") {
-    return "auto";
+    return "inherit";
   }
 
   if (typeof value === "object" && value !== null) {
-    return renderRawNumberWithUnitCss(value) ?? "auto";
+    return renderRawNumberWithUnitCss(value) ?? "inherit";
   }
 
   return value;
 };
 
-export const renderFourSideValuesCss = ({
-  top,
-  right,
-  bottom,
-  left,
-}: FourSideValues) => {
-  return `${top ? renderRawNumberWithUnitOrKeywordCss(top) : 0} ${right ? renderRawNumberWithUnitOrKeywordCss(right) : 0} ${bottom ? renderRawNumberWithUnitOrKeywordCss(bottom) : 0} ${left ? renderRawNumberWithUnitOrKeywordCss(left) : 0}`;
+export const renderFourSideValuesCss = (
+  value: FourSideValues,
+  prefix?: string,
+) => {
+  return Object.entries(value)
+    .filter(([_, val]) => !!val)
+    .map(([key, val]) => {
+      return `${prefix ? `${prefix}-` : ""}${key}: ${renderRawNumberWithUnitOrKeywordCss(val)};`;
+    })
+    .join("\n");
 };

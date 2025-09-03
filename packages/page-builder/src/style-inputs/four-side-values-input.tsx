@@ -15,6 +15,9 @@ import { RawNumberInputWithUnitsAndKeywords } from "./base/raw-number-input-with
 type Props = {
   defaultValue: FourSideValues;
   onChange: (value: FourSideValues) => void;
+  notAllowedGlobalKeywords?: React.ComponentProps<
+    typeof RawNumberInputWithUnitsAndKeywords
+  >["notAllowedGlobalKeywords"];
 };
 
 const step = {
@@ -44,13 +47,14 @@ const options = {
 export const FourSideValuesInput: React.FC<Props> = ({
   defaultValue,
   onChange,
+  notAllowedGlobalKeywords,
 }) => {
   const [value, setValue] = React.useState<FourSideValues>(
     defaultValue ?? {
-      top: "auto",
-      bottom: "auto",
-      left: "auto",
-      right: "auto",
+      top: null,
+      bottom: null,
+      left: null,
+      right: null,
     },
   );
 
@@ -82,6 +86,8 @@ export const FourSideValuesInput: React.FC<Props> = ({
             min={min}
             max={max}
             options={options}
+            nullable
+            notAllowedGlobalKeywords={notAllowedGlobalKeywords}
           />
         </div>
 
@@ -94,6 +100,8 @@ export const FourSideValuesInput: React.FC<Props> = ({
             min={min}
             max={max}
             options={options}
+            nullable
+            notAllowedGlobalKeywords={notAllowedGlobalKeywords}
           />
         </div>
 
@@ -106,6 +114,8 @@ export const FourSideValuesInput: React.FC<Props> = ({
             min={min}
             max={max}
             options={options}
+            nullable
+            notAllowedGlobalKeywords={notAllowedGlobalKeywords}
           />
         </div>
 
@@ -118,6 +128,8 @@ export const FourSideValuesInput: React.FC<Props> = ({
             min={min}
             max={max}
             options={options}
+            nullable
+            notAllowedGlobalKeywords={notAllowedGlobalKeywords}
           />
         </div>
       </div>

@@ -132,7 +132,11 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
     src: template(currentBlock.data?.props?.src ?? "", args, true),
   };
 
-  return isSelected ? (
+  const hasNonStaticPosition = currentBlock.data?.style?.position?.some(
+    (position) => position.value === "absolute" || position.value === "fixed",
+  );
+
+  return isSelected && !hasNonStaticPosition ? (
     <ResizableImage
       props={currentBlock.data ?? {}}
       onDimensionsChange={onDimensionsChange}

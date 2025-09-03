@@ -114,6 +114,7 @@
         "lineHeight": "Line Height",
         "padding": "Padding",
         "margin": "Margin",
+        "inset": "Inset",
         "width": "Width",
         "minWidth": "Min Width",
         "maxWidth": "Max Width",
@@ -305,6 +306,7 @@
         "height": "Height",
         "padding": "Padding",
         "margin": "Margin",
+        "inset": "Inset",
         "border_width": "Border Width",
         "border_radius": "Border Radius",
         "box_shadow": "Box Shadow",
@@ -666,7 +668,8 @@
         "initial": "Initial",
         "none": "None",
         "unset": "Unset",
-        "custom": "Custom"
+        "custom": "Custom",
+        "notSet": "Not Set"
       },
       "borderRadius": {
         "none": "None",

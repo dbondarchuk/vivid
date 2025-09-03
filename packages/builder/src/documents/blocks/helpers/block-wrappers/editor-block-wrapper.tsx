@@ -35,33 +35,30 @@ type TEditorBlockWrapperProps = {
   parentProperty: string;
 };
 
-const variants = cva(
-  "relative max-w-full outline-offset-1 peer-block block-wrapper",
-  {
-    variants: {
-      dragging: {
-        over: "ring-2 opacity-30",
-        overlay: "ring-2 ring-primary !opacity-30",
-        false: "!opacity-100",
-      },
-      // over: {
-      //   true: "bg-blue-800/40 bg-opacity-50",
-      // },
-      over: {
-        true: "outline outline-blue-100",
-      },
-      sorting: {
-        true: "outline-1 outline-dashed outline-blue-400",
-      },
-      outline: {
-        selected:
-          "outline outline-blue-600 [&_+.peer-button>button]:opacity-100 z-[2]",
-        hover:
-          "outline outline-blue-200 [&_+.peer-button>button]:opacity-100 z-[1]",
-      },
+const variants = cva("max-w-full outline-offset-1 peer-block block-wrapper", {
+  variants: {
+    dragging: {
+      over: "ring-2 opacity-30",
+      overlay: "ring-2 ring-primary !opacity-30",
+      false: "!opacity-100",
+    },
+    // over: {
+    //   true: "bg-blue-800/40 bg-opacity-50",
+    // },
+    over: {
+      true: "outline outline-blue-100",
+    },
+    sorting: {
+      true: "outline-1 outline-dashed outline-blue-400",
+    },
+    outline: {
+      selected:
+        "outline outline-blue-600 [&_+.peer-button>button]:opacity-100 z-[2]",
+      hover:
+        "outline outline-blue-200 [&_+.peer-button>button]:opacity-100 z-[1]",
     },
   },
-);
+});
 
 const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
   ({ children, index, parentBlockId, parentProperty }) => {

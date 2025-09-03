@@ -58,6 +58,7 @@ export const transitionPropertyKeys = [
   "font-weight",
   "letter-spacing",
   "line-height",
+  "inset",
 ] as const;
 
 export const transitionPropertyKeyMap = {
@@ -80,6 +81,7 @@ export const transitionPropertyKeyMap = {
   "font-weight": "font_weight",
   "letter-spacing": "letter_spacing",
   "line-height": "line_height",
+  inset: "inset",
 } as const;
 
 // Transition timing function options

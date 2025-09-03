@@ -6,6 +6,8 @@ import { zFourSideValues } from "../../zod";
 
 const PaddingSchema = zFourSideValues;
 
+const notAllowedGlobalKeywords = ["auto" as const];
+
 export const paddingStyle = {
   name: "padding",
   label: "pageBuilder.styles.properties.padding",
@@ -13,16 +15,20 @@ export const paddingStyle = {
   schema: PaddingSchema,
   icon: ({ className }) => <PanelLeftClose className={className} />,
   defaultValue: {
-    top: "auto",
-    right: "auto",
-    bottom: "auto",
-    left: "auto",
+    top: null,
+    right: null,
+    bottom: null,
+    left: null,
   },
   renderToCSS: (value) => {
     if (!value) return null;
-    return `padding: ${renderFourSideValuesCss(value)};`;
+    return renderFourSideValuesCss(value, "padding");
   },
   component: ({ value, onChange }) => (
-    <FourSideValuesInput defaultValue={value} onChange={onChange} />
+    <FourSideValuesInput
+      defaultValue={value}
+      onChange={onChange}
+      notAllowedGlobalKeywords={notAllowedGlobalKeywords}
+    />
   ),
 } as const satisfies StyleDefinition<typeof PaddingSchema>;
