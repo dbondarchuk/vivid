@@ -70,7 +70,7 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
   return (
     <Sidebar
       side="right"
-      className="absolute z-[45] h-full group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1.2)] pt-0 [&>[data-sidebar=sidebar]]:sticky [&>[data-sidebar=sidebar]]:top-0 [&>[data-sidebar=sidebar]]:h-fit"
+      className="absolute z-[40] h-full group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1.2)] pt-0 [&>[data-sidebar=sidebar]]:sticky [&>[data-sidebar=sidebar]]:top-9 [&>[data-sidebar=sidebar]]:h-fit"
       variant="inset"
     >
       <SidebarContent className="w-full border-b border-secondary bg-background relative h-full overflow-hidden">
@@ -81,12 +81,12 @@ export const InspectorDrawer: React.FC<{ extraTabs?: SidebarTab[] }> = ({
             onValueChange={(value) => setSidebarTab(value as any)}
           >
             <SelectBlockListener />
-            <TabsList className="w-full justify-between sticky top-0 z-[1] flex-wrap h-auto items-center">
+            <TabsList className="w-full justify-between sticky top-0 z-10 flex-wrap h-auto items-center">
               {allTabs.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className="gap-2"
+                  className="gap-2 flex-1"
                 >
                   {tab.icon} {tab.label}
                 </TabsTrigger>

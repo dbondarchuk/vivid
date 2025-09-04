@@ -1184,6 +1184,9 @@
           "blur": "Blur",
           "default": "Default"
         },
+        "noClose": {
+          "label": "Hide close button"
+        },
         "shortcuts": {
           "maxWidth": {
             "label": "Width",

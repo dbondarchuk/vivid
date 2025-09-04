@@ -2,7 +2,7 @@
 
 import { ConfigurationProps, SelectInput } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
-import { deepMemo } from "@vivid/ui";
+import { Checkbox, deepMemo, Label } from "@vivid/ui";
 import { useCallback, useMemo } from "react";
 import { StylesConfigurationPanel } from "../../configuration-panel/styles-configuration-panel";
 import { overlayType, PopupProps, showPopupType } from "./schema";
@@ -58,6 +58,18 @@ export const PopupConfiguration = deepMemo(
           onChange={(overlay) => updateProps({ ...data.props, overlay })}
           options={overlayOptions}
         />
+        <div className="flex items-center gap-2 flex-1">
+          <Checkbox
+            id="noClose"
+            checked={!!data.props.noClose}
+            onCheckedChange={(noClose) =>
+              updateProps({ ...data.props, noClose })
+            }
+          />
+          <Label htmlFor="noClose">
+            {t("pageBuilder.blocks.popup.noClose.label")}
+          </Label>
+        </div>
       </StylesConfigurationPanel>
     );
   },

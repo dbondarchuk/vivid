@@ -8,6 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  ScrollArea,
 } from "@vivid/ui";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
@@ -26,6 +27,7 @@ export const PopupReader = ({
   const buttons = props?.buttons?.children || [];
   const content = props?.content?.children || [];
   const overlay = props?.overlay;
+  const noClose = props?.noClose;
   const className = generateClassName();
   const base = block.base;
 
@@ -39,6 +41,7 @@ export const PopupReader = ({
         id={base?.id}
         className={cn(className, base?.className)}
         overlay={overlay}
+        noClose={noClose}
       >
         <ReplaceOriginalColors />
         <DialogHeader>
@@ -53,9 +56,11 @@ export const PopupReader = ({
             ))}
           </DialogDescription>
         </DialogHeader>
-        {content.map((child) => (
-          <ReaderBlock key={child.id} block={child} {...rest} />
-        ))}
+        <ScrollArea className="max-h-[70vh]">
+          {content.map((child) => (
+            <ReaderBlock key={child.id} block={child} {...rest} />
+          ))}
+        </ScrollArea>
         <DialogFooter>
           {buttons.map((child) => (
             <ReaderBlock key={child.id} block={child} {...rest} />

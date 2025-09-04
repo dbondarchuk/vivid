@@ -14,11 +14,21 @@ export const Popup: React.FC<{
   blockId: string;
   show: (typeof showPopupType)[number];
   overlay: (typeof overlayType)[number];
+  noClose?: boolean;
   isEditor?: boolean;
   id?: string;
   className?: string;
   children: React.ReactNode;
-}> = ({ blockId, show, overlay, isEditor, id, className, children }) => {
+}> = ({
+  blockId,
+  show,
+  overlay,
+  noClose,
+  isEditor,
+  id,
+  className,
+  children,
+}) => {
   const popupId = id || blockId;
   const COOKIE_NAME = `popup-shown-${popupId}`;
 
@@ -53,6 +63,7 @@ export const Popup: React.FC<{
           id={id}
           className={className}
           overlayVariant={overlay}
+          noClose={noClose}
         >
           {children}
         </DialogContent>

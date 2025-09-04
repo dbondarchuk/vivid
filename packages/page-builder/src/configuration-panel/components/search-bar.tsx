@@ -27,7 +27,7 @@ export const SearchBar = <T extends BaseStyleDictionary>({
     <div className="flex items-center gap-2">
       <div className="relative flex-grow">
         <Search
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground z-10"
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground z-[1]"
           size={16}
         />
         <Input

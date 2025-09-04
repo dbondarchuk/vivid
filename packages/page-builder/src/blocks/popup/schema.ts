@@ -25,6 +25,7 @@ export const PopupPropsSchema = z.object({
     buttons: z.object({
       children: z.array(z.any()).max(1),
     }),
+    noClose: z.boolean().optional(),
   }),
 });
 
