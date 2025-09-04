@@ -32,6 +32,7 @@ import {
   BaseFontBackgroundColorPlugin,
   BaseFontColorPlugin,
   BaseFontSizePlugin,
+  BaseFontWeightPlugin,
 } from "@udecode/plate-font";
 import {
   BaseHeadingPlugin,
@@ -130,6 +131,7 @@ export const createPlateStaticEditor = (
       BaseHeadingPlugin,
       BaseMediaEmbedPlugin,
       BaseBoldPlugin,
+      BaseFontWeightPlugin,
       BaseCodePlugin,
       BaseItalicPlugin,
       BaseStrikethroughPlugin,

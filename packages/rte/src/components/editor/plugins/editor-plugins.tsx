@@ -9,6 +9,7 @@ import {
   FontBackgroundColorPlugin,
   FontColorPlugin,
   FontSizePlugin,
+  FontWeightPlugin,
 } from "@udecode/plate-font/react";
 import { HighlightPlugin } from "@udecode/plate-highlight/react";
 import { HorizontalRulePlugin } from "@udecode/plate-horizontal-rule/react";
@@ -58,6 +59,7 @@ export const viewPlugins = [
   FontColorPlugin,
   FontBackgroundColorPlugin,
   FontSizePlugin,
+  FontWeightPlugin,
   HighlightPlugin,
   KbdPlugin,
 

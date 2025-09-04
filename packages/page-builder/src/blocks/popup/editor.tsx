@@ -49,7 +49,7 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
         </DialogTrigger> */}
 
         <div
-          className={cn("relative grid", className, base?.className)}
+          className={cn("relative grid w-full", className, base?.className)}
           id={base?.id}
         >
           {!noClose && (
