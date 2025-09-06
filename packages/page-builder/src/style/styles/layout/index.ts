@@ -1,4 +1,5 @@
 import { alignItemsStyle } from "./align-items";
+import { aspectRatioStyle } from "./aspect-ratio";
 import { displayStyle } from "./display";
 import { flexBasisStyle } from "./flex-basis";
 import { flexDirectionStyle } from "./flex-direction";
@@ -17,6 +18,7 @@ import { verticalAlignStyle } from "./vertical-align";
 import { widthStyle } from "./width";
 
 export * from "./align-items";
+export * from "./aspect-ratio";
 export * from "./display";
 export * from "./flex-basis";
 export * from "./flex-direction";
@@ -52,4 +54,5 @@ export const layoutStyles = [
   flexBasisStyle,
   gridTemplateColumnsStyle,
   verticalAlignStyle,
+  aspectRatioStyle,
 ] as const;

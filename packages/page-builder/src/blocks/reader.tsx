@@ -1,6 +1,7 @@
 import { ReaderDocumentBlocksDictionary } from "@vivid/builder";
 import { AccordionItem } from "./accordion-item/reader";
 import { Accordion } from "./accordion/reader";
+import { BeforeAfterReader } from "./before-after/reader";
 import { BookingReader } from "./booking/reader";
 import { ButtonReader } from "./button/reader";
 import { CarouselReader } from "./carousel/reader";
@@ -101,5 +102,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   CustomHTML: {
     Reader: CustomHTML,
+  },
+  BeforeAfter: {
+    Reader: BeforeAfterReader,
   },
 };

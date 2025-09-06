@@ -15,6 +15,7 @@ import {
   GalleryHorizontalEnd,
   Heading,
   Image,
+  Images,
   Layout,
   LetterText,
   Link,
@@ -39,6 +40,12 @@ import {
   AccordionItemPropsDefaults,
   AccordionItemToolbar,
 } from "./accordion-item";
+import {
+  BeforeAfterConfiguration,
+  BeforeAfterEditor,
+  BeforeAfterPropsDefaults,
+  BeforeAfterToolbar,
+} from "./before-after";
 import {
   ButtonConfiguration,
   ButtonEditor,
@@ -392,6 +399,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: CustomHTMLToolbar,
     defaultValue: CustomHTMLPropsDefaults,
     category: "pageBuilder.blocks.categories.layout",
+  },
+  BeforeAfter: {
+    displayName: "pageBuilder.blocks.beforeAfterSlider.displayName",
+    icon: <Images />,
+    Editor: BeforeAfterEditor,
+    Configuration: BeforeAfterConfiguration,
+    Toolbar: BeforeAfterToolbar,
+    defaultValue: BeforeAfterPropsDefaults,
+    category: "pageBuilder.blocks.categories.objects",
   },
 };
 

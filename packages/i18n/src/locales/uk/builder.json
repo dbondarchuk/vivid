@@ -132,6 +132,7 @@
         "borderRadius": "Радіус рамки",
         "boxShadow": "Тінь блоку",
         "backgroundPosition": "Позиція фону",
+        "aspectRatio": "Пропорції",
         "backgroundSize": "Розмір фону",
         "backgroundRepeat": "Повторення фону",
         "backgroundBlendMode": "Режим змішування фону",
@@ -581,6 +582,12 @@
         "accent-foreground": "Акцентний текст",
         "destructive": "Руйнівний",
         "destructive-foreground": "Руйнівний текст"
+      },
+      "aspectRatio": {
+        "initial": "Початковий",
+        "inherit": "Успадкувати",
+        "unset": "Вилучити",
+        "custom": "Власний"
       },
       "backgroundPosition": {
         "center": "Центр",
@@ -1236,6 +1243,44 @@
         "html": "HTML",
         "errors": {
           "required": "HTML є обов'язковим"
+        }
+      },
+      "beforeAfterSlider": {
+        "displayName": "Слайдер До/Після",
+        "beforeImage": "Зображення До",
+        "afterImage": "Зображення Після",
+        "beforeAlt": "Альтернативний текст зображення До",
+        "afterAlt": "Альтернативний текст зображення Після",
+        "sliderPosition": "Початкова позиція слайдера",
+        "orientation": {
+          "label": "Орієнтація",
+          "horizontal": "Горизонтально",
+          "vertical": "Вертикально"
+        },
+        "showLabels": "Показувати мітки",
+        "beforeLabel": {
+          "label": "Текст До",
+          "placeholder": "До"
+        },
+        "afterLabel": {
+          "label": "Текст Після",
+          "placeholder": "Після"
+        },
+        "noImages": "Будь ласка, додайте обидва зображення До/Після",
+        "shortcuts": {
+          "aspectRatio": {
+            "label": "Співвідношення сторін",
+            "square": "Квадрат (1:1)",
+            "landscape": "Альбомна (4:3)",
+            "portrait": "Портретна (3:4)",
+            "widescreen": "Широкоекранна (16:9)",
+            "mobile": "Мобільна (9:16)"
+          },
+          "orientation": {
+            "label": "Орієнтація",
+            "horizontal": "Горизонтально",
+            "vertical": "Вертикально"
+          }
         }
       }
     },

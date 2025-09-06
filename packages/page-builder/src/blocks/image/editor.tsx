@@ -9,6 +9,7 @@ import {
 } from "@vivid/builder";
 import { template } from "@vivid/utils";
 import { useCallback } from "react";
+import { useAllowImageResize } from "./context";
 import { Image } from "./reader";
 import { ResizableImage } from "./resizable-image";
 import { ImageProps } from "./schema";
@@ -17,6 +18,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
   const currentBlock = useCurrentBlock<ImageProps>();
   const currentBlockId = useCurrentBlockId();
   const isSelected = useIsSelectedBlock(currentBlockId);
+  const allowResize = useAllowImageResize();
 
   const getUpdatedSize = (
     currentBlockData: ImageProps,
@@ -136,7 +138,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
     (position) => position.value === "absolute" || position.value === "fixed",
   );
 
-  return isSelected && !hasNonStaticPosition ? (
+  return isSelected && !hasNonStaticPosition && allowResize ? (
     <ResizableImage
       props={currentBlock.data ?? {}}
       onDimensionsChange={onDimensionsChange}

@@ -72,6 +72,7 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
     const disable = useCurrentBlockDisableOptions();
     const blockType = useBlockType(blockId);
     const depth = useBlockDepth(blockId) ?? 0;
+    const isEditorView = useSelectedView() === "editor";
 
     const isActiveHierarchyOverDroppable =
       useIsActiveHierarchyOverDroppable(blockId);
@@ -91,7 +92,7 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
 
     // Auto-scroll to block when it becomes selected
     useEffect(() => {
-      if (isSelected && !isOverlay) {
+      if (isSelected && !isOverlay && isEditorView) {
         const element = ref?.current ?? blockElement;
         if (element) {
           // Use a small delay to ensure the selection state is fully applied
@@ -106,7 +107,7 @@ const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
           return () => clearTimeout(timeoutId);
         }
       }
-    }, [isSelected, ref, blockElement, isOverlay]);
+    }, [isSelected, ref, blockElement, isOverlay, isEditorView]);
 
     const Element = ref?.current ? (
       <>{children}</>
@@ -180,7 +181,7 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
 
     // Auto-scroll to block when it becomes selected
     useEffect(() => {
-      if (isSelected && !isOverlay) {
+      if (isSelected && !isOverlay && isEditorView) {
         const element = ref?.current ?? blockElement;
         if (element) {
           // Use a small delay to ensure the selection state is fully applied
@@ -195,7 +196,7 @@ export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
           return () => clearTimeout(timeoutId);
         }
       }
-    }, [isSelected, ref, blockElement]);
+    }, [isSelected, ref, blockElement, isEditorView]);
 
     const handleRef = useRef<HTMLButtonElement | null>(null);
 

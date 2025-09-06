@@ -131,6 +131,7 @@
         "borderStyle": "Border Style",
         "borderRadius": "Border Radius",
         "boxShadow": "Box Shadow",
+        "aspectRatio": "Aspect Ratio",
         "backgroundPosition": "Background Position",
         "backgroundSize": "Background Size",
         "backgroundRepeat": "Background Repeat",
@@ -581,6 +582,12 @@
         "accent-foreground": "Accent Text",
         "destructive": "Destructive",
         "destructive-foreground": "Destructive Text"
+      },
+      "aspectRatio": {
+        "initial": "Initial",
+        "inherit": "Inherit",
+        "unset": "Unset",
+        "custom": "Custom"
       },
       "backgroundPosition": {
         "center": "Center",
@@ -1236,6 +1243,44 @@
         "html": "HTML",
         "errors": {
           "required": "HTML is required"
+        }
+      },
+      "beforeAfterSlider": {
+        "displayName": "Before/After Slider",
+        "beforeImage": "Before Image",
+        "afterImage": "After Image",
+        "beforeAlt": "Before Image Alt Text",
+        "afterAlt": "After Image Alt Text",
+        "sliderPosition": "Initial Slider Position",
+        "orientation": {
+          "label": "Orientation",
+          "horizontal": "Horizontal",
+          "vertical": "Vertical"
+        },
+        "showLabels": "Show Labels",
+        "beforeLabel": {
+          "label": "Before Label",
+          "placeholder": "Before"
+        },
+        "afterLabel": {
+          "label": "After Label",
+          "placeholder": "After"
+        },
+        "noImages": "Please add both before and after images",
+        "shortcuts": {
+          "aspectRatio": {
+            "label": "Aspect Ratio",
+            "square": "Square (1:1)",
+            "landscape": "Landscape (4:3)",
+            "portrait": "Portrait (3:4)",
+            "widescreen": "Widescreen (16:9)",
+            "mobile": "Mobile (9:16)"
+          },
+          "orientation": {
+            "label": "Orientation",
+            "horizontal": "Horizontal",
+            "vertical": "Vertical"
+          }
         }
       }
     },

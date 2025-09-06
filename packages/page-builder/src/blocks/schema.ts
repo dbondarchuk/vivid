@@ -1,5 +1,6 @@
 import { AccordionItemPropsSchema } from "./accordion-item/schema";
 import { AccordionPropsSchema } from "./accordion/schema";
+import { BeforeAfterPropsSchema } from "./before-after/schema";
 import { BookingPropsSchema } from "./booking/schema";
 import { ButtonPropsSchema } from "./button/schema";
 import { CarouselPropsSchema } from "./carousel/schema";
@@ -47,6 +48,7 @@ export const EditorBlocksSchema = {
   InlineContainer: InlineContainerPropsSchema,
   Icon: IconPropsSchema,
   CustomHTML: CustomHTMLPropsSchema,
+  BeforeAfter: BeforeAfterPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -71,4 +73,5 @@ export const EditorBlocksSchema = {
   InlineContainer: typeof InlineContainerPropsSchema;
   Icon: typeof IconPropsSchema;
   CustomHTML: typeof CustomHTMLPropsSchema;
+  BeforeAfter: typeof BeforeAfterPropsSchema;
 };
