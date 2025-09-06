@@ -2,6 +2,7 @@ import { cn } from "@vivid/ui";
 import { forwardRef } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
+import { ImageLightbox } from "./image-lightbox";
 import { ImageReaderProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
@@ -14,12 +15,12 @@ export const Image = forwardRef<
   const className = generateClassName();
   const base = block.base;
   const imageElement = (
-    <img
+    <ImageLightbox
       alt={props?.alt ?? ""}
       src={props?.src ?? ""}
       className={cn(className, base?.className)}
       id={base?.id}
-      ref={!linkHref ? (ref as any) : undefined}
+      ref={linkHref ? (ref as any) : undefined}
     />
   );
 

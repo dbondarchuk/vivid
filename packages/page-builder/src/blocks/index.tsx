@@ -13,6 +13,7 @@ import {
   CopyPlus,
   Film,
   GalleryHorizontalEnd,
+  GalleryThumbnails,
   Heading,
   Image,
   Images,
@@ -127,6 +128,11 @@ import {
   InlineTextPropsDefaults,
   InlineTextToolbar,
 } from "./inline-text";
+import {
+  LightboxConfiguration,
+  LightboxEditor,
+  LightboxPropsDefaults,
+} from "./lightbox";
 import {
   PageHeroConfiguration,
   PageHeroEditor,
@@ -408,6 +414,14 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Toolbar: BeforeAfterToolbar,
     defaultValue: BeforeAfterPropsDefaults,
     category: "pageBuilder.blocks.categories.objects",
+  },
+  Lightbox: {
+    displayName: "pageBuilder.blocks.lightbox.displayName",
+    icon: <GalleryThumbnails />,
+    Editor: LightboxEditor,
+    Configuration: LightboxConfiguration,
+    defaultValue: LightboxPropsDefaults,
+    category: "pageBuilder.blocks.categories.content",
   },
 };
 

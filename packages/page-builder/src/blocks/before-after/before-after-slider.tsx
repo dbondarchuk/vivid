@@ -3,6 +3,7 @@
 import { cn } from "@vivid/ui";
 import { GripVertical } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
 
 interface BeforeAfterSliderProps {
   before: React.ReactNode;
@@ -195,6 +196,8 @@ export const BeforeAfterSlider = ({
       )}
       id={id}
     >
+      <ReplaceOriginalColors />
+
       <ComparisonItem
         position="left"
         sliderPosition={position}

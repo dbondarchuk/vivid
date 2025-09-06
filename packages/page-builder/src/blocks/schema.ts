@@ -14,6 +14,7 @@ import { IconPropsSchema } from "./icon/schema";
 import { ImagePropsSchema } from "./image/schema";
 import { InlineContainerPropsSchema } from "./inline-container/schema";
 import { InlineTextPropsSchema } from "./inline-text/schema";
+import { LightboxPropsSchema } from "./lightbox/schema";
 import { LinkPropsSchema } from "./link/schema";
 import { PageHeroPropsSchema } from "./page-hero/schema";
 import { PageLayoutPropsSchema } from "./page-layout/schema";
@@ -49,6 +50,7 @@ export const EditorBlocksSchema = {
   Icon: IconPropsSchema,
   CustomHTML: CustomHTMLPropsSchema,
   BeforeAfter: BeforeAfterPropsSchema,
+  Lightbox: LightboxPropsSchema,
 } as {
   Image: typeof ImagePropsSchema;
   Button: typeof ButtonPropsSchema;
@@ -74,4 +76,5 @@ export const EditorBlocksSchema = {
   Icon: typeof IconPropsSchema;
   CustomHTML: typeof CustomHTMLPropsSchema;
   BeforeAfter: typeof BeforeAfterPropsSchema;
+  Lightbox: typeof LightboxPropsSchema;
 };

@@ -1206,6 +1206,20 @@
           }
         }
       },
+      "lightbox": {
+        "displayName": "Lightbox",
+        "overlay": {
+          "label": "Тип підкладки",
+          "blur": "Розмиття",
+          "default": "Типовий"
+        },
+        "navigation": "Навігація",
+        "loop": "Зациклити",
+        "autoPlay": "Автоматичне відтворення",
+        "autoPlaySpeed": "Швидкість автовідтворення",
+        "autoPlaySeconds": "с",
+        "showAltAsDescription": "Показувати альтернативний текст як опис"
+      },
       "inlineText": {
         "displayName": "Рядковий текст",
         "placeholder": "Текст тут",

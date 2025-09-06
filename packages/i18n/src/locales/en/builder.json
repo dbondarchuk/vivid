@@ -1206,6 +1206,20 @@
           }
         }
       },
+      "lightbox": {
+        "displayName": "Lightbox",
+        "overlay": {
+          "label": "Overlay",
+          "blur": "Blur",
+          "default": "Default"
+        },
+        "navigation": "Navigation",
+        "loop": "Loop",
+        "autoPlay": "Auto play",
+        "autoPlaySpeed": "Auto Play Speed",
+        "autoPlaySeconds": "s",
+        "showAltAsDescription": "Show Alt As Description"
+      },
       "inlineText": {
         "displayName": "Inline text",
         "placeholder": "Text here",

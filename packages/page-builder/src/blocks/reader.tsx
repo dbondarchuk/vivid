@@ -15,6 +15,7 @@ import { Icon } from "./icon/reader";
 import { Image } from "./image/reader";
 import { InlineContainerReader } from "./inline-container/reader";
 import { InlineText } from "./inline-text/reader";
+import { LightboxReader } from "./lightbox/reader";
 import { Link } from "./link/reader";
 import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
@@ -105,5 +106,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   BeforeAfter: {
     Reader: BeforeAfterReader,
+  },
+  Lightbox: {
+    Reader: LightboxReader,
   },
 };
