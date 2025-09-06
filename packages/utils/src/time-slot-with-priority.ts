@@ -46,6 +46,34 @@ function parseTimeToDateTime(
   return date.setZone(zone).set({ hour, minute, second: 0, millisecond: 0 });
 }
 
+function mergeOverlappingPeriods(periods: Period[]): Period[] {
+  if (periods.length === 0) return [];
+
+  // Sort periods by start time
+  const sorted = [...periods].sort(
+    (a, b) => a.startAt.toMillis() - b.startAt.toMillis()
+  );
+  const merged: Period[] = [sorted[0]];
+
+  for (let i = 1; i < sorted.length; i++) {
+    const current = sorted[i];
+    const lastMerged = merged[merged.length - 1];
+
+    // If current period overlaps with or is adjacent to the last merged period
+    if (current.startAt <= lastMerged.endAt) {
+      // Merge by extending the end time if current ends later
+      if (current.endAt > lastMerged.endAt) {
+        lastMerged.endAt = current.endAt;
+      }
+    } else {
+      // No overlap, add as new period
+      merged.push(current);
+    }
+  }
+
+  return merged;
+}
+
 function getSlotStartTimes(
   start: DateTime,
   end: DateTime,
@@ -191,17 +219,20 @@ export function getAvailableTimeSlotsWithPriority({
     for (const shift of shifts) {
       const workStart = parseTimeToDateTime(day, shift.start, timeZone);
       const workEnd = parseTimeToDateTime(day, shift.end, timeZone);
-      const shiftEvents = events.filter(
-        (e) => e.startAt < workEnd && e.endAt > workStart
-      );
+      // Filter events that overlap with the shift and clip them to shift boundaries
+      const shiftEvents = events
+        .filter((e) => e.startAt < workEnd && e.endAt > workStart)
+        .map((e) => ({
+          startAt: DateTime.max(e.startAt, workStart),
+          endAt: DateTime.min(e.endAt, workEnd),
+        }));
 
-      const timeline: Period[] = [
+      // Create timeline with work boundaries and events, then merge overlapping periods
+      const timeline: Period[] = mergeOverlappingPeriods([
         { startAt: workStart, endAt: workStart },
-        ...shiftEvents.sort(
-          (a, b) => a.startAt.toMillis() - b.startAt.toMillis()
-        ),
+        ...shiftEvents,
         { startAt: workEnd, endAt: workEnd },
-      ];
+      ]);
 
       const allSlotStarts = getSlotStartTimes(workStart, workEnd, {
         ...configuration,
