@@ -13,7 +13,7 @@ export const Scheduler: React.FC<
     }
 > = ({ view: forceView, ...props }) => {
   const isMobile = useIsMobile();
-  const view = (forceView ?? isMobile) ? "simple" : "full";
+  const view = forceView ?? (isMobile ? "simple" : "full");
 
   return view === "full" ? (
     <DayScheduleSelector {...props} />
