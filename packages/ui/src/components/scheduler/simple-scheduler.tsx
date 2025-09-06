@@ -25,6 +25,7 @@ export interface SimpleSchedulerProps {
   onChange: (value: AvailablePeriod[]) => void;
   addShiftLabel?: string;
   shiftsLabel?: AllKeys;
+  weekDate?: Date;
 }
 
 export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
@@ -33,6 +34,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
   onChange,
   addShiftLabel,
   shiftsLabel,
+  weekDate,
 }) => {
   const t = useI18n("ui");
   const tAll = useI18n();
@@ -270,7 +272,14 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
           <AccordionItem key={day} value={day.toString()}>
             <AccordionTrigger className="hover:no-underline">
               <div className="flex justify-between items-center w-full pr-4">
-                <span>{weekDayMap[day]}</span>
+                <span>
+                  {weekDate
+                    ? DateTime.fromJSDate(weekDate)
+                        .startOf("week")
+                        .plus({ days: day - 1 })
+                        .toFormat("EEEE, MMM d")
+                    : weekDayMap[day]}
+                </span>
                 <span className="text-xs text-muted-foreground">
                   {shiftsLabel
                     ? tAll(shiftsLabel, {
