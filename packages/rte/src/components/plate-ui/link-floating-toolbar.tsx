@@ -1,26 +1,27 @@
 "use client";
 
-import { useEditorRef } from "@udecode/plate-core/react";
+import { cn } from "@udecode/cn";
 import {
+  type UseVirtualFloatingOptions,
   flip,
   offset,
-  UseVirtualFloatingOptions,
 } from "@udecode/plate-floating";
 import {
-  FloatingLinkUrlInput,
-  LinkFloatingToolbarState,
+  type LinkFloatingToolbarState,
   LinkOpenButton,
+} from "@udecode/plate-link/react";
+
+import { useEditorRef, useFormInputProps } from "@udecode/plate/react";
+import { ExternalLink, Link, Text, Unlink } from "lucide-react";
+import { ReactEditor } from "slate-react";
+
+import {
+  FloatingLinkUrlInput,
   useFloatingLinkEdit,
   useFloatingLinkEditState,
   useFloatingLinkInsert,
   useFloatingLinkInsertState,
-} from "@udecode/plate-link/react";
-import { useCallback, useMemo } from "react";
-import { ReactEditor } from "slate-react";
-
-import { cn } from "@vivid/ui";
-
-import { ExternalLink, Link, Text, Unlink } from "lucide-react";
+} from "./use-floating-link";
 
 import {
   buttonVariants,
@@ -28,16 +29,17 @@ import {
   popoverVariants,
   Separator,
 } from "@vivid/ui";
+import { useCallback, useMemo } from "react";
 
 const floatingOptions: UseVirtualFloatingOptions = {
-  placement: "bottom-start",
   middleware: [
     offset(12),
     flip({
-      padding: 12,
       fallbackPlacements: ["bottom-end", "top-start", "top-end"],
+      padding: 12,
     }),
   ],
+  placement: "bottom-start",
 };
 
 export interface LinkFloatingToolbarProps {
@@ -46,7 +48,6 @@ export interface LinkFloatingToolbarProps {
 
 export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
   const editor = useEditorRef();
-
   const insertState = useFloatingLinkInsertState({
     ...state,
     floatingOptions: {
@@ -55,9 +56,9 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
     },
   });
   const {
+    hidden,
     props: insertProps,
     ref: insertRef,
-    hidden,
     textInputProps,
   } = useFloatingLinkInsert(insertState);
 
@@ -69,11 +70,14 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
     },
   });
   const {
+    editButtonProps,
     props: editProps,
     ref: editRef,
-    editButtonProps,
     unlinkButtonProps,
   } = useFloatingLinkEdit(editState);
+  const inputProps = useFormInputProps({
+    preventDefaultOnEnterKeydown: true,
+  });
 
   const getSelectionAbsolutePosition = useCallback(() => {
     if (!editor.selection) return;
@@ -119,27 +123,27 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
   if (hidden) return null;
 
   const input = (
-    <div className="flex w-[330px] flex-col">
+    <div className="flex w-[330px] flex-col" {...inputProps}>
       <div className="flex items-center">
-        <div className="text-muted-foreground flex items-center pl-3">
-          <Link className="h-4 w-4" />
+        <div className="flex items-center pr-1 pl-2 text-muted-foreground">
+          <Link className="size-4" />
         </div>
 
         <FloatingLinkUrlInput
-          className={inputVariants({ variant: "ghost", h: "sm" })}
+          className={inputVariants({ h: "sm", variant: "ghost" })}
           placeholder="Paste link"
+          data-plate-focus
         />
       </div>
-
-      <Separator />
-
+      <Separator className="my-1" />
       <div className="flex items-center">
-        <div className="text-muted-foreground flex items-center pl-3">
-          <Text className="h-4 w-4" />
+        <div className="flex items-center pr-1 pl-2 text-muted-foreground">
+          <Text className="size-4" />
         </div>
         <input
-          className={inputVariants({ variant: "ghost", h: "sm" })}
+          className={inputVariants({ h: "sm", variant: "ghost" })}
           placeholder="Text to display"
+          data-plate-focus
           {...textInputProps}
         />
       </div>
@@ -149,10 +153,10 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
   const editContent = editState.isEditing ? (
     input
   ) : (
-    <div className="box-content flex h-9 items-center gap-1">
+    <div className="box-content flex items-center">
       <button
+        className={buttonVariants({ size: "sm", variant: "ghost" })}
         type="button"
-        className={buttonVariants({ variant: "ghost", size: "sm" })}
         {...editButtonProps}
       >
         Edit link
@@ -162,8 +166,8 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
 
       <LinkOpenButton
         className={buttonVariants({
+          size: "icon",
           variant: "ghost",
-          size: "sm",
         })}
       >
         <ExternalLink width={18} />
@@ -172,11 +176,11 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
       <Separator orientation="vertical" />
 
       <button
-        type="button"
         className={buttonVariants({
+          size: "icon",
           variant: "ghost",
-          size: "sm",
         })}
+        type="button"
         {...unlinkButtonProps}
       >
         <Unlink width={18} />
@@ -184,17 +188,16 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
     </div>
   );
 
-  if (!currentAbsolutePosition) return null;
-
   return (
     <>
       <div
         ref={insertRef}
         className={cn(popoverVariants(), "w-auto p-1")}
+        {...insertProps}
         style={{
           ...insertProps.style,
-          top: currentAbsolutePosition.y,
-          left: currentAbsolutePosition.x,
+          // top: currentAbsolutePosition?.y,
+          // left: currentAbsolutePosition?.x,
         }}
       >
         {input}
@@ -203,10 +206,11 @@ export function LinkFloatingToolbar({ state }: LinkFloatingToolbarProps) {
       <div
         ref={editRef}
         className={cn(popoverVariants(), "w-auto p-1")}
+        {...editProps}
         style={{
           ...editProps.style,
-          top: currentAbsolutePosition.y,
-          left: currentAbsolutePosition.x,
+          // top: currentAbsolutePosition?.y,
+          // left: currentAbsolutePosition?.x,
         }}
       >
         {editContent}
