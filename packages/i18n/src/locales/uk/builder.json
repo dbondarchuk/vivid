@@ -288,7 +288,7 @@
         "skewX_minus_10deg": "Нахил X -10°",
         "skewY_minus_10deg": "Нахил Y -10°",
         "custom": "Користувацький",
-        "function": "Функція {{index}}",
+        "function": "Функція {index}",
         "functionType": "Тип функції",
         "values": "Значення",
         "addFunction": "Додати функцію",

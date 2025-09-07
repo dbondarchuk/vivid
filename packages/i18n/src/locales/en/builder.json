@@ -288,7 +288,7 @@
         "skewX_minus_10deg": "Skew X -10°",
         "skewY_minus_10deg": "Skew Y -10°",
         "custom": "Custom",
-        "function": "Function {{index}}",
+        "function": "Function {index}",
         "functionType": "Function Type",
         "values": "Values",
         "addFunction": "Add Function",
