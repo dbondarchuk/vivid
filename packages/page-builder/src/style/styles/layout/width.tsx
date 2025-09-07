@@ -27,6 +27,7 @@ export const widthStyle = {
       value={value}
       onChange={onChange}
       keywords={widthOrHeightOptions}
+      noMax
     />
   ),
 } as const satisfies StyleDefinition<typeof WidthSchema>;

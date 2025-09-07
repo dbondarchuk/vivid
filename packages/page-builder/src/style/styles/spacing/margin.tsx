@@ -23,6 +23,12 @@ export const marginStyle = {
     return renderFourSideValuesCss(value, "margin");
   },
   component: ({ value, onChange }) => (
-    <FourSideValuesInput defaultValue={value} onChange={onChange} />
+    <FourSideValuesInput
+      defaultValue={value}
+      onChange={onChange}
+      allowNegative
+      noMin
+      noMax
+    />
   ),
 } as const satisfies StyleDefinition<typeof MarginSchema>;

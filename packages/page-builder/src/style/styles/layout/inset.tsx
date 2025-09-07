@@ -23,6 +23,12 @@ export const insetStyle = {
     return renderFourSideValuesCss(value);
   },
   component: ({ value, onChange }) => (
-    <FourSideValuesInput defaultValue={value} onChange={onChange} />
+    <FourSideValuesInput
+      defaultValue={value}
+      onChange={onChange}
+      noMax
+      noMin
+      allowNegative
+    />
   ),
 } as const satisfies StyleDefinition<typeof InsetSchema>;

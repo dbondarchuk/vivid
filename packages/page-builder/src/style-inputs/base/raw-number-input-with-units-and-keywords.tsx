@@ -39,7 +39,17 @@ const globalKeywords = [
 ] as const satisfies CSSValueOption<string>[];
 type BaseRawNumberInputWithUnitsAndKeywordsProps = Pick<
   RawNumberInputWithUnitsProps,
-  "icon" | "min" | "max" | "step" | "forceUnit" | "id" | "options" | "nullable"
+  | "icon"
+  | "min"
+  | "max"
+  | "step"
+  | "forceUnit"
+  | "id"
+  | "options"
+  | "nullable"
+  | "noMax"
+  | "noMin"
+  | "allowNegative"
 > & {
   className?: string;
   notAllowedGlobalKeywords?: (typeof globalKeywords)[number]["value"][];

@@ -26,6 +26,7 @@ export const minHeightStyle = {
       value={value}
       onChange={onChange}
       keywords={widthOrHeightOptions}
+      noMax
     />
   ),
 } as const satisfies StyleDefinition<typeof MinHeightSchema>;

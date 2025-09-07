@@ -29,6 +29,7 @@ export const paddingStyle = {
       defaultValue={value}
       onChange={onChange}
       notAllowedGlobalKeywords={notAllowedGlobalKeywords}
+      noMax
     />
   ),
 } as const satisfies StyleDefinition<typeof PaddingSchema>;

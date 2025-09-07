@@ -18,6 +18,9 @@ type Props = {
   notAllowedGlobalKeywords?: React.ComponentProps<
     typeof RawNumberInputWithUnitsAndKeywords
   >["notAllowedGlobalKeywords"];
+  allowNegative?: boolean;
+  noMin?: boolean;
+  noMax?: boolean;
 };
 
 const step = {
@@ -48,6 +51,9 @@ export const FourSideValuesInput: React.FC<Props> = ({
   defaultValue,
   onChange,
   notAllowedGlobalKeywords,
+  allowNegative,
+  noMin,
+  noMax,
 }) => {
   const [value, setValue] = React.useState<FourSideValues>(
     defaultValue ?? {
@@ -88,6 +94,9 @@ export const FourSideValuesInput: React.FC<Props> = ({
             options={options}
             nullable
             notAllowedGlobalKeywords={notAllowedGlobalKeywords}
+            allowNegative={allowNegative}
+            noMin={noMin}
+            noMax={noMax}
           />
         </div>
 
@@ -102,6 +111,9 @@ export const FourSideValuesInput: React.FC<Props> = ({
             options={options}
             nullable
             notAllowedGlobalKeywords={notAllowedGlobalKeywords}
+            allowNegative={allowNegative}
+            noMin={noMin}
+            noMax={noMax}
           />
         </div>
 
@@ -116,6 +128,9 @@ export const FourSideValuesInput: React.FC<Props> = ({
             options={options}
             nullable
             notAllowedGlobalKeywords={notAllowedGlobalKeywords}
+            allowNegative={allowNegative}
+            noMin={noMin}
+            noMax={noMax}
           />
         </div>
 
@@ -130,6 +145,9 @@ export const FourSideValuesInput: React.FC<Props> = ({
             options={options}
             nullable
             notAllowedGlobalKeywords={notAllowedGlobalKeywords}
+            allowNegative={allowNegative}
+            noMin={noMin}
+            noMax={noMax}
           />
         </div>
       </div>

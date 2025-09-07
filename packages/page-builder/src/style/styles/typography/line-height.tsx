@@ -22,6 +22,7 @@ export const lineHeightStyle = {
       icon={<TextCursor className="size-4" />}
       defaultValue={value}
       onChange={onChange}
+      noMax
     />
   ),
 } as const satisfies StyleDefinition<typeof LineHeightSchema>;

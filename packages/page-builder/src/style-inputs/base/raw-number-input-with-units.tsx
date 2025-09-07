@@ -54,6 +54,9 @@ export type RawNumberInputWithUnitsProps = {
   icon: React.JSX.Element;
   min?: Partial<Record<Unit, number>> & { base?: number };
   max?: Partial<Record<Unit, number>> & { base?: number };
+  noMax?: boolean;
+  noMin?: boolean;
+  allowNegative?: boolean;
   step?: Partial<Record<Unit, number>> & { base?: number };
   options?: Partial<Record<Unit, number[]>> & { base?: number[] };
   forceUnit?: Unit;
@@ -77,6 +80,9 @@ export const RawNumberInputWithUnit: React.FC<RawNumberInputWithUnitsProps> = ({
   onChange,
   min,
   max,
+  noMax,
+  noMin,
+  allowNegative,
   options,
   step = {},
   nullable,
@@ -101,16 +107,20 @@ export const RawNumberInputWithUnit: React.FC<RawNumberInputWithUnitsProps> = ({
     step.base ??
     baseUnitConfigs.step[unit] ??
     baseUnitConfigs.step.base;
-  const currentMin =
-    min?.[unit] ??
-    min?.base ??
-    baseUnitConfigs.min[unit] ??
-    baseUnitConfigs.min.base;
-  const currentMax =
-    max?.[unit] ??
-    max?.base ??
-    baseUnitConfigs.max[unit] ??
-    baseUnitConfigs.max.base;
+  const currentMin = noMin
+    ? allowNegative
+      ? undefined
+      : 0
+    : (min?.[unit] ??
+      min?.base ??
+      baseUnitConfigs.min[unit] ??
+      baseUnitConfigs.min.base);
+  const currentMax = noMax
+    ? undefined
+    : (max?.[unit] ??
+      max?.base ??
+      baseUnitConfigs.max[unit] ??
+      baseUnitConfigs.max.base);
   const currentOptions = [
     ...(options?.[unit] ??
       options?.base ??
