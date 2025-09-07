@@ -281,8 +281,29 @@
         "rotate_minus_45deg": "Rotate -45°",
         "translateX_10px": "Move Right 10px",
         "translateY_10px": "Move Down 10px",
+        "translateX_minus_10px": "Move Left 10px",
+        "translateY_minus_10px": "Move Up 10px",
         "skewX_10deg": "Skew X 10°",
-        "skewY_10deg": "Skew Y 10°"
+        "skewY_10deg": "Skew Y 10°",
+        "skewX_minus_10deg": "Skew X -10°",
+        "skewY_minus_10deg": "Skew Y -10°",
+        "custom": "Custom",
+        "function": "Function {{index}}",
+        "functionType": "Function Type",
+        "values": "Values",
+        "addFunction": "Add Function",
+        "transformFunctions": {
+          "scale": "Scale",
+          "scaleX": "Scale X",
+          "scaleY": "Scale Y",
+          "rotate": "Rotate",
+          "translateX": "Translate X",
+          "translateY": "Translate Y",
+          "translate": "Translate",
+          "skewX": "Skew X",
+          "skewY": "Skew Y",
+          "skew": "Skew"
+        }
       },
       "transition": {
         "none": "None",

@@ -281,8 +281,29 @@
         "rotate_minus_45deg": "Поворот -45°",
         "translateX_10px": "Вправо 10px",
         "translateY_10px": "Вниз 10px",
+        "translateX_minus_10px": "Вліво 10px",
+        "translateY_minus_10px": "Вгору 10px",
         "skewX_10deg": "Нахил X 10°",
-        "skewY_10deg": "Нахил Y 10°"
+        "skewY_10deg": "Нахил Y 10°",
+        "skewX_minus_10deg": "Нахил X -10°",
+        "skewY_minus_10deg": "Нахил Y -10°",
+        "custom": "Користувацький",
+        "function": "Функція {{index}}",
+        "functionType": "Тип функції",
+        "values": "Значення",
+        "addFunction": "Додати функцію",
+        "transformFunctions": {
+          "scale": "Масштаб",
+          "scaleX": "Масштаб X",
+          "scaleY": "Масштаб Y",
+          "rotate": "Поворот",
+          "translateX": "Переміщення X",
+          "translateY": "Переміщення Y",
+          "translate": "Переміщення",
+          "skewX": "Нахил X",
+          "skewY": "Нахил Y",
+          "skew": "Нахил"
+        }
       },
       "transition": {
         "none": "Немає",
