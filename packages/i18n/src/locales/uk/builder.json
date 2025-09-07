@@ -166,7 +166,8 @@
         "filter": "Фільтр",
         "objectFit": "Заповнення контейнера",
         "objectPosition": "Позиція об'єкта",
-        "verticalAlign": "Вертикальне вирівнювання"
+        "verticalAlign": "Вертикальне вирівнювання",
+        "zoom": "Масштаб"
       },
       "shortcuts": "Швидкі налаштування",
       "fontWeight": {

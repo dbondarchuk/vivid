@@ -8,6 +8,7 @@ import { overflowStyle } from "./overflow";
 import { transformStyle } from "./transform";
 import { transitionStyle } from "./transition";
 import { zIndexStyle } from "./z-index";
+import { zoomStyle } from "./zoom";
 
 export * from "./animation";
 export * from "./box-shadow";
@@ -19,6 +20,7 @@ export * from "./overflow";
 export * from "./transform";
 export * from "./transition";
 export * from "./z-index";
+export * from "./zoom";
 
 export const effectsStyles = [
   animationStyle,
@@ -31,4 +33,5 @@ export const effectsStyles = [
   transformStyle,
   transitionStyle,
   filterStyle,
+  zoomStyle,
 ] as const;

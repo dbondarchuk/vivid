@@ -166,7 +166,8 @@
         "filter": "Filter",
         "objectFit": "Object Fit",
         "objectPosition": "Object Position",
-        "verticalAlign": "Vertical Align"
+        "verticalAlign": "Vertical Align",
+        "zoom": "Zoom"
       },
       "shortcuts": "Quick Settings",
       "fontWeight": {
