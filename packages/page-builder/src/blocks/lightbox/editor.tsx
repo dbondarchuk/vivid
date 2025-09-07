@@ -1,6 +1,5 @@
 import { EditorChildren, useCurrentBlock } from "@vivid/builder";
 import { LightboxProvider } from "./context";
-import { Lightbox } from "./lightbox";
 import { LightboxProps } from "./schema";
 
 export const LightboxEditor = () => {
@@ -9,7 +8,8 @@ export const LightboxEditor = () => {
   return (
     <LightboxProvider>
       <EditorChildren blockId={currentBlock.id} property="props" />
-      <Lightbox {...currentBlock.data?.props} />
+      {/* Do not use Lightbox in editor, as it will interfere with the image editor */}
+      {/* <Lightbox {...currentBlock.data?.props} /> */}
     </LightboxProvider>
   );
 };
