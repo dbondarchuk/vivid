@@ -13,6 +13,21 @@ export const fontName = z.enum([firstFont, ...restFonts], {
   message: "configuration.styling.fonts.unknown",
 });
 
+export const fontsOptions = allFonts.items.reduce(
+  (acc, font) => {
+    acc[font.family] = {
+      variants: font.variants,
+      subsets: font.subsets,
+      category: font.category,
+    };
+    return acc;
+  },
+  {} as Record<
+    string,
+    { variants: string[]; subsets: string[]; category: string }
+  >,
+);
+
 export const colors = [
   "background",
   "foreground",

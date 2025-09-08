@@ -1,6 +1,6 @@
 import { SonnerToaster, Toaster } from "@vivid/ui";
 
-import { Resource } from "@vivid/types";
+import { fontsOptions, Resource } from "@vivid/types";
 
 import NextScript from "next/script";
 
@@ -12,6 +12,39 @@ import "../globals.css";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+
+const buildGoogleFontsUrl = (...fonts: (string | undefined)[]): string => {
+  const families = fonts
+    .filter(
+      (fontName): fontName is string => !!fontName && fontName in fontsOptions,
+    )
+    .map((fontName) => {
+      const font = fontsOptions[fontName];
+      const family = fontName.replace(/ /g, "+");
+
+      const variantParams = font.variants
+        .map((v) => {
+          if (v === "regular") return "0,400";
+          if (v === "italic") return "1,400";
+          const match = v.match(/^(\d+)(italic)?$/);
+          if (match) {
+            const weight = match[1];
+            const isItalic = !!match[2];
+            return `${isItalic ? 1 : 0},${weight}`;
+          }
+          return null;
+        })
+        .filter(Boolean)
+        .join(";");
+
+      if (variantParams) {
+        return `family=${family}:ital,wght@${variantParams}`;
+      }
+      return `family=${family}`;
+    });
+
+  return `https://fonts.googleapis.com/css2?${families.join("&")}&display=swap`;
+};
 
 const ScriptRenderer = ({
   resource,
@@ -87,31 +120,19 @@ export default async function RootLayout({
     );
   }
 
-  const weights = `:wght@100..900`;
-
   const primaryFont = styling?.fonts?.primary || "Montserrat";
   const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
   const tertiaryFont = styling?.fonts?.tertiary;
 
-  logger.debug(
-    { primaryFont, secondaryFont, tertiaryFont },
-    "Font configuration",
+  const fontsCssUrl = buildGoogleFontsUrl(
+    primaryFont,
+    secondaryFont,
+    tertiaryFont,
   );
 
-  const tertiaryFontQueryArg = tertiaryFont
-    ? `&family=${encodeURIComponent(tertiaryFont)}${weights}`
-    : "";
-
-  const fontsRes = await fetch(
-    `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-      primaryFont,
-    )}${weights}&family=${encodeURIComponent(
-      secondaryFont,
-    )}${weights}${tertiaryFontQueryArg}&display=swap`,
-    {
-      cache: "force-cache",
-    },
-  );
+  const fontsRes = await fetch(fontsCssUrl, {
+    cache: "force-cache",
+  });
 
   const fonts = await fontsRes.text();
   const colors = getColorsCss(styling?.colors);

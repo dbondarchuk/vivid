@@ -1159,6 +1159,59 @@
         "toasts": {
           "changesSaved": "Your changes were saved.",
           "requestError": "There was a problem with your request."
+        },
+        "fonts": {
+          "seeOnGoogleFonts": "See on Google Fonts",
+          "variants": {
+            "label": "Variants: {variants}",
+            "regular": "Regular",
+            "italic": "Italic",
+            "bold": "Bold",
+            "medium": "Medium",
+            "semibold": "Semi-bold",
+            "extrabold": "Extra-bold",
+            "100": "100",
+            "200": "200",
+            "300": "300",
+            "400": "400",
+            "500": "500",
+            "600": "600",
+            "700": "700",
+            "800": "800",
+            "900": "900",
+            "100italic": "100 Italic",
+            "200italic": "200 Italic",
+            "300italic": "300 Italic",
+            "400italic": "400 Italic",
+            "500italic": "500 Italic",
+            "600italic": "600 Italic",
+            "700italic": "700 Italic",
+            "800italic": "800 Italic",
+            "900italic": "900 Italic"
+          },
+          "subsets": {
+            "label": "Subsets: {subsets}",
+            "latin": "Latin",
+            "latin-ext": "Latin Extended",
+            "vietnamese": "Vietnamese",
+            "cyrillic": "Cyrillic",
+            "cyrillic-ext": "Cyrillic Extended",
+            "greek": "Greek",
+            "greek-ext": "Greek Extended",
+            "hebrew": "Hebrew",
+            "math": "Math",
+            "symbols": "Symbols"
+          },
+          "category": {
+            "label": "Category: {category}",
+            "sans-serif": "Sans-serif",
+            "serif": "Serif",
+            "monospace": "Monospace",
+            "display": "Display",
+            "handwriting": "Handwriting",
+            "script": "Script",
+            "fantasy": "Fantasy"
+          }
         }
       },
       "colors": {

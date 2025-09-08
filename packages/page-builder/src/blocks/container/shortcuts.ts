@@ -363,11 +363,11 @@ export const containerShortcuts: Shortcut<AllStylesSchemas>[] = [
           width: { value: 100, unit: "%" },
           maxWidth: {
             variants: [
-              { value: { value: 640, unit: "px" }, breakpoint: [] },
-              { value: { value: 768, unit: "px" }, breakpoint: ["sm"] },
-              { value: { value: 1024, unit: "px" }, breakpoint: ["md"] },
-              { value: { value: 1280, unit: "px" }, breakpoint: ["lg"] },
-              { value: { value: 1536, unit: "px" }, breakpoint: ["xl"] },
+              { value: { value: 100, unit: "%" }, breakpoint: [] },
+              { value: { value: 640, unit: "px" }, breakpoint: ["sm"] },
+              { value: { value: 768, unit: "px" }, breakpoint: ["md"] },
+              { value: { value: 1024, unit: "px" }, breakpoint: ["lg"] },
+              { value: { value: 1280, unit: "px" }, breakpoint: ["xl"] },
               { value: { value: 1536, unit: "px" }, breakpoint: ["2xl"] },
             ],
           },
