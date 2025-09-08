@@ -61,7 +61,7 @@ export function HeadingEditor({ props, style }: HeadingProps) {
       ref={ref}
       args={args}
       asInput
-      className="max-w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal"
+      className="!max-w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal"
       style={styles}
       value={value ?? "Heading"}
       onChange={onChange}
