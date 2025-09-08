@@ -21,16 +21,5 @@ export const InlineTextPropsDefaults = {
   props: {
     text: "Hello friend",
   },
-  style: {
-    textAlign: [
-      {
-        value: "left",
-      },
-    ],
-    fontFamily: [
-      {
-        value: "PRIMARY",
-      },
-    ],
-  },
+  style: {},
 } as const satisfies InlineTextProps;

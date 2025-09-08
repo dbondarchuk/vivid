@@ -419,7 +419,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
     }, [textValue, Tag]);
 
     return (
-      <div className="relative w-full">
+      <>
         <Tag
           // @ts-ignore ignore
           ref={mergeRefs(ref, elementRef)}
@@ -459,7 +459,7 @@ export const ContentEditableMentions = React.forwardRef<HTMLElement, Props>(
             </CommandGroup>
           </CommandList>
         </Command>
-      </div>
+      </>
     );
   },
 );

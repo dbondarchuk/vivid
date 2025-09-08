@@ -87,7 +87,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
         }}
         args={args}
         className={cn(
-          "w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal",
+          "!max-w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal",
           isSelected && "px-1",
           className,
           base?.className,

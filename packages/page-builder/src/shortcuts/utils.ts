@@ -41,7 +41,7 @@ export const applyShortcutOption = <T extends BaseStyleDictionary>(
 
     // Handle style removal (explicitly setting to undefined)
     if (targetStyle === undefined) {
-      delete newStyles[styleName];
+      newStyles[styleName] = undefined;
       return;
     }
 
