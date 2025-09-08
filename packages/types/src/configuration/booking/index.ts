@@ -35,21 +35,21 @@ export const generalBookingConfigurationSchema = z.object({
       .number()
       .int("configuration.booking.maxWeeksInFuture.integer")
       .min(2, "configuration.booking.maxWeeksInFuture.min")
-      .max(20, "configuration.booking.maxWeeksInFuture.max")
+      .max(20, "configuration.booking.maxWeeksInFuture.max"),
   ),
   minHoursBeforeBooking: asOptinalNumberField(
     z.coerce
       .number()
       .int("configuration.booking.minHoursBeforeBooking.integer")
       .min(0, "configuration.booking.minHoursBeforeBooking.min")
-      .max(72, "configuration.booking.minHoursBeforeBooking.max")
+      .max(72, "configuration.booking.minHoursBeforeBooking.max"),
   ),
   breakDuration: asOptinalNumberField(
     z.coerce
       .number()
       .int("configuration.booking.breakDuration.integer")
       .min(0, "configuration.booking.breakDuration.min")
-      .max(120, "configuration.booking.breakDuration.max")
+      .max(120, "configuration.booking.breakDuration.max"),
   ),
   slotStart: z
     .union(
@@ -62,7 +62,7 @@ export const generalBookingConfigurationSchema = z.object({
         z.literal("every-hour"), // every hour at start
         z.literal("custom"), // custom
       ],
-      { message: "configuration.booking.slotStart.unknown" }
+      { message: "configuration.booking.slotStart.unknown" },
     )
     .optional(),
   customSlotTimes: z.array(customTimeSlotSchema).optional(),
@@ -80,7 +80,7 @@ export const generalBookingConfigurationSchema = z.object({
     .or(
       z.object({
         allowSmartSchedule: z.literal(false).optional(),
-      })
+      }),
     ),
   payments: paymentsConfigurationSchema,
 });
@@ -88,7 +88,7 @@ export const generalBookingConfigurationSchema = z.object({
 export const appointOptionsSchema = z.array(
   z.object({
     id: z.string().min(1, "configuration.booking.options.id.required"),
-  })
+  }),
 );
 
 export const bookingConfigurationSchema = generalBookingConfigurationSchema
@@ -96,7 +96,7 @@ export const bookingConfigurationSchema = generalBookingConfigurationSchema
     z.object({
       calendarSources: calendarSourcesConfigurationSchema,
       options: appointOptionsSchema,
-    })
+    }),
   )
   .superRefine((arg, ctx) => {
     if (arg.slotStart === "custom" && !arg.customSlotTimes?.length) {

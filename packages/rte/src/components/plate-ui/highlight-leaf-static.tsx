@@ -1,9 +1,7 @@
-import React from "react";
-
 import type { SlateLeafProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
 import { SlateLeaf } from "@udecode/plate";
+import { cn } from "@vivid/ui";
 
 export function HighlightLeafStatic({
   children,

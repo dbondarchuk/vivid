@@ -37,7 +37,7 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
       type,
       template: query?.template,
     },
-    "Loading new template page"
+    "Loading new template page",
   );
 
   let template: TemplatesTemplate | undefined = undefined;
@@ -51,7 +51,7 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
       template: query?.template,
       hasTemplate: !!template,
     },
-    "New template page loaded"
+    "New template page loaded",
   );
 
   return (

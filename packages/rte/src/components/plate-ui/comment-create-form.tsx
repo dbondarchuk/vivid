@@ -1,14 +1,12 @@
 "use client";
 
-import React from "react";
-
-import { buttonVariants, cn, inputVariants } from "@vivid/ui";
 import {
   CommentNewSubmitButton,
   CommentNewTextarea,
   CommentsPlugin,
 } from "@udecode/plate-comments/react";
 import { usePluginOption } from "@udecode/plate/react";
+import { buttonVariants, cn, inputVariants } from "@vivid/ui";
 
 import { CommentAvatar } from "./comment-avatar";
 

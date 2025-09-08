@@ -11,11 +11,11 @@ import { fontFamilyItems } from "../../toolbars/font-family";
 import { EmailLayoutDefaultProps, EmailLayoutProps } from "./schema";
 
 const LayoutFontFamilyDropdownMenu = (
-  props: ToolbarDropdownPropsValues<EmailLayoutProps>
+  props: ToolbarDropdownPropsValues<EmailLayoutProps>,
 ) => {
   const t = useI18n("builder");
   const selectedFont = FONT_FAMILIES.find(
-    (font) => font.key === props.data?.fontFamily
+    (font) => font.key === props.data?.fontFamily,
   );
 
   return (
@@ -34,7 +34,7 @@ const LayoutFontFamilyDropdownMenu = (
 };
 
 export const EmailLayoutToolbar = (
-  props: ConfigurationProps<EmailLayoutProps>
+  props: ConfigurationProps<EmailLayoutProps>,
 ) => {
   const t = useI18n("builder");
 

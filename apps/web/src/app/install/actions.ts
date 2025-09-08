@@ -69,41 +69,41 @@ export async function install(data: InstallFormData) {
           weekDay: index + 1,
           shifts,
         })),
-      }
+      },
     );
 
-    logger.info("Setting footer configuration");
-    await ServicesContainer.ConfigurationService().setConfiguration("footer", {
-      isCustom: false,
-    });
+    // logger.info("Setting footer configuration");
+    // await ServicesContainer.ConfigurationService().setConfiguration("footer", {
+    //   isCustom: false,
+    // });
 
-    logger.info("Setting header configuration");
-    await ServicesContainer.ConfigurationService().setConfiguration("header", {
-      menu: [],
-    });
+    // logger.info("Setting header configuration");
+    // await ServicesContainer.ConfigurationService().setConfiguration("header", {
+    //   menu: [],
+    // });
 
     logger.info("Setting social and styling configurations");
     await ServicesContainer.ConfigurationService().setConfiguration(
       "social",
-      {}
+      {},
     );
     await ServicesContainer.ConfigurationService().setConfiguration(
       "styling",
-      {}
+      {},
     );
 
     logger.info("Creating default connected apps");
     await ServicesContainer.ConnectedAppsService().createNewApp(
-      REMINDERS_APP_NAME
+      REMINDERS_APP_NAME,
     );
     await ServicesContainer.ConnectedAppsService().createNewApp(
-      FOLLOW_UPS_APP_NAME
+      FOLLOW_UPS_APP_NAME,
     );
     await ServicesContainer.ConnectedAppsService().createNewApp(
-      CUSTOMER_EMAIL_NOTIFICATION_APP_NAME
+      CUSTOMER_EMAIL_NOTIFICATION_APP_NAME,
     );
     await ServicesContainer.ConnectedAppsService().createNewApp(
-      CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME
+      CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,
     );
 
     // const logCleanerAppId =
@@ -123,7 +123,7 @@ export async function install(data: InstallFormData) {
     logger.info("Creating assets storage app");
     const assetsStorageAppId =
       await ServicesContainer.ConnectedAppsService().createNewApp(
-        FILE_SYSTEM_ASSETS_STORAGE_APP_NAME
+        FILE_SYSTEM_ASSETS_STORAGE_APP_NAME,
       );
 
     await ServicesContainer.ConnectedAppsService().updateApp(
@@ -131,7 +131,7 @@ export async function install(data: InstallFormData) {
       {
         status: "connected",
         statusText: "common.statusText.installed",
-      }
+      },
     );
 
     logger.info("Setting default apps configuration");
@@ -142,7 +142,7 @@ export async function install(data: InstallFormData) {
         assetsStorage: {
           appId: assetsStorageAppId,
         },
-      }
+      },
     );
 
     logger.info("Installation completed successfully");

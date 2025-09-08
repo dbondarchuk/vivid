@@ -19,13 +19,13 @@ export const searchParams = {
   start: parseAsIsoDateTime,
   end: parseAsIsoDateTime,
   direction: parseAsArrayOf(
-    parseAsStringLiteral(communicationDirectionSchema)
+    parseAsStringLiteral(communicationDirectionSchema),
   ).withDefault([...communicationDirectionSchema]),
   participantType: parseAsArrayOf(
-    parseAsStringLiteral(communicationParticipantTypeSchema)
+    parseAsStringLiteral(communicationParticipantTypeSchema),
   ).withDefault([...communicationParticipantTypeSchema]),
   channel: parseAsArrayOf(
-    parseAsStringLiteral(communicationChannels)
+    parseAsStringLiteral(communicationChannels),
   ).withDefault([...communicationChannels]),
   customer: parseAsArrayOf(parseAsString),
   appointment: parseAsString,

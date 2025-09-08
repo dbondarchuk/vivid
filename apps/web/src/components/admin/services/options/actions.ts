@@ -16,7 +16,7 @@ export async function create(field: AppointmentOptionUpdateModel) {
       optionDuration: field.duration,
       optionPrice: field.price,
     },
-    "Creating new service option"
+    "Creating new service option",
   );
 
   try {
@@ -28,7 +28,7 @@ export async function create(field: AppointmentOptionUpdateModel) {
         optionId: result._id,
         optionName: field.name,
       },
-      "Service option created successfully"
+      "Service option created successfully",
     );
 
     return result;
@@ -38,7 +38,7 @@ export async function create(field: AppointmentOptionUpdateModel) {
         optionName: field.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create service option"
+      "Failed to create service option",
     );
     throw error;
   }
@@ -46,7 +46,7 @@ export async function create(field: AppointmentOptionUpdateModel) {
 
 export async function update(
   _id: string,
-  update: AppointmentOptionUpdateModel
+  update: AppointmentOptionUpdateModel,
 ) {
   const actionLogger = logger("update");
 
@@ -57,7 +57,7 @@ export async function update(
       optionDuration: update.duration,
       optionPrice: update.price,
     },
-    "Updating service option"
+    "Updating service option",
   );
 
   try {
@@ -68,7 +68,7 @@ export async function update(
         optionId: _id,
         optionName: update.name,
       },
-      "Service option updated successfully"
+      "Service option updated successfully",
     );
 
     return okStatus;
@@ -79,7 +79,7 @@ export async function update(
         optionName: update.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update service option"
+      "Failed to update service option",
     );
     throw error;
   }
@@ -92,7 +92,7 @@ export async function deleteOption(_id: string) {
     {
       optionId: _id,
     },
-    "Deleting service option"
+    "Deleting service option",
   );
 
   try {
@@ -100,7 +100,7 @@ export async function deleteOption(_id: string) {
     if (!page) {
       actionLogger.warn(
         { optionId: _id },
-        "Service option not found for deletion"
+        "Service option not found for deletion",
       );
       return notFound();
     }
@@ -109,7 +109,7 @@ export async function deleteOption(_id: string) {
       {
         optionId: _id,
       },
-      "Service option deleted successfully"
+      "Service option deleted successfully",
     );
 
     return okStatus;
@@ -119,7 +119,7 @@ export async function deleteOption(_id: string) {
         optionId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete service option"
+      "Failed to delete service option",
     );
     throw error;
   }
@@ -133,7 +133,7 @@ export async function deleteSelected(ids: string[]) {
       optionIds: ids,
       count: ids.length,
     },
-    "Deleting selected service options"
+    "Deleting selected service options",
   );
 
   try {
@@ -144,7 +144,7 @@ export async function deleteSelected(ids: string[]) {
         optionIds: ids,
         count: ids.length,
       },
-      "Selected service options deleted successfully"
+      "Selected service options deleted successfully",
     );
 
     return okStatus;
@@ -155,7 +155,7 @@ export async function deleteSelected(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected service options"
+      "Failed to delete selected service options",
     );
     throw error;
   }
@@ -169,14 +169,14 @@ export async function checkUniqueName(name: string, _id?: string) {
       optionName: name,
       excludeId: _id,
     },
-    "Checking option name uniqueness"
+    "Checking option name uniqueness",
   );
 
   try {
     const result =
       await ServicesContainer.ServicesService().checkOptionUniqueName(
         name,
-        _id
+        _id,
       );
 
     actionLogger.debug(
@@ -185,7 +185,7 @@ export async function checkUniqueName(name: string, _id?: string) {
         excludeId: _id,
         isUnique: result,
       },
-      "Option name uniqueness check completed"
+      "Option name uniqueness check completed",
     );
 
     return result;
@@ -196,7 +196,7 @@ export async function checkUniqueName(name: string, _id?: string) {
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check option name uniqueness"
+      "Failed to check option name uniqueness",
     );
     throw error;
   }

@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing availability API request"
+    "Processing availability API request",
   );
 
   const searchParams = request.nextUrl.searchParams;
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     logger.warn("Missing required duration parameter");
     return NextResponse.json(
       { error: "Duration is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     logger.warn({ duration, durationStr }, "Invalid duration parameter");
     return NextResponse.json(
       { error: "Duration should be positive number" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       duration,
       availableSlots: availability.length,
     },
-    "Successfully retrieved availability"
+    "Successfully retrieved availability",
   );
 
   return NextResponse.json(availability);

@@ -18,10 +18,10 @@ export class PaymentsService implements IPaymentsService {
   protected readonly loggerFactory = getLoggerFactory("PaymentsService");
 
   public constructor(
-    protected readonly connectedAppsService: IConnectedAppsService
+    protected readonly connectedAppsService: IConnectedAppsService,
   ) {}
   public async createIntent(
-    intent: Omit<PaymentIntentUpdateModel, "status">
+    intent: Omit<PaymentIntentUpdateModel, "status">,
   ): Promise<PaymentIntent> {
     const logger = this.loggerFactory("createIntent");
     logger.debug(
@@ -34,12 +34,12 @@ export class PaymentsService implements IPaymentsService {
           appName: intent.appName,
         },
       },
-      "Creating payment intent"
+      "Creating payment intent",
     );
 
     const db = await getDbConnection();
     const intents = db.collection<PaymentIntent>(
-      PAYMENT_INTENTS_COLLECTION_NAME
+      PAYMENT_INTENTS_COLLECTION_NAME,
     );
 
     const dbIntent: PaymentIntent = {
@@ -61,7 +61,7 @@ export class PaymentsService implements IPaymentsService {
         customerId: dbIntent.customerId,
         appName: dbIntent.appName,
       },
-      "Successfully created payment intent"
+      "Successfully created payment intent",
     );
 
     return dbIntent;
@@ -73,7 +73,7 @@ export class PaymentsService implements IPaymentsService {
 
     const db = await getDbConnection();
     const intents = db.collection<PaymentIntent>(
-      PAYMENT_INTENTS_COLLECTION_NAME
+      PAYMENT_INTENTS_COLLECTION_NAME,
     );
 
     const intent = await intents.findOne({
@@ -93,7 +93,7 @@ export class PaymentsService implements IPaymentsService {
           customerId: intent.customerId,
           appName: intent.appName,
         },
-        "Payment intent found"
+        "Payment intent found",
       );
     }
 
@@ -101,14 +101,14 @@ export class PaymentsService implements IPaymentsService {
   }
 
   public async getIntentByExternalId(
-    externalId: string
+    externalId: string,
   ): Promise<PaymentIntent | null> {
     const logger = this.loggerFactory("getIntentByExternalId");
     logger.debug({ externalId }, "Getting payment intent by external id");
 
     const db = await getDbConnection();
     const intents = db.collection<PaymentIntent>(
-      PAYMENT_INTENTS_COLLECTION_NAME
+      PAYMENT_INTENTS_COLLECTION_NAME,
     );
 
     const intent = await intents.findOne({
@@ -126,7 +126,7 @@ export class PaymentsService implements IPaymentsService {
           amount: intent.amount,
           appId: intent.appId,
         },
-        "Payment intent found by external id"
+        "Payment intent found by external id",
       );
     }
 
@@ -135,7 +135,7 @@ export class PaymentsService implements IPaymentsService {
 
   public async updateIntent(
     id: string,
-    update: Partial<PaymentIntentUpdateModel>
+    update: Partial<PaymentIntentUpdateModel>,
   ): Promise<PaymentIntent> {
     const logger = this.loggerFactory("updateIntent");
     logger.debug({ intentId: id, update }, "Updating payment intent");
@@ -143,7 +143,7 @@ export class PaymentsService implements IPaymentsService {
     const { _id: _, paidAt, ...updateObj } = update as PaymentIntent; // Remove fields in case it slips here
     const db = await getDbConnection();
     const intents = db.collection<PaymentIntent>(
-      PAYMENT_INTENTS_COLLECTION_NAME
+      PAYMENT_INTENTS_COLLECTION_NAME,
     );
 
     const $set: Partial<PaymentIntent> = {
@@ -161,7 +161,7 @@ export class PaymentsService implements IPaymentsService {
       },
       {
         $set,
-      }
+      },
     );
 
     const updatedIntent = await intents.findOne({
@@ -175,7 +175,7 @@ export class PaymentsService implements IPaymentsService {
 
     logger.debug(
       { intentId: id, status: updatedIntent.status },
-      "Successfully updated payment intent"
+      "Successfully updated payment intent",
     );
     return updatedIntent;
   }
@@ -193,7 +193,7 @@ export class PaymentsService implements IPaymentsService {
           customerId: payment.customerId,
         },
       },
-      "Creating payment"
+      "Creating payment",
     );
 
     const db = await getDbConnection();
@@ -209,7 +209,7 @@ export class PaymentsService implements IPaymentsService {
 
     logger.debug(
       { paymentId: dbPayment._id, amount: dbPayment.amount },
-      "Successfully created payment"
+      "Successfully created payment",
     );
 
     return dbPayment;
@@ -240,7 +240,7 @@ export class PaymentsService implements IPaymentsService {
           appointmentId: payment.appointmentId,
           customerId: payment.customerId,
         },
-        "Payment found"
+        "Payment found",
       );
     }
 
@@ -249,7 +249,7 @@ export class PaymentsService implements IPaymentsService {
 
   public async updatePayment(
     id: string,
-    update: Partial<PaymentUpdateModel>
+    update: Partial<PaymentUpdateModel>,
   ): Promise<Payment> {
     const logger = this.loggerFactory("updatePayment");
     logger.debug({ paymentId: id, update }, "Updating payment");
@@ -269,7 +269,7 @@ export class PaymentsService implements IPaymentsService {
       },
       {
         $set,
-      }
+      },
     );
 
     const updatedPayment = await payments.findOne({
@@ -283,7 +283,7 @@ export class PaymentsService implements IPaymentsService {
 
     logger.debug(
       { paymentId: id, status: updatedPayment.status },
-      "Successfully updated payment"
+      "Successfully updated payment",
     );
 
     return updatedPayment;
@@ -291,7 +291,7 @@ export class PaymentsService implements IPaymentsService {
 
   public async refundPayment(
     id: string,
-    amount: number
+    amount: number,
   ): Promise<
     | { success: false; error: string; status: number }
     | { success: true; updatedPayment: Payment }
@@ -308,7 +308,7 @@ export class PaymentsService implements IPaymentsService {
     if (payment.type !== "online") {
       logger.error(
         { paymentId: id, type: payment.type, amount },
-        "Only online payments supported for refund"
+        "Only online payments supported for refund",
       );
 
       return {
@@ -330,7 +330,7 @@ export class PaymentsService implements IPaymentsService {
     const totalRefunded =
       (payment.refunds || [])?.reduce(
         (acc, refund) => acc + refund.amount,
-        0
+        0,
       ) || 0;
 
     if (totalRefunded + amount > payment.amount) {
@@ -340,10 +340,10 @@ export class PaymentsService implements IPaymentsService {
           amount,
           totalRefunded: payment.refunds?.reduce(
             (acc, refund) => acc + refund.amount,
-            0
+            0,
           ),
         },
-        "Refund amount exceeds payment amount"
+        "Refund amount exceeds payment amount",
       );
       return {
         success: false,
@@ -355,12 +355,12 @@ export class PaymentsService implements IPaymentsService {
     try {
       const { app, service } =
         await this.connectedAppsService.getAppService<IPaymentProcessor>(
-          payment.appId
+          payment.appId,
         );
       if (!service.refundPayment) {
         logger.error(
           { paymentId: id, appId: payment.appId, amount },
-          "Refund not supported by payment app"
+          "Refund not supported by payment app",
         );
 
         throw new Error("refund_not_supported");
@@ -378,7 +378,7 @@ export class PaymentsService implements IPaymentsService {
 
         logger.debug(
           { paymentId: id, amount },
-          "Successfully processed payment refund"
+          "Successfully processed payment refund",
         );
 
         return { success: true, updatedPayment };
@@ -386,7 +386,7 @@ export class PaymentsService implements IPaymentsService {
 
       logger.error(
         { paymentId: id, error: result.error, amount },
-        "Payment app refund failed"
+        "Payment app refund failed",
       );
 
       return {
@@ -397,7 +397,7 @@ export class PaymentsService implements IPaymentsService {
     } catch (error) {
       logger.error(
         { paymentId: id, error, amount },
-        "Payment app does not support refund"
+        "Payment app does not support refund",
       );
 
       return {

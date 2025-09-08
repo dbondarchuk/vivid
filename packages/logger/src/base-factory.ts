@@ -3,7 +3,7 @@ import { format } from "util";
 
 export const getBaseLoggerFactory = (
   correlationId?: string | null,
-  sessionId?: string | null
+  sessionId?: string | null,
 ) => {
   const logger = pino({
     level: process.env.LOG_LEVEL || "info",

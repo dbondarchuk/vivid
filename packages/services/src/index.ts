@@ -24,14 +24,16 @@ export * from "./payments.service";
 export * from "./schedule.service";
 export * from "./services.service";
 
+export * from "./utils";
+
 export const ServicesContainer: IServicesContainer = {
   ConfigurationService: cache(() => new CachedConfigurationService()),
   AssetsService: cache(
     () =>
       new AssetsService(
         ServicesContainer.ConfigurationService(),
-        ServicesContainer.ConnectedAppsService()
-      )
+        ServicesContainer.ConnectedAppsService(),
+      ),
   ),
   EventsService: cache(
     () =>
@@ -42,33 +44,33 @@ export const ServicesContainer: IServicesContainer = {
         ServicesContainer.CustomersService(),
         ServicesContainer.ScheduleService(),
         ServicesContainer.ServicesService(),
-        ServicesContainer.PaymentsService()
-      )
+        ServicesContainer.PaymentsService(),
+      ),
   ),
   PagesService: cache(() => new PagesService()),
   CustomersService: cache(() => new CustomersService()),
   ServicesService: cache(
-    () => new ServicesService(ServicesContainer.ConfigurationService())
+    () => new ServicesService(ServicesContainer.ConfigurationService()),
   ),
   ScheduleService: cache(
     () =>
       new ScheduleService(
         ServicesContainer.ConnectedAppsService(),
-        ServicesContainer.ConfigurationService()
-      )
+        ServicesContainer.ConfigurationService(),
+      ),
   ),
   TemplatesService: cache(() => new TemplatesService()),
   CommunicationLogsService: cache(() => new CommunicationLogsService()),
   ConnectedAppsService: cache(() => new ConnectedAppsService()),
   PaymentsService: cache(
-    () => new PaymentsService(ServicesContainer.ConnectedAppsService())
+    () => new PaymentsService(ServicesContainer.ConnectedAppsService()),
   ),
   NotificationService: cache(
     () =>
       new NotificationService(
         ServicesContainer.ConfigurationService(),
         ServicesContainer.ConnectedAppsService(),
-        ServicesContainer.CommunicationLogsService()
-      )
+        ServicesContainer.CommunicationLogsService(),
+      ),
   ),
 };

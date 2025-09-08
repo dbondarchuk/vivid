@@ -41,7 +41,10 @@ export const columns: ColumnDef<Page>[] = [
   {
     cell: ({ row }) => {
       return (
-        <Link href={`/admin/dashboard/pages/${row.original._id}`}>
+        <Link
+          href={`/admin/dashboard/pages/${row.original._id}`}
+          variant="underline"
+        >
           {row.original.title}
         </Link>
       );
@@ -67,7 +70,7 @@ export const columns: ColumnDef<Page>[] = [
     header: tableSortHeader(
       "pages.table.columns.published",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -76,7 +79,7 @@ export const columns: ColumnDef<Page>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.publishDate).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "publishDate",
@@ -88,7 +91,7 @@ export const columns: ColumnDef<Page>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.createdAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "createdAt",
@@ -100,7 +103,7 @@ export const columns: ColumnDef<Page>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",

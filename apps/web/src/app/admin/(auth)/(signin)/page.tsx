@@ -1,13 +1,13 @@
 import { UserAuthForm } from "@/components/admin/forms/user-auth-form";
+import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { buttonVariants, cn } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
 import { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { AuthResult } from "../../auth";
-import { redirect } from "next/navigation";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getI18nAsync("admin");
@@ -35,7 +35,7 @@ export default async function AuthenticationPage() {
     {
       businessName: general.name,
     },
-    "Signin page loaded"
+    "Signin page loaded",
   );
 
   return (
@@ -44,7 +44,7 @@ export default async function AuthenticationPage() {
         href="/admin/auth/signin"
         className={cn(
           buttonVariants({ variant: "ghost" }),
-          "absolute right-4 top-4 hidden md:right-8 md:top-8"
+          "absolute right-4 top-4 hidden md:right-8 md:top-8",
         )}
       >
         {t("auth.signIn")}

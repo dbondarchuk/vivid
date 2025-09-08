@@ -35,7 +35,7 @@ export const sendEmailCommunicationRequestSchema = z.object({
       {
         required_error: "communication.email.content.required",
         message: "communication.email.content.required",
-      }
+      },
     )
     .passthrough(),
 });
@@ -49,7 +49,7 @@ export const sendCommunicationRequestSchema = z
     z.union([
       sendAppointmentCommunicationRequestSchema,
       sendCustomerCommunicationRequestSchema,
-    ])
+    ]),
   )
   .superRefine((arg, ctx) => {
     if (!("appointmentId" in arg) && !("customerId" in arg)) {

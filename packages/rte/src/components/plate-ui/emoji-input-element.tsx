@@ -75,5 +75,5 @@ export const EmojiInputElement = withRef<typeof PlateElement>(
         {children}
       </PlateElement>
     );
-  }
+  },
 );

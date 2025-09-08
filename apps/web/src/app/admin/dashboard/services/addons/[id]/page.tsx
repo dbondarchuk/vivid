@@ -34,7 +34,7 @@ export default async function EditAddonPage(props: Props) {
     {
       addonId: params.id,
     },
-    "Loading service addon edit page"
+    "Loading service addon edit page",
   );
 
   const addon = await getAddon(params.id);
@@ -50,7 +50,7 @@ export default async function EditAddonPage(props: Props) {
       addonName: addon.name,
       addonPrice: addon.price,
     },
-    "Service addon edit page loaded"
+    "Service addon edit page loaded",
   );
 
   const breadcrumbItems = [

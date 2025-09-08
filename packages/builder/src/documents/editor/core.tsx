@@ -1,30 +1,64 @@
-import React from "react";
+import React, { memo, useMemo } from "react";
 import { EditorBlockWrapper } from "../blocks/helpers/block-wrappers/editor-block-wrapper";
 import { templateProps } from "../helpers/template-props";
-import { BlockConfiguration } from "../types";
-import { useBlocks, useEditorArgs, useRootBlock } from "./context";
+import { BaseBlockProps } from "../types";
+import {
+  useBlock,
+  useBlocks,
+  useEditorArgs,
+  useRootBlockType,
+} from "./context";
 
 export const templatePropsFromContext = (props: any) => {
   const args = useEditorArgs();
   return templateProps(props, args);
 };
 
-export const CoreEditorBlock: React.FC<BlockConfiguration<any>> = ({
-  type,
-  data,
-}) => {
-  const blocks = useBlocks();
-  const rootBlock = useRootBlock();
+export const CoreEditorBlock: React.FC<{
+  blockId: string;
+  additionalProps?: Record<string, any>;
+  index: number;
+  parentBlockId: string;
+  parentProperty: string;
+}> = memo(
+  ({ blockId, additionalProps, index, parentBlockId, parentProperty }) => {
+    const blocks = useBlocks();
+    const rootBlockType = useRootBlockType();
+    const block = useBlock(blockId)!;
 
-  const Component = blocks[type].Editor;
-  if (rootBlock.type === type) return <Component {...data} />;
+    const Component = useMemo(
+      () => blocks[block.type].Editor,
+      [blocks, block.type],
+    );
 
-  return (
-    <EditorBlockWrapper>
-      <Component {...data} />
-    </EditorBlockWrapper>
-  );
+    if (rootBlockType === block.type) return <Component {...block.data} />;
+
+    // console.log("CoreEditorBlock - rerender", type, data);
+
+    return (
+      <EditorBlockWrapper
+        index={index}
+        parentBlockId={parentBlockId}
+        parentProperty={parentProperty}
+      >
+        <Component {...block.data} base={block.base} {...additionalProps} />
+      </EditorBlockWrapper>
+    );
+  },
+);
+
+export type BlockDisableOptions = {
+  drag?: boolean;
+  delete?: boolean;
+  move?: boolean;
+  clone?: boolean;
 };
 
-export type TEditorBlock<T = any> = { type: string; data: T; id: string };
+export type TEditorBlock<T = any> = {
+  type: string;
+  data: T;
+  id: string;
+  base?: BaseBlockProps;
+};
+
 export type TEditorConfiguration = TEditorBlock;

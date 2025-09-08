@@ -1,12 +1,12 @@
 "use client";
 
-import React, { type ComponentPropsWithoutRef } from "react";
+import { type ComponentPropsWithoutRef } from "react";
 
-import { cn, buttonVariants } from "@vivid/ui";
 import {
   useColorsCustom,
   useColorsCustomState,
 } from "@udecode/plate-font/react";
+import { buttonVariants, cn } from "@vivid/ui";
 import { PlusIcon } from "lucide-react";
 
 import {
@@ -57,7 +57,7 @@ export function ColorCustom({
                 size: "icon",
                 variant: "outline",
               }),
-              "absolute top-1.5 right-2 bottom-2 flex size-7 items-center justify-center rounded-full"
+              "absolute top-1.5 right-2 bottom-2 flex size-7 items-center justify-center rounded-full",
             )}
             {...menuItemProps}
           >

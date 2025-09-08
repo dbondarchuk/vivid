@@ -1,21 +1,21 @@
 "use client";
 
-import { Input } from "../input";
-import { cn } from "../../utils";
+import { useI18n } from "@vivid/i18n";
 import { Options } from "nuqs";
 import { useTransition } from "react";
-import { useI18n } from "@vivid/i18n";
+import { cn } from "../../utils";
+import { Input } from "../input";
 
 interface DataTableSearchProps {
   searchKey: string;
   searchQuery: string;
   setSearchQuery: (
     value: string | ((old: string) => string | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
   setPage: <Shallow>(
     value: number | ((old: number) => number | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
 }
 

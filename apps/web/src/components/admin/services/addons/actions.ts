@@ -15,7 +15,7 @@ export async function create(field: AppointmentAddonUpdateModel) {
       addonName: field.name,
       addonPrice: field.price,
     },
-    "Creating new service addon"
+    "Creating new service addon",
   );
 
   try {
@@ -26,7 +26,7 @@ export async function create(field: AppointmentAddonUpdateModel) {
         addonId: result._id,
         addonName: field.name,
       },
-      "Service addon created successfully"
+      "Service addon created successfully",
     );
 
     return result;
@@ -36,7 +36,7 @@ export async function create(field: AppointmentAddonUpdateModel) {
         addonName: field.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create service addon"
+      "Failed to create service addon",
     );
     throw error;
   }
@@ -51,7 +51,7 @@ export async function update(_id: string, update: AppointmentAddonUpdateModel) {
       addonName: update.name,
       addonPrice: update.price,
     },
-    "Updating service addon"
+    "Updating service addon",
   );
 
   try {
@@ -62,7 +62,7 @@ export async function update(_id: string, update: AppointmentAddonUpdateModel) {
         addonId: _id,
         addonName: update.name,
       },
-      "Service addon updated successfully"
+      "Service addon updated successfully",
     );
 
     return okStatus;
@@ -73,7 +73,7 @@ export async function update(_id: string, update: AppointmentAddonUpdateModel) {
         addonName: update.name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update service addon"
+      "Failed to update service addon",
     );
     throw error;
   }
@@ -86,7 +86,7 @@ export async function deleteAddon(_id: string) {
     {
       addonId: _id,
     },
-    "Deleting service addon"
+    "Deleting service addon",
   );
 
   try {
@@ -94,7 +94,7 @@ export async function deleteAddon(_id: string) {
     if (!page) {
       actionLogger.warn(
         { addonId: _id },
-        "Service addon not found for deletion"
+        "Service addon not found for deletion",
       );
       return notFound();
     }
@@ -103,7 +103,7 @@ export async function deleteAddon(_id: string) {
       {
         addonId: _id,
       },
-      "Service addon deleted successfully"
+      "Service addon deleted successfully",
     );
 
     return okStatus;
@@ -113,7 +113,7 @@ export async function deleteAddon(_id: string) {
         addonId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete service addon"
+      "Failed to delete service addon",
     );
     throw error;
   }
@@ -127,7 +127,7 @@ export async function deleteSelected(ids: string[]) {
       addonIds: ids,
       count: ids.length,
     },
-    "Deleting selected service addons"
+    "Deleting selected service addons",
   );
 
   try {
@@ -138,7 +138,7 @@ export async function deleteSelected(ids: string[]) {
         addonIds: ids,
         count: ids.length,
       },
-      "Selected service addons deleted successfully"
+      "Selected service addons deleted successfully",
     );
 
     return okStatus;
@@ -149,7 +149,7 @@ export async function deleteSelected(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected service addons"
+      "Failed to delete selected service addons",
     );
     throw error;
   }
@@ -163,7 +163,7 @@ export async function checkUniqueName(name: string, _id?: string) {
       addonName: name,
       excludeId: _id,
     },
-    "Checking addon name uniqueness"
+    "Checking addon name uniqueness",
   );
 
   try {
@@ -176,7 +176,7 @@ export async function checkUniqueName(name: string, _id?: string) {
         excludeId: _id,
         isUnique: result,
       },
-      "Addon name uniqueness check completed"
+      "Addon name uniqueness check completed",
     );
 
     return result;
@@ -187,7 +187,7 @@ export async function checkUniqueName(name: string, _id?: string) {
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check addon name uniqueness"
+      "Failed to check addon name uniqueness",
     );
     throw error;
   }

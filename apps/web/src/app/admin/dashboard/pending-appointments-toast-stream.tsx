@@ -1,10 +1,10 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { Badge, toast } from "@vivid/ui";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { create } from "zustand";
-import { useI18n } from "@vivid/i18n";
 
 export type PendingAppointmentsContextProps = {
   count: number;
@@ -67,7 +67,7 @@ export const PendingAppointmentsToastStream: React.FC = () => {
           label: viewLabel,
           onClick: () => {
             router.push(
-              `/admin/dashboard?activeTab=appointments&key=${Date.now()}`
+              `/admin/dashboard?activeTab=appointments&key=${Date.now()}`,
             );
           },
         },

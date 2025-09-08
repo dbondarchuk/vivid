@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       url: req.url,
       method: req.method,
     },
-    "Processing sitemap.xml request"
+    "Processing sitemap.xml request",
   );
 
   const { url } =
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
       pageCount: pages.items.length,
       totalUrls: sitemap.length,
     },
-    "Successfully generated sitemap"
+    "Successfully generated sitemap",
   );
 
   return new Response(generateSiteMap(sitemap), {

@@ -2,7 +2,8 @@ import {
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
-  useSelectedBlockId,
+  useIsSelectedBlock,
+  usePortalContext,
 } from "@vivid/builder";
 import { PlateEditor, PlateStaticEditor } from "@vivid/rte";
 import { TextProps } from "./schema";
@@ -14,8 +15,8 @@ export const TextEditor = ({ props, style }: TextProps) => {
   const dispatchAction = useDispatchAction();
 
   const currentBlockId = useCurrentBlockId();
-  const selectedBlockId = useSelectedBlockId();
-  const isSelected = selectedBlockId === currentBlockId;
+  const { document } = usePortalContext();
+  const isSelected = useIsSelectedBlock(currentBlockId);
 
   const onChange = (value: any) => {
     dispatchAction({
@@ -38,6 +39,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
       value={currentBlock?.data?.props?.value}
       onChange={onChange}
       style={styles}
+      document={document}
     />
   ) : (
     <PlateStaticEditor value={props?.value} style={styles} />

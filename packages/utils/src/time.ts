@@ -38,7 +38,7 @@ export const formatTime = (time: Time) =>
 export const formatTimeLocale = (time: Time, locale?: string) =>
   DateTime.fromObject({ hour: time.hour, minute: time.minute }).toLocaleString(
     DateTime.TIME_SIMPLE,
-    { locale }
+    { locale },
   );
 
 export const durationToTime = (minutes: number) => {
@@ -50,7 +50,7 @@ export const durationToTime = (minutes: number) => {
 };
 
 export const timeToDuration = (
-  time?: { hours: number; minutes: number } | null
+  time?: { hours: number; minutes: number } | null,
 ) => {
   if (!time) return undefined;
   return time.hours * 60 + time.minutes;
@@ -58,7 +58,7 @@ export const timeToDuration = (
 
 export const areTimesEqual = (
   timeA: Time | undefined | null,
-  timeB: Time | undefined | null
+  timeB: Time | undefined | null,
 ) => timeA?.hour === timeB?.hour && timeA?.minute === timeB?.minute;
 
 export const is12hourUserTimeFormat = (locale?: string) => {
@@ -71,7 +71,7 @@ export const is12hourUserTimeFormat = (locale?: string) => {
 export const hasSame = (
   date1: DateTime | Date,
   date2: DateTime | Date,
-  unit: DateTimeUnit
+  unit: DateTimeUnit,
 ) => {
   const dateTime1 = date1 instanceof Date ? DateTime.fromJSDate(date1) : date1;
   const dateTime2 = date2 instanceof Date ? DateTime.fromJSDate(date2) : date2;
@@ -82,7 +82,7 @@ export const hasSame = (
 export function eachOfInterval(
   start: DateTime | Date,
   end: DateTime | Date,
-  unit: DateTimeUnit
+  unit: DateTimeUnit,
 ): DateTime[] {
   const startDate = start instanceof Date ? DateTime.fromJSDate(start) : start;
   const endDate = end instanceof Date ? DateTime.fromJSDate(end) : end;
@@ -90,7 +90,7 @@ export function eachOfInterval(
   return (
     Interval.fromDateTimes(
       startDate.startOf("day"),
-      endDate.endOf("day")
+      endDate.endOf("day"),
     ) as Interval<true>
   )
     .splitBy({ [unit]: 1 })

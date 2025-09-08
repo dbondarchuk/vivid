@@ -74,8 +74,9 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
                   </FormLabel>
                   <FormControl>
                     <Input
+                      autoComplete="off"
                       placeholder={t(
-                        "s3AssetsStorage.form.accessKeyId.placeholder"
+                        "s3AssetsStorage.form.accessKeyId.placeholder",
                       )}
                       {...field}
                     />
@@ -94,8 +95,9 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
                   </FormLabel>
                   <FormControl>
                     <Input
+                      autoComplete="off"
                       placeholder={t(
-                        "s3AssetsStorage.form.secretAccessKey.placeholder"
+                        "s3AssetsStorage.form.secretAccessKey.placeholder",
                       )}
                       type="password"
                       {...field}
@@ -119,7 +121,7 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
                   <FormControl>
                     <Input
                       placeholder={t(
-                        "s3AssetsStorage.form.endpoint.placeholder"
+                        "s3AssetsStorage.form.endpoint.placeholder",
                       )}
                       {...field}
                     />
@@ -185,15 +187,17 @@ export const S3AssetsStorageAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("s3AssetsStorage.form.connect")}</span>
-              <ConnectedAppNameAndLogo
-                app={{ name: S3AssetsStorageApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={S3AssetsStorageApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

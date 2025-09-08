@@ -32,6 +32,7 @@ import {
   IMailSender,
   IOAuthConnectedApp,
 } from "@vivid/types";
+import { decrypt, encrypt } from "@vivid/utils";
 import { createEvent } from "ics";
 import { DateTime } from "luxon";
 import { env } from "process";
@@ -92,14 +93,14 @@ export class OutlookConnectedApp
     } catch (error: any) {
       logger.error(
         { appId, error: error?.message || error?.toString() },
-        "Error generating Outlook login URL"
+        "Error generating Outlook login URL",
       );
       throw error;
     }
   }
 
   public async processRedirect(
-    request: ApiRequest
+    request: ApiRequest,
   ): Promise<ConnectedAppResponse> {
     const logger = this.loggerFactory("processRedirect");
     logger.debug({ url: request.url }, "Processing Outlook OAuth redirect");
@@ -111,23 +112,23 @@ export class OutlookConnectedApp
 
       logger.debug(
         { appId, hasCode: !!code },
-        "Extracted OAuth parameters from redirect"
+        "Extracted OAuth parameters from redirect",
       );
 
       if (!appId) {
         logger.error(
           { url: request.url },
-          "Redirect request does not contain app ID"
+          "Redirect request does not contain app ID",
         );
         throw new ConnectedAppError(
-          "outlook.statusText.redirect_request_does_not_contain_app_id"
+          "outlook.statusText.redirect_request_does_not_contain_app_id",
         );
       }
 
       if (!code) {
         logger.error(
           { appId },
-          "Redirect request does not contain authorization code"
+          "Redirect request does not contain authorization code",
         );
         return {
           appId,
@@ -150,17 +151,25 @@ export class OutlookConnectedApp
         const { tokens, username } = this.parseAuthResult(
           client,
           _tokenResponse,
-          true
+          true,
         );
 
         logger.info(
           { appId, username },
-          "Successfully processed Outlook OAuth redirect"
+          "Successfully processed Outlook OAuth redirect",
         );
 
         return {
           appId,
-          token: tokens,
+          token: {
+            ...tokens,
+            accessToken: tokens.accessToken
+              ? encrypt(tokens.accessToken)
+              : undefined,
+            refreshToken: tokens.refreshToken
+              ? encrypt(tokens.refreshToken)
+              : undefined,
+          },
           account: {
             username,
           },
@@ -168,7 +177,7 @@ export class OutlookConnectedApp
       } catch (e: any) {
         logger.error(
           { appId, error: e?.message || e?.toString() },
-          "Error parsing authorization result"
+          "Error parsing authorization result",
         );
         return {
           appId,
@@ -182,7 +191,7 @@ export class OutlookConnectedApp
     } catch (e: any) {
       logger.error(
         { url: request.url, error: e?.message || e?.toString() },
-        "Error processing Outlook OAuth redirect"
+        "Error processing Outlook OAuth redirect",
       );
       return {
         appId: new URL(request.url).searchParams.get("state") as string,
@@ -198,7 +207,7 @@ export class OutlookConnectedApp
   public async getBusyTimes(
     app: ConnectedAppData,
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
     logger.debug(
@@ -207,14 +216,14 @@ export class OutlookConnectedApp
         start: start.toISOString(),
         end: end.toISOString(),
       },
-      "Getting busy times from Outlook"
+      "Getting busy times from Outlook",
     );
 
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
       throw new ConnectedAppError(
-        "outlook.statusText.error_processing_configuration"
+        "outlook.statusText.error_processing_configuration",
       );
     }
 
@@ -223,24 +232,27 @@ export class OutlookConnectedApp
 
       logger.debug(
         { appId: app._id, start: start.toISOString(), end: end.toISOString() },
-        "Retrieved Outlook client, fetching events"
+        "Retrieved Outlook client, fetching events",
       );
 
       const events = await this.getEvents(
         client,
         DateTime.fromJSDate(start),
-        DateTime.fromJSDate(end)
+        DateTime.fromJSDate(end),
       );
 
       logger.debug(
         { appId: app._id, eventCount: events.length },
-        "Retrieved events from Outlook"
+        "Retrieved events from Outlook",
       );
 
       const result = events
         .filter(
           (event) =>
-            event.start && event.end && event.subject && event.showAs !== "free"
+            event.start &&
+            event.end &&
+            event.subject &&
+            event.showAs !== "free",
         )
         .map((event) => {
           const startAt = DateTime.fromISO(event.start?.dateTime!, {
@@ -253,7 +265,7 @@ export class OutlookConnectedApp
 
           const uid: string =
             event.singleValueExtendedProperties?.find(
-              (p) => p.id === uidPropertyName
+              (p) => p.id === uidPropertyName,
             )?.value ??
             (event as any).uid ??
             event.iCalUId;
@@ -268,7 +280,7 @@ export class OutlookConnectedApp
 
       logger.info(
         { appId: app._id, busyTimeCount: result.length },
-        "Successfully processed busy times from Outlook"
+        "Successfully processed busy times from Outlook",
       );
 
       this.props.update({
@@ -280,7 +292,7 @@ export class OutlookConnectedApp
     } catch (e: any) {
       logger.error(
         { appId: app._id, error: e?.message || e?.toString() },
-        "Error getting busy times from Outlook"
+        "Error getting busy times from Outlook",
       );
 
       this.props.update({
@@ -297,7 +309,7 @@ export class OutlookConnectedApp
 
   public async sendMail(
     app: ConnectedAppData,
-    email: Email
+    email: Email,
   ): Promise<EmailResponse> {
     const logger = this.loggerFactory("sendMail");
     logger.debug(
@@ -308,14 +320,14 @@ export class OutlookConnectedApp
         hasAttachments: !!email.attachments?.length,
         hasIcalEvent: !!email.icalEvent,
       },
-      "Sending email via Outlook"
+      "Sending email via Outlook",
     );
 
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
       throw new ConnectedAppError(
-        "outlook.statusText.error_processing_configuration"
+        "outlook.statusText.error_processing_configuration",
       );
     }
 
@@ -324,7 +336,7 @@ export class OutlookConnectedApp
 
       logger.debug(
         { appId: app._id, subject: email.subject },
-        "Retrieved Outlook client, preparing email"
+        "Retrieved Outlook client, preparing email",
       );
 
       const to = Array.isArray(email.to) ? email.to : [email.to];
@@ -338,17 +350,17 @@ export class OutlookConnectedApp
       if (email.icalEvent) {
         logger.debug(
           { appId: app._id, subject: email.subject },
-          "Processing iCal event attachment"
+          "Processing iCal event attachment",
         );
 
         const { value: icsContent, error: icsError } = createEvent(
-          email.icalEvent.content
+          email.icalEvent.content,
         );
 
         if (!icsContent || !!icsError) {
           logger.error(
             { appId: app._id, icsError },
-            "Failed to parse iCal event"
+            "Failed to parse iCal event",
           );
           console.error(icsError || "Failed to parse event");
         } else {
@@ -367,7 +379,7 @@ export class OutlookConnectedApp
       if (email.attachments) {
         logger.debug(
           { appId: app._id, attachmentCount: email.attachments.length },
-          "Processing email attachments"
+          "Processing email attachments",
         );
 
         for (const attachment of email.attachments) {
@@ -411,7 +423,7 @@ export class OutlookConnectedApp
 
       logger.debug(
         { appId: app._id, messageId, subject: email.subject },
-        "Sending email via Outlook API"
+        "Sending email via Outlook API",
       );
 
       await client
@@ -421,7 +433,7 @@ export class OutlookConnectedApp
 
       logger.info(
         { appId: app._id, messageId, subject: email.subject },
-        "Successfully sent email via Outlook"
+        "Successfully sent email via Outlook",
       );
 
       this.props.update({
@@ -439,7 +451,7 @@ export class OutlookConnectedApp
           subject: email.subject,
           error: e?.message || e?.toString(),
         },
-        "Error sending email via Outlook"
+        "Error sending email via Outlook",
       );
 
       this.props.update({
@@ -456,7 +468,7 @@ export class OutlookConnectedApp
 
   public async createEvent(
     app: ConnectedAppData,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult> {
     const logger = this.loggerFactory("createEvent");
     logger.debug(
@@ -465,14 +477,14 @@ export class OutlookConnectedApp
         eventId: event.id,
         eventTitle: event.title,
       },
-      "Creating event in Outlook"
+      "Creating event in Outlook",
     );
 
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
       throw new ConnectedAppError(
-        "outlook.statusText.error_processing_configuration"
+        "outlook.statusText.error_processing_configuration",
       );
     }
 
@@ -481,7 +493,7 @@ export class OutlookConnectedApp
 
       logger.debug(
         { appId: app._id, eventId: event.id, eventTitle: event.title },
-        "Preparing Outlook event"
+        "Preparing Outlook event",
       );
 
       const result = (await client
@@ -495,7 +507,7 @@ export class OutlookConnectedApp
           eventTitle: event.title,
           outlookEventId: result.id,
         },
-        "Successfully created event in Outlook"
+        "Successfully created event in Outlook",
       );
 
       return {
@@ -504,7 +516,7 @@ export class OutlookConnectedApp
     } catch (error: any) {
       logger.error(
         { appId: app._id, eventId: event.id, error },
-        "Error creating event in Outlook"
+        "Error creating event in Outlook",
       );
 
       this.props.update({
@@ -522,7 +534,7 @@ export class OutlookConnectedApp
   public async updateEvent(
     app: ConnectedAppData,
     uid: string,
-    event: CalendarEvent
+    event: CalendarEvent,
   ): Promise<CalendarEventResult> {
     const logger = this.loggerFactory("updateEvent");
     logger.debug(
@@ -532,14 +544,14 @@ export class OutlookConnectedApp
         uid,
         eventTitle: event.title,
       },
-      "Updating event in Outlook"
+      "Updating event in Outlook",
     );
 
     const tokens = app.token as ConnectedOauthAppTokens;
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
       throw new ConnectedAppError(
-        "outlook.statusText.error_processing_configuration"
+        "outlook.statusText.error_processing_configuration",
       );
     }
 
@@ -549,7 +561,7 @@ export class OutlookConnectedApp
 
       logger.debug(
         { appId: app._id, eventId: event.id, uid, outlookEventId: eventId },
-        "Preparing to update Outlook event"
+        "Preparing to update Outlook event",
       );
 
       const result = (await client
@@ -564,7 +576,7 @@ export class OutlookConnectedApp
           eventTitle: event.title,
           outlookEventId: result.id,
         },
-        "Successfully updated event in Outlook"
+        "Successfully updated event in Outlook",
       );
 
       return {
@@ -573,7 +585,7 @@ export class OutlookConnectedApp
     } catch (error: any) {
       logger.error(
         { appId: app._id, eventId: event.id, uid, error },
-        "Error updating event in Outlook"
+        "Error updating event in Outlook",
       );
 
       this.props.update({
@@ -596,7 +608,7 @@ export class OutlookConnectedApp
     if (!tokens?.accessToken) {
       logger.error({ appId: app._id }, "No token provided");
       throw new ConnectedAppError(
-        "outlook.statusText.error_processing_configuration"
+        "outlook.statusText.error_processing_configuration",
       );
     }
 
@@ -607,19 +619,19 @@ export class OutlookConnectedApp
 
       logger.debug(
         { appId: app._id, uid, outlookEventId: id },
-        "Deleting Outlook event"
+        "Deleting Outlook event",
       );
 
       await client.api(`/me/calendar/events/${id}`).delete();
 
       logger.info(
         { appId: app._id, uid },
-        "Successfully deleted event from Outlook"
+        "Successfully deleted event from Outlook",
       );
     } catch (error: any) {
       logger.error(
         { appId: app._id, uid, error },
-        "Error deleting event from Outlook"
+        "Error deleting event from Outlook",
       );
 
       this.props.update({
@@ -636,7 +648,7 @@ export class OutlookConnectedApp
 
   private async getOutlookEventId(
     client: Client,
-    uid: string
+    uid: string,
   ): Promise<string> {
     const logger = this.loggerFactory("getOutlookEventId");
     logger.debug({ uid }, "Looking up Outlook Event ID for UID");
@@ -645,7 +657,7 @@ export class OutlookConnectedApp
       const response = await client
         .api("/me/calendar/events")
         .filter(
-          `singleValueExtendedProperties/Any(ep: ep/id eq '${uidPropertyName}' and ep/value eq '${uid}')`
+          `singleValueExtendedProperties/Any(ep: ep/id eq '${uidPropertyName}' and ep/value eq '${uid}')`,
         )
         .select("id")
         .get();
@@ -655,13 +667,13 @@ export class OutlookConnectedApp
         logger.error({ uid }, "Failed to find Outlook Event ID for UID");
         throw new ConnectedAppError(
           "outlook.statusText.failed_to_find_event_id_for_uid",
-          { uid }
+          { uid },
         );
       }
 
       logger.debug(
         { uid, outlookEventId: id },
-        "Found Outlook Event ID for UID"
+        "Found Outlook Event ID for UID",
       );
       return id;
     } catch (error: any) {
@@ -678,7 +690,7 @@ export class OutlookConnectedApp
         eventTitle: event.title,
         attendeeCount: event.attendees?.length || 0,
       },
-      "Converting event to Outlook format"
+      "Converting event to Outlook format",
     );
 
     const start = DateTime.fromJSDate(event.startTime)
@@ -731,7 +743,7 @@ export class OutlookConnectedApp
         startTime: start.toISO(),
         endTime: end.toISO(),
       },
-      "Converted event to Outlook format"
+      "Converted event to Outlook format",
     );
 
     return outlookEvent;
@@ -742,13 +754,13 @@ export class OutlookConnectedApp
     start: DateTime,
     end: DateTime,
     skip: number,
-    top: number
+    top: number,
   ) {
     return await client
       .api("/me/calendarview")
       .query(`startDateTime=${start.toISO()}&endDateTime=${end.toISO()}`)
       .expand(
-        `singleValueExtendedProperties($filter=id eq '${uidPropertyName}')`
+        `singleValueExtendedProperties($filter=id eq '${uidPropertyName}')`,
       )
       // .select("uid,start,end,showAs,subject")
       .count(true)
@@ -760,12 +772,12 @@ export class OutlookConnectedApp
   private async getEvents(
     client: Client,
     start: DateTime,
-    end: DateTime
+    end: DateTime,
   ): Promise<OutlookEvent[]> {
     const logger = this.loggerFactory("getEvents");
     logger.debug(
       { start: start.toISO(), end: end.toISO() },
-      "Fetching events from Outlook"
+      "Fetching events from Outlook",
     );
 
     const results: OutlookEvent[] = [];
@@ -776,7 +788,7 @@ export class OutlookConnectedApp
     do {
       logger.debug(
         { skip, top, currentCount: results.length },
-        "Fetching paginated events from Outlook"
+        "Fetching paginated events from Outlook",
       );
 
       const response = await this.getEventsPaginated(
@@ -784,7 +796,7 @@ export class OutlookConnectedApp
         start,
         end,
         skip,
-        top
+        top,
       );
       count = response["@odata.count"];
 
@@ -794,7 +806,7 @@ export class OutlookConnectedApp
 
     logger.debug(
       { totalCount: results.length, start: start.toISO(), end: end.toISO() },
-      "Retrieved all events from Outlook"
+      "Retrieved all events from Outlook",
     );
 
     return results;
@@ -802,7 +814,7 @@ export class OutlookConnectedApp
 
   private async getClient(
     appId: string,
-    tokens: ConnectedOauthAppTokens
+    tokens: ConnectedOauthAppTokens,
   ): Promise<Client> {
     const accessToken = this.getOrRefreshAuthToken(appId, tokens);
 
@@ -817,37 +829,29 @@ export class OutlookConnectedApp
 
   private async getOrRefreshAuthToken(
     appId: string,
-    currentTokens: ConnectedOauthAppTokens
+    currentTokens: ConnectedOauthAppTokens,
   ): Promise<string> {
+    const logger = this.loggerFactory("getOrRefreshAuthToken");
     if (!currentTokens.expiresOn || currentTokens.expiresOn >= new Date()) {
-      this.loggerFactory("getOrRefreshAuthToken").debug(
-        { appId },
-        "Using existing access token"
-      );
-      return currentTokens.accessToken;
+      logger.debug({ appId }, "Using existing access token");
+      return decrypt(currentTokens.accessToken);
     }
 
-    this.loggerFactory("getOrRefreshAuthToken").debug(
-      { appId },
-      "Access token expired, refreshing"
-    );
+    logger.debug({ appId }, "Access token expired, refreshing");
 
     const client = this.getMsalClient();
 
     const tokenRequest = {
       ...(await this.getAuthParams(appId)),
-      refreshToken: currentTokens.refreshToken,
+      refreshToken: decrypt(currentTokens.refreshToken),
     };
 
     try {
       const result = await client.acquireTokenByRefreshToken(tokenRequest);
       if (!result) {
-        this.loggerFactory("getOrRefreshAuthToken").error(
-          { appId },
-          "Failed to refresh access token"
-        );
+        logger.error({ appId }, "Failed to refresh access token");
         throw new ConnectedAppError(
-          "outlook.statusText.error_refreshing_access_token"
+          "outlook.statusText.error_refreshing_access_token",
         );
       }
 
@@ -858,19 +862,16 @@ export class OutlookConnectedApp
         },
         token: {
           ...tokens,
-          refreshToken: currentTokens.refreshToken,
+          accessToken: encrypt(tokens.accessToken!),
         },
       });
 
-      this.loggerFactory("getOrRefreshAuthToken").debug(
-        { appId, username },
-        "Successfully refreshed access token"
-      );
+      logger.debug({ appId, username }, "Successfully refreshed access token");
       return tokens.accessToken!;
     } catch (e: any) {
-      this.loggerFactory("getOrRefreshAuthToken").error(
+      logger.error(
         { appId, error: e?.message || e?.toString() },
-        "Failed to refresh access token"
+        "Failed to refresh access token",
       );
 
       this.props.update({
@@ -885,7 +886,7 @@ export class OutlookConnectedApp
   private parseAuthResult(
     client: ConfidentialClientApplication,
     authResult: AuthenticationResult,
-    expectRefreshToken: boolean
+    expectRefreshToken: boolean,
   ): {
     tokens: Partial<ConnectedOauthAppTokens>;
     username: string;
@@ -893,31 +894,31 @@ export class OutlookConnectedApp
     const logger = this.loggerFactory("parseAuthResult");
     logger.debug(
       { expectRefreshToken, hasAccessToken: !!authResult.accessToken },
-      "Parsing authorization result"
+      "Parsing authorization result",
     );
 
     const username = authResult.account?.username;
     if (!authResult.accessToken) {
       logger.error("Authorization result does not contain access token");
       throw new ConnectedAppError(
-        "outlook.statusText.authorization_result_no_access_token"
+        "outlook.statusText.authorization_result_no_access_token",
       );
     }
 
     if (!username) {
       logger.error("Authorization result does not contain account information");
       throw new ConnectedAppError(
-        "outlook.statusText.authorization_result_no_account_info"
+        "outlook.statusText.authorization_result_no_account_info",
       );
     }
 
     if (requiredScopes.some((s) => authResult.scopes.indexOf(s) < 0)) {
       logger.error(
         { requiredScopes, actualScopes: authResult.scopes },
-        "Authorization result does not contain enough scopes"
+        "Authorization result does not contain enough scopes",
       );
       throw new ConnectedAppError(
-        "outlook.statusText.authorization_result_not_enough_scopes"
+        "outlook.statusText.authorization_result_not_enough_scopes",
       );
     }
 
@@ -935,14 +936,14 @@ export class OutlookConnectedApp
       if (!refreshToken) {
         logger.error("Authorization result does not contain refresh token");
         throw new ConnectedAppError(
-          "outlook.statusText.authorization_result_no_refresh_token"
+          "outlook.statusText.authorization_result_no_refresh_token",
         );
       }
 
       tokens.refreshToken = refreshToken;
       logger.debug(
         { username },
-        "Successfully parsed authorization result with refresh token"
+        "Successfully parsed authorization result with refresh token",
       );
     } else {
       logger.debug({ username }, "Successfully parsed authorization result");

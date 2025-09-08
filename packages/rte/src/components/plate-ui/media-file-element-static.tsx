@@ -1,10 +1,8 @@
-import React from "react";
-
 import type { SlateElementProps } from "@udecode/plate";
 import type { TFileElement } from "@udecode/plate-media";
 
-import { cn } from "@vivid/ui";
 import { SlateElement } from "@udecode/plate";
+import { cn } from "@vivid/ui";
 import { FileUp } from "lucide-react";
 
 export const MediaFileElementStatic = ({

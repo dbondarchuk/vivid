@@ -17,7 +17,7 @@ export async function create(discount: DiscountUpdateModel) {
       discountValue: discount.value,
       discountCodes: discount.codes,
     },
-    "Creating new service discount"
+    "Creating new service discount",
   );
 
   try {
@@ -30,7 +30,7 @@ export async function create(discount: DiscountUpdateModel) {
         discountName: discount.name,
         discountType: discount.type,
       },
-      "Service discount created successfully"
+      "Service discount created successfully",
     );
 
     return result;
@@ -41,7 +41,7 @@ export async function create(discount: DiscountUpdateModel) {
         discountType: discount.type,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create service discount"
+      "Failed to create service discount",
     );
     throw error;
   }
@@ -58,7 +58,7 @@ export async function update(_id: string, update: DiscountUpdateModel) {
       discountValue: update.value,
       discountCodes: update.codes,
     },
-    "Updating service discount"
+    "Updating service discount",
   );
 
   try {
@@ -70,7 +70,7 @@ export async function update(_id: string, update: DiscountUpdateModel) {
         discountName: update.name,
         discountType: update.type,
       },
-      "Service discount updated successfully"
+      "Service discount updated successfully",
     );
 
     return okStatus;
@@ -82,7 +82,7 @@ export async function update(_id: string, update: DiscountUpdateModel) {
         discountType: update.type,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update service discount"
+      "Failed to update service discount",
     );
     throw error;
   }
@@ -95,7 +95,7 @@ export async function deleteDiscount(_id: string) {
     {
       discountId: _id,
     },
-    "Deleting service discount"
+    "Deleting service discount",
   );
 
   try {
@@ -104,7 +104,7 @@ export async function deleteDiscount(_id: string) {
     if (!discount) {
       actionLogger.warn(
         { discountId: _id },
-        "Service discount not found for deletion"
+        "Service discount not found for deletion",
       );
       return notFound();
     }
@@ -113,7 +113,7 @@ export async function deleteDiscount(_id: string) {
       {
         discountId: _id,
       },
-      "Service discount deleted successfully"
+      "Service discount deleted successfully",
     );
 
     return okStatus;
@@ -123,7 +123,7 @@ export async function deleteDiscount(_id: string) {
         discountId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete service discount"
+      "Failed to delete service discount",
     );
     throw error;
   }
@@ -137,7 +137,7 @@ export async function deleteSelected(ids: string[]) {
       discountIds: ids,
       count: ids.length,
     },
-    "Deleting selected service discounts"
+    "Deleting selected service discounts",
   );
 
   try {
@@ -148,7 +148,7 @@ export async function deleteSelected(ids: string[]) {
         discountIds: ids,
         count: ids.length,
       },
-      "Selected service discounts deleted successfully"
+      "Selected service discounts deleted successfully",
     );
 
     return okStatus;
@@ -159,7 +159,7 @@ export async function deleteSelected(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected service discounts"
+      "Failed to delete selected service discounts",
     );
     throw error;
   }
@@ -168,7 +168,7 @@ export async function deleteSelected(ids: string[]) {
 export async function checkUniqueNameAndCode(
   name: string,
   codes: string[],
-  _id?: string
+  _id?: string,
 ) {
   const actionLogger = logger("checkUniqueNameAndCode");
 
@@ -178,7 +178,7 @@ export async function checkUniqueNameAndCode(
       discountCodes: codes,
       excludeId: _id,
     },
-    "Checking discount name and code uniqueness"
+    "Checking discount name and code uniqueness",
   );
 
   try {
@@ -186,7 +186,7 @@ export async function checkUniqueNameAndCode(
       await ServicesContainer.ServicesService().checkDiscountUniqueNameAndCode(
         name,
         codes,
-        _id
+        _id,
       );
 
     actionLogger.debug(
@@ -196,7 +196,7 @@ export async function checkUniqueNameAndCode(
         excludeId: _id,
         isUnique: result,
       },
-      "Discount name and code uniqueness check completed"
+      "Discount name and code uniqueness check completed",
     );
 
     return result;
@@ -208,7 +208,7 @@ export async function checkUniqueNameAndCode(
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check discount name and code uniqueness"
+      "Failed to check discount name and code uniqueness",
     );
     throw error;
   }

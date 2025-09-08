@@ -54,7 +54,7 @@ const TextMessagesTemplateForm: React.FC<{
               <p>
                 {t(
                   "customerTextMessageNotification.form.template.tooltipEmpty",
-                  { whenText }
+                  { whenText },
                 )}
               </p>
             </InfoTooltip>
@@ -123,7 +123,7 @@ export const CustomerTextMessageNotificationAppSetup: React.FC<
               isDataLoading={isDataLoading}
               type={"rescheduled"}
               whenText={t(
-                "customerTextMessageNotification.whenText.rescheduled"
+                "customerTextMessageNotification.whenText.rescheduled",
               )}
             />
             <SaveButton

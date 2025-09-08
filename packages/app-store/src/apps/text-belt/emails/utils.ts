@@ -10,7 +10,7 @@ export const getEmailTemplate = async (
   url: string,
   args: Record<string, any>,
   appointmentId?: string,
-  customerId?: string
+  customerId?: string,
 ) => {
   const templateContent =
     UserEmailTemplates[language]?.[type] ?? UserEmailTemplates["en"][type];
@@ -41,7 +41,7 @@ export const getEmailTemplate = async (
           : undefined,
       ],
     },
-    args
+    args,
   );
 
   return {

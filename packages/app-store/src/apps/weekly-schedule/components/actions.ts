@@ -5,7 +5,7 @@ import { RequestAction } from "../models";
 
 export const getWeeklySchedule = async (
   appId: string,
-  weekIdentifier: WeekIdentifier
+  weekIdentifier: WeekIdentifier,
 ) => {
   return (await processRequest(appId, {
     type: "get-weekly-schedule",
@@ -19,7 +19,7 @@ export const getWeeklySchedule = async (
 export const updateWeeklySchedule = async (
   appId: string,
   weekIdentifier: WeekIdentifier,
-  schedule: Schedule
+  schedule: Schedule,
 ) => {
   await processRequest(appId, {
     type: "set-schedules",
@@ -32,7 +32,7 @@ export const updateWeeklySchedule = async (
 
 export const resetWeeklySchedule = async (
   appId: string,
-  week: WeekIdentifier
+  week: WeekIdentifier,
 ) => {
   await processRequest(appId, {
     type: "remove-schedule",
@@ -42,7 +42,7 @@ export const resetWeeklySchedule = async (
 
 export const resetAllWeeklySchedule = async (
   appId: string,
-  week: WeekIdentifier
+  week: WeekIdentifier,
 ) => {
   await processRequest(appId, {
     type: "remove-all-schedules",
@@ -53,7 +53,7 @@ export const resetAllWeeklySchedule = async (
 export const copyWeeklySchedule = async (
   appId: string,
   fromWeek: WeekIdentifier,
-  toWeek: WeekIdentifier
+  toWeek: WeekIdentifier,
 ) => {
   const fromSchedule = await getWeeklySchedule(appId, fromWeek);
   if (fromSchedule.isDefault)
@@ -73,7 +73,7 @@ export const repeatWeeklySchedule = async (
   week: WeekIdentifier,
   interval: number,
   maxWeek: WeekIdentifier,
-  replaceExisting?: boolean
+  replaceExisting?: boolean,
 ) => {
   const fromSchedule = await getWeeklySchedule(appId, week);
   if (fromSchedule.isDefault)

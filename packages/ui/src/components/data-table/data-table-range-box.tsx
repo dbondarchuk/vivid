@@ -8,12 +8,12 @@ interface FilterBoxProps {
   title?: string;
   setStartValue: (
     value: Date | ((old: Date | null) => Date | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
   startValue: Date | null;
   setEndValue: (
     value: Date | ((old: Date | null) => Date | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
   endValue: Date | null;
 }

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing assets migrate API request"
+    "Processing assets migrate API request",
   );
 
   const limit = pLimit(10);
@@ -35,11 +35,11 @@ export async function POST(request: NextRequest) {
 
   const fromApp =
     await ServicesContainer.ConnectedAppsService().getAppService<IAssetsStorage>(
-      body.fromAppId
+      body.fromAppId,
     );
   const toApp =
     await ServicesContainer.ConnectedAppsService().getAppService<IAssetsStorage>(
-      body.toAppId
+      body.toAppId,
     );
 
   const assets = await ServicesContainer.AssetsService().getAssets({});
@@ -59,25 +59,25 @@ export async function POST(request: NextRequest) {
             // semaphore.acquire();
             const file = await fromApp.service.getFile(
               fromApp.app,
-              asset.filename
+              asset.filename,
             );
 
             await toApp.service.saveFile(
               toApp.app,
               asset.filename,
               file,
-              asset.size
+              asset.size,
             );
 
             Atomics.add(success, 0, 1);
             console.log(
-              `Migrate assets: Successfully processed file ${asset.filename}`
+              `Migrate assets: Successfully processed file ${asset.filename}`,
             );
           } catch (e) {
             Atomics.add(error, 0, 1);
             console.error(
               `Migrate assets: Failed to process file ${asset.filename}`,
-              e
+              e,
             );
           } finally {
             Atomics.add(done, 0, 1);
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
               success: success[0],
               error: error[0],
               total,
-            }) + "\n"
+            }) + "\n",
           );
           controller.enqueue(chunk);
         });
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       sourceBucket: body.fromAppId,
       targetBucket: body.toAppId,
     },
-    "Assets migration completed"
+    "Assets migration completed",
   );
 
   return new NextResponse(stream);

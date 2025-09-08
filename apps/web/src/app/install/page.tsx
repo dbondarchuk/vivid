@@ -1,7 +1,7 @@
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Card, CardDescription, CardHeader, CardTitle } from "@vivid/ui";
-import { getI18nAsync } from "@vivid/i18n/server";
 import { notFound } from "next/navigation";
 import { InstallForm } from "./form";
 

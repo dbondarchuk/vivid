@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useI18n } from "@vivid/i18n";
-import { Modal } from "./modal";
+import { useEffect, useState } from "react";
 import { Button } from "./button";
+import { Modal } from "./modal";
 import { Spinner } from "./spinner";
 
 interface AlertModalProps {

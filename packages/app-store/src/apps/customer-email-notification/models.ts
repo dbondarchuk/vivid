@@ -40,7 +40,7 @@ export type EmailTemplateKeys = z.infer<typeof emailTemplateKeys>;
 
 export const emailTemplatesSchema = zStrictRecord(
   emailTemplateKeys,
-  emailTemplateSchema
+  emailTemplateSchema,
 );
 
 export type EmailTemplates = z.infer<typeof emailTemplatesSchema>;

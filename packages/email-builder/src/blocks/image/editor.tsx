@@ -5,7 +5,7 @@ import {
   useCurrentBlockId,
   useDispatchAction,
   useEditorArgs,
-  useSelectedBlockId,
+  useIsSelectedBlock,
 } from "@vivid/builder";
 import { templateSafeWithError } from "@vivid/utils";
 import { useCallback } from "react";
@@ -22,8 +22,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
 
   const currentBlock = useCurrentBlock<ImageProps>();
   const currentBlockId = useCurrentBlockId();
-  const selectedBlockId = useSelectedBlockId();
-  const isSelected = selectedBlockId === currentBlockId;
+  const isSelected = useIsSelectedBlock(currentBlockId);
 
   const dispatchAction = useDispatchAction();
   const onDimensionsChange = useCallback(
@@ -43,7 +42,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
 
   const onPositionChange = useCallback(
@@ -63,7 +62,7 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
         },
       });
     },
-    [dispatchAction, currentBlock]
+    [dispatchAction, currentBlock],
   );
 
   return isSelected ? (

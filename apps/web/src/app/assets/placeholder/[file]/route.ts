@@ -47,7 +47,7 @@ const generatePlaceholderImage = async ({
 
 export async function GET(
   request: NextRequest,
-  props: Props
+  props: Props,
 ): Promise<NextResponse> {
   const { file } = await props.params;
 

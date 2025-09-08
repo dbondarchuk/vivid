@@ -16,14 +16,14 @@ export default class TextMessageAutoReplyConnectedApp
   implements IConnectedApp, ITextMessageResponder
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "TextMessageAutoReplyConnectedApp"
+    "TextMessageAutoReplyConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: TextMessageAutoReplyConfiguration
+    data: TextMessageAutoReplyConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
@@ -31,13 +31,13 @@ export default class TextMessageAutoReplyConnectedApp
         appId: appData._id,
         autoReplyTemplateId: data.autoReplyTemplateId,
       },
-      "Processing Text Message Auto Reply configuration request"
+      "Processing Text Message Auto Reply configuration request",
     );
 
     try {
       logger.debug(
         { appId: appData._id, templateId: data.autoReplyTemplateId },
-        "Validating auto reply template"
+        "Validating auto reply template",
       );
 
       const template = await this.props.services
@@ -47,10 +47,10 @@ export default class TextMessageAutoReplyConnectedApp
       if (!template) {
         logger.error(
           { appId: appData._id, templateId: data.autoReplyTemplateId },
-          "Auto reply template not found"
+          "Auto reply template not found",
         );
         throw new ConnectedAppError(
-          "textMessageAutoReply.statusText.template_not_found"
+          "textMessageAutoReply.statusText.template_not_found",
         );
       }
 
@@ -60,7 +60,7 @@ export default class TextMessageAutoReplyConnectedApp
           templateId: data.autoReplyTemplateId,
           templateName: template.name,
         },
-        "Auto reply template validated successfully"
+        "Auto reply template validated successfully",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -75,7 +75,7 @@ export default class TextMessageAutoReplyConnectedApp
 
       logger.info(
         { appId: appData._id, templateId: data.autoReplyTemplateId },
-        "Successfully configured Text Message Auto Reply"
+        "Successfully configured Text Message Auto Reply",
       );
 
       return status;
@@ -86,7 +86,7 @@ export default class TextMessageAutoReplyConnectedApp
           templateId: data.autoReplyTemplateId,
           error: e?.message || e?.toString(),
         },
-        "Error processing Text Message Auto Reply configuration request"
+        "Error processing Text Message Auto Reply configuration request",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -110,7 +110,7 @@ export default class TextMessageAutoReplyConnectedApp
 
   public async respond(
     appData: ConnectedAppData<TextMessageAutoReplyConfiguration>,
-    textMessageReply: TextMessageReply
+    textMessageReply: TextMessageReply,
   ): Promise<RespondResult | null> {
     const logger = this.loggerFactory("respond");
     logger.debug(
@@ -122,7 +122,7 @@ export default class TextMessageAutoReplyConnectedApp
         hasCustomer: !!textMessageReply.customer,
         autoReplyTemplateId: appData.data?.autoReplyTemplateId,
       },
-      "Processing text message auto reply"
+      "Processing text message auto reply",
     );
 
     try {
@@ -146,7 +146,7 @@ export default class TextMessageAutoReplyConnectedApp
       if (appData.data?.autoReplyTemplateId) {
         logger.debug(
           { appId: appData._id, templateId: appData.data.autoReplyTemplateId },
-          "Retrieving auto reply template"
+          "Retrieving auto reply template",
         );
 
         const autoReplyTemplate = await this.props.services
@@ -161,7 +161,7 @@ export default class TextMessageAutoReplyConnectedApp
               templateName: autoReplyTemplate.name,
               fromNumber: reply.from,
             },
-            "Auto replying with template"
+            "Auto replying with template",
           );
 
           const message = template(autoReplyTemplate.value, args);
@@ -173,7 +173,7 @@ export default class TextMessageAutoReplyConnectedApp
               messageLength: message.length,
               fromNumber: reply.from,
             },
-            "Sending auto reply text message"
+            "Sending auto reply text message",
           );
 
           await this.props.services.NotificationService().sendTextMessage({
@@ -193,7 +193,7 @@ export default class TextMessageAutoReplyConnectedApp
               templateId: autoReplyTemplate._id,
               fromNumber: reply.from,
             },
-            "Successfully sent auto reply text message"
+            "Successfully sent auto reply text message",
           );
 
           return {
@@ -206,7 +206,7 @@ export default class TextMessageAutoReplyConnectedApp
               appId: appData._id,
               templateId: appData.data.autoReplyTemplateId,
             },
-            "Auto reply template not found"
+            "Auto reply template not found",
           );
 
           this.props.update({
@@ -217,7 +217,7 @@ export default class TextMessageAutoReplyConnectedApp
       } else {
         logger.warn(
           { appId: appData._id },
-          "No auto reply template configured"
+          "No auto reply template configured",
         );
 
         this.props.update({
@@ -234,7 +234,7 @@ export default class TextMessageAutoReplyConnectedApp
           fromNumber: textMessageReply.from,
           error: error?.message || error?.toString(),
         },
-        "Error processing text message auto reply"
+        "Error processing text message auto reply",
       );
       throw error;
     }

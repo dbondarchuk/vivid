@@ -18,7 +18,7 @@ export type TextMessagesTemplateKeys = z.infer<typeof textMessagesTemplateKeys>;
 
 export const textMessagesTemplatesSchema = zStrictRecord(
   textMessagesTemplateKeys,
-  textMessagesTemplateSchema
+  textMessagesTemplateSchema,
 );
 
 export const customerTextMessageNotificationConfigurationSchema = z.object({

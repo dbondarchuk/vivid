@@ -9,14 +9,14 @@ export function useFollowUpsTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [channelFilter, setChannelFilter] = useQueryState(
     "channel",
     searchParams.channel
       .withOptions({ shallow: false })
-      .withDefault(searchParams.channel.defaultValue)
+      .withDefault(searchParams.channel.defaultValue),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);

@@ -86,7 +86,7 @@ const DiscountLimitCard: React.FC<{
                     <OptionSelector
                       className={cn(
                         InputGroupInputClasses(),
-                        "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1"
+                        "[&>button]:rounded-r-none [&>button]:border-r-0  w-full flex-1",
                       )}
                       onItemSelect={(id) => {
                         field.onChange({ id });
@@ -221,10 +221,10 @@ export const DiscountForm: React.FC<{
       checkUniqueNameAndCode(
         name,
         codes?.filter((code) => !!code) ?? [],
-        initialData?._id
+        initialData?._id,
       ),
     "services.discounts.nameUnique",
-    "services.discounts.codeUnique"
+    "services.discounts.codeUnique",
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -311,7 +311,7 @@ export const DiscountForm: React.FC<{
                     <Input
                       disabled={loading}
                       placeholder={t(
-                        "admin.services.discounts.form.namePlaceholder"
+                        "admin.services.discounts.form.namePlaceholder",
                       )}
                       {...field}
                     />
@@ -364,7 +364,7 @@ export const DiscountForm: React.FC<{
                         label: t(`admin.common.labels.discountType.${type}`),
                       }))}
                       searchLabel={t(
-                        "admin.services.discounts.form.typePlaceholder"
+                        "admin.services.discounts.form.typePlaceholder",
                       )}
                       value={field.value}
                       onItemSelect={(item) => {
@@ -487,7 +487,7 @@ export const DiscountForm: React.FC<{
                     <InfoTooltip>
                       <p>
                         {t(
-                          "admin.services.discounts.form.appointmentStartDateTooltip"
+                          "admin.services.discounts.form.appointmentStartDateTooltip",
                         )}
                       </p>
                       <p>{t("admin.common.optional")}</p>
@@ -516,7 +516,7 @@ export const DiscountForm: React.FC<{
                     <InfoTooltip>
                       <p>
                         {t(
-                          "admin.services.discounts.form.appointmentEndDateTooltip"
+                          "admin.services.discounts.form.appointmentEndDateTooltip",
                         )}
                       </p>
                       <p>{t("admin.common.optional")}</p>
@@ -571,7 +571,7 @@ export const DiscountForm: React.FC<{
                     <InfoTooltip>
                       <p>
                         {t(
-                          "admin.services.discounts.form.maxUsagePerCustomerTooltip"
+                          "admin.services.discounts.form.maxUsagePerCustomerTooltip",
                         )}
                       </p>
                       <p>{t("admin.common.optional")}</p>
@@ -623,7 +623,7 @@ export const DiscountForm: React.FC<{
                                 placeholder="SALE15"
                                 className={cn(
                                   InputGroupInputClasses(),
-                                  "flex-1"
+                                  "flex-1",
                                 )}
                                 {...field}
                               />
@@ -633,7 +633,7 @@ export const DiscountForm: React.FC<{
                                   size="icon"
                                   className={cn(
                                     InputGroupSuffixClasses(),
-                                    "px-2"
+                                    "px-2",
                                   )}
                                   onClick={() => onCodeRemove(index)}
                                 >

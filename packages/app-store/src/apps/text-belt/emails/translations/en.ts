@@ -49,7 +49,7 @@ Addons selected:
 - None
 {{/addons}}
 
-Time: {{ dateTime }}
+Time: {{ dateTime.full}}
 
 Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}
 

@@ -4,7 +4,7 @@ export const formatTime = (
   time: string,
   uses12HourFormat = false,
   amLabel = "AM",
-  pmLabel = "PM"
+  pmLabel = "PM",
 ) => {
   if (!uses12HourFormat) return time; // Keep 24-hour format
 
@@ -39,7 +39,7 @@ export const getWeekDayMap = (
   thursday = "Thursday",
   friday = "Friday",
   saturday = "Saturday",
-  sunday = "Sunday"
+  sunday = "Sunday",
 ): Record<number, string> => ({
   1: monday,
   2: tuesday,
@@ -65,7 +65,7 @@ export const weekDayMap: Record<number, string> = {
 export const generateTimeSlots = (
   startTime: { hour: number; minute: number },
   endTime: { hour: number; minute: number },
-  interval: number
+  interval: number,
 ): string[] => {
   const slots: string[] = [];
   let currentHour = startTime.hour;

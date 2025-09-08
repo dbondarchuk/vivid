@@ -10,7 +10,7 @@ export const templateSchema = z.object({
 
 export const getTemplateSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string, id?: string) => Promise<boolean> | boolean,
-  message: string
+  message: string,
 ) => {
   return z.object({
     ...templateSchema.shape,

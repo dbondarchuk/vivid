@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@vivid/ui";
 import {
   PreviewImage,
   useImagePreview,
@@ -8,6 +7,7 @@ import {
   useScaleInput,
 } from "@udecode/plate-media/react";
 import { useEditorRef } from "@udecode/plate/react";
+import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 import { ArrowLeft, ArrowRight, Download, Minus, Plus, X } from "lucide-react";
 
@@ -49,7 +49,7 @@ export const ImagePreview = () => {
     <div
       className={cn(
         "fixed top-0 left-0 z-50 h-screen w-screen",
-        !isOpen && "hidden"
+        !isOpen && "hidden",
       )}
       {...maskLayerProps}
     >
@@ -59,7 +59,7 @@ export const ImagePreview = () => {
         <div className="relative flex max-h-screen w-full items-center">
           <PreviewImage
             className={cn(
-              "mx-auto block max-h-[calc(100vh-4rem)] w-auto object-contain transition-transform"
+              "mx-auto block max-h-[calc(100vh-4rem)] w-auto object-contain transition-transform",
             )}
           />
           <div
@@ -72,7 +72,7 @@ export const ImagePreview = () => {
                 className={cn(
                   toolButtonVariants({
                     variant: prevDisabled ? "disabled" : "default",
-                  })
+                  }),
                 )}
                 type="button"
               >
@@ -84,7 +84,7 @@ export const ImagePreview = () => {
                 className={cn(
                   toolButtonVariants({
                     variant: nextDisabled ? "disabled" : "default",
-                  })
+                  }),
                 )}
                 type="button"
               >
@@ -96,7 +96,7 @@ export const ImagePreview = () => {
                 className={cn(
                   toolButtonVariants({
                     variant: zoomOutDisabled ? "disabled" : "default",
-                  })
+                  }),
                 )}
                 {...zommOutProps}
                 type="button"
@@ -117,7 +117,7 @@ export const ImagePreview = () => {
                 className={cn(
                   toolButtonVariants({
                     variant: zoomInDisabled ? "disabled" : "default",
-                  })
+                  }),
                 )}
                 {...zoomInProps}
                 type="button"

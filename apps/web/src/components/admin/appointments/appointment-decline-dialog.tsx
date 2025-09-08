@@ -57,7 +57,7 @@ const PaymentRefundCard = ({
     id: string,
     defaultAmount: number,
     selected?: boolean,
-    amount?: number
+    amount?: number,
   ) => void;
 }) => {
   const t = useI18n();
@@ -94,7 +94,7 @@ const PaymentRefundCard = ({
       payment._id,
       refundableAmount,
       true,
-      Math.min(payment.amount - totalRefunded, formatAmount(parseFloat(value)))
+      Math.min(payment.amount - totalRefunded, formatAmount(parseFloat(value))),
     );
   }, [
     payment._id,
@@ -109,7 +109,7 @@ const PaymentRefundCard = ({
     <Card
       className={cn(
         "w-full cursor-pointer",
-        paymentState?.selected && "bg-blue-50 dark:bg-sky-600/20"
+        paymentState?.selected && "bg-blue-50 dark:bg-sky-600/20",
       )}
       key={payment._id}
       onClick={() => isRefundable && setSelected(payment._id, refundableAmount)}
@@ -127,15 +127,15 @@ const PaymentRefundCard = ({
           <div className="flex items-center space-x-3">
             {getPaymentMethodIcon(
               payment.type,
-              "appName" in payment ? payment.appName : undefined
+              "appName" in payment ? payment.appName : undefined,
             )}
             <div>
               <h3 className="font-semibold text-lg">
                 {t(
                   getPaymentMethod(
                     payment.type,
-                    "appName" in payment ? payment.appName : undefined
-                  )
+                    "appName" in payment ? payment.appName : undefined,
+                  ),
                 )}
               </h3>
               <p className="text-sm text-gray-600">
@@ -211,7 +211,7 @@ const PaymentRefundCard = ({
               {t(
                 isSelected
                   ? "admin.appointments.declineDialog.refundAmount"
-                  : "admin.appointments.declineDialog.refundableAmount"
+                  : "admin.appointments.declineDialog.refundableAmount",
               )}
             </span>
             {isSelected ? (
@@ -244,7 +244,7 @@ const PaymentRefundCard = ({
                       InputGroupInputClasses({
                         variant: "prefix",
                       }),
-                      "text-right w-24"
+                      "text-right w-24",
                     )}
                   />
                 </InputGroupInput>
@@ -299,7 +299,7 @@ export const AppointmentDeclineDialog: React.FC<{
     id: string,
     defaultAmount: number,
     selected?: boolean,
-    amount?: number
+    amount?: number,
   ) => {
     setPaymentsIdsSelectionState((prev) => {
       return {
@@ -325,10 +325,10 @@ export const AppointmentDeclineDialog: React.FC<{
             (payment.status === "refunded" &&
               (payment.refunds?.reduce(
                 (acc, refund) => acc + refund.amount,
-                0
-              ) || 0) < payment.amount))
+                0,
+              ) || 0) < payment.amount)),
       ) ?? [],
-    [appointment]
+    [appointment],
   );
 
   const refundSelected = async () => {
@@ -419,7 +419,7 @@ export const AppointmentDeclineDialog: React.FC<{
                   <span className="font-semibold">
                     {DateTime.fromJSDate(appointment.dateTime).toLocaleString(
                       DateTime.DATETIME_MED_WITH_WEEKDAY,
-                      { locale }
+                      { locale },
                     )}
                   </span>
                 </div>
@@ -466,8 +466,8 @@ export const AppointmentDeclineDialog: React.FC<{
                   amount: formatAmountString(
                     selectedPayments.reduce(
                       (acc, payment) => acc + payment.amount,
-                      0
-                    )
+                      0,
+                    ),
                   ),
                 })}
               </AppointmentActionButton>

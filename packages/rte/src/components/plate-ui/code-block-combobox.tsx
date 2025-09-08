@@ -144,7 +144,7 @@ export function CodeBlockCombobox() {
     (language) =>
       !value ||
       language.label.toLowerCase().includes(value.toLowerCase()) ||
-      language.value.toLowerCase().includes(value.toLowerCase())
+      language.value.toLowerCase().includes(value.toLowerCase()),
   );
 
   return (
@@ -186,7 +186,9 @@ export function CodeBlockCombobox() {
               >
                 <Check
                   className={cn(
-                    state.value === language.value ? "opacity-100" : "opacity-0"
+                    state.value === language.value
+                      ? "opacity-100"
+                      : "opacity-0",
                   )}
                 />
                 {language.label}

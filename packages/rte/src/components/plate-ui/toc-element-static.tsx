@@ -1,8 +1,5 @@
-import React from "react";
-
 import type { SlateEditor, SlateElementProps, TElement } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
 import { NodeApi, SlateElement } from "@udecode/plate";
 import {
   type Heading,
@@ -10,6 +7,7 @@ import {
   HEADING_KEYS,
   isHeading,
 } from "@udecode/plate-heading";
+import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 
 import { Button } from "@vivid/ui";
@@ -24,7 +22,7 @@ const headingItemVariants = cva(
         3: "pl-[50px]",
       },
     },
-  }
+  },
 );
 
 export function TocElementStatic({

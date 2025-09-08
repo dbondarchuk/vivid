@@ -1,5 +1,5 @@
 import { App } from "@vivid/types";
-import { MessageCircleReply, MessageSquareReply } from "lucide-react";
+import { MessageCircleReply } from "lucide-react";
 import { TEXT_MESSAGE_RESENDER_APP_NAME } from "./const";
 import { TextMessageResenderAppSetup } from "./setup";
 

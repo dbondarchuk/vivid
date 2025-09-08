@@ -45,7 +45,7 @@ export default async function AppointmentsPage(props: Params) {
       searchParams: parsed,
       key,
     },
-    "Loading appointments page"
+    "Loading appointments page",
   );
 
   return (

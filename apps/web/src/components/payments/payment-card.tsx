@@ -28,7 +28,6 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-  useDebounce,
 } from "@vivid/ui";
 import { formatAmount, formatAmountString } from "@vivid/utils";
 import {
@@ -89,7 +88,7 @@ export const getPaymentDescription = (description: string): AdminKeys => {
 
 export const getPaymentMethod = (
   type: PaymentType,
-  appName?: string
+  appName?: string,
 ): AllKeys => {
   return type === "online" && appName
     ? `apps.${AvailableApps[appName]?.displayName}`
@@ -140,7 +139,7 @@ const RefundDialog = ({
   const commitValue = useCallback(() => {
     const newAmount = Math.min(
       payment.amount - totalRefunded,
-      formatAmount(parseFloat(value))
+      formatAmount(parseFloat(value)),
     );
 
     setAmount(newAmount);
@@ -156,7 +155,7 @@ const RefundDialog = ({
         setValue(amount.toFixed(2));
       }
     },
-    [setIsRefundDialogOpen, payment.amount, totalRefunded]
+    [setIsRefundDialogOpen, payment.amount, totalRefunded],
   );
 
   return (
@@ -193,8 +192,8 @@ const RefundDialog = ({
                   {t(
                     getPaymentMethod(
                       type,
-                      "appName" in rest ? rest.appName : undefined
-                    )
+                      "appName" in rest ? rest.appName : undefined,
+                    ),
                   )}
                 </span>
               </div>
@@ -246,7 +245,7 @@ const RefundDialog = ({
                           InputGroupInputClasses({
                             variant: "prefix",
                           }),
-                          "text-right w-24"
+                          "text-right w-24",
                         )}
                       />
                     </InputGroupInput>
@@ -322,7 +321,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
         if (response.status >= 400) {
           const text = await response.text();
           throw new Error(
-            `Refund has failed (status: ${response.status}): ${text}`
+            `Refund has failed (status: ${response.status}): ${text}`,
           );
         }
 
@@ -357,7 +356,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
         setIsRefundInProgress(false);
       }
     },
-    [totalRefunded, _id, t]
+    [totalRefunded, _id, t],
   );
 
   return (
@@ -367,15 +366,15 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
           <div className="flex items-center space-x-3">
             {getPaymentMethodIcon(
               type,
-              "appName" in rest ? rest.appName : undefined
+              "appName" in rest ? rest.appName : undefined,
             )}
             <div>
               <h3 className="font-semibold text-lg">
                 {t(
                   getPaymentMethod(
                     type,
-                    "appName" in rest ? rest.appName : undefined
-                  )
+                    "appName" in rest ? rest.appName : undefined,
+                  ),
                 )}
               </h3>
               <p className="text-sm text-gray-600">
@@ -387,7 +386,7 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({ payment }) => {
             <div className="flex items-center space-x-1">
               {getPaymentMethodIcon(
                 type,
-                "appName" in rest ? rest.appName : undefined
+                "appName" in rest ? rest.appName : undefined,
               )}
               <span>
                 {t(`admin.common.labels.paymentStatus.${payment.status}`)}

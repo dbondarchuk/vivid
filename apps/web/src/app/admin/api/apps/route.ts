@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing apps API request"
+    "Processing apps API request",
   );
 
   const params = request.nextUrl.searchParams;
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       scope,
       appCount: result.length,
     },
-    "Successfully retrieved apps by scope"
+    "Successfully retrieved apps by scope",
   );
 
   const headers = new Headers();

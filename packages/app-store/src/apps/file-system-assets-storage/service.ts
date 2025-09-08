@@ -16,7 +16,7 @@ export default class FileSystemAssetsStorageConnectedApp
   implements IConnectedApp, IAssetsStorage
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "FileSystemAssetsStorageConnectedApp"
+    "FileSystemAssetsStorageConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
@@ -28,12 +28,12 @@ export default class FileSystemAssetsStorageConnectedApp
 
   public async getFile(
     appData: ConnectedAppData,
-    filename: string
+    filename: string,
   ): Promise<Readable> {
     const logger = this.loggerFactory("getFile");
     logger.debug(
       { appId: appData._id, filename },
-      "Getting file from file system storage"
+      "Getting file from file system storage",
     );
 
     try {
@@ -41,19 +41,19 @@ export default class FileSystemAssetsStorageConnectedApp
 
       logger.debug(
         { appId: appData._id, filename, filepath },
-        "Resolved file path"
+        "Resolved file path",
       );
 
       const exists = await this.checkExists(appData, filename);
       if (!exists) {
         logger.warn(
           { appId: appData._id, filename, filepath },
-          "File does not exist"
+          "File does not exist",
         );
 
         throw new ConnectedAppError(
           "fileSystemAssetsStorage.statusText.file_not_found",
-          { filename }
+          { filename },
         );
       }
 
@@ -61,14 +61,14 @@ export default class FileSystemAssetsStorageConnectedApp
 
       logger.info(
         { appId: appData._id, filename, filepath },
-        "Successfully created read stream for file"
+        "Successfully created read stream for file",
       );
 
       return stream;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, filename, error },
-        "Error getting file from file system storage"
+        "Error getting file from file system storage",
       );
       throw error;
     }
@@ -78,12 +78,12 @@ export default class FileSystemAssetsStorageConnectedApp
     appData: ConnectedAppData,
     filename: string,
     file: Readable,
-    fileLength: number
+    fileLength: number,
   ): Promise<void> {
     const logger = this.loggerFactory("saveFile");
     logger.debug(
       { appId: appData._id, filename, fileLength },
-      "Saving file to file system storage"
+      "Saving file to file system storage",
     );
 
     try {
@@ -91,43 +91,43 @@ export default class FileSystemAssetsStorageConnectedApp
 
       logger.debug(
         { appId: appData._id, filename, filepath },
-        "Resolved file path for saving"
+        "Resolved file path for saving",
       );
 
       await this.ensureDirectoryExistence(filepath);
 
       logger.debug(
         { appId: appData._id, filename, filepath },
-        "Ensured directory exists, writing file"
+        "Ensured directory exists, writing file",
       );
 
       await fs.writeFile(filepath, file, {});
 
       logger.info(
         { appId: appData._id, filename, filepath, fileLength },
-        "Successfully saved file to file system storage"
+        "Successfully saved file to file system storage",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, filename, fileLength, error },
-        "Error saving file to file system storage"
+        "Error saving file to file system storage",
       );
 
       throw new ConnectedAppError(
         "fileSystemAssetsStorage.statusText.error_saving_file",
-        { filename }
+        { filename },
       );
     }
   }
 
   public async deleteFile(
     appData: ConnectedAppData,
-    filename: string
+    filename: string,
   ): Promise<void> {
     const logger = this.loggerFactory("deleteFile");
     logger.debug(
       { appId: appData._id, filename },
-      "Deleting file from file system storage"
+      "Deleting file from file system storage",
     );
 
     try {
@@ -135,13 +135,13 @@ export default class FileSystemAssetsStorageConnectedApp
 
       logger.debug(
         { appId: appData._id, filename, filepath },
-        "Resolved file path for deletion"
+        "Resolved file path for deletion",
       );
 
       if (!existsSync(filepath)) {
         logger.warn(
           { appId: appData._id, filename, filepath },
-          "File does not exist, skipping deletion"
+          "File does not exist, skipping deletion",
         );
         return;
       }
@@ -150,29 +150,29 @@ export default class FileSystemAssetsStorageConnectedApp
 
       logger.info(
         { appId: appData._id, filename, filepath },
-        "Successfully deleted file from file system storage"
+        "Successfully deleted file from file system storage",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, filename, error },
-        "Error deleting file from file system storage"
+        "Error deleting file from file system storage",
       );
 
       throw new ConnectedAppError(
         "fileSystemAssetsStorage.statusText.error_deleting_file",
-        { filename }
+        { filename },
       );
     }
   }
 
   public async deleteFiles(
     appData: ConnectedAppData,
-    filenames: string[]
+    filenames: string[],
   ): Promise<void> {
     const logger = this.loggerFactory("deleteFiles");
     logger.debug(
       { appId: appData._id, filenames, fileCount: filenames.length },
-      "Deleting multiple files from file system storage"
+      "Deleting multiple files from file system storage",
     );
 
     try {
@@ -184,13 +184,13 @@ export default class FileSystemAssetsStorageConnectedApp
 
         logger.debug(
           { appId: appData._id, filename, filepath },
-          "Processing file for deletion"
+          "Processing file for deletion",
         );
 
         if (!existsSync(filepath)) {
           logger.warn(
             { appId: appData._id, filename, filepath },
-            "File does not exist, skipping deletion"
+            "File does not exist, skipping deletion",
           );
           skippedCount++;
           continue;
@@ -201,7 +201,7 @@ export default class FileSystemAssetsStorageConnectedApp
 
         logger.debug(
           { appId: appData._id, filename, filepath },
-          "Successfully deleted individual file"
+          "Successfully deleted individual file",
         );
       }
 
@@ -212,29 +212,29 @@ export default class FileSystemAssetsStorageConnectedApp
           deletedCount,
           skippedCount,
         },
-        "Completed bulk file deletion from file system storage"
+        "Completed bulk file deletion from file system storage",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, filenames, error },
-        "Error deleting files from file system storage"
+        "Error deleting files from file system storage",
       );
 
       throw new ConnectedAppError(
         "fileSystemAssetsStorage.statusText.error_deleting_file",
-        { filename: filenames.join(", ") }
+        { filename: filenames.join(", ") },
       );
     }
   }
 
   public async checkExists(
     appData: ConnectedAppData,
-    filename: string
+    filename: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkExists");
     logger.debug(
       { appId: appData._id, filename },
-      "Checking if file exists in file system storage"
+      "Checking if file exists in file system storage",
     );
 
     try {
@@ -243,14 +243,14 @@ export default class FileSystemAssetsStorageConnectedApp
 
       logger.debug(
         { appId: appData._id, filename, filepath, exists },
-        "File existence check completed"
+        "File existence check completed",
       );
 
       return exists;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, filename, error },
-        "Error checking file existence"
+        "Error checking file existence",
       );
       throw error;
     }

@@ -26,28 +26,28 @@ export const followUpTimeAfterSchema = z.object({
       .number()
       .int("common.number.integer")
       .min(0, "followUps.form.weeks.min")
-      .max(10, "followUps.form.weeks.max")
+      .max(10, "followUps.form.weeks.max"),
   ),
   days: asOptinalNumberField(
     z.coerce
       .number()
       .int("common.number.integer")
       .min(0, "followUps.form.days.min")
-      .max(31, "followUps.form.days.max")
+      .max(31, "followUps.form.days.max"),
   ),
   hours: asOptinalNumberField(
     z.coerce
       .number()
       .int("common.number.integer")
       .min(0, "followUps.form.hours.min")
-      .max(24 * 5, "followUps.form.hours.max")
+      .max(24 * 5, "followUps.form.hours.max"),
   ),
   minutes: asOptinalNumberField(
     z.coerce
       .number()
       .int("common.number.integer")
       .min(0, "followUps.form.minutes.min")
-      .max(60 * 10, "followUps.form.minutes.max")
+      .max(60 * 10, "followUps.form.minutes.max"),
   ),
 });
 
@@ -58,7 +58,7 @@ export const followUpAtTimeSchema = z.object({
       .number()
       .int("common.number.integer")
       .min(0, "followUps.form.weeks.min")
-      .max(10, "followUps.form.weeks.max")
+      .max(10, "followUps.form.weeks.max"),
   ),
   days: z.coerce
     .number()
@@ -116,14 +116,14 @@ export const followUpGeneralSchema = z.object({
       .number()
       .int("common.number.integer")
       .min(1, "followUps.form.afterAppointmentCount.min")
-      .max(100, "followUps.form.afterAppointmentCount.max")
+      .max(100, "followUps.form.afterAppointmentCount.max"),
   ),
 });
 
 export const followUpSchema = z
   .intersection(
     z.intersection(followUpGeneralSchema, followUpTypeSchema),
-    followUpChannelSchema
+    followUpChannelSchema,
   )
   .superRefine((arg, ctx) => {
     if (arg.type === "atTime" && !arg.weeks && !arg.days) {
@@ -149,7 +149,7 @@ export const followUpSchema = z
 
 export const getFollowUpSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return followUpSchema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueNameCheckFn(args.name);

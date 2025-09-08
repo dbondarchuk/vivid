@@ -18,5 +18,5 @@ export const ToggleToolbarButton = withRef<typeof ToolbarButton>(
         <ListCollapseIcon />
       </ToolbarButton>
     );
-  }
+  },
 );

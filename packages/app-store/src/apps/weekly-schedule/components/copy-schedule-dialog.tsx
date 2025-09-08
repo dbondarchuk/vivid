@@ -1,36 +1,36 @@
 "use client";
 
-import { WeekIdentifier } from "@vivid/types";
 import { useI18n } from "@vivid/i18n";
+import { WeekIdentifier } from "@vivid/types";
 import {
-  Dialog,
-  DialogTrigger,
-  Button,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
   AlertDialog,
-  AlertDialogTrigger,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogCancel,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  Button,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Label,
   Spinner,
   toastPromise,
-  Label,
   WeekSelector,
 } from "@vivid/ui";
+import { getWeekIdentifier } from "@vivid/utils";
 import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { copyWeeklySchedule } from "./actions";
 import { getWeekDisplay } from "./utils";
-import { getWeekIdentifier } from "@vivid/utils";
 
 type CopyScheduleDialogProps = {
   appId: string;

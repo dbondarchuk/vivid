@@ -9,14 +9,14 @@ export function useAssetsTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);
 
   const [customerFilter, setCustomerFilter] = useQueryState(
     "customer",
-    searchParams.customer.withOptions({ shallow: false })
+    searchParams.customer.withOptions({ shallow: false }),
   );
 
   const resetFilters = useCallback(() => {

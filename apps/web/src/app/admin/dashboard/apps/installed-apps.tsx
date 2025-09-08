@@ -1,8 +1,8 @@
 import { ConnectedAppRow } from "@/components/admin/apps/connected-app";
 import { AvailableApps } from "@vivid/app-store";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import React from "react";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 export const InstalledApps: React.FC = async () => {
   const t = await getI18nAsync("admin");
@@ -10,7 +10,7 @@ export const InstalledApps: React.FC = async () => {
   const apps = (
     await ServicesContainer.ConnectedAppsService().getApps()
   ).filter(
-    (app) => AvailableApps[app.name] && !AvailableApps[app.name].isHidden
+    (app) => AvailableApps[app.name] && !AvailableApps[app.name].isHidden,
   );
 
   return (

@@ -12,8 +12,8 @@ import {
 } from "@vivid/ui";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useQueryState } from "nuqs";
+import { useState } from "react";
 
 import { deleteReminder } from "../actions";
 import { Reminder } from "../models";

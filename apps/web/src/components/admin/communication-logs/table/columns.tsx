@@ -1,8 +1,7 @@
 "use client";
-import { Markdown } from "@/components/web/markdown";
 import { ColumnDef } from "@tanstack/react-table";
-import { useI18n, useLocale } from "@vivid/i18n";
 import JsonView from "@uiw/react-json-view";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { CommunicationLog } from "@vivid/types";
 import {
   Button,
@@ -16,6 +15,7 @@ import {
   DialogTrigger,
   IFrame,
   Link,
+  Markdown,
   tableSortHeader,
   tableSortNoopFunction,
 } from "@vivid/ui";
@@ -56,7 +56,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.direction",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -69,7 +69,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.channel",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -82,7 +82,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.participantType",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -92,7 +92,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.participant",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -106,14 +106,14 @@ export const columns: ColumnDef<CommunicationLog>[] = [
         typeof row.original.handledBy === "object" &&
           row.original.handledBy.args
           ? row.original.handledBy.args
-          : undefined
+          : undefined,
       );
     },
     id: "handledBy",
     header: tableSortHeader(
       "communicationLogs.table.columns.handler",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -123,7 +123,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.subject",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -132,7 +132,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.content",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
     cell: ({ row }) => {
@@ -227,14 +227,14 @@ export const columns: ColumnDef<CommunicationLog>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.dateTime).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "dateTime",
     header: tableSortHeader(
       "communicationLogs.table.columns.dateTime",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -244,7 +244,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.appointment",
       "string",
-      "admin"
+      "admin",
     ),
     cell: ({ row }) => {
       if (!row.original.appointmentId) return null;
@@ -265,7 +265,7 @@ export const columns: ColumnDef<CommunicationLog>[] = [
     header: tableSortHeader(
       "communicationLogs.table.columns.customer",
       "string",
-      "admin"
+      "admin",
     ),
     cell: ({ row }) => {
       if (!row.original.customer) return null;

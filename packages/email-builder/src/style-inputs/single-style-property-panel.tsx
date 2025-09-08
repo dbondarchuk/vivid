@@ -1,7 +1,5 @@
 import React from "react";
 
-import { TStyle } from "./helpers/TStyle";
-import { DraftingCompass } from "lucide-react";
 import {
   ColorInput,
   FontFamilyInput,
@@ -11,8 +9,10 @@ import {
   SliderInput,
   TextAlignInput,
 } from "@vivid/builder";
-import { FONT_FAMILIES } from "./helpers/font-family";
 import { useI18n } from "@vivid/i18n";
+import { DraftingCompass } from "lucide-react";
+import { FONT_FAMILIES } from "./helpers/font-family";
+import { TStyle } from "./helpers/TStyle";
 
 type StylePropertyPanelProps = {
   name: keyof TStyle;

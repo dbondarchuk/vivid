@@ -13,7 +13,6 @@ import {
   AlertDialogTrigger,
   Button,
   Spinner,
-  toast,
   toastPromise,
 } from "@vivid/ui";
 import { Unplug } from "lucide-react";

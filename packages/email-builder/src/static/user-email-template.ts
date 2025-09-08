@@ -26,7 +26,7 @@ export const renderUserEmailTemplate = async (
     previewText,
     title,
   }: UserEmailTemplateProps,
-  args: Record<string, any> = {}
+  args: Record<string, any> = {},
 ) => {
   const topButtons =
     propsTopButtons

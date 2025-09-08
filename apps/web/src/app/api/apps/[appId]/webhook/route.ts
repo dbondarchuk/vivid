@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const processWebhook = async (
   request: NextRequest,
-  { params }: { params: Promise<{ appId: string }> }
+  { params }: { params: Promise<{ appId: string }> },
 ) => {
   const logger = getLoggerFactory("API/apps-webhook")("processWebhook");
   const appId = (await params).appId;
@@ -15,7 +15,7 @@ const processWebhook = async (
       method: request.method,
       appId,
     },
-    "Processing webhook request"
+    "Processing webhook request",
   );
 
   if (!appId) {
@@ -34,7 +34,7 @@ const processWebhook = async (
           appId,
           status: result.status,
         },
-        "Successfully processed webhook"
+        "Successfully processed webhook",
       );
     } else {
       logger.warn({ appId }, "No webhook handler found");
@@ -49,7 +49,7 @@ const processWebhook = async (
         appId,
         error: error?.message || error?.toString(),
       },
-      "Error processing webhook"
+      "Error processing webhook",
     );
     throw error;
   }

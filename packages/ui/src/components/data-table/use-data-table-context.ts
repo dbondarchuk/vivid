@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 export type DataTableContextProps<T> = {
   rowSelection: T[];
@@ -10,8 +10,8 @@ export const useSelectedRowsStore = create<DataTableContextProps<any>>(
     rowSelection: [],
     setRowSelection: (data: any[]) => {
       return set(() => ({
-        rowSelection: data
+        rowSelection: data,
       }));
-    }
-  })
+    },
+  }),
 );

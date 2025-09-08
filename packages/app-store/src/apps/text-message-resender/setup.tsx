@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -16,7 +17,6 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { TextMessageResenderApp } from "./app";
 import {
@@ -76,15 +76,17 @@ export const TextMessageResenderAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("textMessageResender.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo
-                app={{ name: TextMessageResenderApp.name }}
-                t={t}
-              />
+              <ConnectedAppNameAndLogo appName={TextMessageResenderApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

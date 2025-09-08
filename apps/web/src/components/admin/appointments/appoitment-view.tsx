@@ -223,24 +223,24 @@ export const AppointmentView: React.FC<{
     router.refresh();
   };
 
-  const [fileToUpload, setFileToUpload] = React.useState<File | undefined>();
-  const { isUploading, progress, uploadFile, uploadingFile } = useUploadFile({
+  const [filesToUpload, setFilesToUpload] = React.useState<File[]>([]);
+  const { isUploading, progress, uploadFile, uploadingFiles } = useUploadFile({
     appointmentId: appointment._id,
-    onUploadComplete: (file) => {
+    onFileUploaded: (file) => {
       onAssetAdded(file);
     },
   });
 
   const onClickUpload = async () => {
-    if (!fileToUpload) return;
+    if (!filesToUpload?.length) return;
 
-    await uploadFile(fileToUpload);
+    await uploadFile(filesToUpload.map((file) => ({ file })));
 
-    setFileToUpload(undefined);
+    setFilesToUpload([]);
   };
 
   const paidPayments = appointment.payments?.filter(
-    (payment) => payment.status === "paid"
+    (payment) => payment.status === "paid",
   );
 
   const totalPaid =
@@ -948,7 +948,7 @@ export const AppointmentView: React.FC<{
                               DateTime.DATETIME_MED_WITH_WEEKDAY,
                               {
                                 locale,
-                              }
+                              },
                             )}{" "}
                           -{" "}
                           {DateTime.fromJSDate(appointment.dateTime)
@@ -966,7 +966,7 @@ export const AppointmentView: React.FC<{
                                   DateTime.DATETIME_MED_WITH_WEEKDAY,
                                   {
                                     locale,
-                                  }
+                                  },
                                 )}
                             </div>
                             <div>{t("appointments.view.duration")}:</div>
@@ -991,7 +991,7 @@ export const AppointmentView: React.FC<{
                             <div>
                               {
                                 timeZones.find(
-                                  (tz) => tz.name === appointment.timeZone
+                                  (tz) => tz.name === appointment.timeZone,
                                 )?.currentTimeFormat
                               }{" "}
                               <span className="text-sm text-muted-foreground">
@@ -1005,7 +1005,7 @@ export const AppointmentView: React.FC<{
                                 .plus({ minutes: appointment.totalDuration })
                                 .toLocaleString(
                                   DateTime.DATETIME_MED_WITH_WEEKDAY,
-                                  { locale }
+                                  { locale },
                                 )}{" "}
                             </div>
                             <div>{t("appointments.view.requestedAt")}:</div>
@@ -1016,7 +1016,7 @@ export const AppointmentView: React.FC<{
                                   DateTime.DATETIME_MED_WITH_WEEKDAY,
                                   {
                                     locale,
-                                  }
+                                  },
                                 )}
                             </div>
                           </div>
@@ -1057,7 +1057,7 @@ export const AppointmentView: React.FC<{
                           <dd className="col-span-2">
                             $
                             {formatAmountString(
-                              appointment.totalPrice - totalPaid
+                              appointment.totalPrice - totalPaid,
                             )}
                           </dd>
                         </div>
@@ -1115,7 +1115,7 @@ export const AppointmentView: React.FC<{
                         <Link
                           variant="default"
                           href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                            name
+                            name,
                           )}`}
                         >
                           {name}
@@ -1126,7 +1126,7 @@ export const AppointmentView: React.FC<{
                         <Link
                           variant="default"
                           href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                            email
+                            email,
                           )}`}
                         >
                           {email}
@@ -1137,7 +1137,7 @@ export const AppointmentView: React.FC<{
                         <Link
                           variant="default"
                           href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                            phone
+                            phone,
                           )}`}
                         >
                           {phone}
@@ -1169,7 +1169,7 @@ export const AppointmentView: React.FC<{
                               <Link
                                 variant="default"
                                 href={`/admin/dashboard/appointments?search=${encodeURIComponent(
-                                  value.toString()
+                                  value.toString(),
                                 )}`}
                               >
                                 {value.toString()}
@@ -1331,48 +1331,56 @@ export const AppointmentView: React.FC<{
               <DndFileInput
                 name="files"
                 disabled={loading}
-                value={fileToUpload}
-                onChange={setFileToUpload}
+                maxFiles={10}
+                value={filesToUpload}
+                onChange={setFilesToUpload}
               />
               <Button
                 variant="default"
                 className="w-full"
                 onClick={onClickUpload}
-                disabled={loading || isUploading || !fileToUpload}
+                disabled={loading || isUploading || !filesToUpload?.length}
               >
                 {t("appointments.view.upload")}
               </Button>
             </div>
             <div className="grid grid-cols-1 @md/files:grid-cols-2 @lg/files:grid-cols-3 @xl/files:grid-cols-4 gap-2">
-              {uploadingFile && (
+              {uploadingFiles.length > 0 && (
                 <div className="w-full relative flex justify-center">
-                  {uploadingFile.type.startsWith("image/") ? (
-                    <div className="relative w-20 h-20">
-                      <img
-                        src={URL.createObjectURL(uploadingFile)}
-                        alt={uploadingFile.name}
-                        className="w-full object-contain h-full"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-2 text-sm justify-center">
-                      <div className="max-w-10 flex self-center">
-                        <FileIcon
-                          extension={uploadingFile.name.substring(
-                            uploadingFile.name.lastIndexOf(".") + 1
-                          )}
-                          {...defaultStyles[
-                            mimeTypeToExtension(
-                              uploadingFile.type
-                            ) as DefaultExtensionType
-                          ]}
-                        />
-                      </div>
-                      <div className="text-muted-foreground text-center">
-                        {uploadingFile.name}
-                      </div>
-                    </div>
-                  )}
+                  {uploadingFiles.map((file) => (
+                    <>
+                      {file.type.startsWith("image/") ? (
+                        <div className="relative w-20 h-20" key={file.name}>
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            className="w-full object-contain h-full"
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          className="flex flex-col gap-2 text-sm justify-center"
+                          key={file.name}
+                        >
+                          <div className="max-w-10 flex self-center">
+                            <FileIcon
+                              extension={file.name.substring(
+                                file.name.lastIndexOf(".") + 1,
+                              )}
+                              {...defaultStyles[
+                                mimeTypeToExtension(
+                                  file.type,
+                                ) as DefaultExtensionType
+                              ]}
+                            />
+                          </div>
+                          <div className="text-muted-foreground text-center">
+                            {file.name}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ))}
                   <div className="absolute top-0 bottom-0 right-0 left-0 bg-background/50 flex items-center flex-col gap-2 justify-center">
                     <Spinner className="w-5 h-5" />
                     <span className="text-sm">{progress}%</span>
@@ -1439,18 +1447,18 @@ export const AppointmentView: React.FC<{
                       <div className="max-w-10 flex self-center">
                         <FileIcon
                           extension={file.filename?.substring(
-                            file.filename.lastIndexOf(".") + 1
+                            file.filename.lastIndexOf(".") + 1,
                           )}
                           {...defaultStyles[
                             mimeTypeToExtension(
-                              file.mimeType
+                              file.mimeType,
                             ) as DefaultExtensionType
                           ]}
                         />
                       </div>
                       <div className="text-muted-foreground text-center">
                         {file.filename.substring(
-                          file.filename.lastIndexOf("/") + 1
+                          file.filename.lastIndexOf("/") + 1,
                         )}
                       </div>
                     </a>

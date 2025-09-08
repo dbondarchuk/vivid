@@ -1,13 +1,13 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { ComplexAppSetupProps } from "@vivid/types";
-import { FollowUpForm } from "./form";
+import { Skeleton, toast } from "@vivid/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import { FollowUp } from "./models";
 import { getFollowUp } from "./actions";
-import { Skeleton, toast } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
+import { FollowUpForm } from "./form";
+import { FollowUp } from "./models";
 
 export const EditFollowUpPage: React.FC<ComplexAppSetupProps> = ({ appId }) => {
   const searchParams = useSearchParams();

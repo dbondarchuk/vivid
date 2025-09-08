@@ -3,8 +3,8 @@ import React from "react";
 import type { SlateElementProps } from "@udecode/plate";
 import type { TMentionElement } from "@udecode/plate-mention";
 
-import { cn } from "@vivid/ui";
 import { IS_APPLE, SlateElement } from "@udecode/plate";
+import { cn } from "@vivid/ui";
 
 export function MentionElementStatic({
   children,
@@ -23,7 +23,7 @@ export function MentionElementStatic({
         "inline-block rounded-md bg-muted px-1.5 py-0.5 align-baseline text-sm font-medium",
         element.children[0].bold === true && "font-bold",
         element.children[0].italic === true && "italic",
-        element.children[0].underline === true && "underline"
+        element.children[0].underline === true && "underline",
       )}
       data-slate-value={element.value}
       {...props}

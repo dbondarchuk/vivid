@@ -1,104 +1,54 @@
-import React from "react";
+"use client";
+
+import React, { memo, useCallback, useEffect, useRef } from "react";
 
 import { cva } from "class-variance-authority";
 
 import {
+  useCurrentBlockAllowedTypes,
+  useCurrentBlockDisableOptions,
   useCurrentBlockId,
-  useCurrentBlockIsOverlay,
+  useCurrentBlockRef,
+  useIsCurrentBlockOverlay,
 } from "../../../editor/block";
 import {
-  useSelectedBlockId,
+  useBlockDepth,
+  useBlocks,
+  useBlockType,
+  useIsActiveHierarchyOverDroppable,
+  useIsSelectedBlock,
+  useSelectedView,
   useSetSelectedBlockId,
 } from "../../../editor/context";
 
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from "@vivid/ui";
-import { GripVertical } from "lucide-react";
-import { NavMenu } from "./nav-menu";
-import { useI18n } from "@vivid/i18n";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { cn } from "@vivid/ui";
+import { createDynamicCollisionDetector } from "../../../../builder/dnd/collision/dynamic";
+import { DndContext } from "../../../../types/dndContext";
+import { BlockHandlerPortal } from "./block-handler-portal";
+import { BlockNavPortal } from "./block-nav-portal";
 
 type TEditorBlockWrapperProps = {
   children: React.JSX.Element;
+  index: number;
+  parentBlockId: string;
+  parentProperty: string;
 };
 
-export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
-  children,
-}) => {
-  const selectedBlockId = useSelectedBlockId();
-  const [mouseInside, setMouseInside] = React.useState(false);
-  const blockId = useCurrentBlockId();
-  const isOverlay = useCurrentBlockIsOverlay();
-  const setSelectedBlockId = useSetSelectedBlockId();
-  const t = useI18n("ui");
-
-  const {
-    attributes,
-    listeners,
-    isDragging,
-    setNodeRef,
-    transform,
-    transition,
-    isSorting,
-  } = useSortable({
-    id: blockId,
-  });
-
-  const renderHandler = () => {
-    if (selectedBlockId !== blockId) {
-      return null;
-    }
-
-    return (
-      <div
-        className="absolute top-0 -left-14 rounded-2xl px-1 py-2 z-30 bg-transparent"
-        onClick={(ev) => ev.stopPropagation()}
-      >
-        <div className="flex flex-col gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                {...attributes}
-                {...listeners}
-                className={cn(
-                  "text-secondary-foreground",
-                  isDragging ? "cursor-grabbing" : "cursor-grab"
-                )}
-              >
-                <GripVertical fontSize="small" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">{t("common.move")}</TooltipContent>
-          </Tooltip>
-        </div>
-      </div>
-    );
-  };
-
-  const renderNav = () => {
-    if (selectedBlockId !== blockId) {
-      return null;
-    }
-
-    return <NavMenu blockId={blockId} />;
-  };
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  const variants = cva("relative max-w-full outline-offset-1 peer-block", {
+const variants = cva(
+  "max-w-full w-full outline-offset-1 peer-block block-wrapper",
+  {
     variants: {
       dragging: {
         over: "ring-2 opacity-30",
         overlay: "ring-2 ring-primary !opacity-30",
         false: "!opacity-100",
       },
+      // over: {
+      //   true: "bg-blue-800/40 bg-opacity-50",
+      // },
       over: {
-        true: "bg-blue-400/40",
+        true: "outline outline-blue-100",
       },
       sorting: {
         true: "outline-1 outline-dashed outline-blue-400",
@@ -110,39 +60,276 @@ export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = ({
           "outline outline-blue-200 [&_+.peer-button>button]:opacity-100 z-[1]",
       },
     },
-  });
+  },
+);
 
-  return (
-    <div
-      ref={setNodeRef}
-      className={variants({
-        dragging: isOverlay ? "overlay" : isDragging ? "over" : false,
-        // over: isOver,
-        sorting: isSorting,
-        outline:
-          selectedBlockId === blockId
-            ? "selected"
-            : mouseInside
-              ? "hover"
-              : undefined,
-      })}
-      onMouseEnter={(ev) => {
-        setMouseInside(true);
-        ev.stopPropagation();
-      }}
-      onMouseLeave={() => {
-        setMouseInside(false);
-      }}
-      onClick={(ev) => {
+const NoDragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
+  ({ children, index, parentBlockId, parentProperty }) => {
+    const ref = useCurrentBlockRef();
+    const blockId = useCurrentBlockId();
+    const isSelected = useIsSelectedBlock(blockId);
+    const isOverlay = useIsCurrentBlockOverlay();
+    const disable = useCurrentBlockDisableOptions();
+    const blockType = useBlockType(blockId);
+    const depth = useBlockDepth(blockId) ?? 0;
+    const isEditorView = useSelectedView() === "editor";
+
+    const isActiveHierarchyOverDroppable =
+      useIsActiveHierarchyOverDroppable(blockId);
+    // const hasActiveDragBlock = useHasActiveDragBlock();
+
+    const [blockElement, setBlockElement] = React.useState<HTMLElement | null>(
+      null,
+    );
+
+    const className = cn(
+      "hover:outline hover:outline-blue-200 hover:[&_+.peer-button>button]:opacity-100 hover:z-[1]",
+      variants({
+        outline: isSelected ? "selected" : undefined,
+        over: isActiveHierarchyOverDroppable,
+      }),
+    );
+
+    // Auto-scroll to block when it becomes selected
+    useEffect(() => {
+      if (isSelected && !isOverlay && isEditorView) {
+        const element = ref?.current ?? blockElement;
+        if (element) {
+          // Use a small delay to ensure the selection state is fully applied
+          const timeoutId = setTimeout(() => {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+              inline: "nearest",
+            });
+          }, 100);
+
+          return () => clearTimeout(timeoutId);
+        }
+      }
+    }, [isSelected, ref, blockElement, isOverlay, isEditorView]);
+
+    const Element = ref?.current ? (
+      <>{children}</>
+    ) : (
+      <div
+        ref={(el) => {
+          setBlockElement(el);
+        }}
+        data-block-id={blockId}
+        data-block-type={blockType}
+        data-block-index={index}
+        data-block-parent-id={parentBlockId}
+        data-block-parent-property={parentProperty}
+        data-block-depth={depth}
+        data-block-is-overlay={isOverlay}
+        className={className}
+      >
+        {children}
+      </div>
+    );
+
+    return (
+      <>
+        {Element}
+
+        {!isOverlay && isSelected && (
+          <BlockNavPortal
+            blockId={blockId}
+            blockElement={ref?.current ?? blockElement}
+            disable={disable}
+          />
+        )}
+      </>
+    );
+  },
+);
+
+export const DragEditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
+  ({ children, index, parentBlockId, parentProperty }) => {
+    const [blockElement, setBlockElement] = React.useState<HTMLElement | null>(
+      null,
+    );
+    const ref = useCurrentBlockRef();
+    const blockId = useCurrentBlockId();
+    const isSelected = useIsSelectedBlock(blockId);
+    // const document = useDocument();
+    const depth = useBlockDepth(blockId) ?? 0;
+    const isOverlay = useIsCurrentBlockOverlay();
+    const disable = useCurrentBlockDisableOptions();
+    const blockType = useBlockType(blockId);
+    const allowOnly = useCurrentBlockAllowedTypes();
+
+    const isActiveHierarchyOverDroppable =
+      useIsActiveHierarchyOverDroppable(blockId);
+
+    const parentBlockType = useBlockType(parentBlockId);
+    const blocks = useBlocks();
+
+    const isEditorView = useSelectedView() === "editor";
+
+    const setSelectedBlockId = useSetSelectedBlockId();
+
+    const onClick = useCallback(
+      (ev: React.MouseEvent<HTMLElement>) => {
         setSelectedBlockId(blockId);
         ev.stopPropagation();
         ev.preventDefault();
-      }}
-      style={style}
-    >
-      {!isOverlay && renderNav()}
-      {!isOverlay && renderHandler()}
-      {children}
-    </div>
-  );
-};
+      },
+      [blockId, setSelectedBlockId],
+    );
+
+    // Auto-scroll to block when it becomes selected
+    useEffect(() => {
+      if (isSelected && !isOverlay && isEditorView) {
+        const element = ref?.current ?? blockElement;
+        if (element) {
+          // Use a small delay to ensure the selection state is fully applied
+          const timeoutId = setTimeout(() => {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+              inline: "nearest",
+            });
+          }, 100);
+
+          return () => clearTimeout(timeoutId);
+        }
+      }
+    }, [isSelected, ref, blockElement, isEditorView]);
+
+    const handleRef = useRef<HTMLButtonElement | null>(null);
+
+    const { ref: sortableRef, isDragging } = useSortable({
+      id: blockId,
+      index,
+      group: `${parentBlockId}/${parentProperty}`,
+      collisionPriority: depth,
+      feedback: "clone",
+      element: !disable?.drag ? ref : undefined,
+      handle: handleRef,
+      accept: (draggable) => {
+        if (!draggable.type) return false;
+        const type = draggable.type as string;
+        if (!allowOnly?.includes(type)) return false;
+
+        const allowedParents = blocks[type]?.allowedIn;
+        if (
+          allowedParents &&
+          parentBlockType &&
+          !allowedParents.includes(parentBlockType)
+        )
+          return false;
+
+        return true;
+      },
+      type: blockType ?? "",
+      disabled: disable?.drag || isOverlay,
+      transition: {
+        duration: 200,
+        easing: "cubic-bezier(0.2, 0, 0, 1)",
+      },
+      // collisionDetector: closestCenter,
+      // collisionDetector: directionBiased,
+      collisionDetector: createDynamicCollisionDetector("dynamic"),
+      data: {
+        context: {
+          parentBlockId,
+          parentProperty,
+          index,
+          type: blockType ?? "",
+        } satisfies DndContext,
+        size: {
+          width: blockElement?.clientWidth,
+          height: blockElement?.clientHeight,
+        },
+      },
+    });
+
+    const className = cn(
+      "hover:outline hover:outline-blue-200 hover:[&_+.peer-button>button]:opacity-100 hover:z-[1]",
+      variants({
+        outline: isSelected ? "selected" : undefined,
+        over: isActiveHierarchyOverDroppable,
+      }),
+    );
+
+    const Element = ref?.current ? (
+      <>{children}</>
+    ) : (
+      <div
+        ref={(el) => {
+          setBlockElement(el);
+          if (!disable?.drag) {
+            sortableRef(el);
+          }
+        }}
+        className={className}
+        onClick={onClick}
+        data-block-id={blockId}
+        data-block-type={blockType}
+        data-block-index={index}
+        data-block-parent-id={parentBlockId}
+        data-block-parent-property={parentProperty}
+        data-block-depth={depth}
+        data-block-is-overlay={isOverlay}
+      >
+        {children}
+      </div>
+    );
+
+    useEffect(() => {
+      if (ref?.current) {
+        ref.current.addEventListener("click", onClick as any);
+        ref.current.classList.add(...className.split(" "));
+        return () => {
+          ref.current?.removeEventListener("click", onClick as any);
+          ref.current?.classList.remove(...className.split(" "));
+        };
+      }
+    }, [ref?.current, onClick, className]);
+
+    return (
+      <>
+        {Element}
+        {!isOverlay && isSelected && !isDragging && isEditorView && (
+          <BlockNavPortal
+            blockId={blockId}
+            blockElement={ref?.current ?? blockElement}
+            disable={disable}
+          />
+        )}
+        {!isOverlay &&
+          !disable?.drag &&
+          isSelected &&
+          !isDragging &&
+          isEditorView && (
+            <BlockHandlerPortal
+              blockId={blockId}
+              blockElement={ref?.current ?? blockElement}
+              isDragging={isDragging}
+              ref={handleRef}
+            />
+          )}
+      </>
+    );
+  },
+);
+
+export const EditorBlockWrapper: React.FC<TEditorBlockWrapperProps> = memo(
+  ({ children, ...rest }) => {
+    const disable = useCurrentBlockDisableOptions();
+
+    if (disable?.drag) {
+      return (
+        <NoDragEditorBlockWrapper {...rest}>
+          {children}
+        </NoDragEditorBlockWrapper>
+      );
+    }
+
+    return (
+      <DragEditorBlockWrapper {...rest}>{children}</DragEditorBlockWrapper>
+    );
+  },
+);

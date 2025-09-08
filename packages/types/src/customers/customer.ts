@@ -10,7 +10,7 @@ export const isPaymentRequiredForCustomerTypes = [
 ] as const;
 
 const isPaymentRequiredForCustomerSchema = z.enum(
-  isPaymentRequiredForCustomerTypes
+  isPaymentRequiredForCustomerTypes,
 );
 
 export const customerSchema = z
@@ -24,17 +24,17 @@ export const customerSchema = z
     knownNames: zUniqueArray(
       z.array(z.string().min(1, "customer.name.required")),
       (s) => s,
-      "customer.knownNames.unique"
+      "customer.knownNames.unique",
     ),
     knownEmails: zUniqueArray(
       z.array(z.string().email("customer.email.required")),
       (s) => s,
-      "customer.knownEmails.unique"
+      "customer.knownEmails.unique",
     ),
     knownPhones: zUniqueArray(
       z.array(zPhone),
       (s) => s,
-      "customer.knownPhones.unique"
+      "customer.knownPhones.unique",
     ),
     dontAllowBookings: z.coerce.boolean().optional(),
   })
@@ -51,29 +51,29 @@ export const customerSchema = z
             ["always"],
             {
               message: "customer.requireDeposit.required",
-            }
+            },
           ),
           depositPercentage: z.coerce
             .number({ message: "customer.depositPercentage.required" })
             .int("customer.depositPercentage.integer")
             .min(10, "customer.depositPercentage.min")
             .max(100, "customer.depositPercentage.max"),
-        })
-      )
+        }),
+      ),
   );
 
 export const getCustomerSchemaWithUniqueCheck = (
   uniqueEmailOrPhoneCheckFn: (
     emails: string[],
-    phone: string[]
+    phone: string[],
   ) => Promise<{ email: boolean; phone: boolean }>,
   emailMessage: string,
-  phoneMessage: string
+  phoneMessage: string,
 ) => {
   return customerSchema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueEmailOrPhoneCheckFn(
       [args.email, ...(args.knownEmails || [])],
-      [args.phone, ...(args.knownPhones || [])]
+      [args.phone, ...(args.knownPhones || [])],
     );
     if (!isUnique.email) {
       ctx.addIssue({

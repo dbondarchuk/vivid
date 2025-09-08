@@ -25,9 +25,10 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { NavigationGuardDialog, useIsDirty } from "../navigation-guard/dialog";
 import { createTemplate, updateTemplate } from "./actions";
-import { TextMessageBuilder } from "./text-message-builder";
 import { TemplatesTemplate } from "./templates/type";
+import { TextMessageBuilder } from "./text-message-builder";
 
 const checkUniqueName = async (name: string, id?: string) => {
   const url = `/admin/api/templates/check?name=${encodeURIComponent(name)}${id ? `&id=${encodeURIComponent(id)}` : ""}`;
@@ -40,7 +41,7 @@ const checkUniqueName = async (name: string, id?: string) => {
     toast.error("Request failed.");
     const text = await response.text();
     console.error(
-      `Request to validate template name failed: ${response.status}; ${text}`
+      `Request to validate template name failed: ${response.status}; ${text}`,
     );
 
     return false;
@@ -64,7 +65,7 @@ export const TemplateForm: React.FC<
 
   const formSchema = getTemplateSchemaWithUniqueCheck(
     (name) => checkUniqueName(name, initialData?._id),
-    "templates.nameMustBeUnique"
+    "templates.nameMustBeUnique",
   );
 
   type TemplateFormValues = z.infer<typeof formSchema>;
@@ -81,6 +82,8 @@ export const TemplateForm: React.FC<
     },
   });
 
+  const { isFormDirty, onFormSubmit } = useIsDirty(form);
+
   const onSubmit = async (data: TemplateFormValues) => {
     try {
       setLoading(true);
@@ -88,11 +91,18 @@ export const TemplateForm: React.FC<
       const fn = async () => {
         if (!initialData) {
           const { _id } = await createTemplate(data);
-          router.push(`/admin/dashboard/templates/${_id}`);
+          onFormSubmit();
+
+          setTimeout(() => {
+            router.push(`/admin/dashboard/templates/${_id}`);
+          }, 100);
         } else {
           await updateTemplate(initialData._id, data);
+          onFormSubmit();
 
-          router.refresh();
+          setTimeout(() => {
+            router.refresh();
+          }, 100);
         }
       };
 
@@ -115,11 +125,12 @@ export const TemplateForm: React.FC<
         : setError("value", {
             message: t("templates.form.validation.templateNotValid"),
           }),
-    [setError, trigger, t]
+    [setError, trigger, t],
   );
 
   return (
     <Form {...form}>
+      <NavigationGuardDialog isDirty={isFormDirty} />
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full h-full space-y-8"
@@ -157,9 +168,7 @@ export const TemplateForm: React.FC<
                         args={args}
                         value={field.value}
                         onIsValidChange={onEmailBuilderValidChange}
-                        onChange={(value) => {
-                          field.onChange(value);
-                        }}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />

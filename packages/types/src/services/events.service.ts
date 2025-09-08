@@ -26,7 +26,7 @@ export interface IEventsService {
   getPendingAppointmentsCount(after?: Date): Promise<number>;
   getPendingAppointments(
     limit?: number,
-    after?: Date
+    after?: Date,
   ): Promise<WithTotal<Appointment>>;
   getNextAppointments(date: Date, limit?: number): Promise<Appointment[]>;
   getAppointments(
@@ -36,33 +36,33 @@ export interface IEventsService {
       status?: AppointmentStatus[];
       customerId?: string | string[];
       discountId?: string | string[];
-    }
+    },
   ): Promise<WithTotal<Appointment>>;
   getEvents(
     start: Date,
     end: Date,
-    status: AppointmentStatus[]
+    status: AppointmentStatus[],
   ): Promise<Event[]>;
   getAppointment(id: string): Promise<Appointment | null>;
   changeAppointmentStatus(
     id: string,
-    newStatus: AppointmentStatus
+    newStatus: AppointmentStatus,
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
   addAppointmentFiles(id: string, files: File[]): Promise<AssetEntity[]>;
   rescheduleAppointment(
     id: string,
     newTime: Date,
-    newDuration: number
+    newDuration: number,
   ): Promise<void>;
 
   getAppointmentHistory(
     query: Query & {
       appointmentId: string;
       type?: AppointmentHistoryEntry["type"];
-    }
+    },
   ): Promise<WithTotal<AppointmentHistoryEntry>>;
   addAppointmentHistory(
-    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">,
   ): Promise<string>;
 }

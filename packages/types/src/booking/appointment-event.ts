@@ -44,7 +44,7 @@ export const appointmentRequestSchema = z.object({
   addonsIds: zUniqueArray(
     z.array(z.string().min(1, "appointments.request.addonsIds.required")),
     (x) => x,
-    "appointments.request.addonsIds.unique"
+    "appointments.request.addonsIds.unique",
   ).optional(),
   dateTime: z.coerce.date({
     message: "appointments.request.dateTime.required",
@@ -69,11 +69,11 @@ export const appointmentRequestSchema = z.object({
     .passthrough(),
   promoCode: zOptionalOrMinLengthString(
     1,
-    "appointments.request.promoCode.min"
+    "appointments.request.promoCode.min",
   ),
   paymentIntentId: zOptionalOrMinLengthString(
     1,
-    "appointments.request.paymentIntentId.min"
+    "appointments.request.paymentIntentId.min",
   ),
 });
 

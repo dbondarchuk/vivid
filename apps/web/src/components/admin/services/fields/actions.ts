@@ -16,7 +16,7 @@ export async function create(field: ServiceFieldUpdateModel) {
       fieldType: field.type,
       fieldLabel: field.data.label,
     },
-    "Creating new service field"
+    "Creating new service field",
   );
 
   try {
@@ -28,7 +28,7 @@ export async function create(field: ServiceFieldUpdateModel) {
         fieldName: field.name,
         fieldType: field.type,
       },
-      "Service field created successfully"
+      "Service field created successfully",
     );
 
     return result;
@@ -39,7 +39,7 @@ export async function create(field: ServiceFieldUpdateModel) {
         fieldType: field.type,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create service field"
+      "Failed to create service field",
     );
     throw error;
   }
@@ -55,7 +55,7 @@ export async function update(_id: string, update: ServiceFieldUpdateModel) {
       fieldType: update.type,
       fieldLabel: update.data.label,
     },
-    "Updating service field"
+    "Updating service field",
   );
 
   try {
@@ -67,7 +67,7 @@ export async function update(_id: string, update: ServiceFieldUpdateModel) {
         fieldName: update.name,
         fieldType: update.type,
       },
-      "Service field updated successfully"
+      "Service field updated successfully",
     );
 
     return okStatus;
@@ -79,7 +79,7 @@ export async function update(_id: string, update: ServiceFieldUpdateModel) {
         fieldType: update.type,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update service field"
+      "Failed to update service field",
     );
     throw error;
   }
@@ -92,7 +92,7 @@ export async function deleteField(_id: string) {
     {
       fieldId: _id,
     },
-    "Deleting service field"
+    "Deleting service field",
   );
 
   try {
@@ -100,7 +100,7 @@ export async function deleteField(_id: string) {
     if (!page) {
       actionLogger.warn(
         { fieldId: _id },
-        "Service field not found for deletion"
+        "Service field not found for deletion",
       );
       return notFound();
     }
@@ -109,7 +109,7 @@ export async function deleteField(_id: string) {
       {
         fieldId: _id,
       },
-      "Service field deleted successfully"
+      "Service field deleted successfully",
     );
 
     return okStatus;
@@ -119,7 +119,7 @@ export async function deleteField(_id: string) {
         fieldId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete service field"
+      "Failed to delete service field",
     );
     throw error;
   }
@@ -133,7 +133,7 @@ export async function deleteSelected(ids: string[]) {
       fieldIds: ids,
       count: ids.length,
     },
-    "Deleting selected service fields"
+    "Deleting selected service fields",
   );
 
   try {
@@ -144,7 +144,7 @@ export async function deleteSelected(ids: string[]) {
         fieldIds: ids,
         count: ids.length,
       },
-      "Selected service fields deleted successfully"
+      "Selected service fields deleted successfully",
     );
 
     return okStatus;
@@ -155,7 +155,7 @@ export async function deleteSelected(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected service fields"
+      "Failed to delete selected service fields",
     );
     throw error;
   }
@@ -169,7 +169,7 @@ export async function checkUniqueName(name: string, _id?: string) {
       fieldName: name,
       excludeId: _id,
     },
-    "Checking field name uniqueness"
+    "Checking field name uniqueness",
   );
 
   try {
@@ -182,7 +182,7 @@ export async function checkUniqueName(name: string, _id?: string) {
         excludeId: _id,
         isUnique: result,
       },
-      "Field name uniqueness check completed"
+      "Field name uniqueness check completed",
     );
 
     return result;
@@ -193,7 +193,7 @@ export async function checkUniqueName(name: string, _id?: string) {
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check field name uniqueness"
+      "Failed to check field name uniqueness",
     );
     throw error;
   }

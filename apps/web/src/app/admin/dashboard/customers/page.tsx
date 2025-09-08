@@ -37,7 +37,7 @@ export default async function CustomersPage(props: Params) {
       searchParams: parsed,
       key,
     },
-    "Loading customers page"
+    "Loading customers page",
   );
 
   const breadcrumbItems = [

@@ -1,9 +1,8 @@
+import { getI18nAsync } from "@vivid/i18n/server";
 import { Link, Separator, SidebarTrigger } from "@vivid/ui";
 import { Globe2 } from "lucide-react";
 import { BreadcrumbsRender } from "./breadcrumbs";
 import ThemeToggle from "./theme-toggle/theme-toggle";
-import { UserNav } from "./user-nav";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 export default async function Header({}: {}) {
   const t = await getI18nAsync("admin");

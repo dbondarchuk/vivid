@@ -2,12 +2,12 @@
 
 import type { SlateRenderElementProps } from "@udecode/plate";
 
-import { cn, Checkbox } from "@vivid/ui";
 import {
   useIndentTodoListElement,
   useIndentTodoListElementState,
 } from "@udecode/plate-indent-list/react";
 import { useReadOnly } from "@udecode/plate/react";
+import { Checkbox, cn } from "@vivid/ui";
 
 export const TodoMarker = ({
   element,
@@ -21,7 +21,7 @@ export const TodoMarker = ({
       <Checkbox
         className={cn(
           "absolute top-1 -left-6",
-          readOnly && "pointer-events-none"
+          readOnly && "pointer-events-none",
         )}
         {...checkboxProps}
       />
@@ -36,7 +36,7 @@ export const TodoLi = (props: SlateRenderElementProps) => {
     <li
       className={cn(
         "list-none",
-        (element.checked as boolean) && "text-muted-foreground line-through"
+        (element.checked as boolean) && "text-muted-foreground line-through",
       )}
     >
       {children}

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   DefaultAppsConfiguration,
   defaultAppsConfigurationSchema,
@@ -21,7 +22,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { updateDefaultAppsConfiguration } from "./actions";
 import { MigrateAssetsDialog } from "./migrate-assets-dialog";
-import { useI18n } from "@vivid/i18n";
 
 export const DefaultAppsConfigurationForm: React.FC<{
   values: DefaultAppsConfiguration;

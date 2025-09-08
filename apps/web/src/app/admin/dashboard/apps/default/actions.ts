@@ -7,7 +7,7 @@ import { DefaultAppsConfiguration } from "@vivid/types";
 const logger = getLoggerFactory("DefaultAppsActions");
 
 export async function updateDefaultAppsConfiguration(
-  data: DefaultAppsConfiguration
+  data: DefaultAppsConfiguration,
 ) {
   const actionLogger = logger("updateDefaultAppsConfiguration");
 
@@ -16,13 +16,13 @@ export async function updateDefaultAppsConfiguration(
       defaultAppsCount: Object.keys(data).length,
       defaultApps: Object.keys(data),
     },
-    "Updating default apps configuration"
+    "Updating default apps configuration",
   );
 
   try {
     await ServicesContainer.ConfigurationService().setConfiguration(
       "defaultApps",
-      data
+      data,
     );
 
     actionLogger.debug(
@@ -30,7 +30,7 @@ export async function updateDefaultAppsConfiguration(
         defaultAppsCount: Object.keys(data).length,
         defaultApps: Object.keys(data),
       },
-      "Default apps configuration updated successfully"
+      "Default apps configuration updated successfully",
     );
   } catch (error) {
     actionLogger.error(
@@ -39,7 +39,7 @@ export async function updateDefaultAppsConfiguration(
         defaultApps: Object.keys(data),
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update default apps configuration"
+      "Failed to update default apps configuration",
     );
     throw error;
   }

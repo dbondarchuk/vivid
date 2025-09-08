@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
+import { Send } from "lucide-react";
 import { CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./const";
 import { CustomerTextMessageNotificationAppSetup } from "./setup";
-import { Send } from "lucide-react";
 
 export const CustomerTextMessageNotificationApp: App = {
   name: CUSTOMER_TEXT_MESSAGE_NOTIFICATION_APP_NAME,

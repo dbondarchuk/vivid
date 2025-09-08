@@ -38,7 +38,7 @@ export class ConnectedAppError extends Error {
   constructor(
     public readonly key: AppsKeys,
     public readonly args?: Record<string, any>,
-    message?: string
+    message?: string,
   ) {
     super(message || key);
   }

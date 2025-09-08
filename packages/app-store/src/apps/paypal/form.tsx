@@ -11,13 +11,13 @@ import {
   ReactPayPalScriptOptions,
   usePayPalCardFields,
 } from "@paypal/react-paypal-js";
+import { useI18n } from "@vivid/i18n";
 import { PaymentAppFormProps } from "@vivid/types";
 import { Button, Spinner, toast } from "@vivid/ui";
 import React from "react";
 import { PaypalLogo } from "./logo";
 import { PaypalFormProps } from "./models";
 import { PaypalOrder } from "./types";
-import { useI18n } from "@vivid/i18n";
 
 const SubmitPayment: React.FC<{
   isPaying: boolean;
@@ -130,7 +130,7 @@ export const PaypalForm: React.FC<PaymentAppFormProps<PaypalFormProps>> = ({
   const onApprove = async (
     data: Parameters<
       NonNullable<React.ComponentProps<typeof PayPalButtons>["onApprove"]>
-    >[0]
+    >[0],
   ) => {
     try {
       const response = await fetch(`/api/apps/${intent.appId}/orders/capture`, {

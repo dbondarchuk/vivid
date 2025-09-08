@@ -16,13 +16,13 @@ export async function updateStylingConfiguration(data: StylingConfiguration) {
       hasAccentColor: !!data.colors?.find((c) => c.type === "accent"),
       hasFontFamily: !!data.fonts?.primary,
     },
-    "Updating styling configuration"
+    "Updating styling configuration",
   );
 
   try {
     await ServicesContainer.ConfigurationService().setConfiguration(
       "styling",
-      data
+      data,
     );
 
     actionLogger.debug(
@@ -34,7 +34,7 @@ export async function updateStylingConfiguration(data: StylingConfiguration) {
         hasAccentColor: !!data.colors?.find((c) => c.type === "accent")?.value,
         hasFontFamily: !!data.fonts?.primary,
       },
-      "Styling configuration updated successfully"
+      "Styling configuration updated successfully",
     );
   } catch (error) {
     actionLogger.error(
@@ -47,7 +47,7 @@ export async function updateStylingConfiguration(data: StylingConfiguration) {
         hasFontFamily: !!data.fonts?.primary,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update styling configuration"
+      "Failed to update styling configuration",
     );
     throw error;
   }

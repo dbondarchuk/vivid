@@ -2,23 +2,22 @@
 import { useI18n } from "@vivid/i18n";
 import { CommunicationChannel, communicationChannels } from "@vivid/types";
 import {
+  Button,
+  Combobox,
   Dialog,
-  DialogTrigger,
+  DialogClose,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  Spinner,
-  DialogFooter,
-  DialogClose,
-  Button,
+  DialogTrigger,
   Label,
+  Link,
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-  Link,
-  Combobox,
+  SelectTrigger,
+  SelectValue,
 } from "@vivid/ui";
 import { Plus } from "lucide-react";
 import React from "react";
@@ -38,7 +37,7 @@ export const AddNewTemplateButton: React.FC = () => {
       ([name, { name: displayName }]) => ({
         label: displayName,
         value: name,
-      })
+      }),
     ),
   ];
 

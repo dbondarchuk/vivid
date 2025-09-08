@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React from "react";
 
+import { useI18n } from "@vivid/i18n";
 import { CustomerListModel, WithTotal } from "@vivid/types";
 import { Skeleton, toast } from "..";
 import {
@@ -10,7 +11,6 @@ import {
   AsyncFilterBoxProps,
   DataTableAsyncFilterBox,
 } from "./data-table-async-filter-box";
-import { useI18n } from "@vivid/i18n";
 
 const CustomerShortLabel: React.FC<{
   customer: CustomerListModel;
@@ -72,7 +72,7 @@ export const CustomersDataTableAsyncFilterBox: React.FC<
       toast.error(t("common.toasts.error"));
       const text = await response.text();
       console.error(
-        `Request to fetch customers failed: ${response.status}; ${text}`
+        `Request to fetch customers failed: ${response.status}; ${text}`,
       );
 
       return {

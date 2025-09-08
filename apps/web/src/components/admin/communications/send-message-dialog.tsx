@@ -75,7 +75,7 @@ export const SendCommunicationDialog: React.FC<
       setTemplateId(undefined);
       setIsTemplateLoading(false);
     },
-    [setIsTemplateDialogOpen, setIsTemplateLoading, setTemplateId]
+    [setIsTemplateDialogOpen, setIsTemplateLoading, setTemplateId],
   );
 
   const args = useArguments(rest);
@@ -98,7 +98,7 @@ export const SendCommunicationDialog: React.FC<
         : setError("content", {
             message: t("communications.contentNotValid"),
           }),
-    [setError, trigger, t]
+    [setError, trigger, t],
   );
 
   const close = () => {

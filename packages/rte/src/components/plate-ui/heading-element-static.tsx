@@ -1,9 +1,7 @@
-import * as React from "react";
-
 import type { SlateElementProps } from "@udecode/plate";
 
-import { cn } from "@vivid/ui";
 import { SlateElement } from "@udecode/plate";
+import { cn } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 
 interface HeadingElementViewProps extends SlateElementProps {

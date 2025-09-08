@@ -1,5 +1,4 @@
 "use client";
-import { Markdown } from "@/components/web/markdown";
 import { AvailableApps } from "@vivid/app-store";
 import { useI18n } from "@vivid/i18n";
 import { App } from "@vivid/types";
@@ -16,6 +15,7 @@ import {
   Heading,
   Input,
   Link,
+  Markdown,
 } from "@vivid/ui";
 import React from "react";
 
@@ -26,9 +26,9 @@ const AppCard: React.FC<{ app: App }> = ({ app }) => {
   return (
     <Card className="pt-4 h-full">
       <CardContent className="flex flex-col gap-4 h-full">
-        <ConnectedAppNameAndLogo app={{ name: app.name }} t={t} />
+        <ConnectedAppNameAndLogo appName={app.name} />
         <div className="text-default mt-2 flex-grow text-sm line-clamp-3">
-          <Markdown markdown={t(app.description.text)} notProse />
+          <Markdown markdown={t(app.description.text)} prose="none" />
         </div>
         <Link
           href={`/admin/dashboard/apps/store/${app.name}`}
@@ -46,12 +46,12 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
   const t = useI18n("apps");
   const apps = React.useMemo(
     () => Object.values(AvailableApps).filter((app) => !app.isHidden),
-    []
+    [],
   );
 
   const categories = React.useMemo(
     () => Array.from(new Set(apps.flatMap((app) => app.category))),
-    [apps]
+    [apps],
   );
 
   const [search, setSearch] = React.useState("");
@@ -63,7 +63,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
         if (
           category &&
           !app.category.some(
-            (c) => c.toLocaleLowerCase() === category.toLocaleLowerCase()
+            (c) => c.toLocaleLowerCase() === category.toLocaleLowerCase(),
           )
         )
           return false;
@@ -78,7 +78,7 @@ export const AppStore: React.FC<AppStoreProps> = ({}) => {
           app.description.text.toLocaleLowerCase().includes(s)
         );
       }),
-    [apps, category, search]
+    [apps, category, search],
   );
 
   return (

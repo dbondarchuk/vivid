@@ -23,7 +23,7 @@ export async function createAsset(formData: FormData) {
       hasDescription: !!description,
       fileSize: file?.size,
     },
-    "Creating new asset"
+    "Creating new asset",
   );
 
   const asset: Omit<AssetEntity, "_id" | "uploadedAt" | "size"> = {
@@ -35,7 +35,7 @@ export async function createAsset(formData: FormData) {
   try {
     const result = await ServicesContainer.AssetsService().createAsset(
       asset,
-      file
+      file,
     );
 
     actionLogger.debug(
@@ -45,7 +45,7 @@ export async function createAsset(formData: FormData) {
         mimeType,
         fileSize: result.size,
       },
-      "Asset created successfully"
+      "Asset created successfully",
     );
 
     return result;
@@ -57,7 +57,7 @@ export async function createAsset(formData: FormData) {
         fileSize: file?.size,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create asset"
+      "Failed to create asset",
     );
     throw error;
   }
@@ -71,7 +71,7 @@ export async function updateAsset(_id: string, update: AssetUpdate) {
       assetId: _id,
       hasDescription: !!update.description,
     },
-    "Updating asset"
+    "Updating asset",
   );
 
   try {
@@ -81,7 +81,7 @@ export async function updateAsset(_id: string, update: AssetUpdate) {
       {
         assetId: _id,
       },
-      "Asset updated successfully"
+      "Asset updated successfully",
     );
 
     return okStatus;
@@ -91,7 +91,7 @@ export async function updateAsset(_id: string, update: AssetUpdate) {
         assetId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update asset"
+      "Failed to update asset",
     );
     throw error;
   }
@@ -104,7 +104,7 @@ export async function deleteAsset(_id: string) {
     {
       assetId: _id,
     },
-    "Deleting asset"
+    "Deleting asset",
   );
 
   try {
@@ -119,7 +119,7 @@ export async function deleteAsset(_id: string) {
         assetId: _id,
         filename: asset.filename,
       },
-      "Asset deleted successfully"
+      "Asset deleted successfully",
     );
 
     return okStatus;
@@ -129,7 +129,7 @@ export async function deleteAsset(_id: string) {
         assetId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete asset"
+      "Failed to delete asset",
     );
     throw error;
   }
@@ -143,7 +143,7 @@ export async function deleteSelectedAssets(ids: string[]) {
       assetIds: ids,
       count: ids.length,
     },
-    "Deleting selected assets"
+    "Deleting selected assets",
   );
 
   try {
@@ -154,7 +154,7 @@ export async function deleteSelectedAssets(ids: string[]) {
         assetIds: ids,
         count: ids.length,
       },
-      "Selected assets deleted successfully"
+      "Selected assets deleted successfully",
     );
 
     return okStatus;
@@ -165,7 +165,7 @@ export async function deleteSelectedAssets(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected assets"
+      "Failed to delete selected assets",
     );
     throw error;
   }
@@ -179,13 +179,13 @@ export async function checkUniqueFileName(filename: string, _id?: string) {
       filename,
       excludeId: _id,
     },
-    "Checking filename uniqueness"
+    "Checking filename uniqueness",
   );
 
   try {
     const result = await ServicesContainer.AssetsService().checkUniqueFileName(
       filename,
-      _id
+      _id,
     );
 
     actionLogger.debug(
@@ -194,7 +194,7 @@ export async function checkUniqueFileName(filename: string, _id?: string) {
         excludeId: _id,
         isUnique: result,
       },
-      "Filename uniqueness check completed"
+      "Filename uniqueness check completed",
     );
 
     return result;
@@ -205,7 +205,7 @@ export async function checkUniqueFileName(filename: string, _id?: string) {
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check filename uniqueness"
+      "Failed to check filename uniqueness",
     );
     throw error;
   }

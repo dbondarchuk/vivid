@@ -35,12 +35,12 @@ export interface AsyncFilterBoxProps {
   emptyMessage?: string;
   setFilterValue: (
     value: string[] | ((old: string[] | null) => string[] | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
   filterValue: string[] | null;
   fetchItems: (
     page: number,
-    search?: string
+    search?: string,
   ) => Promise<{
     items: AsyncFilterBoxOption[];
     hasMore: boolean;
@@ -224,7 +224,7 @@ export function DataTableAsyncFilterBox({
                           "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
                           selectedValuesSet.has(item.value)
                             ? "bg-primary text-primary-foreground"
-                            : "opacity-50 [&_svg]:invisible"
+                            : "opacity-50 [&_svg]:invisible",
                         )}
                       >
                         <CheckIcon className="h-4 w-4" aria-hidden="true" />

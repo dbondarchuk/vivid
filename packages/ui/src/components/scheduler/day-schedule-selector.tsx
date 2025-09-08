@@ -116,7 +116,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     return generateTimeSlots(
       { hour: startHour, minute: 0 },
       { hour: endHour, minute: 59 },
-      interval
+      interval,
     );
   }, [startHour, endHour, interval]);
 
@@ -127,7 +127,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     t("calendar.thursday"),
     t("calendar.friday"),
     t("calendar.saturday"),
-    t("calendar.sunday")
+    t("calendar.sunday"),
   );
 
   // Store blocks directly instead of using a grid
@@ -153,7 +153,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   const formatTimeWithLocale = (
     time: string,
     amLabel = "AM",
-    pmLabel = "PM"
+    pmLabel = "PM",
   ) => {
     return formatTime(time, uses12HourFormat, amLabel, pmLabel);
   };
@@ -186,7 +186,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
 
       return periods;
     },
-    []
+    [],
   );
 
   // Update blocks when value prop changes
@@ -258,7 +258,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
       const sizes: typeof cellDimensions = {};
       for (const day of days) {
         const cells = gridRef.current?.querySelectorAll(
-          `.grid-cell-day-${day}`
+          `.grid-cell-day-${day}`,
         );
         if (cells && cells.length > 0) {
           const cell = cells[0] as HTMLElement;
@@ -311,7 +311,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     if (timeIndex !== -1) {
       // Find the element for this time slot
       const timeRowElement = containerRef.current.querySelector(
-        `[data-time-index="${timeIndex}"]`
+        `[data-time-index="${timeIndex}"]`,
       );
       if (timeRowElement) {
         // Scroll to the element with some offset
@@ -364,7 +364,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
     Object.values(blocksByDay).forEach((dayBlocks) => {
       // Sort blocks by start time
       dayBlocks.sort(
-        (a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime)
+        (a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime),
       );
 
       let currentBlock = dayBlocks[0];
@@ -497,7 +497,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   const handleCellMouseDown = (
     day: number,
     time: string,
-    e?: React.MouseEvent | React.TouchEvent
+    e?: React.MouseEvent | React.TouchEvent,
   ) => {
     e?.preventDefault(); // Prevent text selection
     if (disabled) return;
@@ -512,7 +512,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   const handleCellTouchStart = (
     day: number,
     time: string,
-    e: React.TouchEvent
+    e: React.TouchEvent,
   ) => {
     handleCellMouseDown(day, time, e);
   };
@@ -542,7 +542,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
       // Get the next time slot for the end time (to make it exclusive)
       const nextTimeSlotIndex = Math.min(
         actualEndIndex + 1,
-        timeSlots.length - 1
+        timeSlots.length - 1,
       );
 
       // Create a new block with the selected range
@@ -575,7 +575,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   const handleBlockResizeStart = (
     e: React.MouseEvent | React.TouchEvent,
     block: Block,
-    type: "resize-start" | "resize-end"
+    type: "resize-start" | "resize-end",
   ) => {
     e.stopPropagation();
     e.preventDefault(); // Prevent text selection
@@ -597,7 +597,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
   // Handle mouse down for moving a block
   const handleBlockMoveStart = (
     e: React.MouseEvent | React.TouchEvent,
-    block: Block
+    block: Block,
   ) => {
     e.stopPropagation();
     e.preventDefault(); // Prevent text selection
@@ -655,11 +655,11 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
       // Calculate time index from position
       const timeIndex = Math.floor(
         (relativeY - timeCellDimensions.height) /
-          cellDimensions[dragState.day].height
+          cellDimensions[dragState.day].height,
       );
       const boundedTimeIndex = Math.max(
         0,
-        Math.min(timeIndex, timeSlots.length - 1)
+        Math.min(timeIndex, timeSlots.length - 1),
       );
       const newTime = timeSlots[boundedTimeIndex];
 
@@ -714,11 +714,11 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
         // Calculate time from position
         const timeIndex = Math.floor(
           (relativeY - timeCellDimensions.height) /
-            cellDimensions[dragState.day].height
+            cellDimensions[dragState.day].height,
         );
         const boundedTimeIndex = Math.max(
           0,
-          Math.min(timeIndex, timeSlots.length - 1)
+          Math.min(timeIndex, timeSlots.length - 1),
         );
         const newStartTime = timeSlots[boundedTimeIndex];
 
@@ -842,7 +842,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
         <div
           className={cn(
             "grid min-w-[800px]",
-            gridColsClasses[days.length as keyof typeof gridColsClasses]
+            gridColsClasses[days.length as keyof typeof gridColsClasses],
           )}
           ref={gridRef}
         >
@@ -856,7 +856,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
               className={cn(
                 "bg-muted p-2 text-center font-medium border-b",
                 index < days.length - 1 && "border-r",
-                "sticky top-0 z-[11] select-none"
+                "sticky top-0 z-[11] select-none",
               )}
             >
               {weekDate
@@ -875,13 +875,13 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                 data-time-index={timeIndex}
                 className={cn(
                   "p-1 flex justify-center items-center border-b border-r font-mono text-xs leading-none sticky z-[12] left-0 bg-background select-none",
-                  isHourStart(time) && "border-t-2 border-t-gray-300 pt-2"
+                  isHourStart(time) && "border-t-2 border-t-gray-300 pt-2",
                 )}
               >
                 {formatTimeWithLocale(
                   time,
                   t("timePicker.am"),
-                  t("timePicker.pm")
+                  t("timePicker.pm"),
                 )}
               </div>
               {days.map((day, dayIndex) => (
@@ -899,7 +899,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                       ? "cursor-not-allowed"
                       : isSelecting
                         ? "cursor-cell"
-                        : "cursor-pointer"
+                        : "cursor-pointer",
                   )}
                   onMouseDown={(e) => handleCellMouseDown(day, time, e)}
                   onTouchStart={(e) => handleCellTouchStart(day, time, e)}
@@ -932,7 +932,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                     "shift-block absolute rounded border pointer-events-auto transition-colors duration-150",
                     activeBlockId === block.id
                       ? "bg-primary/60 border-primary shadow-lg z-20"
-                      : "bg-primary/40 border-primary/30 hover:bg-primary/50"
+                      : "bg-primary/40 border-primary/30 hover:bg-primary/50",
                   )}
                   style={getBlockStyle(block)}
                 >
@@ -940,7 +940,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                   <div
                     className={cn(
                       "absolute top-0 left-0 w-full h-2 bg-primary/10 hover:bg-primary/20 z-10",
-                      disabled ? "cursor-not-allowed" : "cursor-ns-resize"
+                      disabled ? "cursor-not-allowed" : "cursor-ns-resize",
                     )}
                     onMouseDown={(e) =>
                       handleBlockResizeStart(e, block, "resize-start")
@@ -958,7 +958,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                   <div
                     className={cn(
                       "absolute inset-2 flex items-center justify-between px-2",
-                      disabled ? "cursor-not-allowed" : "cursor-move"
+                      disabled ? "cursor-not-allowed" : "cursor-move",
                     )}
                     onMouseDown={(e) => handleBlockMoveStart(e, block)}
                     onTouchStart={(e) => handleBlockMoveStart(e, block)}
@@ -968,7 +968,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                         {formatTimeWithLocale(
                           block.startTime,
                           t("timePicker.am"),
-                          t("timePicker.pm")
+                          t("timePicker.pm"),
                         )}
                       </span>
                       <span> - </span>
@@ -976,7 +976,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                         {formatTimeWithLocale(
                           block.endTime,
                           t("timePicker.am"),
-                          t("timePicker.pm")
+                          t("timePicker.pm"),
                         )}
                       </span>
                     </div>
@@ -993,7 +993,7 @@ export const DayScheduleSelector: React.FC<DayScheduleSelectorProps> = ({
                   <div
                     className={cn(
                       "absolute bottom-0 left-0 w-full h-2 bg-primary/10 hover:bg-primary/20 z-10",
-                      disabled ? "cursor-not-allowed" : "cursor-ns-resize"
+                      disabled ? "cursor-not-allowed" : "cursor-ns-resize",
                     )}
                     onMouseDown={(e) =>
                       handleBlockResizeStart(e, block, "resize-end")

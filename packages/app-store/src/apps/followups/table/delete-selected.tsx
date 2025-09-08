@@ -1,12 +1,12 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AlertModal, Button, Spinner, toastPromise } from "@vivid/ui";
 import { Trash } from "lucide-react";
 import { useQueryState } from "nuqs";
 import React from "react";
 import { deleteFollowUps } from "../actions";
 import { FollowUp } from "../models";
-import { useI18n } from "@vivid/i18n";
 
 export const DeleteSelectedFollowUpsButton: React.FC<{
   appId: string;
@@ -25,14 +25,14 @@ export const DeleteSelectedFollowUpsButton: React.FC<{
       await toastPromise(
         deleteFollowUps(
           appId,
-          selected.map((r) => r._id)
+          selected.map((r) => r._id),
         ),
         {
           success: t("followUps.statusText.follow_ups_deleted", {
             count: selected.length,
           }),
           error: t("followUps.statusText.error_deleting_follow_ups"),
-        }
+        },
       );
 
       reload(`${new Date().valueOf()}`);

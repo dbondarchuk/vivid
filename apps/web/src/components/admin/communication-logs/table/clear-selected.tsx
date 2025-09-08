@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { CommunicationLog } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,7 +19,6 @@ import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { clearSelectedCommunicationLogs } from "../actions";
-import { CommunicationLog } from "@vivid/types";
 
 export const ClearSelectedCommunicationLogsButton: React.FC<{
   selected: CommunicationLog[];
@@ -37,7 +37,7 @@ export const ClearSelectedCommunicationLogsButton: React.FC<{
         {
           success: t("communicationLogs.selectedLogsCleared"),
           error: t("common.toasts.error"),
-        }
+        },
       );
 
       router.refresh();

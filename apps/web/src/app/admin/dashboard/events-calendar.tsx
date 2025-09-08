@@ -4,6 +4,7 @@ import {
   EventCalendar,
   EventCalendarType,
 } from "@/components/admin/event-calendar";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   cn,
@@ -16,7 +17,6 @@ import {
 import { DateTime } from "luxon";
 import React from "react";
 import { useCookies } from "react-cookie";
-import { useI18n } from "@vivid/i18n";
 
 type EventsCalendarView = Exclude<EventCalendarType, "days-around">;
 
@@ -32,11 +32,11 @@ export const EventsCalendar = () => {
   const t = useI18n("admin");
 
   const [date, setDate] = React.useState(
-    DateTime.now().startOf("day") as DateTime
+    DateTime.now().startOf("day") as DateTime,
   );
 
   const [type, setType] = React.useState<EventsCalendarView>(
-    cookies[COOKIE_NAME] ?? "weekly"
+    cookies[COOKIE_NAME] ?? "weekly",
   );
 
   const changeType = (view: EventsCalendarView) => {
@@ -72,7 +72,7 @@ export const EventsCalendar = () => {
         type={type}
         className={cn(
           "w-full",
-          type !== "monthly" && type !== "agenda" && "h-[100vh]"
+          type !== "monthly" && type !== "agenda" && "h-[100vh]",
         )}
         onDateClick={(date) => {
           setDate(DateTime.fromJSDate(date));

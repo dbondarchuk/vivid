@@ -15,7 +15,7 @@ export const searchParams = {
   start: parseAsIsoDateTime,
   end: parseAsIsoDateTime,
   status: parseAsArrayOf(parseAsStringLiteral(appointmentStatuses)).withDefault(
-    ["confirmed", "pending"]
+    ["confirmed", "pending"],
   ),
   customer: parseAsArrayOf(parseAsString),
   discount: parseAsArrayOf(parseAsString),

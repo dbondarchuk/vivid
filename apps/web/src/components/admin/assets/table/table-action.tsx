@@ -12,15 +12,16 @@ import {
   PopoverTrigger,
   useSelectedRowsStore,
 } from "@vivid/ui";
-import { useAssetsTableFilters } from "./use-table-filters";
-import { DeleteSelectedAssetsButton } from "./delete-selected-button";
-import React from "react";
 import { Settings2 } from "lucide-react";
+import React from "react";
+import { DeleteSelectedAssetsButton } from "./delete-selected-button";
+import { useAssetsTableFilters } from "./use-table-filters";
 
 export const AssetsTableAction: React.FC<{
   showCustomerFilter?: boolean;
   className?: string;
-}> = ({ showCustomerFilter, className }) => {
+  onDelete?: () => void;
+}> = ({ showCustomerFilter, className, onDelete }) => {
   const {
     isAnyFilterActive,
     resetFilters,
@@ -48,7 +49,7 @@ export const AssetsTableAction: React.FC<{
     <div
       className={cn(
         "flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row",
-        className
+        className,
       )}
     >
       <div className="flex flex-1 md:flex-wrap items-center gap-4">
@@ -85,7 +86,10 @@ export const AssetsTableAction: React.FC<{
         />
       </div>
       <div className="flex flex-wrap items-center gap-4">
-        <DeleteSelectedAssetsButton selected={rowSelection} />
+        <DeleteSelectedAssetsButton
+          selected={rowSelection}
+          onDelete={onDelete}
+        />
       </div>
     </div>
   );

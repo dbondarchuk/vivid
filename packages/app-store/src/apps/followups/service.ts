@@ -40,7 +40,7 @@ export default class FollowUpsConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction
+    data: RequestAction,
   ): Promise<any> {
     switch (data.type) {
       case "get-follow-up":
@@ -109,12 +109,12 @@ export default class FollowUpsConnectedApp
 
       logger.info(
         { appId: appData._id },
-        "Successfully uninstalled follow-ups app"
+        "Successfully uninstalled follow-ups app",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error: error?.message || error?.toString() },
-        "Error uninstalling follow-ups app"
+        "Error uninstalling follow-ups app",
       );
       throw error;
     }
@@ -135,13 +135,13 @@ export default class FollowUpsConnectedApp
 
       logger.debug(
         { appId, followUpId: id, found: !!followUp },
-        "Retrieved follow-up"
+        "Retrieved follow-up",
       );
       return followUp;
     } catch (error: any) {
       logger.error(
         { appId, followUpId: id, error: error?.message || error?.toString() },
-        "Error getting follow-up"
+        "Error getting follow-up",
       );
       throw error;
     }
@@ -149,7 +149,7 @@ export default class FollowUpsConnectedApp
 
   protected async getFollowUps(
     appId: string,
-    query: GetFollowUpsAction["query"]
+    query: GetFollowUpsAction["query"],
   ): Promise<WithTotal<FollowUp>> {
     const logger = this.loggerFactory("getFollowUps");
     logger.debug({ appId, query }, "Getting follow-ups");
@@ -162,7 +162,7 @@ export default class FollowUpsConnectedApp
           ...prev,
           [curr.id]: curr.desc ? -1 : 1,
         }),
-        {}
+        {},
       ) || { updatedAt: -1 };
 
       const filter: Filter<FollowUp> = {
@@ -224,7 +224,7 @@ export default class FollowUpsConnectedApp
 
       logger.debug(
         { appId, total, itemCount: items.length },
-        "Successfully retrieved follow-ups"
+        "Successfully retrieved follow-ups",
       );
 
       return {
@@ -234,7 +234,7 @@ export default class FollowUpsConnectedApp
     } catch (error: any) {
       logger.error(
         { appId, query, error: error?.message || error?.toString() },
-        "Error getting follow-ups"
+        "Error getting follow-ups",
       );
       throw error;
     }
@@ -242,7 +242,7 @@ export default class FollowUpsConnectedApp
 
   protected async createFollowUp(
     appId: string,
-    followUp: FollowUpUpdateModel
+    followUp: FollowUpUpdateModel,
   ): Promise<FollowUp> {
     const logger = this.loggerFactory("createFollowUp");
     logger.debug(
@@ -252,7 +252,7 @@ export default class FollowUpsConnectedApp
         channel: followUp.channel,
         type: followUp.type,
       },
-      "Creating follow-up"
+      "Creating follow-up",
     );
 
     try {
@@ -266,7 +266,7 @@ export default class FollowUpsConnectedApp
       if (!this.checkUniqueName(appId, followUp.name)) {
         logger.error(
           { appId, followUpName: followUp.name },
-          "Follow-up name already exists"
+          "Follow-up name already exists",
         );
         throw new Error("Name already exists");
       }
@@ -278,7 +278,7 @@ export default class FollowUpsConnectedApp
 
       logger.info(
         { appId, followUpId: dbFollowUp._id, followUpName: followUp.name },
-        "Successfully created follow-up"
+        "Successfully created follow-up",
       );
 
       return dbFollowUp;
@@ -289,7 +289,7 @@ export default class FollowUpsConnectedApp
           followUpName: followUp.name,
           error: error?.message || error?.toString(),
         },
-        "Error creating follow-up"
+        "Error creating follow-up",
       );
       throw error;
     }
@@ -298,12 +298,12 @@ export default class FollowUpsConnectedApp
   protected async updateFollowUp(
     appId: string,
     id: string,
-    update: FollowUpUpdateModel
+    update: FollowUpUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateFollowUp");
     logger.debug(
       { appId, followUpId: id, followUpName: update.name },
-      "Updating follow-up"
+      "Updating follow-up",
     );
 
     try {
@@ -315,7 +315,7 @@ export default class FollowUpsConnectedApp
       if (!this.checkUniqueName(appId, update.name, id)) {
         logger.error(
           { appId, followUpId: id, followUpName: update.name },
-          "Follow-up name already exists"
+          "Follow-up name already exists",
         );
         throw new Error("Name already exists");
       }
@@ -328,12 +328,12 @@ export default class FollowUpsConnectedApp
         },
         {
           $set: updateObj,
-        }
+        },
       );
 
       logger.info(
         { appId, followUpId: id, followUpName: update.name },
-        "Successfully updated follow-up"
+        "Successfully updated follow-up",
       );
     } catch (error: any) {
       logger.error(
@@ -343,7 +343,7 @@ export default class FollowUpsConnectedApp
           followUpName: update.name,
           error: error?.message || error?.toString(),
         },
-        "Error updating follow-up"
+        "Error updating follow-up",
       );
       throw error;
     }
@@ -366,12 +366,12 @@ export default class FollowUpsConnectedApp
 
       logger.info(
         { appId, followUpIds: ids },
-        "Successfully deleted follow-ups"
+        "Successfully deleted follow-ups",
       );
     } catch (error: any) {
       logger.error(
         { appId, followUpIds: ids, error: error?.message || error?.toString() },
-        "Error deleting follow-ups"
+        "Error deleting follow-ups",
       );
       throw error;
     }
@@ -380,7 +380,7 @@ export default class FollowUpsConnectedApp
   protected async checkUniqueName(
     appId: string,
     name: string,
-    id?: string
+    id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkUniqueName");
     logger.debug({ appId, name, followUpId: id }, "Checking unique name");
@@ -405,7 +405,7 @@ export default class FollowUpsConnectedApp
 
       logger.debug(
         { appId, name, followUpId: id, isUnique },
-        "Name uniqueness check completed"
+        "Name uniqueness check completed",
       );
 
       return isUnique;
@@ -417,7 +417,7 @@ export default class FollowUpsConnectedApp
           followUpId: id,
           error: error?.message || error?.toString(),
         },
-        "Error checking unique name"
+        "Error checking unique name",
       );
       throw error;
     }
@@ -427,7 +427,7 @@ export default class FollowUpsConnectedApp
     const logger = this.loggerFactory("onTime");
     logger.debug(
       { appId: appData._id, date: date.toISOString() },
-      "Processing follow-ups for scheduled time"
+      "Processing follow-ups for scheduled time",
     );
 
     try {
@@ -446,7 +446,7 @@ export default class FollowUpsConnectedApp
 
       logger.debug(
         { appId: appData._id, timeZone },
-        "Retrieving follow-ups for processing"
+        "Retrieving follow-ups for processing",
       );
 
       const followUps = await db
@@ -458,7 +458,7 @@ export default class FollowUpsConnectedApp
 
       logger.debug(
         { appId: appData._id, followUpCount: followUps.length },
-        "Found follow-ups to process"
+        "Found follow-ups to process",
       );
 
       const promises = (followUps || []).map(async (followUp) => {
@@ -468,17 +468,23 @@ export default class FollowUpsConnectedApp
             followUpId: followUp._id,
             followUpName: followUp.name,
           },
-          "Processing follow-up"
+          "Processing follow-up",
         );
 
         const appointments = await this.getAppointments(
           date,
           followUp,
-          timeZone
+          timeZone,
         );
 
         const appointmentPromises = appointments.map((appointment) =>
-          this.sendFollowUp(appData, appointment, followUp, config, phoneFields)
+          this.sendFollowUp(
+            appData,
+            appointment,
+            followUp,
+            config,
+            phoneFields,
+          ),
         );
 
         logger.debug(
@@ -487,7 +493,7 @@ export default class FollowUpsConnectedApp
             followUpId: followUp._id,
             appointmentCount: appointments.length,
           },
-          "Sending follow-ups for appointments"
+          "Sending follow-ups for appointments",
         );
 
         return Promise.all(appointmentPromises);
@@ -497,7 +503,7 @@ export default class FollowUpsConnectedApp
 
       logger.info(
         { appId: appData._id, followUpCount: followUps.length },
-        "Successfully processed all follow-ups"
+        "Successfully processed all follow-ups",
       );
     } catch (error: any) {
       logger.error(
@@ -506,7 +512,7 @@ export default class FollowUpsConnectedApp
           date: date.toISOString(),
           error: error?.message || error?.toString(),
         },
-        "Error processing follow-ups for scheduled time"
+        "Error processing follow-ups for scheduled time",
       );
       throw error;
     }
@@ -515,7 +521,7 @@ export default class FollowUpsConnectedApp
   private async getAppointments(
     date: Date,
     followUp: FollowUp,
-    timeZone: string
+    timeZone: string,
   ): Promise<Appointment[]> {
     const logger = this.loggerFactory("getAppointments");
     logger.debug(
@@ -526,7 +532,7 @@ export default class FollowUpsConnectedApp
         afterAppointmentCount: followUp.afterAppointmentCount,
         date: date.toISOString(),
       },
-      "Getting appointments for follow-up"
+      "Getting appointments for follow-up",
     );
 
     try {
@@ -556,7 +562,7 @@ export default class FollowUpsConnectedApp
               startDate: startDate.toISO(),
               endDate: endDate.toISO(),
             },
-            "Searching for appointments with timeAfter follow-up"
+            "Searching for appointments with timeAfter follow-up",
           );
 
           const appointmentsResponse = await this.props.services
@@ -576,7 +582,7 @@ export default class FollowUpsConnectedApp
               followUpId: followUp._id,
               appointmentCount: appointmentsResponse.total,
             },
-            "Found appointments for timeAfter follow-up"
+            "Found appointments for timeAfter follow-up",
           );
           break;
         }
@@ -594,7 +600,7 @@ export default class FollowUpsConnectedApp
                 currentTime: `${dt.hour}:${dt.minute}`,
                 followUpTime: `${atTimeFollowUp.time.hour}:${atTimeFollowUp.time.minute}`,
               },
-              "Current time doesn't match follow-up time"
+              "Current time doesn't match follow-up time",
             );
             return [];
           }
@@ -611,7 +617,7 @@ export default class FollowUpsConnectedApp
               startDate: startDate.toISO(),
               endDate: endDate.toISO(),
             },
-            "Searching for appointments with atTime follow-up"
+            "Searching for appointments with atTime follow-up",
           );
 
           const appointmentsResponse = await this.props.services
@@ -631,7 +637,7 @@ export default class FollowUpsConnectedApp
               followUpId: followUp._id,
               appointmentCount: appointmentsResponse.total,
             },
-            "Found appointments for atTime follow-up"
+            "Found appointments for atTime follow-up",
           );
           break;
         }
@@ -639,7 +645,7 @@ export default class FollowUpsConnectedApp
         default: {
           logger.error(
             { followUpId: (followUp as any)._id, type },
-            "Unknown follow-up type"
+            "Unknown follow-up type",
           );
           return [];
         }
@@ -653,7 +659,7 @@ export default class FollowUpsConnectedApp
             afterAppointmentCount: followUp.afterAppointmentCount,
             totalAppointments: appointments.length,
           },
-          "Filtering appointments by customer appointment count"
+          "Filtering appointments by customer appointment count",
         );
 
         const filteredAppointments: Appointment[] = [];
@@ -662,7 +668,7 @@ export default class FollowUpsConnectedApp
           try {
             // Calculate when this appointment was completed (appointment time + duration)
             const appointmentCompletionTime = DateTime.fromJSDate(
-              appointment.dateTime
+              appointment.dateTime,
             ).plus({ minutes: appointment.totalDuration, seconds: 1 });
 
             // Get all appointments for this customer that were completed before or at the same time as this appointment
@@ -689,7 +695,7 @@ export default class FollowUpsConnectedApp
                 appointmentCount,
                 requiredCount: followUp.afterAppointmentCount,
               },
-              "Checking customer appointment count up to appointment completion"
+              "Checking customer appointment count up to appointment completion",
             );
 
             // Only send follow-up if customer has the exact required number of appointments completed up to this point
@@ -703,7 +709,7 @@ export default class FollowUpsConnectedApp
                 customerId: appointment.customer._id,
                 error: error?.message || error?.toString(),
               },
-              "Error checking customer appointment count"
+              "Error checking customer appointment count",
             );
             // If we can't determine the count, skip this appointment
             continue;
@@ -716,7 +722,7 @@ export default class FollowUpsConnectedApp
             originalCount: appointments.length,
             filteredCount: filteredAppointments.length,
           },
-          "Filtered appointments by appointment count"
+          "Filtered appointments by appointment count",
         );
 
         return filteredAppointments;
@@ -730,7 +736,7 @@ export default class FollowUpsConnectedApp
           followUpName: followUp.name,
           error: error?.message || error?.toString(),
         },
-        "Error getting appointments for follow-up"
+        "Error getting appointments for follow-up",
       );
       throw error;
     }
@@ -745,7 +751,7 @@ export default class FollowUpsConnectedApp
       booking: BookingConfiguration;
       social: SocialConfiguration;
     },
-    phoneFields: ServiceField[]
+    phoneFields: ServiceField[],
   ): Promise<void> {
     const logger = this.loggerFactory("sendFollowUp");
     logger.debug(
@@ -757,7 +763,7 @@ export default class FollowUpsConnectedApp
         appointmentId: appointment._id,
         customerId: appointment.customer._id,
       },
-      "Sending follow-up"
+      "Sending follow-up",
     );
 
     try {
@@ -781,7 +787,7 @@ export default class FollowUpsConnectedApp
             followUpId: followUp._id,
             templateId: followUp.templateId,
           },
-          "Template not found for follow-up"
+          "Template not found for follow-up",
         );
         return;
       }
@@ -793,7 +799,7 @@ export default class FollowUpsConnectedApp
           channel,
           templateId: followUp.templateId,
         },
-        "Template found, sending follow-up"
+        "Template found, sending follow-up",
       );
 
       switch (channel) {
@@ -805,7 +811,7 @@ export default class FollowUpsConnectedApp
               appointmentId: appointment._id,
               email: appointment.fields.email,
             },
-            "Sending email follow-up"
+            "Sending email follow-up",
           );
 
           await this.props.services.NotificationService().sendEmail({
@@ -833,7 +839,7 @@ export default class FollowUpsConnectedApp
               followUpId: followUp._id,
               appointmentId: appointment._id,
             },
-            "Successfully sent email follow-up"
+            "Successfully sent email follow-up",
           );
           return;
 
@@ -849,7 +855,7 @@ export default class FollowUpsConnectedApp
                 followUpId: followUp._id,
                 appointmentId: appointment._id,
               },
-              "Phone number not found for text message follow-up"
+              "Phone number not found for text message follow-up",
             );
             return;
           }
@@ -861,7 +867,7 @@ export default class FollowUpsConnectedApp
               appointmentId: appointment._id,
               phone,
             },
-            "Sending text message follow-up"
+            "Sending text message follow-up",
           );
 
           await this.props.services.NotificationService().sendTextMessage({
@@ -888,14 +894,14 @@ export default class FollowUpsConnectedApp
               followUpId: followUp._id,
               appointmentId: appointment._id,
             },
-            "Successfully sent text message follow-up"
+            "Successfully sent text message follow-up",
           );
           return;
 
         default:
           logger.error(
             { appId: appData._id, followUpId: (followUp as any)._id, channel },
-            "Unknown follow-up channel type"
+            "Unknown follow-up channel type",
           );
           return;
       }
@@ -907,7 +913,7 @@ export default class FollowUpsConnectedApp
           appointmentId: appointment._id,
           error: error?.message || error?.toString(),
         },
-        "Error sending follow-up"
+        "Error sending follow-up",
       );
       throw error;
     }

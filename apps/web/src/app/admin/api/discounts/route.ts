@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing discounts API request"
+    "Processing discounts API request",
   );
 
   const loader = createLoader(searchParams);
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
       total: res.total,
       count: res.items.length,
     },
-    "Successfully retrieved discounts"
+    "Successfully retrieved discounts",
   );
 
   return NextResponse.json(res);

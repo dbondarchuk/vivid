@@ -26,7 +26,7 @@ const loggerFactory = (action: string) => ({
 
 export async function getFollowUps(
   appId: string,
-  query: GetFollowUpsAction["query"]
+  query: GetFollowUpsAction["query"],
 ) {
   const logger = loggerFactory("getFollowUps");
   logger.debug({ appId, query }, "Getting follow-ups");
@@ -39,13 +39,13 @@ export async function getFollowUps(
 
     logger.info(
       { appId, resultCount: result?.items?.length || 0 },
-      "Successfully retrieved follow-ups"
+      "Successfully retrieved follow-ups",
     );
     return result;
   } catch (error: any) {
     logger.error(
       { appId, error: error?.message || error?.toString() },
-      "Error getting follow-ups"
+      "Error getting follow-ups",
     );
     throw error;
   }
@@ -63,13 +63,13 @@ export async function getFollowUp(appId: string, id: string) {
 
     logger.info(
       { appId, followUpId: id, found: !!result },
-      "Successfully retrieved follow-up"
+      "Successfully retrieved follow-up",
     );
     return result;
   } catch (error: any) {
     logger.error(
       { appId, followUpId: id, error: error?.message || error?.toString() },
-      "Error getting follow-up"
+      "Error getting follow-up",
     );
     throw error;
   }
@@ -77,7 +77,7 @@ export async function getFollowUp(appId: string, id: string) {
 
 export async function createFollowUp(
   appId: string,
-  followUp: FollowUpUpdateModel
+  followUp: FollowUpUpdateModel,
 ) {
   const logger = loggerFactory("createFollowUp");
   logger.debug({ appId, followUpName: followUp.name }, "Creating follow-up");
@@ -90,7 +90,7 @@ export async function createFollowUp(
 
     logger.info(
       { appId, followUpName: followUp.name, followUpId: result?._id },
-      "Successfully created follow-up"
+      "Successfully created follow-up",
     );
     return result;
   } catch (error: any) {
@@ -100,7 +100,7 @@ export async function createFollowUp(
         followUpName: followUp.name,
         error: error?.message || error?.toString(),
       },
-      "Error creating follow-up"
+      "Error creating follow-up",
     );
     throw error;
   }
@@ -109,12 +109,12 @@ export async function createFollowUp(
 export async function updateFollowUp(
   appId: string,
   id: string,
-  update: FollowUpUpdateModel
+  update: FollowUpUpdateModel,
 ) {
   const logger = loggerFactory("updateFollowUp");
   logger.debug(
     { appId, followUpId: id, followUpName: update.name },
-    "Updating follow-up"
+    "Updating follow-up",
   );
 
   try {
@@ -126,7 +126,7 @@ export async function updateFollowUp(
 
     logger.info(
       { appId, followUpId: id, followUpName: update.name },
-      "Successfully updated follow-up"
+      "Successfully updated follow-up",
     );
     return result;
   } catch (error: any) {
@@ -137,7 +137,7 @@ export async function updateFollowUp(
         followUpName: update.name,
         error: error?.message || error?.toString(),
       },
-      "Error updating follow-up"
+      "Error updating follow-up",
     );
     throw error;
   }
@@ -158,7 +158,7 @@ export async function deleteFollowUps(appId: string, ids: string[]) {
   } catch (error: any) {
     logger.error(
       { appId, followUpIds: ids, error: error?.message || error?.toString() },
-      "Error deleting follow-ups"
+      "Error deleting follow-ups",
     );
     throw error;
   }
@@ -167,12 +167,12 @@ export async function deleteFollowUps(appId: string, ids: string[]) {
 export async function checkUniqueFollowUpName(
   appId: string,
   name: string,
-  id?: string
+  id?: string,
 ) {
   const logger = loggerFactory("checkUniqueFollowUpName");
   logger.debug(
     { appId, name, followUpId: id },
-    "Checking unique follow-up name"
+    "Checking unique follow-up name",
   );
 
   try {
@@ -184,7 +184,7 @@ export async function checkUniqueFollowUpName(
 
     logger.debug(
       { appId, name, followUpId: id, isUnique: result },
-      "Successfully checked unique follow-up name"
+      "Successfully checked unique follow-up name",
     );
     return result;
   } catch (error: any) {
@@ -195,7 +195,7 @@ export async function checkUniqueFollowUpName(
         followUpId: id,
         error: error?.message || error?.toString(),
       },
-      "Error checking unique follow-up name"
+      "Error checking unique follow-up name",
     );
     throw error;
   }

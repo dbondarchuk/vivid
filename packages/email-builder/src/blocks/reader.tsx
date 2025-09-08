@@ -4,6 +4,7 @@ import { Button } from "./button";
 import { ColumnsContainerReader } from "./columns-container";
 import { ConditionalContainerReader } from "./conditional-container";
 import { ContainerReader } from "./container";
+import { CustomHTML } from "./custom-html";
 import { Divider } from "./divider";
 import { EmailLayoutReader } from "./email-layout";
 import { ForeachContainerReader } from "./foreach-container";
@@ -51,5 +52,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   },
   ForeachContainer: {
     Reader: ForeachContainerReader,
+  },
+  CustomHTML: {
+    Reader: CustomHTML,
   },
 };

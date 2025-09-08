@@ -5,6 +5,7 @@ import {
 } from "@vivid/builder";
 import {
   CircleUserRound,
+  Code,
   Columns3,
   CopyPlus,
   Heading,
@@ -46,6 +47,12 @@ import {
   ContainerPropsDefaults,
   ContainerToolbar,
 } from "./container";
+import {
+  CustomHTMLConfiguration,
+  CustomHTMLEditor,
+  CustomHTMLPropsDefaults,
+  CustomHTMLToolbar,
+} from "./custom-html";
 import {
   Divider,
   DividerConfiguration,
@@ -196,6 +203,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Editor: ForeachContainerEditor,
     defaultValue: ForeachContainerPropsDefaults,
     category: "emailBuilder.blocks.categories.containers",
+  },
+  CustomHTML: {
+    displayName: "emailBuilder.blocks.customHtml.displayName",
+    icon: <Code />,
+    Editor: CustomHTMLEditor,
+    Configuration: CustomHTMLConfiguration,
+    Toolbar: CustomHTMLToolbar,
+    defaultValue: CustomHTMLPropsDefaults,
+    category: "emailBuilder.blocks.categories.layout",
   },
 };
 

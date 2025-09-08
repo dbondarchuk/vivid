@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import TextareaAutosize, {
   type TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
 import type { TEquationElement } from "@udecode/plate-math";
 
-import { cn, Button, PopoverContent } from "@vivid/ui";
 import { useEquationInput } from "@udecode/plate-math/react";
 import { BlockSelectionPlugin } from "@udecode/plate-selection/react";
 import {
@@ -16,6 +15,7 @@ import {
   useElement,
   useReadOnly,
 } from "@udecode/plate/react";
+import { Button, cn, PopoverContent } from "@vivid/ui";
 import { CornerDownLeftIcon } from "lucide-react";
 
 const EquationInput = createPrimitiveComponent(TextareaAutosize)({

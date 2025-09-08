@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing events API request"
+    "Processing events API request",
   );
 
   const searchParams = request.nextUrl.searchParams;
@@ -32,16 +32,16 @@ export async function GET(request: NextRequest) {
   if (!start.isValid || !end.isValid) {
     logger.warn(
       { startStr, endStr, startValid: start.isValid, endValid: end.isValid },
-      "Invalid date format provided"
+      "Invalid date format provided",
     );
     return NextResponse.json(
       { error: "Start and End must be dates in ISO format" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const statuses: AppointmentStatus[] = appointmentStatuses.filter(
-    (s) => includeDeclined || s !== "declined"
+    (s) => includeDeclined || s !== "declined",
   );
 
   logger.debug(
@@ -51,13 +51,13 @@ export async function GET(request: NextRequest) {
       includeDeclined,
       statuses,
     },
-    "Fetching events with parameters"
+    "Fetching events with parameters",
   );
 
   let events = await ServicesContainer.EventsService().getEvents(
     start.toJSDate(),
     end.toJSDate(),
-    statuses
+    statuses,
   );
 
   logger.debug(
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
       end: end.toISO(),
       eventCount: events.length,
     },
-    "Successfully retrieved events"
+    "Successfully retrieved events",
   );
 
   // const config =

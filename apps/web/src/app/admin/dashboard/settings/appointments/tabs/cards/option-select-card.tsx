@@ -71,7 +71,7 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
     } satisfies OptionSelectDragData,
     attributes: {
       roleDescription: t(
-        "settings.appointments.form.cards.optionSelect.roleDescription"
+        "settings.appointments.form.cards.optionSelect.roleDescription",
       ),
     },
   });
@@ -96,7 +96,7 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
         "flex flex-row gap-2 px-2 py-4 bg-card rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
-        })
+        }),
       )}
       ref={setNodeRef}
       style={style}
@@ -155,12 +155,12 @@ export const OptionSelectCard: React.FC<OptionSelectProps> = ({
             <AlertDialogHeader>
               <AlertDialogTitle>
                 {t(
-                  "settings.appointments.form.cards.optionSelect.deleteConfirmTitle"
+                  "settings.appointments.form.cards.optionSelect.deleteConfirmTitle",
                 )}
               </AlertDialogTitle>
               <AlertDialogDescription>
                 {t(
-                  "settings.appointments.form.cards.optionSelect.deleteConfirmDescription"
+                  "settings.appointments.form.cards.optionSelect.deleteConfirmDescription",
                 )}
               </AlertDialogDescription>
             </AlertDialogHeader>

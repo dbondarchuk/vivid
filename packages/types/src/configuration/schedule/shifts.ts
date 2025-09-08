@@ -26,9 +26,9 @@ export const shiftsSchema = zUniqueArray(
         z.object({
           start: timeSchema,
           end: timeSchema,
-        })
+        }),
       ),
-    })
+    }),
   ),
-  (obj) => obj.weekDay
+  (obj) => obj.weekDay,
 );

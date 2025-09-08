@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { Schedule, ScheduleOverride, WeekIdentifier } from "@vivid/types";
 import {
   Button,
@@ -15,7 +16,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { getWeeklyEvents, setEvents } from "./actions";
-import { useI18n } from "@vivid/i18n";
 
 type WeeklySchedule = ScheduleOverride["schedule"];
 type BusyEventsFormProps = {
@@ -89,7 +89,7 @@ export const BusyEventsForm: React.FC<BusyEventsFormProps> = ({ appId }) => {
         router.push(`?week=${newWeek}`);
       }
     },
-    [router, week]
+    [router, week],
   );
 
   return (

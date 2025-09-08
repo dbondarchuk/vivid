@@ -35,7 +35,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   const timeZone = useTimeZone();
 
   const [currentDate, setCurrentDate] = React.useState<DateTime>(
-    DateTime.fromJSDate(date || new Date())
+    DateTime.fromJSDate(date || new Date()),
   );
 
   React.useEffect(() => {
@@ -45,7 +45,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
   React.useEffect(() => {
     onRangeChange?.(
       currentDate.toJSDate(),
-      currentDate.plus({ days: 1 }).endOf("day").toJSDate()
+      currentDate.plus({ days: 1 }).endOf("day").toJSDate(),
     );
   }, [currentDate]);
 
@@ -95,7 +95,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
 
       // Sort events by start time
       dateEvents.sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
       );
 
       eventsByDate.push({
@@ -138,7 +138,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
       <div
         className={cn(
           "flex flex-row items-center pb-2 bg-background sticky z-[5] top-0 h-12",
-          disableTimeChange ? "justify-center" : "justify-between"
+          disableTimeChange ? "justify-center" : "justify-between",
         )}
       >
         {!disableTimeChange && (
@@ -176,7 +176,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                     hasSame(date, DateTime.now(), "day")
                       ? "bg-accent text-accent-foreground"
                       : "hover:bg-muted",
-                    hasEvents ? "font-medium" : "text-muted-foreground"
+                    hasEvents ? "font-medium" : "text-muted-foreground",
                   )}
                   onClick={() => toggleDateExpansion(dateKey)}
                 >
@@ -188,7 +188,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                   <CalendarIcon className="h-4 w-4 mr-2" />
                   <span
                     className={cn(
-                      hasSame(date, DateTime.now(), "day") && "font-bold"
+                      hasSame(date, DateTime.now(), "day") && "font-bold",
                     )}
                   >
                     {date.toLocaleString(DateTime.DATE_FULL, { locale })}
@@ -241,10 +241,10 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                     ) : (
                       events.map((event, idx) => {
                         const eventDate = DateTime.fromJSDate(
-                          event.start
+                          event.start,
                         ).setZone(timeZone);
                         const endDate = DateTime.fromJSDate(event.end).setZone(
-                          timeZone
+                          timeZone,
                         );
 
                         return (
@@ -261,7 +261,7 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                                   "w-3 h-3 rounded-full mt-1.5",
                                   EventVariantClasses[
                                     event.variant || "primary"
-                                  ] ?? EventVariantClasses.primary
+                                  ] ?? EventVariantClasses.primary,
                                 )}
                               />
                               <div className="flex-1 flex flex-col gap-2">
@@ -272,12 +272,12 @@ export const AgendaEventCalendar: React.FC<AgendaEventCalendarProps> = ({
                                   <div className="text-sm text-muted-foreground">
                                     {eventDate.toLocaleString(
                                       DateTime.TIME_SIMPLE,
-                                      { locale }
+                                      { locale },
                                     )}{" "}
                                     -{" "}
                                     {endDate.toLocaleString(
                                       DateTime.TIME_SIMPLE,
-                                      { locale }
+                                      { locale },
                                     )}
                                   </div>
                                 </div>

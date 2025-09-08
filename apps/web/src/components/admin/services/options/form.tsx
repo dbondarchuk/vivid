@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
 import { PlateMarkdownEditor } from "@vivid/rte";
 import {
-  AppointmentOption,
   AppointmentOptionUpdateModel,
   DatabaseId,
   getAppointmentOptionSchemaWithUniqueCheck,
@@ -54,7 +53,7 @@ export const OptionForm: React.FC<{
   const t = useI18n("admin");
   const formSchema = getAppointmentOptionSchemaWithUniqueCheck(
     (slug) => checkUniqueName(slug, initialData?._id),
-    "services.options.nameUnique"
+    "services.options.nameUnique",
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -354,7 +353,7 @@ export const OptionForm: React.FC<{
                         .getValues("fields")
                         ?.filter(
                           ({ id }) =>
-                            id !== form.getValues(`fields.${index}`).id
+                            id !== form.getValues(`fields.${index}`).id,
                         )
                         .map(({ id }) => id)}
                     />
@@ -382,7 +381,7 @@ export const OptionForm: React.FC<{
                         .getValues("addons")
                         ?.filter(
                           ({ id }) =>
-                            id !== form.getValues(`addons.${index}`).id
+                            id !== form.getValues(`addons.${index}`).id,
                         )
                         .map(({ id }) => id)}
                     />

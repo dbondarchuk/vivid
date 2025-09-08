@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { withRef } from "@udecode/cn";
 import { getMentionOnSelectItem } from "@udecode/plate-mention";
@@ -61,7 +61,7 @@ export const MentionInputElement = withRef<typeof PlateElement>(
         {children}
       </PlateElement>
     );
-  }
+  },
 );
 
 export const MENTIONABLES = [

@@ -9,36 +9,36 @@ export function useAppointmentsTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [statusFilter, setStatusFilter] = useQueryState(
     "status",
     searchParams.status
       .withOptions({ shallow: false })
-      .withDefault(searchParams.status.defaultValue)
+      .withDefault(searchParams.status.defaultValue),
   );
 
   const [customerFilter, setCustomerFilter] = useQueryState(
     "customer",
-    searchParams.customer.withOptions({ shallow: false })
+    searchParams.customer.withOptions({ shallow: false }),
   );
 
   const [discountFilter, setDiscountFilter] = useQueryState(
     "discount",
-    searchParams.discount.withOptions({ shallow: false })
+    searchParams.discount.withOptions({ shallow: false }),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);
 
   const [start, setStartValue] = useQueryState(
     "start",
-    searchParams.start.withOptions({ shallow: false })
+    searchParams.start.withOptions({ shallow: false }),
   );
 
   const [end, setEndValue] = useQueryState(
     "end",
-    searchParams.end.withOptions({ shallow: false })
+    searchParams.end.withOptions({ shallow: false }),
   );
 
   const resetFilters = useCallback(() => {

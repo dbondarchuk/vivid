@@ -1,8 +1,8 @@
 import { App } from "@vivid/types";
 import { TEXTBELT_APP_NAME } from "./const";
+import image from "./images/image.png";
 import { TextBeltLogo } from "./logo";
 import { TextBeltAppSetup } from "./setup";
-import image from "./images/image.png";
 
 export const TextBeltApp: App = {
   name: TEXTBELT_APP_NAME,

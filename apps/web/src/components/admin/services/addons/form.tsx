@@ -2,9 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useI18n } from "@vivid/i18n";
-import { PlateEditor, PlateMarkdownEditor } from "@vivid/rte";
+import { PlateMarkdownEditor } from "@vivid/rte";
 import {
-  AppointmentAddon,
   AppointmentAddonUpdateModel,
   DatabaseId,
   getAppointmentAddonSchemaWithUniqueCheck,
@@ -42,7 +41,7 @@ export const AddonForm: React.FC<{
   const t = useI18n("admin");
   const formSchema = getAppointmentAddonSchemaWithUniqueCheck(
     (slug) => checkUniqueName(slug, initialData?._id),
-    "services.addons.nameUnique"
+    "services.addons.nameUnique",
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -193,7 +192,7 @@ export const AddonForm: React.FC<{
                         <Input
                           disabled={loading}
                           placeholder={t(
-                            "services.addons.form.pricePlaceholder"
+                            "services.addons.form.pricePlaceholder",
                           )}
                           type="number"
                           className={InputGroupInputClasses({
@@ -229,7 +228,7 @@ export const AddonForm: React.FC<{
                     excludeIds={form
                       .getValues("fields")
                       ?.filter(
-                        ({ id }) => id !== form.getValues(`fields.${index}`).id
+                        ({ id }) => id !== form.getValues(`fields.${index}`).id,
                       )
                       .map(({ id }) => id)}
                   />

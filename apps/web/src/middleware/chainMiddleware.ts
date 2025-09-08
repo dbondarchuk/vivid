@@ -24,7 +24,7 @@ import { ChainableMiddleware, MiddlewareFactory } from "./types";
  */
 export function chainMiddleware(
   functions: MiddlewareFactory[] = [],
-  index = 0
+  index = 0,
 ): ChainableMiddleware {
   const current = functions[index];
   if (current) {

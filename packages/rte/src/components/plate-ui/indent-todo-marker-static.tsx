@@ -1,5 +1,3 @@
-import React from "react";
-
 import type { SlateRenderElementProps } from "@udecode/plate";
 
 import { cn } from "@vivid/ui";
@@ -27,7 +25,7 @@ export const TodoLiStatic = ({
     <li
       className={cn(
         "list-none",
-        (element.checked as boolean) && "text-muted-foreground line-through"
+        (element.checked as boolean) && "text-muted-foreground line-through",
       )}
     >
       {children}

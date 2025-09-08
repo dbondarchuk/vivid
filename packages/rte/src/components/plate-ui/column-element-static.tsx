@@ -1,10 +1,8 @@
-import React from "react";
-
 import type { SlateElementProps } from "@udecode/plate";
 import type { TColumnElement } from "@udecode/plate-layout";
 
-import { cn } from "@vivid/ui";
 import { SlateElement } from "@udecode/plate";
+import { cn } from "@vivid/ui";
 
 export function ColumnElementStatic({
   children,
@@ -18,7 +16,7 @@ export function ColumnElementStatic({
       <SlateElement
         className={cn(
           className,
-          "h-full px-2 pt-2 group-first/column:pl-0 group-last/column:pr-0"
+          "h-full px-2 pt-2 group-first/column:pl-0 group-last/column:pr-0",
         )}
         {...props}
       >

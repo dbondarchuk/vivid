@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { WeekIdentifier } from "@vivid/types";
 import { useI18n } from "@vivid/i18n";
+import { WeekIdentifier } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -102,7 +102,7 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
           week,
           data.interval,
           data.maxWeek,
-          data.replaceExisting ?? false
+          data.replaceExisting ?? false,
         ),
         {
           success: t("weeklySchedule.dialogs.repeat.success", {
@@ -111,7 +111,7 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
             maxWeek: getWeekDisplay(data.maxWeek),
           }),
           error: t("weeklySchedule.statusText.request_error"),
-        }
+        },
       );
 
       setOpenConfirmDialog(false);
@@ -227,7 +227,7 @@ export const RepeatScheduleDialog: React.FC<RepeatScheduleDialogProps> = ({
                     </div>
                     <FormDescription>
                       {t(
-                        "weeklySchedule.dialogs.repeat.replaceExistingDescription"
+                        "weeklySchedule.dialogs.repeat.replaceExistingDescription",
                       )}
                     </FormDescription>
                   </FormItem>

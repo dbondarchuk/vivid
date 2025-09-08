@@ -77,7 +77,7 @@ export const OptionSelector: React.FC<OptionSelectorProps> = ({
         setOptions(fields);
       } catch (e) {
         toast.error(
-          t("settings.appointments.form.cards.optionSelector.requestFailed")
+          t("settings.appointments.form.cards.optionSelector.requestFailed"),
         );
         console.error(e);
         setOptions([]);

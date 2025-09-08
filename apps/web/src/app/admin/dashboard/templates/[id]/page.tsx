@@ -30,7 +30,7 @@ export default async function UpdateTemplatePage(props: Props) {
     {
       templateId: id,
     },
-    "Loading template edit page"
+    "Loading template edit page",
   );
 
   return (

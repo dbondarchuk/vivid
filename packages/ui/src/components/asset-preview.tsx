@@ -92,7 +92,7 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
                 className={cn(
                   "rounded-md bg-gray-500 text-white flex justify-center items-center",
                   AssetPreviewSizes[size].video.className,
-                  className
+                  className,
                 )}
               >
                 <Play size={AssetPreviewSizes[size].video.icon} />
@@ -123,7 +123,7 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
             <FileIcon
               size={AssetPreviewSizes[size].file}
               extension={asset.filename.substring(
-                asset.filename.lastIndexOf(".") + 1
+                asset.filename.lastIndexOf(".") + 1,
               )}
               {...defaultStyles[
                 mimeTypeToExtension(asset.mimeType) as DefaultExtensionType

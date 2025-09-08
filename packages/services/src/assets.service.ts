@@ -27,7 +27,7 @@ export class AssetsService implements IAssetsService {
 
   constructor(
     protected readonly configurationService: IConfigurationService,
-    protected readonly connectedAppService: IConnectedAppsService
+    protected readonly connectedAppService: IConnectedAppsService,
   ) {}
 
   public async getAsset(id: string): Promise<Asset | null> {
@@ -58,7 +58,7 @@ export class AssetsService implements IAssetsService {
           fileSize: asset.size,
           fileType: asset.mimeType,
         },
-        "Asset found"
+        "Asset found",
       );
     }
 
@@ -71,7 +71,7 @@ export class AssetsService implements IAssetsService {
       customerId?: string | string[];
       appointmentId?: string | string[];
       appId?: string;
-    }
+    },
   ): Promise<WithTotal<Asset>> {
     const logger = this.loggerFactory("getAssets");
     logger.debug({ query }, "Getting assets with query");
@@ -83,7 +83,7 @@ export class AssetsService implements IAssetsService {
         ...prev,
         [curr.id]: curr.desc ? -1 : 1,
       }),
-      {}
+      {},
     ) || { uploadedAt: -1 };
 
     const filter: Filter<Asset> = {};
@@ -94,7 +94,7 @@ export class AssetsService implements IAssetsService {
         { $regex },
         "filename",
         "mimeType",
-        "description"
+        "description",
       );
 
       filter.$or = queries;
@@ -174,7 +174,7 @@ export class AssetsService implements IAssetsService {
         total: result.total,
         count: result.items.length,
       },
-      "Successfully retrieved assets"
+      "Successfully retrieved assets",
     );
 
     return result;
@@ -182,7 +182,7 @@ export class AssetsService implements IAssetsService {
 
   public async createAsset(
     asset: Omit<Asset, "_id" | "uploadedAt">,
-    file: File
+    file: File,
   ): Promise<AssetEntity> {
     const storage = await this.getAssetsStorage();
     const args = { fileName: asset.filename, size: asset.size };
@@ -213,7 +213,7 @@ export class AssetsService implements IAssetsService {
           storage.app,
           asset.filename,
           Readable.fromWeb(file.stream() as any),
-          file.size
+          file.size,
         );
 
         logger.debug(args, "Saving new asset");
@@ -238,7 +238,7 @@ export class AssetsService implements IAssetsService {
 
   public async updateAsset(
     assetId: string,
-    update: AssetUpdate
+    update: AssetUpdate,
   ): Promise<void> {
     const logger = this.loggerFactory("updateAsset");
     logger.debug({ assetId }, "Updating asset");
@@ -255,7 +255,7 @@ export class AssetsService implements IAssetsService {
       },
       {
         $set: updateObj,
-      }
+      },
     );
 
     logger.debug({ assetId }, "Asset was successfully updated");
@@ -283,7 +283,7 @@ export class AssetsService implements IAssetsService {
 
         logger.debug(
           { assetId, fileName: asset.filename },
-          "Asset deleted. Deleting file"
+          "Asset deleted. Deleting file",
         );
 
         await storage.service.deleteFile(storage.app, asset.filename);
@@ -325,12 +325,12 @@ export class AssetsService implements IAssetsService {
 
         logger.debug(
           { assetsIds, deletedCount },
-          "Assets deleted. Deleting files"
+          "Assets deleted. Deleting files",
         );
 
         await storage.service.deleteFiles(
           storage.app,
-          toRemove.map((asset) => asset.filename)
+          toRemove.map((asset) => asset.filename),
         );
 
         logger.debug({ assetsIds, deletedCount }, "Files deleted");
@@ -344,7 +344,7 @@ export class AssetsService implements IAssetsService {
 
   public async checkUniqueFileName(
     filename: string,
-    _id?: string
+    _id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkUniqueFileName");
     logger.debug({ filename, _id }, "Checking if file name is unqiue");
@@ -372,14 +372,14 @@ export class AssetsService implements IAssetsService {
 
     logger.debug(
       { filename, _id },
-      `File name is${hasNext ? " not" : ""} unqiue`
+      `File name is${hasNext ? " not" : ""} unqiue`,
     );
 
     return !hasNext;
   }
 
   public async streamAsset(
-    filename: string
+    filename: string,
   ): Promise<{ stream: Readable; asset: AssetEntity } | null> {
     const logger = this.loggerFactory("streamAsset");
     logger.info({ filename }, "Streaming asset");
@@ -399,7 +399,7 @@ export class AssetsService implements IAssetsService {
 
     logger.debug(
       { filename, assetId: asset._id, size: asset.size },
-      "Found asset, streaming it."
+      "Found asset, streaming it.",
     );
 
     const stream = await storage.service.getFile(storage.app, filename);
@@ -413,7 +413,7 @@ export class AssetsService implements IAssetsService {
     const assetsStorageAppId = defaultAppsConfiguration?.assetsStorage.appId;
 
     return await this.connectedAppService.getAppService<IAssetsStorage>(
-      assetsStorageAppId
+      assetsStorageAppId,
     );
   }
 

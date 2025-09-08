@@ -1,5 +1,7 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
+import { discountTypes } from "@vivid/types";
 import {
   Button,
   DataTableFilterBox,
@@ -14,8 +16,6 @@ import {
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedDiscountsButton } from "./delete-selected";
 import { useFieldsTableFilters } from "./use-table-filters";
-import { discountTypes } from "@vivid/types";
-import { useI18n } from "@vivid/i18n";
 
 export function DiscountsTableAction() {
   const {

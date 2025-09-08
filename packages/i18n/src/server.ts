@@ -7,7 +7,7 @@ type Options<T extends I18nNamespaces | undefined = undefined> =
   LanguageOptions & { namespace: T };
 
 type GetI18nAsyncArgsFn = ((
-  args: LanguageOptions
+  args: LanguageOptions,
 ) => Promise<I18nFn<undefined>>) &
   (<T extends I18nNamespaces>(args: T | Options<T>) => Promise<I18nFn<T>>) &
   ((args?: undefined | Options) => Promise<I18nFn<undefined>>);

@@ -9,45 +9,45 @@ export function useCommunicationLogsTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [directionFilter, setDirectionFilter] = useQueryState(
     "direction",
     searchParams.direction
       .withOptions({ shallow: false })
-      .withDefault(searchParams.direction.defaultValue)
+      .withDefault(searchParams.direction.defaultValue),
   );
 
   const [channelFilter, setChannelFilter] = useQueryState(
     "channel",
     searchParams.channel
       .withOptions({ shallow: false })
-      .withDefault(searchParams.channel.defaultValue)
+      .withDefault(searchParams.channel.defaultValue),
   );
 
   const [participantTypeFilter, setParticipantTypeFilter] = useQueryState(
     "participantType",
     searchParams.participantType
       .withOptions({ shallow: false })
-      .withDefault(searchParams.participantType.defaultValue)
+      .withDefault(searchParams.participantType.defaultValue),
   );
 
   const [customerFilter, setCustomerFilter] = useQueryState(
     "customer",
-    searchParams.customer.withOptions({ shallow: false })
+    searchParams.customer.withOptions({ shallow: false }),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);
 
   const [start, setStartValue] = useQueryState(
     "start",
-    searchParams.start.withOptions({ shallow: false })
+    searchParams.start.withOptions({ shallow: false }),
   );
 
   const [end, setEndValue] = useQueryState(
     "end",
-    searchParams.end.withOptions({ shallow: false })
+    searchParams.end.withOptions({ shallow: false }),
   );
 
   const resetFilters = useCallback(() => {

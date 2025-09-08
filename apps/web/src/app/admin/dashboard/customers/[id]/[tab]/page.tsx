@@ -1,4 +1,6 @@
 import PageContainer from "@/components/admin/layout/page-container";
+import { getI18nAsync } from "@vivid/i18n/server";
+import { getLoggerFactory } from "@vivid/logger";
 import {
   Breadcrumbs,
   DataTableSkeleton,
@@ -9,8 +11,6 @@ import {
   TabsLinkTrigger,
   TabsList,
 } from "@vivid/ui";
-import { getLoggerFactory } from "@vivid/logger";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 import { AppointmentsTableColumnsCount } from "@/components/admin/appointments/table/columns";
 import {
@@ -23,7 +23,6 @@ import {
   searchParamsCache as assetsSearchParamsCache,
   serialize as assetsSerialize,
 } from "@/components/admin/assets/table/search-params";
-import { AssetsTableAction } from "@/components/admin/assets/table/table-action";
 import {
   searchParamsCache as communicationsSearchParamsCache,
   serialize as communicationsSerialize,
@@ -31,16 +30,19 @@ import {
 import { CommunicationLogsTableAction } from "@/components/admin/communication-logs/table/table-action";
 import { CustomerForm } from "@/components/admin/customers/form";
 import { ServicesContainer } from "@vivid/services";
+import { CalendarClock } from "lucide-react";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import {
   RecentCommunications,
   SendCommunicationButton,
 } from "../../../../../../components/admin/communications/communications";
-import { CustomerFiles, CustomerFileUpload } from "./files";
-import { CalendarClock } from "lucide-react";
-import { Metadata } from "next";
-import { cache } from "react";
+import {
+  CustomerFiles,
+  CustomerFilesTableAction,
+  CustomerFileUpload,
+} from "./files";
 
 type Props = {
   params: Promise<{ id: string; tab: string }>;
@@ -92,7 +94,7 @@ export default async function CustomerPage(props: Props) {
         invalidTab: params.tab,
         validTabs: tabs,
       },
-      "Invalid tab requested"
+      "Invalid tab requested",
     );
     notFound();
   }
@@ -111,13 +113,17 @@ export default async function CustomerPage(props: Props) {
     key = communicationsSerialize({ ...parsed });
   }
 
+  if (searchParams.key) {
+    key = searchParams.key as string;
+  }
+
   logger.debug(
     {
       customerId: params.id,
       activeTab,
       key,
     },
-    "Loading customer detail page"
+    "Loading customer detail page",
   );
 
   const customer = await getCustomer(params.id);
@@ -134,7 +140,7 @@ export default async function CustomerPage(props: Props) {
       customerEmail: customer.email,
       activeTab,
     },
-    "Customer detail page loaded"
+    "Customer detail page loaded",
   );
 
   const tabTitle: Record<Tab, string> = {
@@ -219,7 +225,7 @@ export default async function CustomerPage(props: Props) {
                 className="flex flex-1 flex-col gap-4"
               >
                 <div className="flex flex-col md:flex-row gap-2 w-full">
-                  <AssetsTableAction className="flex-1" />
+                  <CustomerFilesTableAction />
                   <CustomerFileUpload customerId={params.id} />
                 </div>
                 <Suspense

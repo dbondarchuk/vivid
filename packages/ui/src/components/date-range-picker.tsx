@@ -1,13 +1,13 @@
 "use client";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { useI18n } from "@vivid/i18n";
+import { DateRange } from "@vivid/types";
+import { DateTime } from "luxon";
+import * as React from "react";
+import { cn } from "../utils";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { cn } from "../utils";
-import { DateRange } from "@vivid/types";
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { DateTime } from "luxon";
-import * as React from "react";
-import { useI18n } from "@vivid/i18n";
 
 export type CalendarDateRangePickerProps =
   React.HTMLAttributes<HTMLDivElement> & {
@@ -38,7 +38,7 @@ export const CalendarDateRangePicker: React.FC<
             variant={"outline"}
             className={cn(
               "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              !date && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -80,7 +80,7 @@ export const CalendarDateRangePicker: React.FC<
                         ? DateTime.fromJSDate(range.to).endOf("day").toJSDate()
                         : undefined,
                     }
-                  : undefined
+                  : undefined,
               )
             }
             numberOfMonths={2}

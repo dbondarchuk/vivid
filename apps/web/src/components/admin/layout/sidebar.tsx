@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import { NavItemGroup } from "@vivid/types";
 import {
   Avatar,
@@ -34,7 +35,6 @@ import { ChevronRight, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { UserNav } from "./user-nav";
-import { useI18n } from "@vivid/i18n";
 
 type SidebarProps = {
   className?: string;
@@ -55,7 +55,7 @@ export const NavIcon = ({
       ...(child?.props || {}),
       // @ts-ignore we have classname
       className,
-    })
+    }),
   );
 };
 
@@ -104,7 +104,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       >
                         <SidebarMenuItem>
                           <CollapsibleTrigger asChild>
-                            <SidebarMenuButton tooltip={item.title}>
+                            <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
                                 <NavIcon className={`size-5`}>
                                   {item.icon}
@@ -138,7 +138,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({
                       <SidebarMenuItem>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <SidebarMenuButton tooltip={item.title}>
+                            <SidebarMenuButton tooltip={t(item.title)}>
                               {item.icon && (
                                 <NavIcon className={`size-5`}>
                                   {item.icon}

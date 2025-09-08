@@ -59,7 +59,7 @@ const TimePickerTag = ({ onAdd }: { onAdd: (value: string) => void }) => {
             formatTime({
               hour: date.getHours(),
               minute: date.getMinutes(),
-            } as Time)
+            } as Time),
           );
         }}
       >
@@ -98,12 +98,12 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
               <InfoTooltip>
                 <p>
                   {t(
-                    "settings.appointments.form.main.scheduleProviderAppTooltip1"
+                    "settings.appointments.form.main.scheduleProviderAppTooltip1",
                   )}
                 </p>
                 <p>
                   {t(
-                    "settings.appointments.form.main.scheduleProviderAppTooltip2"
+                    "settings.appointments.form.main.scheduleProviderAppTooltip2",
                   )}
                 </p>
               </InfoTooltip>
@@ -184,7 +184,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
               <InfoTooltip>
                 <p>
                   {t(
-                    "settings.appointments.form.main.maxWeeksInFutureTooltip1"
+                    "settings.appointments.form.main.maxWeeksInFutureTooltip1",
                   )}
                 </p>
                 <p>
@@ -192,7 +192,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                     {t("settings.appointments.form.main.example")}:
                   </span>{" "}
                   {t(
-                    "settings.appointments.form.main.maxWeeksInFutureTooltip2"
+                    "settings.appointments.form.main.maxWeeksInFutureTooltip2",
                   )}
                 </p>
                 <p>
@@ -200,7 +200,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                     {t("settings.appointments.form.main.default")}:
                   </span>{" "}
                   {t(
-                    "settings.appointments.form.main.maxWeeksInFutureTooltip3"
+                    "settings.appointments.form.main.maxWeeksInFutureTooltip3",
                   )}
                 </p>
               </InfoTooltip>
@@ -283,7 +283,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
               <InfoTooltip>
                 <p>
                   {t(
-                    "settings.appointments.form.main.minHoursBeforeBookingTooltip1"
+                    "settings.appointments.form.main.minHoursBeforeBookingTooltip1",
                   )}
                 </p>
                 <p>
@@ -291,7 +291,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                     {t("settings.appointments.form.main.example")}:
                   </span>{" "}
                   {t(
-                    "settings.appointments.form.main.minHoursBeforeBookingTooltip2"
+                    "settings.appointments.form.main.minHoursBeforeBookingTooltip2",
                   )}
                 </p>
               </InfoTooltip>
@@ -325,7 +325,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
               {t("settings.appointments.form.main.allowedSlotStartTimes")}
               <InfoTooltip>
                 {t(
-                  "settings.appointments.form.main.allowedSlotStartTimesTooltip"
+                  "settings.appointments.form.main.allowedSlotStartTimesTooltip",
                 )}
               </InfoTooltip>
             </FormLabel>
@@ -345,7 +345,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                 <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t(
-                      "settings.appointments.form.main.selectStep"
+                      "settings.appointments.form.main.selectStep",
                     )}
                   />
                 </SelectTrigger>
@@ -379,7 +379,7 @@ export const MainTab: React.FC<TabProps> = ({ form, disabled }) => {
                   {...field}
                   readOnly
                   placeholder={t(
-                    "settings.appointments.form.main.customTimeSlotsPlaceholder"
+                    "settings.appointments.form.main.customTimeSlotsPlaceholder",
                   )}
                   value={field.value}
                   onChange={(e) => {

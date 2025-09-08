@@ -18,8 +18,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  InfoTooltip,
-  Switch,
 } from "@vivid/ui";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
@@ -96,7 +94,7 @@ export const AddonSelectCard: React.FC<AddonSelectProps> = ({
         "flex flex-row gap-2 px-2 py-4 bg-background rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
-        })
+        }),
       )}
       ref={setNodeRef}
       style={style}

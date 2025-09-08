@@ -19,14 +19,14 @@ export function usePagesTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [statusFilter, setStatusFilter] = useQueryState(
     "published",
     searchParams.published
       .withOptions({ shallow: false })
-      .withDefault(searchParams.published.defaultValue)
+      .withDefault(searchParams.published.defaultValue),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);

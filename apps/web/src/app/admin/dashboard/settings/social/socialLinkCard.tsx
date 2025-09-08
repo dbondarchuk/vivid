@@ -39,7 +39,7 @@ const socialTypeValues = Object.entries(socialTypeLabels).map(
   ([value, label]) => ({
     value,
     label,
-  })
+  }),
 );
 
 export type SocialLinkCardProps = {
@@ -102,11 +102,11 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
   });
 
   const type = form.getValues(
-    `${name}.type` as FieldPath<SocialConfiguration>
+    `${name}.type` as FieldPath<SocialConfiguration>,
   ) as SocialLinkType;
 
   const hasError = form.getFieldState(
-    name as FieldPath<SocialConfiguration>
+    name as FieldPath<SocialConfiguration>,
   ).invalid;
 
   return (
@@ -134,7 +134,7 @@ export const SocialLinkCard: React.FC<SocialLinkCardProps> = ({
         <div
           className={cn(
             "w-full text-center flex flex-col",
-            !type && "text-destructive"
+            !type && "text-destructive",
           )}
         >
           {socialTypeLabels[type] || t("settings.social.form.card.invalidType")}

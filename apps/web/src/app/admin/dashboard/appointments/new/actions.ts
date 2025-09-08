@@ -9,7 +9,7 @@ const logger = getLoggerFactory("NewAppointmentActions");
 export const createAppointment = async (
   appointment: Omit<AppointmentEvent, "timeZone">,
   files: Record<string, File> | undefined,
-  confirmed: boolean = false
+  confirmed: boolean = false,
 ) => {
   const actionLogger = logger("createAppointment");
 
@@ -22,13 +22,13 @@ export const createAppointment = async (
       confirmed,
       fieldsCount: Object.keys(appointment.fields).length,
     },
-    "Creating new appointment"
+    "Creating new appointment",
   );
 
   try {
     const { timeZone } =
       await ServicesContainer.ConfigurationService().getConfiguration(
-        "general"
+        "general",
       );
 
     const appointmentEvent: AppointmentEvent = {
@@ -37,7 +37,7 @@ export const createAppointment = async (
         .filter(([key]) => !(key in (files || {})))
         .reduce(
           (map, [key, value]) => ({ ...map, [key]: value }),
-          {} as Appointment["fields"]
+          {} as Appointment["fields"],
         ),
       timeZone,
     };
@@ -50,7 +50,7 @@ export const createAppointment = async (
         timeZone,
         processedFieldsCount: Object.keys(appointmentEvent.fields).length,
       },
-      "Appointment event prepared, creating event"
+      "Appointment event prepared, creating event",
     );
 
     const result = await ServicesContainer.EventsService().createEvent({
@@ -69,7 +69,7 @@ export const createAppointment = async (
         duration: appointment.totalDuration,
         confirmed,
       },
-      "Appointment created successfully"
+      "Appointment created successfully",
     );
 
     return result._id;
@@ -82,7 +82,7 @@ export const createAppointment = async (
         confirmed,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create appointment"
+      "Failed to create appointment",
     );
     throw error;
   }

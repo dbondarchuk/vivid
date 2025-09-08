@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -16,7 +17,6 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { IcsApp } from "./app";
 import { IcsLinkCalendarSource, icsLinkCalendarSourceSchema } from "./models";
@@ -68,12 +68,17 @@ export const IcsAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("ics.form.connect")}</span>
-              <ConnectedAppNameAndLogo app={{ name: IcsApp.name }} t={t} />
+              <ConnectedAppNameAndLogo appName={IcsApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

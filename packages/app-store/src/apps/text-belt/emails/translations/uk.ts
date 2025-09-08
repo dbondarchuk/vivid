@@ -49,7 +49,7 @@ Email: {{ fields.email }}
 - Жодного
 {{/addons}}
 
-Час: {{ dateTime }}
+Час: {{ dateTime.full}}
 
 Тривалість: {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}
 

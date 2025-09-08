@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "./button";
+import { useI18n } from "@vivid/i18n";
+import { cva } from "class-variance-authority";
 import { Save } from "lucide-react";
 import React from "react";
-import { UseFormReturn, useFormState } from "react-hook-form";
-import { cva } from "class-variance-authority";
+import { UseFormReturn } from "react-hook-form";
+import { Button } from "./button";
 import { Spinner } from "./spinner";
-import { useI18n } from "@vivid/i18n";
 // import {
 //   AlertDialog,
 //   AlertDialogCancel,
@@ -42,7 +42,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({
     isLoading: formIsLoading,
     errors,
     isSubmitted,
-  } = useFormState(form);
+  } = form.formState;
 
   const classes = cva([
     "flex flex-row gap-2 items-center ml-auto self-end fixed bottom-4 right-4 z-50",

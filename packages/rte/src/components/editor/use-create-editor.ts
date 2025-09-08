@@ -92,7 +92,7 @@ import { FloatingToolbarPlugin } from "./plugins/floating-toolbar-plugin";
 
 export const useCreateEditor = (
   value?: Value,
-  options?: { singleLine?: boolean }
+  options?: { singleLine?: boolean },
 ) => {
   return usePlateEditor({
     override: {

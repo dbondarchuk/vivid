@@ -3,15 +3,16 @@
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
-import { ArgumentsAutocomplete } from "@vivid/ui";
-import { getStyles } from "./styles";
 import {
-  useEditorArgs,
   useCurrentBlock,
   useDispatchAction,
+  useEditorArgs,
+  usePortalContext,
   useSetSelectedBlockId,
 } from "@vivid/builder";
+import { ArgumentsAutocomplete } from "@vivid/ui";
 import { HeadingProps } from "./schema";
+import { getStyles } from "./styles";
 
 export function HeadingEditor({ props, style }: HeadingProps) {
   const ref = useRef<HTMLInputElement>(null);
@@ -20,6 +21,8 @@ export function HeadingEditor({ props, style }: HeadingProps) {
   const value = currentBlock.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
+
+  const { document } = usePortalContext();
 
   const styles = getStyles({ props, style });
 
@@ -58,11 +61,12 @@ export function HeadingEditor({ props, style }: HeadingProps) {
       ref={ref}
       args={args}
       asInput
-      className="w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal"
+      className="!max-w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal"
       style={styles}
       value={value ?? "Heading"}
       onChange={onChange}
       onKeyDown={handleKeyPress}
+      documentElement={document}
     />
   );
 }

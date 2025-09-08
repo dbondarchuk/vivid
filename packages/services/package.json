@@ -6,8 +6,8 @@
   "scripts": {
     "type-check": "tsc --pretty --noEmit",
     "type-check:ci": "tsc-absolute --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -20,7 +20,6 @@
     "@types/content-type": "1.1.5",
     "@types/react": "19.0.2",
     "@types/html-to-text": "^9.0.4",
-    "eslint": "^8.57.0",
     "typescript": "5.5.4"
   },
   "dependencies": {

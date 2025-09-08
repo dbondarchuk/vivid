@@ -8,7 +8,7 @@ const _getLoggerFactory = cache(async () => {
     const headersList = await headers();
     return getBaseLoggerFactory(
       headersList.get("x-correlation-id"),
-      headersList.get("x-session-id")
+      headersList.get("x-session-id"),
     );
   } catch {
     return getBaseLoggerFactory();
@@ -36,10 +36,10 @@ export const getLoggerFactory = cache((moduleName: string) => {
           {},
           {
             msgPrefix: `[${moduleName}${functionName ? `:${functionName}` : ""}] `,
-          }
-        )
+          },
+        ),
       ),
-      promiseHandler
+      promiseHandler,
     );
 
     return logger;

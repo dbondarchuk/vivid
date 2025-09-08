@@ -7,7 +7,7 @@ export const revalidate = 10;
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const logger = getLoggerFactory("AdminAPI/templates-by-id")("GET");
   const { id } = await params;
@@ -18,7 +18,7 @@ export async function GET(
       method: request.method,
       templateId: id,
     },
-    "Processing template by ID API request"
+    "Processing template by ID API request",
   );
 
   const template = await ServicesContainer.TemplatesService().getTemplate(id);
@@ -34,7 +34,7 @@ export async function GET(
       templateName: template.name,
       templateType: template.type,
     },
-    "Successfully retrieved template"
+    "Successfully retrieved template",
   );
 
   const headers = new Headers();

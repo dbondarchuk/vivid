@@ -2,12 +2,13 @@
 
 import { ResourcesCard } from "@/components/admin/resource/resources-card";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useI18n } from "@vivid/i18n";
+import { useFormatter, useI18n } from "@vivid/i18n";
 import {
   colors as colorOverrides,
   ColorOverrideSchema,
   colorsLabels,
   fontsNames,
+  fontsOptions,
   StylingConfiguration,
   stylingConfigurationSchema,
 } from "@vivid/types";
@@ -46,21 +47,60 @@ import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { updateStylingConfiguration } from "./actions";
 
-const fontTransform = (font: string) => ({
-  value: font,
-  shortLabel: font,
-  label: (
+const FontLabel = ({ font }: { font: string }) => {
+  const t = useI18n("admin");
+  const formatter = useFormatter();
+  return (
     <div className="flex flex-col gap-0.5">
       <span>{font}</span>
+      <span className="text-xs text-muted-foreground">
+        {t("appearance.styling.form.fonts.variants.label", {
+          variants: formatter.list(
+            fontsOptions[font].variants.map((variant) =>
+              t.has(`appearance.styling.form.fonts.variants.${variant}` as any)
+                ? t(`appearance.styling.form.fonts.variants.${variant}` as any)
+                : variant,
+            ),
+          ),
+        })}
+      </span>
+      <span className="text-xs text-muted-foreground">
+        {t("appearance.styling.form.fonts.subsets.label", {
+          subsets: formatter.list(
+            fontsOptions[font].subsets.map((subset) =>
+              t.has(`appearance.styling.form.fonts.subsets.${subset}` as any)
+                ? t(`appearance.styling.form.fonts.subsets.${subset}` as any)
+                : subset,
+            ),
+          ),
+        })}
+      </span>
+      <span className="text-xs text-muted-foreground">
+        {t("appearance.styling.form.fonts.category.label", {
+          category: t.has(
+            `appearance.styling.form.fonts.category.${fontsOptions[font].category}` as any,
+          )
+            ? t(
+                `appearance.styling.form.fonts.category.${fontsOptions[font].category}` as any,
+              )
+            : fontsOptions[font].category,
+        })}
+      </span>
       <a
         className="text-sm text-muted-foreground underline"
         target="_blank"
         href={`https://fonts.google.com/specimen/${font.replace(" ", "+")}`}
       >
-        See on Google Fonts
+        {t("appearance.styling.form.fonts.seeOnGoogleFonts")}
       </a>
     </div>
-  ),
+  );
+};
+
+const fontTransform = (font: string) => ({
+  value: font,
+  shortLabel: font,
+  label: <FontLabel font={font} />,
 });
 
 const customFontSearch = (search: string) => {
@@ -69,6 +109,8 @@ const customFontSearch = (search: string) => {
     .filter((font) => font.toLocaleLowerCase().indexOf(lowerSearch) >= 0)
     .map(fontTransform);
 };
+
+const fonts: IComboboxItem[] = fontsNames.map(fontTransform);
 
 export const StylingsConfigurationForm: React.FC<{
   values: StylingConfiguration;
@@ -79,11 +121,6 @@ export const StylingsConfigurationForm: React.FC<{
     mode: "all",
     values,
   });
-
-  const fonts: IComboboxItem[] = React.useMemo(
-    () => fontsNames.map(fontTransform),
-    []
-  );
 
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
@@ -98,7 +135,7 @@ export const StylingsConfigurationForm: React.FC<{
         {
           success: t("appearance.styling.form.toasts.changesSaved"),
           error: t("appearance.styling.form.toasts.requestError"),
-        }
+        },
       );
 
       router.refresh();
@@ -224,7 +261,7 @@ export const StylingsConfigurationForm: React.FC<{
                 const type = form.getValues(`colors.${index}.type`);
                 const hasMultipleTypes =
                   (form.getValues("colors") || []).filter(
-                    (c) => c.type === type
+                    (c) => c.type === type,
                   ).length > 1;
 
                 return (
@@ -234,7 +271,7 @@ export const StylingsConfigurationForm: React.FC<{
                       <div
                         className={cn(
                           "w-full text-center flex flex-col",
-                          (!type || hasMultipleTypes) && "text-destructive"
+                          (!type || hasMultipleTypes) && "text-destructive",
                         )}
                       >
                         {colorsLabels[type] ||
@@ -263,12 +300,12 @@ export const StylingsConfigurationForm: React.FC<{
                             <AlertDialogHeader>
                               <AlertDialogTitle>
                                 {t(
-                                  "appearance.styling.form.deleteConfirmTitle"
+                                  "appearance.styling.form.deleteConfirmTitle",
                                 )}
                               </AlertDialogTitle>
                               <AlertDialogDescription>
                                 {t(
-                                  "appearance.styling.form.deleteConfirmDescription"
+                                  "appearance.styling.form.deleteConfirmDescription",
                                 )}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
@@ -301,10 +338,12 @@ export const StylingsConfigurationForm: React.FC<{
                                 className="flex w-full font-normal text-base"
                                 values={colorOverrides.map((color) => ({
                                   value: color,
-                                  label: colorsLabels[color],
+                                  label: t(
+                                    `appearance.styling.colors.${color}`,
+                                  ),
                                 }))}
                                 searchLabel={t(
-                                  "appearance.styling.form.selectColorOverrideType"
+                                  "appearance.styling.form.selectColorOverrideType",
                                 )}
                                 value={field.value}
                                 onItemSelect={field.onChange}

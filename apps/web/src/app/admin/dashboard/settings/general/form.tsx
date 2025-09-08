@@ -1,34 +1,34 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Language, languages, useI18n } from "@vivid/i18n";
+import { languages, useI18n } from "@vivid/i18n";
 import { GeneralConfiguration, generalConfigurationSchema } from "@vivid/types";
 import {
+  AssetSelectorInput,
+  Combobox,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  IComboboxItem,
   InfoTooltip,
   Input,
-  AssetSelectorInput,
   PhoneInput,
   SaveButton,
   TagInput,
   Textarea,
   toastPromise,
-  Combobox,
-  IComboboxItem,
 } from "@vivid/ui";
+import { getTimeZones } from "@vvo/tzdb";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { getTimeZones } from "@vvo/tzdb";
 
-import { updateGeneralConfiguration } from "./actions";
 import { LanguageOptions } from "@/constants/texts";
+import { updateGeneralConfiguration } from "./actions";
 
 const timeZones = getTimeZones();
 const timeZoneValues: IComboboxItem[] = timeZones.map((zone) => ({
@@ -60,7 +60,7 @@ export const GeneralSettingsForm: React.FC<{
         {
           success: t("settings.general.form.toasts.changesSaved"),
           error: t("settings.general.form.toasts.requestError"),
-        }
+        },
       );
 
       if (data.language !== values.language && window?.location) {
@@ -137,7 +137,7 @@ export const GeneralSettingsForm: React.FC<{
                     autoResize
                     disabled={loading}
                     placeholder={t(
-                      "settings.general.form.descriptionPlaceholder"
+                      "settings.general.form.descriptionPlaceholder",
                     )}
                     {...field}
                   />
@@ -339,7 +339,7 @@ export const GeneralSettingsForm: React.FC<{
                         (zone) =>
                           (zone.label as string)
                             .toLocaleLowerCase()
-                            .indexOf(search.toLocaleLowerCase()) >= 0
+                            .indexOf(search.toLocaleLowerCase()) >= 0,
                       )
                     }
                     value={field.value}

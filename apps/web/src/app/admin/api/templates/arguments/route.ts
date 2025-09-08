@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing templates arguments API request"
+    "Processing templates arguments API request",
   );
 
   const params = request.nextUrl.searchParams;
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     await ServicesContainer.ConfigurationService().getConfigurations(
       "booking",
       "general",
-      "social"
+      "social",
     );
 
   let appointment: Appointment | null = null;
@@ -52,21 +52,21 @@ export async function GET(request: NextRequest) {
       logger.warn({ appointmentId }, "Appointment not found");
       return NextResponse.json(
         { error: "appointment_not_found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     customer = appointment.customer;
   } else {
     const _customer = await ServicesContainer.CustomersService().getCustomer(
-      customerId!
+      customerId!,
     );
 
     if (!_customer) {
       logger.warn({ customerId }, "Customer not found");
       return NextResponse.json(
         { error: "customer_not_found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
       customerId,
       argumentCount: Object.keys(args).length,
     },
-    "Successfully retrieved template arguments"
+    "Successfully retrieved template arguments",
   );
 
   const headers = new Headers();

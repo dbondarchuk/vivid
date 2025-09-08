@@ -92,7 +92,7 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
         "flex flex-row gap-2 px-2 py-4 bg-background rounded",
         variants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
-        })
+        }),
       )}
       ref={setNodeRef}
       style={style}
@@ -148,7 +148,7 @@ export const SelectFieldOptionCard: React.FC<SelectFieldOptionProps> = ({
               </AlertDialogTitle>
               <AlertDialogDescription>
                 {t(
-                  "services.fields.selectFieldOptionCard.deleteConfirmDescription"
+                  "services.fields.selectFieldOptionCard.deleteConfirmDescription",
                 )}
               </AlertDialogDescription>
             </AlertDialogHeader>

@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
+import { OUTLOOK_APP_NAME } from "./const";
 import { OutlookLogo } from "./logo";
 import { OutlookAppSetup } from "./setup";
-import { OUTLOOK_APP_NAME } from "./const";
 
 import image1 from "./images/1.jpg";
 import image2 from "./images/2.jpg";

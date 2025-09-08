@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing services options API request"
+    "Processing services options API request",
   );
 
   const options = await ServicesContainer.ServicesService().getOptions({});
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       total: options.total,
       count: options.items.length,
     },
-    "Successfully retrieved service options"
+    "Successfully retrieved service options",
   );
 
   const headers = new Headers();

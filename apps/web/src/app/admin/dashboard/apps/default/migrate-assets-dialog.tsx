@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { AssetsMigrateRequest } from "@vivid/types";
 import {
   AppSelector,
@@ -15,7 +16,6 @@ import {
   toast,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 
 export const MigrateAssetsDialog: React.FC<{
   appId: string;

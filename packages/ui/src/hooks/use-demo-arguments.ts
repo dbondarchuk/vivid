@@ -5,7 +5,7 @@ export const useDemoArguments = (noAppointment?: boolean) => {
 
   const getDemoArguments = async () => {
     const response = await fetch(
-      `/admin/api/templates/arguments/demo${noAppointment ? "?noAppointment=true" : ""}`
+      `/admin/api/templates/arguments/demo${noAppointment ? "?noAppointment=true" : ""}`,
     );
     return await response.json();
   };

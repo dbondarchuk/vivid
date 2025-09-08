@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing templates arguments demo API request"
+    "Processing templates arguments demo API request",
   );
 
   const searchParams = request.nextUrl.searchParams;
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     await ServicesContainer.ConfigurationService().getConfigurations(
       "booking",
       "general",
-      "social"
+      "social",
     );
   const demoArguments = getArguments({
     appointment:

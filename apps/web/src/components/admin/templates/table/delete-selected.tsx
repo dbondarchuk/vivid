@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { Template } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,7 +19,6 @@ import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { deleteSelectedTemplates } from "../actions";
-import { Template } from "@vivid/types";
 
 export const DeleteSelectedTemplatesButton: React.FC<{
   selected: Template[];
@@ -37,7 +37,7 @@ export const DeleteSelectedTemplatesButton: React.FC<{
         {
           success: t("templates.table.deleteSelected.success"),
           error: t("templates.table.deleteSelected.error"),
-        }
+        },
       );
 
       router.refresh();

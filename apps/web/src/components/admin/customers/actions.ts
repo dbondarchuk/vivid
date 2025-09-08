@@ -18,7 +18,7 @@ export async function create(customer: CustomerUpdateModel) {
       knownEmailsCount: customer.knownEmails?.length || 0,
       knownPhonesCount: customer.knownPhones?.length || 0,
     },
-    "Creating new customer"
+    "Creating new customer",
   );
 
   try {
@@ -31,7 +31,7 @@ export async function create(customer: CustomerUpdateModel) {
         customerName: customer.name,
         customerEmail: customer.email,
       },
-      "Customer created successfully"
+      "Customer created successfully",
     );
 
     return result;
@@ -42,7 +42,7 @@ export async function create(customer: CustomerUpdateModel) {
         customerEmail: customer.email,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create customer"
+      "Failed to create customer",
     );
     throw error;
   }
@@ -60,7 +60,7 @@ export async function update(_id: string, update: CustomerUpdateModel) {
       knownEmailsCount: update.knownEmails?.length || 0,
       knownPhonesCount: update.knownPhones?.length || 0,
     },
-    "Updating customer"
+    "Updating customer",
   );
 
   try {
@@ -72,7 +72,7 @@ export async function update(_id: string, update: CustomerUpdateModel) {
         customerName: update.name,
         customerEmail: update.email,
       },
-      "Customer updated successfully"
+      "Customer updated successfully",
     );
 
     return okStatus;
@@ -84,7 +84,7 @@ export async function update(_id: string, update: CustomerUpdateModel) {
         customerEmail: update.email,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update customer"
+      "Failed to update customer",
     );
     throw error;
   }
@@ -97,7 +97,7 @@ export async function deleteCustomer(_id: string) {
     {
       customerId: _id,
     },
-    "Deleting customer"
+    "Deleting customer",
   );
 
   try {
@@ -114,7 +114,7 @@ export async function deleteCustomer(_id: string) {
         customerName: customer.name,
         customerEmail: customer.email,
       },
-      "Customer deleted successfully"
+      "Customer deleted successfully",
     );
 
     return okStatus;
@@ -124,7 +124,7 @@ export async function deleteCustomer(_id: string) {
         customerId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete customer"
+      "Failed to delete customer",
     );
     throw error;
   }
@@ -138,7 +138,7 @@ export async function deleteSelected(ids: string[]) {
       customerIds: ids,
       count: ids.length,
     },
-    "Deleting selected customers"
+    "Deleting selected customers",
   );
 
   try {
@@ -149,7 +149,7 @@ export async function deleteSelected(ids: string[]) {
         customerIds: ids,
         count: ids.length,
       },
-      "Selected customers deleted successfully"
+      "Selected customers deleted successfully",
     );
 
     return okStatus;
@@ -160,7 +160,7 @@ export async function deleteSelected(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected customers"
+      "Failed to delete selected customers",
     );
     throw error;
   }
@@ -175,7 +175,7 @@ export async function mergeSelected(targetId: string, ids: string[]) {
       customerIdsToMerge: ids,
       count: ids.length,
     },
-    "Merging selected customers"
+    "Merging selected customers",
   );
 
   try {
@@ -187,7 +187,7 @@ export async function mergeSelected(targetId: string, ids: string[]) {
         customerIdsToMerge: ids,
         count: ids.length,
       },
-      "Selected customers merged successfully"
+      "Selected customers merged successfully",
     );
 
     return okStatus;
@@ -199,7 +199,7 @@ export async function mergeSelected(targetId: string, ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to merge selected customers"
+      "Failed to merge selected customers",
     );
     throw error;
   }
@@ -208,7 +208,7 @@ export async function mergeSelected(targetId: string, ids: string[]) {
 export async function checkUniqueEmailAndPhone(
   emails: string[],
   phones: string[],
-  _id?: string
+  _id?: string,
 ) {
   const actionLogger = logger("checkUniqueEmailAndPhone");
 
@@ -218,7 +218,7 @@ export async function checkUniqueEmailAndPhone(
       customerPhones: phones,
       excludeId: _id,
     },
-    "Checking customer email and phone uniqueness"
+    "Checking customer email and phone uniqueness",
   );
 
   try {
@@ -226,7 +226,7 @@ export async function checkUniqueEmailAndPhone(
       await ServicesContainer.CustomersService().checkUniqueEmailAndPhone(
         emails,
         phones,
-        _id
+        _id,
       );
 
     actionLogger.debug(
@@ -236,7 +236,7 @@ export async function checkUniqueEmailAndPhone(
         excludeId: _id,
         isUnique: result,
       },
-      "Customer email and phone uniqueness check completed"
+      "Customer email and phone uniqueness check completed",
     );
 
     return result;
@@ -248,7 +248,7 @@ export async function checkUniqueEmailAndPhone(
         excludeId: _id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check customer email and phone uniqueness"
+      "Failed to check customer email and phone uniqueness",
     );
     throw error;
   }

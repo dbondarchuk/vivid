@@ -18,12 +18,12 @@ export default class LogCleanupConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: LogCleanupConfiguration
+    data: LogCleanupConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, amount: data.amount, type: data.type },
-      "Processing log cleanup configuration request"
+      "Processing log cleanup configuration request",
     );
 
     try {
@@ -44,14 +44,14 @@ export default class LogCleanupConnectedApp
           type: data.type,
           status: status.status,
         },
-        "Successfully configured log cleanup"
+        "Successfully configured log cleanup",
       );
 
       return status;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error processing log cleanup configuration"
+        "Error processing log cleanup configuration",
       );
 
       this.props.update({
@@ -67,7 +67,7 @@ export default class LogCleanupConnectedApp
     const logger = this.loggerFactory("onTime");
     logger.debug(
       { appId: appData._id, date: date.toISOString() },
-      "Log cleanup scheduled task triggered"
+      "Log cleanup scheduled task triggered",
     );
 
     try {
@@ -75,7 +75,7 @@ export default class LogCleanupConnectedApp
       if (!data) {
         logger.debug(
           { appId: appData._id },
-          "No configuration found, using defaults"
+          "No configuration found, using defaults",
         );
         data = {} as LogCleanupConfiguration;
       }
@@ -83,7 +83,7 @@ export default class LogCleanupConnectedApp
       if (!data.amount) {
         logger.debug(
           { appId: appData._id, defaultAmount: 1 },
-          "No amount configured, using default"
+          "No amount configured, using default",
         );
         data.amount = 1;
       }
@@ -91,14 +91,14 @@ export default class LogCleanupConnectedApp
       if (!data.type) {
         logger.debug(
           { appId: appData._id, defaultType: "months" },
-          "No type configured, using default"
+          "No type configured, using default",
         );
         data.type = "months";
       }
 
       logger.debug(
         { appId: appData._id, amount: data.amount, type: data.type },
-        "Log cleanup configuration resolved"
+        "Log cleanup configuration resolved",
       );
 
       const { timeZone } = await this.props.services
@@ -107,7 +107,7 @@ export default class LogCleanupConnectedApp
 
       logger.debug(
         { appId: appData._id, timeZone },
-        "Retrieved timezone configuration"
+        "Retrieved timezone configuration",
       );
 
       const dateTime = DateTime.fromJSDate(date).setZone(timeZone);
@@ -119,20 +119,20 @@ export default class LogCleanupConnectedApp
           hour: dateTime.hour,
           minute: dateTime.minute,
         },
-        "Checking if cleanup should run at this time"
+        "Checking if cleanup should run at this time",
       );
 
       if (dateTime.hour !== 3 || dateTime.minute !== 0) {
         logger.debug(
           { appId: appData._id, hour: dateTime.hour, minute: dateTime.minute },
-          "Not cleanup time (3:00 AM), skipping"
+          "Not cleanup time (3:00 AM), skipping",
         );
         return;
       }
 
       logger.debug(
         { appId: appData._id, amount: data.amount, type: data.type },
-        "Calculating cleanup threshold date"
+        "Calculating cleanup threshold date",
       );
 
       const maxDate = dateTime.minus({
@@ -147,13 +147,13 @@ export default class LogCleanupConnectedApp
           type: data.type,
         },
         `Cleaning up logs older than ${maxDate.toLocaleString(
-          DateTime.DATETIME_FULL_WITH_SECONDS
-        )}`
+          DateTime.DATETIME_FULL_WITH_SECONDS,
+        )}`,
       );
 
       logger.debug(
         { appId: appData._id, maxDate: maxDate.toISO() },
-        "Calling communication logs service to clear old logs"
+        "Calling communication logs service to clear old logs",
       );
 
       await this.props.services
@@ -162,12 +162,12 @@ export default class LogCleanupConnectedApp
 
       logger.info(
         { appId: appData._id, maxDate: maxDate.toISO() },
-        "Successfully completed log cleanup"
+        "Successfully completed log cleanup",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, date: date.toISOString(), error },
-        "Error during log cleanup scheduled task"
+        "Error during log cleanup scheduled task",
       );
 
       this.props.update({

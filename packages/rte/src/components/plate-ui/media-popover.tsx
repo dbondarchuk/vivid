@@ -40,7 +40,7 @@ export function MediaPopover({ children, plugin }: MediaPopoverProps) {
 
   const selectionCollapsed = useEditorSelector(
     (editor) => !editor.api.isExpanded(),
-    []
+    [],
   );
   const isOpen = !readOnly && selected && selectionCollapsed;
   const isEditing = useFloatingMediaValue("isEditing");

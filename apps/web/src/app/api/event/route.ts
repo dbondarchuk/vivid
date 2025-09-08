@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing event API request"
+    "Processing event API request",
   );
 
   const formData = await request.formData();
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         error: "json_missing",
         message: "JSON with event data is missing",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       dateTime: appointmentRequest.dateTime,
       hasPaymentIntent: !!appointmentRequest.paymentIntentId,
     },
-    "Processing appointment request"
+    "Processing appointment request",
   );
 
   let files: Record<string, File> | undefined = undefined;
@@ -71,13 +71,13 @@ export async function POST(request: NextRequest) {
             [fileField]: file,
           };
         },
-        {} as Record<string, File>
+        {} as Record<string, File>,
       );
     } catch (e: any) {
       logger.warn({ error: e?.message }, "File upload error");
       return NextResponse.json(
         { success: false, error: "file_not_uploaded", message: e?.message },
-        { status: 400 }
+        { status: 400 },
       );
     }
   }
@@ -86,13 +86,13 @@ export async function POST(request: NextRequest) {
     {
       fileCount: files ? Object.keys(files).length : 0,
     },
-    "Processing files"
+    "Processing files",
   );
 
   const eventOrError = await getAppointmentEventAndIsPaymentRequired(
     appointmentRequest,
     false,
-    files
+    files,
   );
 
   if ("error" in eventOrError) {
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
         message: eventOrError.error.message,
         status: eventOrError.error.status,
       },
-      "Appointment event creation failed"
+      "Appointment event creation failed",
     );
     return NextResponse.json(
       {
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         error: eventOrError.error.code,
         message: eventOrError.error.message,
       },
-      { status: eventOrError.error.status }
+      { status: eventOrError.error.status },
     );
   }
 
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
       logger.warn("Payment required but no payment intent provided");
       return NextResponse.json(
         { success: false, error: "payment_required" },
-        { status: 402 }
+        { status: 402 },
       ); // Payment required
     }
 
@@ -130,18 +130,18 @@ export async function POST(request: NextRequest) {
       logger.warn({ paymentIntentId }, "Payment intent not found");
       return NextResponse.json(
         { success: false, error: "payment_intent_not_found" },
-        { status: 402 }
+        { status: 402 },
       ); // Payment required
     }
 
     if (paymentIntent.status !== "paid") {
       logger.warn(
         { paymentIntentId, status: paymentIntent.status },
-        "Payment not paid"
+        "Payment not paid",
       );
       return NextResponse.json(
         { success: false, error: "payment_not_paid" },
-        { status: 402 }
+        { status: 402 },
       ); // Payment required
     }
 
@@ -152,11 +152,11 @@ export async function POST(request: NextRequest) {
           paymentAmount: paymentIntent.amount,
           requiredAmount: eventOrError.amount,
         },
-        "Payment amount mismatch"
+        "Payment amount mismatch",
       );
       return NextResponse.json(
         { success: false, error: "payment_amount_dont_match" },
-        { status: 402 }
+        { status: 402 },
       ); // Payment required
     }
   } else if (paymentIntentId) {
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
     } else if (paymentIntent.status !== "paid") {
       logger.warn(
         { paymentIntentId },
-        "Payment intent is not paid. Removing it"
+        "Payment intent is not paid. Removing it",
       );
       paymentIntentId = undefined;
     }
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
         customerName: appointmentRequest.fields.name,
         isPaymentRequired: eventOrError.isPaymentRequired,
       },
-      "Successfully created appointment event"
+      "Successfully created appointment event",
     );
 
     return NextResponse.json({ success: true, id: _id }, { status: 201 });
@@ -200,12 +200,12 @@ export async function POST(request: NextRequest) {
       logger.warn({ error: e?.message }, "Appointment time not available");
       return NextResponse.json(
         { success: false, error: "time_not_available", message: e?.message },
-        { status: 400 }
+        { status: 400 },
       );
     } else {
       logger.error(
         { error: e?.message || e?.toString() },
-        "Error creating appointment event"
+        "Error creating appointment event",
       );
       throw e;
     }

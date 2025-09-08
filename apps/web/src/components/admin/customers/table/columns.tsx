@@ -1,11 +1,7 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@vivid/i18n";
-import {
-  AppointmentEntity,
-  AppointmentOption,
-  CustomerListModel,
-} from "@vivid/types";
+import { AppointmentEntity, CustomerListModel } from "@vivid/types";
 import {
   Checkbox,
   Link,
@@ -13,9 +9,9 @@ import {
   tableSortNoopFunction,
 } from "@vivid/ui";
 import { DateTime } from "luxon";
-import { CellAction } from "./cell-action";
 import Image from "next/image";
 import React from "react";
+import { CellAction } from "./cell-action";
 
 const AppointmentCell: React.FC<{ appointment?: AppointmentEntity }> = ({
   appointment,
@@ -30,7 +26,7 @@ const AppointmentCell: React.FC<{ appointment?: AppointmentEntity }> = ({
       {appointment.option.name} at{" "}
       {DateTime.fromJSDate(appointment.dateTime).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       )}
     </Link>
   ) : (
@@ -124,7 +120,7 @@ export const columns: ColumnDef<CustomerListModel>[] = [
     header: tableSortHeader(
       "customers.table.columns.lastAppointment",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -136,7 +132,7 @@ export const columns: ColumnDef<CustomerListModel>[] = [
     header: tableSortHeader(
       "customers.table.columns.nextAppointment",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -153,7 +149,7 @@ export const columns: ColumnDef<CustomerListModel>[] = [
     header: tableSortHeader(
       "customers.table.columns.appointments",
       "number",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },

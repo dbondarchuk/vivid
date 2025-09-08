@@ -18,7 +18,7 @@ export interface ICommunicationLogsService {
       range?: DateRange;
       customerId?: string | string[];
       appointmentId?: string;
-    }
+    },
   ): Promise<WithTotal<CommunicationLog>>;
   clearAllLogs(): Promise<void>;
   clearSelectedLogs(ids: string[]): Promise<void>;

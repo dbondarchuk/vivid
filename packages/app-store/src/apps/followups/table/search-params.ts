@@ -11,7 +11,7 @@ import { baseSearchParams } from "@vivid/ui";
 export const searchParams = {
   ...baseSearchParams,
   channel: parseAsArrayOf(
-    parseAsStringEnum(communicationChannels.flat())
+    parseAsStringEnum(communicationChannels.flat()),
   ).withDefault(communicationChannels.flat()),
   sort: baseSearchParams.sort.withDefault([
     {

@@ -43,16 +43,16 @@ export const ReminderForm: React.FC<{
   const uses12HourFormat = use12HourFormat();
 
   const reminderTypeValues = Object.entries(reminderTypeLabels).map(
-    ([value, label]) => ({ value, label: t(label) }) as IComboboxItem
+    ([value, label]) => ({ value, label: t(label) }) as IComboboxItem,
   );
 
   const reminderChannelValues = Object.entries(reminderChannelLabels).map(
-    ([value, label]) => ({ value, label: t(label) }) as IComboboxItem
+    ([value, label]) => ({ value, label: t(label) }) as IComboboxItem,
   );
 
   const formSchema = getReminderSchemaWithUniqueCheck(
     (name) => checkUniqueName(appId, name, initialData?._id),
-    t("reminders.form.name.validation.unique")
+    t("reminders.form.name.validation.unique"),
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -75,7 +75,7 @@ export const ReminderForm: React.FC<{
         if (!initialData?._id) {
           const { _id } = await create(appId, data);
           router.push(
-            `/admin/dashboard/communications/reminders/edit?id=${_id}`
+            `/admin/dashboard/communications/reminders/edit?id=${_id}`,
           );
         } else {
           await update(appId, initialData._id, data);

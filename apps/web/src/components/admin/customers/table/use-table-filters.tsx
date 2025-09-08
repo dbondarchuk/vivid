@@ -9,7 +9,7 @@ export function useCustomersTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);
