@@ -98,6 +98,13 @@ export const useFloatingLinkInsert = ({
       [setOption],
     );
 
+  const onNewTabChange = React.useCallback(
+    (checked: boolean) => {
+      setOption("newTab", checked);
+    },
+    [setOption],
+  );
+
   const window = useWindow();
 
   const ref = useOnClickOutside(
@@ -141,7 +148,7 @@ export const useFloatingLinkInsert = ({
 
   useFloatingLinkEscape();
 
-  const { text, updated } = getOptions();
+  const { text, newTab, updated } = getOptions();
 
   const updatedValue = React.useCallback(
     (el: HTMLInputElement) => {
@@ -151,6 +158,19 @@ export const useFloatingLinkInsert = ({
     },
     [getOptions, updated],
   );
+
+  const updatedNewTabValue = React.useCallback(
+    (el: HTMLInputElement) => {
+      if (el && updated) {
+        el.checked = getOptions().newTab;
+      }
+    },
+    [getOptions, updated],
+  );
+
+  const apply = React.useCallback(() => {
+    submitFloatingLink(editor);
+  }, [editor]);
 
   return {
     hidden: readOnly || !isOpen,
@@ -166,6 +186,12 @@ export const useFloatingLinkInsert = ({
       ref: updatedValue,
       onChange,
     },
+    openInNewTabInputProps: {
+      defaultValue: newTab,
+      onCheckedChange: onNewTabChange,
+      ref: updatedNewTabValue,
+    },
+    apply,
   };
 };
 
