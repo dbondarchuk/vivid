@@ -132,7 +132,10 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
           const collisionData = manager.collisionObserver.collisions[0]?.data;
           if (collisionData) {
             const collisionPosition =
-              collisionData?.direction === "up" ? "before" : "after";
+              collisionData?.direction === "up" ||
+              collisionData?.direction === "left"
+                ? "before"
+                : "after";
             modifier = collisionPosition === "after" ? 1 : 0;
           } else {
             const position =
@@ -197,7 +200,10 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
       const collisionData = manager.collisionObserver.collisions[0]?.data;
       if (collisionData) {
         const collisionPosition =
-          collisionData?.direction === "up" ? "before" : "after";
+          collisionData?.direction === "up" ||
+          collisionData?.direction === "left"
+            ? "before"
+            : "after";
         modifier = collisionPosition === "after" ? 1 : 0;
       } else {
         const { dragOperation } = sourceManager;
