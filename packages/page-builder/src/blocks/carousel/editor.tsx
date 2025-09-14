@@ -18,7 +18,7 @@ import { CarouselProps, styles } from "./schema";
 
 const CarouselItemWrapper = memo(
   ({ children }: { children: React.ReactNode }) => (
-    <CarouselItem className="carousel-item">{children}</CarouselItem>
+    <CarouselItem className="carousel-item pl-4">{children}</CarouselItem>
   ),
 );
 

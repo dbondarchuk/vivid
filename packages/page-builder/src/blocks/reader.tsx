@@ -21,7 +21,7 @@ import { PageHeroReader } from "./page-hero/reader";
 import { PageLayoutReader } from "./page-layout/reader";
 import { PopupReader } from "./popup/reader";
 import { EditorBlocksSchema } from "./schema";
-import { Spacer } from "./spacer/reader";
+import { SpacerReader } from "./spacer/reader";
 import { TextReader } from "./text/reader";
 import { Video } from "./video";
 import { YouTubeVideoReader } from "./youtube-video/reader";
@@ -44,11 +44,8 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   Icon: {
     Reader: Icon,
   },
-  // Divider: {
-  //   Reader: Divider,
-  // },
   Spacer: {
-    Reader: Spacer,
+    Reader: SpacerReader,
   },
   PageLayout: {
     Reader: PageLayoutReader,
@@ -59,9 +56,6 @@ export const ReaderBlocks: ReaderDocumentBlocksDictionary<
   Container: {
     Reader: ContainerReader,
   },
-  // // Columns: {
-  // //   Reader: ColumnsContainerReader,
-  // // },
   ConditionalContainer: {
     Reader: ConditionalContainerReader,
   },

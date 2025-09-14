@@ -1,12 +1,14 @@
 "use client";
 
 import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
-import { Spacer } from "./reader";
+import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { SpacerProps } from "./schema";
+import { Spacer } from "./spacer";
 
 export const SpacerEditor = ({}) => {
   const currentBlock = useCurrentBlock<SpacerProps>();
-  const overlayProps = useBlockEditor(currentBlock.id);
+  const resizeProps = useResizeBlockStyles();
+  const overlayProps = useBlockEditor(currentBlock.id, resizeProps);
 
   return (
     <Spacer {...currentBlock.data} block={currentBlock} {...overlayProps} />

@@ -1,6 +1,6 @@
 import { Divider } from "./divider";
 import { DividerProps } from "./schema";
 
-export const DividerReader = (props: DividerProps) => {
-  return <Divider {...props} />;
+export const DividerReader = ({ props, style }: DividerProps) => {
+  return <Divider props={props} style={style} />;
 };
