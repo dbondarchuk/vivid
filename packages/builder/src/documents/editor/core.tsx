@@ -1,5 +1,4 @@
 import React, { memo, useMemo } from "react";
-import { EditorBlockWrapper } from "../blocks/helpers/block-wrappers/editor-block-wrapper";
 import { templateProps } from "../helpers/template-props";
 import { BaseBlockProps } from "../types";
 import {
@@ -33,17 +32,7 @@ export const CoreEditorBlock: React.FC<{
 
     if (rootBlockType === block.type) return <Component {...block.data} />;
 
-    // console.log("CoreEditorBlock - rerender", type, data);
-
-    return (
-      <EditorBlockWrapper
-        index={index}
-        parentBlockId={parentBlockId}
-        parentProperty={parentProperty}
-      >
-        <Component {...block.data} base={block.base} {...additionalProps} />
-      </EditorBlockWrapper>
-    );
+    return <Component {...block.data} base={block.base} {...additionalProps} />;
   },
 );
 

@@ -1,15 +1,20 @@
 "use client";
 
-import { useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { icons } from "lucide-react";
+import { Ref } from "react";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
+import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { IconProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
 export const IconEditor = ({ props, style }: IconProps) => {
   const currentBlock = useCurrentBlock<IconProps>();
+  const onResize = useResizeBlockStyles();
+  const overlayProps = useBlockEditor(currentBlock.id, onResize);
+
   const iconName = (currentBlock?.data?.props as any)?.icon ?? "Star";
   const base = currentBlock?.base;
 
@@ -29,7 +34,12 @@ export const IconEditor = ({ props, style }: IconProps) => {
         isEditor
       />
 
-      <IconComponent className={cn(className, base?.className)} />
+      <IconComponent
+        className={cn(className, base?.className)}
+        id={base?.id}
+        onClick={overlayProps.onClick}
+        ref={overlayProps.ref as Ref<SVGSVGElement>}
+      />
     </>
   );
 };

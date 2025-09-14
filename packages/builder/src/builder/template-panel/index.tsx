@@ -9,8 +9,10 @@ import { effect } from "@dnd-kit/state";
 import { Tabs, useThrottleCallback } from "@vivid/ui";
 import { ComponentProps, memo } from "react";
 import {
+  getActiveOverBlockContext,
   useDisableAnimation,
   useDispatchAction,
+  useEditorStateStore,
   useSelectedScreenSize,
   useSelectedView,
   useSetActiveDragBlockId,
@@ -80,6 +82,8 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
 
     const setDisableAnimation = useSetDisableAnimation();
 
+    const store = useEditorStateStore();
+
     const onDragStart: ComponentProps<
       typeof DragDropProvider
     >["onDragStart"] = (event) => {
@@ -112,18 +116,16 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
     const onDragOver: ComponentProps<typeof DragDropProvider>["onDragOver"] =
       useThrottleCallback(
         (event, manager) => {
-          const sourceContext = event.operation.source?.data
-            .context as DndContext;
           const targetContext = event.operation.target?.data
             .context as DndContext;
           if (!targetContext) {
-            setActiveOverBlock(null);
+            // We don't want to reset the active over block if we are dragging over a block that is not a sortable block
             return;
           }
 
           const { dragOperation } = event.operation.source?.manager ?? {};
           if (!dragOperation) {
-            setActiveOverBlock(null);
+            // We don't want to reset the active over block if we are dragging over a block that is not a sortable block
             return;
           }
 
@@ -155,9 +157,6 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
             property: targetContext.parentProperty,
             index,
           });
-
-          // setCurrentOverBlock({ id, context: event.operation.target?.data.context });
-          // event.preventDefault();
         },
         [setActiveOverBlock],
         100,
@@ -167,6 +166,8 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
       event,
       manager,
     ) => {
+      const activeOverBlock = getActiveOverBlockContext(store.getState());
+
       setActiveDragBlock(null);
       setActiveOverBlock(null);
 
@@ -185,47 +186,13 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
       const activeId = event.operation.source?.id as string;
       if (!activeId) return;
 
-      const overId = event.operation.target?.id as string;
-      if (!overId) return;
-
-      const sourceContext = event.operation.source?.data.context as DndContext;
-      const targetContext = event.operation.target?.data.context as DndContext;
-
-      const sourceManager = event.operation.source?.manager;
-      const target = event.operation.target;
-      if (!targetContext || !sourceManager || !target) return;
-
-      let modifier = 0;
-
-      const collisionData = manager.collisionObserver.collisions[0]?.data;
-      if (collisionData) {
-        const collisionPosition =
-          collisionData?.direction === "up" ||
-          collisionData?.direction === "left"
-            ? "before"
-            : "after";
-        modifier = collisionPosition === "after" ? 1 : 0;
-      } else {
-        const { dragOperation } = sourceManager;
-        const position =
-          dragOperation.shape?.current.center ?? dragOperation.position.current;
-        const isBelowTarget =
-          target.shape &&
-          Math.round(position.y) > Math.round(target.shape.center.y);
-        modifier = isBelowTarget ? 1 : 0;
-      }
-
-      let index = targetContext.index + modifier;
+      if (!activeOverBlock) return;
 
       // Handle block template drop
-
       if (activeId.startsWith("template-")) {
         const blockData = event.operation.source?.data;
 
         if (blockData?.type === "block-template") {
-          const parentBlockId = targetContext.parentBlockId;
-          const parentProperty = targetContext.parentProperty;
-
           const newBlock: TEditorBlock = {
             id: generateId(),
             type: blockData.blockType,
@@ -239,9 +206,9 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
             type: "add-block",
             value: {
               block: newBlock,
-              parentBlockId,
-              parentBlockProperty: parentProperty,
-              index,
+              parentBlockId: activeOverBlock.blockId,
+              parentBlockProperty: activeOverBlock.property,
+              index: activeOverBlock.index,
             },
           });
 
@@ -249,22 +216,13 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
         }
       }
 
-      // if (
-      //   sourceContext.parentBlockId === targetContext.parentBlockId &&
-      //   sourceContext.parentProperty === targetContext.parentProperty &&
-      //   targetContext.index > sourceContext.index
-      // ) {
-      //   index = index - 1;
-      // }
-
-      // } else {
       dispatchAction({
         type: "move-block",
         value: {
           blockId: activeId,
-          parentBlockId: targetContext.parentBlockId,
-          parentBlockProperty: targetContext.parentProperty,
-          index,
+          parentBlockId: activeOverBlock.blockId,
+          parentBlockProperty: activeOverBlock.property,
+          index: activeOverBlock.index,
         },
       });
       // }
@@ -281,8 +239,6 @@ export const TemplatePanel: React.FC<TemplatePanelProps> = memo(
               args[0].preventDefault();
               onDragOver(...args);
             }}
-            // plugins={defaultPreset.plugins}
-            // collisionDetection={customCollisionDetectionAlgorithm}
           >
             <div className="relative flex h-full">
               {selectedView === "editor" && (

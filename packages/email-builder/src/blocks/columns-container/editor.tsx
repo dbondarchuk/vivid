@@ -1,17 +1,23 @@
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorChildren,
+  useBlockEditor,
+  useCurrentBlock,
+} from "@vivid/builder";
 import { BaseColumnsContainer } from "./base";
 import { ColumnsContainerProps } from "./schema";
 
-export default function ColumnsContainerEditor({
+export const ColumnsContainerEditor = ({
   style,
   props,
-}: ColumnsContainerProps) {
+}: ColumnsContainerProps) => {
   const currentBlock = useCurrentBlock<ColumnsContainerProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const { columns, ...restProps } = currentBlock.data?.props ?? {};
 
   return (
     <BaseColumnsContainer
+      {...overlayProps}
       props={restProps}
       style={currentBlock.data?.style}
       columns={[
@@ -21,4 +27,4 @@ export default function ColumnsContainerEditor({
       ]}
     />
   );
-}
+};

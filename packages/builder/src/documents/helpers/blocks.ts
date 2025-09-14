@@ -31,13 +31,17 @@ const findChildrenProp = (obj: any): any[] => {
   return result;
 };
 
-export const deleteBlockInLevel = (block: TEditorBlock, blockId: string) => {
-  const childrenProps = findChildrenProp(block.data);
+export const deleteBlockInLevel = (
+  block: TEditorBlock,
+  blockId: string,
+  property?: string,
+) => {
+  const childrenProps = findChildrenProps(block.data, []);
   let toRemove = -1;
   for (const prop of childrenProps) {
     for (let i = 0; i < prop.children.length; i++) {
       const child = prop.children[i] as TEditorBlock;
-      if (child?.id === blockId) {
+      if (child?.id === blockId && (!property || prop.property === property)) {
         toRemove = i;
         break;
       }

@@ -1,10 +1,11 @@
 "use client";
 
-import { useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
 import { CustomHTMLProps } from "./schema";
 
 export const CustomHTMLEditor = () => {
   const currentBlock = useCurrentBlock<CustomHTMLProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
   const html = (currentBlock?.data?.props as any)?.html ?? "";
   const base = currentBlock?.base;
 
@@ -12,6 +13,7 @@ export const CustomHTMLEditor = () => {
     <div
       className={base?.className}
       id={base?.id}
+      {...overlayProps}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

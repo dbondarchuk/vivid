@@ -31,7 +31,20 @@ export type ScheduleProps = {
   isEditor?: boolean;
 };
 
-export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
+export const Schedule: React.FC<
+  ScheduleProps & React.HTMLAttributes<HTMLDivElement>
+> = ({
+  appointmentOption,
+  goBack,
+  successPage,
+  fieldsSchema,
+  timeZone,
+  showPromoCode,
+  className,
+  id,
+  isEditor,
+  ...props
+}) => {
   const i18n = useI18n("translation");
 
   const errors = React.useMemo(
@@ -55,7 +68,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
   const topRef = React.createRef<HTMLDivElement>();
 
-  const appointmentOptionDuration = props.appointmentOption.duration;
+  const appointmentOptionDuration = appointmentOption.duration;
   const [duration, setDuration] = React.useState<number | undefined>(
     appointmentOptionDuration,
   );
@@ -69,9 +82,9 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   }, [appointmentOptionDuration, setDuration]);
 
   let initialStep: StepType = "duration";
-  if (props.appointmentOption.addons && props.appointmentOption.addons.length) {
+  if (appointmentOption.addons && appointmentOption.addons.length) {
     initialStep = "addons";
-  } else if (props.appointmentOption.duration) initialStep = "calendar";
+  } else if (appointmentOption.duration) initialStep = "calendar";
 
   const [step, setStep] = React.useState<StepType>(initialStep);
   const [dateTime, setDateTime] = React.useState<DateTime | undefined>(
@@ -84,10 +97,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
   const addonsFields =
     selectedAddons?.flatMap((addon) => addon.fields || []) || [];
-  const allFormFields = [
-    ...(props.appointmentOption.fields || []),
-    ...addonsFields,
-  ];
+  const allFormFields = [...(appointmentOption.fields || []), ...addonsFields];
   const fieldsIdsRequired = [...allFormFields].reduce(
     (map, field) => ({
       ...map,
@@ -97,10 +107,10 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   );
 
   const formFields = Object.entries(fieldsIdsRequired)
-    .filter(([id]) => !!props.fieldsSchema[id])
+    .filter(([id]) => !!fieldsSchema[id])
     .map(([id, required]) => ({
-      ...props.fieldsSchema[id],
-      required: !!props.fieldsSchema[id].required || required,
+      ...fieldsSchema[id],
+      required: !!fieldsSchema[id].required || required,
     }));
 
   const [availability, setAvailability] = React.useState<Availability>([]);
@@ -172,7 +182,7 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
         .toJSDate(),
       timeZone: dateTime.timeZone,
       duration: duration,
-      optionId: props.appointmentOption._id,
+      optionId: appointmentOption._id,
       addonsIds: selectedAddons?.map((addon) => addon._id),
       promoCode: promoCode?.code,
       paymentIntentId: paymentInformation?.intent?._id,
@@ -274,14 +284,14 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
 
       const { id } = (await response.json()) as WithDatabaseId<any>;
 
-      if (props.successPage) {
+      if (successPage) {
         const expireDate = LuxonDateTime.now().plus({ minutes: 1 });
 
         document.cookie = `appointment_id=${encodeURIComponent(
           id,
         )}; expires=${expireDate.toJSDate().toUTCString()};`;
 
-        router.push(props.successPage);
+        router.push(successPage);
       } else {
         setStep("confirmation");
       }
@@ -299,12 +309,12 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
   }, [step]);
 
   return (
-    <div className="relative" id={props.id}>
+    <div className="relative" id={id} {...props}>
       <div ref={topRef} />
       <ScheduleContext.Provider
         value={{
           selectedAddons,
-          appointmentOption: props.appointmentOption,
+          appointmentOption,
           duration,
           setDiscount: setPromoCode,
           discount: promoCode,
@@ -318,18 +328,18 @@ export const Schedule: React.FC<ScheduleProps> = (props: ScheduleProps) => {
           setDuration,
           setSelectedAddons,
           dateTime,
-          goBack: props.goBack,
-          showPromoCode: props.showPromoCode,
+          goBack,
+          showPromoCode,
           formFields,
-          timeZone: props.timeZone,
+          timeZone,
           availability,
           paymentInformation,
           setPaymentInformation,
           fetchPaymentInformation,
           isFormValid,
           setIsFormValid,
-          className: props.className,
-          isEditor: props.isEditor,
+          className,
+          isEditor,
         }}
       >
         <StepCard />

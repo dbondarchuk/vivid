@@ -4,7 +4,6 @@ import { cn, SidebarInset, SidebarProvider, useSidebar } from "@vivid/ui";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { createPortal } from "react-dom";
-import { PortalProvider } from "../documents/blocks/helpers/block-wrappers/portal-context";
 import {
   EditorArgsContext,
   EditorStateProvider,
@@ -21,6 +20,7 @@ import {
 } from "../documents/types";
 import { InspectorDrawer, SidebarTab } from "./inspector-drawer";
 import { TemplatePanel } from "./template-panel";
+import { PortalProvider } from "./template-panel/portal-context";
 import { BuilderToolbar } from "./template-panel/toolbar/builder-toolbar";
 
 export type BuilderProps<T extends BaseZodDictionary> = {

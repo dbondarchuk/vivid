@@ -7,8 +7,11 @@ import { demoBookingOptionsResponse } from "./fixtures";
 import { BookingProps } from "./types";
 
 export const Booking: React.FC<
-  BookingProps & { id?: string; isEditor?: boolean }
-> = ({ successPage, className, id, isEditor }) => {
+  BookingProps & {
+    id?: string;
+    isEditor?: boolean;
+  } & React.HTMLAttributes<HTMLDivElement>
+> = ({ successPage, className, id, isEditor, ...props }) => {
   const [response, setResponse] =
     React.useState<GetAppointmentOptionsResponse | null>(null);
 
@@ -28,7 +31,7 @@ export const Booking: React.FC<
 
   if (!response)
     return (
-      <div className={className} id={id}>
+      <div className={className} id={id} {...props}>
         <Skeleton className="w-full h-48" />
         <Skeleton className="w-full h-48" />
         <Skeleton className="w-full h-48" />
@@ -38,6 +41,7 @@ export const Booking: React.FC<
   return (
     <Appointments
       id={id}
+      {...props}
       className={className}
       options={response.options}
       successPage={successPage ?? undefined}

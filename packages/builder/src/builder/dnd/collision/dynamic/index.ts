@@ -14,6 +14,8 @@ import { trackMovementInterval } from "./track-movement-interval";
 
 let flushNext: UniqueIdentifier = "";
 
+const SHOULD_USE_DEPTH_PRIORITY = true;
+
 /**
  * A factory for creating a "dynamic" collision detector
  *
@@ -60,6 +62,9 @@ export const createDynamicCollisionDetector = (
     };
 
     const { center: dropCenter } = dropShape;
+    // Always grab depth priority from droppable data
+    const depthPriority = droppable.collisionPriority ?? 0;
+    const depthModifier = SHOULD_USE_DEPTH_PRIORITY ? depthPriority : 0;
 
     const overMidpoint = getMidpointImpact(
       dragShape,
@@ -78,7 +83,7 @@ export const createDynamicCollisionDetector = (
       if (collision) {
         return {
           ...collision,
-          priority: CollisionPriority.Highest,
+          priority: CollisionPriority.Highest + depthModifier,
           data,
         };
       }
@@ -91,7 +96,7 @@ export const createDynamicCollisionDetector = (
       const collision: Collision = {
         id: droppable.id,
         value: intersectionRatio,
-        priority: CollisionPriority.High,
+        priority: CollisionPriority.High + depthModifier,
         type: CollisionType.Collision,
       };
 
@@ -137,14 +142,14 @@ export const createDynamicCollisionDetector = (
 
             return {
               ...fallbackCollision,
-              priority: CollisionPriority.Low,
+              priority: CollisionPriority.Low + depthModifier,
               data,
             };
           }
 
           return {
             ...fallbackCollision,
-            priority: CollisionPriority.Lowest,
+            priority: CollisionPriority.Lowest + depthModifier,
             data,
           };
         }

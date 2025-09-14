@@ -1,6 +1,10 @@
 "use client";
 
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorChildren,
+  useBlockEditor,
+  useCurrentBlock,
+} from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { useMemo } from "react";
 import { BlockStyle } from "../../helpers/styling";
@@ -10,7 +14,7 @@ import { styles } from "./styles";
 
 export const AccordionEditor = ({ props, style }: AccordionProps) => {
   const currentBlock = useCurrentBlock<AccordionProps>();
-
+  const overlayProps = useBlockEditor(currentBlock.id);
   const className = useClassName();
   const base = currentBlock.base;
 
@@ -35,14 +39,18 @@ export const AccordionEditor = ({ props, style }: AccordionProps) => {
         styleDefinitions={styles}
         styles={currentBlock.data?.style}
       />
-      <EditorChildren
-        blockId={currentBlock.id}
-        property="props"
+      <div
         className={cn(className, base?.className)}
         id={base?.id}
-        allowOnly="AccordionItem"
-        additionalProps={additionalProps}
-      />
+        {...overlayProps}
+      >
+        <EditorChildren
+          blockId={currentBlock.id}
+          property="props"
+          allowOnly="AccordionItem"
+          additionalProps={additionalProps}
+        />
+      </div>
     </>
   );
 };

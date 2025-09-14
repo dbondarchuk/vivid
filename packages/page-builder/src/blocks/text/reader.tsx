@@ -20,11 +20,9 @@ export const TextReader = ({ props, style, block }: TextReaderProps) => {
         styles={style}
         defaults={defaults}
       />
-      <PlateStaticEditor
-        value={value}
-        className={cn(className, base?.className)}
-        id={base?.id}
-      />
+      <div className={cn(className, base?.className)} id={base?.id}>
+        <PlateStaticEditor value={value} />
+      </div>
     </>
   );
 };

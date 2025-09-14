@@ -3,11 +3,13 @@
 import {
   EditorBlock,
   useBlockChildrenBlockIds,
+  useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
+import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { ButtonProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
@@ -20,6 +22,8 @@ const disable = {
 
 export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const currentBlock = useCurrentBlock<ButtonProps>();
+  const onResize = useResizeBlockStyles();
+  const overlayProps = useBlockEditor(currentBlock.id, onResize);
   const contentId = useBlockChildrenBlockIds(currentBlock.id, "props")?.[0];
 
   const base = currentBlock.base;
@@ -36,7 +40,11 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         defaults={defaults}
         isEditor
       />
-      <div className={cn(className, base?.className)} id={base?.id}>
+      <span
+        className={cn(className, base?.className)}
+        id={base?.id}
+        {...overlayProps}
+      >
         {!!contentId && (
           <EditorBlock
             key={contentId}
@@ -48,7 +56,7 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
             allowedTypes="InlineContainer"
           />
         )}
-      </div>
+      </span>
     </>
   );
 };

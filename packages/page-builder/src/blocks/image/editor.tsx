@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useBlockEditor,
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
@@ -8,52 +9,23 @@ import {
   useIsSelectedBlock,
 } from "@vivid/builder";
 import { template } from "@vivid/utils";
-import { useCallback } from "react";
+import { Ref, useCallback } from "react";
+import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { useAllowImageResize } from "./context";
 import { Image } from "./reader";
-import { ResizableImage } from "./resizable-image";
+import { ImagePositionEditor } from "./resizable-image";
 import { ImageProps } from "./schema";
 
 export const ImageEditor = ({ props, style }: ImageProps) => {
   const currentBlock = useCurrentBlock<ImageProps>();
   const currentBlockId = useCurrentBlockId();
+  const onResize = useResizeBlockStyles();
   const isSelected = useIsSelectedBlock(currentBlockId);
   const allowResize = useAllowImageResize();
-
-  const getUpdatedSize = (
-    currentBlockData: ImageProps,
-    width: number,
-    height: number,
-  ) => {
-    const newStyles = {
-      ...(currentBlockData.style || {}),
-    };
-
-    newStyles.width =
-      newStyles.width?.filter(
-        (w) => !!w.breakpoint?.length || !!w.state?.length,
-      ) || [];
-    newStyles.height =
-      newStyles.height?.filter(
-        (h) => !!h.breakpoint?.length || !!h.state?.length,
-      ) || [];
-
-    newStyles.width.push({
-      value: {
-        value: width,
-        unit: "px",
-      },
-    });
-
-    newStyles.height.push({
-      value: {
-        value: height,
-        unit: "px",
-      },
-    });
-
-    return newStyles;
-  };
+  const overlayProps = useBlockEditor(
+    currentBlock.id,
+    allowResize ? onResize : undefined,
+  );
 
   const getUpdatedPosition = (
     currentBlockData: ImageProps,
@@ -80,21 +52,6 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
   };
 
   const dispatchAction = useDispatchAction();
-  const onDimensionsChange = useCallback(
-    (width: number, height: number) => {
-      dispatchAction({
-        type: "set-block-data",
-        value: {
-          blockId: currentBlockId,
-          data: {
-            ...currentBlock.data,
-            style: getUpdatedSize(currentBlock.data, width, height),
-          },
-        },
-      });
-    },
-    [dispatchAction, currentBlock],
-  );
 
   const onPositionChange = useCallback(
     (x: number, y: number) => {
@@ -112,14 +69,6 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
     [dispatchAction, currentBlock],
   );
 
-  const baseWidth = currentBlock.data?.style?.width?.find(
-    (w) => !w.breakpoint?.length && !w.state?.length,
-  )?.value;
-
-  const baseHeight = currentBlock.data?.style?.height?.find(
-    (h) => !h.breakpoint?.length && !h.state?.length,
-  )?.value;
-
   const baseX = currentBlock.data?.style?.objectPosition?.find(
     (position) => !position.breakpoint?.length && !position.state?.length,
   )?.value.x;
@@ -134,23 +83,35 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
     src: template(currentBlock.data?.props?.src ?? "", args, true),
   };
 
-  const hasNonStaticPosition = currentBlock.data?.style?.position?.some(
-    (position) => position.value === "absolute" || position.value === "fixed",
-  );
+  // const hasNonStaticPosition = currentBlock.data?.style?.position?.some(
+  //   (position) => position.value === "absolute" || position.value === "fixed",
+  // );
 
-  return isSelected && !hasNonStaticPosition && allowResize ? (
-    <ResizableImage
+  return isSelected /*&& !hasNonStaticPosition*/ && allowResize ? (
+    <ImagePositionEditor
       props={currentBlock.data ?? {}}
-      onDimensionsChange={onDimensionsChange}
       onPositionChange={onPositionChange}
-      initialWidth={typeof baseWidth === "object" ? baseWidth.value : undefined}
-      initialHeight={
-        typeof baseHeight === "object" ? baseHeight.value : undefined
-      }
       initialX={baseX ?? 50}
       initialY={baseY ?? 50}
+      ref={overlayProps.ref as Ref<HTMLImageElement>}
+      onClick={overlayProps.onClick}
     />
   ) : (
-    <Image props={updatedProps} style={style} block={currentBlock} />
+    <Image
+      props={updatedProps}
+      style={style}
+      block={currentBlock}
+      ref={overlayProps.ref as Ref<HTMLImageElement>}
+      onClick={overlayProps.onClick}
+    />
   );
+  // return (
+  //   <Image
+  //     props={updatedProps}
+  //     style={style}
+  //     block={currentBlock}
+  //     ref={overlayProps.ref as Ref<HTMLImageElement>}
+  //     onClick={overlayProps.onClick}
+  //   />
+  // );
 };

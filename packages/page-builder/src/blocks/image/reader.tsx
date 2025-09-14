@@ -8,8 +8,10 @@ import { getDefaults, styles } from "./styles";
 
 export const Image = forwardRef<
   HTMLImageElement | HTMLAnchorElement,
-  Pick<ImageReaderProps, "style" | "props" | "block">
->(({ style, props, block }, ref) => {
+  Pick<ImageReaderProps, "style" | "props" | "block"> & {
+    onClick?: (e: React.MouseEvent) => void;
+  }
+>(({ style, props, block, onClick }, ref) => {
   const linkHref = props?.linkHref;
 
   const className = generateClassName();
@@ -20,7 +22,8 @@ export const Image = forwardRef<
       src={props?.src ?? ""}
       className={cn(className, base?.className)}
       id={base?.id}
-      ref={linkHref ? (ref as any) : undefined}
+      ref={!linkHref ? (ref as any) : undefined}
+      onClick={onClick}
     />
   );
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
@@ -9,6 +9,7 @@ import { getDefaults, styles } from "./styles";
 
 export const CustomHTMLEditor = ({ props, style }: CustomHTMLProps) => {
   const currentBlock = useCurrentBlock<CustomHTMLProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
   const html = (currentBlock?.data?.props as any)?.html ?? "";
   const base = currentBlock?.base;
 
@@ -28,6 +29,7 @@ export const CustomHTMLEditor = ({ props, style }: CustomHTMLProps) => {
       <div
         className={cn(className, base?.className)}
         id={base?.id}
+        {...overlayProps}
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </>

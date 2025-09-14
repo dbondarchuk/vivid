@@ -4,6 +4,7 @@ import { Fragment } from "react";
 
 import {
   EditorChildren,
+  useBlockEditor,
   useCurrentBlock,
   useSetSelectedBlockId,
 } from "@vivid/builder";
@@ -15,13 +16,11 @@ import { PageLayoutProps } from "./schema";
 export const PageLayoutEditor = () => {
   const currentBlock = useCurrentBlock<PageLayoutProps>();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   return (
     <Fragment>
       <div
-        onClick={() => {
-          setSelectedBlockId(null);
-        }}
         style={{
           backgroundColor: getColorStyle(
             currentBlock?.data?.backgroundColor ?? COLORS.background.value,
@@ -38,6 +37,10 @@ export const PageLayoutEditor = () => {
           width: "100%",
           minHeight: "100%",
         }}
+        {...overlayProps}
+        onClick={() => {
+          setSelectedBlockId(null);
+        }}
       >
         <div
           className={cn(
@@ -45,14 +48,7 @@ export const PageLayoutEditor = () => {
             !currentBlock?.data?.fullWidth && "container mx-auto",
           )}
         >
-          <EditorChildren
-            blockId={currentBlock?.id}
-            property=""
-            className={cn(
-              "w-full",
-              !currentBlock?.data?.fullWidth && "container mx-auto",
-            )}
-          />
+          <EditorChildren blockId={currentBlock?.id} property="" />
         </div>
       </div>
     </Fragment>

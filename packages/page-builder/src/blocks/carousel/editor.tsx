@@ -1,4 +1,8 @@
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorChildren,
+  useBlockEditor,
+  useCurrentBlock,
+} from "@vivid/builder";
 import {
   Carousel,
   CarouselContent,
@@ -17,40 +21,13 @@ const CarouselItemWrapper = memo(
     <CarouselItem className="carousel-item">{children}</CarouselItem>
   ),
 );
-const CarouselItemsWrapper = memo(
-  ({
-    children,
-    className,
-    style,
-    id,
-    ref,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-    style?: React.CSSProperties;
-    id?: string;
-    ref?: React.Ref<HTMLDivElement>;
-  }) => (
-    <Carousel className={className} style={style} id={id} ref={ref}>
-      <CarouselContent className="relative">{children}</CarouselContent>
-      <CarouselPrevious className="left-0" />
-      <CarouselNext className="right-0" />
-    </Carousel>
-  ),
-);
 
 export const CarouselEditor = ({ style, props }: CarouselProps) => {
   const currentBlock = useCurrentBlock<CarouselProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const className = useClassName();
   const base = currentBlock.base;
-
-  // const newStyle: CarouselProps["style"] = {
-  //   ...currentBlock.data?.style,
-  //   display: [{ value: "flex" }],
-  //   flexDirection: [{ value: "row" }],
-  //   flexWrap: [{ value: "wrap" }],
-  // };
 
   return (
     <>
@@ -59,19 +36,25 @@ export const CarouselEditor = ({ style, props }: CarouselProps) => {
         styleDefinitions={styles}
         styles={currentBlock.data?.style}
       />
-      <EditorChildren
-        blockId={currentBlock.id}
-        className={cn(
-          "items-center",
-          currentBlock.data?.props?.orientation === "vertical" && "flex-col",
-          className,
-          base?.className,
-        )}
+      <Carousel
         id={base?.id}
-        property="props"
-        childWrapper={CarouselItemWrapper}
-        childrenWrapper={CarouselItemsWrapper}
-      />
+        opts={{
+          loop: !!currentBlock.data?.props.loop,
+          align: "start",
+        }}
+        orientation={currentBlock.data?.props.orientation ?? undefined}
+        {...overlayProps}
+      >
+        <CarouselContent className={cn("relative", className, base?.className)}>
+          <EditorChildren
+            blockId={currentBlock.id}
+            property="props"
+            childWrapper={CarouselItemWrapper}
+          />
+        </CarouselContent>
+        <CarouselPrevious className="left-0" />
+        <CarouselNext className="right-0" />
+      </Carousel>
     </>
   );
 };

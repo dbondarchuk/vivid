@@ -3,6 +3,7 @@
 import {
   EditorBlock,
   useBlockChildrenBlockIds,
+  useBlockEditor,
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
@@ -28,6 +29,8 @@ const disable = {
 export const BeforeAfterEditor = ({ props, style }: BeforeAfterProps) => {
   const currentBlock = useCurrentBlock<BeforeAfterProps>();
   const currentBlockId = useCurrentBlockId();
+  const overlayProps = useBlockEditor(currentBlock.id);
+
   const dispatchAction = useDispatchAction();
   const beforeId = useBlockChildrenBlockIds(
     currentBlock.id,
@@ -81,58 +84,60 @@ export const BeforeAfterEditor = ({ props, style }: BeforeAfterProps) => {
         styles={currentBlock.data?.style}
       />
       <ImageProvider allowResize={false}>
-        <BeforeAfterSlider
-          className={cn(className, currentBlock.base?.className)}
-          id={currentBlock.base?.id}
-          sliderPosition={sliderPosition || 50}
-          showLabels={!!showLabels}
-          beforeLabel={
-            <EditorBlock
-              key={beforeLabelId}
-              blockId={beforeLabelId}
-              {...disable}
-              index={0}
-              parentBlockId={currentBlock.id}
-              parentProperty="props.beforeLabel"
-              allowedTypes="InlineContainer"
-            />
-          }
-          afterLabel={
-            <EditorBlock
-              key={afterLabelId}
-              blockId={afterLabelId}
-              {...disable}
-              index={0}
-              parentBlockId={currentBlock.id}
-              parentProperty="props.afterLabel"
-              allowedTypes="InlineContainer"
-            />
-          }
-          orientation={orientation || "horizontal"}
-          document={document}
-          before={
-            <EditorBlock
-              key={beforeId}
-              blockId={beforeId}
-              {...disable}
-              index={0}
-              parentBlockId={currentBlock.id}
-              parentProperty="props.before"
-              allowedTypes="Container"
-            />
-          }
-          after={
-            <EditorBlock
-              key={afterId}
-              blockId={afterId}
-              {...disable}
-              index={0}
-              parentBlockId={currentBlock.id}
-              parentProperty="props.after"
-              allowedTypes="Container"
-            />
-          }
-        />
+        <div className="relative w-full h-full" {...overlayProps}>
+          <BeforeAfterSlider
+            className={cn(className, currentBlock.base?.className)}
+            id={currentBlock.base?.id}
+            sliderPosition={sliderPosition || 50}
+            showLabels={!!showLabels}
+            beforeLabel={
+              <EditorBlock
+                key={beforeLabelId}
+                blockId={beforeLabelId}
+                {...disable}
+                index={0}
+                parentBlockId={currentBlock.id}
+                parentProperty="props.beforeLabel"
+                allowedTypes="InlineContainer"
+              />
+            }
+            afterLabel={
+              <EditorBlock
+                key={afterLabelId}
+                blockId={afterLabelId}
+                {...disable}
+                index={0}
+                parentBlockId={currentBlock.id}
+                parentProperty="props.afterLabel"
+                allowedTypes="InlineContainer"
+              />
+            }
+            orientation={orientation || "horizontal"}
+            document={document}
+            before={
+              <EditorBlock
+                key={beforeId}
+                blockId={beforeId}
+                {...disable}
+                index={0}
+                parentBlockId={currentBlock.id}
+                parentProperty="props.before"
+                allowedTypes="Container"
+              />
+            }
+            after={
+              <EditorBlock
+                key={afterId}
+                blockId={afterId}
+                {...disable}
+                index={0}
+                parentBlockId={currentBlock.id}
+                parentProperty="props.after"
+                allowedTypes="Container"
+              />
+            }
+          />
+        </div>
       </ImageProvider>
     </>
   );

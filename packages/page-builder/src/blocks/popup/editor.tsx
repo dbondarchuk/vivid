@@ -3,6 +3,7 @@
 import {
   EditorBlock,
   useBlockChildrenBlockIds,
+  useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
 import { cn, DialogFooter, DialogHeader } from "@vivid/ui";
@@ -21,6 +22,7 @@ const disable = {
 
 export const PopupEditor = ({ props, style }: PopupProps) => {
   const currentBlock = useCurrentBlock<PopupProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
   const subtitleId = useBlockChildrenBlockIds(
@@ -42,7 +44,10 @@ export const PopupEditor = ({ props, style }: PopupProps) => {
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
-      <div className="relative bg-muted flex flex-col items-center grow">
+      <div
+        className="relative bg-muted flex flex-col items-center grow"
+        {...overlayProps}
+      >
         {/* <Dialog>
         <DialogTrigger asChild>
           <Button>{t("pageBuilder.blocks.popup.open")}</Button>

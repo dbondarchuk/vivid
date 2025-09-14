@@ -54,8 +54,6 @@ const Placeholder = ({
     },
   });
 
-  // if (!hasActiveDragBlock) return null;
-
   return (
     <div
       ref={ref}
@@ -74,17 +72,8 @@ export type EditorChildrenProps<T extends BaseZodDictionary = any> = {
   blockId: string;
   property: string;
   allowOnly?: keyof T | (keyof T)[];
-  id?: string;
-  className?: string;
   style?: React.CSSProperties;
   childWrapper?: (props: {
-    children: React.ReactNode;
-    className?: string;
-    style?: React.CSSProperties;
-    ref?: React.Ref<HTMLDivElement>;
-    id?: string;
-  }) => React.ReactNode;
-  childrenWrapper?: (props: {
     children: React.ReactNode;
     className?: string;
     style?: React.CSSProperties;
@@ -99,20 +88,11 @@ export const EditorChildren = memo(
     property,
     blockId: currentBlockId,
     allowOnly: propAllowOnly,
-    id,
-    className,
-    style,
     childWrapper,
-    childrenWrapper,
     additionalProps,
   }: EditorChildrenProps<T>) => {
     const depth = useBlockDepth(currentBlockId) ?? 0;
     const knownBlockTypes = useBlockTypes();
-
-    const Wrapper = useMemo(
-      () => (childrenWrapper ?? "div") as React.ElementType,
-      [childrenWrapper],
-    );
 
     const allowOnly = useMemo(
       () =>
@@ -127,17 +107,15 @@ export const EditorChildren = memo(
     const childrenIds = useBlockChildrenBlockIds(currentBlockId, property);
 
     return (
-      <Wrapper className={cn("relative", className)} id={id} style={style}>
-        <EditorChildrenRender
-          childrenIds={childrenIds}
-          childWrapper={childWrapper}
-          additionalProps={additionalProps}
-          currentBlockId={currentBlockId}
-          property={property}
-          depth={depth}
-          allowOnly={allowOnly as string[]}
-        />
-      </Wrapper>
+      <EditorChildrenRender
+        childrenIds={childrenIds}
+        childWrapper={childWrapper}
+        additionalProps={additionalProps}
+        currentBlockId={currentBlockId}
+        property={property}
+        depth={depth}
+        allowOnly={allowOnly as string[]}
+      />
     );
   },
 );

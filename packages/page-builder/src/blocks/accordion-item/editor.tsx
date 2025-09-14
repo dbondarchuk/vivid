@@ -4,6 +4,7 @@ import {
   EditorBlock,
   EditorChildren,
   useBlockChildrenBlockIds,
+  useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
@@ -38,6 +39,7 @@ export const AccordionItemEditor = ({
   iconStyle?: "plus" | "arrow" | "chevron";
 }) => {
   const currentBlock = useCurrentBlock<AccordionItemProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
   const className = useClassName();
@@ -103,6 +105,7 @@ export const AccordionItemEditor = ({
       <div
         className={cn("border rounded-lg", className, base?.className)}
         id={base?.id}
+        {...overlayProps}
       >
         <div
           className={cn(

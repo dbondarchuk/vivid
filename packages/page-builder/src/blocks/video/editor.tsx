@@ -1,18 +1,15 @@
 "use client";
 
-import {
-  useCurrentBlock,
-  useEditorArgs,
-  useSetCurrentBlockRef,
-} from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock, useEditorArgs } from "@vivid/builder";
 import { template } from "@vivid/utils";
+import { Ref } from "react";
 import { Video } from "./reader";
 import { VideoProps, VideoPropsDefaults } from "./schema";
 
 export const VideoEditor = ({ props, style }: VideoProps) => {
   const currentBlock = useCurrentBlock<VideoProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
   const args = useEditorArgs();
-  const ref = useSetCurrentBlockRef();
 
   const baseProps = {
     ...VideoPropsDefaults.props,
@@ -23,6 +20,12 @@ export const VideoEditor = ({ props, style }: VideoProps) => {
     src: template(baseProps.src ?? "", args, true),
   };
   return (
-    <Video props={updatedProps} style={style} block={currentBlock} ref={ref} />
+    <Video
+      props={updatedProps}
+      style={style}
+      block={currentBlock}
+      ref={overlayProps.ref as Ref<HTMLVideoElement>}
+      onClick={overlayProps.onClick}
+    />
   );
 };

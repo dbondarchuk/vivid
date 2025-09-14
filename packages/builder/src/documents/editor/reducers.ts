@@ -190,7 +190,7 @@ export const editorHistoryReducer = (
 
       if (
         parent.block.id === value.parentBlockId &&
-        value.parentBlockProperty === value.parentBlockProperty
+        parent.property === value.parentBlockProperty
       ) {
         moveBlockToIndexInLevel(parent.block, value.blockId, value.index || 0);
       } else {
@@ -201,7 +201,7 @@ export const editorHistoryReducer = (
           value.index || 0,
         );
 
-        deleteBlockInLevel(parent.block, value.blockId);
+        deleteBlockInLevel(parent.block, value.blockId, parent.property);
       }
 
       break;

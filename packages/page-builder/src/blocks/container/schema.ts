@@ -37,6 +37,11 @@ export const ContainerPropsDefaults = {
         value: "column",
       },
     ],
+    width: [
+      {
+        value: { value: 100, unit: "%" },
+      },
+    ],
     gap: [
       {
         value: {

@@ -946,10 +946,11 @@ export function useAllowedBlockTypes(
   property: string | undefined | null,
 ): string[] | undefined {
   const store = useEditorStateStore();
-  return useStore(store, (s) =>
-    blockId && property
-      ? s.allowedBlockTypes[`${blockId}/${property}`]
-      : undefined,
+  return useStore(
+    store,
+    useDeep((s) =>
+      blockId ? s.allowedBlockTypes[`${blockId}/${property ?? ""}`] : undefined,
+    ),
   );
 }
 
@@ -963,22 +964,26 @@ export function useSetActiveDragBlockId() {
   return useStore(store, (s) => s.actions.setActiveDragBlockId);
 }
 
+export function getActiveOverBlockContext(store: EditorState) {
+  if (!store.activeOverBlockContextId) return null;
+  const [blockId, property, index] = store.activeOverBlockContextId.split("/");
+  const block = store.indexes[blockId];
+  return block
+    ? {
+        blockId,
+        property,
+        contextId: store.activeOverBlockContextId,
+        index: parseInt(index),
+      }
+    : null;
+}
+
 export function useActiveOverBlock() {
   const store = useEditorStateStore();
   return useStore(
     store,
     useDeep((s) => {
-      if (!s.activeOverBlockContextId) return null;
-      const [blockId, property, index] = s.activeOverBlockContextId.split("/");
-      const block = s.indexes[blockId];
-      return block
-        ? {
-            blockId,
-            property,
-            contextId: s.activeOverBlockContextId,
-            index: parseInt(index),
-          }
-        : null;
+      return getActiveOverBlockContext(s);
     }),
   );
 }

@@ -1,13 +1,20 @@
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorChildren,
+  useBlockEditor,
+  useCurrentBlock,
+} from "@vivid/builder";
 import { LightboxProvider } from "./context";
 import { LightboxProps } from "./schema";
 
 export const LightboxEditor = () => {
   const currentBlock = useCurrentBlock<LightboxProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   return (
     <LightboxProvider>
-      <EditorChildren blockId={currentBlock.id} property="props" />
+      <div className="w-full relative" {...overlayProps}>
+        <EditorChildren blockId={currentBlock.id} property="props" />
+      </div>
       {/* Do not use Lightbox in editor, as it will interfere with the image editor */}
       {/* <Lightbox {...currentBlock.data?.props} /> */}
     </LightboxProvider>

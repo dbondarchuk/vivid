@@ -1,5 +1,5 @@
 import { cn } from "@vivid/ui";
-import { forwardRef } from "react";
+import { forwardRef, HTMLAttributes } from "react";
 import { generateClassName } from "../../helpers/class-name-generator";
 import { BlockStyle } from "../../helpers/styling";
 import { VideoPropsDefaults, VideoReaderProps } from "./schema";
@@ -18,8 +18,9 @@ interface VideoInnerProps {
 
 export const Video = forwardRef<
   HTMLVideoElement,
-  Pick<VideoReaderProps, "style" | "props" | "block">
->(({ style, props, block }, ref) => {
+  Pick<HTMLAttributes<HTMLVideoElement>, "onClick"> &
+    Pick<VideoReaderProps, "style" | "props" | "block">
+>(({ style, props, block, ...rest }, ref) => {
   const base = block?.base;
   const className = generateClassName();
   const safeProps: VideoInnerProps = {
@@ -30,6 +31,7 @@ export const Video = forwardRef<
 
   const videoElement = (
     <video
+      {...rest}
       className={cn("block", className, base?.className)}
       src={safeProps.src ?? ""}
       poster={safeProps.poster ?? undefined}

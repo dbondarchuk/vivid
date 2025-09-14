@@ -15,9 +15,9 @@ import {
   useBlocks,
   useDispatchAction,
   useSetSelectedBlockId,
-} from "../../../editor/context";
-import { BlockDisableOptions } from "../../../editor/core";
-import { usePortalContext } from "./portal-context";
+} from "../../documents/editor/context";
+import { BlockDisableOptions } from "../../documents/editor/core";
+import { usePortalContext } from "../template-panel/portal-context";
 
 type Props = {
   blockId: string;

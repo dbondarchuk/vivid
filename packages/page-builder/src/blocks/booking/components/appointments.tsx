@@ -19,7 +19,9 @@ export type AppointmentsProps = {
   isEditor?: boolean;
 };
 
-export const Appointments: React.FC<AppointmentsProps> = ({
+export const Appointments: React.FC<
+  AppointmentsProps & React.HTMLAttributes<HTMLDivElement>
+> = ({
   options,
   optionsClassName,
   successPage,
@@ -29,6 +31,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
   className,
   id,
   isEditor,
+  ...props
 }) => {
   const fromQuery = useSearchParams().get("option");
   const [option, setOption] = React.useState<string | null>(fromQuery);
@@ -39,9 +42,10 @@ export const Appointments: React.FC<AppointmentsProps> = ({
       {!selected ? (
         <AppointmentsCard
           options={options}
-          onSelect={setOption}
+          onSelectOption={setOption}
           className={cn(className, optionsClassName)}
           id={id}
+          {...props}
         />
       ) : (
         <Schedule
@@ -54,6 +58,7 @@ export const Appointments: React.FC<AppointmentsProps> = ({
           showPromoCode={showPromoCode}
           id={id}
           isEditor={isEditor}
+          {...props}
         />
       )}
     </>

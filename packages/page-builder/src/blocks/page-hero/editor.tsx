@@ -3,6 +3,7 @@
 import {
   EditorBlock,
   useBlockChildrenBlockIds,
+  useBlockEditor,
   useCurrentBlock,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
@@ -20,6 +21,7 @@ const disable = {
 
 export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
   const currentBlock = useCurrentBlock<PageHeroProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const titleId = useBlockChildrenBlockIds(currentBlock.id, "props.title")?.[0];
   const subtitleId = useBlockChildrenBlockIds(
@@ -36,7 +38,11 @@ export const PageHeroEditor = ({ props, style }: PageHeroProps) => {
   return (
     <>
       <BlockStyle name={className} styleDefinitions={styles} styles={style} />
-      <section className={cn(className, base?.className)} id={base?.id}>
+      <section
+        className={cn(className, base?.className)}
+        id={base?.id}
+        {...overlayProps}
+      >
         {!!titleId && (
           <EditorBlock
             blockId={titleId}

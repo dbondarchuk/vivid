@@ -11,18 +11,20 @@ export const ImageLightbox = forwardRef<
     alt?: string;
     className?: string;
     id?: string;
+    onClick?: (e: React.MouseEvent) => void;
   }
->(({ src, alt, className, id }, ref) => {
+>(({ src, alt, className, id, onClick }, ref) => {
   const lightbox = useLightboxImage();
   const [imageId, setImageId] = useState<string | null>(null);
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLImageElement>) => {
+      onClick?.(e);
       if (lightbox && src && imageId) {
         lightbox.openLightbox(imageId);
         e.preventDefault();
       }
     },
-    [lightbox, src, imageId],
+    [lightbox, src, imageId, onClick],
   );
 
   useEffect(() => {

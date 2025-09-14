@@ -16,34 +16,31 @@ export type AppointmentsCardProps = {
   options: AppointmentChoice[];
   className?: string;
   id?: string;
-  onSelect: (slug: string) => void;
+  onSelectOption: (slug: string) => void;
 };
 
-export const AppointmentsCard: React.FC<AppointmentsCardProps> = ({
-  options: meetings,
-  className,
-  id,
-  onSelect,
-}) => {
+export const AppointmentsCard: React.FC<
+  AppointmentsCardProps & React.HTMLAttributes<HTMLDivElement>
+> = ({ options: meetings, className, id, onSelectOption, ...props }) => {
   const i18n = useI18n("translation");
 
   const onKeyPress = React.useCallback(
     (id: string, event: React.KeyboardEvent<any>) => {
       if (event.key === "Enter" || event.key === " ") {
-        onSelect(id);
+        onSelectOption(id);
         event.preventDefault();
       }
     },
-    [onSelect],
+    [onSelectOption],
   );
 
   return (
-    <div className={className} id={id}>
+    <div className={className} id={id} {...props}>
       {meetings.map((option) => {
         return (
           <Card
             key={option._id}
-            onClick={() => onSelect(option._id)}
+            onClick={() => onSelectOption(option._id)}
             onKeyDown={(e) => onKeyPress(option._id, e)}
             className="cursor-pointer flex flex-col justify-between"
             tabIndex={1}

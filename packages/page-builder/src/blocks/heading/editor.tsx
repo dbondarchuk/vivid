@@ -4,6 +4,7 @@ import {
   BaseBlockProps,
   EditorBlock,
   useBlockChildrenBlockIds,
+  useBlockEditor,
   useCurrentBlockId,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
@@ -27,6 +28,7 @@ export function HeadingEditor({
   const level = props?.level ?? DefaultHeadingLevel;
 
   const currentBlockId = useCurrentBlockId();
+  const overlayProps = useBlockEditor(currentBlockId);
   const contentId = useBlockChildrenBlockIds(currentBlockId, "props")?.[0];
 
   const className = useClassName();
@@ -43,7 +45,11 @@ export function HeadingEditor({
         defaults={defaults}
         isEditor
       />
-      <Element className={cn(className, base?.className)} id={base?.id}>
+      <Element
+        className={cn(className, base?.className)}
+        id={base?.id}
+        {...overlayProps}
+      >
         {!!contentId && (
           <EditorBlock
             key={contentId}

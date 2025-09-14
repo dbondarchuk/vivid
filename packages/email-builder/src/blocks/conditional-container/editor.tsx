@@ -1,4 +1,8 @@
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
+import {
+  EditorChildren,
+  useBlockEditor,
+  useCurrentBlock,
+} from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { ConditionalContainerProps } from "./schema";
 
@@ -8,10 +12,11 @@ export const ConditionalContainerEditor = ({
   const t = useI18n("builder");
 
   const currentBlock = useCurrentBlock<ConditionalContainerProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
   const condition = currentBlock.data?.props?.condition || "";
 
   return (
-    <div className="w-full">
+    <div className="w-full" {...overlayProps}>
       <div className="mb-2 text-muted-foreground text-xs w-full">
         {t.rich(
           "emailBuilder.blocks.conditionalContainer.ifConditionIsCorrectFormat",

@@ -3,7 +3,6 @@
 import {
   createContext,
   memo,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -17,13 +16,11 @@ const EditorBlockContext = createContext<{
   blockId: string;
   isOverlay: boolean;
   allowedTypes?: string[];
-  ref?: React.RefObject<HTMLElement | null>;
   disable: BlockDisableOptions;
 }>({
   blockId: "",
   isOverlay: false,
   allowedTypes: [],
-  ref: undefined,
   disable: {
     move: false,
     delete: false,
@@ -39,23 +36,6 @@ export const useCurrentBlockAllowedTypes = () =>
   useContext(EditorBlockContext).allowedTypes;
 export const useCurrentBlockDisableOptions = () =>
   useContext(EditorBlockContext).disable;
-
-export const useCurrentBlockRef = () => {
-  return useContext(EditorBlockContext).ref;
-};
-
-export const useSetCurrentBlockRef = () => {
-  const setRef = useContext(EditorBlockContext).ref;
-
-  return useCallback(
-    (element: HTMLElement | null) => {
-      if (setRef) {
-        setRef.current = element;
-      }
-    },
-    [setRef],
-  );
-};
 
 export const useCurrentBlock = <T,>() => {
   // return useBlock(useCurrentBlockId()) as TEditorBlock<T>;

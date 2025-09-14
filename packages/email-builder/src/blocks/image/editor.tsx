@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useBlockEditor,
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
@@ -8,8 +9,8 @@ import {
   useIsSelectedBlock,
 } from "@vivid/builder";
 import { templateSafeWithError } from "@vivid/utils";
-import { useCallback } from "react";
-import { Image } from "./reader";
+import { Ref, useCallback } from "react";
+import { Image } from "./image";
 import { ResizableImage } from "./resizable-image";
 import { ImageProps, ImagePropsDefaults } from "./schema";
 import { getWrapperStyles } from "./styles";
@@ -65,19 +66,27 @@ export const ImageEditor = ({ props, style }: ImageProps) => {
     [dispatchAction, currentBlock],
   );
 
+  const overlayProps = useBlockEditor(currentBlock.id, onDimensionsChange);
+
   return isSelected ? (
     <ResizableImage
       src={url || ""}
       alt={currentBlock.data?.props?.alt ?? undefined}
       wrapperStyles={getWrapperStyles({ style: currentBlock.data?.style })}
-      onDimensionsChange={onDimensionsChange}
       onPositionChange={onPositionChange}
-      initialWidth={currentBlock.data?.props?.width ?? undefined}
-      initialHeight={currentBlock.data?.props?.height ?? undefined}
+      width={currentBlock.data?.props?.width ?? undefined}
+      height={currentBlock.data?.props?.height ?? undefined}
       initialX={currentBlock.data?.props?.x ?? ImagePropsDefaults.props.x}
       initialY={currentBlock.data?.props?.y ?? ImagePropsDefaults.props.y}
+      ref={overlayProps.ref as Ref<HTMLImageElement>}
+      onClick={overlayProps.onClick}
     />
   ) : (
-    <Image props={props} style={style} />
+    <Image
+      props={props}
+      style={style}
+      ref={overlayProps.ref as Ref<HTMLImageElement>}
+      onClick={overlayProps.onClick}
+    />
   );
 };

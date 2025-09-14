@@ -4,6 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 export function useClipboard(document?: Document, pollInterval = 1000) {
   const [clipboardText, setClipboardText] = useState<string>("");
 
+  const isFirefox = useMemo(() => {
+    return navigator.userAgent?.toLocaleLowerCase().includes("firefox");
+  }, []);
+
   const navigatorToUse = useMemo(
     () => document?.defaultView?.navigator || navigator,
     [document],
@@ -11,6 +15,11 @@ export function useClipboard(document?: Document, pollInterval = 1000) {
 
   const readClipboard = useCallback(async () => {
     try {
+      // Firefox shows a popup when reading the clipboard
+      if (isFirefox) {
+        return false;
+      }
+
       const text = await navigatorToUse?.clipboard.readText();
       setClipboardText(text);
       return text;
@@ -18,7 +27,7 @@ export function useClipboard(document?: Document, pollInterval = 1000) {
       // console.error("Failed to read clipboard: ", err);
       return false;
     }
-  }, [navigatorToUse]);
+  }, [navigatorToUse, isFirefox]);
 
   const copyToClipboard = useCallback(
     async (text: string) => {

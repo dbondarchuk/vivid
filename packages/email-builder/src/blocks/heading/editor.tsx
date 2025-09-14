@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { Ref, useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
 import {
+  useBlockEditor,
   useCurrentBlock,
   useDispatchAction,
   useEditorArgs,
@@ -11,6 +12,7 @@ import {
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { ArgumentsAutocomplete } from "@vivid/ui";
+import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
 import { HeadingProps } from "./schema";
 import { getStyles } from "./styles";
 
@@ -21,6 +23,7 @@ export function HeadingEditor({ props, style }: HeadingProps) {
   const value = currentBlock.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const { document } = usePortalContext();
 
@@ -56,17 +59,20 @@ export function HeadingEditor({ props, style }: HeadingProps) {
     }
   };
 
+  const Element = currentBlock?.data?.props?.level || "h2";
+
   return (
     <ArgumentsAutocomplete
-      ref={ref}
+      ref={mergeRefs(ref, overlayProps.ref as Ref<HTMLInputElement>)}
       args={args}
-      asInput
-      className="!max-w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal"
-      style={styles}
+      asContentEditable
+      element={Element}
       value={value ?? "Heading"}
       onChange={onChange}
       onKeyDown={handleKeyPress}
       documentElement={document}
+      style={styles}
+      onClick={overlayProps.onClick}
     />
   );
 }

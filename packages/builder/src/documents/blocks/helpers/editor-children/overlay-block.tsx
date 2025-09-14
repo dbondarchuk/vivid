@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { memo, useMemo } from "react";
 import { EditorBlock } from "../../../editor/block";
 import {
@@ -47,11 +48,18 @@ const OverlayBlockContent = memo(
       return null;
 
     return (
-      <>
-        <div className="ring-2 ring-primary bg-primary !opacity-30">
+      <AnimatePresence>
+        <motion.div
+          layoutId="overlay-block"
+          // className="contents *:relative *:after:absolute *:after:inset-0 *:after:bg-blue-700/50 *:after:z-[2]"
+          className="bg-blue-700/50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
           {RenderedBlock}
-        </div>
-      </>
+        </motion.div>
+      </AnimatePresence>
     );
   },
 );

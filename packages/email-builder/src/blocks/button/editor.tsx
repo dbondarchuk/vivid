@@ -1,11 +1,11 @@
 "use client";
 
 import {
+  useBlockEditor,
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
   useEditorArgs,
-  useIsSelectedBlock,
   usePortalContext,
   useSetSelectedBlockId,
 } from "@vivid/builder";
@@ -13,7 +13,6 @@ import { useI18n } from "@vivid/i18n";
 import { ArgumentsAutocomplete, cn } from "@vivid/ui";
 import { useRef } from "react";
 import sanitizeHtml from "sanitize-html";
-import { Button } from "./reader";
 import { ButtonProps } from "./schema";
 import { getLinkStyles, getWrapperStyles } from "./styles";
 
@@ -25,12 +24,12 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
   const linkStyles = getLinkStyles({ props, style });
 
   const currentBlockId = useCurrentBlockId();
+  const overlayProps = useBlockEditor(currentBlockId);
   const args = useEditorArgs();
   const currentBlock = useCurrentBlock<ButtonProps>();
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
 
-  const isSelected = useIsSelectedBlock(currentBlockId);
   const value = currentBlock.data?.props?.text;
 
   const sanitizeConf = {
@@ -63,12 +62,13 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
     }
   };
 
-  return isSelected ? (
-    <div style={wrapperStyles}>
+  return (
+    <div style={wrapperStyles} {...overlayProps}>
       <ArgumentsAutocomplete
         ref={ref}
         args={args}
-        asInput
+        asContentEditable
+        element="span"
         className={cn(
           "border-0 bg-transparent focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal md:leading-normal",
           props?.width === "full" ? "w-full" : "w-auto",
@@ -80,7 +80,5 @@ export const ButtonEditor = ({ props, style }: ButtonProps) => {
         documentElement={document}
       />
     </div>
-  ) : (
-    <Button props={props} style={style} />
   );
 };

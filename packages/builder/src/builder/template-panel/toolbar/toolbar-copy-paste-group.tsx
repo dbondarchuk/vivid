@@ -1,8 +1,7 @@
 import { useI18n } from "@vivid/i18n";
 import { ToolbarButton, ToolbarGroup } from "@vivid/ui";
 import { ClipboardCopy, ClipboardPaste } from "lucide-react";
-import { useCallback, useEffect } from "react";
-import { usePortalContext } from "../../../documents/blocks/helpers/block-wrappers/portal-context";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   useBlockParentData,
   useBlockType,
@@ -15,6 +14,7 @@ import {
 import { useBlockClipboard } from "../../../documents/editor/copy";
 import { TEditorBlock } from "../../../documents/editor/core";
 import { cloneBlock } from "../../../documents/helpers/blocks";
+import { usePortalContext } from "../portal-context";
 
 const useParentData = (blockId: string | null | undefined) => {
   const parentData = useBlockParentData(blockId ?? null);
@@ -40,6 +40,10 @@ export const ToolbarCopyPasteGroup = ({
 }) => {
   const t = useI18n("builder");
   const dispatchAction = useDispatchAction();
+
+  const isFirefox = useMemo(() => {
+    return navigator.userAgent?.toLocaleLowerCase().includes("firefox");
+  }, []);
 
   const store = useEditorStateStore();
   const { document: portalDocument } = usePortalContext();
@@ -142,19 +146,22 @@ export const ToolbarCopyPasteGroup = ({
       >
         <ClipboardCopy />
       </ToolbarButton>
-      <ToolbarButton
-        tooltip={t("baseBuilder.builderToolbar.paste")}
-        disabled={
-          (!hasBlockClipboard && !hasBlockClipboardPortal) ||
-          !parentData ||
-          isPreview
-        }
-        onClick={() => {
-          handlePasteBlock(clipboardBlock);
-        }}
-      >
-        <ClipboardPaste />
-      </ToolbarButton>
+      {/* Firefox shows a popup when reading the clipboard */}
+      {!isFirefox && (
+        <ToolbarButton
+          tooltip={t("baseBuilder.builderToolbar.paste")}
+          disabled={
+            (!hasBlockClipboard && !hasBlockClipboardPortal) ||
+            !parentData ||
+            isPreview
+          }
+          onClick={() => {
+            handlePasteBlock(clipboardBlock);
+          }}
+        >
+          <ClipboardPaste />
+        </ToolbarButton>
+      )}
     </ToolbarGroup>
   );
 };

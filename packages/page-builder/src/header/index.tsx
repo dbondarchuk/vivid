@@ -124,7 +124,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
   return (
     <header
       className={cn(
-        "font-light text-[hsl(var(--value-foreground-color))] font-[family-name:--font-primary-value] w-full bg-[hsl(var(--value-background-color))] z-40 transition-all duration-300",
+        "font-light text-[hsl(var(--value-foreground-color))] font-[family-name:--font-primary-value] w-full bg-[hsl(var(--value-background-color))] z-20 transition-all duration-300",
         config?.sticky && "sticky top-0",
         config?.shadow === "static" && "drop-shadow-md",
         className,

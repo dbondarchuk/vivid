@@ -4,7 +4,6 @@ import { useI18n } from "@vivid/i18n";
 import { ToolbarButton, ToolbarGroup } from "@vivid/ui";
 import { Redo2, Undo2 } from "lucide-react";
 import { useCallback, useEffect } from "react";
-import { usePortalContext } from "../../../documents/blocks/helpers/block-wrappers/portal-context";
 import {
   useCanRedoHistory,
   useCanUndoHistory,
@@ -12,6 +11,7 @@ import {
   useUndoHistory,
 } from "../../../documents/editor/context";
 import { isUndoRedo } from "../../../documents/helpers/is-undo-redo";
+import { usePortalContext } from "../portal-context";
 
 export const ToolbarHistoryGroup = () => {
   const t = useI18n("builder");

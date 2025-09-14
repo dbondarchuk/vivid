@@ -112,6 +112,8 @@ export type PlateStaticEditorProps = {
   style?: React.CSSProperties;
   className?: string;
   id?: string;
+  onClick?: () => void;
+  ref?: React.Ref<HTMLDivElement>;
 } & VariantProps<typeof editorVariants>;
 
 export const createPlateStaticEditor = (
@@ -231,6 +233,7 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
   className,
   id,
   variant,
+  ...rest
 }) => {
   const editorStatic = createPlateStaticEditor(value);
 
@@ -284,6 +287,7 @@ export const PlateStaticEditor: React.FC<PlateStaticEditorProps> = ({
       style={style}
       className={cn(editorVariants({ variant }), className)}
       id={id}
+      {...rest}
     />
   );
 };

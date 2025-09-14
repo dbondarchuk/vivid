@@ -4,6 +4,7 @@ import { Fragment } from "react";
 
 import {
   EditorChildren,
+  useBlockEditor,
   useCurrentBlock,
   useSetSelectedBlockId,
 } from "@vivid/builder";
@@ -13,7 +14,7 @@ import { EmailLayoutProps } from "./schema";
 export const EmailLayoutEditor = (props: EmailLayoutProps) => {
   const currentBlock = useCurrentBlock<EmailLayoutProps>();
   const setSelectedBlockId = useSetSelectedBlockId();
-
+  const overlayProps = useBlockEditor(currentBlock.id);
   return (
     <Fragment>
       {props.previewText && (
@@ -23,6 +24,7 @@ export const EmailLayoutEditor = (props: EmailLayoutProps) => {
         </div>
       )}
       <div
+        {...overlayProps}
         onClick={() => {
           setSelectedBlockId(null);
         }}

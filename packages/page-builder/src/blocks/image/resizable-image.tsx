@@ -6,6 +6,7 @@ import {
   usePortalContext,
 } from "@vivid/builder";
 import { cn, useDebounce } from "@vivid/ui";
+import { mergeRefs } from "@vivid/ui/src/utils/merge-refs";
 import { template } from "@vivid/utils";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { BlockStyle } from "../../helpers/styling";
@@ -14,35 +15,22 @@ import { ImageProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 // import Image from "next/image";
 
-type ResizableImageProps = {
+type ImagePositionEditorProps = {
   props: ImageProps;
-  initialWidth?: number;
-  initialHeight?: number;
   initialX: number;
   initialY: number;
-  minWidth?: number;
-  minHeight?: number;
   className?: string;
   base?: BaseBlockProps;
-  onDimensionsChange: (width: number, height: number) => void;
   onPositionChange: (x: number, y: number) => void;
+  onClick: (e: React.MouseEvent) => void;
 };
 
-export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
+export const ImagePositionEditor = forwardRef<
+  HTMLImageElement,
+  ImagePositionEditorProps
+>(
   (
-    {
-      props,
-      initialWidth,
-      initialHeight,
-      initialX,
-      initialY,
-      minWidth = 100,
-      minHeight = 100,
-      className,
-      onDimensionsChange,
-      onPositionChange,
-      base,
-    },
+    { props, initialX, initialY, className, onPositionChange, base, onClick },
     ref,
   ) => {
     const { src, alt } = props.props ?? {
@@ -54,38 +42,10 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
     const documentOrPortal = portalDocument ?? document;
 
     // Add a new state to track if the image has loaded
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const [imageDimensions, setImageDimensions] = useState({
-      width: 0,
-      height: 0,
-    });
-
-    // Update the dimensions state initialization to use initialWidth/initialHeight if provided
-    const [dimensions, setDimensions] = useState({
-      width: initialWidth,
-      height: initialHeight,
-    });
-
-    useEffect(() => {
-      setDimensions({
-        width: initialWidth,
-        height: initialHeight,
-      });
-    }, [initialWidth, initialHeight]);
-
-    const [resizing, setResizing] = useState(false);
-    const [activeHandle, setActiveHandle] = useState<string | null>(null);
+    const [isDraggingImage, setIsDraggingImage] = useState(false);
     const imageRef = useRef<HTMLImageElement>(null);
     const startPosRef = useRef({ x: 0, y: 0 });
-    const startDimensionsRef = useRef({ width: 0, height: 0 });
 
-    const [newDimensions, setNewDimensions] = useState<
-      { width: number; height: number } | undefined
-    >();
-
-    const debouncedNewDimensions = useDebounce(newDimensions, 200);
-
-    const [isDraggingImage, setIsDraggingImage] = useState(false);
     const [objectPosition, setObjectPosition] = useState({
       x: initialX,
       y: initialY,
@@ -103,166 +63,8 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
     const dragStartPosRef = useRef({ x: 0, y: 0 });
     const dragStartObjectPosRef = useRef({ x: 50, y: 50 });
 
-    // Handle mouse down on resize handles
-    const handleMouseDown = (e: React.MouseEvent, handle: string) => {
-      if (!imageRef.current) return;
-      e.preventDefault();
-      e.stopPropagation();
-      setResizing(() => true);
-      setActiveHandle(() => handle);
-
-      startPosRef.current = { x: e.clientX, y: e.clientY };
-      startDimensionsRef.current = {
-        width: dimensions.width ?? imageRef.current.clientWidth,
-        height: dimensions.height ?? imageRef.current.clientHeight,
-      };
-    };
-
-    // Handle mouse move during resize
-    const handleMouseMove = useCallback(
-      (e: MouseEvent) => {
-        if (!resizing) return;
-
-        const deltaX = e.clientX - startPosRef.current.x;
-        const deltaY = e.clientY - startPosRef.current.y;
-
-        let newWidth = startDimensionsRef.current.width;
-        let newHeight = startDimensionsRef.current.height;
-
-        // Adjust dimensions based on which handle is being dragged
-        switch (activeHandle) {
-          case "bottom-right":
-            newWidth = Math.max(
-              minWidth,
-              startDimensionsRef.current.width + deltaX,
-            );
-            newHeight = Math.max(
-              minHeight,
-              startDimensionsRef.current.height + deltaY,
-            );
-            break;
-          case "bottom-left":
-            newWidth = Math.max(
-              minWidth,
-              startDimensionsRef.current.width - deltaX,
-            );
-            newHeight = Math.max(
-              minHeight,
-              startDimensionsRef.current.height + deltaY,
-            );
-            break;
-          case "top-right":
-            newWidth = Math.max(
-              minWidth,
-              startDimensionsRef.current.width + deltaX,
-            );
-            newHeight = Math.max(
-              minHeight,
-              startDimensionsRef.current.height - deltaY,
-            );
-            break;
-          case "top-left":
-            newWidth = Math.max(
-              minWidth,
-              startDimensionsRef.current.width - deltaX,
-            );
-            newHeight = Math.max(
-              minHeight,
-              startDimensionsRef.current.height - deltaY,
-            );
-            break;
-        }
-
-        setDimensions(() => ({ width: newWidth, height: newHeight }));
-        setNewDimensions(() => ({ width: newWidth, height: newHeight }));
-      },
-      [
-        resizing,
-        minWidth,
-        minHeight,
-        startDimensionsRef.current.width,
-        startDimensionsRef.current.height,
-        startPosRef.current.x,
-        startPosRef.current.y,
-        activeHandle,
-      ],
-    );
-
-    useEffect(() => {
-      if (!newDimensions) return;
-      onDimensionsChange(newDimensions.width, newDimensions.height);
-    }, [debouncedNewDimensions]);
-
-    // Handle mouse up to stop resizing
-    const handleMouseUp = useCallback(
-      (e: MouseEvent) => {
-        if (!resizing) return;
-
-        setResizing(false);
-        setActiveHandle(null);
-        e.stopPropagation();
-        e.preventDefault();
-
-        documentOrPortal.removeEventListener("mousemove", handleMouseMove);
-        documentOrPortal.removeEventListener("mouseup", handleMouseUp);
-      },
-      [resizing],
-    );
-
-    // Clean up event listeners on unmount
-    useEffect(() => {
-      // Add event listeners for mouse move and mouse up
-      documentOrPortal.addEventListener("mousemove", handleMouseMove);
-      documentOrPortal.addEventListener("mouseup", handleMouseUp);
-
-      return () => {
-        documentOrPortal.removeEventListener("mousemove", handleMouseMove);
-        documentOrPortal.removeEventListener("mouseup", handleMouseUp);
-      };
-    }, [
-      resizing,
-      activeHandle,
-      setDimensions,
-      setActiveHandle,
-      startDimensionsRef.current,
-    ]);
-
-    useEffect(() => {
-      // documentOrBody.addEventListener("mousemove", handleMouseMove);
-      // documentOrBody.addEventListener("mouseup", handleMouseUp);
-
-      return () => {
-        documentOrPortal.removeEventListener("mousemove", handleMouseMove);
-        documentOrPortal.removeEventListener("mouseup", handleMouseUp);
-      };
-    }, []);
-
-    // Add a function to handle image load and get natural dimensions
-    const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-      const img = e.currentTarget;
-      const naturalWidth = img.naturalWidth;
-      const naturalHeight = img.naturalHeight;
-
-      setImageDimensions({
-        width: naturalWidth,
-        height: naturalHeight,
-      });
-
-      // if (!initialWidth || !initialHeight) {
-      //   setDimensions({
-      //     width: naturalWidth,
-      //     height: naturalHeight,
-      //   });
-      // }
-
-      setImageLoaded(true);
-    };
-
     const handleImageMouseDown = useCallback(
       (e: React.MouseEvent) => {
-        // Only allow dragging if not resizing
-        if (resizing) return;
-
         e.stopPropagation();
         e.preventDefault();
         setIsDraggingImage(true);
@@ -272,7 +74,7 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
         // Change cursor style
         documentOrPortal.body.style.cursor = "move";
       },
-      [resizing, objectPosition],
+      [objectPosition, onClick],
     );
 
     const handleImageMouseMove = useCallback(
@@ -283,30 +85,28 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
         const deltaX = e.clientX - dragStartPosRef.current.x;
         const deltaY = e.clientY - dragStartPosRef.current.y;
 
+        const rect = imageRef.current.getBoundingClientRect();
+
         // Calculate new position (invert the movement for natural feeling)
         // and constrain between 0 and 100
         const newX = Math.max(
           0,
           Math.min(
             100,
-            dragStartObjectPosRef.current.x -
-              (deltaX / (dimensions.width ?? imageRef.current.clientWidth)) *
-                100,
+            dragStartObjectPosRef.current.x - (deltaX / rect.width) * 100,
           ),
         );
         const newY = Math.max(
           0,
           Math.min(
             100,
-            dragStartObjectPosRef.current.y -
-              (deltaY / (dimensions.height ?? imageRef.current?.clientHeight)) *
-                100,
+            dragStartObjectPosRef.current.y - (deltaY / rect.height) * 100,
           ),
         );
 
         setObjectPosition({ x: Math.round(newX), y: Math.round(newY) });
       },
-      [isDraggingImage, dimensions.width, dimensions.height, imageRef.current],
+      [isDraggingImage, imageRef.current],
     );
 
     const handleImageMouseUp = useCallback(
@@ -326,12 +126,15 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
       if (isDraggingImage) {
         documentOrPortal.addEventListener("mousemove", handleImageMouseMove);
         documentOrPortal.addEventListener("mouseup", handleImageMouseUp);
-      }
 
-      return () => {
-        documentOrPortal.removeEventListener("mousemove", handleImageMouseMove);
-        documentOrPortal.removeEventListener("mouseup", handleImageMouseUp);
-      };
+        return () => {
+          documentOrPortal.removeEventListener(
+            "mousemove",
+            handleImageMouseMove,
+          );
+          documentOrPortal.removeEventListener("mouseup", handleImageMouseUp);
+        };
+      }
     }, [isDraggingImage, handleImageMouseMove, handleImageMouseUp]);
 
     const imgClassName = useClassName();
@@ -348,77 +151,25 @@ export const ResizableImage = forwardRef<HTMLImageElement, ResizableImageProps>(
           defaults={defaults}
           isEditor={true}
         />
-        <div
-          ref={ref}
-          className={cn(
-            "relative group block",
-            resizing ? "select-none" : "",
-            className,
-          )}
-          style={{}}
+        <img
+          ref={mergeRefs(imageRef, ref)}
+          src={template(src || "/assets/placeholder/400x200.jpg", args, true)}
+          alt={alt ?? ""}
+          className={cn(base?.className, imgClassName)}
           id={base?.id}
-        >
-          <div className="relative w-full h-full overflow-hidden inline-block">
-            <img
-              ref={imageRef}
-              src={template(
-                src || "/assets/placeholder/400x200.jpg",
-                args,
-                true,
-              )}
-              alt={alt ?? ""}
-              className={cn(imgClassName, base?.className)}
-              style={{
-                // objectFit: "cover",
-                objectPosition: `${objectPosition.x}% ${objectPosition.y}%`,
-                width: dimensions.width ? `${dimensions.width}px` : undefined,
-                height: dimensions.height
-                  ? `${dimensions.height}px`
-                  : undefined,
-                cursor: resizing ? "default" : "move",
-              }}
-              onLoad={handleImageLoad}
-              onMouseDown={handleImageMouseDown}
-              draggable={false}
-            />
-
-            {/* Resize handles */}
-            <div
-              className="absolute bottom-0 right-0 w-4 h-4 bg-transparent opacity-0 group-hover:opacity-100 cursor-nwse-resize"
-              onMouseDown={(e) => handleMouseDown(e, "bottom-right")}
-            />
-            <div
-              className="absolute bottom-0 left-0 w-4 h-4 bg-transparent opacity-0 group-hover:opacity-100 cursor-nesw-resize"
-              onMouseDown={(e) => handleMouseDown(e, "bottom-left")}
-            />
-            <div
-              className="absolute top-0 right-0 w-4 h-4 bg-transparent opacity-0 group-hover:opacity-100 cursor-nesw-resize"
-              onMouseDown={(e) => handleMouseDown(e, "top-right")}
-            />
-            <div
-              className="absolute top-0 left-0 w-4 h-4 bg-transparent opacity-0 group-hover:opacity-100 cursor-nwse-resize"
-              onMouseDown={(e) => handleMouseDown(e, "top-left")}
-            />
-
-            {/* Update the dimensions display to show a loading state if needed */}
-            {(resizing || isDraggingImage) && (
-              <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded opacity-50 group-hover:opacity-100">
-                {imageLoaded ? (
-                  <>
-                    <span>
-                      {dimensions.width} × {dimensions.height}
-                    </span>
-                    <span className="ml-2">
-                      | Pos: {objectPosition.x}%, {objectPosition.y}%
-                    </span>
-                  </>
-                ) : (
-                  "Loading..."
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+          style={{
+            // @ts-expect-error - TODO: remove this once we have a proper solution for this
+            userDrag: "none",
+            // objectFit: "cover",
+            objectPosition: `${objectPosition.x}% ${objectPosition.y}%`,
+            cursor: "move",
+          }}
+          onMouseDown={handleImageMouseDown}
+          draggable={false}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        />
       </>
     );
   },

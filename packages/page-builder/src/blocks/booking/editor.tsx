@@ -1,6 +1,6 @@
 "use client";
 
-import { useCurrentBlock } from "@vivid/builder";
+import { useBlockEditor, useCurrentBlock } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { ReplaceOriginalColors } from "../../helpers/replace-original-colors";
 import { BlockStyle } from "../../helpers/styling";
@@ -11,6 +11,7 @@ import { styles } from "./styles";
 
 export const BookingEditor = ({ props, style }: BookingProps) => {
   const currentBlock = useCurrentBlock<BookingProps>();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const className = useClassName();
   const base = currentBlock.base;
@@ -24,6 +25,7 @@ export const BookingEditor = ({ props, style }: BookingProps) => {
         id={base?.id}
         successPage={props.confirmationPage}
         isEditor
+        {...overlayProps}
       />
     </>
   );

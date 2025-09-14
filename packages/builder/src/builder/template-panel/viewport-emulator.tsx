@@ -4,8 +4,8 @@ import { useI18n } from "@vivid/i18n";
 import { cn, ScrollArea, ScrollBar, Skeleton } from "@vivid/ui";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { usePortalContext } from "../../documents/blocks/helpers/block-wrappers/portal-context";
 import { ViewportSize } from "../../documents/editor/context";
+import { usePortalContext } from "./portal-context";
 
 interface ViewportEmulatorProps {
   children: React.ReactNode;

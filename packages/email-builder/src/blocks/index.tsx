@@ -35,7 +35,7 @@ import {
   ColumnsContainerPropsDefaults,
   ColumnsContainerToolbar,
 } from "./columns-container";
-import ColumnsContainerEditor from "./columns-container/editor";
+import { ColumnsContainerEditor } from "./columns-container/editor";
 import {
   ConditionalContainerConfiguration,
   ConditionalContainerEditor,
@@ -54,8 +54,8 @@ import {
   CustomHTMLToolbar,
 } from "./custom-html";
 import {
-  Divider,
   DividerConfiguration,
+  DividerEditor,
   DividerPropsDefaults,
   DividerToolbar,
 } from "./divider";
@@ -87,8 +87,8 @@ import {
 } from "./image";
 import { EditorBlocksSchema } from "./schema";
 import {
-  Spacer,
   SpacerConfiguration,
+  SpacerEditor,
   SpacerPropsDefaults,
   SpacerToolbar,
 } from "./spacer";
@@ -146,7 +146,7 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
   Divider: {
     displayName: "emailBuilder.blocks.divider.displayName",
     icon: <SquareSplitVertical />,
-    Editor: Divider,
+    Editor: DividerEditor,
     Configuration: DividerConfiguration,
     Toolbar: DividerToolbar,
     defaultValue: DividerPropsDefaults,
@@ -155,7 +155,7 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
   Spacer: {
     displayName: "emailBuilder.blocks.spacer.displayName",
     icon: <RectangleHorizontal />,
-    Editor: Spacer,
+    Editor: SpacerEditor,
     Configuration: SpacerConfiguration,
     Toolbar: SpacerToolbar,
     defaultValue: SpacerPropsDefaults,

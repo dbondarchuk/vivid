@@ -9,6 +9,7 @@ import {
   useBlockDepth,
   useRootBlockId,
 } from "../../documents/editor/context";
+import { OverlayProvider } from "../overlay/context";
 
 export const ActiveOverblockDebug = () => {
   const activeOverBlock = useActiveOverBlock();
@@ -41,12 +42,22 @@ export const Editor = memo(({ selectedView }: { selectedView: string }) => {
       className={cn("mt-0", selectedView !== "editor" && "hidden")}
       forceMount
     >
-      <EditorBlock
-        blockId={rootBlockId}
-        index={0}
-        parentBlockId={rootBlockId}
-        parentProperty="children"
-      />
+      {/* <style>
+        {`.rte-fixed-toolbar {
+          position: absolute;
+          transform: translateY(calc(-100% - 4px));
+          z-index: 50;
+          overflow: hidden;
+        }`}
+      </style> */}
+      <OverlayProvider>
+        <EditorBlock
+          blockId={rootBlockId}
+          index={0}
+          parentBlockId={rootBlockId}
+          parentProperty="children"
+        />
+      </OverlayProvider>
     </TabsContent>
   );
 });
@@ -73,5 +84,20 @@ export const BlockDragOverlay = memo(() => {
     );
   }, [dragBlockId]);
 
-  return <DragOverlay>{RenderedBlock}</DragOverlay>;
+  return (
+    <DragOverlay className="relative">
+      <style>
+        {`
+          @scope {
+            * {
+              transition: none !important;
+              animation: none !important;
+            }
+          }
+        `}
+      </style>
+      {RenderedBlock}
+      <div className="absolute inset-0 bg-blue-400/50 z-50" />
+    </DragOverlay>
+  );
 });

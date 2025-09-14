@@ -1,4 +1,5 @@
 import {
+  useBlockEditor,
   useCurrentBlock,
   useCurrentBlockId,
   useDispatchAction,
@@ -15,6 +16,7 @@ export const TextEditor = ({ props, style }: TextProps) => {
   const dispatchAction = useDispatchAction();
 
   const currentBlockId = useCurrentBlockId();
+  const overlayProps = useBlockEditor(currentBlockId);
   const { document } = usePortalContext();
   const isSelected = useIsSelectedBlock(currentBlockId);
 
@@ -34,14 +36,18 @@ export const TextEditor = ({ props, style }: TextProps) => {
     });
   };
 
-  return isSelected ? (
-    <PlateEditor
-      value={currentBlock?.data?.props?.value}
-      onChange={onChange}
-      style={styles}
-      document={document}
-    />
-  ) : (
-    <PlateStaticEditor value={props?.value} style={styles} />
+  return (
+    <div {...overlayProps} style={styles}>
+      {isSelected ? (
+        <PlateEditor
+          value={currentBlock?.data?.props?.value}
+          onChange={onChange}
+          document={document}
+          className="w-full bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 sm:px-0 border-none leading-normal md:leading-normal"
+        />
+      ) : (
+        <PlateStaticEditor value={props?.value} />
+      )}
+    </div>
   );
 };

@@ -3,8 +3,8 @@
 import {
   EditorBlock,
   useBlockChildrenBlockIds,
+  useBlockEditor,
   useCurrentBlock,
-  useSetCurrentBlockRef,
 } from "@vivid/builder";
 import { cn } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
@@ -23,7 +23,7 @@ export const LinkEditor = ({ props, style }: LinkProps) => {
   const currentBlock = useCurrentBlock<LinkProps>();
   const contentId = useBlockChildrenBlockIds(currentBlock.id, "props")?.[0];
   const base = currentBlock.base;
-  const ref = useSetCurrentBlockRef();
+  const overlayProps = useBlockEditor(currentBlock.id);
 
   const className = useClassName();
   const defaults = getDefaults({ props, style }, true);
@@ -37,7 +37,11 @@ export const LinkEditor = ({ props, style }: LinkProps) => {
         defaults={defaults}
         isEditor
       />
-      <div className={cn(className, base?.className)} id={base?.id} ref={ref}>
+      <span
+        className={cn(className, base?.className)}
+        id={base?.id}
+        {...overlayProps}
+      >
         {!!contentId && (
           <EditorBlock
             key={contentId}
@@ -49,7 +53,7 @@ export const LinkEditor = ({ props, style }: LinkProps) => {
             allowedTypes="InlineContainer"
           />
         )}
-      </div>
+      </span>
     </>
   );
 };

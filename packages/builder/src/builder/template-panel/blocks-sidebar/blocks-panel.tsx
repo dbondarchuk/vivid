@@ -26,7 +26,7 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
     const { isDragging, ref } = useDraggable({
       id: `template-${blockType}`,
       type: blockType,
-      feedback: "move",
+      feedback: "clone",
 
       data: {
         type: "block-template",
@@ -34,6 +34,26 @@ const DraggableBlockItem: React.FC<DraggableBlockItemProps> = memo(
         blockConfig,
       },
     });
+
+    //  const { isDragging, ref } = useSortable({
+    //    id: `template-${blockType}`,
+    //    index: 0,
+    //    group: "blocks-panel",
+    //    type: blockType,
+    //    feedback: "clone",
+    //    accept: () => false,
+    //    transition: {
+    //      duration: 200,
+    //      easing: "cubic-bezier(0.2, 0, 0, 1)",
+    //    },
+    //    collisionDetector: createDynamicCollisionDetector("dynamic"),
+
+    //    data: {
+    //      type: "block-template",
+    //      blockType,
+    //      blockConfig,
+    //    },
+    //  });
 
     const t = useI18n("builder");
 

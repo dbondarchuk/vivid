@@ -1,12 +1,15 @@
-import { EditorChildren, useCurrentBlock } from "@vivid/builder";
-import { cn } from "@vivid/ui";
+import {
+  EditorChildren,
+  useBlockEditor,
+  useCurrentBlock,
+} from "@vivid/builder";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
 import { GridContainerProps, styles } from "./schema";
 
 export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
   const currentBlock = useCurrentBlock<GridContainerProps>();
-
+  const overlayProps = useBlockEditor(currentBlock.id);
   const className = useClassName();
   const base = currentBlock.base;
 
@@ -17,12 +20,9 @@ export const GridContainerEditor = ({ style, props }: GridContainerProps) => {
         styleDefinitions={styles}
         styles={currentBlock.data?.style}
       />
-      <EditorChildren
-        blockId={currentBlock.id}
-        property="props"
-        className={cn(className, base?.className)}
-        id={base?.id}
-      />
+      <div className={className} id={base?.id} {...overlayProps}>
+        <EditorChildren blockId={currentBlock.id} property="props" />
+      </div>
     </>
   );
 };

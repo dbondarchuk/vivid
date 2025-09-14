@@ -4,18 +4,19 @@ import { useCallback, useRef } from "react";
 import sanitizeHtml from "sanitize-html";
 
 import {
+  useBlockEditor,
   useCurrentBlock,
   useDispatchAction,
   useEditorArgs,
   useIsSelectedBlock,
   usePortalContext,
-  useSetCurrentBlockRef,
   useSetSelectedBlockId,
 } from "@vivid/builder";
 import { useI18n } from "@vivid/i18n";
 import { ArgumentsAutocomplete, cn, useDebounceCallback } from "@vivid/ui";
 import { BlockStyle } from "../../helpers/styling";
 import { useClassName } from "../../helpers/use-class-name";
+import { useResizeBlockStyles } from "../../helpers/use-resize-block-styles";
 import { InlineTextProps } from "./schema";
 import { getDefaults, styles } from "./styles";
 
@@ -27,7 +28,9 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
   const value = currentBlock?.data?.props?.text;
   const dispatchAction = useDispatchAction();
   const setSelectedBlockId = useSetSelectedBlockId();
-  const setRef = useSetCurrentBlockRef();
+  const onResize = useResizeBlockStyles();
+  // const setRef = useSetCurrentBlockRef();
+  const overlayProps = useBlockEditor(currentBlock.id, onResize);
 
   const { document } = usePortalContext();
 
@@ -83,11 +86,11 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
       <ArgumentsAutocomplete
         ref={(el) => {
           ref.current = el as HTMLInputElement;
-          setRef(el as any);
+          overlayProps.ref(el as HTMLElement);
         }}
         args={args}
         className={cn(
-          "!max-w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal",
+          "w-fit bg-transparent border-0 focus-visible:ring-0 rounded-none h-auto p-0 border-none leading-normal",
           isSelected && "px-1",
           className,
           base?.className,
@@ -106,6 +109,7 @@ export function InlineTextEditor({ props, style }: InlineTextProps) {
           }
         }
         id={base?.id}
+        onClick={overlayProps.onClick}
       />
     </>
   );
