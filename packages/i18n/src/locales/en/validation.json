@@ -323,6 +323,18 @@
       },
       "depositPercentage": {
         "required": "Deposit percentage must be an integer number between 10 and 100"
+      },
+      "askForConfirmationIfHasCloseAppointments": {
+        "enabled": {
+          "required": "Amount of days before or after the appointment to ask for confirmation is required"
+        },
+        "days": {
+          "min": "Amount of days must be between 1 and 30",
+          "max": "Amount of days must be between 1 and 30"
+        },
+        "message": {
+          "required": "Message is required"
+        }
       }
     }
   },

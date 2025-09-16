@@ -59,7 +59,7 @@ Email: {{ fields.email }}
 Платежі:
 
 {{#payments}}
- 1. {{appName}} {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
+ 1. {{appName}} {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - Жодного

@@ -497,6 +497,7 @@ export class EventsService implements IEventsService {
       range?: DateRange;
       endRange?: DateRange;
       status?: AppointmentStatus[];
+      optionId?: string | string[];
       customerId?: string | string[];
       discountId?: string | string[];
     },
@@ -549,6 +550,12 @@ export class EventsService implements IEventsService {
         $in: Array.isArray(query.customerId)
           ? query.customerId
           : [query.customerId],
+      };
+    }
+
+    if (query.optionId) {
+      filter["option._id"] = {
+        $in: Array.isArray(query.optionId) ? query.optionId : [query.optionId],
       };
     }
 

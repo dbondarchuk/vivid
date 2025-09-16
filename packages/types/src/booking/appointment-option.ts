@@ -48,13 +48,63 @@ export const appointmentOptionSchema = z
       (field) => field.id,
       "appointments.option.fields.id.unique",
     ).optional(),
+    askForConfirmationIfHasCloseAppointments: z
+      .object({
+        enabled: z.literal(true, {
+          message:
+            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+          required_error:
+            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+          invalid_type_error:
+            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+        }),
+        message: z
+          .string()
+          .min(
+            1,
+            "appointments.option.askForConfirmationIfHasCloseAppointments.message.required",
+          ),
+        days: z.coerce
+          .number({
+            required_error:
+              "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
+            message:
+              "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
+          })
+          .min(
+            1,
+            "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
+          )
+          .max(
+            30,
+            "appointments.option.askForConfirmationIfHasCloseAppointments.days.max",
+          ),
+      })
+      .or(
+        z.object({
+          enabled: z
+            .literal(false, {
+              errorMap: () => ({
+                message:
+                  "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+              }),
+            })
+            .default(false)
+            .optional()
+            .nullable(),
+        }),
+      )
+      .optional(),
   })
   .and(
     z
       .object({
-        requireDeposit: isPaymentRequiredForOptionSchema.exclude(["always"], {
-          message: "appointments.option.requireDeposit.required",
-        }),
+        requireDeposit: isPaymentRequiredForOptionSchema
+          .exclude(["always"], {
+            message: "appointments.option.requireDeposit.required",
+          })
+          .optional()
+          .nullable(),
       })
       .or(
         z.object({

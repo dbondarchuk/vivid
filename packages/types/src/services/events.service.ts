@@ -34,6 +34,7 @@ export interface IEventsService {
       range?: DateRange;
       endRange?: DateRange;
       status?: AppointmentStatus[];
+      optionId?: string | string[];
       customerId?: string | string[];
       discountId?: string | string[];
     },

@@ -58,7 +58,7 @@ Price: \${{.}}
 Payments:
 
 {{#payments}}
- 1. {{appName}} on {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
+ 1. {{appName}} on {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - None

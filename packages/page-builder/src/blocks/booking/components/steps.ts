@@ -1,10 +1,26 @@
 import { AddonsCard } from "./addons-card";
 import { CalendarCard } from "./calendar-card";
+import { ClosestAppointmentConfirmationCard } from "./closest-appointment-confirmation-card";
 import { ConfirmationCard } from "./confirmation-card";
-import { Step, StepType } from "./context";
+import { ScheduleContextProps, Step, StepType } from "./context";
 import { DurationCard } from "./duration-card";
 import { FormCard } from "./form-card";
 import { PaymentCard } from "./payment-card";
+
+const handleGoToPayment = async (ctx: ScheduleContextProps) => {
+  try {
+    const payment = await ctx.fetchPaymentInformation();
+    ctx.setPaymentInformation(payment);
+
+    if (!payment || payment.intent?.status === "paid") {
+      ctx.onSubmit();
+    } else {
+      ctx.setStep("payment");
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 export const ScheduleSteps: Record<StepType, Step> = {
   duration: {
@@ -79,18 +95,19 @@ export const ScheduleSteps: Record<StepType, Step> = {
       show: () => true,
       isEnabled: ({ isFormValid, isEditor }) => isFormValid && !isEditor,
       action: async (ctx) => {
-        try {
-          const payment = await ctx.fetchPaymentInformation();
-          ctx.setPaymentInformation(payment);
-
-          if (!payment || payment.intent?.status === "paid") {
-            ctx.onSubmit();
-          } else {
-            ctx.setStep("payment");
+        const optionNeedsCloseAppointmentsConfirmation =
+          ctx.appointmentOption.askForConfirmationIfHasCloseAppointments
+            ?.enabled;
+        if (optionNeedsCloseAppointmentsConfirmation) {
+          const closeAppointments = await ctx.checkCloseAppointments();
+          if (closeAppointments.hasCloseAppointments) {
+            ctx.setClosestAppointment(closeAppointments.closestAppointment);
+            ctx.setStep("close-appointments-confirmation");
+            return;
           }
-        } catch (e) {
-          console.error(e);
         }
+
+        handleGoToPayment(ctx);
       },
     },
     Content: FormCard,
@@ -120,5 +137,18 @@ export const ScheduleSteps: Record<StepType, Step> = {
       action: () => {},
     },
     Content: ConfirmationCard,
+  },
+  "close-appointments-confirmation": {
+    prev: {
+      show: () => true,
+      isEnabled: () => true,
+      action: ({ setStep }) => setStep("form"),
+    },
+    next: {
+      show: () => true,
+      isEnabled: (ctx) => ctx.confirmClosestAppointment,
+      action: (ctx) => handleGoToPayment(ctx),
+    },
+    Content: ClosestAppointmentConfirmationCard,
   },
 };

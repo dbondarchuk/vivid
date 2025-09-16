@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { ScheduleContext, StepType } from "./context";
 import { StepCard } from "./step-card";
+import { CheckCloseAppointmentsResponse } from "./types";
 
 export type ScheduleProps = {
   appointmentOption: AppointmentChoice;
@@ -73,6 +74,10 @@ export const Schedule: React.FC<
     appointmentOptionDuration,
   );
 
+  const [closestAppointment, setClosestAppointment] = React.useState<
+    LuxonDateTime | undefined
+  >(undefined);
+
   const [promoCode, setPromoCode] = React.useState<ApplyDiscountResponse>();
   const [paymentInformation, setPaymentInformation] =
     React.useState<CollectPayment | null>();
@@ -122,6 +127,8 @@ export const Schedule: React.FC<
   });
 
   const [isFormValid, setIsFormValid] = React.useState(false);
+  const [confirmClosestAppointment, setConfirmClosestAppointment] =
+    React.useState(false);
 
   const router = useRouter();
 
@@ -163,6 +170,42 @@ export const Schedule: React.FC<
       setIsLoading(false);
     }
   };
+
+  const checkCloseAppointments =
+    async (): Promise<CheckCloseAppointmentsResponse> => {
+      const request = getAppointmentRequest();
+      if (!request) throw new Error("Failed to build appointment request");
+
+      setIsLoading(true);
+
+      try {
+        const response = await fetch("/api/event/closest", {
+          method: "POST",
+          body: JSON.stringify(request),
+        });
+
+        if (response.status >= 400) throw new Error(response.statusText);
+        const data = (await response.json()) as CheckCloseAppointmentsResponse;
+        return {
+          ...data,
+          closestAppointment:
+            data.hasCloseAppointments && data.closestAppointment
+              ? LuxonDateTime.fromISO(
+                  data.closestAppointment as any as string,
+                ).setZone(timeZone)
+              : undefined,
+        } as CheckCloseAppointmentsResponse;
+      } catch (e) {
+        console.error(e);
+        toast.error(errors.fetchTitle, {
+          description: errors.fetchDescription,
+        });
+
+        throw e;
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   const getAppointmentRequest = (): AppointmentRequest | null => {
     if (!dateTime || !duration) return null;
@@ -336,6 +379,11 @@ export const Schedule: React.FC<
           paymentInformation,
           setPaymentInformation,
           fetchPaymentInformation,
+          checkCloseAppointments,
+          confirmClosestAppointment,
+          setConfirmClosestAppointment,
+          closestAppointment,
+          setClosestAppointment,
           isFormValid,
           setIsFormValid,
           className,

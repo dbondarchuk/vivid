@@ -791,6 +791,16 @@
         "selectOption": "Select option",
         "fields": "Fields",
         "addons": "Add-ons",
+        "askForConfirmationIfHasCloseAppointments": {
+          "title": "Same service appointments around same date and time",
+          "enabled": "Ask to confirm",
+          "enabledTooltip": "Whether to ask customer to confirm if they have appointments of same service in future around selected date and time",
+          "days": "Days before or after",
+          "daysSuffix": "days",
+          "daysTooltip": "Amount of days to check for closest appointment before or after the selected date and time to ask for confirmation",
+          "message": "Custom confirmation message",
+          "messageTooltip": "Message to show to the user. You can use following placeholders: '{{days'}} to show the amount of days, '{{name'}} to show customers name, '{{serviceName'}} to show the service name, '{{date'}} to show the date of the closest appointment"
+        },
         "validation": {
           "nameUnique": "Option name must be unique"
         },

@@ -11,6 +11,11 @@ import {
   WithDatabaseId,
 } from "@vivid/types";
 import {
+  BooleanSelect,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
   Combobox,
   DurationInput,
   Form,
@@ -64,10 +69,18 @@ export const OptionForm: React.FC<{
     resolver: zodResolver(formSchema),
     mode: "all",
     reValidateMode: "onChange",
-    defaultValues: initialData || {},
+    defaultValues: initialData || {
+      requireDeposit: "inherit",
+      askForConfirmationIfHasCloseAppointments: {
+        enabled: false,
+      },
+    },
   });
 
   const requireDeposit = form.watch("requireDeposit");
+  const askForConfirmationIfHasCloseAppointments = form.watch(
+    "askForConfirmationIfHasCloseAppointments.enabled",
+  );
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -249,87 +262,237 @@ export const OptionForm: React.FC<{
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="requireDeposit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t("services.options.form.requireDeposit")}{" "}
-                    <InfoTooltip>
-                      <p>{t("services.options.form.requireDepositTooltip1")}</p>
-                      <p className="font-semibold">
-                        {t("services.options.form.requireDepositTooltip2")}
-                      </p>
-                    </InfoTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <Combobox
-                      disabled={loading}
-                      className="flex w-full font-normal text-base"
-                      values={isPaymentRequiredForOptionTypes.map((value) => ({
-                        value,
-                        label: IsPaymentRequiredForOptionTypesLabels[value],
-                      }))}
-                      searchLabel={t("services.options.form.selectOption")}
-                      value={field.value}
-                      onItemSelect={(item) => {
-                        field.onChange(item);
-                        field.onBlur();
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {requireDeposit === "always" && (
-              <>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base font-medium">
+                  {t("services.options.form.requireDeposit")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
                 <FormField
                   control={form.control}
-                  name="depositPercentage"
+                  name="requireDeposit"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {t("services.options.form.depositAmount")}{" "}
+                        {t("services.options.form.requireDeposit")}{" "}
                         <InfoTooltip>
                           <p>
-                            {t("services.options.form.depositAmountTooltip1")}
+                            {t("services.options.form.requireDepositTooltip1")}
                           </p>
-                          <p>
-                            {t("services.options.form.depositAmountTooltip2")}
-                          </p>
-                          <p>
-                            {t("services.options.form.depositAmountTooltip3")}
+                          <p className="font-semibold">
+                            {t("services.options.form.requireDepositTooltip2")}
                           </p>
                         </InfoTooltip>
                       </FormLabel>
                       <FormControl>
-                        <InputGroup>
-                          <InputGroupInput>
-                            <Input
-                              disabled={loading}
-                              placeholder="20"
-                              type="number"
-                              className={InputGroupInputClasses()}
-                              {...field}
-                              onChange={(e) => {
-                                field.onChange(e);
-                                form.trigger("requireDeposit");
-                              }}
-                            />
-                          </InputGroupInput>
-                          <InputSuffix className={InputGroupSuffixClasses()}>
-                            %
-                          </InputSuffix>
-                        </InputGroup>
+                        <Combobox
+                          disabled={loading}
+                          className="flex w-full font-normal text-base"
+                          values={isPaymentRequiredForOptionTypes.map(
+                            (value) => ({
+                              value,
+                              label:
+                                IsPaymentRequiredForOptionTypesLabels[value],
+                            }),
+                          )}
+                          searchLabel={t("services.options.form.selectOption")}
+                          value={field.value || "inherit"}
+                          onItemSelect={(item) => {
+                            field.onChange(item);
+                            field.onBlur();
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </>
-            )}
+                {requireDeposit === "always" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="depositPercentage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t("services.options.form.depositAmount")}{" "}
+                            <InfoTooltip>
+                              <p>
+                                {t(
+                                  "services.options.form.depositAmountTooltip1",
+                                )}
+                              </p>
+                              <p>
+                                {t(
+                                  "services.options.form.depositAmountTooltip2",
+                                )}
+                              </p>
+                              <p>
+                                {t(
+                                  "services.options.form.depositAmountTooltip3",
+                                )}
+                              </p>
+                            </InfoTooltip>
+                          </FormLabel>
+                          <FormControl>
+                            <InputGroup>
+                              <InputGroupInput>
+                                <Input
+                                  disabled={loading}
+                                  placeholder="20"
+                                  type="number"
+                                  className={InputGroupInputClasses()}
+                                  {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    form.trigger("requireDeposit");
+                                  }}
+                                />
+                              </InputGroupInput>
+                              <InputSuffix
+                                className={InputGroupSuffixClasses()}
+                              >
+                                %
+                              </InputSuffix>
+                            </InputGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base font-medium">
+                  {t(
+                    "services.options.form.askForConfirmationIfHasCloseAppointments.title",
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                <FormField
+                  control={form.control}
+                  name="askForConfirmationIfHasCloseAppointments.enabled"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t(
+                          "services.options.form.askForConfirmationIfHasCloseAppointments.enabled",
+                        )}{" "}
+                        <InfoTooltip>
+                          {t(
+                            "services.options.form.askForConfirmationIfHasCloseAppointments.enabledTooltip",
+                          )}
+                        </InfoTooltip>
+                      </FormLabel>
+                      <FormControl>
+                        <BooleanSelect
+                          value={field.value ?? false}
+                          onValueChange={(item) => {
+                            field.onChange(item);
+                            field.onBlur();
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {askForConfirmationIfHasCloseAppointments && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="askForConfirmationIfHasCloseAppointments.days"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t(
+                              "services.options.form.askForConfirmationIfHasCloseAppointments.days",
+                            )}{" "}
+                            <InfoTooltip>
+                              {t(
+                                "services.options.form.askForConfirmationIfHasCloseAppointments.daysTooltip",
+                              )}
+                            </InfoTooltip>
+                          </FormLabel>
+                          <FormControl>
+                            <InputGroup>
+                              <InputGroupInput>
+                                <Input
+                                  disabled={loading}
+                                  placeholder="7"
+                                  type="number"
+                                  className={InputGroupInputClasses({
+                                    variant: "suffix",
+                                  })}
+                                  {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    form.trigger(
+                                      "askForConfirmationIfHasCloseAppointments.enabled",
+                                    );
+                                  }}
+                                  onBlur={() => {
+                                    field.onBlur();
+                                    form.trigger(
+                                      "askForConfirmationIfHasCloseAppointments.enabled",
+                                    );
+                                  }}
+                                />
+                              </InputGroupInput>
+                              <InputSuffix
+                                className={InputGroupSuffixClasses({
+                                  variant: "suffix",
+                                })}
+                              >
+                                {t(
+                                  "services.options.form.askForConfirmationIfHasCloseAppointments.daysSuffix",
+                                )}
+                              </InputSuffix>
+                            </InputGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="askForConfirmationIfHasCloseAppointments.message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {t(
+                              "services.options.form.askForConfirmationIfHasCloseAppointments.message",
+                            )}{" "}
+                            <InfoTooltip>
+                              {t(
+                                "services.options.form.askForConfirmationIfHasCloseAppointments.messageTooltip",
+                              )}
+                            </InfoTooltip>
+                          </FormLabel>
+                          <FormControl>
+                            <PlateMarkdownEditor
+                              className="bg-background px-4 sm:px-4 pb-24"
+                              disabled={loading}
+                              value={field.value}
+                              onChange={(v) => {
+                                field.onChange(v);
+                                field.onBlur();
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+              </CardContent>
+            </Card>
           </div>
           <div className="w-full  grid md:grid-cols-2 gap-4">
             <Sortable

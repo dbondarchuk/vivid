@@ -91,7 +91,13 @@ function processObject(obj: any, locale: Language, timeZone?: string): any {
           short: dateTime
             .setLocale(locale)
             .toLocaleString(DateTime.DATETIME_SHORT),
+          huge: dateTime
+            .setLocale(locale)
+            .toLocaleString(DateTime.DATETIME_HUGE),
           date: dateTime.setLocale(locale).toLocaleString(DateTime.DATE_FULL),
+          dateHuge: dateTime
+            .setLocale(locale)
+            .toLocaleString(DateTime.DATE_HUGE),
           time: dateTime.setLocale(locale).toLocaleString(DateTime.TIME_SIMPLE),
           timeWithSeconds: dateTime
             .setLocale(locale)
