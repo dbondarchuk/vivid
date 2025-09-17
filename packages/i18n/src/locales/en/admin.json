@@ -203,6 +203,8 @@
       "by": "by",
       "dateTime": "Date & Time",
       "duration": "Duration",
+      "doNotNotifyCustomer": "Do not notify customer",
+      "doNotNotifyCustomerDescription": "If checked, the customer will not be notified about the rescheduled appointment",
       "confirmOverlap": "Confirm overlap",
       "confirmOverlapDescription": "I understand that rescheduling this appointment will create an overlap in my schedule",
       "close": "Close",

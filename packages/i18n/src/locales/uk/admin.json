@@ -205,6 +205,8 @@
       "duration": "Тривалість",
       "confirmOverlap": "Підтвердити накладення",
       "confirmOverlapDescription": "Я розумію, що перенесення цього запису створить накладення в моєму розкладі",
+      "doNotNotifyCustomer": "Не повідомляти клієнта",
+      "doNotNotifyCustomerDescription": "Якщо ввімкнено, клієнт не буде повідомлений про перенесення запису",
       "close": "Закрити",
       "reschedule": "Перенести",
       "confirmTitle": "Ви абсолютно впевнені?",

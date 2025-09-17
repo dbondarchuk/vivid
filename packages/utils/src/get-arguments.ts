@@ -13,6 +13,7 @@ import {
   socialType,
 } from "@vivid/types";
 import { formatArguments, FormattedArguments } from "./format-arguments";
+import { capitalize } from "./string";
 import { durationToTime } from "./time";
 
 const AppointmentStatusTexts: Record<
@@ -117,6 +118,10 @@ export const getArguments = <
 
     return {
       ...payment,
+      appName:
+        "appName" in payment && payment.appName
+          ? capitalize(payment.appName)
+          : (undefined as any as string),
       amountLeft,
       totalRefunded,
     };

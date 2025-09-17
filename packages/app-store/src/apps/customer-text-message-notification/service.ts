@@ -188,14 +188,32 @@ export default class CustomerTextMessageNotificationConnectedApp
     appointment: Appointment,
     newTime: Date,
     newDuration: number,
+    _?: Date,
+    __?: number,
+    doNotNotifyCustomer?: boolean,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
+    if (doNotNotifyCustomer) {
+      logger.debug(
+        {
+          appId: appData._id,
+          appointmentId: appointment._id,
+          newTime: newTime.toISOString(),
+          newDuration,
+          doNotNotifyCustomer,
+        },
+        "Appointment rescheduled, not sending customer text message notification - do not notify customer",
+      );
+      return;
+    }
+
     logger.debug(
       {
         appId: appData._id,
         appointmentId: appointment._id,
         newTime: newTime.toISOString(),
         newDuration,
+        doNotNotifyCustomer,
       },
       "Appointment rescheduled, sending customer text message notification",
     );

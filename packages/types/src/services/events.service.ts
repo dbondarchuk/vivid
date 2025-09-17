@@ -55,6 +55,7 @@ export interface IEventsService {
     id: string,
     newTime: Date,
     newDuration: number,
+    doNotNotifyCustomer?: boolean,
   ): Promise<void>;
 
   getAppointmentHistory(

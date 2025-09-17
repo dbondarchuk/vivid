@@ -963,10 +963,11 @@ export class EventsService implements IEventsService {
     id: string,
     newTime: Date,
     newDuration: number,
+    doNotNotifyCustomer?: boolean,
   ) {
     const logger = this.loggerFactory("rescheduleAppointment");
     logger.debug(
-      { appointmentId: id, newTime, newDuration },
+      { appointmentId: id, newTime, newDuration, doNotNotifyCustomer },
       "Rescheduling appointment",
     );
 
@@ -1035,6 +1036,7 @@ export class EventsService implements IEventsService {
             newDuration,
             oldTime,
             oldDuration,
+            doNotNotifyCustomer,
           },
           "Executing reschedule hook",
         );
@@ -1046,6 +1048,7 @@ export class EventsService implements IEventsService {
           newDuration,
           oldTime,
           oldDuration,
+          doNotNotifyCustomer,
         );
 
         logger.debug(
@@ -1057,6 +1060,7 @@ export class EventsService implements IEventsService {
             newDuration,
             oldTime,
             oldDuration,
+            doNotNotifyCustomer,
           },
           "Reschedule hook executed",
         );

@@ -20,5 +20,6 @@ export interface IAppointmentHook {
     newDuration: number,
     oldTime?: Date,
     oldDuration?: number,
+    doNotNotifyCustomer?: boolean,
   ): Promise<void>;
 }

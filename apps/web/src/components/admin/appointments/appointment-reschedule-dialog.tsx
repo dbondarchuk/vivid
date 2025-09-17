@@ -56,6 +56,7 @@ const formSchema = z.object({
     .int("Should be the integer value")
     .min(1, "Minimum duration is 1")
     .max(60 * 24 * 10, "Maximum duration is 10 days"),
+  doNotNotifyCustomer: z.coerce.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -76,6 +77,7 @@ export const AppointmentRescheduleDialog: React.FC<
     values: {
       dateTime: propAppointment.dateTime,
       duration: propAppointment.totalDuration,
+      doNotNotifyCustomer: false,
     },
   });
 
@@ -103,7 +105,12 @@ export const AppointmentRescheduleDialog: React.FC<
       setLoading(true);
 
       await toastPromise(
-        rescheduleAppointment(appointment._id, data.dateTime, data.duration),
+        rescheduleAppointment(
+          appointment._id,
+          data.dateTime,
+          data.duration,
+          data.doNotNotifyCustomer,
+        ),
         {
           success: t("appointments.rescheduleDialog.success"),
           error: t("appointments.rescheduleDialog.error"),
@@ -216,6 +223,35 @@ export const AppointmentRescheduleDialog: React.FC<
                             <DurationInput disabled={loading} {...field} />
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="doNotNotifyCustomer"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex flex-row items-center gap-2">
+                            <Checkbox
+                              id="do-not-notify-customer"
+                              disabled={loading}
+                              checked={!!field.value}
+                              onCheckedChange={(e) => field.onChange(!!e)}
+                            />
+                            <FormLabel
+                              htmlFor="do-not-notify-customer"
+                              className="cursor-pointer"
+                            >
+                              {t(
+                                "appointments.rescheduleDialog.doNotNotifyCustomer",
+                              )}
+                            </FormLabel>
+                          </div>
+                          <FormDescription>
+                            {t(
+                              "appointments.rescheduleDialog.doNotNotifyCustomerDescription",
+                            )}
+                          </FormDescription>
                         </FormItem>
                       )}
                     />

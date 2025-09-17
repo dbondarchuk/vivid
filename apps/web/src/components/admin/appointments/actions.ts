@@ -179,6 +179,7 @@ export async function rescheduleAppointment(
   id: string,
   dateTime: Date,
   duration: number,
+  doNotNotifyCustomer?: boolean,
 ) {
   const actionLogger = logger("rescheduleAppointment");
 
@@ -187,6 +188,7 @@ export async function rescheduleAppointment(
       appointmentId: id,
       newDateTime: dateTime.toISOString(),
       newDuration: duration,
+      doNotNotifyCustomer,
     },
     "Rescheduling appointment",
   );
@@ -196,6 +198,7 @@ export async function rescheduleAppointment(
       id,
       dateTime,
       duration,
+      doNotNotifyCustomer,
     );
 
     actionLogger.debug(
@@ -203,6 +206,7 @@ export async function rescheduleAppointment(
         appointmentId: id,
         newDateTime: dateTime.toISOString(),
         newDuration: duration,
+        doNotNotifyCustomer,
       },
       "Appointment rescheduled successfully",
     );
@@ -214,6 +218,7 @@ export async function rescheduleAppointment(
         appointmentId: id,
         newDateTime: dateTime.toISOString(),
         newDuration: duration,
+        doNotNotifyCustomer,
         error: error instanceof Error ? error.message : String(error),
       },
       "Failed to reschedule appointment",
