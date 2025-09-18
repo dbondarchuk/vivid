@@ -469,8 +469,13 @@ export const OptionForm: React.FC<{
                               "services.options.form.askForConfirmationIfHasCloseAppointments.message",
                             )}{" "}
                             <InfoTooltip>
-                              {t(
+                              {t.rich(
                                 "services.options.form.askForConfirmationIfHasCloseAppointments.messageTooltip",
+                                {
+                                  p: (chunks: any) => <p>{chunks}</p>,
+                                  br: () => <br />,
+                                  i: (chunks: any) => <em>{chunks}</em>,
+                                },
                               )}
                             </InfoTooltip>
                           </FormLabel>

@@ -76,7 +76,7 @@ export const hasSame = (
   const dateTime1 = date1 instanceof Date ? DateTime.fromJSDate(date1) : date1;
   const dateTime2 = date2 instanceof Date ? DateTime.fromJSDate(date2) : date2;
 
-  return dateTime1.startOf(unit).equals(dateTime2.startOf(unit));
+  return +dateTime1.startOf(unit) === +dateTime2.startOf(unit);
 };
 
 export function eachOfInterval(

@@ -9733,14 +9733,14 @@ next-auth@^5.0.0-beta.25:
   dependencies:
     "@auth/core" "0.37.2"
 
-next-intl@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/next-intl/-/next-intl-4.3.1.tgz#6bbafec13fcb3de1771bd1718d51b7ca473859c3"
-  integrity sha512-FylHpOoQw5MpOyJt4cw8pNEGba7r3jKDSqt112fmBqXVceGR5YncmqpxS5MvSHsWRwbjqpOV8OsZCIY/4f4HWg==
+next-intl@^4.3.9:
+  version "4.3.9"
+  resolved "https://registry.yarnpkg.com/next-intl/-/next-intl-4.3.9.tgz#d15673c24b3cd0ad3d5de0c0abe52ec0ce248a93"
+  integrity sha512-4oSROHlgy8a5Qr2vH69wxo9F6K0uc6nZM2GNzqSe6ET79DEzOmBeSijCRzD5txcI4i+XTGytu4cxFsDXLKEDpQ==
   dependencies:
     "@formatjs/intl-localematcher" "^0.5.4"
     negotiator "^1.0.0"
-    use-intl "^4.3.1"
+    use-intl "^4.3.9"
 
 next-logger@^5.0.1:
   version "5.0.1"
@@ -12945,10 +12945,10 @@ use-file-picker@^2.1.2:
   dependencies:
     file-selector "0.2.4"
 
-use-intl@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/use-intl/-/use-intl-4.3.1.tgz#a538e38de893a5c22fe207b389a4a157535f7b10"
-  integrity sha512-8Xn5RXzeHZhWqqZimi1wi2pKFqm0NxRUOB41k1QdjbPX+ysoeLW3Ey+fi603D/e5EGb0fYw8WzjgtUagJdlIvg==
+use-intl@^4.3.9:
+  version "4.3.9"
+  resolved "https://registry.yarnpkg.com/use-intl/-/use-intl-4.3.9.tgz#31c91310c6411b3e56de762c810d168ca9da7708"
+  integrity sha512-bZu+h13HIgOvsoGleQtUe4E6gM49CRm+AH36KnJVB/qb1+Beo7jr7HNrR8YWH8oaOkQfGNm6vh0HTepxng8UTg==
   dependencies:
     "@formatjs/fast-memoize" "^2.2.0"
     "@schummar/icu-type-parser" "1.21.5"

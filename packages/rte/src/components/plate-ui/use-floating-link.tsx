@@ -140,8 +140,7 @@ export const useFloatingLinkInsert = ({
     },
     {
       enableOnContentEditable: true,
-      document: window.document,
-      //   document: window.document,
+      document: window?.document,
     },
     [focused],
   );
