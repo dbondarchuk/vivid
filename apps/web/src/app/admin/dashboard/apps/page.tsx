@@ -28,7 +28,7 @@ export default async function AppsPage(props: Params) {
     { title: t("navigation.apps"), link: "/admin/dashboard/apps" },
   ];
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />

@@ -35,7 +35,7 @@ export const MentionElement = withRef<
         selected && focused && "ring-2 ring-ring",
         element.children[0].bold === true && "font-bold",
         element.children[0].italic === true && "italic",
-        element.children[0].underline === true && "underline"
+        element.children[0].underline === true && "underline",
       )}
       onClick={getHandler(onClick, element)}
       data-slate-value={element.value}

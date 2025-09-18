@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { communicationChannels } from "@vivid/types";
 import {
   Button,
   DataTableFilterBox,
@@ -16,7 +17,6 @@ import { Plus, Settings2 } from "lucide-react";
 import React from "react";
 import { DeleteSelectedRemindersButton } from "./delete-selected";
 import { useRemindersTableFilters } from "./use-table-filters";
-import { communicationChannels } from "@vivid/types";
 
 export const RemindersTableAction: React.FC<{ appId: string }> = ({
   appId,

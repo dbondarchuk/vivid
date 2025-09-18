@@ -2,11 +2,11 @@
 
 import { SortableContext } from "@dnd-kit/sortable";
 import { cva } from "class-variance-authority";
-import { Card, CardContent, CardHeader } from "./card";
-import { ScrollArea } from "./scroll-area";
+import { ChevronsUpDown, Plus } from "lucide-react";
 import React from "react";
 import { Button } from "./button";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { Card, CardContent, CardHeader } from "./card";
+import { ScrollArea } from "./scroll-area";
 
 export type NonSortableProps = {
   title: React.ReactNode;
@@ -32,7 +32,7 @@ export function NonSortable({
   className,
 }: NonSortableProps) {
   const variants = cva(
-    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center w-full"
+    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center w-full",
   );
 
   return (

@@ -6,7 +6,7 @@ import { createLoader } from "nuqs/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const logger = getLoggerFactory("AdminAPI/appointments/[id]/history")("GET");
   const { id: appointmentId } = await params;
@@ -17,7 +17,7 @@ export async function GET(
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing appointment history API request"
+    "Processing appointment history API request",
   );
 
   const loader = createLoader(baseSearchParams);
@@ -41,7 +41,7 @@ export async function GET(
       limit,
       offset,
     },
-    "Fetching appointment history with parameters"
+    "Fetching appointment history with parameters",
   );
 
   const res = await ServicesContainer.EventsService().getAppointmentHistory({
@@ -57,7 +57,7 @@ export async function GET(
       total: res.total,
       count: res.items.length,
     },
-    "Successfully retrieved appointment history"
+    "Successfully retrieved appointment history",
   );
 
   return NextResponse.json(res);

@@ -92,7 +92,7 @@ export const CommunicationLogsTableAction: React.FC<{
             (participantType) => ({
               value: participantType,
               label: t(`common.labels.participantType.${participantType}`),
-            })
+            }),
           )}
           setFilterValue={setParticipantTypeFilter as any}
           filterValue={participantTypeFilter}
@@ -117,7 +117,7 @@ export const CommunicationLogsTableAction: React.FC<{
     <div
       className={cn(
         "flex flex-col flex-wrap md:items-center justify-between gap-4 md:flex-row",
-        className
+        className,
       )}
     >
       <div className="flex flex-1 md:flex-wrap items-center gap-4">

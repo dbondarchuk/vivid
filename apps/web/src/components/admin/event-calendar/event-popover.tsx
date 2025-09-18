@@ -1,3 +1,4 @@
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   Popover,
   PopoverContent,
@@ -6,7 +7,6 @@ import {
   useTimeZone,
 } from "@vivid/ui";
 import { durationToTime } from "@vivid/utils";
-import { useI18n, useLocale } from "@vivid/i18n";
 import { CalendarClock, Clock, Timer } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
@@ -29,7 +29,7 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
   const eventDate = DateTime.fromJSDate(event.start).setZone(timeZone);
   const endDate = DateTime.fromJSDate(event.end).setZone(timeZone);
   const duration = durationToTime(
-    endDate.diff(eventDate, "minutes").toObject().minutes ?? 0
+    endDate.diff(eventDate, "minutes").toObject().minutes ?? 0,
   );
   return (
     <Popover>
@@ -40,7 +40,7 @@ export const EventPopover: React.FC<EventPopoverProps> = ({
             className={cn(
               "h-1.5 rounded-full",
               EventVariantClasses[event.variant || "primary"] ??
-                EventVariantClasses.primary
+                EventVariantClasses.primary,
             )}
           />
           <div className="font-semibold text-lg">{event.title}</div>

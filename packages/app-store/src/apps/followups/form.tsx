@@ -47,17 +47,17 @@ export const FollowUpForm: React.FC<{
 
   const followUpTypeValues = followUpTypes.map(
     (value) =>
-      ({ value, label: t(`followUps.triggers.${value}`) }) as IComboboxItem
+      ({ value, label: t(`followUps.triggers.${value}`) }) as IComboboxItem,
   );
 
   const followUpChannelValues = communicationChannels.map(
     (value) =>
-      ({ value, label: t(`followUps.channels.${value}`) }) as IComboboxItem
+      ({ value, label: t(`followUps.channels.${value}`) }) as IComboboxItem,
   );
 
   const formSchema = getFollowUpSchemaWithUniqueCheck(
     (name) => checkUniqueFollowUpName(appId, name, initialData?._id),
-    t("followUps.form.name.validation.unique")
+    t("followUps.form.name.validation.unique"),
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -80,7 +80,7 @@ export const FollowUpForm: React.FC<{
         if (!initialData?._id) {
           const { _id } = await createFollowUp(appId, data);
           router.push(
-            `/admin/dashboard/communications/follow-ups/edit?id=${_id}`
+            `/admin/dashboard/communications/follow-ups/edit?id=${_id}`,
           );
         } else {
           await updateFollowUp(appId, initialData._id, data);
@@ -93,12 +93,12 @@ export const FollowUpForm: React.FC<{
         success: t(
           initialData?._id
             ? "followUps.statusText.follow_up_updated"
-            : "followUps.statusText.follow_up_created"
+            : "followUps.statusText.follow_up_created",
         ),
         error: t(
           initialData?._id
             ? "followUps.statusText.error_updating_follow_up"
-            : "followUps.statusText.error_creating_follow_up"
+            : "followUps.statusText.error_creating_follow_up",
         ),
       });
     } catch (error: any) {
@@ -150,7 +150,7 @@ export const FollowUpForm: React.FC<{
                     type="number"
                     disabled={loading}
                     placeholder={t(
-                      "followUps.form.afterAppointmentCount.placeholder"
+                      "followUps.form.afterAppointmentCount.placeholder",
                     )}
                     {...field}
                   />

@@ -1,10 +1,10 @@
 import React from "react";
+import { useIsMobile } from "../../hooks";
 import {
   DayScheduleSelector,
   DayScheduleSelectorProps,
 } from "./day-schedule-selector";
 import { SimpleScheduler, SimpleSchedulerProps } from "./simple-scheduler";
-import { useIsMobile } from "../../hooks";
 
 export const Scheduler: React.FC<
   DayScheduleSelectorProps &

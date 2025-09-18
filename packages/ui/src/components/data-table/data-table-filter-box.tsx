@@ -32,7 +32,7 @@ interface FilterBoxProps<T extends boolean | string> {
   options: FilterOption<T>[];
   setFilterValue: (
     value: T[] | ((old: T[]) => T[] | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
   filterValue: T[];
 }
@@ -120,7 +120,7 @@ export function DataTableFilterBox<T extends boolean | string>({
                       "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
                       selectedValuesSet.has(option.value)
                         ? "bg-primary text-primary-foreground"
-                        : "opacity-50 [&_svg]:invisible"
+                        : "opacity-50 [&_svg]:invisible",
                     )}
                   >
                     <CheckIcon className="h-4 w-4" aria-hidden="true" />

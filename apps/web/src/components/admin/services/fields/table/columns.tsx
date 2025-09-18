@@ -1,6 +1,6 @@
 "use client";
-import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { IdName, ServiceField } from "@vivid/types";
 import {
   Button,
@@ -13,7 +13,6 @@ import {
   DialogTrigger,
   Link,
   ScrollArea,
-  Table,
   tableSortHeader,
   tableSortNoopFunction,
 } from "@vivid/ui";
@@ -64,7 +63,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.fields.table.columns.name",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -77,7 +76,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.fields.table.columns.type",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -87,7 +86,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.fields.table.columns.label",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -96,14 +95,14 @@ export const columns: ColumnDef<
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",
     header: tableSortHeader(
       "services.fields.table.columns.updatedAt",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -154,7 +153,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.fields.table.columns.addons",
       "number",
-      "admin"
+      "admin",
     ),
   },
   {
@@ -204,7 +203,7 @@ export const columns: ColumnDef<
     header: tableSortHeader(
       "services.fields.table.columns.options",
       "number",
-      "admin"
+      "admin",
     ),
   },
   {

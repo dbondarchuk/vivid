@@ -1,6 +1,6 @@
 "use client";
-import { Asset } from "@vivid/types";
 import { useI18n } from "@vivid/i18n";
+import { Asset } from "@vivid/types";
 import {
   AlertModal,
   Button,

@@ -3,7 +3,7 @@ import { Metadata, ResolvingMetadata } from "next";
 
 export async function generateMetadata(
   _: any,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const t = await getI18nAsync("admin");
   const parentTitle = (await parent).title?.template?.replace("%s |", "");

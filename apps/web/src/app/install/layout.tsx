@@ -1,6 +1,6 @@
 import Providers from "@/components/admin/layout/providers";
-import { Toaster } from "@vivid/ui";
 import { getI18nAsync } from "@vivid/i18n/server";
+import { Toaster } from "@vivid/ui";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
@@ -28,7 +28,7 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className={`${inter.className} overflow-hidden `}
-        suppressHydrationWarning={true}
+        suppressHydrationWarning
       >
         <NextTopLoader showSpinner={false} />
         <Providers session={undefined}>

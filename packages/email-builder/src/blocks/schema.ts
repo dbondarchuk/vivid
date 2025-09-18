@@ -3,6 +3,7 @@ import { ButtonPropsSchema } from "./button";
 import { ColumnsContainerPropsSchema } from "./columns-container";
 import { ConditionalContainerPropsSchema } from "./conditional-container";
 import { ContainerPropsSchema } from "./container";
+import { CustomHTMLPropsSchema } from "./custom-html/schema";
 import { DividerPropsSchema } from "./divider";
 import EmailLayoutPropsSchema from "./email-layout/schema";
 import { ForeachContainerPropsSchema } from "./foreach-container";
@@ -24,4 +25,5 @@ export const EditorBlocksSchema = {
   Columns: ColumnsContainerPropsSchema,
   ConditionalContainer: ConditionalContainerPropsSchema,
   ForeachContainer: ForeachContainerPropsSchema,
+  CustomHTML: CustomHTMLPropsSchema,
 };

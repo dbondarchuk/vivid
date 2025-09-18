@@ -9,19 +9,36 @@ import {
   IConnectedAppProps,
   IMailSender,
 } from "@vivid/types";
+import { decrypt, encrypt } from "@vivid/utils";
 import { createEvent } from "ics";
 import nodemailer from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import { SmtpConfiguration } from "./models";
 
-export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
+const MASKED_PASSWORD = "********";
+
+export default class SmtpConnectedApp
+  implements IConnectedApp<SmtpConfiguration>, IMailSender
+{
   protected readonly loggerFactory = getLoggerFactory("SmtpConnectedApp");
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
+  public async processAppData(
+    appData: SmtpConfiguration,
+  ): Promise<SmtpConfiguration> {
+    return {
+      ...appData,
+      auth: {
+        ...appData.auth,
+        pass: appData.auth?.pass ? MASKED_PASSWORD : undefined,
+      },
+    };
+  }
+
   public async processRequest(
     appData: ConnectedAppData,
-    data: SmtpConfiguration
+    data: SmtpConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
@@ -32,15 +49,27 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
         secure: data.secure,
         email: data.email,
       },
-      "Processing SMTP configuration request"
+      "Processing SMTP configuration request",
     );
+
+    if (data?.auth?.pass === MASKED_PASSWORD && appData?.data?.auth?.pass) {
+      data.auth = {
+        ...data.auth,
+        pass: appData.data.auth.pass,
+      };
+    } else if (data?.auth?.pass) {
+      data.auth = {
+        ...data.auth,
+        pass: encrypt(data.auth.pass),
+      };
+    }
 
     try {
       const client = this.getClient(data);
 
       logger.debug(
         { appId: appData._id, host: data.host, port: data.port },
-        "Verifying SMTP connection"
+        "Verifying SMTP connection",
       );
 
       const result = await client.verify();
@@ -48,16 +77,17 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
       if (!result) {
         logger.error(
           { appId: appData._id, host: data.host, port: data.port },
-          "SMTP connection verification failed"
+          "SMTP connection verification failed",
         );
+
         throw new ConnectedAppError(
-          "smtp.statusText.connection_verification_failed"
+          "smtp.statusText.connection_verification_failed",
         );
       }
 
       logger.debug(
         { appId: appData._id, host: data.host, port: data.port },
-        "SMTP connection verified successfully"
+        "SMTP connection verified successfully",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -76,12 +106,12 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
 
       logger.info(
         { appId: appData._id, host: data.host, email: data.email },
-        "Successfully connected to SMTP server"
+        "Successfully connected to SMTP server",
       );
 
       logger.debug(
         { appId: appData._id, status: status.status },
-        "Successfully configured SMTP"
+        "Successfully configured SMTP",
       );
 
       return status;
@@ -92,7 +122,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
           host: data.host,
           error: e?.message || e?.toString(),
         },
-        "Error processing SMTP configuration request"
+        "Error processing SMTP configuration request",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -116,7 +146,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
 
   public async sendMail(
     appData: ConnectedAppData,
-    email: Email
+    email: Email,
   ): Promise<EmailResponse> {
     const logger = this.loggerFactory("sendMail");
     logger.debug(
@@ -127,7 +157,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
         hasAttachments: !!email.attachments?.length,
         hasIcalEvent: !!email.icalEvent,
       },
-      "Sending email via SMTP"
+      "Sending email via SMTP",
     );
 
     try {
@@ -135,27 +165,27 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
 
       logger.debug(
         { appId: appData._id, subject: email.subject },
-        "Processing email attachments and iCal events"
+        "Processing email attachments and iCal events",
       );
 
       let icalEvent: Mail.IcalAttachment | undefined = undefined;
       if (email.icalEvent) {
         logger.debug(
           { appId: appData._id, subject: email.subject },
-          "Processing iCal event attachment"
+          "Processing iCal event attachment",
         );
 
         const { value: icsContent, error: icsError } = createEvent(
-          email.icalEvent.content
+          email.icalEvent.content,
         );
 
         if (!icsContent || icsError) {
           logger.error(
             { appId: appData._id, icsError },
-            "Failed to parse iCal event"
+            "Failed to parse iCal event",
           );
           throw new ConnectedAppError(
-            "smtp.statusText.error_parsing_ical_event"
+            "smtp.statusText.error_parsing_ical_event",
           );
         }
 
@@ -171,7 +201,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
             subject: email.subject,
             filename: icalEvent.filename,
           },
-          "Successfully created iCal event attachment"
+          "Successfully created iCal event attachment",
         );
       }
 
@@ -197,7 +227,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
           to: Array.isArray(email.to) ? email.to : [email.to],
           attachmentCount: email.attachments?.length || 0,
         },
-        "Prepared email options, sending via SMTP"
+        "Prepared email options, sending via SMTP",
       );
 
       const client = this.getClient(smtpConfiguration);
@@ -209,7 +239,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
           subject: email.subject,
           messageId: result.messageId,
         },
-        "Successfully sent email via SMTP"
+        "Successfully sent email via SMTP",
       );
 
       return {
@@ -222,7 +252,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
           subject: email.subject,
           error: e?.message || e?.toString(),
         },
-        "Error sending email via SMTP"
+        "Error sending email via SMTP",
       );
 
       const status: ConnectedAppStatusWithText = {
@@ -253,7 +283,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
         secure: smtpConfiguration.secure,
         email: smtpConfiguration.email,
       },
-      "Creating SMTP client"
+      "Creating SMTP client",
     );
 
     try {
@@ -263,13 +293,15 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
         secure: smtpConfiguration.secure,
         auth: {
           user: smtpConfiguration.auth.user,
-          pass: smtpConfiguration.auth.pass,
+          pass: smtpConfiguration.auth.pass
+            ? decrypt(smtpConfiguration.auth.pass)
+            : undefined,
         },
       });
 
       logger.debug(
         { host: smtpConfiguration.host, port: smtpConfiguration.port },
-        "SMTP client created successfully"
+        "SMTP client created successfully",
       );
 
       return client;
@@ -280,7 +312,7 @@ export default class SmtpConnectedApp implements IConnectedApp, IMailSender {
           port: smtpConfiguration.port,
           error: error?.message || error?.toString(),
         },
-        "Error creating SMTP client"
+        "Error creating SMTP client",
       );
       throw error;
     }

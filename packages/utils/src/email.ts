@@ -31,7 +31,7 @@ export const getEventCalendarContent = (
   event: Appointment,
   summary: string,
   description: string,
-  method: IcalEventMethod = "REQUEST"
+  method: IcalEventMethod = "REQUEST",
 ) => {
   const { address, name, url, email } = generalConfig;
 

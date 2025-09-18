@@ -134,7 +134,7 @@ export function BarGraph() {
       desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
       mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
     }),
-    []
+    [],
   );
 
   return (

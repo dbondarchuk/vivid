@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const logger = getLoggerFactory("AdminAPI/payment-refund")("POST");
   const { id: paymentId } = await params;
@@ -19,12 +19,12 @@ export async function POST(
       paymentId,
       amount,
     },
-    "Processing payment refund request"
+    "Processing payment refund request",
   );
 
   const result = await ServicesContainer.PaymentsService().refundPayment(
     paymentId,
-    amount
+    amount,
   );
 
   if (!result.success) {
@@ -35,11 +35,11 @@ export async function POST(
         error: result.error,
         status: result.status,
       },
-      "Payment refund failed"
+      "Payment refund failed",
     );
     return NextResponse.json(
       { success: false, error: result.error },
-      { status: result.status }
+      { status: result.status },
     );
   }
 
@@ -64,7 +64,7 @@ export async function POST(
       totalRefunded:
         result.updatedPayment.refunds?.reduce(
           (acc, refund) => acc + refund.amount,
-          0
+          0,
         ) || 0,
     },
     appointmentId: result.updatedPayment.appointmentId,
@@ -75,11 +75,11 @@ export async function POST(
       paymentId,
       success: result.success,
     },
-    "Payment refund successful"
+    "Payment refund successful",
   );
 
   return NextResponse.json(
     { success: true, payment: result.updatedPayment },
-    { status: 201 }
+    { status: 201 },
   );
 }

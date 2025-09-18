@@ -1,5 +1,5 @@
-import { Markdown } from "@/components/web/markdown";
 import { AvailableApps } from "@vivid/app-store";
+import { getI18nAsync } from "@vivid/i18n/server";
 import {
   Button,
   Carousel,
@@ -10,6 +10,7 @@ import {
   ConnectedAppNameAndLogo,
   Heading,
   Link,
+  Markdown,
 } from "@vivid/ui";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
@@ -17,14 +18,13 @@ import React from "react";
 import { AddOrUpdateAppButton } from "../add-or-update-app-dialog";
 import { getInstalledApps } from "./actions";
 import { InstallComplexAppButton } from "./install-complex-app-button";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 export type AppDetailsProps = {
   appName: string;
 };
 
 export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
-  const app = React.useMemo(() => AvailableApps[appName], [appName]);
+  const app = AvailableApps[appName];
   const installed = await getInstalledApps(appName);
   const t = await getI18nAsync("apps");
   //if (app.isHidden) return null;
@@ -45,10 +45,9 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <div className="flex flex-col w-full gap-8">
           <ConnectedAppNameAndLogo
-            app={app}
+            appName={app.name}
             nameClassName="text-3xl text-accent-foreground"
             logoClassName="w-12 h-12"
-            t={t}
           />
           <div className="flex flex-row flex-wrap gap-4 items-center">
             {app.isFeatured && (
@@ -79,7 +78,6 @@ export const AppDetails: React.FC<AppDetailsProps> = async ({ appName }) => {
               <InstallComplexAppButton
                 appName={appName}
                 installed={installed.length}
-                t={t}
               />
             )}
           </div>

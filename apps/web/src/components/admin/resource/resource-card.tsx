@@ -3,6 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Editor } from "@monaco-editor/react";
+import { useI18n } from "@vivid/i18n";
 import {
   Resource,
   resourceSchema,
@@ -33,7 +34,6 @@ import {
   Input,
   useTheme,
 } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
 import { stripObject } from "@vivid/utils";
 import { cva } from "class-variance-authority";
 import { GripVertical, Trash } from "lucide-react";
@@ -66,7 +66,7 @@ const resourceSourceTypeValues = Object.entries(resourceSourceTypeLabels).map(
     ({
       value,
       label,
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 export const ResourceCard = ({
@@ -149,7 +149,7 @@ export const ResourceCard = ({
         </Button>
         <span
           className={cn(
-            !resourceSourceTypeLabels[itemSourceType] ? "text-destructive" : ""
+            !resourceSourceTypeLabels[itemSourceType] ? "text-destructive" : "",
           )}
         >
           {itemSourceType

@@ -66,7 +66,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                   {t("settings.appointments.form.payments.paymentsApp")}{" "}
                   <InfoTooltip>
                     {t(
-                      "settings.appointments.form.payments.paymentsAppTooltip"
+                      "settings.appointments.form.payments.paymentsAppTooltip",
                     )}
                   </InfoTooltip>
                 </FormLabel>
@@ -98,12 +98,12 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                   <InfoTooltip>
                     <p>
                       {t(
-                        "settings.appointments.form.payments.requireDepositTooltip1"
+                        "settings.appointments.form.payments.requireDepositTooltip1",
                       )}
                     </p>
                     <p>
                       {t(
-                        "settings.appointments.form.payments.requireDepositTooltip2"
+                        "settings.appointments.form.payments.requireDepositTooltip2",
                       )}
                     </p>
                   </InfoTooltip>
@@ -115,7 +115,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                     className="w-full"
                     trueLabel={t("settings.appointments.form.payments.require")}
                     falseLabel={t(
-                      "settings.appointments.form.payments.doNotRequire"
+                      "settings.appointments.form.payments.doNotRequire",
                     )}
                   />
                 </FormControl>
@@ -138,7 +138,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                           {
                             p: (chunks: any) => <p>{chunks}</p>,
                             strong: (chunks: any) => <strong>{chunks}</strong>,
-                          }
+                          },
                         )}
                       </InfoTooltip>
                     </FormLabel>
@@ -169,7 +169,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                   <FormItem>
                     <FormLabel>
                       {t(
-                        "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointments"
+                        "settings.appointments.form.payments.dontRequireIfCompletedMinNumberOfAppointments",
                       )}{" "}
                       <InfoTooltip>
                         {t.rich(
@@ -177,7 +177,7 @@ export const PaymentsTab: React.FC<TabProps> = ({ form, disabled }) => {
                           {
                             p: (chunks: any) => <p>{chunks}</p>,
                             strong: (chunks: any) => <strong>{chunks}</strong>,
-                          }
+                          },
                         )}
                       </InfoTooltip>
                     </FormLabel>

@@ -1,10 +1,9 @@
 "use client";
 
-import { Schedule, ScheduleOverride, WeekIdentifier } from "@vivid/types";
 import { useI18n } from "@vivid/i18n";
+import { Schedule, ScheduleOverride, WeekIdentifier } from "@vivid/types";
 import {
   Button,
-  DayScheduleSelector,
   Scheduler,
   Separator,
   Skeleton,
@@ -19,9 +18,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { getWeeklySchedule, updateWeeklySchedule } from "./actions";
 import { CopyScheduleDialog } from "./copy-schedule-dialog";
+import { RepeatScheduleDialog } from "./repeat-schedule-dialog";
 import { ResetAllDialog } from "./reset-all-dialog";
 import { ResetDialog } from "./reset-dialog";
-import { RepeatScheduleDialog } from "./repeat-schedule-dialog";
 
 type WeeklySchedule = ScheduleOverride["schedule"];
 type WeeklyScheduleFormProps = {
@@ -99,7 +98,7 @@ export const WeeklyScheduleForm: React.FC<WeeklyScheduleFormProps> = ({
         router.push(`?week=${newWeek}`);
       }
     },
-    [router, week]
+    [router, week],
   );
 
   return (

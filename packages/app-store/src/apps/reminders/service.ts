@@ -41,12 +41,12 @@ export default class RemindersConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction
+    data: RequestAction,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, actionType: data.type },
-      "Processing reminders request"
+      "Processing reminders request",
     );
 
     try {
@@ -54,28 +54,28 @@ export default class RemindersConnectedApp
         case "get-reminder":
           logger.debug(
             { appId: appData._id, reminderId: data.id },
-            "Getting reminder"
+            "Getting reminder",
           );
           return await this.getReminder(appData._id, data.id);
 
         case "get-reminders":
           logger.debug(
             { appId: appData._id, query: data.query },
-            "Getting reminders"
+            "Getting reminders",
           );
           return await this.getReminders(appData._id, data.query);
 
         case "delete-reminders":
           logger.debug(
             { appId: appData._id, reminderIds: data.ids },
-            "Deleting reminders"
+            "Deleting reminders",
           );
           return await this.deleteReminders(appData._id, data.ids);
 
         case "create-reminder":
           logger.debug(
             { appId: appData._id, reminderName: data.reminder.name },
-            "Creating reminder"
+            "Creating reminder",
           );
           return await this.createReminder(appData._id, data.reminder);
 
@@ -86,21 +86,21 @@ export default class RemindersConnectedApp
               reminderId: data.id,
               reminderName: data.update.name,
             },
-            "Updating reminder"
+            "Updating reminder",
           );
           return await this.updateReminder(appData._id, data.id, data.update);
 
         case "check-unique-name":
           logger.debug(
             { appId: appData._id, name: data.name, reminderId: data.id },
-            "Checking unique name"
+            "Checking unique name",
           );
           return await this.checkUniqueName(appData._id, data.name, data.id);
 
         default: {
           logger.debug(
             { appId: appData._id },
-            "Processing default request - setting up reminders app"
+            "Processing default request - setting up reminders app",
           );
 
           const defaultApps = await this.props.services
@@ -115,12 +115,12 @@ export default class RemindersConnectedApp
 
             logger.debug(
               { appId: appData._id, emailAppId },
-              "Email sender default app found"
+              "Email sender default app found",
             );
           } catch {
             logger.error(
               { appId: appData._id },
-              "Email sender default app is not configured"
+              "Email sender default app is not configured",
             );
             return {
               status: "failed",
@@ -140,7 +140,7 @@ export default class RemindersConnectedApp
 
           logger.info(
             { appId: appData._id },
-            "Successfully set up reminders app"
+            "Successfully set up reminders app",
           );
 
           return status;
@@ -153,7 +153,7 @@ export default class RemindersConnectedApp
           actionType: data.type,
           error: error?.message || error?.toString(),
         },
-        "Error processing reminders request"
+        "Error processing reminders request",
       );
       throw error;
     }
@@ -177,19 +177,19 @@ export default class RemindersConnectedApp
       if (count === 0) {
         logger.debug(
           { appId: appData._id },
-          "No reminders left, dropping collection"
+          "No reminders left, dropping collection",
         );
         await db.dropCollection(REMINDERS_COLLECTION_NAME);
       }
 
       logger.info(
         { appId: appData._id },
-        "Successfully uninstalled reminders app"
+        "Successfully uninstalled reminders app",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error: error?.message || error?.toString() },
-        "Error uninstalling reminders app"
+        "Error uninstalling reminders app",
       );
       throw error;
     }
@@ -212,7 +212,7 @@ export default class RemindersConnectedApp
       if (reminder) {
         logger.debug(
           { appId, reminderId: id, reminderName: reminder.name },
-          "Successfully retrieved reminder"
+          "Successfully retrieved reminder",
         );
       } else {
         logger.debug({ appId, reminderId: id }, "Reminder not found");
@@ -222,7 +222,7 @@ export default class RemindersConnectedApp
     } catch (error: any) {
       logger.error(
         { appId, reminderId: id, error: error?.message || error?.toString() },
-        "Error getting reminder"
+        "Error getting reminder",
       );
       throw error;
     }
@@ -230,7 +230,7 @@ export default class RemindersConnectedApp
 
   protected async getReminders(
     appId: string,
-    query: GetRemindersAction["query"]
+    query: GetRemindersAction["query"],
   ): Promise<WithTotal<Reminder>> {
     const logger = this.loggerFactory("getReminders");
     logger.debug({ appId, query }, "Getting reminders");
@@ -243,7 +243,7 @@ export default class RemindersConnectedApp
           ...prev,
           [curr.id]: curr.desc ? -1 : 1,
         }),
-        {}
+        {},
       ) || { updatedAt: -1 };
 
       const filter: Filter<Reminder> = {
@@ -265,7 +265,7 @@ export default class RemindersConnectedApp
 
       logger.debug(
         { appId, filter, sort, offset: query.offset, limit: query.limit },
-        "Executing reminders query"
+        "Executing reminders query",
       );
 
       const [result] = await db
@@ -310,7 +310,7 @@ export default class RemindersConnectedApp
 
       logger.debug(
         { appId, total, itemCount: items.length },
-        "Successfully retrieved reminders"
+        "Successfully retrieved reminders",
       );
 
       return {
@@ -320,7 +320,7 @@ export default class RemindersConnectedApp
     } catch (error: any) {
       logger.error(
         { appId, query, error: error?.message || error?.toString() },
-        "Error getting reminders"
+        "Error getting reminders",
       );
       throw error;
     }
@@ -328,7 +328,7 @@ export default class RemindersConnectedApp
 
   protected async createReminder(
     appId: string,
-    reminder: ReminderUpdateModel
+    reminder: ReminderUpdateModel,
   ): Promise<Reminder> {
     const logger = this.loggerFactory("createReminder");
     logger.debug(
@@ -338,7 +338,7 @@ export default class RemindersConnectedApp
         channel: reminder.channel,
         type: reminder.type,
       },
-      "Creating reminder"
+      "Creating reminder",
     );
 
     try {
@@ -353,7 +353,7 @@ export default class RemindersConnectedApp
       if (!isUnique) {
         logger.error(
           { appId, reminderName: reminder.name },
-          "Reminder name already exists"
+          "Reminder name already exists",
         );
         throw new ConnectedAppError("reminders.form.name.validation.unique");
       }
@@ -365,7 +365,7 @@ export default class RemindersConnectedApp
 
       logger.info(
         { appId, reminderId: dbReminder._id, reminderName: reminder.name },
-        "Successfully created reminder"
+        "Successfully created reminder",
       );
 
       return dbReminder;
@@ -376,7 +376,7 @@ export default class RemindersConnectedApp
           reminderName: reminder.name,
           error: error?.message || error?.toString(),
         },
-        "Error creating reminder"
+        "Error creating reminder",
       );
       throw error;
     }
@@ -385,12 +385,12 @@ export default class RemindersConnectedApp
   protected async updateReminder(
     appId: string,
     id: string,
-    update: ReminderUpdateModel
+    update: ReminderUpdateModel,
   ): Promise<void> {
     const logger = this.loggerFactory("updateReminder");
     logger.debug(
       { appId, reminderId: id, reminderName: update.name },
-      "Updating reminder"
+      "Updating reminder",
     );
 
     try {
@@ -403,7 +403,7 @@ export default class RemindersConnectedApp
       if (!isUnique) {
         logger.error(
           { appId, reminderId: id, reminderName: update.name },
-          "Reminder name already exists"
+          "Reminder name already exists",
         );
         throw new ConnectedAppError("reminders.form.name.validation.unique");
       }
@@ -416,12 +416,12 @@ export default class RemindersConnectedApp
         },
         {
           $set: updateObj,
-        }
+        },
       );
 
       logger.info(
         { appId, reminderId: id, reminderName: update.name },
-        "Successfully updated reminder"
+        "Successfully updated reminder",
       );
     } catch (error: any) {
       logger.error(
@@ -431,7 +431,7 @@ export default class RemindersConnectedApp
           reminderName: update.name,
           error: error?.message || error?.toString(),
         },
-        "Error updating reminder"
+        "Error updating reminder",
       );
       throw error;
     }
@@ -454,12 +454,12 @@ export default class RemindersConnectedApp
 
       logger.info(
         { appId, reminderIds: ids },
-        "Successfully deleted reminders"
+        "Successfully deleted reminders",
       );
     } catch (error: any) {
       logger.error(
         { appId, reminderIds: ids, error: error?.message || error?.toString() },
-        "Error deleting reminders"
+        "Error deleting reminders",
       );
       throw error;
     }
@@ -468,7 +468,7 @@ export default class RemindersConnectedApp
   protected async checkUniqueName(
     appId: string,
     name: string,
-    id?: string
+    id?: string,
   ): Promise<boolean> {
     const logger = this.loggerFactory("checkUniqueName");
     logger.debug({ appId, name, reminderId: id }, "Checking unique name");
@@ -497,7 +497,7 @@ export default class RemindersConnectedApp
 
       logger.debug(
         { appId, name, reminderId: id, isUnique },
-        "Name uniqueness check completed"
+        "Name uniqueness check completed",
       );
 
       return isUnique;
@@ -509,7 +509,7 @@ export default class RemindersConnectedApp
           reminderId: id,
           error: error?.message || error?.toString(),
         },
-        "Error checking unique name"
+        "Error checking unique name",
       );
       throw error;
     }
@@ -519,7 +519,7 @@ export default class RemindersConnectedApp
     const logger = this.loggerFactory("onTime");
     logger.debug(
       { appId: appData._id, date: date.toISOString() },
-      "Processing reminders for scheduled time"
+      "Processing reminders for scheduled time",
     );
 
     try {
@@ -538,7 +538,7 @@ export default class RemindersConnectedApp
 
       logger.debug(
         { appId: appData._id, timeZone },
-        "Retrieving reminders for processing"
+        "Retrieving reminders for processing",
       );
 
       const reminders = await db
@@ -550,7 +550,7 @@ export default class RemindersConnectedApp
 
       logger.debug(
         { appId: appData._id, reminderCount: reminders.length },
-        "Found reminders to process"
+        "Found reminders to process",
       );
 
       const promises = (reminders || []).map(async (reminder) => {
@@ -560,16 +560,22 @@ export default class RemindersConnectedApp
             reminderId: reminder._id,
             reminderName: reminder.name,
           },
-          "Processing reminder"
+          "Processing reminder",
         );
 
         const appointments = await this.getAppointments(
           date,
           reminder,
-          timeZone
+          timeZone,
         );
         const appointmentPromises = appointments.map((appointment) =>
-          this.sendReminder(appData, appointment, reminder, config, phoneFields)
+          this.sendReminder(
+            appData,
+            appointment,
+            reminder,
+            config,
+            phoneFields,
+          ),
         );
 
         logger.debug(
@@ -578,7 +584,7 @@ export default class RemindersConnectedApp
             reminderId: reminder._id,
             appointmentCount: appointments.length,
           },
-          "Sending reminders for appointments"
+          "Sending reminders for appointments",
         );
 
         return Promise.all(appointmentPromises);
@@ -588,7 +594,7 @@ export default class RemindersConnectedApp
 
       logger.info(
         { appId: appData._id, reminderCount: reminders.length },
-        "Successfully processed all reminders"
+        "Successfully processed all reminders",
       );
     } catch (error: any) {
       logger.error(
@@ -597,7 +603,7 @@ export default class RemindersConnectedApp
           date: date.toISOString(),
           error: error?.message || error?.toString(),
         },
-        "Error processing reminders for scheduled time"
+        "Error processing reminders for scheduled time",
       );
       throw error;
     }
@@ -606,7 +612,7 @@ export default class RemindersConnectedApp
   private async getAppointments(
     date: Date,
     reminder: Reminder,
-    timeZone: string
+    timeZone: string,
   ): Promise<Appointment[]> {
     const logger = this.loggerFactory("getAppointments");
     logger.debug(
@@ -616,7 +622,7 @@ export default class RemindersConnectedApp
         type: reminder.type,
         date: date.toISOString(),
       },
-      "Getting appointments for reminder"
+      "Getting appointments for reminder",
     );
 
     try {
@@ -644,7 +650,7 @@ export default class RemindersConnectedApp
               startDate: startDate.toISO(),
               endDate: endDate.toISO(),
             },
-            "Searching for appointments with timeBefore reminder"
+            "Searching for appointments with timeBefore reminder",
           );
 
           const appointments = await this.props.services
@@ -659,7 +665,7 @@ export default class RemindersConnectedApp
 
           logger.debug(
             { reminderId: reminder._id, appointmentCount: appointments.total },
-            "Found appointments for timeBefore reminder"
+            "Found appointments for timeBefore reminder",
           );
 
           return appointments.items;
@@ -678,7 +684,7 @@ export default class RemindersConnectedApp
                 currentTime: `${dt.hour}:${dt.minute}`,
                 reminderTime: `${atTimeReminder.time.hour}:${atTimeReminder.time.minute}`,
               },
-              "Current time doesn't match reminder time"
+              "Current time doesn't match reminder time",
             );
             return [];
           }
@@ -695,7 +701,7 @@ export default class RemindersConnectedApp
               startDate: startDate.toISO(),
               endDate: endDate.toISO(),
             },
-            "Searching for appointments with atTime reminder"
+            "Searching for appointments with atTime reminder",
           );
 
           const appointments = await this.props.services
@@ -710,7 +716,7 @@ export default class RemindersConnectedApp
 
           logger.debug(
             { reminderId: reminder._id, appointmentCount: appointments.total },
-            "Found appointments for atTime reminder"
+            "Found appointments for atTime reminder",
           );
 
           return appointments.items;
@@ -719,7 +725,7 @@ export default class RemindersConnectedApp
         default: {
           logger.error(
             { reminderId: (reminder as any)._id, type },
-            "Unknown reminder type"
+            "Unknown reminder type",
           );
           return [];
         }
@@ -731,7 +737,7 @@ export default class RemindersConnectedApp
           reminderName: reminder.name,
           error: error?.message || error?.toString(),
         },
-        "Error getting appointments for reminder"
+        "Error getting appointments for reminder",
       );
       throw error;
     }
@@ -746,7 +752,7 @@ export default class RemindersConnectedApp
       booking: BookingConfiguration;
       social: SocialConfiguration;
     },
-    phoneFields: ServiceField[]
+    phoneFields: ServiceField[],
   ): Promise<void> {
     const logger = this.loggerFactory("sendReminder");
     logger.debug(
@@ -758,7 +764,7 @@ export default class RemindersConnectedApp
         appointmentId: appointment._id,
         customerId: appointment.customer._id,
       },
-      "Sending reminder"
+      "Sending reminder",
     );
 
     try {
@@ -782,7 +788,7 @@ export default class RemindersConnectedApp
             reminderId: reminder._id,
             templateId: reminder.templateId,
           },
-          "Template not found for reminder"
+          "Template not found for reminder",
         );
         return;
       }
@@ -794,7 +800,7 @@ export default class RemindersConnectedApp
           channel,
           templateId: reminder.templateId,
         },
-        "Template found, sending reminder"
+        "Template found, sending reminder",
       );
 
       switch (channel) {
@@ -806,7 +812,7 @@ export default class RemindersConnectedApp
               appointmentId: appointment._id,
               email: appointment.fields.email,
             },
-            "Sending email reminder"
+            "Sending email reminder",
           );
 
           await this.props.services.NotificationService().sendEmail({
@@ -834,7 +840,7 @@ export default class RemindersConnectedApp
               reminderId: reminder._id,
               appointmentId: appointment._id,
             },
-            "Successfully sent email reminder"
+            "Successfully sent email reminder",
           );
           return;
 
@@ -850,7 +856,7 @@ export default class RemindersConnectedApp
                 reminderId: reminder._id,
                 appointmentId: appointment._id,
               },
-              "Phone number not found for text message reminder"
+              "Phone number not found for text message reminder",
             );
             return;
           }
@@ -862,7 +868,7 @@ export default class RemindersConnectedApp
               appointmentId: appointment._id,
               phone,
             },
-            "Sending text message reminder"
+            "Sending text message reminder",
           );
 
           await this.props.services.NotificationService().sendTextMessage({
@@ -889,14 +895,14 @@ export default class RemindersConnectedApp
               reminderId: reminder._id,
               appointmentId: appointment._id,
             },
-            "Successfully sent text message reminder"
+            "Successfully sent text message reminder",
           );
           return;
 
         default:
           logger.error(
             { appId: appData._id, reminderId: (reminder as any)._id, channel },
-            "Unknown reminder channel type"
+            "Unknown reminder channel type",
           );
           return;
       }
@@ -908,7 +914,7 @@ export default class RemindersConnectedApp
           appointmentId: appointment._id,
           error: error?.message || error?.toString(),
         },
-        "Error sending reminder"
+        "Error sending reminder",
       );
       throw error;
     }

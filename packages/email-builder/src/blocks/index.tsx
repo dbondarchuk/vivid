@@ -5,6 +5,7 @@ import {
 } from "@vivid/builder";
 import {
   CircleUserRound,
+  Code,
   Columns3,
   CopyPlus,
   Heading,
@@ -34,7 +35,7 @@ import {
   ColumnsContainerPropsDefaults,
   ColumnsContainerToolbar,
 } from "./columns-container";
-import ColumnsContainerEditor from "./columns-container/editor";
+import { ColumnsContainerEditor } from "./columns-container/editor";
 import {
   ConditionalContainerConfiguration,
   ConditionalContainerEditor,
@@ -47,8 +48,14 @@ import {
   ContainerToolbar,
 } from "./container";
 import {
-  Divider,
+  CustomHTMLConfiguration,
+  CustomHTMLEditor,
+  CustomHTMLPropsDefaults,
+  CustomHTMLToolbar,
+} from "./custom-html";
+import {
   DividerConfiguration,
+  DividerEditor,
   DividerPropsDefaults,
   DividerToolbar,
 } from "./divider";
@@ -80,8 +87,8 @@ import {
 } from "./image";
 import { EditorBlocksSchema } from "./schema";
 import {
-  Spacer,
   SpacerConfiguration,
+  SpacerEditor,
   SpacerPropsDefaults,
   SpacerToolbar,
 } from "./spacer";
@@ -139,7 +146,7 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
   Divider: {
     displayName: "emailBuilder.blocks.divider.displayName",
     icon: <SquareSplitVertical />,
-    Editor: Divider,
+    Editor: DividerEditor,
     Configuration: DividerConfiguration,
     Toolbar: DividerToolbar,
     defaultValue: DividerPropsDefaults,
@@ -148,7 +155,7 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
   Spacer: {
     displayName: "emailBuilder.blocks.spacer.displayName",
     icon: <RectangleHorizontal />,
-    Editor: Spacer,
+    Editor: SpacerEditor,
     Configuration: SpacerConfiguration,
     Toolbar: SpacerToolbar,
     defaultValue: SpacerPropsDefaults,
@@ -196,6 +203,15 @@ export const EditorBlocks: EditorDocumentBlocksDictionary<
     Editor: ForeachContainerEditor,
     defaultValue: ForeachContainerPropsDefaults,
     category: "emailBuilder.blocks.categories.containers",
+  },
+  CustomHTML: {
+    displayName: "emailBuilder.blocks.customHtml.displayName",
+    icon: <Code />,
+    Editor: CustomHTMLEditor,
+    Configuration: CustomHTMLConfiguration,
+    Toolbar: CustomHTMLToolbar,
+    defaultValue: CustomHTMLPropsDefaults,
+    category: "emailBuilder.blocks.categories.layout",
   },
 };
 

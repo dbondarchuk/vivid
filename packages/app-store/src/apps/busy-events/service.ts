@@ -36,7 +36,7 @@ export default class BusyEventsConnectedApp
     try {
       const db = await this.props.getDbConnection();
       const collection = db.collection<BusyEventsEntity>(
-        BUSY_EVENTS_COLLECTION_NAME
+        BUSY_EVENTS_COLLECTION_NAME,
       );
 
       logger.debug({ appId: appData._id }, "Deleting busy events");
@@ -46,13 +46,13 @@ export default class BusyEventsConnectedApp
 
       logger.info(
         { appId: appData._id, deletedCount: deleteResult.deletedCount },
-        "Deleted busy events"
+        "Deleted busy events",
       );
 
       const count = await collection.countDocuments({});
       logger.debug(
         { appId: appData._id, remainingCount: count },
-        "Remaining documents in collection"
+        "Remaining documents in collection",
       );
 
       if (count === 0) {
@@ -69,12 +69,12 @@ export default class BusyEventsConnectedApp
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: RequestAction
+    data: RequestAction,
   ): Promise<any> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, requestType: data.type },
-      "Processing request"
+      "Processing request",
     );
 
     try {
@@ -82,14 +82,14 @@ export default class BusyEventsConnectedApp
         case "get-weekly-busy-events":
           logger.debug(
             { appId: appData._id, week: data.week },
-            "Getting weekly busy events"
+            "Getting weekly busy events",
           );
 
           const result = await this.getWeekBusyEvents(appData._id, data.week);
 
           logger.debug(
             { appId: appData._id, week: data.week, eventCount: result.length },
-            "Retrieved weekly busy events"
+            "Retrieved weekly busy events",
           );
           return result;
 
@@ -100,13 +100,13 @@ export default class BusyEventsConnectedApp
               week: data.week,
               eventCount: data.events.length,
             },
-            "Setting busy events"
+            "Setting busy events",
           );
 
           await this.setBusyEvents(appData._id, data.week, data.events);
           logger.info(
             { appId: appData._id, week: data.week },
-            "Successfully set busy events"
+            "Successfully set busy events",
           );
 
           return;
@@ -125,7 +125,7 @@ export default class BusyEventsConnectedApp
 
           logger.info(
             { appId: appData._id, status: status.status },
-            "App status updated"
+            "App status updated",
           );
 
           return status;
@@ -140,7 +140,7 @@ export default class BusyEventsConnectedApp
 
   protected async getWeekBusyEvents(
     appId: string,
-    weekIdentifier: WeekIdentifier
+    weekIdentifier: WeekIdentifier,
   ): Promise<Schedule> {
     const logger = this.loggerFactory("getWeekBusyEvents");
     logger.debug({ appId, week: weekIdentifier }, "Getting week busy events");
@@ -148,7 +148,7 @@ export default class BusyEventsConnectedApp
     try {
       const db = await this.props.getDbConnection();
       const collection = db.collection<BusyEventsEntity>(
-        BUSY_EVENTS_COLLECTION_NAME
+        BUSY_EVENTS_COLLECTION_NAME,
       );
 
       const result = await collection.findOne({
@@ -159,14 +159,14 @@ export default class BusyEventsConnectedApp
       const schedule = result?.schedule || [];
       logger.debug(
         { appId, week: weekIdentifier, eventCount: schedule.length },
-        "Found week busy events"
+        "Found week busy events",
       );
 
       return schedule;
     } catch (error) {
       logger.error(
         { appId, week: weekIdentifier, error },
-        "Error getting week busy events"
+        "Error getting week busy events",
       );
 
       throw error;
@@ -176,18 +176,18 @@ export default class BusyEventsConnectedApp
   protected async setBusyEvents(
     appId: string,
     week: WeekIdentifier,
-    schedule: Schedule
+    schedule: Schedule,
   ): Promise<void> {
     const logger = this.loggerFactory("setBusyEvents");
     logger.debug(
       { appId, week, scheduleLength: schedule.length },
-      "Setting busy events"
+      "Setting busy events",
     );
 
     try {
       const db = await this.props.getDbConnection();
       const events = db.collection<BusyEventsEntity>(
-        BUSY_EVENTS_COLLECTION_NAME
+        BUSY_EVENTS_COLLECTION_NAME,
       );
 
       const updateResult = await events.updateOne(
@@ -202,7 +202,7 @@ export default class BusyEventsConnectedApp
             _id: new ObjectId().toString(),
           },
         },
-        { upsert: true }
+        { upsert: true },
       );
 
       logger.debug(
@@ -213,7 +213,7 @@ export default class BusyEventsConnectedApp
           modifiedCount: updateResult.modifiedCount,
           upsertedCount: updateResult.upsertedCount,
         },
-        "Update result"
+        "Update result",
       );
     } catch (error) {
       logger.error({ appId, week, error }, "Error setting busy events");
@@ -224,13 +224,13 @@ export default class BusyEventsConnectedApp
   public async getBusyTimes(
     { _id: appId }: ConnectedAppData,
     start: Date,
-    end: Date
+    end: Date,
   ): Promise<CalendarBusyTime[]> {
     const logger = this.loggerFactory("getBusyTimes");
     const t = await getI18nAsync("apps");
     logger.debug(
       { appId, start: start.toISOString(), end: end.toISOString() },
-      "Getting busy times"
+      "Getting busy times",
     );
 
     try {
@@ -242,21 +242,21 @@ export default class BusyEventsConnectedApp
           ...map,
           [day.toISODate()!]: getWeekIdentifier(day),
         }),
-        {} as Record<string, WeekIdentifier>
+        {} as Record<string, WeekIdentifier>,
       );
 
       const weeks = Array.from(
-        new Set(Object.values(weekMap).map((week) => week))
+        new Set(Object.values(weekMap).map((week) => week)),
       );
 
       logger.debug(
         { appId, weekCount: weeks.length, weeks },
-        "Unique weeks found"
+        "Unique weeks found",
       );
 
       const db = await this.props.getDbConnection();
       const busyEvents = db.collection<BusyEventsEntity>(
-        BUSY_EVENTS_COLLECTION_NAME
+        BUSY_EVENTS_COLLECTION_NAME,
       );
 
       logger.debug({ appId, weeks }, "Querying database for weeks");
@@ -271,7 +271,7 @@ export default class BusyEventsConnectedApp
 
       logger.debug(
         { appId, overrideCount: weeksOverrides.length },
-        "Found week overrides in database"
+        "Found week overrides in database",
       );
 
       const weeksOverridesMap = weeksOverrides.reduce(
@@ -279,7 +279,7 @@ export default class BusyEventsConnectedApp
           ...map,
           [weeksOverride.week]: weeksOverride.schedule,
         }),
-        {} as Record<WeekIdentifier, Schedule>
+        {} as Record<WeekIdentifier, Schedule>,
       );
 
       const events = days.flatMap((day) => {
@@ -288,7 +288,7 @@ export default class BusyEventsConnectedApp
 
         const weekDay = day.weekday;
         const dayEvents = weekEvents?.find(
-          (s) => s.weekDay === weekDay
+          (s) => s.weekDay === weekDay,
         )?.shifts;
 
         if (!dayEvents) return [];
@@ -306,7 +306,7 @@ export default class BusyEventsConnectedApp
           appId,
           eventCount: events.length,
         },
-        "Generated busy time events"
+        "Generated busy time events",
       );
 
       return events;

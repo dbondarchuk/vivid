@@ -20,8 +20,8 @@ import { updateBookingConfiguration } from "./actions";
 import { CalendarSourcesTab } from "./tabs/calendar-sources";
 import { MainTab } from "./tabs/main";
 import { OptionsTab } from "./tabs/options";
-import { SmartScheduleTab } from "./tabs/smart-schedule";
 import { PaymentsTab } from "./tabs/payments";
+import { SmartScheduleTab } from "./tabs/smart-schedule";
 
 export const AppointmentsSettingsForm: React.FC<{
   values: BookingConfiguration;
@@ -91,7 +91,7 @@ export const AppointmentsSettingsForm: React.FC<{
               className={cn(
                 form.getFieldState("calendarSources").invalid
                   ? "text-destructive"
-                  : ""
+                  : "",
               )}
             >
               {t("settings.appointments.form.tabs.calendarSources")}
@@ -99,7 +99,7 @@ export const AppointmentsSettingsForm: React.FC<{
             <TabsTrigger
               value="options"
               className={cn(
-                form.getFieldState("options").invalid ? "text-destructive" : ""
+                form.getFieldState("options").invalid ? "text-destructive" : "",
               )}
             >
               {t("settings.appointments.form.tabs.options")}
@@ -109,7 +109,7 @@ export const AppointmentsSettingsForm: React.FC<{
               className={cn(
                 form.getFieldState("smartSchedule").invalid
                   ? "text-destructive"
-                  : ""
+                  : "",
               )}
             >
               {t("settings.appointments.form.tabs.smartSchedule")}
@@ -117,7 +117,9 @@ export const AppointmentsSettingsForm: React.FC<{
             <TabsTrigger
               value="payments"
               className={cn(
-                form.getFieldState("payments").invalid ? "text-destructive" : ""
+                form.getFieldState("payments").invalid
+                  ? "text-destructive"
+                  : "",
               )}
             >
               {t("settings.appointments.form.tabs.payments")}

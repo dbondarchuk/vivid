@@ -10,3 +10,18 @@ export const caldavCalendarSourceSchema = z.object({
 });
 
 export type CaldavCalendarSource = z.infer<typeof caldavCalendarSourceSchema>;
+
+export type SaveActionType = "save";
+export type FetchActionType = "fetchCalendars";
+
+export type CaldavActionType = SaveActionType | FetchActionType;
+
+export type CaldavAction =
+  | {
+      type: SaveActionType;
+      data: CaldavCalendarSource;
+    }
+  | {
+      type: FetchActionType;
+      data: CaldavCalendarSource;
+    };

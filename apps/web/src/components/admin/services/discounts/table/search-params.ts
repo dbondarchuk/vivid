@@ -14,7 +14,7 @@ import { baseSearchParams } from "@vivid/ui";
 export const searchParams = {
   ...baseSearchParams,
   type: parseAsArrayOf(parseAsStringEnum(discountTypes.flat())).withDefault(
-    discountTypes.flat()
+    discountTypes.flat(),
   ),
   enabled: parseAsArrayOf(parseAsBoolean).withDefault([true, false]),
   start: parseAsIsoDateTime,

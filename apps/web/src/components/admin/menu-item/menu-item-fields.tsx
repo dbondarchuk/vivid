@@ -1,3 +1,6 @@
+"use client";
+
+import { I18nText, useI18n } from "@vivid/i18n";
 import { MenuItemType, SubMenuItem } from "@vivid/types";
 import {
   ButtonSizes,
@@ -18,7 +21,6 @@ import {
   TextSizes,
   TextWeights,
 } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
 import { useMemo } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { IconSelect } from "./icon-select";
@@ -35,39 +37,39 @@ const linkVariantsValues = LinkVariants.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: variant,
+      shortLabel: <I18nText key={`admin.menuItem.linkVariants.${variant}`} />,
       label: (
         <Link href="#" variant={variant} onClick={(e) => e.preventDefault()}>
-          {variant}
+          <I18nText key={`admin.menuItem.linkVariants.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const buttonVariantsValues = ButtonVariants.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: variant,
+      shortLabel: <I18nText key={`admin.menuItem.buttonVariants.${variant}`} />,
       label: (
         <Link
-          button={true}
+          button
           href="#"
           variant={variant}
           size="sm"
           onClick={(e) => e.preventDefault()}
         >
-          {variant}
+          <I18nText key={`admin.menuItem.buttonVariants.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const linkSizesValues = LinkSizes.map(
   (size) =>
     ({
       value: size,
-      shortLabel: size,
+      shortLabel: <I18nText key={`admin.menuItem.sizes.${size}`} />,
       label: (
         <Link
           href="#"
@@ -75,17 +77,17 @@ const linkSizesValues = LinkSizes.map(
           variant="default"
           onClick={(e) => e.preventDefault()}
         >
-          {size}
+          <I18nText key={`admin.menuItem.sizes.${size}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const buttonSizesValues = ButtonSizes.map(
   (size) =>
     ({
       value: size,
-      shortLabel: size,
+      shortLabel: <I18nText key={`admin.menuItem.sizes.${size}`} />,
       label: (
         <Link
           button
@@ -94,17 +96,17 @@ const buttonSizesValues = ButtonSizes.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          {size}
+          <I18nText key={`admin.menuItem.sizes.${size}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const textFontValues = TextFonts.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: variant,
+      shortLabel: <I18nText key={`admin.menuItem.fonts.${variant}`} />,
       label: (
         <Link
           button
@@ -113,17 +115,17 @@ const textFontValues = TextFonts.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          {variant}
+          <I18nText key={`admin.menuItem.fonts.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const textSizesValues = TextSizes.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: variant,
+      shortLabel: <I18nText key={`admin.menuItem.sizes.${variant}`} />,
       label: (
         <Link
           button
@@ -132,17 +134,17 @@ const textSizesValues = TextSizes.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          {variant}
+          <I18nText key={`admin.menuItem.sizes.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 const textWeightsValues = TextWeights.map(
   (variant) =>
     ({
       value: variant,
-      shortLabel: variant,
+      shortLabel: <I18nText key={`admin.menuItem.weights.${variant}`} />,
       label: (
         <Link
           button
@@ -151,10 +153,10 @@ const textWeightsValues = TextWeights.map(
           variant="secondary"
           onClick={(e) => e.preventDefault()}
         >
-          {variant}
+          <I18nText key={`admin.menuItem.weights.${variant}`} />
         </Link>
       ),
-    }) as IComboboxItem
+    }) as IComboboxItem,
 );
 
 export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
@@ -178,7 +180,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
 
   const subMenusIds = useMemo(
     () => subMenuItems.map((x) => x.id),
-    [subMenuItems]
+    [subMenuItems],
   );
 
   const sortSubMenus = (activeId: string, overId: string) => {
@@ -460,7 +462,7 @@ export const MenuItemFields: React.FC<MenuItemFieldsProps> = ({
                 <Input
                   disabled={disabled}
                   placeholder={t(
-                    "menuItem.fields.additionalClassesPlaceholder"
+                    "menuItem.fields.additionalClassesPlaceholder",
                   )}
                   {...field}
                 />

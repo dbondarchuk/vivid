@@ -1,6 +1,6 @@
 "use client";
 import { useI18n } from "@vivid/i18n";
-import { AppointmentAddon, ServiceField } from "@vivid/types";
+import { AppointmentAddon } from "@vivid/types";
 import {
   AlertModal,
   Button,

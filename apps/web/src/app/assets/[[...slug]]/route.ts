@@ -11,20 +11,20 @@ import { Readable, ReadableOptions } from "stream";
  */
 function streamFile(
   downloadStream: Readable,
-  options?: ReadableOptions
+  options?: ReadableOptions,
 ): ReadableStream<Uint8Array> {
   return new ReadableStream({
     start(controller) {
       downloadStream.on("data", (chunk: Buffer | string) =>
         controller.enqueue(
           new Uint8Array(
-            typeof chunk === "string" ? Buffer.from(chunk, "utf-8") : chunk
-          )
-        )
+            typeof chunk === "string" ? Buffer.from(chunk, "utf-8") : chunk,
+          ),
+        ),
       );
       downloadStream.on("end", () => controller.close());
       downloadStream.on("error", (error: NodeJS.ErrnoException) =>
-        controller.error(error)
+        controller.error(error),
       );
     },
     cancel() {
@@ -39,7 +39,7 @@ type Props = {
 
 export async function GET(
   request: NextRequest,
-  props: Props
+  props: Props,
 ): Promise<NextResponse> {
   const params = await props.params;
 

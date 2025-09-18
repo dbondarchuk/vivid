@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing communication logs API request"
+    "Processing communication logs API request",
   );
 
   const loader = createLoader(searchParams);
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       limit,
       offset,
     },
-    "Fetching communication logs with parameters"
+    "Fetching communication logs with parameters",
   );
 
   const res =
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
       total: res.total,
       count: res.items.length,
     },
-    "Successfully retrieved communication logs"
+    "Successfully retrieved communication logs",
   );
 
   return NextResponse.json(res);

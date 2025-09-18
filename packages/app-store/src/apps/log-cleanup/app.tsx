@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
+import { MessageCircleX } from "lucide-react";
 import { LOG_CLEANUP_APP_NAME } from "./const";
 import { LogCleanupAppSetup } from "./setup";
-import { MessageCircleX } from "lucide-react";
 
 export const LogCleanupApp: App = {
   name: LOG_CLEANUP_APP_NAME,

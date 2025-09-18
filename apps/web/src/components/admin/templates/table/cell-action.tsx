@@ -13,10 +13,10 @@ import {
   toastPromise,
 } from "@vivid/ui";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteTemplate } from "../actions";
-import Link from "next/link";
 
 interface CellActionProps {
   template: TemplateListModel;

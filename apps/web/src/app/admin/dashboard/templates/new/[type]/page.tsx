@@ -37,7 +37,7 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
       type,
       template: query?.template,
     },
-    "Loading new template page"
+    "Loading new template page",
   );
 
   let template: TemplatesTemplate | undefined = undefined;
@@ -51,11 +51,11 @@ export default async function NewTemplatePage({ params, searchParams }: Props) {
       template: query?.template,
       hasTemplate: !!template,
     },
-    "New template page loaded"
+    "New template page loaded",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4 h-full">
         <div className="flex flex-col gap-4 justify-between">
           <Heading

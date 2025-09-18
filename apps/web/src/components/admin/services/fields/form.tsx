@@ -19,7 +19,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  IComboboxItem,
   InfoTooltip,
   Input,
   InputGroup,
@@ -59,7 +58,7 @@ const FileTypePickerTag = ({
 }) => {
   const t = useI18n("admin");
   const [value, setValue] = React.useState<keyof typeof fileTypes | undefined>(
-    "image/*"
+    "image/*",
   );
 
   return (
@@ -103,7 +102,7 @@ export const ServiceFieldForm: React.FC<{
   const t = useI18n("admin");
   const formSchema = getFieldSchemaWithUniqueCheck(
     (slug) => checkUniqueName(slug, initialData?._id),
-    "services.fields.nameUnique"
+    "services.fields.nameUnique",
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -340,7 +339,7 @@ export const ServiceFieldForm: React.FC<{
                           <Input
                             disabled={loading}
                             placeholder={t(
-                              "services.fields.form.maxSizeMbPlaceholder"
+                              "services.fields.form.maxSizeMbPlaceholder",
                             )}
                             type="number"
                             className={InputGroupInputClasses()}
@@ -373,7 +372,7 @@ export const ServiceFieldForm: React.FC<{
                         {...field}
                         readOnly
                         placeholder={t(
-                          "services.fields.form.acceptedFilesPlaceholder"
+                          "services.fields.form.acceptedFilesPlaceholder",
                         )}
                         value={field.value}
                         onChange={(e) => {

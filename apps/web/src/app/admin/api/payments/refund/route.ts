@@ -11,9 +11,9 @@ const refundPaymentsSchema = z.object({
       z.object({
         id: z.string().min(1),
         amount: z.number().min(0.01),
-      })
+      }),
     ),
-    (s) => s.id
+    (s) => s.id,
   ),
 });
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing payments refund API request"
+    "Processing payments refund API request",
   );
 
   const limit = pLimit(2);
@@ -49,12 +49,12 @@ export async function POST(request: NextRequest) {
             paymentId,
             amount,
           },
-          "Refunding payment"
+          "Refunding payment",
         );
 
         const result = await ServicesContainer.PaymentsService().refundPayment(
           paymentId,
-          amount
+          amount,
         );
 
         if (result.success) {
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
               totalRefunded:
                 result.updatedPayment.refunds?.reduce(
                   (acc, refund) => acc + refund.amount,
-                  0
+                  0,
                 ) || 0,
             },
             appointmentId: result.updatedPayment.appointmentId,
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
             amount,
             success: result.success,
           },
-          `Refunding payment ${paymentId}: ${result.success ? "success" : "error"}`
+          `Refunding payment ${paymentId}: ${result.success ? "success" : "error"}`,
         );
       } catch (e: any) {
         logger.error(
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
             amount,
             error: e?.message || e?.toString(),
           },
-          "Error refunding payment"
+          "Error refunding payment",
         );
 
         errors[paymentId] = e?.message || e?.toString();
@@ -120,18 +120,18 @@ export async function POST(request: NextRequest) {
         updatedPayments: successes,
         errors,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (e: any) {
     logger.error(
       {
         error: e?.message || e?.toString(),
       },
-      "Error processing payments refund"
+      "Error processing payments refund",
     );
     return NextResponse.json(
       { success: false, error: e?.message ?? e?.toString() },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

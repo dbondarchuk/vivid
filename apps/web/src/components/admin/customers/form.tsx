@@ -64,7 +64,7 @@ export const CustomerForm: React.FC<{
     (emails, phones) =>
       checkUniqueEmailAndPhone(emails, phones, initialData?._id),
     "customers.emailAlreadyExists",
-    "customers.phoneAlreadyExists"
+    "customers.phoneAlreadyExists",
   );
 
   type FormValues = z.infer<typeof formSchema>;
@@ -341,7 +341,7 @@ export const CustomerForm: React.FC<{
                             (value) => ({
                               value,
                               label: t(`customers.form.${value}`),
-                            })
+                            }),
                           )}
                           searchLabel={t("customers.form.selectOption")}
                           value={field.value}
@@ -427,11 +427,11 @@ export const CustomerForm: React.FC<{
                               <Input
                                 disabled={loading}
                                 placeholder={t(
-                                  "customers.form.namePlaceholder"
+                                  "customers.form.namePlaceholder",
                                 )}
                                 className={cn(
                                   InputGroupInputClasses(),
-                                  "flex-1"
+                                  "flex-1",
                                 )}
                                 {...field}
                               />
@@ -441,7 +441,7 @@ export const CustomerForm: React.FC<{
                                   size="icon"
                                   className={cn(
                                     InputGroupSuffixClasses(),
-                                    "px-2"
+                                    "px-2",
                                   )}
                                   onClick={() => onNameRemove(index)}
                                 >
@@ -483,11 +483,11 @@ export const CustomerForm: React.FC<{
                                 type="email"
                                 disabled={loading}
                                 placeholder={t(
-                                  "customers.form.emailPlaceholder"
+                                  "customers.form.emailPlaceholder",
                                 )}
                                 className={cn(
                                   InputGroupInputClasses(),
-                                  "flex-1"
+                                  "flex-1",
                                 )}
                                 {...field}
                               />
@@ -497,7 +497,7 @@ export const CustomerForm: React.FC<{
                                   size="icon"
                                   className={cn(
                                     InputGroupSuffixClasses(),
-                                    "px-2"
+                                    "px-2",
                                   )}
                                   onClick={() => onEmailRemove(index)}
                                 >
@@ -540,7 +540,7 @@ export const CustomerForm: React.FC<{
                                 disabled={loading}
                                 className={cn(
                                   InputGroupInputClasses(),
-                                  "flex-1"
+                                  "flex-1",
                                 )}
                                 {...field}
                               />
@@ -550,7 +550,7 @@ export const CustomerForm: React.FC<{
                                   size="icon"
                                   className={cn(
                                     InputGroupSuffixClasses(),
-                                    "px-2"
+                                    "px-2",
                                   )}
                                   onClick={() => onPhoneRemove(index)}
                                 >

@@ -4,6 +4,7 @@ export * from "./file-input";
 export * from "./font-family-input";
 export * from "./font-size-input";
 export * from "./padding-input";
+export * from "./page-input";
 export * from "./radio-group-input";
 export * from "./radio-group-input-item";
 export * from "./raw";

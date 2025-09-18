@@ -1,5 +1,5 @@
-import { ServicesContainer } from "@vivid/services";
 import { getLoggerFactory } from "@vivid/logger";
+import { ServicesContainer } from "@vivid/services";
 import { notFound, redirect } from "next/navigation";
 
 type Props = {
@@ -14,7 +14,7 @@ export default async function CloneTemplatePage(props: Props) {
     {
       templateId: id,
     },
-    "Starting template clone operation"
+    "Starting template clone operation",
   );
 
   const template = await ServicesContainer.TemplatesService().getTemplate(id);
@@ -32,7 +32,7 @@ export default async function CloneTemplatePage(props: Props) {
       originalName: template.name,
       newName: newTemplate.name,
     },
-    "Creating cloned template"
+    "Creating cloned template",
   );
 
   const { _id } =
@@ -44,7 +44,7 @@ export default async function CloneTemplatePage(props: Props) {
       newTemplateId: _id,
       newName: newTemplate.name,
     },
-    "Template cloned successfully, redirecting"
+    "Template cloned successfully, redirecting",
   );
 
   redirect(`/admin/dashboard/templates/${_id}`);

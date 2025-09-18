@@ -11,7 +11,6 @@ import {
 import { useInView } from "react-intersection-observer";
 
 import { SendCommunicationDialog } from "@/components/admin/communications/send-message-dialog";
-import { Markdown } from "@/components/web/markdown";
 import {
   Badge,
   Button,
@@ -23,6 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
   IFrame,
+  Markdown,
   Skeleton,
   toast,
   Tooltip,
@@ -63,7 +63,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
                   : entry.handledBy.key,
                 typeof entry.handledBy === "object" && entry.handledBy.args
                   ? entry.handledBy.args
-                  : undefined
+                  : undefined,
               )}
           </p>
           <div className="flex items-center space-x-2">
@@ -129,7 +129,7 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
                   : entry.handledBy.key,
                 typeof entry.handledBy === "object" && entry.handledBy.args
                   ? entry.handledBy.args
-                  : undefined
+                  : undefined,
               ),
             })}
           </Badge>
@@ -206,7 +206,7 @@ export type CustomerOrAppointment =
     };
 
 export const SendCommunicationButton: React.FC<CustomerOrAppointment> = (
-  props
+  props,
 ) => {
   const t = useI18n("admin");
   const router = useRouter();
@@ -281,7 +281,7 @@ export const RecentCommunications: React.FC<RecentCommunicationsProps> = ({
         hasMore: page * toLoad < res.total,
       };
     },
-    [customerId, appointmentId, direction, channel, start, end, search]
+    [customerId, appointmentId, direction, channel, start, end, search],
   );
 
   React.useEffect(() => {

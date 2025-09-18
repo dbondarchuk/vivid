@@ -1,6 +1,5 @@
-import { getI18nAsync } from "@vivid/i18n/server";
 import { AppointmentView } from "@/components/admin/appointments/appoitment-view";
-import { ServicesContainer } from "@vivid/services";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 import { notFound } from "next/navigation";
 import React from "react";

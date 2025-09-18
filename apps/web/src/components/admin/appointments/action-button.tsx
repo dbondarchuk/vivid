@@ -14,7 +14,7 @@ export const changeStatus = async (
   setIsLoading: (isLoading: boolean) => void,
   refresh: () => void,
   onSuccess?: (newStatus: AppointmentStatus) => void,
-  beforeRequest?: () => Promise<void> | void
+  beforeRequest?: () => Promise<void> | void,
 ) => {
   setIsLoading(true);
 
@@ -62,7 +62,7 @@ export const AppointmentActionButton = React.forwardRef<
       setIsLoading: propsSetIsLoading,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isLoading, stateSetIsLoading] = React.useState(false);
     const router = useRouter();
@@ -85,7 +85,7 @@ export const AppointmentActionButton = React.forwardRef<
           onSuccess?.(newStatus);
           originalOnClick?.(e);
         },
-        beforeRequest
+        beforeRequest,
       );
     };
 
@@ -97,13 +97,13 @@ export const AppointmentActionButton = React.forwardRef<
         onClick={onClick}
         className={cn(
           "inline-flex flex-row gap-1 items-center",
-          props.className
+          props.className,
         )}
       >
         {isLoading && <Spinner />}
         {props.children}
       </Button>
     );
-  }
+  },
 );
 AppointmentActionButton.displayName = "AppointmentActionButton";

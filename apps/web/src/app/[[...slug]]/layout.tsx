@@ -1,20 +1,50 @@
-import { Footer } from "@/components/web/footer";
-import { Header } from "@/components/web/header";
 import { SonnerToaster, Toaster } from "@vivid/ui";
 
-import { Resource } from "@vivid/types";
+import { fontsOptions, Resource } from "@vivid/types";
 
 import NextScript from "next/script";
-import { TwLoad } from "../twLoad";
 
-import { ServicesContainer } from "@vivid/services";
-import "../globals.css";
-import { getColorsCss } from "@vivid/utils";
 import { CookiesProvider } from "@/components/cookies-provider";
 import { getLoggerFactory } from "@vivid/logger";
+import { ServicesContainer } from "@vivid/services";
+import { getColorsCss } from "@vivid/utils";
+import "../globals.css";
 
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+
+const buildGoogleFontsUrl = (...fonts: (string | undefined)[]): string => {
+  const families = fonts
+    .filter(
+      (fontName): fontName is string => !!fontName && fontName in fontsOptions,
+    )
+    .map((fontName) => {
+      const font = fontsOptions[fontName];
+      const family = fontName.replace(/ /g, "+");
+
+      const variantParams = font.variants
+        .map((v) => {
+          if (v === "regular") return "0,400";
+          if (v === "italic") return "1,400";
+          const match = v.match(/^(\d+)(italic)?$/);
+          if (match) {
+            const weight = match[1];
+            const isItalic = !!match[2];
+            return `${isItalic ? 1 : 0},${weight}`;
+          }
+          return null;
+        })
+        .filter(Boolean)
+        .join(";");
+
+      if (variantParams) {
+        return `family=${family}:ital,wght@${variantParams}`;
+      }
+      return `family=${family}`;
+    });
+
+  return `https://fonts.googleapis.com/css2?${families.join("&")}&display=swap`;
+};
 
 const ScriptRenderer = ({
   resource,
@@ -71,14 +101,14 @@ export default async function RootLayout({
     await ServicesContainer.ConfigurationService().getConfigurations(
       "general",
       "scripts",
-      "styling"
+      "styling",
     );
 
   const locale = await getLocale();
 
   logger.debug(
     { hasGeneral: !!general, hasScripts: !!scripts, hasStyling: !!styling },
-    "Retrieved configurations"
+    "Retrieved configurations",
   );
 
   if (!general) {
@@ -90,38 +120,26 @@ export default async function RootLayout({
     );
   }
 
-  const weights = `:wght@100..900`;
-
   const primaryFont = styling?.fonts?.primary || "Montserrat";
   const secondaryFont = styling?.fonts?.secondary || "Playfair Display";
   const tertiaryFont = styling?.fonts?.tertiary;
 
-  logger.debug(
-    { primaryFont, secondaryFont, tertiaryFont },
-    "Font configuration"
+  const fontsCssUrl = buildGoogleFontsUrl(
+    primaryFont,
+    secondaryFont,
+    tertiaryFont,
   );
 
-  const tertiaryFontQueryArg = tertiaryFont
-    ? `&family=${encodeURIComponent(tertiaryFont)}${weights}`
-    : "";
-
-  const fontsRes = await fetch(
-    `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-      primaryFont
-    )}${weights}&family=${encodeURIComponent(
-      secondaryFont
-    )}${weights}${tertiaryFontQueryArg}&display=swap`,
-    {
-      cache: "force-cache",
-    }
-  );
+  const fontsRes = await fetch(fontsCssUrl, {
+    cache: "force-cache",
+  });
 
   const fonts = await fontsRes.text();
   const colors = getColorsCss(styling?.colors);
 
   logger.debug(
     { fontsLength: fonts.length, hasColors: !!colors },
-    "Generated styles"
+    "Generated styles",
   );
 
   return (
@@ -159,14 +177,10 @@ export default async function RootLayout({
             <CssRenderer resource={resource} id={index} key={index} />
           ))}
         </head>
-        <TwLoad />
+        {/* <TwLoad /> */}
         <body className="font-primary">
           <NextIntlClientProvider>
-            <Header />
-            <main className="min-h-screen bg-background pt-5 prose-lg lg:prose-xl prose-h3:text-4xl max-w-none">
-              {children}
-            </main>
-            <Footer />
+            <main className="min-h-screen max-w-none">{children}</main>
             {scripts?.footer?.map((resource, index) => (
               <ScriptRenderer resource={resource} id={index} key={index} />
             ))}

@@ -1,9 +1,5 @@
 "use client";
 
-import { SortableContext } from "@dnd-kit/sortable";
-import { cva } from "class-variance-authority";
-import { Card, CardContent, CardHeader } from "./card";
-import { ScrollArea } from "./scroll-area";
 import {
   DndContext,
   DragOverEvent,
@@ -12,9 +8,13 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
+import { cva } from "class-variance-authority";
+import { ChevronsUpDown, Plus } from "lucide-react";
 import React from "react";
 import { Button } from "./button";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { Card, CardContent, CardHeader } from "./card";
+import { ScrollArea } from "./scroll-area";
 
 export type SortableProps = {
   title: string;
@@ -42,7 +42,7 @@ export function Sortable({
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const variants = cva(
-    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center w-full",
+    "h-fit max-h-[75vh] max-w-full bg-secondary flex flex-col snap-center w-full",
     {
       variants: {
         dragging: {
@@ -51,7 +51,7 @@ export function Sortable({
           overlay: "ring-2 ring-primary",
         },
       },
-    }
+    },
   );
 
   function onDragOver(event: DragOverEvent) {

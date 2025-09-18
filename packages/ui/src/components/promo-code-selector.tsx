@@ -1,8 +1,8 @@
+import { useI18n } from "@vivid/i18n";
 import { Discount, WithTotal } from "@vivid/types";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
 import { DateTime } from "luxon";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 
 type PromoCode = Discount & { code: string };
 
@@ -91,10 +91,10 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
 }) => {
   const t = useI18n("ui");
   const [itemsCache, setItemsCache] = React.useState<Record<string, PromoCode>>(
-    {}
+    {},
   );
 
-  const getCustomers = React.useCallback(
+  const getDiscounts = React.useCallback(
     async (page: number, search?: string) => {
       const limit = 10;
       let url = `/admin/api/discounts?page=${page}&limit=${limit}`;
@@ -110,7 +110,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
         toast.error(t("promoCodeSelector.requestFailed"));
         const text = await response.text();
         console.error(
-          `Request to fetch discounts failed: ${response.status}; ${text}`
+          `Request to fetch discounts failed: ${response.status}; ${text}`,
         );
 
         return {
@@ -125,7 +125,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
         discount.codes.map((code) => ({
           ...discount,
           code,
-        }))
+        })),
       );
 
       setItemsCache((prev) => ({
@@ -135,7 +135,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
             ...map,
             [cur.code]: cur,
           }),
-          {} as typeof itemsCache
+          {} as typeof itemsCache,
         ),
       }));
 
@@ -148,7 +148,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
         hasMore: page * limit < res.total,
       };
     },
-    [value, setItemsCache, t]
+    [value, setItemsCache, t],
   );
 
   React.useEffect(() => {
@@ -164,7 +164,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
       placeholder={t("promoCodeSelector.placeholder")}
       value={value}
       allowClear={allowClear}
-      fetchItems={getCustomers}
+      fetchItems={getDiscounts}
       loader={<PromoCodeLoader />}
     />
   );

@@ -2,7 +2,7 @@
 
 import { AllKeys, useI18n } from "@vivid/i18n";
 import { AvailablePeriod } from "@vivid/types";
-import { parseTime, template } from "@vivid/utils";
+import { parseTime } from "@vivid/utils";
 import { Clock, Plus, X } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useMemo, useState } from "react";
@@ -63,7 +63,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
 
     // Sort shifts by start time
     const sortedShifts = [...shifts].sort(
-      (a, b) => timeToMinutes(a.start) - timeToMinutes(b.start)
+      (a, b) => timeToMinutes(a.start) - timeToMinutes(b.start),
     );
 
     const mergedShifts: { start: string; end: string }[] = [];
@@ -108,7 +108,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
     day: number,
     index: number,
     startTime: string,
-    endTime: string
+    endTime: string,
   ) => {
     setEditingShift({ day, index, startTime, endTime });
   };
@@ -132,7 +132,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
     // Create a new value array with the updated shift
     const newValue = [...value];
     const periodIndex = newValue.findIndex(
-      (p) => p.weekDay === editingShift.day
+      (p) => p.weekDay === editingShift.day,
     );
 
     if (periodIndex !== -1) {
@@ -165,7 +165,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
 
     if (periodIndex !== -1) {
       const newShifts = newValue[periodIndex].shifts.filter(
-        (_, i) => i !== index
+        (_, i) => i !== index,
       );
 
       if (newShifts.length === 0) {
@@ -257,7 +257,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
     t("calendar.thursday"),
     t("calendar.friday"),
     t("calendar.saturday"),
-    t("calendar.sunday")
+    t("calendar.sunday"),
   );
 
   return (
@@ -371,7 +371,7 @@ export const SimpleScheduler: React.FC<SimpleSchedulerProps> = ({
                                   day,
                                   index,
                                   shift.start,
-                                  shift.end
+                                  shift.end,
                                 )
                               }
                             >

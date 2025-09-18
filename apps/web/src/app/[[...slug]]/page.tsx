@@ -1,12 +1,14 @@
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
-import { MdxContent } from "@/components/web/mdx/mdx-content";
+import { Styling } from "@vivid/page-builder";
+import { Header, PageReader } from "@vivid/page-builder/reader";
 import { ServicesContainer } from "@vivid/services";
-import { cn } from "@vivid/ui";
-import { setPageData } from "@vivid/utils";
+import { formatArguments, setPageData } from "@vivid/utils";
+import { DateTime } from "luxon";
 import { Metadata, ResolvingMetadata } from "next";
+import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
-import { headers } from "next/headers";
 
 type Props = {
   params: Promise<{ slug: string[] }>;
@@ -33,7 +35,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
   if (!slug || !slug.length) {
     logger.debug(
       { originalSlug: slug },
-      "No slug provided, defaulting to home"
+      "No slug provided, defaulting to home",
     );
     slug = "home";
   }
@@ -64,7 +66,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
         publishDate: page?.publishDate,
         currentDate: new Date().toISOString(),
       },
-      "Page not found or not published"
+      "Page not found or not published",
     );
     throw new NotFoundError("Page not found");
   }
@@ -81,7 +83,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
       pagePublished: page.published,
       publishDate: page.publishDate,
     },
-    "Successfully retrieved page source"
+    "Successfully retrieved page source",
   );
 
   return { page, settings };
@@ -89,7 +91,7 @@ const getSource = cache(async (slug?: string, preview = false) => {
 
 export async function generateMetadata(
   props: Props,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const logger = getLoggerFactory("PageComponent")("generateMetadata");
 
@@ -104,12 +106,12 @@ export async function generateMetadata(
         slug: params.slug,
         preview: searchParams?.preview,
       },
-      "Processing metadata generation request"
+      "Processing metadata generation request",
     );
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview
+      searchParams?.preview,
     );
 
     logger.debug(
@@ -117,7 +119,7 @@ export async function generateMetadata(
         siteTitle: settings.title,
         siteDescription: settings.description?.substring(0, 100) + "...",
       },
-      "Retrieved general configuration"
+      "Retrieved general configuration",
     );
 
     const title = page.doNotCombine?.title
@@ -141,7 +143,7 @@ export async function generateMetadata(
         doNotCombineDescription: page.doNotCombine?.description,
         doNotCombineKeywords: page.doNotCombine?.keywords,
       },
-      "Generated page metadata"
+      "Generated page metadata",
     );
 
     return {
@@ -161,7 +163,7 @@ export async function generateMetadata(
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Error generating page metadata"
+      "Error generating page metadata",
     );
 
     // Return basic metadata on error
@@ -181,18 +183,24 @@ export default async function Page(props: Props) {
     const searchParams = await props.searchParams;
     const params = await props.params;
 
+    const { styling, social } =
+      await ServicesContainer.ConfigurationService().getConfigurations(
+        "styling",
+        "social",
+      );
+
     logger.debug(
       {
         slug: params.slug,
         preview: searchParams?.preview,
         slugLength: params.slug?.length,
       },
-      "Processing page render request"
+      "Processing page render request",
     );
 
     const { page, settings } = await getSource(
       params.slug?.join("/"),
-      searchParams?.preview
+      searchParams?.preview,
     );
 
     logger.debug(
@@ -202,7 +210,7 @@ export default async function Page(props: Props) {
         pageFullWidth: page.fullWidth,
         contentLength: page.content?.length || 0,
       },
-      "Setting page data and rendering content"
+      "Setting page data and rendering content",
     );
 
     setPageData({
@@ -218,18 +226,56 @@ export default async function Page(props: Props) {
         pageSlug: params.slug?.join("/") || "home",
         preview: searchParams?.preview,
       },
-      "Successfully rendered page"
+      "Successfully rendered page",
     );
 
+    const { content, ...rest } = page;
+    const args: Record<string, any> = {
+      page: rest,
+      isPage: true,
+      general: settings,
+      social: social,
+      now: new Date(),
+    };
+
+    const cookieStore = await cookies();
+    const appointmentId = cookieStore.get("appointment_id")?.value;
+    if (appointmentId) {
+      const appointment =
+        await ServicesContainer.EventsService().getAppointment(appointmentId);
+      if (
+        appointment &&
+        DateTime.fromJSDate(appointment.createdAt).diffNow().toMillis() <
+          60 * 1000 // 60 seconds
+      ) {
+        args.appointment = appointment;
+      } else {
+        notFound();
+      }
+    }
+
+    const header = page.headerId
+      ? await ServicesContainer.PagesService().getPageHeader(page.headerId)
+      : undefined;
+
+    const footer = page.footerId
+      ? await ServicesContainer.PagesService().getPageFooter(page.footerId)
+      : undefined;
+
+    const t = await getI18nAsync("translation");
+    const formattedArgs = formatArguments(args, settings.language);
+
     return (
-      <div
-        className={cn(
-          "flex flex-col gap-5",
-          page.fullWidth ? "w-full" : "container mx-auto"
+      <>
+        <Styling styling={styling} />
+        {header && (
+          <Header name={settings.name} logo={settings.logo} config={header} />
         )}
-      >
-        <MdxContent source={page.content} />
-      </div>
+        <PageReader document={content} args={formattedArgs} />
+        {footer?.content && (
+          <PageReader document={footer.content} args={formattedArgs} />
+        )}
+      </>
     );
   } catch (error: any) {
     const loggerFn =
@@ -240,7 +286,7 @@ export default async function Page(props: Props) {
         slug: (await props.params).slug,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Error rendering page"
+      "Error rendering page",
     );
 
     if (error instanceof NotFoundError) {

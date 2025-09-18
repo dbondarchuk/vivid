@@ -26,28 +26,28 @@ export const reminderTimeBeforeSchema = z.object({
       .number()
       .int("common.number.integer")
       .min(0, "reminders.form.weeks.min")
-      .max(10, "reminders.form.weeks.max")
+      .max(10, "reminders.form.weeks.max"),
   ),
   days: asOptinalNumberField(
     z.coerce
       .number()
       .int("common.number.integer")
       .min(0, "reminders.form.days.min")
-      .max(31, "reminders.form.days.max")
+      .max(31, "reminders.form.days.max"),
   ),
   hours: asOptinalNumberField(
     z.coerce
       .number()
       .int("common.number.integer")
       .min(0, "reminders.form.hours.min")
-      .max(24 * 5, "reminders.form.hours.max")
+      .max(24 * 5, "reminders.form.hours.max"),
   ),
   minutes: asOptinalNumberField(
     z.coerce
       .number()
       .int("common.number.integer")
       .min(0, "reminders.form.minutes.min")
-      .max(60 * 10, "reminders.form.minutes.max")
+      .max(60 * 10, "reminders.form.minutes.max"),
   ),
 });
 
@@ -58,7 +58,7 @@ export const reminderAtTimeSchema = z.object({
       .number()
       .int("common.number.integer")
       .min(0, "reminders.form.weeks.min")
-      .max(10, "reminders.form.weeks.max")
+      .max(10, "reminders.form.weeks.max"),
   ),
   days: z.coerce
     .number()
@@ -115,7 +115,7 @@ export const reminderGeneralSchema = z.object({
 export const reminderSchema = z
   .intersection(
     z.intersection(reminderGeneralSchema, reminderTypeSchema),
-    reminderChannelSchema
+    reminderChannelSchema,
   )
   .superRefine((arg, ctx) => {
     if (arg.type === "atTime" && !arg.weeks && !arg.days) {
@@ -141,7 +141,7 @@ export const reminderSchema = z
 
 export const getReminderSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return reminderSchema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueNameCheckFn(args.name);

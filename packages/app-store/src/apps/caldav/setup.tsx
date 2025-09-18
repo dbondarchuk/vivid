@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -22,12 +23,11 @@ import {
   toast,
 } from "@vivid/ui";
 import React from "react";
-import { processStaticRequest } from "../../actions";
+import { processRequest, processStaticRequest } from "../../actions";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { CaldavApp } from "./app";
-import { CaldavCalendarSource, caldavCalendarSourceSchema } from "./models";
 import { CALDAV_APP_NAME } from "./const";
-import { useI18n } from "@vivid/i18n";
+import { CaldavCalendarSource, caldavCalendarSourceSchema } from "./models";
 
 export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
@@ -41,6 +41,10 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
       schema: caldavCalendarSourceSchema,
       onSuccess,
       onError,
+      processDataForSubmit: (data) => ({
+        type: "save",
+        data,
+      }),
     });
 
   const t = useI18n("apps");
@@ -58,17 +62,22 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
   const fetchCalendars = async () => {
     setFetchingCalendars(true);
     try {
-      const result = await processStaticRequest(CALDAV_APP_NAME, {
-        ...form.getValues(),
-        fetchCalendars: true,
-      });
+      const result = existingAppId
+        ? await processRequest(existingAppId, {
+            type: "fetchCalendars",
+            data: form.getValues(),
+          })
+        : await processStaticRequest(CALDAV_APP_NAME, {
+            ...form.getValues(),
+            fetchCalendars: true,
+          });
 
       setCalendars(result);
     } catch (error: any) {
       toast.error(
         t("calDav.toast.failed_to_fetch_calendars", {
           serverUrl: form.getValues("serverUrl"),
-        })
+        }),
       );
       console.error(error);
     } finally {
@@ -192,12 +201,17 @@ export const CaldavAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("calDav.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo app={{ name: CaldavApp.name }} t={t} />
+              <ConnectedAppNameAndLogo appName={CaldavApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

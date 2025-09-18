@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 
-import { useIsTouchDevice } from "@vivid/ui";
 import { AIChatPlugin } from "@udecode/plate-ai/react";
 import { BlockquotePlugin } from "@udecode/plate-block-quote/react";
 import { HEADING_KEYS } from "@udecode/plate-heading";
@@ -13,6 +12,7 @@ import {
   BlockSelectionPlugin,
 } from "@udecode/plate-selection/react";
 import { ParagraphPlugin, useEditorPlugin } from "@udecode/plate/react";
+import { useIsTouchDevice } from "@vivid/ui";
 
 import {
   ContextMenu,
@@ -47,7 +47,7 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
           editor.tf.toggleBlock(type, { at: path });
         });
     },
-    [editor]
+    [editor],
   );
 
   const handleAlign = useCallback(
@@ -56,7 +56,7 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
         .getTransforms(BlockSelectionPlugin)
         .blockSelection.setNodes({ align });
     },
-    [editor]
+    [editor],
   );
 
   if (isTouch) {

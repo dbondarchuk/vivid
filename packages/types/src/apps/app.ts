@@ -16,7 +16,7 @@ export type AppScope =
 export type AppSetupProps = {
   onSuccess: () => void;
   onError: (
-    error: string | { key: string; args?: Record<string, any> }
+    error: string | { key: string; args?: Record<string, any> },
   ) => void;
   appId?: string;
 };

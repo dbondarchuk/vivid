@@ -1,9 +1,9 @@
 import { AppointmentCard } from "@/components/admin/appointments/appointment-card";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { ServicesContainer } from "@vivid/services";
 import { Card, CardContent, CardHeader } from "@vivid/ui";
 import { DateTime } from "luxon";
 import React from "react";
-import { getI18nAsync } from "@vivid/i18n/server";
 
 export const PendingAppointmentsTab: React.FC = async () => {
   const t = await getI18nAsync("admin");
@@ -11,7 +11,7 @@ export const PendingAppointmentsTab: React.FC = async () => {
   const pendingAppointments =
     await ServicesContainer.EventsService().getPendingAppointments(
       20,
-      beforeNow
+      beforeNow,
     );
 
   const { timeZone } =

@@ -29,12 +29,12 @@ export const ToggleElement = withRef<typeof PlateElement>(
           <ChevronRight
             className={cn(
               "transition-transform duration-75",
-              open ? "rotate-90" : "rotate-0"
+              open ? "rotate-90" : "rotate-0",
             )}
           />
         </Button>
         {children}
       </PlateElement>
     );
-  }
+  },
 );

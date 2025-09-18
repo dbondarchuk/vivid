@@ -16,7 +16,7 @@ export async function createTemplate(template: TemplateUpdateModel) {
       templateType: template.type,
       hasValue: !!template.value,
     },
-    "Creating new template"
+    "Creating new template",
   );
 
   try {
@@ -29,7 +29,7 @@ export async function createTemplate(template: TemplateUpdateModel) {
         templateName: template.name,
         templateType: template.type,
       },
-      "Template created successfully"
+      "Template created successfully",
     );
 
     return result;
@@ -40,7 +40,7 @@ export async function createTemplate(template: TemplateUpdateModel) {
         templateType: template.type,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create template"
+      "Failed to create template",
     );
     throw error;
   }
@@ -56,7 +56,7 @@ export async function updateTemplate(id: string, update: TemplateUpdateModel) {
       templateType: update.type,
       hasValue: !!update.value,
     },
-    "Updating template"
+    "Updating template",
   );
 
   try {
@@ -68,7 +68,7 @@ export async function updateTemplate(id: string, update: TemplateUpdateModel) {
         templateName: update.name,
         templateType: update.type,
       },
-      "Template updated successfully"
+      "Template updated successfully",
     );
 
     return okStatus;
@@ -80,7 +80,7 @@ export async function updateTemplate(id: string, update: TemplateUpdateModel) {
         templateType: update.type,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update template"
+      "Failed to update template",
     );
     throw error;
   }
@@ -93,7 +93,7 @@ export async function deleteTemplate(id: string) {
     {
       templateId: id,
     },
-    "Deleting template"
+    "Deleting template",
   );
 
   try {
@@ -110,7 +110,7 @@ export async function deleteTemplate(id: string) {
         templateName: template.name,
         templateType: template.type,
       },
-      "Template deleted successfully"
+      "Template deleted successfully",
     );
 
     return okStatus;
@@ -120,7 +120,7 @@ export async function deleteTemplate(id: string) {
         templateId: id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete template"
+      "Failed to delete template",
     );
     throw error;
   }
@@ -134,7 +134,7 @@ export async function deleteSelectedTemplates(ids: string[]) {
       templateIds: ids,
       count: ids.length,
     },
-    "Deleting selected templates"
+    "Deleting selected templates",
   );
 
   try {
@@ -145,7 +145,7 @@ export async function deleteSelectedTemplates(ids: string[]) {
         templateIds: ids,
         count: ids.length,
       },
-      "Selected templates deleted successfully"
+      "Selected templates deleted successfully",
     );
 
     return okStatus;
@@ -156,7 +156,7 @@ export async function deleteSelectedTemplates(ids: string[]) {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected templates"
+      "Failed to delete selected templates",
     );
     throw error;
   }
@@ -170,13 +170,13 @@ export async function checkUniqueName(name: string, id?: string) {
       templateName: name,
       excludeId: id,
     },
-    "Checking template name uniqueness"
+    "Checking template name uniqueness",
   );
 
   try {
     const result = await ServicesContainer.TemplatesService().checkUniqueName(
       name,
-      id
+      id,
     );
 
     actionLogger.debug(
@@ -185,7 +185,7 @@ export async function checkUniqueName(name: string, id?: string) {
         excludeId: id,
         isUnique: result,
       },
-      "Template name uniqueness check completed"
+      "Template name uniqueness check completed",
     );
 
     return result;
@@ -196,7 +196,7 @@ export async function checkUniqueName(name: string, id?: string) {
         excludeId: id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check template name uniqueness"
+      "Failed to check template name uniqueness",
     );
     throw error;
   }

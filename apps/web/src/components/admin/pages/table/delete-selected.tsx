@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { Page } from "@vivid/types";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,7 +19,6 @@ import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { deleteSelectedPages } from "../actions";
-import { Page } from "@vivid/types";
 
 export const DeleteSelectedPagesButton: React.FC<{
   selected: Page[];
@@ -37,7 +37,7 @@ export const DeleteSelectedPagesButton: React.FC<{
         {
           success: t("pages.table.delete.success"),
           error: t("pages.table.delete.error"),
-        }
+        },
       );
 
       router.refresh();

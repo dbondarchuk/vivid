@@ -42,7 +42,7 @@ const getAddons = async () => {
     toast.error("Request failed.");
     const text = await response.text();
     console.error(
-      `Request to fetch addons failed: ${response.status}; ${text}`
+      `Request to fetch addons failed: ${response.status}; ${text}`,
     );
 
     return [];
@@ -135,7 +135,7 @@ export const AddonSelector: React.FC<AddonSelectorProps> = ({
           : t("services.addonSelector.selectAddon")
       }
       selected={value || []}
-      onChange={(value) => onItemSelect?.(value as string[])}
+      onChange={onItemSelect}
     />
   ) : (
     <Combobox

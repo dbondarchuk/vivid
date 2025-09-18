@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing discounts API request"
+    "Processing discounts API request",
   );
 
   const body = await request.json();
@@ -32,12 +32,12 @@ export async function POST(request: NextRequest) {
       optionId: data.optionId,
       addonsCount: data.addons?.length || 0,
     },
-    "Applying discount"
+    "Applying discount",
   );
 
   const customer = await ServicesContainer.CustomersService().findCustomer(
     data.email,
-    data.phone
+    data.phone,
   );
 
   const discount = await ServicesContainer.ServicesService().applyDiscount({
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       value: discount.value,
       customerFound: !!customer,
     },
-    "Successfully applied discount"
+    "Successfully applied discount",
   );
 
   return NextResponse.json({

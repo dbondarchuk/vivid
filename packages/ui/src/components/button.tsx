@@ -21,11 +21,11 @@ const buttonVariants = {
   "link-dashed": "text-primary underline-offset-4 underline decoration-dashed",
 };
 
-const buttonSizes = {
+export const buttonSizes = {
   none: "",
   default: "h-9 px-4 py-2",
-  xs: "h-7 rounded-md px-3 text-xs",
-  sm: "h-8 rounded-md px-3",
+  xs: "h-7 rounded-md px-3 text-xs [&>svg]:size-3",
+  sm: "h-8 rounded-md px-3 text-xs",
   md: "h-9 rounded-md px-5",
   lg: "h-10 rounded-md px-8",
   icon: "h-9 w-9",
@@ -49,18 +49,20 @@ const buttonClasses = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export type ButtonVariant = VariantProps<typeof buttonClasses>["variant"];
 export const ButtonVariants = Object.keys(
-  buttonVariants
+  buttonVariants,
 ) as (keyof typeof buttonVariants)[];
 
 export type ButtonSize = VariantProps<typeof buttonClasses>["size"];
 export const ButtonSizes = Object.keys(
-  buttonSizes
+  buttonSizes,
 ) as (keyof typeof buttonSizes)[];
+
+export type ButtonVariants = VariantProps<typeof buttonClasses>;
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -82,7 +84,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       type = "button",
       ...props
     },
-    ref
+    ref,
   ) => {
     const Comp = asChild ? Slot : "button";
     return (
@@ -90,14 +92,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           textVariants({ font, fontSize, fontWeight }),
           buttonClasses({ variant, size }),
-          className
+          className,
         )}
         type={type}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";
 

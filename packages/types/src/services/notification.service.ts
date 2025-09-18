@@ -35,6 +35,6 @@ export interface INotificationService {
   sendEmail(props: EmailNotificationRequest): Promise<void>;
 
   sendTextMessage(
-    props: TextMessageNotificationRequest
+    props: TextMessageNotificationRequest,
   ): Promise<TextMessageResponse>;
 }

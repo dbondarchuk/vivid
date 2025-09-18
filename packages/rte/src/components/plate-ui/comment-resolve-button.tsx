@@ -1,12 +1,10 @@
 "use client";
 
-import React from "react";
-
-import { buttonVariants, cn } from "@vivid/ui";
 import {
   CommentResolveButton as CommentResolveButtonPrimitive,
   useComment,
 } from "@udecode/plate-comments/react";
+import { buttonVariants, cn } from "@vivid/ui";
 import { Check, RotateCcw } from "lucide-react";
 
 export function CommentResolveButton() {
@@ -16,7 +14,7 @@ export function CommentResolveButton() {
     <CommentResolveButtonPrimitive
       className={cn(
         buttonVariants({ variant: "ghost" }),
-        "h-6 p-1 text-muted-foreground"
+        "h-6 p-1 text-muted-foreground",
       )}
     >
       {comment.isResolved ? (

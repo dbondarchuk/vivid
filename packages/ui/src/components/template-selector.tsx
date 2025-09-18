@@ -1,9 +1,9 @@
+import { useI18n } from "@vivid/i18n";
 import { CommunicationChannel, TemplateListModel } from "@vivid/types";
 import React from "react";
+import { toast } from "sonner";
 import { cn } from "../utils";
 import { Combobox, IComboboxItem } from "./combobox";
-import { toast } from "sonner";
-import { useI18n } from "@vivid/i18n";
 
 const getTemplates = async (type: string) => {
   const url = `/admin/api/templates?type=${encodeURIComponent(type)}&limit=10000000`;
@@ -102,7 +102,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
       value={value}
       customSearch={(search) =>
         templateValues(
-          templates.filter((template) => checkTemplateSearch(template, search))
+          templates.filter((template) => checkTemplateSearch(template, search)),
         )
       }
       onItemSelect={onItemSelect}

@@ -1,3 +1,6 @@
+import { useI18n } from "@vivid/i18n";
+import { CodeSquare } from "lucide-react";
+import React from "react";
 import { Link } from "./link";
 import {
   Tooltip,
@@ -5,9 +8,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
-import { CodeSquare } from "lucide-react";
-import React from "react";
-import { useI18n } from "@vivid/i18n";
 
 export type SupportsMarkdownTooltipProps = {
   supportsMdx?: boolean;

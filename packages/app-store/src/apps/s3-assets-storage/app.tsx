@@ -1,9 +1,9 @@
 import { App } from "@vivid/types";
 import { S3_ASSETS_STORAGE_APP_NAME } from "./const";
-import { S3Logo } from "./logo";
-import { S3AssetsStorageAppSetup } from "./setup";
 import image1 from "./images/1.png";
 import image2 from "./images/2.png";
+import { S3Logo } from "./logo";
+import { S3AssetsStorageAppSetup } from "./setup";
 
 export const S3AssetsStorageApp: App = {
   name: S3_ASSETS_STORAGE_APP_NAME,

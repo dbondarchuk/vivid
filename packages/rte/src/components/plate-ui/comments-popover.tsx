@@ -1,8 +1,5 @@
 "use client";
 
-import React from "react";
-
-import { cn, popoverVariants } from "@vivid/ui";
 import {
   CommentProvider,
   CommentsPositioner,
@@ -11,6 +8,7 @@ import {
   useFloatingCommentsState,
 } from "@udecode/plate-comments/react";
 import { PortalBody } from "@udecode/plate/react";
+import { cn, popoverVariants } from "@vivid/ui";
 
 import { CommentCreateForm } from "./comment-create-form";
 import { CommentItem } from "./comment-item";

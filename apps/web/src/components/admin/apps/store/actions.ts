@@ -13,7 +13,7 @@ export const getInstalledApps = async (name: string) => {
     {
       appName: name,
     },
-    "Getting installed apps"
+    "Getting installed apps",
   );
 
   try {
@@ -25,7 +25,7 @@ export const getInstalledApps = async (name: string) => {
         appName: name,
         installedAppsCount: result.length,
       },
-      "Installed apps retrieved successfully"
+      "Installed apps retrieved successfully",
     );
 
     return result;
@@ -35,7 +35,7 @@ export const getInstalledApps = async (name: string) => {
         appName: name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to get installed apps"
+      "Failed to get installed apps",
     );
     throw error;
   }
@@ -48,7 +48,7 @@ export const installComplexApp = async (name: string) => {
     {
       appName: name,
     },
-    "Installing complex app"
+    "Installing complex app",
   );
 
   try {
@@ -60,7 +60,7 @@ export const installComplexApp = async (name: string) => {
         appName: name,
         appId,
       },
-      "Complex app created, updating status"
+      "Complex app created, updating status",
     );
 
     await ServicesContainer.ConnectedAppsService().updateApp(appId, {
@@ -74,7 +74,7 @@ export const installComplexApp = async (name: string) => {
         appId,
         status: "connected",
       },
-      "Complex app installed successfully"
+      "Complex app installed successfully",
     );
 
     return appId;
@@ -84,7 +84,7 @@ export const installComplexApp = async (name: string) => {
         appName: name,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to install complex app"
+      "Failed to install complex app",
     );
     throw error;
   }
@@ -92,7 +92,7 @@ export const installComplexApp = async (name: string) => {
 
 export const setAppStatus = async (
   appId: string,
-  status: ConnectedAppStatusWithText
+  status: ConnectedAppStatusWithText,
 ) => {
   const actionLogger = logger("setAppStatus");
 
@@ -102,13 +102,13 @@ export const setAppStatus = async (
       status: status.status,
       statusText: status.statusText,
     },
-    "Setting app status"
+    "Setting app status",
   );
 
   try {
     const result = await ServicesContainer.ConnectedAppsService().updateApp(
       appId,
-      status
+      status,
     );
 
     actionLogger.debug(
@@ -117,7 +117,7 @@ export const setAppStatus = async (
         status: status.status,
         statusText: status.statusText,
       },
-      "App status updated successfully"
+      "App status updated successfully",
     );
 
     return result;
@@ -129,7 +129,7 @@ export const setAppStatus = async (
         statusText: status.statusText,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to set app status"
+      "Failed to set app status",
     );
     throw error;
   }

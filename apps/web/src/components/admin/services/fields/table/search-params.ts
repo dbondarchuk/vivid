@@ -11,7 +11,7 @@ import { baseSearchParams } from "@vivid/ui";
 export const searchParams = {
   ...baseSearchParams,
   type: parseAsArrayOf(parseAsStringEnum(fieldTypes.flat())).withDefault(
-    fieldTypes.flat()
+    fieldTypes.flat(),
   ),
   sort: baseSearchParams.sort.withDefault([
     {

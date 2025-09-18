@@ -13,6 +13,21 @@ export const fontName = z.enum([firstFont, ...restFonts], {
   message: "configuration.styling.fonts.unknown",
 });
 
+export const fontsOptions = allFonts.items.reduce(
+  (acc, font) => {
+    acc[font.family] = {
+      variants: font.variants,
+      subsets: font.subsets,
+      category: font.category,
+    };
+    return acc;
+  },
+  {} as Record<
+    string,
+    { variants: string[]; subsets: string[]; category: string }
+  >,
+);
+
 export const colors = [
   "background",
   "foreground",
@@ -68,7 +83,7 @@ export const stylingConfigurationSchema = z.object({
   colors: zUniqueArray(
     colorOverrideSchema.array(),
     (item) => item.type,
-    "configuration.styling.colors.unique"
+    "configuration.styling.colors.unique",
   ).optional(),
   fonts: z
     .object({

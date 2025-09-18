@@ -1,8 +1,8 @@
+import { useI18n } from "@vivid/i18n";
 import { CustomerListModel, WithTotal } from "@vivid/types";
 import { cn, ComboboxAsync, IComboboxItem, Skeleton, toast } from "@vivid/ui";
 import Image from "next/image";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 
 const CustomerShortLabel: React.FC<{
   customer: CustomerListModel;
@@ -106,7 +106,7 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
             ...map,
             [cur._id]: cur,
           }),
-          {} as typeof itemsCache
+          {} as typeof itemsCache,
         ),
       }));
 
@@ -119,7 +119,7 @@ export const CustomerSelector: React.FC<CustomerSelectorProps> = ({
         hasMore: page * limit < res.total,
       };
     },
-    [value, setItemsCache, t]
+    [value, setItemsCache, t],
   );
 
   React.useEffect(() => {

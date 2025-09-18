@@ -1,6 +1,6 @@
 import { ConfigurationProps, NumberInputToolbarMenu } from "@vivid/builder";
-import { Leaves } from "@vivid/utils";
 import { useI18n } from "@vivid/i18n";
+import { Leaves } from "@vivid/types";
 
 const fontSizes = [8, 9, 10, 12, 14, 16, 18, 24, 30, 36, 48];
 

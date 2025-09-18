@@ -47,7 +47,7 @@ export const DeleteSelectedCustomersButton: React.FC<{
   };
 
   const hasCustomersWithAppointments = selected.some(
-    (customer) => customer.appointmentsCount > 0
+    (customer) => customer.appointmentsCount > 0,
   );
 
   return (

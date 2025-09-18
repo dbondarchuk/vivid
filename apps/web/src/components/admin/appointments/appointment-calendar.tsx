@@ -21,7 +21,7 @@ export const AppointmentCalendar: React.FC<
   const [apiEvents, setApiEvents] = React.useState<Event[]>([]);
   const [events, setEvents] = React.useState<Event[]>([]);
   const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
-    {}
+    {},
   );
   const [loading, setLoading] = React.useState(false);
 
@@ -30,13 +30,13 @@ export const AppointmentCalendar: React.FC<
   const appointmentDateTime = appointment.dateTime;
   const appointmentDate = React.useMemo(
     () => DateTime.fromJSDate(appointment.dateTime).toISODate(),
-    [appointmentDateTime]
+    [appointmentDateTime],
   );
 
   const getData = async (start: DateTime, end: DateTime) => {
     setLoading(true);
     const response = await fetch(
-      `/admin/api/calendar?start=${encodeURIComponent(start.toISO()!)}&end=${encodeURIComponent(end.toISO()!)}`
+      `/admin/api/calendar?start=${encodeURIComponent(start.toISO()!)}&end=${encodeURIComponent(end.toISO()!)}`,
     );
 
     const body = (await response.json()) as {
@@ -58,7 +58,7 @@ export const AppointmentCalendar: React.FC<
 
   React.useEffect(() => {
     const apiEventsWithoutCurrent = apiEvents.filter(
-      (a) => (a as Appointment)._id !== appointment._id
+      (a) => (a as Appointment)._id !== appointment._id,
     );
 
     setEvents([...apiEventsWithoutCurrent, appointment]);
@@ -70,7 +70,7 @@ export const AppointmentCalendar: React.FC<
     const date = DateTime.fromJSDate(appointmentDateTime);
     getData(
       date.minus({ days: 1 }).startOf("day"),
-      date.plus({ days: 1 }).endOf("day")
+      date.plus({ days: 1 }).endOf("day"),
     );
   }, [appointmentDate]);
 
@@ -103,7 +103,7 @@ export const AppointmentCalendar: React.FC<
           };
         }
       }),
-    [events, t, appointment._id]
+    [events, t, appointment._id],
   );
 
   return (

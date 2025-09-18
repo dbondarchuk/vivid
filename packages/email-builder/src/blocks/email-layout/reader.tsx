@@ -63,6 +63,7 @@ export const EmailLayoutReader = ({
                     block={child}
                     args={args}
                     document={document}
+                    isEditor={props.isEditor}
                   />
                 ))}
               </td>

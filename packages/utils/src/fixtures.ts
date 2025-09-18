@@ -90,7 +90,7 @@ export const demoAppointment: Appointment = {
       email: "john.smith@example.com",
       phone: "+1 (555)555-5555",
     },
-    proxyHandler
+    proxyHandler,
   ) as AppointmentFields,
   fieldsLabels: new Proxy({}, proxyHandler),
   customerId,

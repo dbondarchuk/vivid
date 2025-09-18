@@ -14,7 +14,6 @@ import {
   InfoTooltip,
   Input,
   SaveButton,
-  Switch,
 } from "@vivid/ui";
 import React from "react";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
@@ -164,7 +163,12 @@ export const SmtpAppSetup: React.FC<ComplexAppSetupProps> = ({ appId }) => {
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

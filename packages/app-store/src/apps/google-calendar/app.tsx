@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
+import { GOOGLE_CALENDAR_APP_NAME } from "./const";
 import { GoogleCalendarLogo } from "./logo";
 import { GoogleAppSetup } from "./setup";
-import { GOOGLE_CALENDAR_APP_NAME } from "./const";
 
 import image1 from "./images/1.png";
 import image2 from "./images/2.png";

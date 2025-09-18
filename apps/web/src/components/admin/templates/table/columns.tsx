@@ -64,14 +64,14 @@ export const columns: ColumnDef<TemplateListModel>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",
     header: tableSortHeader(
       "templates.table.columns.updatedAt",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },

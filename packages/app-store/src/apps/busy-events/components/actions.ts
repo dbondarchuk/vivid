@@ -4,7 +4,7 @@ import { RequestAction } from "../models";
 
 export const getWeeklyEvents = async (
   appId: string,
-  weekIdentifier: WeekIdentifier
+  weekIdentifier: WeekIdentifier,
 ) => {
   return (await processRequest(appId, {
     type: "get-weekly-busy-events",
@@ -15,7 +15,7 @@ export const getWeeklyEvents = async (
 export const setEvents = async (
   appId: string,
   week: WeekIdentifier,
-  events: Schedule
+  events: Schedule,
 ) => {
   await processRequest(appId, {
     type: "set-busy-events",

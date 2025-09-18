@@ -1,5 +1,6 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n, useLocale } from "@vivid/i18n";
 import {
   Checkbox,
   Link,
@@ -9,7 +10,6 @@ import {
 import { DateTime } from "luxon";
 import { FollowUp } from "../models";
 import { CellAction } from "./cell-action";
-import { useI18n, useLocale } from "@vivid/i18n";
 
 export const columns: ColumnDef<FollowUp>[] = [
   {
@@ -68,7 +68,7 @@ export const columns: ColumnDef<FollowUp>[] = [
     header: tableSortHeader(
       "followUps.table.columns.channel",
       "string",
-      "apps"
+      "apps",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -81,7 +81,7 @@ export const columns: ColumnDef<FollowUp>[] = [
     header: tableSortHeader(
       "followUps.table.columns.afterAppointmentCount",
       "number",
-      "apps"
+      "apps",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -90,14 +90,14 @@ export const columns: ColumnDef<FollowUp>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",
     header: tableSortHeader(
       "followUps.table.columns.updatedAt",
       "date",
-      "apps"
+      "apps",
     ),
     sortingFn: tableSortNoopFunction,
   },

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       url: request.url,
       method: request.method,
     },
-    "Processing auth check API request"
+    "Processing auth check API request",
   );
 
   const credentials = (await request.json()) as Credentials;
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       email: credentials.email,
       hasPassword: !!credentials.password,
     },
-    "Checking credentials"
+    "Checking credentials",
   );
 
   const { name, email, language } =
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         email: credentials.email,
         name,
       },
-      "Authentication successful"
+      "Authentication successful",
     );
 
     return NextResponse.json({
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       email: credentials.email,
       emailMatch: email === credentials.email,
     },
-    "Authentication failed"
+    "Authentication failed",
   );
 
   return NextResponse.json(null, { status: 401 });

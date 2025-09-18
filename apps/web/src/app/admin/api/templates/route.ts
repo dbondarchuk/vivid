@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing templates API request"
+    "Processing templates API request",
   );
 
   const loader = createLoader(searchParams);
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       type,
       offset,
     },
-    "Fetching templates with parameters"
+    "Fetching templates with parameters",
   );
 
   const res = await ServicesContainer.TemplatesService().getTemplates({
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
       total: res.total,
       count: res.items.length,
     },
-    "Successfully retrieved templates"
+    "Successfully retrieved templates",
   );
 
   const headers = new Headers();

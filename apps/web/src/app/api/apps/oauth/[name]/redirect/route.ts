@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ name: string }> }
+  { params }: { params: Promise<{ name: string }> },
 ) {
   const logger = getLoggerFactory("API/apps-oauth-redirect")("GET");
   const name = (await params).name;
@@ -15,7 +15,7 @@ export async function GET(
       method: request.method,
       appName: name,
     },
-    "Processing OAuth redirect request"
+    "Processing OAuth redirect request",
   );
 
   const service = ServicesContainer.ConnectedAppsService();
@@ -27,7 +27,7 @@ export async function GET(
       {
         appName: name,
       },
-      "Successfully processed OAuth redirect"
+      "Successfully processed OAuth redirect",
     );
 
     return new NextResponse(`<html><script>window.close()</script></html>`, {
@@ -40,7 +40,7 @@ export async function GET(
         appName: name,
         error: error?.message || error?.toString(),
       },
-      "Error processing OAuth redirect"
+      "Error processing OAuth redirect",
     );
     throw error;
   }

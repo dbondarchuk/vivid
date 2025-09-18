@@ -1,11 +1,11 @@
 import Providers from "@/components/admin/layout/providers";
 import { SonnerToaster, Toaster } from "@vivid/ui";
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import { Inter, Montserrat, Playfair_Display } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +42,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body
         className={`${montserrat.variable} ${playfair.variable} ${inter.className} overflow-hidden `}
-        suppressHydrationWarning={true}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <NextTopLoader showSpinner={false} color="hsl(var(--primary))" />

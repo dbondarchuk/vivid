@@ -37,7 +37,7 @@ export const deleteReminder = async (appId: string, reminderId: string) => {
         reminderId,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete reminder"
+      "Failed to delete reminder",
     );
     throw error;
   }
@@ -47,7 +47,7 @@ export const deleteSelectedReminders = async (appId: string, ids: string[]) => {
   const actionLogger = logger("deleteSelectedReminders");
   actionLogger.debug(
     { appId, ids, count: ids.length },
-    "Deleting selected reminders"
+    "Deleting selected reminders",
   );
   try {
     const result = await processRequest(appId, {
@@ -56,7 +56,7 @@ export const deleteSelectedReminders = async (appId: string, ids: string[]) => {
     } as RequestAction);
     actionLogger.debug(
       { appId, ids, count: ids.length },
-      "Selected reminders deleted"
+      "Selected reminders deleted",
     );
     return result;
   } catch (error) {
@@ -67,7 +67,7 @@ export const deleteSelectedReminders = async (appId: string, ids: string[]) => {
         count: ids.length,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to delete selected reminders"
+      "Failed to delete selected reminders",
     );
     throw error;
   }
@@ -75,7 +75,7 @@ export const deleteSelectedReminders = async (appId: string, ids: string[]) => {
 
 export const getReminders = async (
   appId: string,
-  query: GetRemindersAction["query"]
+  query: GetRemindersAction["query"],
 ) => {
   const actionLogger = logger("getReminders");
   actionLogger.debug({ appId, hasQuery: !!query }, "Getting reminders");
@@ -86,7 +86,7 @@ export const getReminders = async (
     } as RequestAction)) as WithTotal<Reminder>;
     actionLogger.debug(
       { appId, hasQuery: !!query, total: result.total },
-      "Reminders retrieved"
+      "Reminders retrieved",
     );
     return result;
   } catch (error) {
@@ -96,7 +96,7 @@ export const getReminders = async (
         hasQuery: !!query,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to get reminders"
+      "Failed to get reminders",
     );
     throw error;
   }
@@ -112,7 +112,7 @@ export const getReminder = async (appId: string, id: string) => {
     } as RequestAction)) as Reminder;
     actionLogger.debug(
       { appId, id, hasResult: !!result },
-      "Reminder retrieved"
+      "Reminder retrieved",
     );
     return result;
   } catch (error) {
@@ -122,7 +122,7 @@ export const getReminder = async (appId: string, id: string) => {
         id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to get reminder"
+      "Failed to get reminder",
     );
     throw error;
   }
@@ -140,7 +140,7 @@ export const getAppData = async (appId: string) => {
   } catch (error) {
     actionLogger.error(
       { appId, error: error instanceof Error ? error.message : String(error) },
-      "Failed to get app data"
+      "Failed to get app data",
     );
     throw error;
   }
@@ -163,7 +163,7 @@ export const setAppData = async (appId: string, data: RemindersAppData) => {
         hasData: !!data,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to set app data"
+      "Failed to set app data",
     );
     throw error;
   }
@@ -172,7 +172,7 @@ export const setAppData = async (appId: string, data: RemindersAppData) => {
 export const checkUniqueName = async (
   appId: string,
   name: string,
-  id?: string
+  id?: string,
 ) => {
   const actionLogger = logger("checkUniqueName");
   actionLogger.debug({ appId, name, id }, "Checking unique name");
@@ -184,7 +184,7 @@ export const checkUniqueName = async (
     } as RequestAction)) as boolean;
     actionLogger.debug(
       { appId, name, id, isUnique: result },
-      "Unique name check completed"
+      "Unique name check completed",
     );
     return result;
   } catch (error) {
@@ -195,7 +195,7 @@ export const checkUniqueName = async (
         id,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to check unique name"
+      "Failed to check unique name",
     );
     throw error;
   }
@@ -218,7 +218,7 @@ export const create = async (appId: string, reminder: ReminderUpdateModel) => {
         hasReminder: !!reminder,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to create reminder"
+      "Failed to create reminder",
     );
     throw error;
   }
@@ -227,7 +227,7 @@ export const create = async (appId: string, reminder: ReminderUpdateModel) => {
 export const update = async (
   appId: string,
   id: string,
-  update: ReminderUpdateModel
+  update: ReminderUpdateModel,
 ) => {
   const actionLogger = logger("update");
   actionLogger.debug({ appId, id, hasUpdate: !!update }, "Updating reminder");
@@ -247,7 +247,7 @@ export const update = async (
         hasUpdate: !!update,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update reminder"
+      "Failed to update reminder",
     );
     throw error;
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useI18n } from "@vivid/i18n";
 import {
   Button,
   CardContent,
@@ -16,7 +17,6 @@ import {
   toast,
   toastPromise,
 } from "@vivid/ui";
-import { useI18n } from "@vivid/i18n";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -47,7 +47,7 @@ export const InstallForm: React.FC = () => {
         {
           success: t("install.form.success"),
           error: t("install.form.error"),
-        }
+        },
       );
 
       router.push("/admin");

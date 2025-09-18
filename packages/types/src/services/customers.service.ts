@@ -9,14 +9,14 @@ import { Query, WithTotal } from "../database";
 export interface ICustomersService {
   getCustomer(id: string): Promise<Customer | null>;
   getCustomers(
-    query: Query & { priorityIds?: string[] }
+    query: Query & { priorityIds?: string[] },
   ): Promise<WithTotal<CustomerListModel>>;
 
   findCustomer(email: string, phone: string): Promise<Customer | null>;
 
   findCustomerBySearchField(
     search: string,
-    field: CustomerSearchField
+    field: CustomerSearchField,
   ): Promise<Customer | null>;
 
   createCustomer(customer: CustomerUpdateModel): Promise<string>;
@@ -30,6 +30,6 @@ export interface ICustomersService {
   checkUniqueEmailAndPhone(
     emails: string[],
     phones: string[],
-    id?: string
+    id?: string,
   ): Promise<{ email: boolean; phone: boolean }>;
 }

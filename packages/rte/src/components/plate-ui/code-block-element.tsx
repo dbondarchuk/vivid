@@ -40,7 +40,7 @@ export const CodeBlockElement = withRef<typeof PlateElement>(
         )}
       </PlateElement>
     );
-  }
+  },
 );
 
 export function CodeBlockFormatButton({

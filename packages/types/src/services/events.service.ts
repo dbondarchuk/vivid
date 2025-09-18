@@ -23,10 +23,18 @@ export interface IEventsService {
     paymentIntentId?: string;
     by: "customer" | "user";
   }): Promise<Appointment>;
+  updateEvent(
+    id: string,
+    args: {
+      event: AppointmentEvent;
+      confirmed?: boolean;
+      files?: Record<string, File>;
+    },
+  ): Promise<Appointment>;
   getPendingAppointmentsCount(after?: Date): Promise<number>;
   getPendingAppointments(
     limit?: number,
-    after?: Date
+    after?: Date,
   ): Promise<WithTotal<Appointment>>;
   getNextAppointments(date: Date, limit?: number): Promise<Appointment[]>;
   getAppointments(
@@ -34,35 +42,37 @@ export interface IEventsService {
       range?: DateRange;
       endRange?: DateRange;
       status?: AppointmentStatus[];
+      optionId?: string | string[];
       customerId?: string | string[];
       discountId?: string | string[];
-    }
+    },
   ): Promise<WithTotal<Appointment>>;
   getEvents(
     start: Date,
     end: Date,
-    status: AppointmentStatus[]
+    status: AppointmentStatus[],
   ): Promise<Event[]>;
   getAppointment(id: string): Promise<Appointment | null>;
   changeAppointmentStatus(
     id: string,
-    newStatus: AppointmentStatus
+    newStatus: AppointmentStatus,
   ): Promise<void>;
   updateAppointmentNote(id: string, note?: string): Promise<void>;
   addAppointmentFiles(id: string, files: File[]): Promise<AssetEntity[]>;
   rescheduleAppointment(
     id: string,
     newTime: Date,
-    newDuration: number
+    newDuration: number,
+    doNotNotifyCustomer?: boolean,
   ): Promise<void>;
 
   getAppointmentHistory(
     query: Query & {
       appointmentId: string;
       type?: AppointmentHistoryEntry["type"];
-    }
+    },
   ): Promise<WithTotal<AppointmentHistoryEntry>>;
   addAppointmentHistory(
-    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">
+    entry: Omit<AppointmentHistoryEntry, "_id" | "dateTime">,
   ): Promise<string>;
 }

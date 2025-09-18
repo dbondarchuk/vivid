@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
+import { CalendarDays } from "lucide-react";
 import { WEEKLY_SCHEDULE_APP_NAME } from "./const";
 import { WeeklyScheduleAppSetup } from "./setup";
-import { CalendarDays } from "lucide-react";
 
 export const WeeklyScheduleApp: App = {
   name: WEEKLY_SCHEDULE_APP_NAME,

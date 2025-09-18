@@ -11,12 +11,12 @@ import {
 } from "@vivid/ui";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useQueryState } from "nuqs";
+import { useState } from "react";
 
+import { useI18n } from "@vivid/i18n";
 import { deleteFollowUps } from "../actions";
 import { FollowUp } from "../models";
-import { useI18n } from "@vivid/i18n";
 
 interface CellActionProps {
   followUp: FollowUp;

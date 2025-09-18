@@ -28,7 +28,7 @@ export default async function NewAddonPage(props: Props) {
     {
       fromAddonId: from,
     },
-    "Loading new service addon page"
+    "Loading new service addon page",
   );
 
   const breadcrumbItems = [
@@ -57,7 +57,7 @@ export default async function NewAddonPage(props: Props) {
         fromAddonId: from,
         addonName: result.name,
       },
-      "Using source addon as template"
+      "Using source addon as template",
     );
   }
 
@@ -66,11 +66,11 @@ export default async function NewAddonPage(props: Props) {
       fromAddonId: from,
       hasInitialData: !!initialData,
     },
-    "New service addon page loaded"
+    "New service addon page loaded",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />

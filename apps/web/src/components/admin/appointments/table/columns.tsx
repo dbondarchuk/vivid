@@ -1,5 +1,5 @@
 "use client";
-import { CellContext, ColumnDef, RowData } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { useI18n, useLocale } from "@vivid/i18n";
 import { Appointment } from "@vivid/types";
 import {
@@ -231,7 +231,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.status",
       "default",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
     enableResizing: false,
@@ -245,7 +245,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.option",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -255,7 +255,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.customer",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -271,7 +271,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.dateTime",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -287,7 +287,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.requestedAt",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -302,7 +302,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.duration",
       "time",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -330,7 +330,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.discount",
       "time",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -343,7 +343,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: tableSortHeader(
       "appointments.table.columns.price",
       "number",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },

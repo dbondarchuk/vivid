@@ -9,31 +9,31 @@ export function useFieldsTableFilters() {
     "search",
     searchParams.search
       .withOptions({ shallow: false, throttleMs: 1000 })
-      .withDefault("")
+      .withDefault(""),
   );
 
   const [typeFilter, setTypeFilter] = useQueryState(
     "type",
     searchParams.type
       .withOptions({ shallow: false })
-      .withDefault(searchParams.type.defaultValue)
+      .withDefault(searchParams.type.defaultValue),
   );
 
   const [enabledFilter, setEnabledFilter] = useQueryState(
     "enabled",
     searchParams.enabled
       .withOptions({ shallow: false })
-      .withDefault(searchParams.enabled.defaultValue)
+      .withDefault(searchParams.enabled.defaultValue),
   );
 
   const [start, setStartValue] = useQueryState(
     "start",
-    searchParams.start.withOptions({ shallow: false })
+    searchParams.start.withOptions({ shallow: false }),
   );
 
   const [end, setEndValue] = useQueryState(
     "end",
-    searchParams.end.withOptions({ shallow: false })
+    searchParams.end.withOptions({ shallow: false }),
   );
 
   const [page, setPage] = useQueryState("page", searchParams.page);

@@ -3,8 +3,8 @@ import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { Breadcrumbs, Heading } from "@vivid/ui";
-import { ScheduleSettingsForm } from "./form";
 import { Metadata } from "next";
+import { ScheduleSettingsForm } from "./form";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getI18nAsync("admin");
@@ -34,7 +34,7 @@ export default async function Page() {
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />

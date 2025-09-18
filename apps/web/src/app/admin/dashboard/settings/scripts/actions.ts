@@ -6,6 +6,6 @@ import { ScriptsConfiguration } from "@vivid/types";
 export async function updateScriptsConfiguration(data: ScriptsConfiguration) {
   await ServicesContainer.ConfigurationService().setConfiguration(
     "scripts",
-    data
+    data,
   );
 }

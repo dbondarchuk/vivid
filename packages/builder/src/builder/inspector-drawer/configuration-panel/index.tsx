@@ -1,11 +1,12 @@
 import { useI18n } from "@vivid/i18n";
+import { useCallback, useMemo } from "react";
 import {
+  useBlocks,
   useDispatchAction,
-  useEditorStateStore,
   useSelectedBlock,
 } from "../../../documents/editor/context";
-import { TEditorBlock } from "../../../documents/editor/core";
-import BaseSidebarPanel from "./input-panels/helpers/base-sidebar-panel";
+import { BaseBlockProps } from "../../../documents/types";
+import { BaseSidebarPanel } from "./input-panels/helpers/base-sidebar-panel";
 
 function renderMessage(val: string) {
   return (
@@ -15,32 +16,63 @@ function renderMessage(val: string) {
   );
 }
 
+export const ConfigurationPanelTab = "block-configuration";
+
 export const ConfigurationPanel: React.FC = () => {
-  const selectedBlock: TEditorBlock = useSelectedBlock();
+  const selectedBlock = useSelectedBlock();
+
+  const selectedBlockId = selectedBlock?.id;
+  const selectedBlockType = selectedBlock?.type;
+
   const dispatchAction = useDispatchAction();
 
-  const blocks = useEditorStateStore((s) => s.blocks);
+  const blocks = useBlocks();
   const t = useI18n("builder");
 
-  if (!selectedBlock) {
+  const setBlock = useCallback(
+    (data: any) => {
+      if (!selectedBlockId) return;
+      dispatchAction({
+        type: "set-block-data",
+        value: { blockId: selectedBlockId, data },
+      });
+    },
+    [dispatchAction, selectedBlockId],
+  );
+
+  const setBase = useCallback(
+    (base: BaseBlockProps) => {
+      if (!selectedBlockId) return;
+      dispatchAction({
+        type: "set-block-base",
+        value: { blockId: selectedBlockId, base },
+      });
+    },
+    [dispatchAction, selectedBlockId],
+  );
+
+  const Panel = useMemo(
+    () => (selectedBlockType ? blocks[selectedBlockType].Configuration : null),
+    [blocks, selectedBlockType],
+  );
+
+  if (!selectedBlockId || !Panel) {
     return renderMessage(
-      t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect")
+      t("baseBuilder.inspector.configurationPanel.clickOnBlockToInspect"),
     );
   }
 
-  const setBlock = (data: any) => {
-    dispatchAction({
-      type: "set-block-data",
-      value: { blockId: selectedBlock.id, data },
-    });
-  };
-
-  const { data, type, id } = selectedBlock;
-  const Panel = blocks[type].Configuration;
+  const { data, id, base } = selectedBlock;
 
   return (
-    <BaseSidebarPanel title={blocks[selectedBlock.type].displayName}>
-      <Panel data={data} setData={setBlock} key={id} />
+    <BaseSidebarPanel title={t(blocks[selectedBlock.type].displayName)}>
+      <Panel
+        data={data}
+        setData={setBlock}
+        key={id}
+        base={base}
+        onBaseChange={setBase}
+      />
     </BaseSidebarPanel>
   );
 };

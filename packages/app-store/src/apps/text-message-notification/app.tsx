@@ -1,7 +1,7 @@
 import { App } from "@vivid/types";
+import { SendHorizonal } from "lucide-react";
 import { TEXT_MESSAGE_NOTIFICATION_APP_NAME } from "./const";
 import { TextMessageNotificationAppSetup } from "./setup";
-import { SendHorizonal } from "lucide-react";
 
 export const TextMessageNotificationApp: App = {
   name: TEXT_MESSAGE_NOTIFICATION_APP_NAME,

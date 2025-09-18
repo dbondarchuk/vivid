@@ -1,3 +1,4 @@
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps, ConnectedApp } from "@vivid/types";
 import {
   Button,
@@ -10,7 +11,6 @@ import {
   toastPromise,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import {
   addNewApp,
   getAppLoginUrl,
@@ -87,7 +87,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
         {
           success: t("googleCalendar.toast.changes_saved"),
           error: t("googleCalendar.toast.request_error"),
-        }
+        },
       );
     } catch (e: any) {
       console.error(e);
@@ -158,7 +158,7 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
         value: c.id,
         label: c.name,
       })) ?? [],
-    [calendars]
+    [calendars],
   );
 
   return (
@@ -193,13 +193,15 @@ export const GoogleAppSetup: React.FC<AppSetupProps> = ({
               ? t("googleCalendar.form.reconnect")
               : t("googleCalendar.form.connect")}
           </span>
-          <ConnectedAppNameAndLogo
-            app={{ name: GoogleCalendarApp.name }}
-            t={t}
-          />
+          <ConnectedAppNameAndLogo appName={GoogleCalendarApp.name} />
         </Button>
       </div>
-      {app && <ConnectedAppStatusMessage app={app} t={t} />}
+      {app && (
+        <ConnectedAppStatusMessage
+          status={app.status}
+          statusText={app.statusText}
+        />
+      )}
     </>
   );
 };

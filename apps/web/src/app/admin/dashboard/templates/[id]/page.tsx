@@ -30,11 +30,11 @@ export default async function UpdateTemplatePage(props: Props) {
     {
       templateId: id,
     },
-    "Loading template edit page"
+    "Loading template edit page",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4 h-full">
         <div className="flex flex-col gap-4 justify-between">
           <div className="flex items-center justify-between">

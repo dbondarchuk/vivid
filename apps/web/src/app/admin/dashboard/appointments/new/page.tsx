@@ -4,8 +4,8 @@ import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
 import { AppointmentChoice } from "@vivid/types";
 import { Breadcrumbs, Heading } from "@vivid/ui";
-import { AppointmentScheduleForm } from "./form";
 import { Metadata } from "next";
+import { AppointmentScheduleForm } from "../../../../../components/admin/appointments/appointment-form";
 
 type Props = {
   searchParams: Promise<{ from?: string; customer?: string }>;
@@ -28,7 +28,7 @@ export default async function NewAssetsPage(props: Props) {
       from: searchParams.from,
       customer: searchParams.customer,
     },
-    "Loading new appointment page"
+    "Loading new appointment page",
   );
 
   const breadcrumbItems = [
@@ -70,7 +70,7 @@ export default async function NewAssetsPage(props: Props) {
   const customer =
     !from && searchParams.customer
       ? await ServicesContainer.CustomersService().getCustomer(
-          searchParams.customer
+          searchParams.customer,
         )
       : undefined;
 
@@ -84,11 +84,11 @@ export default async function NewAssetsPage(props: Props) {
       fieldsCount: fields.items?.length || 0,
       addonsCount: addons.items?.length || 0,
     },
-    "New appointment page loaded"
+    "New appointment page loaded",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
@@ -101,6 +101,7 @@ export default async function NewAssetsPage(props: Props) {
           options={choices}
           knownFields={fields.items || []}
           from={from}
+          isEdit={false}
           customer={customer}
         />
       </div>

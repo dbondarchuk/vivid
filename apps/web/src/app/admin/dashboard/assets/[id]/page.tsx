@@ -30,7 +30,7 @@ export default async function EditAssetsPage(props: Props) {
     {
       assetId: params.id,
     },
-    "Loading asset edit page"
+    "Loading asset edit page",
   );
 
   const asset = await ServicesContainer.AssetsService().getAsset(params.id);
@@ -46,7 +46,7 @@ export default async function EditAssetsPage(props: Props) {
       filename: asset.filename,
       mimeType: asset.mimeType,
     },
-    "Asset edit page loaded"
+    "Asset edit page loaded",
   );
 
   const breadcrumbItems = [
@@ -56,7 +56,7 @@ export default async function EditAssetsPage(props: Props) {
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />

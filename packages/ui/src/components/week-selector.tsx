@@ -1,9 +1,20 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, FC } from "react";
-import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { useI18n } from "@vivid/i18n";
+import { WeekIdentifier } from "@vivid/types";
+import {
+  eachOfInterval,
+  getDateFromWeekIdentifier,
+  getWeekIdentifier,
+  hasSame,
+} from "@vivid/utils";
+import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { DateTime } from "luxon";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { cn } from "../utils";
 import { Button } from "./button";
 import { Card, CardContent } from "./card";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import {
   Select,
   SelectContent,
@@ -11,17 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { cn } from "../utils";
-import { DateTime } from "luxon";
-import {
-  eachOfInterval,
-  getDateFromWeekIdentifier,
-  getWeekIdentifier,
-  hasSame,
-} from "@vivid/utils";
-import { WeekIdentifier } from "@vivid/types";
-import { useI18n } from "@vivid/i18n";
 
 export type WeekSelectorProps = {
   onWeekChange?: (week: WeekIdentifier) => void;
@@ -42,12 +42,12 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
 }) => {
   const t = useI18n("ui");
   const [week, setWeek] = useState(
-    initialWeek ?? getWeekIdentifier(new Date())
+    initialWeek ?? getWeekIdentifier(new Date()),
   );
 
   const viewDate = useMemo(
     () => DateTime.fromJSDate(getDateFromWeekIdentifier(week)),
-    [week]
+    [week],
   );
 
   const [isOpen, setIsOpen] = useState(false);
@@ -57,14 +57,14 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
       minWeek
         ? DateTime.fromJSDate(getDateFromWeekIdentifier(minWeek)).startOf("day")
         : DateTime.now().startOf("day").minus({ years: 10 }),
-    [minWeek]
+    [minWeek],
   );
   const maxDate = useMemo(
     () =>
       maxWeek
         ? DateTime.fromJSDate(getDateFromWeekIdentifier(maxWeek)).endOf("day")
         : DateTime.now().endOf("day").plus({ years: 10 }),
-    [maxWeek]
+    [maxWeek],
   );
 
   // Memoize the updateDate function to prevent recreating it on every render
@@ -78,7 +78,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
         onWeekChange(newWeek);
       }
     },
-    [onWeekChange, week]
+    [onWeekChange, week],
   );
 
   // Calculate the start and end of the week - memoize to prevent recalculation on every render
@@ -118,12 +118,12 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
       eachOfInterval(
         viewDate.startOf("year"),
         viewDate.endOf("year"),
-        "month"
+        "month",
       ).map((date) => ({
         value: date.month.toString(),
         label: date.toFormat("MMMM"),
       })),
-    [currentYear]
+    [currentYear],
   );
 
   // Generate calendar days
@@ -157,7 +157,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
       if (!minDate && !maxDate) return true;
 
       const start = DateTime.fromJSDate(
-        getDateFromWeekIdentifier(week)
+        getDateFromWeekIdentifier(week),
       ).startOf("week");
       const end = start.endOf("week");
 
@@ -171,7 +171,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
 
       return true;
     },
-    [minDate, maxDate]
+    [minDate, maxDate],
   );
 
   // Check if we can navigate to previous month
@@ -233,7 +233,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
 
       updateWeek(getWeekIdentifier(newDate));
     },
-    [minDate, maxDate, updateWeek, viewDate]
+    [minDate, maxDate, updateWeek, viewDate],
   );
 
   const handleMonthChange = useCallback(
@@ -252,7 +252,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
 
       updateWeek(getWeekIdentifier(newDate));
     },
-    [minDate, maxDate, updateWeek, viewDate]
+    [minDate, maxDate, updateWeek, viewDate],
   );
 
   const selectWeek = useCallback(
@@ -263,7 +263,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
 
       setIsOpen(false);
     },
-    [isWeekSelectable, updateWeek, setIsOpen]
+    [isWeekSelectable, updateWeek, setIsOpen],
   );
 
   // // Trigger onWeekChange on initial render - with proper dependency array
@@ -291,7 +291,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
           disabled={disabled}
           className={cn(
             "w-full max-w-full justify-center text-left font-normal py-2",
-            className
+            className,
           )}
         >
           <Calendar className="mr-2 h-4 w-4" />
@@ -391,7 +391,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                   {weeks.map((week, weekIndex) => {
                     // Check if this week contains the selected date
                     const isSelectedWeek = week.some(
-                      (day) => day >= weekStart && day <= weekEnd
+                      (day) => day >= weekStart && day <= weekEnd,
                     );
 
                     const weekIdentifier = getWeekIdentifier(week[1]);
@@ -405,7 +405,7 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                         className={cn(
                           "grid grid-cols-7 gap-1 relative",
                           isSelectedWeek && "bg-primary/10 rounded-md",
-                          !weekSelectable && "opacity-50"
+                          !weekSelectable && "opacity-50",
                         )}
                       >
                         {/* Clickable overlay for the entire week */}
@@ -432,7 +432,8 @@ export const WeekSelector: FC<WeekSelectorProps> = ({
                                   "text-muted-foreground opacity-50",
                                 hasSame(day, DateTime.now(), "day") &&
                                   "bg-primary text-primary-foreground rounded-md",
-                                isDisabled && "text-muted-foreground opacity-30"
+                                isDisabled &&
+                                  "text-muted-foreground opacity-30",
                               )}
                             >
                               <span className="text-sm">

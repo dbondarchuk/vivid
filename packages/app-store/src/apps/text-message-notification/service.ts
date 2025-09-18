@@ -22,19 +22,19 @@ export class TextMessageNotificationConnectedApp
   implements IConnectedApp, IAppointmentHook, ITextMessageResponder
 {
   protected readonly loggerFactory = getLoggerFactory(
-    "TextMessageNotificationConnectedApp"
+    "TextMessageNotificationConnectedApp",
   );
 
   public constructor(protected readonly props: IConnectedAppProps) {}
 
   public async processRequest(
     appData: ConnectedAppData,
-    data: TextMessageNotificationConfiguration
+    data: TextMessageNotificationConfiguration,
   ): Promise<ConnectedAppStatusWithText> {
     const logger = this.loggerFactory("processRequest");
     logger.debug(
       { appId: appData._id, phone: data?.phone },
-      "Processing text message notification configuration request"
+      "Processing text message notification configuration request",
     );
 
     try {
@@ -44,14 +44,14 @@ export class TextMessageNotificationConnectedApp
 
       logger.debug(
         { appId: appData._id },
-        "Retrieved default apps configuration"
+        "Retrieved default apps configuration",
       );
 
       try {
         const textMessageAppId = defaultApps.textMessage?.appId;
         logger.debug(
           { appId: appData._id, textMessageAppId },
-          "Retrieved text message app ID"
+          "Retrieved text message app ID",
         );
 
         await this.props.services
@@ -60,12 +60,12 @@ export class TextMessageNotificationConnectedApp
 
         logger.debug(
           { appId: appData._id, textMessageAppId },
-          "Text message app is properly configured"
+          "Text message app is properly configured",
         );
       } catch (error: any) {
         logger.error(
           { appId: appData._id, error },
-          "Text message sender default app is not configured"
+          "Text message sender default app is not configured",
         );
 
         return {
@@ -87,14 +87,14 @@ export class TextMessageNotificationConnectedApp
 
       logger.info(
         { appId: appData._id, status: status.status },
-        "Successfully configured text message notification"
+        "Successfully configured text message notification",
       );
 
       return status;
     } catch (error: any) {
       logger.error(
         { appId: appData._id, error },
-        "Error processing text message notification configuration"
+        "Error processing text message notification configuration",
       );
 
       this.props.update({
@@ -110,12 +110,12 @@ export class TextMessageNotificationConnectedApp
   public async onAppointmentCreated(
     appData: ConnectedAppData,
     appointment: Appointment,
-    confirmed: boolean
+    confirmed: boolean,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentCreated");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, confirmed },
-      "Appointment created, sending owner text message notification"
+      "Appointment created, sending owner text message notification",
     );
 
     try {
@@ -147,14 +147,14 @@ export class TextMessageNotificationConnectedApp
         TextMessageNotificationMessages[config.general.language]
           .newAppointmentRequested ??
           TextMessageNotificationMessages["en"].newAppointmentRequested,
-        args
+        args,
       );
 
       const phone = data?.phone || config.general.phone;
       if (!phone) {
         logger.warn(
           { appId: appData._id, appointmentId: appointment._id },
-          "Phone field not found for owner notification"
+          "Phone field not found for owner notification",
         );
 
         return;
@@ -167,7 +167,7 @@ export class TextMessageNotificationConnectedApp
           phone: phone.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
           messageLength: body.length,
         },
-        "Sending appointment created notification"
+        "Sending appointment created notification",
       );
 
       this.props.services.NotificationService().sendTextMessage({
@@ -184,12 +184,12 @@ export class TextMessageNotificationConnectedApp
 
       logger.info(
         { appId: appData._id, appointmentId: appointment._id, confirmed },
-        "Successfully sent owner text message notification for new appointment"
+        "Successfully sent owner text message notification for new appointment",
       );
     } catch (error: any) {
       logger.error(
         { appId: appData._id, appointmentId: appointment._id, error },
-        "Error sending owner text message notification for new appointment"
+        "Error sending owner text message notification for new appointment",
       );
 
       this.props.update({
@@ -205,12 +205,12 @@ export class TextMessageNotificationConnectedApp
   public async onAppointmentStatusChanged(
     appData: ConnectedAppData,
     appointment: Appointment,
-    newStatus: AppointmentStatus
+    newStatus: AppointmentStatus,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentStatusChanged");
     logger.debug(
       { appId: appData._id, appointmentId: appointment._id, newStatus },
-      "Appointment status changed (no action required)"
+      "Appointment status changed (no action required)",
     );
     // do nothing
   }
@@ -219,7 +219,7 @@ export class TextMessageNotificationConnectedApp
     appData: ConnectedAppData,
     appointment: Appointment,
     newTime: Date,
-    newDuration: number
+    newDuration: number,
   ): Promise<void> {
     const logger = this.loggerFactory("onAppointmentRescheduled");
     logger.debug(
@@ -229,14 +229,14 @@ export class TextMessageNotificationConnectedApp
         newTime: newTime.toISOString(),
         newDuration,
       },
-      "Appointment rescheduled (no action required)"
+      "Appointment rescheduled (no action required)",
     );
     // do nothing
   }
 
   public async respond(
     appData: ConnectedAppData,
-    reply: TextMessageReply
+    reply: TextMessageReply,
   ): Promise<RespondResult> {
     const logger = this.loggerFactory("respond");
     logger.debug(
@@ -246,14 +246,14 @@ export class TextMessageNotificationConnectedApp
         from: reply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
         message: reply.message,
       },
-      "Processing text message reply"
+      "Processing text message reply",
     );
 
     try {
       if (!reply?.data?.appointmentId) {
         logger.error(
           { appId: appData._id, replyData: reply?.data },
-          "Appointment ID missing in reply"
+          "Appointment ID missing in reply",
         );
         throw new Error(`Appointment Id is missing`);
       }
@@ -273,7 +273,7 @@ export class TextMessageNotificationConnectedApp
             appointmentId: reply.data.appointmentId,
             from: reply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
           },
-          "Unknown appointment in reply"
+          "Unknown appointment in reply",
         );
 
         const body = template(
@@ -282,7 +282,7 @@ export class TextMessageNotificationConnectedApp
             TextMessageNotificationMessages["en"].unknownAppointment,
           {
             config: config.general,
-          }
+          },
         );
 
         await this.props.services.NotificationService().sendTextMessage({
@@ -309,7 +309,7 @@ export class TextMessageNotificationConnectedApp
           replyMessage,
           currentStatus: appointment.status,
         },
-        "Processing reply message"
+        "Processing reply message",
       );
 
       if (
@@ -318,7 +318,7 @@ export class TextMessageNotificationConnectedApp
       ) {
         logger.info(
           { appId: appData._id, appointmentId: appointment._id, replyMessage },
-          "Processing confirmation reply"
+          "Processing confirmation reply",
         );
 
         return await this.processReply(appointment, "confirmed", reply, config);
@@ -328,7 +328,7 @@ export class TextMessageNotificationConnectedApp
       ) {
         logger.info(
           { appId: appData._id, appointmentId: appointment._id, replyMessage },
-          "Processing decline reply"
+          "Processing decline reply",
         );
 
         return await this.processReply(appointment, "declined", reply, config);
@@ -340,7 +340,7 @@ export class TextMessageNotificationConnectedApp
             replyMessage,
             currentStatus: appointment.status,
           },
-          "Unknown reply message"
+          "Unknown reply message",
         );
 
         const args = getArguments({
@@ -353,7 +353,7 @@ export class TextMessageNotificationConnectedApp
           TextMessageNotificationMessages[config.general.language]
             .unknownAppointment ??
             TextMessageNotificationMessages["en"].unknownOption,
-          args
+          args,
         );
 
         await this.props.services.NotificationService().sendTextMessage({
@@ -377,7 +377,7 @@ export class TextMessageNotificationConnectedApp
           appointmentId: reply?.data?.appointmentId,
           error,
         },
-        "Error processing text message reply"
+        "Error processing text message reply",
       );
 
       this.props.update({
@@ -398,7 +398,7 @@ export class TextMessageNotificationConnectedApp
       general: GeneralConfiguration;
       booking: BookingConfiguration;
       social: SocialConfiguration;
-    }
+    },
   ): Promise<RespondResult> {
     const logger = this.loggerFactory("processReply");
     logger.info(
@@ -408,7 +408,7 @@ export class TextMessageNotificationConnectedApp
         oldStatus: appointment.status,
         newStatus,
       },
-      "Processing appointment status change"
+      "Processing appointment status change",
     );
 
     try {
@@ -433,7 +433,7 @@ export class TextMessageNotificationConnectedApp
               ? "appointmentConfirmed"
               : "appointmentDeclined"
           ],
-        args
+        args,
       );
 
       logger.debug(
@@ -444,7 +444,7 @@ export class TextMessageNotificationConnectedApp
           phone: reply.from?.replace(/(\d{3})\d{3}(\d{4})/, "$1***$2"),
           messageLength: responseBody.length,
         },
-        "Sending status change confirmation"
+        "Sending status change confirmation",
       );
 
       await this.props.services.NotificationService().sendTextMessage({
@@ -458,7 +458,7 @@ export class TextMessageNotificationConnectedApp
 
       logger.info(
         { appId: reply.data.appId, appointmentId: appointment._id, newStatus },
-        "Successfully processed appointment status change"
+        "Successfully processed appointment status change",
       );
 
       return {
@@ -473,7 +473,7 @@ export class TextMessageNotificationConnectedApp
           newStatus,
           error,
         },
-        "Error processing appointment status change"
+        "Error processing appointment status change",
       );
 
       throw error;

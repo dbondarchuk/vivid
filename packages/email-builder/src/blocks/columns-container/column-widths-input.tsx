@@ -35,7 +35,7 @@ export const ColumnWidthsInput = ({
 
   const setIndexValue = (
     index: 0 | 1 | 2,
-    value: number | null | undefined
+    value: number | null | undefined,
   ) => {
     const nValue: FixedWidths = [...currentValue];
     nValue[index] = value;

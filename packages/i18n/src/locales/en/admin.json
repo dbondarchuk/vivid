@@ -54,7 +54,8 @@
         "rescheduled": "Rescheduled",
         "created": "Created",
         "paymentAdded": "Payment added",
-        "paymentRefunded": "Payment refunded"
+        "paymentRefunded": "Payment refunded",
+        "updated": "Updated"
       },
       "filters": "Filters",
       "loading": "Loading"
@@ -62,10 +63,17 @@
     "buttons": {
       "delete": "Delete",
       "cancel": "Cancel",
-      "close": "Close"
+      "close": "Close",
+      "addNew": "Add new"
     },
     "optional": "Optional",
-    "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}"
+    "timeDuration": "{hours, plural, =0 {{minutes} min} other {# hr, {minutes} min}}",
+    "navigationGuard": {
+      "title": "Are you sure you want to leave this page?",
+      "description": "You have unsaved changes. Are you sure you want to leave this page?",
+      "cancel": "Cancel",
+      "leave": "Leave"
+    }
   },
   "navigation": {
     "overview": "Overview",
@@ -81,6 +89,8 @@
     "customers": "Customers",
     "website": "Website",
     "pages": "Pages",
+    "pageHeaders": "Headers",
+    "pageFooters": "Footers",
     "assets": "Assets",
     "appearance": "Appearance",
     "styling": "Styling",
@@ -109,6 +119,12 @@
     "textBelt": "TextBelt SMS",
     "weeklySchedule": "Weekly schedule",
     "viewWebsite": "View website"
+  },
+  "themeToggle": {
+    "toggleTheme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   },
   "appointments": {
     "title": "Appointments",
@@ -188,6 +204,8 @@
       "by": "by",
       "dateTime": "Date & Time",
       "duration": "Duration",
+      "doNotNotifyCustomer": "Do not notify customer",
+      "doNotNotifyCustomerDescription": "If checked, the customer will not be notified about the rescheduled appointment",
       "confirmOverlap": "Confirm overlap",
       "confirmOverlapDescription": "I understand that rescheduling this appointment will create an overlap in my schedule",
       "close": "Close",
@@ -212,6 +230,10 @@
       "title": "New appointment",
       "description": "Schedule a new appointment on behalf of the customer"
     },
+    "edit": {
+      "title": "Edit appointment",
+      "description": "Edit an existing appointment"
+    },
     "view": {
       "noteUpdated": "Appointment note was updated.",
       "requestError": "There was a problem with your request.",
@@ -219,6 +241,7 @@
       "sendMessage": "Send message",
       "scheduleAgain": "Schedule again",
       "reschedule": "Reschedule",
+      "edit": "Edit",
       "decline": "Decline",
       "confirm": "Confirm",
       "dateTime": "Date & Time",
@@ -271,7 +294,9 @@
       "oldDateTime": "Old date and time: {oldDateTime}",
       "newDateTime": "New date and time: {newDateTime}",
       "refundedAmount": "Refunded ${amount}",
-      "totalRefunded": "Total refunded ${amount}"
+      "totalRefunded": "Total refunded ${amount}",
+      "oldOption": "Old option: {oldOption}",
+      "newOption": "New option: {newOption}"
     },
     "form": {
       "dateTimeRequired": "Date and time are required",
@@ -305,7 +330,11 @@
       "confirmAppointmentDescription": "Mark appointment as confirmed",
       "confirmOverlap": "Confirm overlap",
       "confirmOverlapDescription": "I understand that scheduling this appointment will create an overlap in my schedule",
-      "scheduleAppointment": "Schedule appointment"
+      "scheduleAppointment": "Schedule appointment",
+      "doNotNotifyCustomer": "Do not notify customer",
+      "doNotNotifyCustomerDescription": "If checked, the customer will not be notified about the appointment change",
+      "updateAppointment": "Update appointment",
+      "updatedSuccess": "Appointment was successfully updated"
     },
     "actionButton": {
       "changesSaved": "Your changes were saved.",
@@ -470,6 +499,12 @@
       "changePhoto": "Change photo",
       "customerPhotoAlt": "Customer photo"
     },
+    "uploadFiles": {
+      "title": "Upload files",
+      "description": "Upload files for your customer",
+      "descriptionPlaceholder": "File description",
+      "upload": "Upload"
+    },
     "table": {
       "columns": {
         "name": "Name",
@@ -548,7 +583,7 @@
       "title": "Title",
       "titlePlaceholder": "Page title",
       "doNotCombineTitle": "Do not combine title",
-      "doNotCombineTitleTooltip": "Should the page title be combined with website title for SEO like 'Page Title - Website Name'",
+      "doNotCombineTitleTooltip": "Should the page title be combined with website title for SEO like 'Page Title | Website Name'",
       "description": "Description",
       "descriptionPlaceholder": "Page description",
       "descriptionTooltip": "It is also used by page list component (a.k.a blog list) for showing preview",
@@ -561,7 +596,10 @@
       "fullWidthPage": "Full width page",
       "fullWidthPageTooltip": "If enabled, page will not be wrapped in Container element",
       "language": "Language",
-      "defaultLanguage": "Default"
+      "defaultLanguage": "Default",
+      "settingsTabLabel": "Settings",
+      "header": "Header",
+      "footer": "Footer"
     },
     "table": {
       "columns": {
@@ -608,6 +646,111 @@
       "pageDeleted": "Page '{title}' was deleted.",
       "relativeUrlCopied": "Page relative url '{url}' was copied to clipboard.",
       "absoluteUrlCopied": "Page absolute url '{url}' was copied to clipboard."
+    },
+    "headers": {
+      "title": "Page headers",
+      "new": "New page header",
+      "edit": "Edit page header",
+      "addNew": "Add New",
+      "addNewPageHeader": "Add new page header",
+      "managePageHeaders": "Manage page headers",
+      "managePageHeader": "Manage page header",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Page header name",
+        "nameTooltip": "Unique page header name",
+        "menuTooltip": "Menu items for the page header",
+        "showLogoTooltip": "Whether to show the logo in the page header",
+        "sticky": "Sticky",
+        "stickyTooltip": "Whether to make the page header sticky",
+        "showLogo": "Show logo",
+        "showLogoDescription": "Should be logo showed in header",
+        "stickyHeader": "Sticky header",
+        "stickyHeaderDescription": "Should header move with the page scroll",
+        "headerShadow": "Header shadow",
+        "selectShadowType": "Select shadow type",
+        "menu": "Menu"
+      },
+      "shadowType": {
+        "none": "None",
+        "static": "Static",
+        "on-scroll": "On scroll"
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "usedCount": "Used in pages",
+          "updatedAt": "Updated at"
+        },
+        "actions": {
+          "selectAll": "Select all",
+          "selectRow": "Select row",
+          "openMenu": "Open menu",
+          "actions": "Actions",
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "delete": {
+          "title": "Are you absolutely sure?",
+          "description": "This action cannot be undone. This will delete selected page headers",
+          "confirm": "Delete selected",
+          "cancel": "Cancel",
+          "selectedCount": "Delete selected {count, plural, =1 {page header} other {# page headers}}",
+          "success": "Selected page headers have been deleted",
+          "error": "There was a problem with your request."
+        }
+      },
+      "toasts": {
+        "pageHeaderDeleted": "Page header '{name}' was deleted.",
+        "changesSaved": "Your changes were saved."
+      },
+      "usedOnPages": "Used on {count, plural, =1 {page} other {# pages}}"
+    },
+    "footers": {
+      "title": "Page footers",
+      "new": "New page footer",
+      "edit": "Edit page footer",
+      "addNew": "Add New",
+      "addNewPageFooter": "Add new page footer",
+      "managePageFooters": "Manage page footers",
+      "managePageFooter": "Manage page footer",
+      "usedOnPages": "Used on {count, plural, =1 {page} other {# pages}}",
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "Page footer name",
+        "nameTooltip": "Unique page footer name",
+        "content": "Content"
+      },
+      "toasts": {
+        "pageFooterDeleted": "Page footer '{name}' was deleted.",
+        "changesSaved": "Your changes were saved.",
+        "requestError": "There was a problem with your request."
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "usedCount": "Used in pages",
+          "updatedAt": "Updated at",
+          "actions": "Actions"
+        },
+        "actions": {
+          "selectAll": "Select all",
+          "selectRow": "Select row",
+          "openMenu": "Open menu",
+          "actions": "Actions",
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "delete": {
+          "title": "Are you absolutely sure?",
+          "description": "This action cannot be undone. This will delete selected page footers",
+          "confirm": "Delete selected",
+          "cancel": "Cancel",
+          "selectedCount": "Delete selected {count, plural, =1 {page footer} other {# page footers}}",
+          "success": "Selected page footers have been deleted",
+          "error": "There was a problem with your request."
+        }
+      }
     }
   },
   "services": {
@@ -662,6 +805,16 @@
         "selectOption": "Select option",
         "fields": "Fields",
         "addons": "Add-ons",
+        "askForConfirmationIfHasCloseAppointments": {
+          "title": "Same service appointments around same date and time",
+          "enabled": "Ask to confirm",
+          "enabledTooltip": "Whether to ask customer to confirm if they have appointments of same service in future around selected date and time",
+          "days": "Days before or after",
+          "daysSuffix": "days",
+          "daysTooltip": "Amount of days to check for closest appointment before or after the selected date and time to ask for confirmation",
+          "message": "Custom confirmation message",
+          "messageTooltip": "Message to show to the user.<br></br>You can use following placeholders:<br></br>- '{{days'}} to show the amount of days,<br></br>- '{{name'}} to show customers name,<br></br>- '{{serviceName'}} to show the service name,<br></br>- '{{date'}} to show the date of the closest appointment"
+        },
         "validation": {
           "nameUnique": "Option name must be unique"
         },
@@ -1030,24 +1183,80 @@
         "toasts": {
           "changesSaved": "Your changes were saved.",
           "requestError": "There was a problem with your request."
+        },
+        "fonts": {
+          "seeOnGoogleFonts": "See on Google Fonts",
+          "variants": {
+            "label": "Variants: {variants}",
+            "regular": "Regular",
+            "italic": "Italic",
+            "bold": "Bold",
+            "medium": "Medium",
+            "semibold": "Semi-bold",
+            "extrabold": "Extra-bold",
+            "100": "100",
+            "200": "200",
+            "300": "300",
+            "400": "400",
+            "500": "500",
+            "600": "600",
+            "700": "700",
+            "800": "800",
+            "900": "900",
+            "100italic": "100 Italic",
+            "200italic": "200 Italic",
+            "300italic": "300 Italic",
+            "400italic": "400 Italic",
+            "500italic": "500 Italic",
+            "600italic": "600 Italic",
+            "700italic": "700 Italic",
+            "800italic": "800 Italic",
+            "900italic": "900 Italic"
+          },
+          "subsets": {
+            "label": "Subsets: {subsets}",
+            "latin": "Latin",
+            "latin-ext": "Latin Extended",
+            "vietnamese": "Vietnamese",
+            "cyrillic": "Cyrillic",
+            "cyrillic-ext": "Cyrillic Extended",
+            "greek": "Greek",
+            "greek-ext": "Greek Extended",
+            "hebrew": "Hebrew",
+            "math": "Math",
+            "symbols": "Symbols"
+          },
+          "category": {
+            "label": "Category: {category}",
+            "sans-serif": "Sans-serif",
+            "serif": "Serif",
+            "monospace": "Monospace",
+            "display": "Display",
+            "handwriting": "Handwriting",
+            "script": "Script",
+            "fantasy": "Fantasy"
+          }
         }
-      }
-    },
-    "header": {
-      "title": "Header menu",
-      "description": "Adjust links and style of the header",
-      "form": {
-        "showLogo": "Show logo",
-        "showLogoDescription": "Should be logo showed in header",
-        "stickyHeader": "Sticky header",
-        "stickyHeaderDescription": "Should header move with the page scroll",
-        "headerShadow": "Header shadow",
-        "selectShadowType": "Select shadow type",
-        "menu": "Menu",
-        "toasts": {
-          "changesSaved": "Your changes were saved.",
-          "requestError": "There was a problem with your request."
-        }
+      },
+      "colors": {
+        "default": "Default",
+        "custom": "Custom Color",
+        "background": "Background",
+        "foreground": "Text",
+        "card": "Card",
+        "card-foreground": "Card Text",
+        "popover": "Popover",
+        "popover-foreground": "Popover Text",
+        "primary": "Primary",
+        "primary-foreground": "Primary Text",
+        "secondary": "Secondary",
+        "secondary-foreground": "Secondary Text",
+        "muted": "Muted",
+        "muted-foreground": "Muted Text",
+        "accent": "Accent",
+        "accent-foreground": "Accent Text",
+        "destructive": "Destructive",
+        "destructive-foreground": "Destructive Text"
       }
     },
     "footer": {
@@ -1456,6 +1665,57 @@
     "quoteAuthor": "Olesia Bondarchuk"
   },
   "menuItem": {
+    "labels": {
+      "icon": "Icon",
+      "link": "Link",
+      "button": "Button",
+      "submenu": "Submenu"
+    },
+    "linkVariants": {
+      "default": "Default",
+      "underline": "Underline",
+      "standalone": "Standalone",
+      "dashed": "Dashed"
+    },
+    "buttonVariants": {
+      "default": "Default",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "link": "Link",
+      "link-underline": "Link underline",
+      "link-dashed": "Link dashed"
+    },
+    "sizes": {
+      "none": "None",
+      "icon": "Icon",
+      "xs": "Extra small",
+      "default": "Default",
+      "sm": "Small",
+      "md": "Medium",
+      "lg": "Large",
+      "xl": "Extra large"
+    },
+    "weights": {
+      "default": "Default",
+      "light": "Light",
+      "thin": "Thin",
+      "normal": "Normal",
+      "medium": "Medium",
+      "semibold": "Semi-bold",
+      "bold": "Bold",
+      "extrabold": "Extra-bold",
+      "black": "Black",
+      "extralight": "Extra-light"
+    },
+    "fonts": {
+      "default": "Default",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "tertiary": "Tertiary"
+    },
     "fields": {
       "url": "Url",
       "urlPlaceholder": "Link",

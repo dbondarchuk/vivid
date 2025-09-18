@@ -71,7 +71,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
                 {t("settings.appointments.form.cards.calendarSource.app")}{" "}
                 <InfoTooltip>
                   {t(
-                    "settings.appointments.form.cards.calendarSource.appTooltip"
+                    "settings.appointments.form.cards.calendarSource.appTooltip",
                   )}
                 </InfoTooltip>
               </FormLabel>
@@ -105,7 +105,7 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
               size="sm"
               type="button"
               title={t(
-                "settings.appointments.form.cards.calendarSource.remove"
+                "settings.appointments.form.cards.calendarSource.remove",
               )}
             >
               <Trash size={20} />
@@ -115,13 +115,13 @@ export const CalendarSourceCard: React.FC<CalendarSourceCardProps> = ({
             <AlertDialogHeader>
               <AlertDialogTitle>
                 {t(
-                  "settings.appointments.form.cards.calendarSource.deleteConfirmTitle"
+                  "settings.appointments.form.cards.calendarSource.deleteConfirmTitle",
                 )}
               </AlertDialogTitle>
               <AlertDialogDescription>
                 <p>
                   {t(
-                    "settings.appointments.form.cards.calendarSource.deleteConfirmDescription"
+                    "settings.appointments.form.cards.calendarSource.deleteConfirmDescription",
                   )}
                 </p>
               </AlertDialogDescription>

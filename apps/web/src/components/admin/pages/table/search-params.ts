@@ -3,6 +3,7 @@ import {
   createSerializer,
   parseAsArrayOf,
   parseAsBoolean,
+  parseAsString,
 } from "nuqs/server";
 
 import { baseSearchParams } from "@vivid/ui";
@@ -10,6 +11,7 @@ import { baseSearchParams } from "@vivid/ui";
 export const searchParams = {
   ...baseSearchParams,
   published: parseAsArrayOf(parseAsBoolean).withDefault([true, false]),
+  tags: parseAsArrayOf(parseAsString),
   sort: baseSearchParams.sort.withDefault([
     {
       id: "updatedAt",

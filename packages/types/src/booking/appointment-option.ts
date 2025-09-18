@@ -2,6 +2,7 @@ import { z } from "zod";
 import { WithDatabaseId } from "../database";
 import { asOptinalNumberField, zUniqueArray } from "../utils";
 import { Prettify } from "../utils/helpers";
+import { FieldSchema } from "./field";
 
 export const isPaymentRequiredForOptionTypes = [
   "inherit",
@@ -10,7 +11,7 @@ export const isPaymentRequiredForOptionTypes = [
 ] as const;
 
 const isPaymentRequiredForOptionSchema = z.enum(
-  isPaymentRequiredForOptionTypes
+  isPaymentRequiredForOptionTypes,
 );
 
 export const appointmentOptionSchema = z
@@ -22,38 +23,88 @@ export const appointmentOptionSchema = z
       z.coerce
         .number()
         .int("appointments.option.duration.positive")
-        .min(1, "appointments.option.duration.positive")
+        .min(1, "appointments.option.duration.positive"),
     ),
 
     price: asOptinalNumberField(
-      z.coerce.number().min(1, "appointments.option.price.min")
+      z.coerce.number().min(1, "appointments.option.price.min"),
     ),
     addons: zUniqueArray(
       z.array(
         z.object({
           id: z.string().min(1, "appointments.option.addons.id.required"),
-        })
+        }),
       ),
       (addon) => addon.id,
-      "appointments.option.addons.id.unique"
+      "appointments.option.addons.id.unique",
     ).optional(),
     fields: zUniqueArray(
       z.array(
         z.object({
           id: z.string().min(1, "appointments.option.fields.id.required"),
           required: z.coerce.boolean().optional(),
-        })
+        }),
       ),
       (field) => field.id,
-      "appointments.option.fields.id.unique"
+      "appointments.option.fields.id.unique",
     ).optional(),
+    askForConfirmationIfHasCloseAppointments: z
+      .object({
+        enabled: z.literal(true, {
+          message:
+            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+          required_error:
+            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+          invalid_type_error:
+            "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+        }),
+        message: z
+          .string()
+          .min(
+            1,
+            "appointments.option.askForConfirmationIfHasCloseAppointments.message.required",
+          ),
+        days: z.coerce
+          .number({
+            required_error:
+              "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
+            message:
+              "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
+          })
+          .min(
+            1,
+            "appointments.option.askForConfirmationIfHasCloseAppointments.days.min",
+          )
+          .max(
+            30,
+            "appointments.option.askForConfirmationIfHasCloseAppointments.days.max",
+          ),
+      })
+      .or(
+        z.object({
+          enabled: z
+            .literal(false, {
+              errorMap: () => ({
+                message:
+                  "appointments.option.askForConfirmationIfHasCloseAppointments.enabled.required",
+              }),
+            })
+            .default(false)
+            .optional()
+            .nullable(),
+        }),
+      )
+      .optional(),
   })
   .and(
     z
       .object({
-        requireDeposit: isPaymentRequiredForOptionSchema.exclude(["always"], {
-          message: "appointments.option.requireDeposit.required",
-        }),
+        requireDeposit: isPaymentRequiredForOptionSchema
+          .exclude(["always"], {
+            message: "appointments.option.requireDeposit.required",
+          })
+          .optional()
+          .nullable(),
       })
       .or(
         z.object({
@@ -67,8 +118,8 @@ export const appointmentOptionSchema = z
             .int("appointments.option.depositPercentage.required")
             .min(10, "appointments.option.depositPercentage.required")
             .max(100, "appointments.option.depositPercentage.required"),
-        })
-      )
+        }),
+      ),
   );
 
 export type AppointmentOptionUpdateModel = z.infer<
@@ -83,7 +134,7 @@ export type AppointmentOption = Prettify<
 
 export const getAppointmentOptionSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return appointmentOptionSchema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueNameCheckFn(args.name);
@@ -105,7 +156,7 @@ export const appointmentAddonSchema = z.object({
     z.coerce
       .number()
       .int("addons.duration.positive")
-      .min(1, "addons.duration.positive")
+      .min(1, "addons.duration.positive"),
   ),
   price: asOptinalNumberField(z.coerce.number().min(1, "addons.price.min")),
   fields: zUniqueArray(
@@ -113,16 +164,16 @@ export const appointmentAddonSchema = z.object({
       z.object({
         id: z.string().min(1, "appointments.option.fields.id.required"),
         required: z.coerce.boolean().optional(),
-      })
+      }),
     ),
     (field) => field.id,
-    "appointments.option.fields.id.unique"
+    "appointments.option.fields.id.unique",
   ).optional(),
 });
 
 export const getAppointmentAddonSchemaWithUniqueCheck = (
   uniqueNameCheckFn: (name: string) => Promise<boolean>,
-  message: string
+  message: string,
 ) => {
   return appointmentAddonSchema.superRefine(async (args, ctx) => {
     const isUnique = await uniqueNameCheckFn(args.name);
@@ -156,3 +207,10 @@ export type AppointmentChoice = Prettify<
     addons: AppointmentAddon[];
   }
 >;
+
+export type GetAppointmentOptionsResponse = {
+  options: AppointmentChoice[];
+  fieldsSchema: Record<string, FieldSchema>;
+  timeZone: string;
+  showPromoCode: boolean;
+};

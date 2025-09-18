@@ -43,11 +43,11 @@ export default async function Page({ searchParams }: Params) {
       activeTab,
       key,
     },
-    "Loading dashboard page"
+    "Loading dashboard page",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Breadcrumbs items={breadcrumbItems} />
       <div className="space-y-2 flex-1">
         <div className="flex items-center justify-between space-y-2">
@@ -56,7 +56,7 @@ export default async function Page({ searchParams }: Params) {
               {
                 (
                   await ServicesContainer.ConfigurationService().getConfiguration(
-                    "general"
+                    "general",
                   )
                 ).name
               }

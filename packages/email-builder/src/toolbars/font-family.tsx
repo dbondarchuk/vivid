@@ -2,11 +2,10 @@ import {
   ToolbarDropdownMenu,
   ToolbarDropdownPropsValues,
 } from "@vivid/builder";
-import { Bold } from "lucide-react";
-import { FontFamily, FontWeight } from "../style-inputs/helpers/zod";
-import { Leaves } from "@vivid/utils";
-import { FONT_FAMILIES } from "../style-inputs/helpers/font-family";
 import { useI18n } from "@vivid/i18n";
+import { Leaves } from "@vivid/types";
+import { FONT_FAMILIES } from "../style-inputs/helpers/font-family";
+import { FontFamily } from "../style-inputs/helpers/zod";
 
 export const fontFamilyItems = [
   {
@@ -23,11 +22,11 @@ export const fontFamilyItems = [
 type PropsType = { style?: { fontFamily?: FontFamily | null } | null };
 
 export const FontFamilyDropdownMenu = <T extends PropsType>(
-  props: Omit<ToolbarDropdownPropsValues<T>, "defaultValue">
+  props: Omit<ToolbarDropdownPropsValues<T>, "defaultValue">,
 ) => {
   const t = useI18n("builder");
   const selectedFont = FONT_FAMILIES.find(
-    (font) => font.key === props.data?.style?.fontFamily
+    (font) => font.key === props.data?.style?.fontFamily,
   );
 
   return (

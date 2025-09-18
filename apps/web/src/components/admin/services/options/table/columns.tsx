@@ -1,6 +1,6 @@
 "use client";
-import { useI18n, useLocale } from "@vivid/i18n";
 import { ColumnDef } from "@tanstack/react-table";
+import { useI18n, useLocale } from "@vivid/i18n";
 import { AppointmentOption } from "@vivid/types";
 import {
   Checkbox,
@@ -50,7 +50,7 @@ export const columns: ColumnDef<AppointmentOption>[] = [
     header: tableSortHeader(
       "services.options.table.columns.name",
       "string",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },
@@ -59,14 +59,14 @@ export const columns: ColumnDef<AppointmentOption>[] = [
       const locale = useLocale();
       return DateTime.fromJSDate(row.original.updatedAt).toLocaleString(
         DateTime.DATETIME_MED,
-        { locale }
+        { locale },
       );
     },
     id: "updatedAt",
     header: tableSortHeader(
       "services.options.table.columns.updatedAt",
       "date",
-      "admin"
+      "admin",
     ),
     sortingFn: tableSortNoopFunction,
   },

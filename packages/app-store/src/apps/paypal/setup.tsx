@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
 import { AppSetupProps } from "@vivid/types";
 import {
   Button,
@@ -20,7 +21,6 @@ import {
   Spinner,
 } from "@vivid/ui";
 import React from "react";
-import { useI18n } from "@vivid/i18n";
 import { useConnectedAppSetup } from "../../hooks/use-connected-app-setup";
 import { PaypalApp } from "./app";
 import {
@@ -63,6 +63,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                   <FormControl>
                     <Input
                       placeholder={t("paypal.form.clientId.placeholder")}
+                      autoComplete="off"
                       {...field}
                       type="password"
                     />
@@ -80,6 +81,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                   <FormControl>
                     <Input
                       placeholder={t("paypal.form.secretKey.placeholder")}
+                      autoComplete="off"
                       {...field}
                       type="password"
                     />
@@ -181,7 +183,7 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
                         {paypalButtonLayout.map((layout) => (
                           <SelectItem key={layout} value={layout}>
                             {t(
-                              `paypal.form.buttonStyle.layout.values.${layout}`
+                              `paypal.form.buttonStyle.layout.values.${layout}`,
                             )}
                           </SelectItem>
                         ))}
@@ -235,12 +237,17 @@ export const PaypalAppSetup: React.FC<AppSetupProps> = ({
             >
               {isLoading && <Spinner />}
               <span>{t("paypal.form.connectWith")}</span>
-              <ConnectedAppNameAndLogo app={{ name: PaypalApp.name }} t={t} />
+              <ConnectedAppNameAndLogo appName={PaypalApp.name} />
             </Button>
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

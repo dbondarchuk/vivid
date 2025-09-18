@@ -2,6 +2,7 @@
 
 import { useI18n } from "@vivid/i18n";
 import { Appointment, DaySchedule, Event } from "@vivid/types";
+import { useTimeZone } from "@vivid/ui";
 import {
   CheckCircle,
   DollarSign,
@@ -15,7 +16,6 @@ import { AgendaEventCalendar } from "./agenda-event-calendar";
 import { MonthlyEventCalendar } from "./monthly-event-calendar";
 import { CalendarEvent, EventCalendarProps } from "./types";
 import { WeeklyEventCalendar } from "./weekly-event-calendar";
-import { useTimeZone } from "@vivid/ui";
 
 export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
   const t = useI18n("admin");
@@ -25,7 +25,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
   >();
 
   const [schedule, setSchedule] = React.useState<Record<string, DaySchedule>>(
-    {}
+    {},
   );
 
   const [loading, setLoading] = React.useState(false);
@@ -36,7 +36,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     setEvents([]);
 
     const response = await fetch(
-      `/admin/api/calendar?start=${encodeURIComponent(DateTime.fromJSDate(start).startOf("day").toISO()!)}&end=${encodeURIComponent(DateTime.fromJSDate(end).endOf("day").toISO()!)}`
+      `/admin/api/calendar?start=${encodeURIComponent(DateTime.fromJSDate(start).startOf("day").toISO()!)}&end=${encodeURIComponent(DateTime.fromJSDate(end).endOf("day").toISO()!)}`,
     );
 
     const body = (await response.json()) as {
@@ -63,7 +63,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           ...a,
           dateTime: dateTime,
         };
-      })
+      }),
     );
   };
 
@@ -91,7 +91,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
           };
         }
       }),
-    [events, t]
+    [events, t],
   );
 
   const onEventClick = ({ id }: CalendarEvent) => {
@@ -100,7 +100,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
     }
 
     const appointment = events.find(
-      (app) => (app as Appointment)._id == id
+      (app) => (app as Appointment)._id == id,
     ) as Appointment;
     if (appointment) setAppointment(appointment);
   };
@@ -118,7 +118,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
       }
 
       const appointment = events.find(
-        (app) => (app as Appointment)._id == event.id
+        (app) => (app as Appointment)._id == event.id,
       ) as Appointment;
 
       return (
@@ -156,7 +156,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
         </dl>
       );
     },
-    [events, t]
+    [events, t],
   );
 
   return (
@@ -238,7 +238,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
       {appointment && (
         <AppointmentDialog
           appointment={appointment}
-          open={true}
+          open
           onOpenChange={onDialogOpenChange}
         />
       )}

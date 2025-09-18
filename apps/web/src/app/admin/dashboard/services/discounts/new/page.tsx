@@ -28,7 +28,7 @@ export default async function NewDiscountPage(props: Props) {
     {
       fromDiscountId: from,
     },
-    "Loading new service discount page"
+    "Loading new service discount page",
   );
 
   const breadcrumbItems = [
@@ -50,7 +50,7 @@ export default async function NewDiscountPage(props: Props) {
     if (!result) {
       logger.warn(
         { fromDiscountId: from },
-        "Source discount not found for copying"
+        "Source discount not found for copying",
       );
       notFound();
     }
@@ -63,7 +63,7 @@ export default async function NewDiscountPage(props: Props) {
         fromDiscountId: from,
         discountName: result.name,
       },
-      "Using source discount as template"
+      "Using source discount as template",
     );
   }
 
@@ -72,11 +72,11 @@ export default async function NewDiscountPage(props: Props) {
       fromDiscountId: from,
       hasInitialData: !!initialData,
     },
-    "New service discount page loaded"
+    "New service discount page loaded",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />

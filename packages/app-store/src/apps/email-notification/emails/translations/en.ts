@@ -40,7 +40,7 @@ Addons selected:
 - None
 {{/addons}}
 
-Time: {{ dateTime }}
+Time: {{ dateTime.full }}
 
 Duration: {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}
 
@@ -58,7 +58,7 @@ Price: \${{.}}
 Payments:
 
 {{#payments}}
- 1. {{appName}} on {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
+ 1. {{appName}} on {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} refunded, \${{amountLeftFormatted}} left) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - None
@@ -78,24 +78,24 @@ export const EnEmailTemplates: EmailTemplates = {
     text: getText("The appointment was declined by you."),
   },
   rescheduled: {
-    title: "Appointment was rescheduled for {{dateTime}}",
+    title: "Appointment was rescheduled for {{dateTime.full}}",
     text: getText(
-      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}"
+      "The appointment for {{option.name}} by {{fields.name}} was rescheduled for {{dateTime.full}}, duration {{#duration.hours}}{{.}} hr {{/duration.hours}}{{#duration.minutes}}{{.}} min{{/duration.minutes}}",
     ),
   },
   "auto-confirmed": {
     title: "Appointment for {{option.name}} was requested and auto-confirmed",
     text: getText(
-      "A new appointment was requested on the website and was auto-confirmed."
+      "A new appointment was requested on the website and was auto-confirmed.",
     ),
   },
   pending: {
     title: "Appointment for {{option.name}} was requested",
     text: getText(
-      "A new appointment was requested on the website for {{option.name}}."
+      "A new appointment was requested on the website for {{option.name}}.",
     ),
   },
-  subject: "{{fields.name}} for {{option.name}} at {{dateTime}}",
+  subject: "{{fields.name}} for {{option.name}} at {{dateTime.full}}",
   eventTitle: "{{fields.name}} for {{option.name}}",
   buttonTexts: {
     viewAppointment: "View Appointment",

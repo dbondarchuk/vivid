@@ -11,7 +11,6 @@ import {
   FormLabel,
   FormMessage,
   InfoTooltip,
-  Input,
   Skeleton,
   TemplateSelector,
 } from "@vivid/ui";
@@ -70,7 +69,7 @@ const EmailTemplateForm: React.FC<{
                   <ArgumentsAutocomplete
                     disabled={disabled}
                     placeholder={t(
-                      `customerEmailNotification.form.subject.placeholder`
+                      `customerEmailNotification.form.subject.placeholder`,
                     )}
                     {...field}
                     asInput
@@ -170,7 +169,7 @@ export const CustomerEmailNotificationAppSetup: React.FC<
             <div className="flex flex-col gap-2 w-full">
               <h3 className="m-0 text-center">
                 {t(
-                  `customerEmailNotification.form.calendarEventTemplate.title`
+                  `customerEmailNotification.form.calendarEventTemplate.title`,
                 )}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
@@ -181,12 +180,12 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                     <FormItem>
                       <FormLabel>
                         {t(
-                          `customerEmailNotification.form.calendarEventTemplate.summary.label`
+                          `customerEmailNotification.form.calendarEventTemplate.summary.label`,
                         )}
                         <InfoTooltip>
                           <p>
                             {t(
-                              `customerEmailNotification.form.calendarEventTemplate.summary.description`
+                              `customerEmailNotification.form.calendarEventTemplate.summary.description`,
                             )}
                           </p>
                           <p>{tAdmin("common.usesTemplatedValues")}</p>
@@ -196,12 +195,14 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                         {isDataLoading ? (
                           <Skeleton className="w-full h-10" />
                         ) : (
-                          <Input
+                          <ArgumentsAutocomplete
                             disabled={isLoading}
                             placeholder={t(
-                              `customerEmailNotification.form.calendarEventTemplate.summary.placeholder`
+                              `customerEmailNotification.form.calendarEventTemplate.summary.placeholder`,
                             )}
                             {...field}
+                            asInput
+                            args={demoArguments}
                           />
                         )}
                       </FormControl>
@@ -216,11 +217,11 @@ export const CustomerEmailNotificationAppSetup: React.FC<
                     <FormItem>
                       <FormLabel>
                         {t(
-                          `customerEmailNotification.form.calendarEventTemplate.templateId.label`
+                          `customerEmailNotification.form.calendarEventTemplate.templateId.label`,
                         )}
                         <InfoTooltip>
                           {t(
-                            `customerEmailNotification.form.calendarEventTemplate.templateId.description`
+                            `customerEmailNotification.form.calendarEventTemplate.templateId.description`,
                           )}
                         </InfoTooltip>
                       </FormLabel>
@@ -250,7 +251,12 @@ export const CustomerEmailNotificationAppSetup: React.FC<
           </div>
         </form>
       </Form>
-      {appStatus && <ConnectedAppStatusMessage app={appStatus} t={t} />}
+      {appStatus && (
+        <ConnectedAppStatusMessage
+          status={appStatus.status}
+          statusText={appStatus.statusText}
+        />
+      )}
     </>
   );
 };

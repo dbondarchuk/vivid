@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing services addons API request"
+    "Processing services addons API request",
   );
 
   const addons = await ServicesContainer.ServicesService().getAddons({});
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       total: addons.total,
       count: addons.items.length,
     },
-    "Successfully retrieved service addons"
+    "Successfully retrieved service addons",
   );
 
   const headers = new Headers();

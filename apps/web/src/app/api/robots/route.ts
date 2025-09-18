@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       url: req.url,
       method: req.method,
     },
-    "Processing robots.txt request"
+    "Processing robots.txt request",
   );
 
   const { url } =
@@ -26,7 +26,7 @@ Sitemap: ${url}/sitemap.xml`;
     {
       sitemapUrl: `${url}/sitemap.xml`,
     },
-    "Successfully generated robots.txt"
+    "Successfully generated robots.txt",
   );
 
   return new Response(robots, {

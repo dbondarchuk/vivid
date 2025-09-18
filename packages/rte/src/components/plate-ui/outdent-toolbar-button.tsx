@@ -14,5 +14,5 @@ export const OutdentToolbarButton = withRef<typeof ToolbarButton>(
         <Outdent />
       </ToolbarButton>
     );
-  }
+  },
 );

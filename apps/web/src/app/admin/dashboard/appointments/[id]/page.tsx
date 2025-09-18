@@ -1,10 +1,10 @@
 import PageContainer from "@/components/admin/layout/page-container";
-import { Skeleton } from "@vivid/ui";
+import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
+import { Skeleton } from "@vivid/ui";
+import { Metadata } from "next";
 import { Suspense } from "react";
 import { AppointmentViewWrapper } from "./appointment-view-wrapper";
-import { getI18nAsync } from "@vivid/i18n/server";
-import { Metadata } from "next";
 import { getAppointment } from "./cached";
 
 type Props = {
@@ -35,11 +35,11 @@ export default async function AppointmentPage(props: Props) {
       appointmentId: id,
       shouldShowDeclineModal,
     },
-    "Loading appointment detail page"
+    "Loading appointment detail page",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Suspense
         fallback={
           <div className="flex flex-1 flex-col gap-4">

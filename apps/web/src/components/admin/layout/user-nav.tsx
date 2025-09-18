@@ -1,9 +1,9 @@
 "use client";
+import { useI18n } from "@vivid/i18n";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -17,7 +17,6 @@ import {
 } from "@vivid/ui";
 import { ChevronsUpDown } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { useI18n } from "@vivid/i18n";
 export function UserNav() {
   const { data: session } = useSession();
   const { isMobile } = useSidebar();

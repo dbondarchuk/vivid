@@ -14,13 +14,13 @@ export async function updateScheduleConfiguration(data: ScheduleConfiguration) {
       hasWorkingHours: !!data.schedule?.length,
       workingDaysCount: data.schedule?.length || 0,
     },
-    "Updating schedule configuration"
+    "Updating schedule configuration",
   );
 
   try {
     await ServicesContainer.ConfigurationService().setConfiguration(
       "schedule",
-      data
+      data,
     );
 
     actionLogger.debug(
@@ -28,7 +28,7 @@ export async function updateScheduleConfiguration(data: ScheduleConfiguration) {
         hasWorkingHours: !!data.schedule?.length,
         workingDaysCount: data.schedule?.length || 0,
       },
-      "Schedule configuration updated successfully"
+      "Schedule configuration updated successfully",
     );
   } catch (error) {
     actionLogger.error(
@@ -37,7 +37,7 @@ export async function updateScheduleConfiguration(data: ScheduleConfiguration) {
         workingDaysCount: data.schedule?.length || 0,
         error: error instanceof Error ? error.message : String(error),
       },
-      "Failed to update schedule configuration"
+      "Failed to update schedule configuration",
     );
     throw error;
   }

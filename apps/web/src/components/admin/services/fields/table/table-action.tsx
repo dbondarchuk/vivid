@@ -1,5 +1,7 @@
 "use client";
 
+import { useI18n } from "@vivid/i18n";
+import { fieldTypes } from "@vivid/types";
 import {
   Button,
   DataTableFilterBox,
@@ -13,8 +15,6 @@ import {
 import { Settings2 } from "lucide-react";
 import { DeleteSelectedFieldsButton } from "./delete-selected";
 import { useFieldsTableFilters } from "./use-table-filters";
-import { fieldTypes } from "@vivid/types";
-import { useI18n } from "@vivid/i18n";
 
 export function FieldsTableAction() {
   const {

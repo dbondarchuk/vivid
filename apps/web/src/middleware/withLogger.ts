@@ -6,7 +6,7 @@ export const withLogger: MiddlewareFactory = (next) => {
   return async (request: NextRequest, event: NextFetchEvent) => {
     if (
       /^(\/_next\/static|\/_next\/image|\/favicon.ico)/.test(
-        request.nextUrl.pathname
+        request.nextUrl.pathname,
       )
     )
       return next(request, event);
@@ -22,7 +22,7 @@ export const withLogger: MiddlewareFactory = (next) => {
 
     logger.debug(
       { url: request.url, method: request.method, correlationId },
-      "Incoming request"
+      "Incoming request",
     );
 
     // const start = performance.now();

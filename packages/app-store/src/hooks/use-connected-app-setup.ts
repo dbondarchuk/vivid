@@ -15,6 +15,7 @@ export type UseConnectedAppSetupProps<T extends FieldValues> = {
   errorText?: string;
   onSuccess?: () => void;
   onError?: (error: string) => void;
+  processDataForSubmit?: (data: T) => any;
 };
 
 export function useConnectedAppSetup<T extends FieldValues>({
@@ -25,6 +26,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
   errorText,
   onSuccess,
   onError,
+  processDataForSubmit,
 }: UseConnectedAppSetupProps<T>) {
   const t = useI18n("apps");
   const [appId, setAppId] = React.useState<string>();
@@ -67,9 +69,11 @@ export function useConnectedAppSetup<T extends FieldValues>({
           const _appId = appId || (await addNewApp(appName));
           setAppId(_appId);
 
+          const processedData = processDataForSubmit?.(data) || data;
+
           const status = (await processRequest(
             _appId,
-            data
+            processedData,
           )) as ConnectedAppStatusWithText;
 
           setAppStatus(status);
@@ -82,7 +86,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
           if (status.status === "connected") {
             resolve(status);
           }
-        }
+        },
       );
 
       await toastPromise(promise, {
@@ -100,7 +104,7 @@ export function useConnectedAppSetup<T extends FieldValues>({
 
       onSuccess?.();
     } catch (e: any) {
-      onError?.(e?.message);
+      onError?.(e instanceof Error ? e.message : e?.toString());
     } finally {
       setIsLoading(false);
     }

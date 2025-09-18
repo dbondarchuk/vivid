@@ -9,8 +9,8 @@ import {
   FormMessage,
   InfoTooltip,
 } from "@vivid/ui";
-import { TabProps } from "./types";
 import { OptionSelector } from "./cards/option-selector";
+import { TabProps } from "./types";
 
 export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
   const t = useI18n("admin");
@@ -25,11 +25,11 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
           <FormItem>
             <FormLabel>
               {t(
-                "settings.appointments.form.smartSchedule.enableSmartSchedule"
+                "settings.appointments.form.smartSchedule.enableSmartSchedule",
               )}{" "}
               <InfoTooltip>
                 {t(
-                  "settings.appointments.form.smartSchedule.enableSmartScheduleTooltip"
+                  "settings.appointments.form.smartSchedule.enableSmartScheduleTooltip",
                 )}
               </InfoTooltip>
             </FormLabel>
@@ -40,13 +40,13 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                 className="w-full"
                 trueLabel={t("settings.appointments.form.smartSchedule.enable")}
                 falseLabel={t(
-                  "settings.appointments.form.smartSchedule.disable"
+                  "settings.appointments.form.smartSchedule.disable",
                 )}
               />
             </FormControl>
             <FormDescription className="text-destructive font-semibold">
               {t(
-                "settings.appointments.form.smartSchedule.experimentalWarning"
+                "settings.appointments.form.smartSchedule.experimentalWarning",
               )}
             </FormDescription>
             <FormMessage />
@@ -65,7 +65,7 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                   {t("settings.appointments.form.smartSchedule.allowSkipBreak")}{" "}
                   <InfoTooltip>
                     {t(
-                      "settings.appointments.form.smartSchedule.allowSkipBreakTooltip"
+                      "settings.appointments.form.smartSchedule.allowSkipBreakTooltip",
                     )}
                   </InfoTooltip>
                 </FormLabel>
@@ -75,10 +75,10 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                     onValueChange={field.onChange}
                     className="w-full"
                     trueLabel={t(
-                      "settings.appointments.form.smartSchedule.enable"
+                      "settings.appointments.form.smartSchedule.enable",
                     )}
                     falseLabel={t(
-                      "settings.appointments.form.smartSchedule.disable"
+                      "settings.appointments.form.smartSchedule.disable",
                     )}
                   />
                 </FormControl>
@@ -93,11 +93,11 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
               <FormItem>
                 <FormLabel>
                   {t(
-                    "settings.appointments.form.smartSchedule.preferBackToBack"
+                    "settings.appointments.form.smartSchedule.preferBackToBack",
                   )}{" "}
                   <InfoTooltip>
                     {t(
-                      "settings.appointments.form.smartSchedule.preferBackToBackTooltip"
+                      "settings.appointments.form.smartSchedule.preferBackToBackTooltip",
                     )}
                   </InfoTooltip>
                 </FormLabel>
@@ -107,10 +107,10 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                     onValueChange={field.onChange}
                     className="w-full"
                     trueLabel={t(
-                      "settings.appointments.form.smartSchedule.enable"
+                      "settings.appointments.form.smartSchedule.enable",
                     )}
                     falseLabel={t(
-                      "settings.appointments.form.smartSchedule.disable"
+                      "settings.appointments.form.smartSchedule.disable",
                     )}
                   />
                 </FormControl>
@@ -125,11 +125,11 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
               <FormItem>
                 <FormLabel>
                   {t(
-                    "settings.appointments.form.smartSchedule.allowSmartSlotStarts"
+                    "settings.appointments.form.smartSchedule.allowSmartSlotStarts",
                   )}{" "}
                   <InfoTooltip>
                     {t(
-                      "settings.appointments.form.smartSchedule.allowSmartSlotStartsTooltip"
+                      "settings.appointments.form.smartSchedule.allowSmartSlotStartsTooltip",
                     )}
                   </InfoTooltip>
                 </FormLabel>
@@ -139,10 +139,10 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
                     onValueChange={field.onChange}
                     className="w-full"
                     trueLabel={t(
-                      "settings.appointments.form.smartSchedule.enable"
+                      "settings.appointments.form.smartSchedule.enable",
                     )}
                     falseLabel={t(
-                      "settings.appointments.form.smartSchedule.disable"
+                      "settings.appointments.form.smartSchedule.disable",
                     )}
                   />
                 </FormControl>
@@ -157,11 +157,11 @@ export const SmartScheduleTab: React.FC<TabProps> = ({ form, disabled }) => {
               <FormItem>
                 <FormLabel>
                   {t(
-                    "settings.appointments.form.smartSchedule.preferredService"
+                    "settings.appointments.form.smartSchedule.preferredService",
                   )}{" "}
                   <InfoTooltip>
                     {t(
-                      "settings.appointments.form.smartSchedule.preferredServiceTooltip"
+                      "settings.appointments.form.smartSchedule.preferredServiceTooltip",
                     )}
                   </InfoTooltip>
                 </FormLabel>

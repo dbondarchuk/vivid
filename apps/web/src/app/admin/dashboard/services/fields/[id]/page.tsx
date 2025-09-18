@@ -35,7 +35,7 @@ export default async function EditFieldPage(props: Props) {
     {
       fieldId: params.id,
     },
-    "Loading service field edit page"
+    "Loading service field edit page",
   );
 
   const field = await getField(params.id);
@@ -52,7 +52,7 @@ export default async function EditFieldPage(props: Props) {
       fieldType: field.type,
       fieldLabel: field.data.label,
     },
-    "Service field edit page loaded"
+    "Service field edit page loaded",
   );
 
   const breadcrumbItems = [
@@ -66,7 +66,7 @@ export default async function EditFieldPage(props: Props) {
   ];
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />

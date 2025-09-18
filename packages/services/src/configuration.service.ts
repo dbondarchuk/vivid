@@ -15,13 +15,13 @@ export class ConfigurationService implements IConfigurationService {
   protected readonly loggerFactory = getLoggerFactory("ConfigurationService");
 
   public async getConfiguration<T extends ConfigurationKey>(
-    key: T
+    key: T,
   ): Promise<ConfigurationOption<T>["value"]> {
     const logger = this.loggerFactory("getConfiguration");
     logger.debug({ key }, "Getting configuration");
     const db = await getDbConnection();
     const configurations = db.collection<ConfigurationOption<T>>(
-      CONFIGURATION_COLLECTION_NAME
+      CONFIGURATION_COLLECTION_NAME,
     );
 
     const value = await configurations.findOne({
@@ -59,7 +59,7 @@ export class ConfigurationService implements IConfigurationService {
     if (values.length !== keys.length) {
       logger.error(
         { keys, foundKeys: values?.map((v) => v.key) },
-        "Can't find configuration for all keys"
+        "Can't find configuration for all keys",
       );
     }
 
@@ -68,7 +68,7 @@ export class ConfigurationService implements IConfigurationService {
         ...acc,
         [cur.key]: cur.value,
       }),
-      {} as Pick<Configuration, T>
+      {} as Pick<Configuration, T>,
     );
 
     logger.debug({ keys }, "Fetched configurations");
@@ -77,14 +77,14 @@ export class ConfigurationService implements IConfigurationService {
 
   public async setConfiguration<T extends ConfigurationKey>(
     key: T,
-    configuration: ConfigurationOption<T>["value"]
+    configuration: ConfigurationOption<T>["value"],
   ): Promise<void> {
     const logger = this.loggerFactory("setConfiguration");
     logger.debug({ key }, "Setting configuration");
 
     const db = await getDbConnection();
     const configurations = db.collection<ConfigurationOption<T>>(
-      CONFIGURATION_COLLECTION_NAME
+      CONFIGURATION_COLLECTION_NAME,
     );
 
     const updateResult = await configurations.updateOne(
@@ -100,7 +100,7 @@ export class ConfigurationService implements IConfigurationService {
       },
       {
         upsert: true,
-      }
+      },
     );
 
     logger.debug({ key, updateResult }, "Set configuration");
@@ -115,7 +115,7 @@ export class CachedConfigurationService extends ConfigurationService {
     cache(async (...options) => await super.getConfigurations(...options));
 
   public async getConfiguration<T extends ConfigurationKey>(
-    key: T
+    key: T,
   ): Promise<ConfigurationOption<T>["value"]> {
     return await this.cachedGetConfiguration(key);
   }

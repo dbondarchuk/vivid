@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       method: request.method,
       searchParams: Object.fromEntries(request.nextUrl.searchParams.entries()),
     },
-    "Processing scheduler API request"
+    "Processing scheduler API request",
   );
 
   const searchParams = request.nextUrl.searchParams;
@@ -28,11 +28,11 @@ export async function GET(request: NextRequest) {
   if (key !== process.env.SCHEDULER_KEY) {
     logger.warn(
       { providedKey: key ? "***" : "missing" },
-      "Invalid or missing scheduler key"
+      "Invalid or missing scheduler key",
     );
     return NextResponse.json(
       { error: "Scheduler key is required" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -41,12 +41,12 @@ export async function GET(request: NextRequest) {
       date: date.toISO(),
       appCount: 0, // Will be updated after fetching apps
     },
-    "Starting scheduled tasks execution"
+    "Starting scheduled tasks execution",
   );
 
   const apps =
     await ServicesContainer.ConnectedAppsService().getAppsByScopeWithData(
-      "scheduled"
+      "scheduled",
     );
 
   logger.debug(
@@ -55,12 +55,12 @@ export async function GET(request: NextRequest) {
       appCount: apps.length,
       appNames: apps.map((app) => app.name),
     },
-    "Found scheduled apps to process"
+    "Found scheduled apps to process",
   );
 
   const promises = apps.map(async (app) => {
     const service = AvailableAppServices[app.name](
-      ServicesContainer.ConnectedAppsService().getAppServiceProps(app._id)
+      ServicesContainer.ConnectedAppsService().getAppServiceProps(app._id),
     );
 
     return (service as any as IScheduled).onTime(app, date.toUTC().toJSDate());
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
       date: date.toISO(),
       appCount: apps.length,
     },
-    "Successfully initiated scheduled tasks"
+    "Successfully initiated scheduled tasks",
   );
 
   return NextResponse.json(okStatus);

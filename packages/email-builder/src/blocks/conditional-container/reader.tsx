@@ -20,7 +20,7 @@ export const ConditionalContainerReader = ({
   return (
     <>
       {(result ? thenChildren : otherwiseChildren).map((child) => (
-        <ReaderBlock key={child.id} block={child} {...rest} />
+        <ReaderBlock key={child.id} {...rest} block={child} />
       ))}
     </>
   );

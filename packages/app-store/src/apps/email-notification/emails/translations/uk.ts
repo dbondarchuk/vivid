@@ -40,7 +40,7 @@ Email: {{ fields.email }}
 - Жодного
 {{/addons}}
 
-Час: {{ dateTime }}
+Час: {{ dateTime.full}}
 
 Тривалість: {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}
 
@@ -59,7 +59,7 @@ Email: {{ fields.email }}
 Платежі:
 
 {{#payments}}
- 1. {{appName}} {{paidAt}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
+ 1. {{appName}} {{paidAt.full}}: \${{amountFormatted}} {{#totalRefundedFormatted}} (-\${{totalRefundedFormatted}} повернено, \${{amountLeftFormatted}} залишилок) {{/totalRefundedFormatted}}
 {{/payments}}
 {{^payments}}
 - Жодного
@@ -79,24 +79,24 @@ export const UkEmailTemplates: EmailTemplates = {
     text: getText("Запис був відхилений вами."),
   },
   rescheduled: {
-    title: "Запис був перенесений на {{dateTime}}",
+    title: "Запис був перенесений на {{dateTime.full}}",
     text: getText(
-      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}"
+      "Запис на {{option.name}} від {{fields.name}} був перенесений на {{dateTime.full}}, тривалість {{#duration.hours}}{{.}} год {{/duration.hours}}{{#duration.minutes}}{{.}} хв{{/duration.minutes}}",
     ),
   },
   "auto-confirmed": {
     title: "Запис на {{option.name}} був запитаний і автоматично підтверджений",
     text: getText(
-      "Новий запис був запитаний на веб-сайті і автоматично підтверджений."
+      "Новий запис був запитаний на веб-сайті і автоматично підтверджений.",
     ),
   },
   pending: {
     title: "Запит на запис для {{option.name}}",
     text: getText(
-      "Новий запис був запитаний на веб-сайті для {{option.name}}."
+      "Новий запис був запитаний на веб-сайті для {{option.name}}.",
     ),
   },
-  subject: "{{fields.name}} на {{option.name}} на {{dateTime}}",
+  subject: "{{fields.name}} на {{option.name}} на {{dateTime.full}}",
   eventTitle: "{{fields.name}} на {{option.name}}",
   buttonTexts: {
     viewAppointment: "Переглянути запис",

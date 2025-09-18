@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@vivid/i18n";
+import { communicationChannels } from "@vivid/types";
 import {
   Button,
   DataTableFilterBox,
@@ -11,10 +12,9 @@ import {
   PopoverTrigger,
   useSelectedRowsStore,
 } from "@vivid/ui";
+import { Settings2 } from "lucide-react";
 import { DeleteSelectedTemplatesButton } from "./delete-selected";
 import { useTemplatesTableFilters } from "./use-table-filters";
-import { Settings2 } from "lucide-react";
-import { communicationChannels } from "@vivid/types";
 
 export function TemplatesTableAction() {
   const t = useI18n("admin");

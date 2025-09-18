@@ -28,7 +28,7 @@ export default async function NewOptionPage(props: Props) {
     {
       fromOptionId: from,
     },
-    "Loading new service option page"
+    "Loading new service option page",
   );
 
   const breadcrumbItems = [
@@ -50,7 +50,7 @@ export default async function NewOptionPage(props: Props) {
     if (!result) {
       logger.warn(
         { fromOptionId: from },
-        "Source option not found for copying"
+        "Source option not found for copying",
       );
       notFound();
     }
@@ -63,7 +63,7 @@ export default async function NewOptionPage(props: Props) {
         fromOptionId: from,
         optionName: result.name,
       },
-      "Using source option as template"
+      "Using source option as template",
     );
   }
 
@@ -72,11 +72,11 @@ export default async function NewOptionPage(props: Props) {
       fromOptionId: from,
       hasInitialData: !!initialData,
     },
-    "New service option page loaded"
+    "New service option page loaded",
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
