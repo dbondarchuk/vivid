@@ -25,7 +25,7 @@ COPY --parents packages/*/package.json .
 # COPY packages/ui/package.json ./packages/ui/package.json
 # COPY packages/utils/package.json ./packages/utils/package.json
 
-COPY patches ./
+COPY patches/ ./patches
 
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
