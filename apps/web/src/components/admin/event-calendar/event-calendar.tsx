@@ -238,7 +238,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = (props) => {
       {appointment && (
         <AppointmentDialog
           appointment={appointment}
-          open={true}
+          open
           onOpenChange={onDialogOpenChange}
         />
       )}

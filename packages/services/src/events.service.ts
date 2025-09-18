@@ -348,6 +348,168 @@ export class EventsService implements IEventsService {
     return appointment;
   }
 
+  public async updateEvent(
+    appointmentId: string,
+    {
+      event,
+      confirmed: propsConfirmed,
+      files,
+    }: {
+      event: AppointmentEvent;
+      confirmed?: boolean;
+      files?: Record<string, File>;
+    },
+  ): Promise<Appointment> {
+    const logger = this.loggerFactory("updateEvent");
+    logger.debug(
+      {
+        event: {
+          dateTime: event.dateTime,
+          totalDuration: event.totalDuration,
+          customerName: event.fields.name,
+          customerEmail: event.fields.email,
+          customerPhone: event.fields.phone,
+          optionName: event.option.name,
+        },
+        confirmed: propsConfirmed,
+        fileCount: files ? Object.keys(files).length : 0,
+      },
+      "Updating event",
+    );
+
+    const appointment = await this.getAppointment(appointmentId);
+
+    if (!appointment) {
+      logger.error({ id: appointmentId }, "Appointment not found");
+      throw new Error("Appointment not found");
+    }
+
+    if (appointment.status === "declined") {
+      logger.error({ id: appointmentId }, "Appointment is declined");
+      throw new Error("Appointment is declined");
+    }
+
+    const assets: Asset[] = [];
+    if (files) {
+      logger.debug(
+        { appointmentId, fileCount: Object.keys(files).length },
+        "Processing files for event",
+      );
+
+      for (const [fieldId, file] of Object.entries(files)) {
+        let fileType = mimeType.lookup(file.name);
+        if (!fileType) {
+          fileType = "application/octet-stream";
+        } else if (Array.isArray(fileType)) {
+          fileType = fileType[0];
+        }
+
+        const asset = await this.assetsService.createAsset(
+          {
+            filename: `${getAppointmentBucket(appointmentId)}/${fieldId}-${file.name}`,
+            mimeType: fileType,
+            appointmentId,
+            description: `${event.fields.name} - ${event.option.name} - ${fieldId}`,
+          },
+          file,
+        );
+
+        assets.push(asset);
+      }
+    }
+
+    const confirmed = propsConfirmed ?? appointment.status === "confirmed";
+
+    logger.debug({ appointmentId, confirmed }, "Saving event");
+
+    await this.updateEventInDatabase(
+      appointmentId,
+      event,
+      appointment,
+      assets.length ? assets : undefined,
+      confirmed,
+    );
+
+    logger.debug({ appointmentId, confirmed }, "Event saved");
+
+    const updatedAppointment = await this.getAppointment(appointmentId);
+    if (!updatedAppointment) {
+      logger.error(
+        { appointmentId },
+        "Something went wrong - updated appointment not found",
+      );
+      throw new Error("Something went wrong - updated appointment not found");
+    }
+
+    const hooks =
+      await this.appsService.getAppsByScopeWithData("appointment-hook");
+
+    logger.debug(
+      { appointmentId, hookCount: hooks.length },
+      "Executing appointment hooks",
+    );
+
+    const promises = hooks.map(async (hook) => {
+      const service = AvailableAppServices[hook.name](
+        this.appsService.getAppServiceProps(hook._id),
+      ) as any as IAppointmentHook;
+
+      try {
+        logger.debug(
+          {
+            appointmentId,
+            hookName: hook.name,
+            confirmed,
+            hookId: hook._id,
+          },
+          "Executing appointment hook",
+        );
+
+        await service.onAppointmentRescheduled(
+          hook,
+          updatedAppointment,
+          event.dateTime,
+          event.totalDuration,
+          updatedAppointment.dateTime,
+          updatedAppointment.totalDuration,
+        );
+
+        // if (confirmed) {
+        //   await service.onAppointmentStatusChanged(
+        //     hook,
+        //     appointment,
+        //     "confirmed"
+        //   );
+        // }
+      } catch (error: any) {
+        logger.error(
+          {
+            hookName: hook.name,
+            hookId: hook._id,
+            appointmentId,
+            confirmed,
+            error,
+          },
+          "Hook execution failed",
+        );
+      }
+    });
+
+    await Promise.all(promises);
+
+    logger.debug(
+      {
+        appointmentId,
+        customerName: updatedAppointment.customer.name,
+        status: updatedAppointment.status,
+        confirmed,
+      },
+      "Event updated successfully",
+    );
+
+    return updatedAppointment;
+  }
+
   public async getPendingAppointmentsCount(after?: Date): Promise<number> {
     const logger = this.loggerFactory("getPendingAppointmentsCount");
     logger.debug({ after }, "Getting pending appointments count");
@@ -1583,6 +1745,83 @@ export class EventsService implements IEventsService {
         );
 
         return result;
+      });
+    } finally {
+      await session.endSession();
+    }
+  }
+
+  private async updateEventInDatabase(
+    id: string,
+    event: AppointmentEvent,
+    oldEvent: Appointment,
+    files?: Asset[],
+    confirmed?: boolean,
+  ): Promise<void> {
+    const logger = this.loggerFactory("saveEvent");
+
+    logger.debug(
+      {
+        appointmentId: id,
+        customerName: event.fields.name,
+        fileCount: files?.length || 0,
+        confirmed,
+      },
+      "Updating event in database",
+    );
+
+    const db = await getDbConnection();
+    const client = await getDbClient();
+    const session = client.startSession();
+    try {
+      await session.withTransaction(async () => {
+        const appointments = db.collection<AppointmentEntity>(
+          APPOINTMENTS_COLLECTION_NAME,
+        );
+
+        const status =
+          confirmed || oldEvent.status === "confirmed"
+            ? "confirmed"
+            : "pending";
+
+        const dbEvent: Partial<AppointmentEntity> = {
+          ...event,
+          status,
+        };
+
+        await appointments.updateOne({ _id: id }, { $set: dbEvent });
+
+        await this.addAppointmentHistory({
+          appointmentId: id,
+          type: "updated",
+          data: {
+            oldOption: oldEvent.option,
+            newOption: event.option,
+            oldFields: oldEvent.fields,
+            newFields: event.fields,
+            oldAddons: oldEvent.addons,
+            newAddons: event.addons,
+            oldDiscount: oldEvent.discount,
+            newDiscount: event.discount,
+            oldNote: oldEvent.note,
+            newNote: event.note,
+            oldDateTime: oldEvent.dateTime,
+            newDateTime: event.dateTime,
+            oldDuration: oldEvent.totalDuration,
+            newDuration: event.totalDuration,
+            oldTotalPrice: oldEvent.totalPrice,
+            newTotalPrice: event.totalPrice,
+            oldTotalDuration: oldEvent.totalDuration,
+            newTotalDuration: event.totalDuration,
+            oldStatus: oldEvent.status,
+            newStatus: status,
+          },
+        });
+
+        logger.debug(
+          { appointmentId: id, status },
+          "Event updated in database successfully",
+        );
       });
     } finally {
       await session.endSession();

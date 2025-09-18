@@ -53,7 +53,7 @@ const buttonVariantsValues = ButtonVariants.map(
       shortLabel: <I18nText key={`admin.menuItem.buttonVariants.${variant}`} />,
       label: (
         <Link
-          button={true}
+          button
           href="#"
           variant={variant}
           size="sm"

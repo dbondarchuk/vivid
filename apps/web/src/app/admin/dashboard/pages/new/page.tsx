@@ -27,7 +27,7 @@ export default async function NewPagesPage() {
     );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Styling styling={styling} />
       <PageForm config={{ general, social }} />
     </PageContainer>

@@ -39,7 +39,7 @@ export default async function AppointmentPage(props: Props) {
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Suspense
         fallback={
           <div className="flex flex-1 flex-col gap-4">

@@ -447,7 +447,7 @@ export const TextareaMentions = React.forwardRef<
           //       ref as React.RefObject<HTMLInputElement | null>,
           //       textareaRef as React.RefObject<HTMLInputElement | null>
           //     )}
-          //     contentEditable={true}
+          //     contentEditable
           //     className={className}
           //     onInput={onTextValueChange}
           //     {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}

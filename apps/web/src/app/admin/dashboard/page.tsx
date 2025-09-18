@@ -47,7 +47,7 @@ export default async function Page({ searchParams }: Params) {
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Breadcrumbs items={breadcrumbItems} />
       <div className="space-y-2 flex-1">
         <div className="flex items-center justify-between space-y-2">

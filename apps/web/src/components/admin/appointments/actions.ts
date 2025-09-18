@@ -2,15 +2,20 @@
 
 import { getLoggerFactory } from "@vivid/logger";
 import { ServicesContainer } from "@vivid/services";
-import { AppointmentStatus, okStatus } from "@vivid/types";
+import {
+  Appointment,
+  AppointmentEvent,
+  AppointmentStatus,
+  okStatus,
+} from "@vivid/types";
 
-const logger = getLoggerFactory("AppointmentsActions");
+const loggerFactory = getLoggerFactory("AppointmentsActions");
 
 export async function changeAppointmentStatus(
   id: string,
   newStatus: AppointmentStatus,
 ) {
-  const actionLogger = logger("changeAppointmentStatus");
+  const actionLogger = loggerFactory("changeAppointmentStatus");
 
   actionLogger.debug(
     {
@@ -49,7 +54,7 @@ export async function changeAppointmentStatus(
 }
 
 export async function updateAppointmentNote(id: string, note?: string) {
-  const actionLogger = logger("updateAppointmentNote");
+  const actionLogger = loggerFactory("updateAppointmentNote");
 
   actionLogger.debug(
     {
@@ -86,7 +91,7 @@ export async function updateAppointmentNote(id: string, note?: string) {
 }
 
 export async function addAppointmentFiles(formData: FormData) {
-  const actionLogger = logger("addAppointmentFiles");
+  const actionLogger = loggerFactory("addAppointmentFiles");
 
   const file = formData.get("file") as File;
   const id = formData.get("appointmentId") as string;
@@ -143,7 +148,7 @@ export async function addAppointmentFiles(formData: FormData) {
 }
 
 export async function removeAppointmentFile(assetId: string) {
-  const actionLogger = logger("removeAppointmentFile");
+  const actionLogger = loggerFactory("removeAppointmentFile");
 
   actionLogger.debug(
     {
@@ -181,7 +186,7 @@ export async function rescheduleAppointment(
   duration: number,
   doNotNotifyCustomer?: boolean,
 ) {
-  const actionLogger = logger("rescheduleAppointment");
+  const actionLogger = loggerFactory("rescheduleAppointment");
 
   actionLogger.debug(
     {
@@ -226,3 +231,169 @@ export async function rescheduleAppointment(
     throw error;
   }
 }
+
+export const createAppointment = async (
+  appointment: Omit<AppointmentEvent, "timeZone">,
+  files: Record<string, File> | undefined,
+  confirmed: boolean = false,
+) => {
+  const actionLogger = loggerFactory("createAppointment");
+
+  actionLogger.debug(
+    {
+      optionId: appointment.option._id,
+      dateTime: appointment.dateTime.toISOString(),
+      duration: appointment.totalDuration,
+      filesCount: files ? Object.keys(files).length : 0,
+      confirmed,
+      fieldsCount: Object.keys(appointment.fields).length,
+    },
+    "Creating new appointment",
+  );
+
+  try {
+    const { timeZone } =
+      await ServicesContainer.ConfigurationService().getConfiguration(
+        "general",
+      );
+
+    const appointmentEvent: AppointmentEvent = {
+      ...appointment,
+      fields: Object.entries(appointment.fields)
+        .filter(([key]) => !(key in (files || {})))
+        .reduce(
+          (map, [key, value]) => ({ ...map, [key]: value }),
+          {} as Appointment["fields"],
+        ),
+      timeZone,
+    };
+
+    actionLogger.debug(
+      {
+        optionId: appointment.option._id,
+        dateTime: appointment.dateTime.toISOString(),
+        duration: appointment.totalDuration,
+        timeZone,
+        processedFieldsCount: Object.keys(appointmentEvent.fields).length,
+      },
+      "Appointment event prepared, creating event",
+    );
+
+    const result = await ServicesContainer.EventsService().createEvent({
+      event: appointmentEvent,
+      confirmed,
+      force: true,
+      files,
+      by: "user",
+    });
+
+    actionLogger.debug(
+      {
+        appointmentId: result._id,
+        optionId: appointment.option._id,
+        dateTime: appointment.dateTime.toISOString(),
+        duration: appointment.totalDuration,
+        confirmed,
+      },
+      "Appointment created successfully",
+    );
+
+    return result._id;
+  } catch (error) {
+    actionLogger.error(
+      {
+        optionId: appointment.option._id,
+        dateTime: appointment.dateTime.toISOString(),
+        duration: appointment.totalDuration,
+        confirmed,
+        error: error instanceof Error ? error.message : String(error),
+      },
+      "Failed to create appointment",
+    );
+    throw error;
+  }
+};
+
+export const updateAppointment = async (
+  id: string,
+  appointment: Omit<AppointmentEvent, "timeZone">,
+  files: Record<string, File> | undefined,
+  confirmed: boolean = false,
+) => {
+  const actionLogger = loggerFactory("updateAppointment");
+
+  actionLogger.debug(
+    {
+      appointmentId: id,
+      optionId: appointment.option._id,
+      dateTime: appointment.dateTime.toISOString(),
+      duration: appointment.totalDuration,
+      filesCount: files ? Object.keys(files).length : 0,
+      confirmed,
+      fieldsCount: Object.keys(appointment.fields).length,
+    },
+    "Updating appointment",
+  );
+
+  try {
+    const { timeZone } =
+      await ServicesContainer.ConfigurationService().getConfiguration(
+        "general",
+      );
+
+    const appointmentEvent: AppointmentEvent = {
+      ...appointment,
+      fields: Object.entries(appointment.fields)
+        .filter(([key]) => !(key in (files || {})))
+        .reduce(
+          (map, [key, value]) => ({ ...map, [key]: value }),
+          {} as Appointment["fields"],
+        ),
+      timeZone,
+    };
+
+    actionLogger.debug(
+      {
+        appointmentId: id,
+        optionId: appointment.option._id,
+        dateTime: appointment.dateTime.toISOString(),
+        duration: appointment.totalDuration,
+        timeZone,
+        processedFieldsCount: Object.keys(appointmentEvent.fields).length,
+      },
+      "Appointment event prepared, updating event",
+    );
+
+    const result = await ServicesContainer.EventsService().updateEvent(id, {
+      event: appointmentEvent,
+      confirmed,
+      files,
+    });
+
+    actionLogger.debug(
+      {
+        appointmentId: id,
+        optionId: appointment.option._id,
+        dateTime: appointment.dateTime.toISOString(),
+        duration: appointment.totalDuration,
+        confirmed,
+      },
+      "Appointment updated successfully",
+    );
+
+    return id;
+  } catch (error) {
+    actionLogger.error(
+      {
+        appointmentId: id,
+        optionId: appointment.option._id,
+        dateTime: appointment.dateTime.toISOString(),
+        duration: appointment.totalDuration,
+        confirmed,
+        error: error instanceof Error ? error.message : String(error),
+      },
+      "Failed to update appointment",
+    );
+    throw error;
+  }
+};

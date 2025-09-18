@@ -55,14 +55,31 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { z } from "zod";
-import { createAppointment } from "./actions";
+import { createAppointment, updateAppointment } from "./actions";
 
 export type AppointmentScheduleFormProps = {
   options: AppointmentChoice[];
   knownFields: (Field<WithLabelFieldData> & { _id: string })[];
-  from?: Appointment | null;
   customer?: Customer | null;
-};
+} & (
+  | ({
+      from: Appointment;
+    } & (
+      | {
+          isEdit: true;
+          id: string;
+        }
+      | {
+          isEdit?: false;
+          id?: never;
+        }
+    ))
+  | {
+      from?: null;
+      isEdit?: false;
+      id?: never;
+    }
+);
 
 const getSelectedFields = (
   selectedOption: AppointmentChoice | undefined,
@@ -97,7 +114,7 @@ const getSelectedFields = (
 
 export const AppointmentScheduleForm: React.FC<
   AppointmentScheduleFormProps
-> = ({ options, knownFields, from, customer: propsCustomer }) => {
+> = ({ options, knownFields, from, isEdit, id, customer: propsCustomer }) => {
   const t = useI18n("admin");
   const timeZone = useTimeZone();
   const now = React.useMemo(
@@ -137,7 +154,8 @@ export const AppointmentScheduleForm: React.FC<
       note: z.string().optional(),
       confirmed: z.coerce.boolean().optional(),
       customerId: z.string().optional(),
-      promoCode: z.string().optional(),
+      promoCode: z.string().optional().nullable(),
+      doNotNotifyCustomer: z.coerce.boolean().optional(),
     })
     .superRefine((args, ctx) => {
       const option = options.find((x) => x._id === args.option);
@@ -177,7 +195,7 @@ export const AppointmentScheduleForm: React.FC<
     mode: "all",
     reValidateMode: "onChange",
     values: {
-      dateTime: now,
+      dateTime: isEdit ? from.dateTime : now,
       totalDuration: from?.totalDuration || options[0].duration || 0,
       totalPrice: from?.totalPrice || undefined,
       addons: from?.addons?.map(({ _id }) => ({ id: _id })) || [],
@@ -189,6 +207,9 @@ export const AppointmentScheduleForm: React.FC<
       customerId: from?.customerId ?? propsCustomer?._id,
       option: from?.option?._id || options[0]._id,
       confirmed: true,
+      note: isEdit ? from?.note || "" : "",
+      promoCode: isEdit ? from?.discount?.code : undefined,
+      doNotNotifyCustomer: false,
     },
   });
 
@@ -237,6 +258,8 @@ export const AppointmentScheduleForm: React.FC<
     });
 
     return calendarEvents.some((app) => {
+      if (isEdit && "_id" in app && app._id === id) return false;
+
       const appStart = DateTime.fromJSDate(app.dateTime);
       const appEnd = appStart.plus({ minutes: app.totalDuration });
 
@@ -328,15 +351,26 @@ export const AppointmentScheduleForm: React.FC<
         discount: appointmentDiscount,
       };
 
-      const id = await toastPromise(
-        createAppointment(appointmentEvent, files, data.confirmed),
-        {
-          success: t("appointments.form.scheduledSuccess"),
-          error: t("appointments.form.requestError"),
-        },
-      );
+      let appointmentId = id;
+      if (isEdit) {
+        await toastPromise(
+          updateAppointment(id, appointmentEvent, files, data.confirmed),
+          {
+            success: t("appointments.form.updatedSuccess"),
+            error: t("appointments.form.requestError"),
+          },
+        );
+      } else {
+        appointmentId = await toastPromise(
+          createAppointment(appointmentEvent, files, data.confirmed),
+          {
+            success: t("appointments.form.scheduledSuccess"),
+            error: t("appointments.form.requestError"),
+          },
+        );
+      }
 
-      router.push(`/admin/dashboard/appointments/${id}`);
+      router.push(`/admin/dashboard/appointments/${appointmentId}`);
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -361,7 +395,7 @@ export const AppointmentScheduleForm: React.FC<
     const dt = DateTime.fromJSDate(dateTime);
 
     return {
-      _id: "",
+      _id: id || "",
       date: dt.startOf("day").toISODate(),
       time: {
         hour: dt.hour,
@@ -609,8 +643,11 @@ export const AppointmentScheduleForm: React.FC<
                     <FormLabel>{t("appointments.form.discount")}</FormLabel>
                     <FormControl>
                       <PromoCodeSelector
-                        onItemSelect={field.onChange}
-                        value={field.value}
+                        onItemSelect={(val) => {
+                          field.onChange(val ?? null);
+                          field.onBlur();
+                        }}
+                        value={field.value as string | undefined}
                         disabled={loading}
                         onValueChange={(val) => {
                           setDiscount(val);
@@ -680,29 +717,62 @@ export const AppointmentScheduleForm: React.FC<
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="confirmed"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-row items-center gap-2">
-                      <Checkbox
-                        id="confirmed"
-                        disabled={loading}
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                      <FormLabel htmlFor="confirmed" className="cursor-pointer">
-                        {t("appointments.form.confirmAppointment")}
-                      </FormLabel>
-                    </div>
-                    <FormDescription>
-                      {t("appointments.form.confirmAppointmentDescription")}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {(!isEdit || from?.status === "pending") && (
+                <FormField
+                  control={form.control}
+                  name="confirmed"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex flex-row items-center gap-2">
+                        <Checkbox
+                          id="confirmed"
+                          disabled={loading}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <FormLabel
+                          htmlFor="confirmed"
+                          className="cursor-pointer"
+                        >
+                          {t("appointments.form.confirmAppointment")}
+                        </FormLabel>
+                      </div>
+                      <FormDescription>
+                        {t("appointments.form.confirmAppointmentDescription")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              {isEdit && (
+                <FormField
+                  control={form.control}
+                  name="doNotNotifyCustomer"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex flex-row items-center gap-2">
+                        <Checkbox
+                          id="doNotNotifyCustomer"
+                          disabled={loading}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <FormLabel
+                          htmlFor="doNotNotifyCustomer"
+                          className="cursor-pointer"
+                        >
+                          {t("appointments.form.doNotNotifyCustomer")}
+                        </FormLabel>
+                      </div>
+                      <FormDescription>
+                        {t("appointments.form.doNotNotifyCustomerDescription")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               {isOverlaping && (
                 <FormItem>
                   <div className="flex flex-row items-center gap-2">
@@ -745,7 +815,11 @@ export const AppointmentScheduleForm: React.FC<
           ) : (
             <CalendarClock className="w-4 h-4" />
           )}{" "}
-          {t("appointments.form.scheduleAppointment")}
+          {t(
+            isEdit
+              ? "appointments.form.updateAppointment"
+              : "appointments.form.scheduleAppointment",
+          )}
         </Button>
       </form>
     </Form>

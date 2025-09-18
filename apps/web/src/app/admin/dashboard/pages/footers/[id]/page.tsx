@@ -70,7 +70,7 @@ export default async function EditPageFooterPage(props: Props) {
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Styling styling={styling} />
       <PageFooterForm initialData={pageFooter} args={args} />
     </PageContainer>

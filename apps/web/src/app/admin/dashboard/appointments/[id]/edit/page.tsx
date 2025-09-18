@@ -1,3 +1,4 @@
+import { AppointmentScheduleForm } from "@/components/admin/appointments/appointment-form";
 import PageContainer from "@/components/admin/layout/page-container";
 import { getI18nAsync } from "@vivid/i18n/server";
 import { getLoggerFactory } from "@vivid/logger";
@@ -5,43 +6,30 @@ import { ServicesContainer } from "@vivid/services";
 import { AppointmentChoice } from "@vivid/types";
 import { Breadcrumbs, Heading } from "@vivid/ui";
 import { Metadata } from "next";
-import { AppointmentScheduleForm } from "../../../../../components/admin/appointments/appointment-form";
+import { notFound } from "next/navigation";
 
 type Props = {
-  searchParams: Promise<{ from?: string; customer?: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getI18nAsync("admin");
   return {
-    title: t("appointments.new.title"),
+    title: t("appointments.edit.title"),
   };
 }
 
 export default async function NewAssetsPage(props: Props) {
   const t = await getI18nAsync("admin");
-  const logger = getLoggerFactory("AdminPages")("new-appointment");
-  const searchParams = await props.searchParams;
+  const logger = getLoggerFactory("AdminPages")("edit-appointment");
+  const { id } = await props.params;
 
   logger.debug(
     {
-      from: searchParams.from,
-      customer: searchParams.customer,
+      id,
     },
-    "Loading new appointment page",
+    "Loading edit appointment page",
   );
-
-  const breadcrumbItems = [
-    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
-    {
-      title: t("navigation.appointments"),
-      link: "/admin/dashboard/appointments",
-    },
-    {
-      title: t("appointments.new.title"),
-      link: "/admin/dashboard/appointments/new",
-    },
-  ];
 
   const config =
     await ServicesContainer.ConfigurationService().getConfiguration("booking");
@@ -63,28 +51,38 @@ export default async function NewAssetsPage(props: Props) {
         .filter((f) => !!f) || [],
   }));
 
-  const from = searchParams?.from
-    ? await ServicesContainer.EventsService().getAppointment(searchParams.from)
-    : undefined;
+  const appointment =
+    await ServicesContainer.EventsService().getAppointment(id);
 
-  const customer =
-    !from && searchParams.customer
-      ? await ServicesContainer.CustomersService().getCustomer(
-          searchParams.customer,
-        )
-      : undefined;
+  if (!appointment) {
+    logger.warn({ id }, "Appointment not found");
+    return notFound();
+  }
+
+  const breadcrumbItems = [
+    { title: t("navigation.dashboard"), link: "/admin/dashboard" },
+    {
+      title: t("navigation.appointments"),
+      link: "/admin/dashboard/appointments",
+    },
+    {
+      title: appointment.option.name,
+      link: `/admin/dashboard/appointments/${id}`,
+    },
+    {
+      title: t("appointments.edit.title"),
+      link: `/admin/dashboard/appointments/${id}/edit`,
+    },
+  ];
 
   logger.debug(
     {
-      from: searchParams.from,
-      customer: searchParams.customer,
-      hasFromAppointment: !!from,
-      hasCustomer: !!customer,
+      id,
       optionsCount: choices.length,
       fieldsCount: fields.items?.length || 0,
       addonsCount: addons.items?.length || 0,
     },
-    "New appointment page loaded",
+    "Edit appointment page loaded",
   );
 
   return (
@@ -93,16 +91,17 @@ export default async function NewAssetsPage(props: Props) {
         <div className="flex flex-col gap-4 justify-between">
           <Breadcrumbs items={breadcrumbItems} />
           <Heading
-            title={t("appointments.new.title")}
-            description={t("appointments.new.description")}
+            title={t("appointments.edit.title")}
+            description={t("appointments.edit.description")}
           />
         </div>
         <AppointmentScheduleForm
           options={choices}
           knownFields={fields.items || []}
-          from={from}
-          isEdit={false}
-          customer={customer}
+          from={appointment}
+          isEdit={true}
+          id={id}
+          customer={appointment.customer}
         />
       </div>
     </PageContainer>

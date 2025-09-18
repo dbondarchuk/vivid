@@ -23,6 +23,14 @@ export interface IEventsService {
     paymentIntentId?: string;
     by: "customer" | "user";
   }): Promise<Appointment>;
+  updateEvent(
+    id: string,
+    args: {
+      event: AppointmentEvent;
+      confirmed?: boolean;
+      files?: Record<string, File>;
+    },
+  ): Promise<Appointment>;
   getPendingAppointmentsCount(after?: Date): Promise<number>;
   getPendingAppointments(
     limit?: number,

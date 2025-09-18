@@ -492,7 +492,7 @@ export function DateTimePicker({
                 "aria-selected:bg-accent aria-selected:text-accent-foreground",
               hidden: "invisible",
             }}
-            showOutsideDays={true}
+            showOutsideDays
             {...props}
           />
           <div

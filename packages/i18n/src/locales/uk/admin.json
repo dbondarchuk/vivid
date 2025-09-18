@@ -54,7 +54,8 @@
         "rescheduled": "Перенесено",
         "created": "Створено",
         "paymentAdded": "Платіж додано",
-        "paymentRefunded": "Платіж повернено"
+        "paymentRefunded": "Платіж повернено",
+        "updated": "Оновлено"
       },
       "filters": "Фільтри",
       "loading": "Завантаження"
@@ -229,6 +230,10 @@
       "title": "Новий запис",
       "description": "Створити новий запис від імені клієнта"
     },
+    "edit": {
+      "title": "Редагувати запис",
+      "description": "Редагувати існуючий запис"
+    },
     "view": {
       "noteUpdated": "Примітку до запису було оновлено.",
       "requestError": "Виникла проблема з вашим запитом.",
@@ -236,6 +241,7 @@
       "sendMessage": "Надіслати повідомлення",
       "scheduleAgain": "Запланувати знову",
       "reschedule": "Перенести",
+      "edit": "Редагувати",
       "decline": "Відхилити",
       "confirm": "Підтвердити",
       "dateTime": "Дата та час",
@@ -311,7 +317,11 @@
       "confirmAppointmentDescription": "Позначити запис як підтверджений",
       "confirmOverlap": "Підтвердити накладення",
       "confirmOverlapDescription": "Я розумію, що планування цього запису створить накладення в моєму розкладі",
-      "scheduleAppointment": "Створити запис"
+      "scheduleAppointment": "Створити запис",
+      "doNotNotifyCustomer": "Не повідомляти клієнта",
+      "doNotNotifyCustomerDescription": "Якщо ввімкнено, клієнт не буде повідомлений про зміну запису",
+      "updateAppointment": "Оновити запис",
+      "updatedSuccess": "Запис було успішно оновлено"
     },
     "actionButton": {
       "changesSaved": "Ваші зміни були збережені.",
@@ -326,7 +336,9 @@
       "oldDateTime": "Старий час: {oldDateTime}",
       "newDateTime": "Новий час: {newDateTime}",
       "refundedAmount": "Повернено ${amount}",
-      "totalRefunded": "Всього повернено ${amount}"
+      "totalRefunded": "Всього повернено ${amount}",
+      "oldOption": "Стара опція: {oldOption}",
+      "newOption": "Нова опція: {newOption}"
     }
   },
   "assets": {

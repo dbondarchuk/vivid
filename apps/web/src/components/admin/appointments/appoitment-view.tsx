@@ -61,6 +61,7 @@ import {
 import { getTimeZones } from "@vvo/tzdb";
 import {
   CalendarCheck2,
+  CalendarCog,
   CalendarSearch,
   CalendarSync,
   CalendarX2,
@@ -253,13 +254,13 @@ export const AppointmentView: React.FC<{
           appointmentId={appointment._id}
           onSuccess={() => setKey(new Date().getTime().toString())}
         >
-          <Button variant="outline">
+          <Button variant="secondary">
             <Send /> {t("appointments.view.sendMessage")}
           </Button>
         </SendCommunicationDialog>
         <Link
           className="inline-flex flex-row gap-2 items-center"
-          variant="primary"
+          variant="outline"
           button
           href={`/admin/dashboard/appointments/new?from=${appointment._id}`}
         >
@@ -273,7 +274,7 @@ export const AppointmentView: React.FC<{
               onRescheduled={reschedule}
               trigger={
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   className="inline-flex flex-row gap-2 items-center"
                 >
                   <CalendarSearch size={20} />
@@ -281,6 +282,14 @@ export const AppointmentView: React.FC<{
                 </Button>
               }
             />
+            <Link
+              className="inline-flex flex-row gap-2 items-center"
+              variant="outline"
+              button
+              href={`/admin/dashboard/appointments/${appointment._id}/edit`}
+            >
+              <CalendarCog size={20} /> {t("appointments.view.edit")}
+            </Link>
             <AppointmentDeclineDialog
               appointment={appointment}
               onSuccess={updateStatus}

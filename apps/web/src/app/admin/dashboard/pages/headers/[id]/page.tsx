@@ -52,7 +52,7 @@ export default async function EditPageHeaderPage(props: Props) {
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <div className="flex flex-1 flex-col gap-4">
         <PageHeaderForm initialData={pageHeader} />
       </div>

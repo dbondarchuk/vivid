@@ -121,7 +121,7 @@ export const AnimationConfiguration = ({
           min={0}
           max={10}
           options={[0.1, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 3, 5]}
-          float={true}
+          float
           nullable={false}
           suffix={t("pageBuilder.common.secondsShort")}
         />
@@ -235,7 +235,7 @@ export const AnimationConfiguration = ({
           min={0}
           max={10}
           options={[0, 0.1, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 3, 5]}
-          float={true}
+          float
           nullable={false}
           suffix={t("pageBuilder.common.secondsShort")}
         />

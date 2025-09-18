@@ -76,7 +76,7 @@ export const ColorShortcut = <T extends BaseStyleDictionary>({
     <ColorExtendedInput
       defaultValue={currentColorValue}
       onChange={handleValueChange}
-      nullable={true}
+      nullable
     />
   );
 };

@@ -42,7 +42,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body
         className={`${montserrat.variable} ${playfair.variable} ${inter.className} overflow-hidden `}
-        suppressHydrationWarning={true}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <NextTopLoader showSpinner={false} color="hsl(var(--primary))" />

@@ -98,7 +98,7 @@ export const TableCellElement = withRef<
         <div
           className="group absolute top-0 size-full select-none"
           contentEditable={false}
-          suppressContentEditableWarning={true}
+          suppressContentEditableWarning
         >
           {!readOnly && (
             <>

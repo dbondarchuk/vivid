@@ -55,7 +55,7 @@ export default async function AppsStorePage(props: Params) {
   console.log(appName);
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Breadcrumbs items={breadcrumbItems} />
       <AppDetails appName={appName} />
     </PageContainer>

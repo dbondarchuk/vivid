@@ -21,6 +21,7 @@ import {
   Banknote,
   BanknoteX,
   CalendarCheck,
+  CalendarCog,
   CalendarPlus2,
   CalendarX,
   HistoryIcon,
@@ -41,6 +42,8 @@ const HistoryEntryTypeIcon: React.FC<{
       return <Banknote className={className} />;
     case "paymentRefunded":
       return <BanknoteX className={className} />;
+    case "updated":
+      return <CalendarCog className={className} />;
     case "statusChanged":
       switch (entry.data.newStatus) {
         case "confirmed":
@@ -240,6 +243,38 @@ const HistoryEntry: React.FC<{ entry: AppointmentHistoryEntry }> = ({
                   : entry.data.payment.type === "cash"
                     ? t("admin.payment.methods.cash")
                     : t("admin.payment.methods.card")}
+              </Badge>
+            </>
+          )}
+          {entry.type === "updated" && (
+            <>
+              <Badge variant="outline" className="text-xs">
+                {t("admin.appointments.history.oldOption", {
+                  oldOption: entry.data.oldOption.name,
+                })}
+              </Badge>
+              <Badge variant="default" className="text-xs">
+                {t("admin.appointments.history.newOption", {
+                  newOption: entry.data.newOption.name,
+                })}
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                {t("admin.appointments.history.oldDateTime", {
+                  oldDateTime: DateTime.fromISO(
+                    entry.data.oldDateTime as any as string,
+                  )
+                    .setZone(timeZone)
+                    .toLocaleString(DateTime.DATETIME_MED, { locale }),
+                })}
+              </Badge>
+              <Badge variant="default" className="text-xs">
+                {t("admin.appointments.history.newDateTime", {
+                  newDateTime: DateTime.fromISO(
+                    entry.data.newDateTime as any as string,
+                  )
+                    .setZone(timeZone)
+                    .toLocaleString(DateTime.DATETIME_MED, { locale }),
+                })}
               </Badge>
             </>
           )}

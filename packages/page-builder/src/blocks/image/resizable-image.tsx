@@ -149,7 +149,7 @@ export const ImagePositionEditor = forwardRef<
           styleDefinitions={styles}
           styles={props.style}
           defaults={defaults}
-          isEditor={true}
+          isEditor
         />
         <img
           ref={mergeRefs(imageRef, ref)}

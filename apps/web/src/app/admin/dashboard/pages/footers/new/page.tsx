@@ -36,7 +36,7 @@ export default async function NewPageFooterPage() {
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Styling styling={styling} />
       <PageFooterForm args={args} />
     </PageContainer>

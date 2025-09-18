@@ -68,7 +68,7 @@ export const AssetEditForm: React.FC<{ asset: AssetEntity }> = ({ asset }) => {
           <FormItem>
             <FormLabel>{t("assets.form.fileName")}</FormLabel>
             <Input
-              disabled={true}
+              disabled
               placeholder={t("assets.form.assetName")}
               value={asset.filename}
             />

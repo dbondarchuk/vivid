@@ -94,7 +94,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
     {},
   );
 
-  const getCustomers = React.useCallback(
+  const getDiscounts = React.useCallback(
     async (page: number, search?: string) => {
       const limit = 10;
       let url = `/admin/api/discounts?page=${page}&limit=${limit}`;
@@ -164,7 +164,7 @@ export const PromoCodeSelector: React.FC<PromoCodeSelectorProps> = ({
       placeholder={t("promoCodeSelector.placeholder")}
       value={value}
       allowClear={allowClear}
-      fetchItems={getCustomers}
+      fetchItems={getDiscounts}
       loader={<PromoCodeLoader />}
     />
   );

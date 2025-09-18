@@ -25,7 +25,7 @@ export default async function Page() {
   );
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <Styling styling={styling} />
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-4 justify-between">

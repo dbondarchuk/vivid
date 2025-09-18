@@ -17,7 +17,7 @@ export default async function NewPageHeaderPage() {
   logger.debug("Loading new page header creation page");
 
   return (
-    <PageContainer scrollable={true}>
+    <PageContainer scrollable>
       <PageHeaderForm />
     </PageContainer>
   );

@@ -54,7 +54,8 @@
         "rescheduled": "Rescheduled",
         "created": "Created",
         "paymentAdded": "Payment added",
-        "paymentRefunded": "Payment refunded"
+        "paymentRefunded": "Payment refunded",
+        "updated": "Updated"
       },
       "filters": "Filters",
       "loading": "Loading"
@@ -229,6 +230,10 @@
       "title": "New appointment",
       "description": "Schedule a new appointment on behalf of the customer"
     },
+    "edit": {
+      "title": "Edit appointment",
+      "description": "Edit an existing appointment"
+    },
     "view": {
       "noteUpdated": "Appointment note was updated.",
       "requestError": "There was a problem with your request.",
@@ -236,6 +241,7 @@
       "sendMessage": "Send message",
       "scheduleAgain": "Schedule again",
       "reschedule": "Reschedule",
+      "edit": "Edit",
       "decline": "Decline",
       "confirm": "Confirm",
       "dateTime": "Date & Time",
@@ -288,7 +294,9 @@
       "oldDateTime": "Old date and time: {oldDateTime}",
       "newDateTime": "New date and time: {newDateTime}",
       "refundedAmount": "Refunded ${amount}",
-      "totalRefunded": "Total refunded ${amount}"
+      "totalRefunded": "Total refunded ${amount}",
+      "oldOption": "Old option: {oldOption}",
+      "newOption": "New option: {newOption}"
     },
     "form": {
       "dateTimeRequired": "Date and time are required",
@@ -322,7 +330,11 @@
       "confirmAppointmentDescription": "Mark appointment as confirmed",
       "confirmOverlap": "Confirm overlap",
       "confirmOverlapDescription": "I understand that scheduling this appointment will create an overlap in my schedule",
-      "scheduleAppointment": "Schedule appointment"
+      "scheduleAppointment": "Schedule appointment",
+      "doNotNotifyCustomer": "Do not notify customer",
+      "doNotNotifyCustomerDescription": "If checked, the customer will not be notified about the appointment change",
+      "updateAppointment": "Update appointment",
+      "updatedSuccess": "Appointment was successfully updated"
     },
     "actionButton": {
       "changesSaved": "Your changes were saved.",
