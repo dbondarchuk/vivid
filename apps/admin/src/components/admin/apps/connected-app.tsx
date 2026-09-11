@@ -11,6 +11,7 @@ import {
   TooltipResponsiveTrigger,
 } from "@hacado/ui";
 import {
+  AppName,
   ConnectedAppAccount,
   ConnectedAppNameAndLogo,
   ConnectedAppStatusMessage,
@@ -44,25 +45,32 @@ export const ConnectedAppRow: React.FC<ConnectedAppRowProps> = ({ app }) => {
   return (
     <div className="w-full rounded-lg border bg-card flex flex-col">
       <div className="flex flex-row items-center justify-between gap-2 border-b px-3 py-2.5 md:px-4 md:py-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           <TooltipResponsive>
             <TooltipResponsiveTrigger>
               <span
-                className={`size-2.5 rounded-full ${statusIndicatorClass} ${statusIndicatorAnimation}`}
+                className={`size-2.5 shrink-0 rounded-full ${statusIndicatorClass} ${statusIndicatorAnimation}`}
               />
             </TooltipResponsiveTrigger>
             <TooltipResponsiveContent side="right">
               {statusLabel}
             </TooltipResponsiveContent>
           </TooltipResponsive>
-          <ConnectedAppNameAndLogo
-            appName={app.name}
-            className="break-all"
-            logoClassName="size-4"
-            nameClassName="text-base"
-          />
+          <TooltipResponsive>
+            <TooltipResponsiveTrigger>
+              <ConnectedAppNameAndLogo
+                appName={app.name}
+                className="min-w-0"
+                logoClassName="size-4 shrink-0"
+                nameClassName="text-base truncate"
+              />
+            </TooltipResponsiveTrigger>
+            <TooltipResponsiveContent side="bottom">
+              <AppName appName={app.name} />
+            </TooltipResponsiveContent>
+          </TooltipResponsive>
         </div>
-        <div className="flex items-center gap-1.5 flex-row flex-wrap justify-end">
+        <div className="flex items-center gap-1.5 flex-row md:flex-wrap justify-end">
           {appDescriptor.type === "complex" && appDescriptor.settingsHref ? (
             <Link
               button

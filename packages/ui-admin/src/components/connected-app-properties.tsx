@@ -60,18 +60,30 @@ export const ConnectedAppStatusMessage: React.FC<{
   );
 };
 
-export const ConnectedAppNameAndLogo: React.FC<{
+export interface ConnectedAppNameAndLogoProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   appName: ConnectedApp["name"];
-  className?: string;
   logoClassName?: string;
   nameClassName?: string;
-}> = ({ appName, className, logoClassName, nameClassName }) => {
+}
+
+export const ConnectedAppNameAndLogo: React.FC<
+  ConnectedAppNameAndLogoProps
+> = ({ appName, className, logoClassName, nameClassName, ...props }) => {
   const App = AvailableApps[appName];
   const t = useI18n();
   return (
-    <div className={cn("inline-flex items-center gap-2", className)}>
+    <div className={cn("inline-flex items-center gap-2", className)} {...props}>
       <App.Logo className={cn("size-3.5", logoClassName)} />
       <span className={cn("text-xs", nameClassName)}>{t(App.displayName)}</span>
     </div>
   );
+};
+
+export const AppName: React.FC<
+  React.HTMLAttributes<HTMLSpanElement> & { appName: ConnectedApp["name"] }
+> = ({ appName, ...props }) => {
+  const App = AvailableApps[appName];
+  const t = useI18n();
+  return <span {...props}>{t(App.displayName)}</span>;
 };

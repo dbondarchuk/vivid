@@ -1,5 +1,12 @@
 import { AssetEntity } from "@hacado/types";
-import { cn, Dialog, DialogContent, DialogTrigger, Link } from "@hacado/ui";
+import {
+  cn,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  ImageZoom,
+  Link,
+} from "@hacado/ui";
 import { mimeTypeToExtension } from "@hacado/utils";
 import { FileIcon, Play } from "lucide-react";
 // import Image from "next/image";
@@ -86,11 +93,12 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({
             closeClassName="bg-background"
           >
             <div className="relative h-[calc(100vh-220px)] w-full overflow-clip rounded-md bg-transparent shadow-none">
-              <img
+              {/* <img
                 src={src}
                 alt={description || ""}
                 className="h-full w-full object-contain"
-              />
+              /> */}
+              <ImageZoom src={src} alt={description || ""} />
             </div>
           </DialogContent>
         </Dialog>

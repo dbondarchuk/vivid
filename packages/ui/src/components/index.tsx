@@ -34,6 +34,7 @@ export * from "./forms";
 export * from "./heading";
 export * from "./icon";
 export * from "./iframe";
+export * from "./image-zoom";
 export * from "./info-tooltip";
 export * from "./input";
 export * from "./input-group";

@@ -260,3 +260,7 @@ marketingBrowserCarousel:
   goToSlide: "Go to slide {slide}"
   imageAlt: "{name} preview"
   emptySlides: "No slides added yet"
+imageZoom:
+  zoomIn: Zoom in
+  zoomOut: Zoom out
+  resetZoom: Reset zoom

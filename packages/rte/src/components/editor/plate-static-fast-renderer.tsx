@@ -12,7 +12,14 @@ import type { Descendant, TText } from "@udecode/slate";
 import { ChevronRight, FileUp, RadicalIcon } from "lucide-react";
 import React from "react";
 
-import { Button, cn } from "@hacado/ui";
+import {
+  Button,
+  cn,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  ImageZoom,
+} from "@hacado/ui";
 import { BaseParagraphPlugin, type Value } from "@udecode/plate";
 import {
   BaseBoldPlugin,
@@ -526,11 +533,11 @@ function renderBlock(
       const url = el.url as string | undefined;
       const width = el.width as number | undefined;
       const align = (el.align as string) ?? "center";
-      const caption = el.caption as Descendant[] | undefined;
+      const caption = el.children as Descendant[] | undefined;
       const capText = caption?.[0]
         ? stringFromDescendants([caption[0]] as Descendant[])
         : "";
-      return (
+      return url ? (
         <div
           key={pathKey}
           className="py-2.5 flex flex-col items-center justify-center"
@@ -540,11 +547,23 @@ function renderBlock(
               className="relative max-w-full min-w-[92px]"
               style={{ textAlign: align as React.CSSProperties["textAlign"] }}
             >
-              <img
-                className="w-full max-w-full cursor-default object-cover px-0 rounded-sm"
-                alt=""
-                src={url}
-              />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <img
+                    className="w-full max-w-full cursor-pointer object-cover px-0 rounded-sm"
+                    alt=""
+                    src={url}
+                  />
+                </DialogTrigger>
+                <DialogContent
+                  className="max-w-7xl border-0 bg-transparent p-0 shadow-none"
+                  closeClassName="bg-background"
+                >
+                  <div className="relative h-[calc(100vh-220px)] w-full overflow-clip rounded-md bg-transparent shadow-none">
+                    <ImageZoom src={url} alt={capText || ""} />
+                  </div>
+                </DialogContent>
+              </Dialog>
               {capText ? (
                 <figcaption className="mx-auto mt-2 h-[24px] max-w-full">
                   {capText}
@@ -554,7 +573,7 @@ function renderBlock(
           </figure>
           {ph}
         </div>
-      );
+      ) : null;
     }
     case BaseVideoPlugin.key: {
       const url = el.url as string | undefined;

@@ -9,6 +9,7 @@ import {
   CarouselPrevious,
   Dialog,
   DialogContent,
+  ImageZoom,
 } from "@hacado/ui";
 import { useContext, useEffect, useState } from "react";
 import { LightboxInternalContext } from "./context";
@@ -65,11 +66,12 @@ export const Lightbox = ({
               <CarouselItem key={index}>
                 <div className="flex flex-col gap-2 justify-center h-full max-h-lvh">
                   <div className="w-full flex justify-center max-h-[80%]">
-                    <img
+                    {/* <img
                       src={file.url}
                       className="w-full h-full object-contain"
                       alt={file.alt || ""}
-                    />
+                    /> */}
+                    <ImageZoom src={file.url} alt={file.alt || ""} />
                   </div>
                   {showAltAsDescription && file.alt && (
                     <div className="text-background text-center">

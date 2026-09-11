@@ -432,6 +432,7 @@ export const PlateStaticEditor = React.forwardRef<
   if (renderMode === "fast") {
     return <PlateStaticEditorFast ref={ref} {...props} />;
   }
+
   return (
     <PlateStaticEditorPlate
       ref={ref}
