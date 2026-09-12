@@ -65,7 +65,7 @@ export const Lightbox = ({
             {images.map((file, index) => (
               <CarouselItem key={index}>
                 <div className="flex flex-col gap-2 justify-center h-full max-h-lvh">
-                  <div className="w-full flex justify-center max-h-[80%]">
+                  <div className="w-full flex justify-center h-[80dvh] max-h-[80%]">
                     {/* <img
                       src={file.url}
                       className="w-full h-full object-contain"
