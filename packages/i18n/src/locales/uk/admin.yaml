@@ -423,8 +423,8 @@ team:
   pendingInvitations: Очікувані запрошення
   cancelInvite: Скасувати
   members: Учасники
-  seats: "{active} з {available} місць зайнято"
-  seatsUnlimited: "{active} учасників · без ліміту місць"
+  seats: "{active} з {available, plural, =1 {1 місце} few {# місця} many {# місць} other {# місця}} зайнято"
+  seatsUnlimited: "{active, plural, =1 {1 учасник} other {# учасників}} · без ліміту місць"
   purchaseSeats: Купити місця
   purchaseSeatsDescription: Додайте місця користувачів до підписки.
   seatsPurchase:

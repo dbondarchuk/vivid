@@ -33,10 +33,29 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
   const dateTime = DateTime.fromJSDate(entry.dateTime);
   const locale = useLocale();
   const isMobile = useIsMobile();
+
+  const subject =
+    entry.subject ??
+    t(
+      typeof entry.handledBy === "string"
+        ? entry.handledBy
+        : entry.handledBy.key,
+      typeof entry.handledBy === "object" && entry.handledBy.args
+        ? entry.handledBy.args
+        : undefined,
+    );
+
+  const handler = t(
+    typeof entry.handledBy === "object" ? entry.handledBy.key : entry.handledBy,
+    typeof entry.handledBy === "object" && entry.handledBy.args
+      ? entry.handledBy.args
+      : undefined,
+  );
+
   return (
     <div className="w-full rounded-lg border bg-card">
-      <div className="flex items-center justify-between border-b p-4">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center justify-between gap-2 border-b p-4">
+        <div className="flex items-center gap-2 min-w-0">
           <div className="flex-shrink-0">
             {entry.channel === "email" ? (
               <Mail className="size-5 text-muted-foreground" />
@@ -46,21 +65,18 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
               <MailQuestion className="size-5 text-muted-foreground" />
             )}
           </div>
-          <p className="font-medium text-base truncate">
-            {entry.subject ??
-              t(
-                typeof entry.handledBy === "string"
-                  ? entry.handledBy
-                  : entry.handledBy.key,
-                typeof entry.handledBy === "object" && entry.handledBy.args
-                  ? entry.handledBy.args
-                  : undefined,
-              )}
-          </p>
+          <TooltipResponsive>
+            <TooltipResponsiveTrigger>
+              <span className="font-medium text-base truncate">{subject}</span>
+            </TooltipResponsiveTrigger>
+            <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
+              {subject}
+            </TooltipResponsiveContent>
+          </TooltipResponsive>
         </div>
         <TooltipResponsive>
           <TooltipResponsiveTrigger>
-            <span className="text-sm text-muted-foreground underline decoration-dashed cursor-help">
+            <span className="text-sm text-muted-foreground underline decoration-dashed cursor-help shrink-0">
               {dateTime.setLocale(locale).toRelative()}
             </span>
           </TooltipResponsiveTrigger>
@@ -83,9 +99,9 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
             title={tAdmin("communications.logContent")}
             trigger={
               <Button
-                variant="ghost"
+                variant="link-dashed"
                 size="sm"
-                className="h-auto px-1 py-0 text-sm text-muted-foreground hover:text-foreground"
+                className="h-auto px-0 py-0 text-sm text-muted-foreground hover:text-foreground"
               >
                 {tAdmin("communications.viewMore")}
               </Button>
@@ -99,23 +115,34 @@ const CommunicationEntry: React.FC<{ entry: CommunicationLog }> = ({
           <Badge variant="secondary" className="text-sm">
             {tAdmin(`common.labels.direction.${entry.direction}`)}
           </Badge>
-          <Badge variant="outline" className="text-sm">
-            {tAdmin("communications.handler", {
-              handler: t(
-                typeof entry.handledBy === "object"
-                  ? entry.handledBy.key
-                  : entry.handledBy,
-                typeof entry.handledBy === "object" && entry.handledBy.args
-                  ? entry.handledBy.args
-                  : undefined,
-              ),
-            })}
+          <Badge variant="outline" className="text-sm overflow-hidden">
+            <TooltipResponsive>
+              <TooltipResponsiveTrigger>
+                <span className="truncate">
+                  {tAdmin("communications.handler", {
+                    handler: handler,
+                  })}
+                </span>
+              </TooltipResponsiveTrigger>
+              <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
+                {handler}
+              </TooltipResponsiveContent>
+            </TooltipResponsive>
           </Badge>
           {entry.participant && (
-            <Badge variant="outline" className="text-sm">
-              {tAdmin("communications.participant", {
-                participant: entry.participant,
-              })}
+            <Badge variant="outline" className="text-sm overflow-hidden">
+              <TooltipResponsive>
+                <TooltipResponsiveTrigger>
+                  <span className="truncate">
+                    {tAdmin("communications.participant", {
+                      participant: entry.participant,
+                    })}
+                  </span>
+                </TooltipResponsiveTrigger>
+                <TooltipResponsiveContent side={isMobile ? "bottom" : "left"}>
+                  {entry.participant}
+                </TooltipResponsiveContent>
+              </TooltipResponsive>
             </Badge>
           )}
           {entry.hasPayloadData && (

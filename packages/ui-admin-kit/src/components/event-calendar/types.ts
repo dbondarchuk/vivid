@@ -26,8 +26,20 @@ export type EventCalendarEvent = {
   end: Date;
   /** Primary label - service name for appointments, event title for external. */
   title: string;
-  /** Customer display name (appointments). */
-  customerName?: string;
+  customer?: {
+    _id?: string | null;
+    name?: string | null;
+    image?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  video?: {
+    link?: string | null;
+    password?: string | null;
+    provider?: string | null;
+    meetingId?: string | null;
+  };
+
   /** Assigned staff member (appointments / events from calendar apps). */
   member?: {
     _id: string;

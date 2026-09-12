@@ -11,7 +11,7 @@ import type { EventCalendarEvent } from "./types";
 export type EventItemContentProps = {
   event: Pick<
     EventCalendarEvent,
-    "title" | "customerName" | "member" | "start" | "end"
+    "title" | "customer" | "member" | "start" | "end"
   >;
   /** `full` = week/agenda card; `compact` = month chip. */
   density?: "full" | "compact";
@@ -67,10 +67,10 @@ export const EventItemContent: React.FC<EventItemContentProps> = ({
           {timeLabel}
         </div>
       ) : null}
-      {event.customerName ? (
+      {event.customer?.name ? (
         <div className="flex items-center gap-1 min-w-0 text-[12px] leading-tight opacity-90">
           <User className="size-3.5 shrink-0 opacity-80" aria-hidden />
-          <span className="truncate">{event.customerName}</span>
+          <span className="truncate">{event.customer.name}</span>
         </div>
       ) : null}
       {event.member ? (

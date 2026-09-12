@@ -87,7 +87,13 @@ export const AppointmentCalendar: React.FC<{
             end: start.plus({ minutes: app.totalDuration || 0 }).toJSDate(),
             id: app._id,
             title: app.option.name,
-            customerName: app.fields.name,
+            customer: {
+              _id: app.customer?._id,
+              name: app.fields.name,
+              image: app.customer?.avatar,
+              email: app.fields.email,
+              phone: app.fields.phone,
+            },
             member: app.member
               ? {
                   _id: app.member._id,
@@ -97,6 +103,14 @@ export const AppointmentCalendar: React.FC<{
                 }
               : undefined,
             color: memberName ? getColorForName(memberName) : undefined,
+            video: app.meetingInformation
+              ? {
+                  link: app.meetingInformation.url,
+                  password: app.meetingInformation.meetingPassword,
+                  meetingId: app.meetingInformation.meetingId,
+                  provider: app.meetingInformation.type,
+                }
+              : undefined,
             variant:
               app._id === appointment._id &&
               !isClosedAppointmentStatus(app.status)

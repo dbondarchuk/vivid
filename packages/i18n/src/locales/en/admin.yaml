@@ -426,8 +426,8 @@ team:
   pendingInvitations: Pending invitations
   cancelInvite: Cancel
   members: Members
-  seats: "{active} of {available} seats used"
-  seatsUnlimited: "{active} members · no seat limit"
+  seats: "{active} of {available, plural, =1 {1 seat} other {# seats}} used"
+  seatsUnlimited: "{active, plural, =1 {1 member} other {# members}} · no seat limit"
   purchaseSeats: Purchase seats
   purchaseSeatsDescription: Add recurring user seats to your subscription.
   seatsPurchase:
