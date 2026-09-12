@@ -25,7 +25,8 @@ import {
   okStatus,
   WithDatabaseId,
 } from "@hacado/types";
-import { decrypt, encrypt, getAdminUrl } from "@hacado/utils";
+import { getAdminUrl } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import { Credentials, OAuth2Client } from "google-auth-library";
 import { DateTime } from "luxon";
 import {

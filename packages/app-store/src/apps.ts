@@ -35,6 +35,8 @@ import { OutlookApp } from "./apps/outlook/app";
 import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { PaypalApp } from "./apps/paypal/app";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
+import { ResendApp } from "./apps/resend/app";
+import { RESEND_APP_NAME } from "./apps/resend/const";
 import { SmartScheduleApp } from "./apps/smart-schedule/app";
 import { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 import { SmtpApp } from "./apps/smtp/app";
@@ -71,6 +73,7 @@ export const AvailableApps: Record<string, App> = {
   [CALDAV_APP_NAME]: CaldavApp,
   [CARDDAV_APP_NAME]: CarddavApp,
   [SMTP_APP_NAME]: SmtpApp,
+  [RESEND_APP_NAME]: ResendApp,
   [WEEKLY_SCHEDULE_APP_NAME]: WeeklyScheduleApp,
   [BUSY_EVENTS_APP_NAME]: BusyEventsApp,
   [TEXTBELT_APP_NAME]: TextBeltApp,
@@ -125,6 +128,7 @@ export { STRIPE_APP_NAME } from "./apps/stripe/const";
 export { APPOINTMENT_NOTIFICATIONS_APP_NAME } from "./apps/appointment-notifications/const";
 export { FORMS_APP_NAME } from "./apps/forms/const";
 export { GIFT_CARD_STUDIO_APP_NAME } from "./apps/gift-card-studio/const";
+export { RESEND_APP_NAME } from "./apps/resend/const";
 export { SMART_SCHEDULE_APP_NAME } from "./apps/smart-schedule/const";
 export { SMTP_APP_NAME } from "./apps/smtp/const";
 export { TEXTBELT_APP_NAME } from "./apps/text-belt/const";

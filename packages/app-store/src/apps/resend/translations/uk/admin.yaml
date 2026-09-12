@@ -1,0 +1,39 @@
+title: Resend
+app:
+  displayName: Resend
+  description: Resend — сучасний email API для розробників. Підключіть акаунт Resend через OAuth, щоб надсилати транзакційні листи з перевіреного домену.
+form:
+  connect: Підключити <app></app>
+  reconnect: Перепідключити <app></app>
+  pendingAuthorization: Очікування авторизації
+  fromEmail:
+    label: Email відправника
+    placeholder: hello@yourdomain.com
+    tooltip: Має бути адреса на домені, перевіреному у вашому акаунті Resend
+  fromName:
+    label: Ім'я відправника
+    placeholder: Ваш бізнес
+    tooltip: Необов'язкове ім'я, яке відображається у полі Від
+  save: Зберегти налаштування відправника
+  saveSuccess: Налаштування відправника збережено
+  saveError: Не вдалося зберегти налаштування відправника
+statusText:
+  successfully_connected: Успішно підключено до Resend
+  successfully_configured: Налаштування відправника збережено
+  error_processing_configuration: Помилка обробки конфігурації Resend
+  oauth_error: Помилка OAuth автентифікації
+  missing_oauth_config: OAuth клієнт Resend не налаштований
+  refresh_token_not_set: Refresh token не встановлено
+  redirect_request_does_not_contain_app_id: Запит перенаправлення не містить ID додатку
+  redirect_request_does_not_contain_authorization_code: Запит перенаправлення не містить код авторизації
+  app_was_not_authorized_properly: Додаток не було належним чином авторизовано
+  pkce_verifier_missing: Відсутній OAuth PKCE verifier. Почніть підключення знову.
+  requires_sender_settings: Потрібні налаштування відправника
+  from_email_not_configured: Email відправника не налаштовано
+  error_sending_email: Помилка надсилання email через Resend
+  error_parsing_ical_event: Не вдалося розібрати iCal подію
+validation:
+  fromEmail:
+    invalid: Email відправника має бути коректною email адресою
+  fromName:
+    max: Ім'я відправника не може бути більше 256 символів

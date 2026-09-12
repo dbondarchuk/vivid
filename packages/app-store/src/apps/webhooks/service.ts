@@ -11,7 +11,7 @@ import {
   IConnectedAppProps,
   IEventSubscriber,
 } from "@hacado/types";
-import { decrypt, encrypt } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import crypto from "crypto";
 import {
   LIST_SELECTABLE_EVENT_TYPES_REQUEST_TYPE,

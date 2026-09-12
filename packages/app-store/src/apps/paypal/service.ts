@@ -18,7 +18,8 @@ import {
   SyncedPaymentTransaction,
   systemEventSource,
 } from "@hacado/types";
-import { decrypt, encrypt, getAppsExternalUrl, maskify } from "@hacado/utils";
+import { getAppsExternalUrl, maskify } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import { Environment } from "@paypal/paypal-server-sdk";
 import {
   APPLE_PAY_DOMAIN_ASSOCIATION_PRODUCTION,

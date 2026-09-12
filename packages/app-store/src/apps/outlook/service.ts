@@ -29,7 +29,8 @@ import {
   IOAuthConnectedApp,
   WithDatabaseId,
 } from "@hacado/types";
-import { decrypt, encrypt, getAdminUrl } from "@hacado/utils";
+import { getAdminUrl } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import { Client } from "@microsoft/microsoft-graph-client";
 import {
   Attachment,

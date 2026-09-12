@@ -24,12 +24,8 @@ import {
   SyncedPaymentTransaction,
   systemEventSource,
 } from "@hacado/types";
-import {
-  decrypt,
-  encrypt,
-  getAppsExternalUrl,
-  getWebsiteDomain,
-} from "@hacado/utils";
+import { getAppsExternalUrl, getWebsiteDomain } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import { getApplePayDomainAssociation } from "./apple-pay";
 import { getSquareOrder, getSquarePayment } from "./client";
 import { SQUARE_APP_NAME } from "./const";

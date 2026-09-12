@@ -1,7 +1,7 @@
-import { PlannedShortLink } from "@hacado/utils";
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
-import { ShortLinksService } from "./short-links.service";
+import { PlannedShortLink } from "./helpers";
+import { ShortLinksService } from "./service";
 
 class RecordingShortLinksService extends ShortLinksService {
   public readonly persistCalls: PlannedShortLink[][] = [];

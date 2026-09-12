@@ -17,14 +17,13 @@ import {
   TextMessageResponse,
 } from "@hacado/types";
 import {
-  decrypt,
-  encrypt,
   getAdminUrl,
   getAppsExternalUrl,
   getArguments,
   getWebsiteUrl,
   maskify,
 } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import crypto from "crypto";
 import { getEmailTemplate } from "./emails/utils";
 import { TextBeltConfiguration, textBeltConfigurationSchema } from "./models";

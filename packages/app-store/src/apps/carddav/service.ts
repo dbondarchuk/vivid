@@ -7,7 +7,8 @@ import {
   IConnectedApp,
   IConnectedAppProps,
 } from "@hacado/types";
-import { decrypt, encrypt, getAppsExternalUrl } from "@hacado/utils";
+import { getAppsExternalUrl } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import crypto from "crypto";
 import {
   CarddavConfiguration,

@@ -123,10 +123,13 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
     () => ({
       onSuccess: (appId: string, doNotCloseDialog?: boolean) => {
         toast.success(t("common.connectedAppSetup.success.description"));
+        // Keep the setup dialog open (e.g. Resend needs From email after OAuth).
+        if (doNotCloseDialog) {
+          return;
+        }
+
         if (app || !defaultScopes?.length || dontAskToSetDefault) {
-          if (!doNotCloseDialog) {
-            closeDialog(true);
-          }
+          closeDialog(true);
           return;
         }
 
@@ -134,7 +137,7 @@ export const AddOrUpdateAppButton: React.FC<AddOrUpdateAppButtonProps> = ({
           setPendingDefaultPrompt({ appId, scopes: defaultScopes });
           setSelectedScopes(defaultScopes);
           setIsOpen(false);
-        } else if (!doNotCloseDialog) {
+        } else {
           closeDialog(true);
         }
       },

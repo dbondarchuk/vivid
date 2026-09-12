@@ -6,6 +6,8 @@ import { OUTLOOK_APP_NAME } from "./apps/outlook/const";
 import { OutlookImages } from "./apps/outlook/images";
 import { PAYPAL_APP_NAME } from "./apps/paypal/const";
 import { PaypalImages } from "./apps/paypal/images";
+import { RESEND_APP_NAME } from "./apps/resend/const";
+import { ResendImages } from "./apps/resend/images";
 import { SQUARE_APP_NAME } from "./apps/square/const";
 import { SquareImages } from "./apps/square/images";
 import { STRIPE_APP_NAME } from "./apps/stripe/const";
@@ -22,6 +24,7 @@ export const AppImages: Record<string, string[]> = {
   [GOOGLE_CALENDAR_APP_NAME]: GoogleCalendarImages,
   [OUTLOOK_APP_NAME]: OutlookImages,
   [PAYPAL_APP_NAME]: PaypalImages,
+  [RESEND_APP_NAME]: ResendImages,
   [TEXTBELT_APP_NAME]: TextBeltImages,
   [WAITLIST_APP_NAME]: WaitlistImages,
   [ZOOM_APP_NAME]: ZoomImages,

@@ -4,7 +4,7 @@ import {
   ConnectedAppUpdateModel,
   ConnectedOauthAppTokens,
 } from "@hacado/types";
-import { decrypt, encrypt } from "@hacado/utils";
+import { decrypt, encrypt } from "@hacado/utils/server";
 import { ZoomAdminAllKeys } from "./translations/types";
 
 export const ZOOM_OAUTH_TOKEN_URL = "https://zoom.us/oauth/token";

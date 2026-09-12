@@ -1,5 +1,8 @@
 import { getLoggerFactory } from "@hacado/logger";
 import { IShortLinksService, ShortLink } from "@hacado/types";
+import { AnyBulkWriteOperation, MongoBulkWriteError } from "mongodb";
+import { SHORT_LINKS_COLLECTION_NAME } from "../collections";
+import { getDbConnection } from "../database";
 import {
   buildShortLinkUrl,
   getShortDomain,
@@ -7,10 +10,10 @@ import {
   planSmsShortLinks,
   rewriteUrlsInText,
   urlToShortCode,
-} from "@hacado/utils";
-import { AnyBulkWriteOperation, MongoBulkWriteError } from "mongodb";
-import { SHORT_LINKS_COLLECTION_NAME } from "./collections";
-import { getDbConnection } from "./database";
+} from "./helpers";
+
+export { SHORT_CODE_ALPHABET } from "./helpers";
+export type { PlannedShortLink } from "./helpers";
 
 const MAX_CODE_LENGTH = 16;
 

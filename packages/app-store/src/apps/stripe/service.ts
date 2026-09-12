@@ -23,7 +23,8 @@ import {
   SyncedPaymentTransaction,
   systemEventSource,
 } from "@hacado/types";
-import { encrypt, getWebsiteDomain } from "@hacado/utils";
+import { getWebsiteDomain } from "@hacado/utils";
+import { encrypt } from "@hacado/utils/server";
 import Stripe from "stripe";
 import { getStripeApplePayDomainAssociation } from "./apple-pay";
 import { STRIPE_APP_NAME } from "./const";

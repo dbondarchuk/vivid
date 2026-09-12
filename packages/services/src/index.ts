@@ -30,7 +30,7 @@ import { S3AssetsStorageService } from "./s3-assets-storage";
 import { getS3Configuration } from "./s3-assets-storage/utils";
 import { ScheduleService } from "./schedule.service";
 import { ServicesService } from "./services.service";
-import { ShortLinksService } from "./short-links.service";
+import { ShortLinksService } from "./short-links";
 import { SyncedPaymentsService } from "./synced-payments.service";
 import { TeamService } from "./team.service";
 import { TemplatesService } from "./templates.service";
@@ -63,7 +63,7 @@ export * from "./payments.service";
 export * from "./s3-assets-storage";
 export * from "./schedule.service";
 export * from "./services.service";
-export * from "./short-links.service";
+export * from "./short-links";
 export * from "./synced-payments.service";
 export * from "./team.service";
 

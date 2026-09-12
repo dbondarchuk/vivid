@@ -23,10 +23,10 @@ import {
 } from "@hacado/types";
 import {
   dispatchAppointmentEventPayload,
-  encrypt,
   getAdminUrl,
   stripMarkdown,
 } from "@hacado/utils";
+import { encrypt } from "@hacado/utils/server";
 import { DateTime } from "luxon";
 import {
   ZOOM_API_BASE_URL,

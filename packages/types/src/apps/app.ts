@@ -130,7 +130,7 @@ export type OAuthApp<
   CustomKeys extends string | undefined = undefined,
 > = BaseApp<T, CustomKeys> & {
   type: "oauth";
-  dontAllowMultiple?: false;
+  dontAllowMultiple?: boolean;
   isHidden?: false;
 };
 

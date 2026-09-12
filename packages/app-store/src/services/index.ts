@@ -35,6 +35,8 @@ import { OUTLOOK_APP_NAME } from "../apps/outlook/const";
 import OutlookConnectedApp from "../apps/outlook/service";
 import { PAYPAL_APP_NAME } from "../apps/paypal/const";
 import PaypalConnectedApp from "../apps/paypal/service";
+import { RESEND_APP_NAME } from "../apps/resend/const";
+import ResendConnectedApp from "../apps/resend/service";
 import { SMART_SCHEDULE_APP_NAME } from "../apps/smart-schedule/const";
 import SmartScheduleConnectedApp from "../apps/smart-schedule/service";
 import { SMTP_APP_NAME } from "../apps/smtp/const";
@@ -76,6 +78,7 @@ export const AvailableAppServices: Record<
   [WEEKLY_SCHEDULE_APP_NAME]: (props) => new WeeklyScheduleConnectedApp(props),
   [BUSY_EVENTS_APP_NAME]: (props) => new BusyEventsConnectedApp(props),
   [SMTP_APP_NAME]: (props) => new SmtpConnectedApp(props),
+  [RESEND_APP_NAME]: (props) => new ResendConnectedApp(props),
   [TEXTBELT_APP_NAME]: (props) => new TextBeltConnectedApp(props),
   [CUSTOMER_EMAIL_NOTIFICATION_APP_NAME]: (props) =>
     new CustomerEmailNotificationConnectedApp(props),

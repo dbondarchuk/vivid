@@ -1,6 +1,9 @@
 import { getLoggerFactory } from "@hacado/logger";
-import { ShortLinksService } from "@hacado/services/short-links";
-import { getAdminUrl, SHORT_CODE_ALPHABET } from "@hacado/utils";
+import {
+  SHORT_CODE_ALPHABET,
+  ShortLinksService,
+} from "@hacado/services/short-links";
+import { getAdminUrl } from "@hacado/utils";
 import dotenv from "dotenv";
 import http from "http";
 import { URL } from "url";

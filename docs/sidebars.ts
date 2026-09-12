@@ -19,6 +19,7 @@ const payments = ["apps/stripe", "apps/square", "apps/paypal"];
 
 const email = [
   "apps/smtp",
+  "apps/resend",
   "apps/email-notification",
   "apps/customer-email-notification",
   "apps/appointment-notifications",
