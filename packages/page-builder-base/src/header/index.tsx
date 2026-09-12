@@ -27,8 +27,8 @@ import {
   HeaderDrawerTrigger,
   PortalDrawerContent,
 } from "./drawer-content";
+import { HeaderInternal } from "./header";
 import { Logo } from "./logo";
-import { HeaderWithScrollShadow } from "./with-scroll-shadow";
 
 export type HeaderProps = {
   name: string;
@@ -60,7 +60,7 @@ const LinkRender: React.FC<{
   </>
 );
 
-const HeaderBase: React.FC<HeaderProps> = ({
+export const Header: React.FC<HeaderProps> = ({
   name,
   logo,
   config,
@@ -141,19 +141,7 @@ const HeaderBase: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header
-      className={cn(
-        "font-light text-[hsl(var(--value-foreground-color))] font-[family-name:--font-primary-value] w-full z-20 transition-all duration-300 header-container",
-        config?.sticky && config?.backdropBlur
-          ? "bg-[hsl(var(--value-background-color)/0.9)] backdrop-blur"
-          : "bg-[hsl(var(--value-background-color))]",
-        config?.sticky && "sticky top-0",
-        config?.shadow === "static" && "drop-shadow-md",
-        headerId && `header-${headerId}-container`,
-        className,
-      )}
-      data-header-id={headerId}
-    >
+    <HeaderInternal config={config} className={className} headerId={headerId}>
       <ReplaceOriginalColors />
       <div className="container mx-auto flex flex-wrap p-4 flex-row items-center gap-4 header-content">
         <Logo
@@ -263,16 +251,6 @@ const HeaderBase: React.FC<HeaderProps> = ({
           </Drawer>
         </div>
       </div>
-    </header>
+    </HeaderInternal>
   );
-};
-
-export const Header: React.FC<HeaderProps> = (props) => {
-  const baseHeader = <HeaderBase {...props} />;
-
-  if (props.config?.shadow === "on-scroll") {
-    return <HeaderWithScrollShadow>{baseHeader}</HeaderWithScrollShadow>;
-  }
-
-  return baseHeader;
 };
