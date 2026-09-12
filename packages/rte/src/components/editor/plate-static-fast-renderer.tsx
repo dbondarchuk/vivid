@@ -221,6 +221,12 @@ function renderTextMarks(
     style.fontSize = rest.fontSize as string;
   if (typeof rest.fontFamily === "string")
     style.fontFamily = rest.fontFamily as string;
+  if (
+    typeof rest.fontWeight === "string" ||
+    typeof rest.fontWeight === "number"
+  ) {
+    style.fontWeight = rest.fontWeight as React.CSSProperties["fontWeight"];
+  }
   if (Object.keys(style).length) {
     inner = <span style={style}>{inner}</span>;
   }
@@ -241,6 +247,7 @@ function renderPhrasing(
         </React.Fragment>
       );
     }
+
     if (!Element.isElement(child)) return null;
     const el = child as {
       type: string;
@@ -360,11 +367,9 @@ function renderPhrasing(
       );
     }
 
-    return (
-      <span key={k} data-unknown-inline={el.type}>
-        {renderPhrasing(ch, k)}
-      </span>
-    );
+    // Block/void nodes can end up under a paragraph (paste / editor quirks).
+    // PlateStatic still renders them via the element map; do the same here.
+    return renderBlock(child, k);
   });
 }
 
@@ -377,6 +382,36 @@ function indentBlockStyle(el: { [k: string]: unknown }): React.CSSProperties {
     return {};
   }
   return { marginLeft: raw * INDENT_OFFSET_PX };
+}
+
+/** Matches {@link BaseAlignPlugin} inject style (`textAlign` from node `align`). */
+function alignBlockStyle(el: { [k: string]: unknown }): React.CSSProperties {
+  const align = el.align;
+  if (
+    align !== "left" &&
+    align !== "center" &&
+    align !== "right" &&
+    align !== "justify" &&
+    align !== "start" &&
+    align !== "end"
+  ) {
+    return {};
+  }
+  return { textAlign: align };
+}
+
+/** Matches {@link BaseLineHeightPlugin} inject style (`lineHeight` on p/headings). */
+function lineHeightBlockStyle(el: {
+  [k: string]: unknown;
+}): React.CSSProperties {
+  const lh = el.lineHeight;
+  if (typeof lh === "number" && Number.isFinite(lh) && lh > 0) {
+    return { lineHeight: lh };
+  }
+  if (typeof lh === "string" && lh.length > 0) {
+    return { lineHeight: lh };
+  }
+  return {};
 }
 
 function listStyleOnBlock(el: { [k: string]: unknown }): string | undefined {
@@ -429,6 +464,9 @@ function renderBlock(
   const ch = (el.children ?? []) as Descendant[];
   const ph = renderPhrasing(ch, pathKey);
   const blockIndent = ctx.listIndentOnLi ? {} : indentBlockStyle(el);
+  const blockAlign = alignBlockStyle(el);
+  const blockLineHeight = lineHeightBlockStyle(el);
+  const blockStyle = { ...blockIndent, ...blockAlign, ...blockLineHeight };
 
   switch (el.type) {
     case BaseParagraphPlugin.key:
@@ -436,7 +474,7 @@ function renderBlock(
         <p
           key={pathKey}
           className="m-0 px-0 py-1"
-          style={{ whiteSpace: "pre-line", ...blockIndent }}
+          style={{ whiteSpace: "pre-line", ...blockStyle }}
         >
           {ph}
         </p>
@@ -468,7 +506,7 @@ function renderBlock(
       }[Tag];
       return React.createElement(
         Tag,
-        { key: pathKey, className: cls, style: blockIndent },
+        { key: pathKey, className: cls, style: blockStyle },
         ph,
       );
     }
@@ -533,20 +571,21 @@ function renderBlock(
       const url = el.url as string | undefined;
       const width = el.width as number | undefined;
       const align = (el.align as string) ?? "center";
-      const caption = el.children as Descendant[] | undefined;
+      const caption = el.caption as Descendant[] | undefined;
       const capText = caption?.[0]
         ? stringFromDescendants([caption[0]] as Descendant[])
         : "";
       return url ? (
         <div
           key={pathKey}
-          className="py-2.5 flex flex-col items-center justify-center"
+          className="py-2.5"
+          style={{ textAlign: align as React.CSSProperties["textAlign"] }}
         >
-          <figure className="group relative m-0 inline-block" style={{ width }}>
-            <div
-              className="relative max-w-full min-w-[92px]"
-              style={{ textAlign: align as React.CSSProperties["textAlign"] }}
-            >
+          <figure
+            className="group relative m-0 inline-block max-w-full"
+            style={{ width }}
+          >
+            <div className="relative max-w-full min-w-[92px]">
               <Dialog>
                 <DialogTrigger asChild>
                   <img
@@ -565,13 +604,12 @@ function renderBlock(
                 </DialogContent>
               </Dialog>
               {capText ? (
-                <figcaption className="mx-auto mt-2 h-[24px] max-w-full">
+                <figcaption className="mt-2 h-[24px] max-w-full text-center">
                   {capText}
                 </figcaption>
               ) : null}
             </div>
           </figure>
-          {ph}
         </div>
       ) : null;
     }

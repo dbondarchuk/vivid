@@ -52,6 +52,16 @@ function isAwaitingSenderSettings(app: ConnectedApp): boolean {
   );
 }
 
+/** OAuth in progress — not yet authorized / not ready for From settings. */
+function isAuthorizing(app: ConnectedApp): boolean {
+  return app.status === "pending" && !isAwaitingSenderSettings(app);
+}
+
+/** Tokens already exist (or OAuth done); user can edit From without reconnecting. */
+function canConfigureSender(app: ConnectedApp): boolean {
+  return !isAuthorizing(app);
+}
+
 export const ResendAppSetup: React.FC<AppSetupProps> = ({
   onSuccess,
   onError,
@@ -64,8 +74,7 @@ export const ResendAppSetup: React.FC<AppSetupProps> = ({
   const [app, setApp] = React.useState<ConnectedApp | undefined>(undefined);
   const [timer, setTimer] = React.useState<NodeJS.Timeout>();
 
-  const showSenderSettings =
-    !!app && (app.status === "connected" || isAwaitingSenderSettings(app));
+  const showSenderSettings = !!app && canConfigureSender(app);
   const formAppId = showSenderSettings ? (app._id ?? existingAppId) : undefined;
 
   const {
@@ -88,7 +97,7 @@ export const ResendAppSetup: React.FC<AppSetupProps> = ({
     const status = await adminApi.apps.getAppStatus(appId);
     setApp(() => status);
 
-    if (status.status === "pending" && !isAwaitingSenderSettings(status)) {
+    if (isAuthorizing(status)) {
       const id = setTimeout(() => getStatus(appId), 1000);
       setTimer(id);
       return;
@@ -97,7 +106,8 @@ export const ResendAppSetup: React.FC<AppSetupProps> = ({
     setIsConnecting(false);
 
     if (status.status === "failed") {
-      onError(status.statusText);
+      // OAuth tokens are present; keep the dialog open so the user can fix From settings.
+      onSuccess(appId, true);
       return;
     }
 

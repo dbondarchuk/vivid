@@ -29,21 +29,16 @@ export function ImageElementStatic({
 
   return (
     <SlateElement
-      className={cn(
-        className,
-        "py-2.5 flex flex-col items-center justify-center",
-      )}
+      className={cn(className, "py-2.5")}
       {...props}
+      style={{ textAlign: align, ...props.style }}
       nodeProps={nodeProps}
     >
       <figure
         className="group relative m-0 inline-block max-w-full"
         style={{ width }}
       >
-        <div
-          className="relative max-w-full min-w-[92px]"
-          style={{ textAlign: align }}
-        >
+        <div className="relative max-w-full min-w-[92px]">
           <Dialog>
             <DialogTrigger asChild>
               <img
@@ -70,7 +65,7 @@ export function ImageElementStatic({
           </Dialog>
 
           {caption && (
-            <figcaption className="mx-auto mt-2 h-[24px] max-w-full">
+            <figcaption className="mt-2 h-[24px] max-w-full text-center">
               {NodeApi.string(caption[0])}
             </figcaption>
           )}
